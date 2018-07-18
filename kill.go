@@ -84,6 +84,11 @@ func (s *state) killMoblin(animal, pit, thrownObj bool) bool {
 	return s.killNormalEnemy(animal, pit, thrownObj)
 }
 
+func (s *state) killMoldorm() bool {
+	return s.sword || s.sustainBombs() || s.useFists() ||
+		((s.satchel || s.slingshot) && s.sustainScent())
+}
+
 // non-any% enemies
 
 func (s *state) killGel(pit, thrownObj bool) bool {
