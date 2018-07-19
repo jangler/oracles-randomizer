@@ -7,6 +7,8 @@ package main
 // ideally "enter <dungeon>" is the only overworld item the dungeon nodes
 // reference.
 
+// TODO: d0
+
 var d1ChestItems = []string{
 	"", // 1-indexed
 	"d1 map",
@@ -15,6 +17,7 @@ var d1ChestItems = []string{
 	"", // bombs, can replace with w/e
 	"d1 key 2",
 	"d1 boss key",
+	"ring",
 }
 
 var d1NodesAnd = map[string][]string{
@@ -33,9 +36,13 @@ var d1NodesAnd = map[string][]string{
 	"d1 warp":           []string{"enter goriya bros", "kill goriya bros"},
 	"satchel":           []string{"d1 warp"},
 	"d1 chest 6":        []string{"d1 chest 1", "ember seeds", "kill goriya (pit)"},
-	d1ChestItems[6]:     []string{"d1 chest 6"},
+	d1ChestItems[6]:     []string{"d1 chest 6"}, // boss key
+	"d1 chest 7":        []string{"enter d1", "ember seeds"},
+	d1ChestItems[7]:     []string{"d1 chest 7"}, // ring
 	"enter aquamentus":  []string{"ember seeds", "d1 boss key"},
 	"d1 essence":        []string{"enter aquamentus", "kill aquamentus"},
 }
 
 var d1NodesOr = map[string][]string{}
+
+// TODO: d2
