@@ -8,7 +8,7 @@ import (
 func main() {
 	r := NewRoute()
 	path := list.New()
-	target := r.Map["d1 essence"]
+	target := r.Map["kill facade"]
 	mark := target.GetMark(path)
 	if mark == MarkTrue {
 		for path.Len() > 0 {
