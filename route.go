@@ -18,19 +18,27 @@ func NewRoute() *Route {
 	r.AddRootNodes(
 		"enter d0",
 		"ember tree",
+
+		// later
+		"slingshot",
+		"scent seeds",
+		"gale seeds",
+		"feather",
+		"cape",
+		"fists",
 	)
+
+	r.Map["slingshot"].SetMark(MarkFalse)
+	r.Map["scent seeds"].SetMark(MarkFalse)
+	r.Map["gale seeds"].SetMark(MarkFalse)
+	r.Map["feather"].SetMark(MarkFalse)
+	r.Map["cape"].SetMark(MarkFalse)
+	r.Map["fists"].SetMark(MarkFalse)
 
 	r.AddAndNodes(
 		"gnarled key",
 		"enter d1",
-		"d1 key 1",
-		"d1 key 2",
-		"enter goriya bros",
-		"kill goriya bros",
-		"satchel",
 		"ember seeds",
-		"d1 boss key",
-		"d1 essence",
 		"portal 1",
 		"winter",
 		"mystery tree",
@@ -45,6 +53,7 @@ func NewRoute() *Route {
 		"d2 key 3 1",
 		"d2 key 3 2",
 		"enter facade",
+		"d2 warp",
 	)
 
 	// also include single-parent nodes
@@ -56,15 +65,12 @@ func NewRoute() *Route {
 		"shield",
 		"pop bubble",
 		"remove bush",
-		"kill stalfos",
 		"hit lever",
-		"fight goriya bros",
+		"seed item",
 		"find ember seeds",
 		"harvest seeds",
 		"harvest ember seeds",
 		"get ember seeds",
-		"kill goriya (pit)",
-		"kill aquamentus",
 		"boomerang",
 		"rod",
 		"hit switch (far)",
@@ -72,27 +78,33 @@ func NewRoute() *Route {
 		"find mystery seeds",
 		"harvest mystery seeds",
 		"get mystery seeds",
-		"kill rope",
-		"kill hardhat beetle (pit)",
-		"kill moblin (gap)",
-		"kill gel",
 		"d2 key 3",
-		"kill facade",
+
+		// later
+		"jump",
 	)
+
+	for key, _ := range killNodesAnd {
+		r.AddAndNodes(key)
+	}
+	for key, _ := range killNodesOr {
+		r.AddOrNodes(key)
+	}
+
+	for key, _ := range d1NodesAnd {
+		r.AddAndNodes(key)
+	}
+	for key, _ := range d1NodesOr {
+		r.AddOrNodes(key)
+	}
 
 	// AND nodes only
 	r.AddParents(map[string][]string{
+		// TODO: non-any% stuff
 		"gnarled key":         []string{"sword", "pop bubble"},
 		"enter d1":            []string{"gnarled key", "remove bush"},
-		"d1 key 1":            []string{"enter d1", "kill stalfos"},
-		"d1 key 2":            []string{"d1 key 1", "kill stalfos", "hit lever"},
-		"enter goriya bros":   []string{"d1 key 2", "bombs"},
-		"kill goriya bros":    []string{"enter goriya bros", "fight goriya bros"},
-		"satchel":             []string{"kill goriya bros"},
 		"harvest ember seeds": []string{"satchel", "ember tree", "harvest seeds"},
 		"ember seeds":         []string{"satchel", "get ember seeds"},
-		"d1 boss key":         []string{"ember seeds", "kill goriya (pit)"},
-		"d1 essence":          []string{"d1 boss key", "kill aquamentus"},
 		"portal 1":            []string{"d1 essence", "ember seeds", "remove bush"},
 
 		// TODO: account for sequence breaking
@@ -109,44 +121,45 @@ func NewRoute() *Route {
 		"mystery seeds": []string{"satchel", "get mystery seeds"},
 
 		"d2 key 1":     []string{"enter d2 1", "kill rope"},
-		"bracelet":     []string{"d2 key 1", "ember seeds", "kill hardhat beetle (pit)", "kill moblin (gap)"},
+		"bracelet":     []string{"d2 key 1", "ember seeds", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"},
 		"d2 key 2":     []string{"enter d2 2", "remove bush", "bombs"},
 		"d2 key 3 1":   []string{"enter d2 1", "kill rope", "ember seeds", "kill gel"},
 		"d2 key 3 2":   []string{"enter d2 2", "bracelet"},
 		"enter facade": []string{"d2 key 3", "bombs", "bracelet"},
-		"kill facade":  []string{"enter facade", "bombs"},
+		"d2 warp":      []string{"enter facade", "kill facade"},
 	})
 
 	// OR nodes only
 	r.AddParents(map[string][]string{
-		"d0 key 1":                  []string{"enter d0"},
-		"sword":                     []string{"d0 key 1"},
-		"rupees":                    []string{"sword", "ember seeds"},
-		"bombs":                     []string{"rupees"},
-		"shield":                    []string{"rupees"},
-		"pop bubble":                []string{"sword", "bombs", "ember seeds"},
-		"remove bush":               []string{"sword", "bombs", "ember seeds"},
-		"kill stalfos":              []string{"sword", "bombs", "ember seeds", "rod"},
-		"hit lever":                 []string{"sword", "ember seeds"},
-		"fight goriya bros":         []string{"sword", "bombs"},
-		"harvest seeds":             []string{"sword", "rod"},
-		"find ember seeds":          []string{"enter d1"}, // TODO: among other places
-		"get ember seeds":           []string{"find ember seeds", "harvest ember seeds"},
-		"kill goriya (pit)":         []string{"sword", "bombs", "ember seeds"},
-		"kill aquamentus":           []string{"sword", "bombs"},
-		"boomerang":                 []string{"portal 1"},
-		"rod":                       []string{"portal 1"},
-		"hit switch (far)":          []string{"boomerang", "bombs"},
-		"winter":                    []string{"rod", "hit switch (far)"},
-		"shovel":                    []string{"winter"},
-		"find mystery seeds":        []string{"d2 mystery seeds 1", "d2 mystery seeds 2"},
-		"get mystery seeds":         []string{"find mystery seeds", "harvest mystery seeds"},
-		"kill rope":                 []string{"sword", "bombs", "ember seeds"},
-		"kill hardhat beetle (pit)": []string{"sword", "shield", "bombs", "rod", "shovel", "bracelet"},
-		"kill moblin (gap)":         []string{"sword", "bombs", "bracelet"},
-		"kill gel":                  []string{"sword", "bombs", "ember seeds"},
-		"d2 key 3":                  []string{"d2 key 3 1", "d2 key 3 2"},
+		"d0 key 1":           []string{"enter d0"},
+		"sword":              []string{"d0 key 1"},
+		"rupees":             []string{"sword", "ember seeds"},
+		"bombs":              []string{"rupees"},
+		"shield":             []string{"rupees"},
+		"pop bubble":         []string{"sword", "bombs", "ember seeds"},
+		"remove bush":        []string{"sword", "bombs", "ember seeds"},
+		"hit lever":          []string{"sword", "ember seeds"},
+		"seed item":          []string{"satchel", "slingshot"},
+		"harvest seeds":      []string{"sword", "rod"},
+		"find ember seeds":   []string{"enter d1"}, // TODO: among other places
+		"get ember seeds":    []string{"find ember seeds", "harvest ember seeds"},
+		"boomerang":          []string{"portal 1"},
+		"rod":                []string{"portal 1"},
+		"hit switch (far)":   []string{"boomerang", "bombs"},
+		"winter":             []string{"rod", "hit switch (far)"},
+		"shovel":             []string{"winter"},
+		"find mystery seeds": []string{"d2 mystery seeds 1", "d2 mystery seeds 2"},
+		"get mystery seeds":  []string{"find mystery seeds", "harvest mystery seeds"},
+		"d2 key 3":           []string{"d2 key 3 1", "d2 key 3 2"},
+
+		// later
+		"jump": []string{"feather", "cape"},
 	})
+
+	r.AddParents(killNodesAnd)
+	r.AddParents(killNodesOr)
+	r.AddParents(d1NodesAnd)
+	r.AddParents(d1NodesOr)
 
 	// validate
 	for name, node := range r.Map {

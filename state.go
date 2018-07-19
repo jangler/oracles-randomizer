@@ -54,11 +54,15 @@ type state struct {
 	energyRing    bool
 	tossRing      bool
 
-	smallKeys []int // per dungeon; 0 = hero's cave
+	smallKeys []int  // per dungeon; 0 = hero's cave
+	bossKeys  []bool // per dungeon; 0 = unused
 }
 
 // magnet glove is not included in any of this (yet) because it's so rare
 
+// XXX deprecated, but kept around for now for reference
+
+/*
 func (s *state) sustainRupees() bool {
 	// fist ring is not included since you need rupees to appraise it in the
 	// first place. bombs are not included since you might need rupees to buy
@@ -192,3 +196,4 @@ func (s *state) sustainGale() bool {
 	return s.satchel && s.galeTree && s.harvestItem()
 	// TODO: check for sustainable areas
 }
+*/

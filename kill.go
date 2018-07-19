@@ -1,103 +1,50 @@
 package main
 
-// conditions required to kill enemies
+// these nodes do not define items, only which items can kill which enemies
+// under what circumstances, assuming that you've arrived in the room
+// containing the enemy.
 //
-// roughly in the order encountered as *necessary* to kill in the any% route,
-// with other enemies afterward
-
-// general functions
-
-// for pushing enemies into pits
+// technically mystery seeds can be used to kill many enemies that can be
+// killed by ember, scent, or gale seeds. mystery seeds are only included as a
+// kill option if at all three of these seed types work.
 //
-// mind that all of these items don't work on all enemies that can be pushed.
-// these are just the common conditions that work on most enemies.
-func (s *state) pushItem(thrownObj bool) bool {
-	// fist ring doesn't push hardhats for some reason
-	return s.sword || s.shield || s.sustainBombs() || s.rod || s.shovel ||
-		(thrownObj && s.bracelet) || ((s.satchel || s.slingshot) &&
-		(s.sustainMystery() || s.sustainScent()))
+// if an enemy is in the same room as a throwable object and is vulnerable to
+// thrown objects, than just adding "bracelet" as an OR is sufficient.
+//
+// animal companions are not (yet?) included in this logic.
+//
+// these conditions are added only as necessary: if there's no point in the
+// route so far that requires killing ropes in a room with pits, there won't be
+// any "kill rope (pit)" node.
+
+var killNodesAnd = map[string][]string{
+	"slingshot kill normal":   []string{"slingshot", "seed kill normal"},
+	"jump kill normal":        []string{"jump", "kill normal"},
+	"slingshot gale seeds":    []string{"slingshot", "gale seeds"},
+	"slingshot mystery seeds": []string{"slingshot", "gale seeds"},
+	"kill dodongo":            []string{"bombs", "bracelet"},
 }
 
-// a bunch of common enemies are vulnerable to the same things
-func (s *state) killNormalEnemy(animal, pit, thrownObj bool) bool {
-	return s.sword || s.sustainBombs() || (pit && s.pushItem(thrownObj)) ||
-		s.useFists() || (thrownObj && s.bracelet) ||
-		(animal && s.callAnimal()) ||
-		((s.satchel || s.slingshot) && (s.sustainEmber() ||
-			s.sustainMystery() || s.sustainScent() || s.sustainGale()))
-}
+var killNodesOr = map[string][]string{
+	// enemies in normal route-ish order, but with prereqs first
+	"seed kill normal":          []string{"ember seeds", "scent seeds", "gale seeds", "mystery seeds"},
+	"kill normal":               []string{"sword", "bombs", "fists", "seed kill normal"},
+	"pit kill normal":           []string{"sword", "shield", "bombs", "rod", "shovel", "fists", "scent seeds"},
+	"kill normal (pit)":         []string{"kill normal", "pit kill normal"},
+	"kill stalfos":              []string{"kill normal", "rod"},
+	"kill stalfos (throw)":      []string{"kill stalfos", "bracelet"},
+	"kill goriya bros":          []string{"sword", "bombs", "fists"},
+	"kill goriya":               []string{"kill normal"},
+	"kill goriya (pit)":         []string{"kill goriya", "pit kill normal"},
+	"kill aquamentus":           []string{"sword", "bombs", "fists", "scent seeds"},
+	"kill rope":                 []string{"kill normal"},
+	"kill hardhat (pit, throw)": []string{"gale seeds", "sword", "shield", "bombs", "rod", "shovel", "scent seeds", "bracelet"},
+	"kill moblin (gap, throw)":  []string{"sword", "bombs", "fists", "bracelet", "scent seeds", "slingshot kill normal", "jump kill normal"},
+	"kill gel":                  []string{"sword", "bombs", "fists", "ember seeds", "scent seeds", "slingshot gale seeds", "slingshot mystery seeds"},
+	"kill facade":               []string{"bombs"},
+	"kill beetle":               []string{"kill normal"},
+	// TODO: required enemies after d2
 
-// any% route enemies
-
-func (s *state) killStalfos(animal, pit, thrownObj bool) bool {
-	return s.rod || s.killNormalEnemy(animal, pit, thrownObj)
-}
-
-func (s *state) killGoriyaBros() bool {
-	return s.sword || s.sustainBombs() || s.useFists()
-}
-
-func (s *state) killGoriya(animal, pit, thrownObj bool) bool {
-	return s.killNormalEnemy(animal, pit, thrownObj)
-}
-
-func (s *state) killAquamentus() bool {
-	return s.sword || s.sustainBombs() || s.useFists() ||
-		((s.satchel || s.slingshot) &&
-			(s.sustainMystery() || s.sustainScent()))
-}
-
-func (s *state) killRope(animal, pit, thrownObj bool) bool {
-	return s.killNormalEnemy(animal, pit, thrownObj)
-}
-
-func (s *state) killHardhat(pit, thrownObj bool) bool {
-	// still going to ignore magnet…
-	return (pit && s.pushItem(thrownObj)) || ((s.satchel || s.slingshot) &&
-		s.sustainGale())
-}
-
-// for the bracelet room in d2
-func (s *state) killGapMoblin() bool {
-	// the bracelet works because you can throw a pot from the previous room
-	return s.sword || s.sustainBombs() || s.useFists() ||
-		s.bracelet || (s.satchel && s.sustainScent()) || (s.slingshot &&
-		(s.sustainEmber() || s.sustainMystery() || s.sustainScent() ||
-			s.sustainGale())) ||
-		(s.feather && (s.killNormalEnemy(false, true, false)))
-}
-
-func (s *state) killFacade() bool {
-	return s.sustainBombs() || s.killBeetle()
-}
-
-// spawned by facade
-func (s *state) killBeetle() bool {
-	return s.killNormalEnemy(false, false, false)
-}
-
-func (s *state) killDodongo() bool {
-	return s.sustainBombs() && s.bracelet
-}
-
-func (s *state) killMoblin(animal, pit, thrownObj bool) bool {
-	return s.killNormalEnemy(animal, pit, thrownObj)
-}
-
-func (s *state) killMoldorm() bool {
-	return s.sword || s.sustainBombs() || s.useFists() ||
-		((s.satchel || s.slingshot) && s.sustainScent())
-}
-
-// non-any% enemies
-
-func (s *state) killGel(pit, thrownObj bool) bool {
-	// gels are immune to satchel gale seeds (but not slingshot ones) and
-	// pushing for some reason, but can be lured into pits without any item at
-	// all
-	return s.sword || s.sustainBombs() || pit ||
-		(s.fistRing && s.sustainRupees()) || (thrownObj && s.bracelet) ||
-		((s.satchel || s.slingshot) && (s.sustainEmber() ||
-			s.sustainMystery() || s.sustainScent())) ||
-		(s.slingshot && s.sustainGale())
+	// enemies not required to kill until later
+	"kill moldorm": []string{"sword", "bombs", "fists", "scent seeds"},
 }
