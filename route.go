@@ -28,6 +28,7 @@ func NewRoute() *Route {
 		"enter goriya bros",
 		"kill goriya bros",
 		"satchel",
+		"ember seeds",
 		"d1 boss key",
 		"d1 essence",
 		"portal 1",
@@ -37,6 +38,7 @@ func NewRoute() *Route {
 		"enter d2 2",
 		"d2 mystery seeds 1",
 		"d2 mystery seeds 2",
+		"mystery seeds",
 		"d2 key 1",
 		"bracelet",
 		"d2 key 2", // TODO: what are the d2 keys for?
@@ -60,7 +62,7 @@ func NewRoute() *Route {
 		"find ember seeds",
 		"harvest seeds",
 		"harvest ember seeds",
-		"ember seeds",
+		"get ember seeds",
 		"kill goriya (pit)",
 		"kill aquamentus",
 		"boomerang",
@@ -69,7 +71,7 @@ func NewRoute() *Route {
 		"shovel",
 		"find mystery seeds",
 		"harvest mystery seeds",
-		"mystery seeds",
+		"get mystery seeds",
 		"kill rope",
 		"kill hardhat beetle (pit)",
 		"kill moblin (gap)",
@@ -88,10 +90,10 @@ func NewRoute() *Route {
 		"kill goriya bros":    []string{"enter goriya bros", "fight goriya bros"},
 		"satchel":             []string{"kill goriya bros"},
 		"harvest ember seeds": []string{"satchel", "ember tree", "harvest seeds"},
+		"ember seeds":         []string{"satchel", "get ember seeds"},
 		"d1 boss key":         []string{"ember seeds", "kill goriya (pit)"},
 		"d1 essence":          []string{"d1 boss key", "kill aquamentus"},
 		"portal 1":            []string{"d1 essence", "ember seeds", "remove bush"},
-		"hit switch (far)":    []string{"boomerang", "bombs"},
 
 		// TODO: account for sequence breaking
 		"mystery tree": []string{"winter", "shovel"},
@@ -103,6 +105,8 @@ func NewRoute() *Route {
 		// same seeds, different route
 		"d2 mystery seeds 1": []string{"enter d2 1", "kill rope", "ember seeds", "kill gel", "remove bush"},
 		"d2 mystery seeds 2": []string{"enter d2 2", "bracelet", "remove bush"},
+
+		"mystery seeds": []string{"satchel", "get mystery seeds"},
 
 		"d2 key 1":     []string{"enter d2 1", "kill rope"},
 		"bracelet":     []string{"d2 key 1", "ember seeds", "kill hardhat beetle (pit)", "kill moblin (gap)"},
@@ -127,15 +131,16 @@ func NewRoute() *Route {
 		"fight goriya bros":         []string{"sword", "bombs"},
 		"harvest seeds":             []string{"sword", "rod"},
 		"find ember seeds":          []string{"enter d1"}, // TODO: among other places
-		"ember seeds":               []string{"satchel", "find ember seeds", "harvest ember seeds"},
+		"get ember seeds":           []string{"find ember seeds", "harvest ember seeds"},
 		"kill goriya (pit)":         []string{"sword", "bombs", "ember seeds"},
 		"kill aquamentus":           []string{"sword", "bombs"},
 		"boomerang":                 []string{"portal 1"},
 		"rod":                       []string{"portal 1"},
+		"hit switch (far)":          []string{"boomerang", "bombs"},
 		"winter":                    []string{"rod", "hit switch (far)"},
 		"shovel":                    []string{"winter"},
 		"find mystery seeds":        []string{"d2 mystery seeds 1", "d2 mystery seeds 2"},
-		"mystery seeds":             []string{"satchel", "find mystery seeds", "harvest mystery seeds"},
+		"get mystery seeds":         []string{"find mystery seeds", "harvest mystery seeds"},
 		"kill rope":                 []string{"sword", "bombs", "ember seeds"},
 		"kill hardhat beetle (pit)": []string{"sword", "shield", "bombs", "rod", "shovel", "bracelet"},
 		"kill moblin (gap)":         []string{"sword", "bombs", "bracelet"},
