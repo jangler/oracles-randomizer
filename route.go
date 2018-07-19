@@ -53,7 +53,7 @@ func NewRoute() *Route {
 		"satchel":     []string{"d1 key 2", "bombs", "kill goriya bros"},
 		"ember seeds": []string{"satchel", "sword"},
 		"d1 boss key": []string{"ember seeds", "kill goriya (pit)"},
-		"d1 essence":  []string{"d1 boss key", "sword"},
+		"d1 essence":  []string{"d1 boss key", "kill aquamentus"},
 	})
 
 	// OR nodes only

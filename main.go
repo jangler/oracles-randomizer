@@ -1,10 +1,21 @@
 package main
 
 import (
+	"container/list"
 	"log"
 )
 
 func main() {
-	NewRoute()
-	log.Fatal("NYI")
+	r := NewRoute()
+	path := list.New()
+	target := r.Map["d1 essence"]
+	mark := target.GetMark(path)
+	if mark == MarkTrue {
+		for path.Len() > 0 {
+			step := path.Remove(path.Front()).(string)
+			log.Print(step)
+		}
+	} else {
+		log.Print("path not found")
+	}
 }

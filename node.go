@@ -1,5 +1,9 @@
 package main
 
+import (
+	"container/list"
+)
+
 // this file defines operations on a dependency graph for the game, but does
 // not itself define the graph.
 
@@ -17,7 +21,7 @@ const (
 // Node is the general interface that encompasses everything in the graph.
 type Node interface {
 	GetName() string
-	GetMark() Mark
+	GetMark(*list.List) Mark // list to append path to if non-nil
 	SetMark(Mark)
 }
 
@@ -28,7 +32,8 @@ type ChildNode interface {
 	HasParents() bool
 }
 
-// RootNode has no parents and returns MarkTrue instead of MarkNone.
+// RootNode has no parents and is set to MarkTrue when queried if its mark is
+// MarkNone.
 type RootNode struct {
 	Name string
 	Mark Mark
@@ -36,10 +41,15 @@ type RootNode struct {
 
 func (n *RootNode) GetName() string { return n.Name }
 
-func (n *RootNode) GetMark() Mark {
+func (n *RootNode) GetMark(path *list.List) Mark {
 	if n.Mark == MarkNone {
-		return MarkTrue
+		n.Mark = MarkTrue
 	}
+
+	if path != nil && n.Mark != MarkFalse {
+		path.PushBack(n.Name)
+	}
+
 	return n.Mark
 }
 
@@ -57,16 +67,20 @@ type AndNode struct {
 
 func (n *AndNode) GetName() string { return n.Name }
 
-func (n *AndNode) GetMark() Mark {
+func (n *AndNode) GetMark(path *list.List) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkTrue
 		for _, parent := range n.Parents {
-			if parent.GetMark() == MarkFalse {
+			if parent.GetMark(path) == MarkFalse {
 				n.Mark = MarkFalse
 				break
 			}
 		}
+		if path != nil && n.Mark == MarkTrue {
+			path.PushBack(n.Name)
+		}
 	}
+
 	return n.Mark
 }
 
@@ -92,16 +106,20 @@ type OrNode struct {
 
 func (n *OrNode) GetName() string { return n.Name }
 
-func (n *OrNode) GetMark() Mark {
+func (n *OrNode) GetMark(path *list.List) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkFalse
 		for _, parent := range n.Parents {
-			if parent.GetMark() == MarkTrue {
+			if parent.GetMark(path) == MarkTrue {
 				n.Mark = MarkTrue
 				break
 			}
 		}
+		if path != nil && n.Mark == MarkTrue {
+			path.PushBack(n.Name)
+		}
 	}
+
 	return n.Mark
 }
 
