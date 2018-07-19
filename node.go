@@ -21,7 +21,8 @@ const (
 // Node is the general interface that encompasses everything in the graph.
 type Node interface {
 	GetName() string
-	GetMark(*list.List) Mark // list to append path to if non-nil
+	GetMark(*list.List) Mark  // list to append path to if non-nil
+	PeekMark(*list.List) Mark // like GetMark but doesn't check parents
 	SetMark(Mark)
 }
 
@@ -50,6 +51,10 @@ func (n *RootNode) GetMark(path *list.List) Mark {
 		path.PushBack(n.Name)
 	}
 
+	return n.Mark
+}
+
+func (n *RootNode) PeekMark(path *list.List) Mark {
 	return n.Mark
 }
 
@@ -84,6 +89,10 @@ func (n *AndNode) GetMark(path *list.List) Mark {
 	return n.Mark
 }
 
+func (n *AndNode) PeekMark(path *list.List) Mark {
+	return n.Mark
+}
+
 func (n *AndNode) SetMark(m Mark) {
 	n.Mark = m
 }
@@ -109,17 +118,34 @@ func (n *OrNode) GetName() string { return n.Name }
 func (n *OrNode) GetMark(path *list.List) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkFalse
+
+		// prioritize already satisfied nodes
 		for _, parent := range n.Parents {
-			if parent.GetMark(path) == MarkTrue {
+			if parent.PeekMark(path) == MarkTrue {
 				n.Mark = MarkTrue
 				break
 			}
 		}
+
+		// then actually check them otherwise
+		if n.Mark == MarkFalse {
+			for _, parent := range n.Parents {
+				if parent.GetMark(path) == MarkTrue {
+					n.Mark = MarkTrue
+					break
+				}
+			}
+		}
+
 		if path != nil && n.Mark == MarkTrue {
 			path.PushBack(n.Name)
 		}
 	}
 
+	return n.Mark
+}
+
+func (n *OrNode) PeekMark(path *list.List) Mark {
 	return n.Mark
 }
 
