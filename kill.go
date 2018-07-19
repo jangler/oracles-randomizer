@@ -21,7 +21,7 @@ var killNodesAnd = map[string][]string{
 	"slingshot kill normal":   []string{"slingshot", "seed kill normal"},
 	"jump kill normal":        []string{"jump", "kill normal"},
 	"slingshot gale seeds":    []string{"slingshot", "gale seeds"},
-	"slingshot mystery seeds": []string{"slingshot", "gale seeds"},
+	"slingshot mystery seeds": []string{"slingshot", "mystery seeds"},
 	"kill dodongo":            []string{"bombs", "bracelet"},
 }
 
