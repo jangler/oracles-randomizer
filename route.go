@@ -131,13 +131,14 @@ func NewRoute() *Route {
 
 	// OR nodes only
 	r.AddParents(map[string][]string{
+		"find bombs":         []string{}, // have to be careful not to soft lock
 		"d0 key 1":           []string{"enter d0"},
 		"sword":              []string{"d0 key 1"},
-		"rupees":             []string{"sword", "ember seeds"},
-		"bombs":              []string{"rupees"},
+		"rupees":             []string{"sword", "ember seeds", "rod", "shovel", "bracelet", "bombs"}, // XXX could bombs soft lock?
+		"bombs":              []string{"rupees", "find bombs"},
 		"shield":             []string{"rupees"},
 		"pop bubble":         []string{"sword", "bombs", "ember seeds"},
-		"remove bush":        []string{"sword", "bombs", "ember seeds"},
+		"remove bush":        []string{"sword", "ember seeds", "bracelet"}, // bombs could soft lock
 		"hit lever":          []string{"sword", "ember seeds"},
 		"seed item":          []string{"satchel", "slingshot"},
 		"harvest seeds":      []string{"sword", "rod"},
