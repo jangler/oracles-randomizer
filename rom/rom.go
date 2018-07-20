@@ -33,6 +33,6 @@ var (
 	HoronShopSellCheck  = Mutable{ROM8, 0x48d0, 0x05, 0x02}
 
 	// can replace the gnarled key with a different item
-	MakuDropID    = Mutable{RO15, 0x617d, 0x42, 0x42}
-	MakuDropSubID = Mutable{RO15, 0x6180, 0x00, 0x00}
+	MakuDropID    = Mutable{RO15, 0x657d, 0x42, 0x42}
+	MakuDropSubID = Mutable{RO15, 0x6580, 0x00, 0x00}
 )
