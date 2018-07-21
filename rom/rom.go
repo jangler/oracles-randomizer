@@ -29,8 +29,8 @@ var (
 	HoronShopStockCheck = Mutable{0x08, 0x4adb, 0x05, 0x02}
 	HoronShopSellCheck  = Mutable{0x08, 0x48d0, 0x05, 0x02}
 
-	// also stock the strange flute from the start
-	HoronShopFluteCheck = Mutable{} // TODO
+	// also stock the strange flute without needing essences
+	HoronShopFluteCheck = Mutable{0x08, 0x4b02, 0xcb, 0xf6}
 
 	// can replace the gnarled key with a different item
 	MakuDropID      = Mutable{0x15, 0x657d, 0x42, 0x42}
