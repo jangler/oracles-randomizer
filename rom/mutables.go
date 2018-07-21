@@ -46,12 +46,11 @@ func (mw MutableWord) Bytes() []byte {
 }
 
 func (mw MutableWord) Mutate(b []byte) error {
-	return nil // TODO
-	/*
-		addr := mw.RealAddr()
-		after := append(append(before[:addr], mw.Bytes()...), before[:addr+2]...)
-		return after, nil
-	*/
+	addr, data := mw.RealAddr(), mw.Bytes()
+	for i := 0; i < 2; i++ {
+		b[addr+int64(i)] = data[i]
+	}
+	return nil
 }
 
 // XXX: so far, this file only handles items and obstacles enocuntered in

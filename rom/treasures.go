@@ -17,12 +17,11 @@ func (t Treasure) Bytes() []byte {
 }
 
 func (t Treasure) Mutate(b []byte) error {
-	return nil // TOOD
-	/*
-		addr := t.RealAddr()
-		after := append(append(before[:addr], t.Bytes()...), before[:addr+4]...)
-		return after, nil
-	*/
+	addr, data := t.RealAddr(), t.Bytes()
+	for i := 0; i < 4; i++ {
+		b[addr+int64(i)] = data[i]
+	}
+	return nil
 }
 
 // treasure item info
