@@ -8,12 +8,20 @@ type Treasure struct {
 	mode, value, text, sprite byte
 }
 
+func (t Treasure) RealAddr() int64 {
+	return bankOffset(0x15) + int64(t.addr) - 1
+}
+
+func (t Treasure) Bytes() []byte {
+	return []byte{t.mode, t.value, t.text, t.sprite}
+}
+
 // treasure item info
-var Treasures = map[string]Treasure{
+var Treasures = map[string]Mutable{
 	"shield L-1":    Treasure{0x01, 0x00, 0x5701, 0x0a, 0x01, 0x1f, 0x13},
 	"bombs":         Treasure{0x03, 0x00, 0x570d, 0x38, 0x10, 0x4d, 0x05},
-	"sword L-1":     Treasure{0x05, 0x00, 0x577d, 0x38, 0x01, 0x1c, 0x10},
-	"sword L-2":     Treasure{0x05, 0x01, 0x5721, 0x09, 0x02, 0x1d, 0x11},
+	"sword L-1":     Treasure{0x05, 0x00, 0x571d, 0x38, 0x01, 0x1c, 0x10},
+	"sword L-2":     Treasure{0x05, 0x00, 0x5721, 0x09, 0x02, 0x1d, 0x11},
 	"boomerang L-1": Treasure{0x06, 0x00, 0x5735, 0x0a, 0x01, 0x22, 0x1c},
 	"boomerang L-2": Treasure{0x06, 0x01, 0x5739, 0x38, 0x02, 0x23, 0x1d},
 	"rod":           Treasure{0x07, 0x00, 0x573d, 0x38, 0x07, 0x0a, 0x1e},
@@ -38,23 +46,25 @@ var Treasures = map[string]Treasure{
 	"small key": Treasure{0x30, 0x00, 0x584d, 0x38, 0x01, 0x1a, 0x42},
 	"boss key":  Treasure{0x31, 0x00, 0x585d, 0x38, 0x00, 0x1b, 0x43},
 	"compass":   Treasure{0x32, 0x00, 0x5869, 0x68, 0x00, 0x19, 0x41},
-	"map":       Treasure{0x33, 0x00, 0x5875, 0x68, 0x00, 0x18, 0x48},
+	"map":       Treasure{0x33, 0x00, 0x5875, 0x68, 0x00, 0x18, 0x40},
 
 	"gnarled key": Treasure{0x42, 0x00, 0x58a9, 0x29, 0x00, 0x42, 0x44},
 
 	// not until after D2
-	"floodgate key":   Treasure{},
-	"dragon key":      Treasure{},
-	"star ore":        Treasure{},
-	"ribbon":          Treasure{},
-	"spring banana":   Treasure{},
-	"ricky's gloves":  Treasure{},
-	"bomb flower":     Treasure{},
-	"pirate's bell":   Treasure{},
-	"round jewel":     Treasure{},
-	"pyramid jewel":   Treasure{},
-	"square jewel":    Treasure{},
-	"x-shaped jewel":  Treasure{},
-	"mamber's card":   Treasure{},
-	"master's plaque": Treasure{},
+	/*
+		"floodgate key":   Treasure{},
+		"dragon key":      Treasure{},
+		"star ore":        Treasure{},
+		"ribbon":          Treasure{},
+		"spring banana":   Treasure{},
+		"ricky's gloves":  Treasure{},
+		"bomb flower":     Treasure{},
+		"pirate's bell":   Treasure{},
+		"round jewel":     Treasure{},
+		"pyramid jewel":   Treasure{},
+		"square jewel":    Treasure{},
+		"x-shaped jewel":  Treasure{},
+		"mamber's card":   Treasure{},
+		"master's plaque": Treasure{},
+	*/
 }
