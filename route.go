@@ -3,6 +3,8 @@ package main
 // this file contains the actual connection of graphs in the game node, and
 // tracks them as they update.
 
+// XXX XXX XXX BOOMERANG L-2 CAN BREAK MUSHROOMS XXX XXX XXX
+
 type Route struct {
 	Map map[string]Node
 }
