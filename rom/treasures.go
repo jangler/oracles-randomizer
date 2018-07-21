@@ -16,6 +16,15 @@ func (t Treasure) Bytes() []byte {
 	return []byte{t.mode, t.value, t.text, t.sprite}
 }
 
+func (t Treasure) Mutate(b []byte) error {
+	return nil // TOOD
+	/*
+		addr := t.RealAddr()
+		after := append(append(before[:addr], t.Bytes()...), before[:addr+4]...)
+		return after, nil
+	*/
+}
+
 // treasure item info
 var Treasures = map[string]Mutable{
 	"shield L-1":    Treasure{0x01, 0x00, 0x5701, 0x0a, 0x01, 0x1f, 0x13},

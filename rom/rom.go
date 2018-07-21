@@ -4,8 +4,10 @@ package rom
 
 import (
 	"bytes"
+	"crypto/sha1"
 	"fmt"
 	"io"
+	"log"
 )
 
 const bankSize = 0x4000
@@ -24,6 +26,20 @@ func Load(f io.Reader) (*bytes.Buffer, error) {
 	buf := new(bytes.Buffer)
 	_, err := io.Copy(buf, f)
 	return buf, err
+}
+
+// Mutate changes the contents of loaded ROM bytes in place.
+func Mutate(b []byte) error {
+	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
+	var err error
+	for _, m := range Mutables {
+		err = m.Mutate(b)
+		if err != nil {
+			return err
+		}
+	}
+	log.Printf("new bytes: sha-1 %x", sha1.Sum(b))
+	return nil
 }
 
 // Verify checks all the package's data against the ROM to see if it matches.
@@ -48,7 +64,7 @@ func verifyMutable(r io.ReaderAt, m Mutable, name string) error {
 	if _, err := r.ReadAt(romData, m.RealAddr()); err != nil {
 		return err
 	}
-	if bytes.Compare(romData, mData) != 1 {
+	if bytes.Compare(romData, mData) != 0 {
 		return fmt.Errorf("%s: at %x, expected %x, got %x",
 			name, m.RealAddr(), mData, romData)
 	}

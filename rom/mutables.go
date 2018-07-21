@@ -1,9 +1,15 @@
 package rom
 
+import (
+	"log"
+)
+
 // A Mutable is a byte string that can be changed by the randomizer.
 type Mutable interface {
 	RealAddr() int64 // return actual offset in ROM, accounting for bank
 	Bytes() []byte   // "old" mutable data
+
+	Mutate([]byte) error // change ROM bytes
 }
 
 // A MutableByte is a single mutable byte.
@@ -20,6 +26,11 @@ func (mb MutableByte) Bytes() []byte {
 	return []byte{mb.Old}
 }
 
+func (mb MutableByte) Mutate(b []byte) error {
+	b[mb.RealAddr()] = mb.New
+	return nil
+}
+
 // A MutableWord is two consecutive mutable bytes (not necessarily aligned).
 type MutableWord struct {
 	Bank, Addr int
@@ -34,12 +45,21 @@ func (mw MutableWord) Bytes() []byte {
 	return []byte{byte(mw.Old >> 8), byte(mw.Old)}
 }
 
+func (mw MutableWord) Mutate(b []byte) error {
+	return nil // TODO
+	/*
+		addr := mw.RealAddr()
+		after := append(append(before[:addr], mw.Bytes()...), before[:addr+2]...)
+		return after, nil
+	*/
+}
+
 // XXX: so far, this file only handles items and obstacles enocuntered in
 //      normal gameplay up through D2.
 
 var holodrumMutables = map[string]Mutable{
 	// want to have maku gate open from start
-	"maku gate check": MutableByte{0x04, 0x6a13, 0x7e, 0x66},
+	"maku gate check": MutableByte{0x04, 0x61a3, 0x7e, 0x66},
 
 	// want to have the horon village shop stock *and* sell items from the
 	// start; replace each with $02
@@ -60,7 +80,7 @@ var holodrumMutables = map[string]Mutable{
 	"rosa spawn check": MutableByte{0x09, 0x678c, 0x40, 0x02},
 
 	// swappable items
-	"shovel": MutableWord{0x0b, 0x6a6f, 0x1500, 0x1500},
+	"shovel gift": MutableWord{0x0b, 0x6a6e, 0x1500, 0x1500},
 
 	// chests that could possibly matter in the overworld
 	// TODO
@@ -69,14 +89,14 @@ var holodrumMutables = map[string]Mutable{
 // rod doesn't seem practical to swap, but maybe it could be placed somewhere
 // in the overworld as a prerequisite to access subrosia.
 var subrosiaMutables = map[string]Mutable{
-	"boomerang L-1": MutableWord{0x0b, 0x6648, 0x0600, 0x0600},
+	"boomerang L-1 gift": MutableWord{0x0b, 0x6648, 0x0600, 0x0600},
 }
 
 // hero's cave
 var d0Mutables = map[string]Mutable{
-	"d0 key chest":   MutableWord{0x15, 0x53f4, 0x3303, 0x3303},
+	"d0 key chest":   MutableWord{0x15, 0x53f4, 0x3003, 0x3003},
 	"d0 rupee chest": MutableWord{0x15, 0x53f8, 0x2804, 0x2804},
-	"d0 sword chest": MutableWord{0x15, 0x53fc, 0x5000, 0x5000},
+	"d0 sword chest": MutableWord{0x15, 0x53fc, 0x0500, 0x0500},
 
 	// disable the "get sword" event that messes up the chest.
 	// unfortunately this also disables the fade to white.
@@ -85,13 +105,16 @@ var d0Mutables = map[string]Mutable{
 
 // dungeon 1
 var d1Mutables = map[string]Mutable{
-	"d1 key fall":       MutableWord{0x0b, 0x466f, 0x3301, 0x3301},
-	"d1 map chest":      MutableWord{0x15, 0x5418, 0x3302, 0x3302},
-	"d1 compass chest":  MutableWord{0x15, 0x5404, 0x3202, 0x3202},
-	"d1 gasha chest":    MutableWord{0x15, 0x5400, 0x3101, 0x3401},
-	"d1 bombs chest":    MutableWord{0x15, 0x5408, 0x0300, 0x0300},
-	"d1 key chest":      MutableWord{0x15, 0x540c, 0x3003, 0x3003},
-	"d1 satchel":        MutableWord{0x09, 0x669a, 0x1900, 0x1900},
+	"d1 key fall":      MutableWord{0x0b, 0x466f, 0x3001, 0x3001},
+	"d1 map chest":     MutableWord{0x15, 0x5418, 0x3302, 0x3302},
+	"d1 compass chest": MutableWord{0x15, 0x5404, 0x3202, 0x3202},
+	"d1 gasha chest":   MutableWord{0x15, 0x5400, 0x3401, 0x3401},
+	"d1 bombs chest":   MutableWord{0x15, 0x5408, 0x0300, 0x0300},
+	"d1 key chest":     MutableWord{0x15, 0x540c, 0x3003, 0x3003},
+
+	// this is backwards from a normal chest
+	"d1 satchel": MutableWord{0x09, 0x669a, 0x0019, 0x0019},
+
 	"d1 boss key chest": MutableWord{0x15, 0x5410, 0x3103, 0x3103},
 	"d1 ring chest":     MutableWord{0x15, 0x5414, 0x2d04, 0x2d04},
 }
@@ -114,6 +137,10 @@ var Mutables map[string]Mutable
 func init() {
 	mutableSets := []map[string]Mutable{
 		holodrumMutables,
+		subrosiaMutables,
+		d0Mutables,
+		d1Mutables,
+		d2Mutables,
 		Treasures,
 	}
 
@@ -122,11 +149,14 @@ func init() {
 	for _, set := range mutableSets {
 		count += len(set)
 	}
-	Mutables := make(map[string]Mutable, count)
+	Mutables = make(map[string]Mutable, count)
 
 	// add mutables to master map
 	for _, set := range mutableSets {
 		for k, v := range set {
+			if _, ok := Mutables[k]; ok {
+				log.Fatalf("duplicate mutable key: %s", k)
+			}
 			Mutables[k] = v
 		}
 	}
