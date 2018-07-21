@@ -6,16 +6,17 @@ import (
 	"log"
 	"os"
 
+	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
 )
 
 func main() {
 	if false {
-		r := NewRoute()
+		g := InitRoute()
 		path := list.New()
-		target := r.Map[os.Args[1]]
+		target := g.Map[os.Args[1]]
 		mark := target.GetMark(path)
-		if mark == MarkTrue {
+		if mark == graph.MarkTrue {
 			for path.Len() > 0 {
 				step := path.Remove(path.Front()).(string)
 				log.Print(step)
