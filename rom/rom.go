@@ -43,33 +43,54 @@ var (
 	RosaEssenceCheck = Mutable{0x09, 0x678c, 0x40, 0x02}
 
 	// swappable items
-	Shovel = MutableWord{} // TODO
+	Shovel = MutableWord{0x0b, 0x6a6f, 0x1500, 0x1500}
+
+	// chests that could possibly matter in the overworld
+	// TODO
 )
 
 // subrosia
-// rod doesn't seem practical to swap
+// rod doesn't seem practical to swap, but maybe it could be placed somewhere
+// in the overworld as a prerequisite to access subrosia.
 var (
 	BoomerangL1 = MutableWord{0x0b, 0x6648, 0x0600, 0x0600}
 )
 
 // hero's cave
 var (
-	D0KeyChest   = MutableWord{} // TODO
-	D0SwordChest = MutableWord{} // TODO
-	D0RupeeChest = MutableWord{} // TODO
+	D0KeyChest   = MutableWord{0x15, 0x53f4, 0x3303, 0x3303}
+	D0RupeeChest = MutableWord{0x15, 0x53f8, 0x2804, 0x2804}
+	D0SwordChest = MutableWord{0x15, 0x53fc, 0x5000, 0x5000}
+
+	// disable the "get sword" event that messes up the chest.
+	// unfortunately this also disables the fade to white.
+	D0SwordEvent = MutableByte{0x11, 0x70ec, 0xf2, 0xff}
 )
 
 // dungeon 1
 var (
-	D1KeyFall      = MutableWord{} // TODO
+	D1KeyFall      = MutableWord{0x0b, 0x466f, 0x3301, 0x3301}
 	D1MapChest     = MutableWord{0x15, 0x5418, 0x3302, 0x3302}
-	D1CompassChest = MutableWord{} // TODO
-	D1GashaChest   = MutableWord{} // TODO
-	D1BombsChest   = MutableWord{} // TODO
-	D1KeyChest     = MutableWord{} // TODO
-	D1Item         = MutableWord{0x09, 0x669a, 0x1900, 0x1900}
+	D1CompassChest = MutableWord{0x15, 0x5404, 0x3202, 0x3202}
+	D1GashaChest   = MutableWord{0x15, 0x5400, 0x3101, 0x3401}
+	D1BombsChest   = MutableWord{0x15, 0x5408, 0x0300, 0x0300}
+	D1KeyChest     = MutableWord{0x15, 0x540c, 0x3003, 0x3003}
+	D1Satchel      = MutableWord{0x09, 0x669a, 0x1900, 0x1900}
 	D1BossKeyChest = MutableWord{0x15, 0x5410, 0x3103, 0x3103}
 	D1RingChest    = MutableWord{0x15, 0x5414, 0x2d04, 0x2d04}
+)
+
+// dungeon 2
+var (
+	D2Rupee5Chest   = MutableWord{0x15, 0x5438, 0x2801, 0x2801}
+	D2KeyFall       = MutableWord{0x0b, 0x466f, 0x3001, 0x3001}
+	D2CompassChest  = MutableWord{0x15, 0x5434, 0x3202, 0x3202}
+	D2MapChest      = MutableWord{0x15, 0x5428, 0x3302, 0x3302}
+	D2BraceletChest = MutableWord{0x15, 0x5424, 0x1600, 0x1600}
+	D2BombKeyChest  = MutableWord{0x15, 0x542c, 0x3003, 0x3003}
+	D2BladeKeyChest = MutableWord{0x15, 0x5430, 0x3003, 0x3003}
+	D2Rupee10Chest  = MutableWord{0x15, 0x541c, 0x2802, 0x2802}
+	D2BossKeyChest  = MutableWord{0x15, 0x5420, 0x3103, 0x3103}
 )
 
 type treasure struct {
