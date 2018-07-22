@@ -7,6 +7,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"log"
 )
 
@@ -21,11 +22,8 @@ func bankOffset(bank int) int64 {
 }
 
 // Load reads ROM data from a reader into memory.
-func Load(f io.Reader) (*bytes.Buffer, error) {
-	// read file into buffer
-	buf := new(bytes.Buffer)
-	_, err := io.Copy(buf, f)
-	return buf, err
+func Load(f io.Reader) ([]byte, error) {
+	return ioutil.ReadAll(f)
 }
 
 // Mutate changes the contents of loaded ROM bytes in place.
@@ -44,13 +42,12 @@ func Mutate(b []byte) error {
 
 // Verify checks all the package's data against the ROM to see if it matches.
 // It returns a slice of errors describing each mismatch.
-func Verify(buf *bytes.Buffer) []error {
+func Verify(b []byte) []error {
 	errors := make([]error, 0)
-	reader := bytes.NewReader(buf.Bytes())
 
 	// check mutables TODO
 	for k, m := range Mutables {
-		if err := verifyMutable(reader, m, k); err != nil {
+		if err := verifyMutable(b, m, k); err != nil {
 			errors = append(errors, err)
 		}
 	}
@@ -58,13 +55,9 @@ func Verify(buf *bytes.Buffer) []error {
 	return errors
 }
 
-func verifyMutable(r io.ReaderAt, m Mutable, name string) error {
-	mData := m.Bytes()
-	romData := make([]byte, len(mData))
-	if _, err := r.ReadAt(romData, m.RealAddr()); err != nil {
-		return err
-	}
-	if bytes.Compare(romData, mData) != 0 {
+func verifyMutable(romData []byte, m Mutable, name string) error {
+	addr, mData := m.RealAddr(), m.Bytes()
+	if bytes.Compare(romData[addr:addr+int64(len(mData))], mData) != 0 {
 		return fmt.Errorf("%s: at %x, expected %x, got %x",
 			name, m.RealAddr(), mData, romData)
 	}

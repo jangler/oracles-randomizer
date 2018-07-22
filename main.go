@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"container/list"
+	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -10,12 +11,56 @@ import (
 	"github.com/jangler/oos-randomizer/rom"
 )
 
+func usage() {
+	fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
+	flag.PrintDefaults()
+	fmt.Fprintf(flag.CommandLine.Output(), `
+Valid operations are checkGraph, verifyData, findPath, and randomize.
+`[1:])
+}
+
 func main() {
-	if false {
-		// testing logic
-		g := InitRoute()
+	flag.Usage = usage
+	flagOp := flag.String("op", "chedkGraph", "operation")
+	flag.Parse()
+
+	switch *flagOp {
+	case "chedkGraph":
+		// validate
+		if errs := checkGraph(); errs != nil {
+			for _, err := range errs {
+				log.Print(err)
+			}
+			os.Exit(1)
+		}
+	case "verifyData":
+		// load rom
+		if flag.NArg() != 1 {
+			log.Fatalf("verify takes 1 argument; got %d", flag.NArg())
+		}
+		romData, err := loadROM(flag.Arg(0))
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// verify program data vs rom data
+		if errs := rom.Verify(romData); err != nil {
+			for _, err := range errs {
+				log.Print(err)
+			}
+			os.Exit(1)
+		} else {
+			log.Print("everything OK")
+		}
+	case "findPath":
+		// try to find a valid path to the target node
+		g, _ := initRoute() // ignore errors; they're diagnostic only
+		target, ok := g.Map[flag.Arg(0)]
+		if !ok {
+			log.Fatal("target node not found")
+		}
+
 		path := list.New()
-		target := g.Map[os.Args[1]]
 		mark := target.GetMark(path)
 		if mark == graph.MarkTrue {
 			for path.Len() > 0 {
@@ -25,49 +70,73 @@ func main() {
 		} else {
 			log.Print("path not found")
 		}
-	} else {
-		// still validate graph in any case
-		_ = InitRoute()
-	}
-
-	var loadedRom *bytes.Buffer
-	{
-		f, err := os.Open(os.Args[1])
+	case "randomize":
+		// load rom
+		if flag.NArg() != 2 {
+			log.Fatalf("randomize takes 2 arguments; got %d", flag.NArg())
+		}
+		romData, err := loadROM(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer f.Close()
-		loadedRom, err = rom.Load(f)
-		if err != nil {
-			log.Fatal(err)
+
+		// randomize
+		if errs := randomize(romData, flag.Arg(1)); errs != nil {
+			for _, err := range errs {
+				log.Print(err)
+			}
+			os.Exit(1)
 		}
+	default:
+		log.Fatalf("no such operation: %s", *flagOp)
+	}
+}
+
+// make sure the base route graph is ok (before randomizing anything)
+func checkGraph() []error {
+	// TODO initRoute() does this automatically and i'm not sure it should
+	_, errs := initRoute()
+	return errs
+}
+
+// can be used for loading pretty much anything, really, as long as you want it
+// as a slice of bytes.
+func loadROM(filename string) ([]byte, error) {
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return rom.Load(f)
+}
+
+// messes up rom data and writes it to a file.
+//
+// this also calls verify.
+func randomize(romData []byte, outFilename string) []error {
+	if errs := rom.Verify(romData); errs != nil {
+		return errs
 	}
 
-	errs := rom.Verify(loadedRom)
-	if len(errs) > 0 {
-		log.Printf("%d verification errors:\n", len(errs))
-		for _, err := range rom.Verify(loadedRom) {
-			log.Print(err)
-		}
-		return
-	} else {
-		log.Print("everything OK")
-	}
+	// XXX old code, but could be used as reference for new code
+	/*
+		if len(os.Args) > 2 {
+			// randomize rom
+			b := loadedRom.Bytes()
+			rom.Mutate(b)
 
-	if len(os.Args) > 2 {
-		// randomize rom
-		b := loadedRom.Bytes()
-		rom.Mutate(b)
+			// write to file
+			f, err := os.Create(os.Args[2])
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer f.Close()
+			if _, err := f.Write(b); err != nil {
+				log.Fatal(err)
+			}
+			log.Printf("wrote new ROM to %s", os.Args[2])
+		}
+	*/
 
-		// write to file
-		f, err := os.Create(os.Args[2])
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-		if _, err := f.Write(b); err != nil {
-			log.Fatal(err)
-		}
-		log.Printf("wrote new ROM to %s", os.Args[2])
-	}
+	return []error{fmt.Errorf("NYI")}
 }
