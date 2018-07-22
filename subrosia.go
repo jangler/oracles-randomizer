@@ -36,10 +36,10 @@ var subrosiaNodesAnd = map[string][]string{
 
 	"beach 1": And{"swamp portal"},
 	"beach 2": And{"hide and seek", "bracelet", "feather L-2"},
-	"beach 3": And{"hide and seek", "feather", "bracelet", "magnet glove"},
-	"beach 4": And{"furnace", "bracelet", "feather"},
+	"beach 3": And{"hide and seek", "jump", "bracelet", "magnet gloves"},
+	"beach 4": And{"furnace", "bracelet", "jump"},
 	"beach 5": And{"furnace", "feather L-2"},
-	"beach 6": And{"furnace", "jump", "magnet glove"},
+	"beach 6": And{"furnace", "jump", "magnet gloves"},
 	"beach 7": And{"temple", "jump"},
 
 	"hide and seek 1": And{"mountain portal"},
@@ -53,9 +53,9 @@ var subrosiaNodesAnd = map[string][]string{
 
 	"furnace 1": And{"lake portal"},
 	"furnace 2": And{"beach", "feather L-2"},
-	"furnace 3": And{"beach", "magnet glove"},
+	"furnace 3": And{"beach", "magnet gloves"},
 
-	"bridge 1": And{"dance hall", "jump"},
+	"bridge 1": And{"temple", "jump"},
 	"bridge 2": And{"remains portal", "bracelet", "feather L-2"},
 	"bridge 3": And{"hide and seek", "pegasus jump L-2"},
 

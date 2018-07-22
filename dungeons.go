@@ -14,6 +14,9 @@ var d0NodesAnd = map[string][]string{
 	"d0 key chest":   []string{"enter d0"},
 	"d0 sword chest": []string{"enter d0", "d0 small key"},
 	"d0 rupee chest": []string{"remove bush"},
+
+	// TODO randomize
+	"d0 small key": And{"d0 key chest"},
 }
 
 var d0NodesOr = map[string][]string{}
@@ -31,6 +34,11 @@ var d1NodesAnd = map[string][]string{
 	"d1 ring chest":     []string{"enter d1", "ember seeds"},
 	"enter aquamentus":  []string{"enter d1", "ember seeds", "d1 boss key"},
 	"d1 essence":        []string{"enter aquamentus", "kill aquamentus"},
+
+	// TODO randomize
+	"d1 key 1":    And{"d1 key fall"},
+	"d1 key 2":    And{"d1 key chest"},
+	"d1 boss key": And{"d1 boss key chest"},
 }
 
 var d1NodesOr = map[string][]string{}
@@ -39,7 +47,7 @@ var d1NodesOr = map[string][]string{}
 // i'll call the "arrow room" because of the arrow-shaped block arrangement in
 // it. you can either get to this room by entering the main way and lighting
 // the torches, or by entering the third way (into the roller room), pushing
-// the rollers, and killing ropes and goyira.
+// the rollers, and killing ropes and goriya.
 //
 // another weird thing about this dungeon is that if you enter via the
 // secondary entrances, the save location is set to just outside the main
@@ -58,10 +66,10 @@ var d2NodesAnd = map[string][]string{
 	"d2 map chest":         []string{"d2 hardhat room"},
 	"d2 compass chest 1":   []string{"d2 torch room", "ember seeds", "kill rope"},
 	"d2 compass chest 2":   []string{"d2 arrow room", "kill goriya", "kill rope"},
-	"d2 bracelet chest":    []string{"d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (pit, throw)"},
+	"d2 bracelet chest":    []string{"d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"},
 	"d2 bomb key chest":    []string{"enter d2 2", "remove bush", "bombs"},
 	"d2 blade key chest 1": []string{"enter d2 3", "bracelet"},
-	"d2 blade key chest 2": []string{"d2 arrow room", "kill rope", "kill goyira"},
+	"d2 blade key chest 2": []string{"d2 arrow room", "kill rope", "kill goriya"},
 
 	// TODO AND nodes can never require each other. write a routine to check
 	//      for mutual dependencies in the raw graph.
@@ -73,6 +81,12 @@ var d2NodesAnd = map[string][]string{
 	"d2 boss key chest": []string{"enter facade", "d2 key 3", "bombs"},
 	"enter dodongo":     []string{"d2 boss key chest", "d2 boss key"},
 	"d2 essence":        []string{"enter dodongo", "kill dodongo"},
+
+	// TODO randomize
+	"d2 key 1":    And{"d2 key fall"},
+	"d2 key 2":    And{"d2 bomb key chest"},
+	"d2 key 3":    And{"d2 blade key chest"},
+	"d2 boss key": And{"d2 boss key chest"},
 }
 
 var d2NodesOr = map[string][]string{
