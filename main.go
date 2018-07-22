@@ -68,10 +68,7 @@ func main() {
 		if !ok {
 			log.Fatal("target node not found")
 		}
-
-		path := list.New()
-		mark := target.GetMark(path)
-		if mark == graph.MarkTrue {
+		if path := findPath(g, target); path != nil {
 			for path.Len() > 0 {
 				step := path.Remove(path.Front()).(string)
 				log.Print(step)
@@ -118,6 +115,17 @@ func loadROM(filename string) ([]byte, error) {
 	}
 	defer f.Close()
 	return rom.Load(f)
+}
+
+// attempts to find a path from the start to the given node in the graph.
+// returns nil if no path was found.
+func findPath(g *graph.Graph, target graph.Node) *list.List {
+	path := list.New()
+	mark := target.GetMark(path)
+	if mark == graph.MarkTrue {
+		return path
+	}
+	return nil
 }
 
 // messes up rom data and writes it to a file.
