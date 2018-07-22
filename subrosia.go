@@ -63,7 +63,7 @@ var subrosiaNodesAnd = map[string]And{
 	"furnace 3": And{"beach", "magnet glove"},
 
 	"bridge 1": And{"dance hall", "jump"},
-	"bridge 2": And{"ruins portal", "bracelet", "feather L-2"},
+	"bridge 2": And{"remains portal", "bracelet", "feather L-2"},
 	"bridge 3": And{"hide and seek", "pegasus jump L-2"},
 
 	"winter tower": And{"temple"},
@@ -80,7 +80,7 @@ var subrosiaNodesOr = map[string][]string{
 	// seeds are not renewable and it's possible to reach this portal via, say,
 	// the village portal with only satchel, pegasus seeds, and cape, so this
 	// node needs to be a requirement for entering subrosia via the swamp,
-	// mountain, lake, village, and desert portals. the ruins portal and d8
+	// mountain, lake, village, and desert portals. the remains portal and d8
 	// portal are ok.
 	"remove stuck bush": Or{"sword", "boomerang L-2", "bracelet"},
 
@@ -93,7 +93,7 @@ var subrosiaNodesOr = map[string][]string{
 	"bridge":        Or{"bridge 1", "bridge 2", "bridge 3"},
 
 	// isolated areas
-	"eruption room": Or{"ruins portal"},
+	"eruption room": Or{"remains portal"},
 	"enter d8":      Or{"d8 portal"},
 
 	// a few places are unaccounted for, but they're irrelevant for now
