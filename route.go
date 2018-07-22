@@ -8,8 +8,6 @@ import (
 // this file contains the actual connection of nodes in the game graph, and
 // tracks them as they update.
 
-// XXX XXX XXX BOOMERANG L-2 CAN BREAK MUSHROOMS XXX XXX XXX
-
 // XXX need to be careful about rings. i can't imagine a situation where you'd
 //     need both energy ring and fist ring, but if you did, then you'd need to
 //     have the L-2 ring box to do so without danger of soft locking.
