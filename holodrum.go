@@ -9,8 +9,12 @@ var portalNodesAnd = map[string][]string{
 	"rosa portal 1": And{"eastern suburbs", "remove bush"},
 	"rosa portal 2": And{"temple"},
 
-	"swamp portal 1": And{"spool swamp"}, // TODO
-	"swamp portal 2": And{"beach"},
+	"open floodgate 1": And{"pegasus tree", "floodgate key", "pegasus satchel", "bracelet"},
+	"open floodgate 2": And{"pegasus tree", "floodgate key", "feather L-2", "bracelet"},
+	"swamp portal 1":   And{"horon village", "remove bush", "flippers", "bracelet"},
+	"swamp portal 2":   And{"open floodgate", "long jump", "bracelet"},
+	"swamp portal 3":   And{"open floodgate", "animal", "bracelet"},
+	"swamp portal 4":   And{"beach"},
 
 	// jump added since it's effectively useless otherwise
 	"mountain portal 1": And{"mount cucco", "jump"},
@@ -42,9 +46,11 @@ var portalNodesAnd = map[string][]string{
 }
 
 var portalNodesOr = map[string][]string{
+	"open floodgate": Or{"open floodgate 1", "open floodgate 2"},
+
 	// "unsafe" refers to the "remove stuck bush" issue
 	"rosa portal":            Or{"rosa portal 1", "rosa portal 2"},
-	"swamp portal unsafe":    Or{"swamp portal 1", "swamp portal 2"},
+	"swamp portal unsafe":    Or{"swamp portal 1", "swamp portal 2", "swamp portal 3", "swamp portal 4"},
 	"mountain portal unsafe": Or{"mountain portal 1", "mountain portal 2"},
 	"lake portal unsafe":     Or{"lake portal 1", "lake portal 2"},
 	"village portal unsafe":  Or{"village portal 1", "village portal 2", "village portal 3", "village portal 4"},
