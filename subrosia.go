@@ -12,10 +12,6 @@ package main
 //
 // the other locations are isolated and only traverseable with some combination
 // of jumping and boulder removal.
-//
-// XXX the mountain portal needs a "jump" requirement from the holodrum, since
-//     it's easier that way and you can't get anywhere from it without jumping
-//     anyway.
 
 // semi-unrelated note:
 //
