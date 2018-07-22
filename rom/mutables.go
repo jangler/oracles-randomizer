@@ -108,7 +108,7 @@ var d1Mutables = map[string]Mutable{
 	"d1 map chest":     MutableWord{0x15, 0x5418, 0x3302, 0x3302},
 	"d1 compass chest": MutableWord{0x15, 0x5404, 0x3202, 0x3202},
 	"d1 gasha chest":   MutableWord{0x15, 0x5400, 0x3401, 0x3401},
-	"d1 bombs chest":   MutableWord{0x15, 0x5408, 0x0300, 0x0300},
+	"d1 bomb chest":    MutableWord{0x15, 0x5408, 0x0300, 0x0300},
 	"d1 key chest":     MutableWord{0x15, 0x540c, 0x3003, 0x3003},
 
 	// this is backwards from a normal chest
