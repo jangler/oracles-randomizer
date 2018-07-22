@@ -27,7 +27,7 @@ package main
 // ore. another would be not to randomize fool's ore at all, which is what i'm
 // going to do for now.
 
-var subrosiaNodesAnd = map[string][]string{
+var subrosiaNodesAnd = map[string]Point{
 	"temple 1": And{"rosa portal"},
 	"temple 4": And{"beach", "ribbon"},
 	"temple 5": And{"beach", "jump"},
@@ -59,13 +59,14 @@ var subrosiaNodesAnd = map[string][]string{
 	"bridge 2": And{"remains portal", "bracelet", "feather L-2"},
 	"bridge 3": And{"hide and seek", "pegasus jump L-2"},
 
-	"winter tower": And{"temple"},
-	"summer tower": And{"beach", "ribbon"},
-	"spring tower": And{"hide and seek", "jump"},
-	"autumn tower": And{"temple", "jump", "bomb flower"},
+	"boomerang gift": AndSlot{"temple"},
+	"winter tower":   And{"temple"},
+	"summer tower":   And{"beach", "ribbon"},
+	"spring tower":   And{"hide and seek", "jump"},
+	"autumn tower":   And{"temple", "jump", "bomb flower"},
 }
 
-var subrosiaNodesOr = map[string][]string{
+var subrosiaNodesOr = map[string]Point{
 	// exiting subrosia via the rosa portal without having activated it from
 	// holodrum gets you stuck in a bush unless you have a way to cut it down.
 	// usable items are: sword (spin slash), bombs, gale seeds, slingshot w/

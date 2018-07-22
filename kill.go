@@ -46,39 +46,39 @@ package main
 //   - fool's ore
 //   - punch
 
-var killNodesAnd = map[string][]string{
-	"slingshot kill normal":   []string{"slingshot", "seed kill normal"},
-	"jump kill normal":        []string{"jump", "kill normal"},
-	"jump pit normal":         []string{"jump", "pit kill normal"},
-	"slingshot gale seeds":    []string{"slingshot", "gale seeds"},
-	"slingshot mystery seeds": []string{"slingshot", "mystery seeds"},
-	"kill dodongo":            []string{"bombs", "bracelet"},
+var killNodesAnd = map[string]Point{
+	"slingshot kill normal":   And{"slingshot", "seed kill normal"},
+	"jump kill normal":        And{"jump", "kill normal"},
+	"jump pit normal":         And{"jump", "pit kill normal"},
+	"slingshot gale seeds":    And{"slingshot", "gale seeds"},
+	"slingshot mystery seeds": And{"slingshot", "mystery seeds"},
+	"kill dodongo":            And{"bombs", "bracelet"},
 }
 
-var killNodesOr = map[string][]string{
+var killNodesOr = map[string]Point{
 	// required enemies in normal route-ish order, but with prereqs first
-	"seed kill normal":          []string{"ember seeds", "scent seeds", "gale seeds", "mystery seeds"},
-	"pop maku bubble":           []string{"sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"},
-	"remove bush":               []string{"sword", "boomerang L-2", "ember seeds", "gale slingshot", "bombs", "bracelet"},
-	"kill normal":               []string{"sword", "bombs", "beams", "seed kill normal", "fool's ore", "punch"},
-	"pit kill normal":           []string{"sword", "beams", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "punch"},
-	"kill normal (pit)":         []string{"kill normal", "pit kill normal"},
-	"kill stalfos":              []string{"kill normal", "rod"},
-	"kill stalfos (throw)":      []string{"kill stalfos", "bracelet"},
-	"hit lever":                 []string{"sword", "boomerang", "rod", "ember seeds", "scent seeds", "fool's ore", "punch"},
-	"kill goriya bros":          []string{"sword", "bombs", "fool's ore", "punch"},
-	"kill goriya":               []string{"kill normal"},
-	"kill goriya (pit)":         []string{"kill goriya", "pit kill normal"},
-	"kill aquamentus":           []string{"sword", "beams", "scent seeds", "bombs", "fool's ore", "punch"},
-	"kill rope":                 []string{"kill normal"},
-	"kill hardhat (pit, throw)": []string{"gale seeds", "sword", "beams", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "bracelet"},
-	"kill moblin (gap, throw)":  []string{"sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"},
-	"kill gel":                  []string{"sword", "beams", "ember seeds", "slingshot gale seeds", "slingshot mystery seeds", "bombs", "fool's ore", "punch"},
-	"kill facade":               []string{"bombs"},
-	"kill beetle":               []string{"kill normal"},
+	"seed kill normal":          Or{"ember seeds", "scent seeds", "gale seeds", "mystery seeds"},
+	"pop maku bubble":           Or{"sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"},
+	"remove bush":               Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot", "bombs", "bracelet"},
+	"kill normal":               Or{"sword", "bombs", "beams", "seed kill normal", "fool's ore", "punch"},
+	"pit kill normal":           Or{"sword", "beams", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "punch"},
+	"kill normal (pit)":         Or{"kill normal", "pit kill normal"},
+	"kill stalfos":              Or{"kill normal", "rod"},
+	"kill stalfos (throw)":      Or{"kill stalfos", "bracelet"},
+	"hit lever":                 Or{"sword", "boomerang", "rod", "ember seeds", "scent seeds", "fool's ore", "punch"},
+	"kill goriya bros":          Or{"sword", "bombs", "fool's ore", "punch"},
+	"kill goriya":               Or{"kill normal"},
+	"kill goriya (pit)":         Or{"kill goriya", "pit kill normal"},
+	"kill aquamentus":           Or{"sword", "beams", "scent seeds", "bombs", "fool's ore", "punch"},
+	"kill rope":                 Or{"kill normal"},
+	"kill hardhat (pit, throw)": Or{"gale seeds", "sword", "beams", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "bracelet"},
+	"kill moblin (gap, throw)":  Or{"sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"},
+	"kill gel":                  Or{"sword", "beams", "ember seeds", "slingshot gale seeds", "slingshot mystery seeds", "bombs", "fool's ore", "punch"},
+	"kill facade":               Or{"bombs"},
+	"kill beetle":               Or{"kill normal"},
 
 	// enemies not required to kill until later
-	"remove flower":   []string{"sword", "boomerang L-2", "ember seeds", "gale slingshot", "bombs"},
-	"remove mushroom": []string{"boomerang L-2", "bracelet"},
-	"kill moldorm":    []string{"sword", "bombs", "punch", "scent seeds"},
+	"remove flower":   Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot", "bombs"},
+	"remove mushroom": Or{"boomerang L-2", "bracelet"},
+	"kill moldorm":    Or{"sword", "bombs", "punch", "scent seeds"},
 }

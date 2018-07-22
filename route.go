@@ -13,39 +13,55 @@ import (
 //     need both energy ring and fist ring, but if you did, then you'd need to
 //     have the L-2 ring box to do so without danger of soft locking.
 
-// these types are just for readability
+// A Point is a mapping of point strings that will become And or Or nodes in
+// the graph.
+type Point interface {
+	Parents() []string
+}
+
+// the different types of points are all just string slices; the reason for
+// having different ones is purely for type assertions
+
 type And []string
+
+func (p And) Parents() []string { return p }
+
 type Or []string
+
+func (p Or) Parents() []string { return p }
+
+type AndSlot []string
+
+func (p AndSlot) Parents() []string { return p }
+
+type OrSlot []string
+
+func (p OrSlot) Parents() []string { return p }
 
 func initRoute() (*graph.Graph, []error) {
 	g := graph.NewGraph()
 
-	g.AddOrNodes(baseItemNodes...)
-	addAndOrNodes(g, itemNodesAnd, itemNodesOr)
-	addAndOrNodes(g, killNodesAnd, killNodesOr)
-	addAndOrNodes(g, d0NodesAnd, d0NodesOr)
-	addAndOrNodes(g, d1NodesAnd, d1NodesOr)
-	addAndOrNodes(g, d2NodesAnd, d2NodesOr)
-	addAndOrNodes(g, subrosiaNodesAnd, subrosiaNodesOr)
-	addAndOrNodes(g, portalNodesAnd, portalNodesOr)
-	addAndOrNodes(g, holodrumNodesAnd, holodrumNodesOr)
+	totalPoints := make(map[string]Point, 0)
+	appendNodes(totalPoints,
+		itemNodesAnd, itemNodesOr,
+		killNodesAnd, killNodesOr,
+		holodrumNodesAnd, holodrumNodesOr,
+		subrosiaNodesAnd, subrosiaNodesOr,
+		d0NodesAnd, d0NodesOr,
+		d1NodesAnd, d1NodesOr,
+		d2NodesAnd, d2NodesOr,
+	)
 
-	g.AddParents(itemNodesAnd)
-	g.AddParents(itemNodesOr)
-	g.AddParents(killNodesAnd)
-	g.AddParents(killNodesOr)
-	g.AddParents(d0NodesAnd)
-	g.AddParents(d0NodesOr)
-	g.AddParents(d1NodesAnd)
-	g.AddParents(d1NodesOr)
-	g.AddParents(d2NodesAnd)
-	g.AddParents(d2NodesOr)
-	g.AddParents(subrosiaNodesAnd)
-	g.AddParents(subrosiaNodesOr)
-	g.AddParents(portalNodesAnd)
-	g.AddParents(portalNodesOr)
-	g.AddParents(holodrumNodesAnd)
-	g.AddParents(holodrumNodesOr)
+	addPointNodes(g, totalPoints)
+	addPointParents(g, totalPoints)
+
+	openSlots := make(map[string]Point, 0)
+	for name, point := range totalPoints {
+		switch point.(type) {
+		case AndSlot, OrSlot:
+			openSlots[name] = point
+		}
+	}
 
 	// validate
 	var errs []error
@@ -64,11 +80,23 @@ func initRoute() (*graph.Graph, []error) {
 	return g, errs
 }
 
-func addAndOrNodes(g *graph.Graph, andNodes, orNodes map[string][]string) {
-	for key, _ := range andNodes {
+func appendNodes(total map[string]Point, pointMaps ...map[string]Point) {
+	for _, pointMap := range pointMaps {
+		for k, v := range pointMap {
+			total[k] = v
+		}
+	}
+}
+
+func addPointNodes(g *graph.Graph, points map[string]Point) {
+	for key, _ := range points {
 		g.AddAndNodes(key)
 	}
-	for key, _ := range orNodes {
-		g.AddOrNodes(key)
+}
+
+func addPointParents(g *graph.Graph, points map[string]Point) {
+	// TODO optimize?
+	for k, p := range points {
+		g.AddParents(map[string][]string{k: p.Parents()})
 	}
 }
