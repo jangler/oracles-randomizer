@@ -16,9 +16,6 @@ package main
 // XXX the mountain portal needs a "jump" requirement from the holodrum, since
 //     it's easier that way and you can't get anywhere from it without jumping
 //     anyway.
-//
-// XXX give the village portal a "pegasus jump L-2" OR "boomerang L-2
-//     requirement for the same reason.
 
 // semi-unrelated note:
 //
@@ -34,7 +31,7 @@ package main
 // ore. another would be not to randomize fool's ore at all, which is what i'm
 // going to do for now.
 
-var subrosiaNodesAnd = map[string]And{
+var subrosiaNodesAnd = map[string][]string{
 	"temple 1": And{"rosa portal"},
 	"temple 4": And{"beach", "ribbon"},
 	"temple 5": And{"beach", "jump"},

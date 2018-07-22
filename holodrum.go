@@ -2,8 +2,10 @@ package main
 
 // overworld route logic
 
+// portal parents are defined here since they're mostly overworld nodes
 // see subrosia.go for the note about "remove stuck bush"
-var portalNodeAnd = map[string][]string{
+
+var portalNodesAnd = map[string][]string{
 	"rosa portal 1": And{"eastern suburbs", "remove bush"},
 	"rosa portal 2": And{"temple"},
 
@@ -19,8 +21,7 @@ var portalNodeAnd = map[string][]string{
 
 	"village portal 1": And{"horon village", "boomerang L-2"},
 	"village portal 2": And{"horon village", "pegasus jump L-2"},
-	"village portal 3": And{"pirate house", "boomerang L-2"},
-	"village portal 4": And{"pirate house", "pegasus jump L-2"},
+	"village portal 3": And{"pirate house", "hit lever"},
 
 	"desert portal": And{"samasa desert", "remove stuck bush"}, // one-way
 

@@ -12,6 +12,7 @@ import (
 
 func main() {
 	if false {
+		// testing logic
 		g := InitRoute()
 		path := list.New()
 		target := g.Map[os.Args[1]]
@@ -24,6 +25,9 @@ func main() {
 		} else {
 			log.Print("path not found")
 		}
+	} else {
+		// still validate graph in any case
+		_ = InitRoute()
 	}
 
 	var loadedRom *bytes.Buffer
