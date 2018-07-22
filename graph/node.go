@@ -2,6 +2,8 @@ package graph
 
 import (
 	"container/list"
+	"fmt"
+	"strings"
 )
 
 // this file defines operations on a dependency graph for the game, but does
@@ -74,15 +76,27 @@ func (n *AndNode) GetName() string { return n.Name }
 
 func (n *AndNode) GetMark(path *list.List) Mark {
 	if n.Mark == MarkNone {
+		var parentNames []string
+		if path != nil {
+			parentNames = make([]string, len(n.Parents))
+		}
+
 		n.Mark = MarkTrue
-		for _, parent := range n.Parents {
+		for i, parent := range n.Parents {
 			if parent.GetMark(path) == MarkFalse {
 				n.Mark = MarkFalse
 				break
 			}
+			if parentNames != nil {
+				parentNames[i] = parent.GetName()
+			}
 		}
 		if path != nil && n.Mark == MarkTrue {
-			path.PushBack(n.Name)
+			if len(parentNames) > 0 {
+				path.PushBack(n.Name + " <- " + strings.Join(parentNames, ", "))
+			} else {
+				path.PushBack(n.Name)
+			}
 		}
 	}
 
@@ -118,11 +132,13 @@ func (n *OrNode) GetName() string { return n.Name }
 func (n *OrNode) GetMark(path *list.List) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkFalse
+		var parentName string
 
 		// prioritize already satisfied nodes
 		for _, parent := range n.Parents {
 			if parent.PeekMark(path) == MarkTrue {
 				n.Mark = MarkTrue
+				parentName = parent.GetName()
 				break
 			}
 		}
@@ -138,7 +154,7 @@ func (n *OrNode) GetMark(path *list.List) Mark {
 		}
 
 		if path != nil && n.Mark == MarkTrue {
-			path.PushBack(n.Name)
+			path.PushBack(fmt.Sprintf("%s <- %s", n.Name, parentName))
 		}
 	}
 
