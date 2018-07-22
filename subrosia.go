@@ -75,13 +75,13 @@ var subrosiaNodesAnd = map[string]And{
 var subrosiaNodesOr = map[string][]string{
 	// exiting subrosia via the rosa portal without having activated it from
 	// holodrum gets you stuck in a bush unless you have a way to cut it down.
-	// usable items are: sword (spin slash), bombs, slingshot w/ ember or gale
-	// seeds but NOT satchel, bracelet, and L-2 boomerang. bombs and seeds are
-	// not renewable and it's possible to reach this portal via, say, the
-	// village portal with only satchel, pegasus seeds, and cape, so this node
-	// needs to be a requirement for entering subrosia via the swamp, mountain,
-	// lake, village, and desert portals. the ruins portal and d8 portal are
-	// ok.
+	// usable items are: sword (spin slash), bombs, gale seeds, slingshot w/
+	// ember seeds but NOT satchel, bracelet, and L-2 boomerang. bombs and
+	// seeds are not renewable and it's possible to reach this portal via, say,
+	// the village portal with only satchel, pegasus seeds, and cape, so this
+	// node needs to be a requirement for entering subrosia via the swamp,
+	// mountain, lake, village, and desert portals. the ruins portal and d8
+	// portal are ok.
 	"remove stuck bush": Or{"sword", "boomerang L-2", "bracelet"},
 
 	// large areas
