@@ -38,6 +38,7 @@ these all get checked in a normal frame, just for display purposes:
 - $c680-$c6?? = inventory (starting with equipped items)
 - $c6a2/$c6a3 = health / max health
 - $c6a6 = rupees
+- $c6b5-$c6b9 = seed count (ember, ?, ?, ?, ?)
 - $c6c5 = active ring
 - $c6ca-$c6d9 = some global flags
 - $c8a6 = ?
@@ -51,6 +52,8 @@ other things:
 - $c692-$c6a1 = item flags
 - $c6bb = essences obtained?
 	- shop checks for bit 1… wait, that means second essence. damn it
+- $cc77 = ?
+- $cc48 = high byte of link object address (in object table starting at $d000)
 
 ## notable rom addresses
 
