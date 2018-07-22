@@ -26,6 +26,10 @@ func main() {
 
 	switch *flagOp {
 	case "chedkGraph":
+		if flag.NArg() != 0 {
+			log.Fatalf("findPath takes 0 arguments; got %d", flag.NArg())
+		}
+
 		// validate
 		if errs := checkGraph(); errs != nil {
 			for _, err := range errs {
@@ -34,10 +38,11 @@ func main() {
 			os.Exit(1)
 		}
 	case "verifyData":
-		// load rom
 		if flag.NArg() != 1 {
 			log.Fatalf("verify takes 1 argument; got %d", flag.NArg())
 		}
+
+		// load rom
 		romData, err := loadROM(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
@@ -53,6 +58,10 @@ func main() {
 			log.Print("everything OK")
 		}
 	case "findPath":
+		if flag.NArg() != 1 {
+			log.Fatalf("findPath takes 2 arguments; got %d", flag.NArg())
+		}
+
 		// try to find a valid path to the target node
 		g, _ := initRoute() // ignore errors; they're diagnostic only
 		target, ok := g.Map[flag.Arg(0)]
@@ -71,10 +80,11 @@ func main() {
 			log.Print("path not found")
 		}
 	case "randomize":
-		// load rom
 		if flag.NArg() != 2 {
 			log.Fatalf("randomize takes 2 arguments; got %d", flag.NArg())
 		}
+
+		// load rom
 		romData, err := loadROM(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
