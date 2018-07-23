@@ -23,6 +23,8 @@ const (
 
 // Node is the general interface that encompasses everything in the graph.
 type Node interface {
+	fmt.Stringer
+
 	GetName() string
 	GetMark(*list.List) Mark // list to append path to if non-nil
 	PeekMark() Mark          // like GetMark but doesn't check parents

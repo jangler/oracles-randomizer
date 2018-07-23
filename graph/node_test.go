@@ -1,38 +1,110 @@
 package graph
 
 import (
+	"fmt"
 	"testing"
 )
 
-func TestNodeGetters(t *testing.T) {
+// helper functions
+
+var andCounter, orCounter int
+
+func makeAndNode() Node {
+	andCounter++
+	return NewAndNode(fmt.Sprintf("and%d", andCounter))
+}
+
+func makeOrNode() Node {
+	orCounter++
+	return NewOrNode(fmt.Sprintf("or%d", orCounter))
+}
+
+// tests
+
+func TestNodeGetName(t *testing.T) {
 	names := []string{"foo", "bar"}
-	marks := []Mark{MarkTrue, MarkFalse}
-	nodes := []Node{
-		&AndNode{Name: names[0], Mark: marks[0]},
-		&OrNode{Name: names[1], Mark: marks[1]},
-	}
+	nodes := []Node{NewAndNode(names[0]), NewOrNode(names[1])}
 
 	for i, node := range nodes {
 		if node.GetName() != names[i] {
 			t.Errorf("want %s, got %s", node.GetName(), names[i])
 		}
-		if node.PeekMark() != marks[i] {
-			t.Errorf("want %d, got %d", node.PeekMark(), marks[i])
+	}
+}
+
+func TestNodeSetMark(t *testing.T) {
+	for _, maker := range []func() Node{makeAndNode, makeOrNode} {
+		node := maker()
+		if node.PeekMark() != MarkNone {
+			t.Errorf("want %d, got %d", MarkNone, node.PeekMark())
+			continue
 		}
-		// GetMark isn't actually a getter, so it's not tested here
+		node.SetMark(MarkTrue)
+		if node.PeekMark() != MarkTrue {
+			t.Errorf("want %d, got %d", MarkTrue, node.PeekMark())
+			continue
+		}
 	}
 }
 
 func TestNodeRelationships(t *testing.T) {
-	and1 := NewAndNode("and1")
-	or1 := NewOrNode("or1")
-	if and1.HasParents() {
-		t.Errorf("new node has parents")
-		t.Logf("%+v", and1.Parents)
+	permutations := [][]func() Node{
+		[]func() Node{makeAndNode, makeOrNode},
+		[]func() Node{makeOrNode, makeAndNode},
 	}
-	if and1.HasChildren() {
-		t.Errorf("new node has children")
-		t.Logf("%+v", and1.Children)
+
+	for _, perm := range permutations {
+		n1, n2 := perm[0](), perm[1]()
+
+		// new nodes shouldn't have relationships
+		if n1.HasParents() {
+			t.Errorf("node has parents: %+v", n1)
+		}
+		if n1.HasChildren() {
+			t.Errorf("node has children: %+v", n1)
+		}
+		if t.Failed() {
+			continue
+		}
+
+		// test adding a parent
+		n1.AddParents(n2)
+		if !n1.HasParents() {
+			t.Errorf("node has no parents: %+v", n1)
+		}
+		if n1.HasChildren() {
+			t.Errorf("node has children: %+v", n1)
+		}
+		if n2.HasParents() {
+			t.Errorf("node has parents: %+v", n2)
+		}
+		if !n2.HasChildren() {
+			t.Errorf("node has no children: %+v", n2)
+		}
+		if t.Failed() {
+			continue
+		}
+
+		// test clearing parents
+		n1.ClearParents()
+		if n1.HasParents() {
+			t.Errorf("node has parents: %+v", n1)
+		}
+		if n2.HasChildren() {
+			t.Errorf("node has children: %+v", n2)
+		}
 	}
-	// TODO add tests for when there actually are relationships
+}
+
+// make sure nodes convert to string correctly
+func TestNodeString(t *testing.T) {
+	andName, orName := "and1", "or1"
+	and1, or1 := NewAndNode(andName), NewOrNode(orName)
+
+	if s := and1.String(); s != andName {
+		t.Errorf("want %s, got %s", andName, s)
+	}
+	if s := or1.String(); s != orName {
+		t.Errorf("want %s, got %s", orName, s)
+	}
 }
