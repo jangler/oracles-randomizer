@@ -254,6 +254,10 @@ func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedI
 		// slot didn't work; pop it onto the front of the unused list
 		usedSlots.Remove(usedSlots.Back())
 		slotList.PushFront(slotName)
+
+		// reachable slots usually equivalent in terms of routing, so don't
+		// bother checking more at this point
+		break
 	}
 
 	// nothing worked

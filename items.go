@@ -5,13 +5,17 @@ package main
 // OR nodes without parents are false. if these are given parents (i.e. a
 // chest/gift/whatever node), then they can become a valid part of the
 // route
+//
+// TODO there are some optimizations that could be made here: the four jewels
+//      are interchangeable, fist ring and expert's ring are interchangeable.
+//      it would also be nice if the randomizer checked whether a L-1 item is
+//      sufficient before trying a L-2 one.
 var baseItemNodes = map[string]Point{
 	// ring box L-1 is free, but these nodes are "find" because it costs
 	// rupees to appraise (and therefore use) rings
 	"find energy ring":   Or{},
 	"find fist ring":     Or{},
 	"find expert's ring": Or{},
-	"find toss ring":     Or{},
 
 	// shield, bombs, and flute can be bought
 	"sword L-1":     Or{},
@@ -23,27 +27,32 @@ var baseItemNodes = map[string]Point{
 	"bracelet":       Or{},
 	"ricky's gloves": Or{},
 	"floodgate key":  Or{},
-	"square jewel":   Or{},
 	// member's card?
 	"star-shaped ore": Or{},
 	"feather L-1":     Or{},
-	"master's plaque": Or{},
 	"flippers":        Or{},
 	// no fool's ore, see comment in subrosia.go
-	"spring banana":  Or{},
-	"dragon key":     Or{},
-	"ring box L-2":   Or{}, // TODO where is this?
-	"slingshot L-1":  Or{},
-	"pyramid jewel":  Or{},
-	"bomb flower":    Or{},
-	"magnet gloves":  Or{},
-	"x-shaped jewel": Or{},
-	"round jewel":    Or{},
+	"slingshot L-1": Or{},
+	"bomb flower":   Or{},
+	"magnet gloves": Or{},
 	// sword L-2 is fixed
 	"boomerang L-2": Or{},
-	"rusty bell":    Or{},
 	"feather L-2":   Or{},
-	"slingshot L-2": Or{},
+}
+
+// don't slot these for now; they don't satisfy anything
+var ignoredBaseItemNodes = map[string]Point{
+	"spring banana":   Or{},
+	"dragon key":      Or{},
+	"ring box L-2":    Or{}, // TODO where is this?
+	"find toss ring":  Or{},
+	"master's plaque": Or{},
+	"square jewel":    Or{},
+	"pyramid jewel":   Or{},
+	"x-shaped jewel":  Or{},
+	"round jewel":     Or{},
+	"rusty bell":      Or{},
+	"slingshot L-2":   Or{},
 }
 
 var itemNodesAnd = map[string]Point{

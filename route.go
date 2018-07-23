@@ -48,7 +48,8 @@ func initRoute() (*Route, []error) {
 
 	totalPoints := make(map[string]Point, 0)
 	appendNodes(totalPoints,
-		baseItemNodes, itemNodesAnd, itemNodesOr,
+		baseItemNodes, ignoredBaseItemNodes,
+		itemNodesAnd, itemNodesOr,
 		killNodesAnd, killNodesOr,
 		holodrumNodesAnd, holodrumNodesOr,
 		subrosiaNodesAnd, subrosiaNodesOr,
