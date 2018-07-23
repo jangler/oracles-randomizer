@@ -41,6 +41,11 @@ type AndNode struct {
 	Children []Node
 }
 
+func NewAndNode(name string) *AndNode {
+	return &AndNode{Name: name,
+		Parents: make([]Node, 0), Children: make([]Node, 0)}
+}
+
 func (n *AndNode) GetName() string { return n.Name }
 
 func (n *AndNode) GetMark(path *list.List) Mark {
@@ -105,6 +110,11 @@ type OrNode struct {
 	Mark     Mark
 	Parents  []Node
 	Children []Node
+}
+
+func NewOrNode(name string) *OrNode {
+	return &OrNode{Name: name,
+		Parents: make([]Node, 0), Children: make([]Node, 0)}
 }
 
 func (n *OrNode) GetName() string { return n.Name }
