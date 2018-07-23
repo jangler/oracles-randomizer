@@ -217,7 +217,7 @@ func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedI
 
 		slotName := slot.Value.(string)
 		g.ClearMarks() // probably redundant but safe
-		if findPath(g, g.Map[slotName]) == nil {
+		if !canReachTargets(g, []string{slotName}) {
 			continue
 		}
 
