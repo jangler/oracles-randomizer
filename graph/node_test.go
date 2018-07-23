@@ -19,6 +19,12 @@ func makeOrNode() Node {
 	return NewOrNode(fmt.Sprintf("or%d", orCounter))
 }
 
+func clearMarks(nodes ...Node) {
+	for _, n := range nodes {
+		n.SetMark(MarkNone)
+	}
+}
+
 // tests
 
 func TestNodeGetName(t *testing.T) {
@@ -27,7 +33,7 @@ func TestNodeGetName(t *testing.T) {
 
 	for i, node := range nodes {
 		if node.GetName() != names[i] {
-			t.Errorf("want %s, got %s", node.GetName(), names[i])
+			t.Errorf("want %s, got %s", names[i], node.GetName())
 		}
 	}
 }
@@ -106,5 +112,76 @@ func TestNodeString(t *testing.T) {
 	}
 	if s := or1.String(); s != orName {
 		t.Errorf("want %s, got %s", orName, s)
+	}
+}
+
+// this is the big one…
+func TestNodeGetMark(t *testing.T) {
+	and1, or1 := makeAndNode(), makeOrNode()
+
+	// orphan AndNodes are true
+	if mark := and1.GetMark(nil); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	// orphan OrNodes are false
+	if mark := or1.GetMark(nil); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+
+	and2 := makeAndNode()
+	and1.AddParents(or1, and2)
+	clearMarks(and1, or1)
+
+	// AndNodes need all parents to succeed
+	if mark := and1.GetMark(nil); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+
+	or2 := makeOrNode()
+	or1.AddParents(and1, or2)
+	clearMarks(and1, or1, and2)
+
+	// OrNodes need one
+	if mark := or1.GetMark(nil); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	// make sure the OrNode gets the same results by peeking
+	or1.SetMark(MarkNone)
+	if mark := or1.GetMark(nil); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+
+	or1.AddParents(and2)
+	clearMarks(and1, or1, and2, or2)
+
+	// and only one
+	if mark := or1.GetMark(nil); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	// make sure the OrNode gets the same results by peeking
+	or1.SetMark(MarkNone)
+	if mark := or1.GetMark(nil); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	// and now the AndNode should be satisfied
+	if mark := and1.GetMark(nil); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+
+	// but make sure loops don't satisfy nodes
+	and1.ClearParents()
+	and2.ClearParents()
+	or1.ClearParents()
+	or2.ClearParents()
+	and1.AddParents(and2)
+	and2.AddParents(and1)
+	or1.AddParents(or2)
+	or2.AddParents(or1)
+	clearMarks(and1, and2, or1, or2)
+	if mark := and1.GetMark(nil); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	if mark := or1.GetMark(nil); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
 	}
 }
