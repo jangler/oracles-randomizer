@@ -29,7 +29,7 @@ func main() {
 	switch *flagOp {
 	case "checkGraph":
 		if flag.NArg() != 0 {
-			log.Fatalf("findPath takes 0 arguments; got %d", flag.NArg())
+			log.Fatalf("checkGraph takes 0 arguments; got %d", flag.NArg())
 		}
 
 		// validate
