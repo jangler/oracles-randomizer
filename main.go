@@ -60,17 +60,41 @@ func main() {
 			log.Print("everything OK")
 		}
 	case "findPath":
-		if flag.NArg() != 1 {
-			log.Fatalf("findPath takes 2 arguments; got %d", flag.NArg())
+		if flag.NArg() < 2 {
+			log.Fatalf("findPath takes 2+ arguments; got %d", flag.NArg())
+		}
+		if flag.NArg()%2 != 0 {
+			log.Fatalf("findPath requires an even number of arguments; got %d",
+				flag.NArg())
 		}
 
-		// try to find a valid path to the target node
 		r, _ := initRoute() // ignore errors; they're diagnostic only
-		target, ok := r.Graph.Map[flag.Arg(0)]
-		if !ok {
-			log.Fatal("target node not found")
+
+		// get start and end nodes
+		if start, ok := r.Graph.Map[flag.Arg(0)]; ok {
+			start.ClearParents()
+		} else {
+			log.Fatal("node %s not found", flag.Arg(0))
 		}
-		if path := findPath(r.Graph, target); path != nil {
+		dest, ok := r.Graph.Map[flag.Arg(1)]
+		if !ok {
+			log.Fatalf("node %s not found", flag.Arg(1))
+		}
+
+		// place items in slots
+		for i := 2; i < flag.NArg(); i += 2 {
+			if _, ok := baseItemNodes[flag.Arg(i)]; !ok {
+				log.Fatalf("%s is not an item", flag.Arg(i))
+			}
+			if _, ok := r.Slots[flag.Arg(i+1)]; !ok {
+				log.Fatalf("%s is not a slot", flag.Arg(i+1))
+			}
+			r.Graph.AddParents(
+				map[string][]string{flag.Arg(i): []string{flag.Arg(i + 1)}})
+		}
+
+		// try to find a valid path
+		if path := findPath(r.Graph, dest); path != nil {
 			for path.Len() > 0 {
 				step := path.Remove(path.Front()).(string)
 				log.Print(step)
