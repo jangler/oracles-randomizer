@@ -39,6 +39,7 @@ var portalNodesAnd = map[string]Point{
 	"d8 portal 1": And{"remains portal", "summer", "long jump", "magnet gloves"},
 	"d8 portal 2": And{"remains portal", "summer", "pegasus jump L-2"},
 
+	// TODO swamp portal seems bugged and acts like it doesn't have parents ???
 	"swamp portal":    And{"swamp portal unsafe", "remove stuck bush"},
 	"mountain portal": And{"mountain portal unsafe", "remove stuck bush"},
 	"lake portal":     And{"lake portal unsafe", "remove stuck bush"},
@@ -91,6 +92,7 @@ var holodrumNodesAnd = map[string]Point{
 	"scent tree 2":       And{"natzu", "animal"},
 	"scent tree 3":       And{"natzu", "remove bush"}, // defaults to prairie if no animal
 	"blaino":             And{"scent tree"},
+	"blaino gift":        AndSlot{"blaino", "rupees"},
 	"ricky 1":            And{"scent tree"},
 	"ricky 2":            And{"ghastly stump", "jump"},
 	"ricky 3":            And{"pegasus tree", "jump"},

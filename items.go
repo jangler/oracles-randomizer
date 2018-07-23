@@ -26,7 +26,6 @@ var baseItemNodes = map[string]Point{
 	"square jewel":   Or{},
 	// member's card?
 	"star-shaped ore": Or{},
-	"ribbon":          Or{},
 	"feather L-1":     Or{},
 	"master's plaque": Or{},
 	"flippers":        Or{},
@@ -59,17 +58,23 @@ var itemNodesAnd = map[string]Point{
 	"find d2 mystery seeds": And{"d2 bomb wall", "remove bush"},
 	"find d2 bombs":         And{"d2 bomb wall", "remove bush"},
 
-	"ember satchel":   And{"ember seeds", "satchel"},
-	"mystery satchel": And{"mystery seeds", "satchel"},
-	"scent satchel":   And{"scent seeds", "satchel"},
-	"pegasus satchel": And{"pegasus seeds", "satchel"},
-	"gale satchel":    And{"gale seeds", "satchel"},
+	"ember satchel":   And{"get ember seeds", "satchel"},
+	"mystery satchel": And{"get mystery seeds", "satchel"},
+	"scent satchel":   And{"get scent seeds", "satchel"},
+	"pegasus satchel": And{"get pegasus seeds", "satchel"},
+	"gale satchel":    And{"get gale seeds", "satchel"},
 
-	"ember slingshot":   And{"ember seeds", "slingshot"},
-	"mystery slingshot": And{"mystery seeds", "slingshot"},
-	"scent slingshot":   And{"scent seeds", "slingshot"},
-	"pegasus slingshot": And{"pegasus seeds", "slingshot"},
-	"gale slingshot":    And{"gale seeds", "slingshot"},
+	"ember slingshot":   And{"get ember seeds", "slingshot"},
+	"mystery slingshot": And{"get mystery seeds", "slingshot"},
+	"scent slingshot":   And{"get scent seeds", "slingshot"},
+	"pegasus slingshot": And{"get pegasus seeds", "slingshot"},
+	"gale slingshot":    And{"get gale seeds", "slingshot"},
+
+	"ember seeds":   And{"get ember seeds", "seed item"},
+	"mystery seeds": And{"get ember seeds", "seed item"},
+	"scent seeds":   And{"get ember seeds", "seed item"},
+	"pegasus seeds": And{"get ember seeds", "seed item"},
+	"gale seeds":    And{"get ember seeds", "seed item"},
 
 	"punch":           And{"find punch ring", "rupees"},
 	"energy ring":     And{"find energy ring", "rupees"},
@@ -79,6 +84,8 @@ var itemNodesAnd = map[string]Point{
 	"pegasus jump L-2": And{"pegasus satchel", "feather L-2"},
 
 	"sword L-2": And{"lost woods", "winter", "autumn", "spring", "summer"},
+
+	"ribbon": Or{"star-shaped ore", "beach"},
 
 	"winter": And{"rod", "winter tower"},
 	"summer": And{"rod", "summer tower"},
@@ -105,15 +112,15 @@ var itemNodesOr = map[string]Point{
 
 	"harvest item":       Or{"sword", "rod", "fool's ore", "punch"},
 	"find ember seeds":   Or{"find d1 ember seeds", "find d2 ember seeds"}, // TODO
-	"ember seeds":        Or{"harvest ember seeds", "find ember seeds"},
+	"get ember seeds":    Or{"harvest ember seeds", "find ember seeds"},
 	"find mystery seeds": Or{"find d2 mystery seeds"}, // TODO
-	"mystery seeds":      Or{"harvest mystery seeds", "find mystery seeds"},
+	"get mystery seeds":  Or{"harvest mystery seeds", "find mystery seeds"},
 	"find scent seeds":   Or{}, // TODO
-	"scent seeds":        Or{"harvest scent seeds", "find scent seeds"},
+	"get scent seeds":    Or{"harvest scent seeds", "find scent seeds"},
 	"find pegasus seeds": Or{}, // TODO
-	"pegasus seeds":      Or{"harvest pegasus seeds", "find pegasus seeds"},
+	"get pegasus seeds":  Or{"harvest pegasus seeds", "find pegasus seeds"},
 	"find gale seeds":    Or{}, // TODO
-	"gale seeds":         Or{"harvest gale seeds", "find gale seeds"},
+	"get gale seeds":     Or{"harvest gale seeds", "find gale seeds"},
 
 	"long jump": Or{"feather L-2", "pegasus jump L-1"},
 
