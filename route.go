@@ -73,11 +73,24 @@ func initRoute() (*Route, []error) {
 	// validate
 	var errs []error
 	for name, node := range g.Map {
+		if baseItemNodes[name] != nil || ignoredBaseItemNodes[name] != nil ||
+			name == "horon village" {
+			// it's supposed to be orphan/childless; skip it
+			continue
+		}
+
+		// check for parents and children
 		if !node.HasParents() {
 			if errs == nil {
 				errs = make([]error, 0)
 			}
 			errs = append(errs, fmt.Errorf("orphan node: %s", name))
+		}
+		if !node.HasChildren() {
+			if errs == nil {
+				errs = make([]error, 0)
+			}
+			errs = append(errs, fmt.Errorf("childless node: %s", name))
 		}
 	}
 

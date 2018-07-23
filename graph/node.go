@@ -28,8 +28,9 @@ type Node interface {
 	PeekMark() Mark          // like GetMark but doesn't check parents
 	SetMark(Mark)
 	AddParents(...Node)
-	HasParents() bool
 	ClearParents()
+	HasParents() bool
+	HasChildren() bool
 }
 
 // AndNode is satisfied if all of its parents are satisfied, or if it has no
@@ -94,13 +95,17 @@ func (n *AndNode) AddParents(parents ...Node) {
 	addChild(n, parents...)
 }
 
+func (n *AndNode) ClearParents() {
+	removeChild(n, n.Parents...)
+	n.Parents = n.Parents[:0]
+}
+
 func (n *AndNode) HasParents() bool {
 	return len(n.Parents) > 0
 }
 
-func (n *AndNode) ClearParents() {
-	removeChild(n, n.Parents...)
-	n.Parents = n.Parents[:0]
+func (n *AndNode) HasChildren() bool {
+	return len(n.Children) > 0
 }
 
 // OrNode is satisfied if any of its parents is satisfied, unless it has no
@@ -172,6 +177,10 @@ func (n *OrNode) ClearParents() {
 
 func (n *OrNode) HasParents() bool {
 	return len(n.Parents) > 0
+}
+
+func (n *OrNode) HasChildren() bool {
+	return len(n.Children) > 0
 }
 
 // helper functions
