@@ -26,11 +26,6 @@ type Node interface {
 	GetMark(*list.List) Mark  // list to append path to if non-nil
 	PeekMark(*list.List) Mark // like GetMark but doesn't check parents
 	SetMark(Mark)
-}
-
-// ChildNode is a node with parent(s).
-type ChildNode interface {
-	Node
 	AddParents(...Node)
 	HasParents() bool
 }

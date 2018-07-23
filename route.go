@@ -66,14 +66,11 @@ func initRoute() (*graph.Graph, []error) {
 	// validate
 	var errs []error
 	for name, node := range g.Map {
-		switch nt := node.(type) {
-		case graph.ChildNode:
-			if !nt.HasParents() {
-				if errs == nil {
-					errs = make([]error, 0)
-				}
-				errs = append(errs, fmt.Errorf("orphan node: %s", name))
+		if !node.HasParents() {
+			if errs == nil {
+				errs = make([]error, 0)
 			}
+			errs = append(errs, fmt.Errorf("orphan node: %s", name))
 		}
 	}
 

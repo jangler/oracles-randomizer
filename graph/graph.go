@@ -34,16 +34,11 @@ func (r *Graph) CheckDuplicateName(name string) {
 	}
 }
 
-// panics if any of the given child nodes aren't actually child nodes
 func (r *Graph) AddParents(links map[string][]string) {
 	for childName, parentNames := range links {
 		if child, ok := r.Map[childName]; ok {
 			for _, parentName := range parentNames {
-				if parent, ok := r.Map[parentName]; ok {
-					child.(ChildNode).AddParents(parent)
-				} else {
-					panic("no parent named " + parentName)
-				}
+				child.AddParents(r.Map[parentName])
 			}
 		} else {
 			panic("no child named " + childName)
