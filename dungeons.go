@@ -12,7 +12,7 @@ package main
 
 var d0NodesAnd = map[string]Point{
 	"d0 key chest":   And{"enter d0"},
-	"d0 sword chest": And{"enter d0", "d0 small key"},
+	"d0 sword chest": AndSlot{"enter d0", "d0 small key"},
 	"d0 rupee chest": And{"remove bush"},
 
 	// TODO randomize
@@ -29,7 +29,7 @@ var d1NodesAnd = map[string]Point{
 	"d1 bomb chest":     And{"d1 map chest", "hit lever"},
 	"d1 key chest":      And{"d1 map chest", "hit lever"},
 	"enter goriya bros": And{"d1 bomb chest", "bombs", "d1 key 2"},
-	"d1 satchel":        And{"enter goriya bros", "kill goriya bros"},
+	"d1 satchel":        AndSlot{"enter goriya bros", "kill goriya bros"},
 	"d1 boss key chest": And{"d1 map chest", "ember seeds", "kill goriya (pit)"},
 	"d1 ring chest":     And{"enter d1", "ember seeds"},
 	"enter aquamentus":  And{"enter d1", "ember seeds", "d1 boss key"},
@@ -66,7 +66,7 @@ var d2NodesAnd = map[string]Point{
 	"d2 map chest":         And{"d2 hardhat room"},
 	"d2 compass chest 1":   And{"d2 torch room", "ember seeds", "kill rope"},
 	"d2 compass chest 2":   And{"d2 arrow room", "kill goriya", "kill rope"},
-	"d2 bracelet chest":    And{"d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"},
+	"d2 bracelet chest":    AndSlot{"d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"},
 	"d2 bomb key chest":    And{"enter d2 2", "remove bush", "bombs"},
 	"d2 blade key chest 1": And{"enter d2 3", "bracelet"},
 	"d2 blade key chest 2": And{"d2 arrow room", "kill rope", "kill goriya"},

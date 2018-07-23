@@ -59,7 +59,7 @@ var killNodesOr = map[string]Point{
 	// required enemies in normal route-ish order, but with prereqs first
 	"seed kill normal":          Or{"ember seeds", "scent seeds", "gale seeds", "mystery seeds"},
 	"pop maku bubble":           Or{"sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"},
-	"remove bush":               Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot", "bombs", "bracelet"},
+	"remove bush":               Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet"},
 	"kill normal":               Or{"sword", "bombs", "beams", "seed kill normal", "fool's ore", "punch"},
 	"pit kill normal":           Or{"sword", "beams", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "punch"},
 	"kill normal (pit)":         Or{"kill normal", "pit kill normal"},
@@ -78,7 +78,7 @@ var killNodesOr = map[string]Point{
 	"kill beetle":               Or{"kill normal"},
 
 	// enemies not required to kill until later
-	"remove flower":   Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot", "bombs"},
+	"remove flower":   Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot"},
 	"remove mushroom": Or{"boomerang L-2", "bracelet"},
 	"kill moldorm":    Or{"sword", "bombs", "punch", "scent seeds"},
 }

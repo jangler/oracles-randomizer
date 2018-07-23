@@ -86,8 +86,15 @@ func appendNodes(total map[string]Point, pointMaps ...map[string]Point) {
 }
 
 func addPointNodes(g *graph.Graph, points map[string]Point) {
-	for key, _ := range points {
-		g.AddAndNodes(key)
+	for key, pt := range points {
+		switch pt.(type) {
+		case And, AndSlot:
+			g.AddAndNodes(key)
+		case Or, OrSlot:
+			g.AddOrNodes(key)
+		default:
+			panic("unknown point type for " + key)
+		}
 	}
 }
 

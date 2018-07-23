@@ -62,7 +62,7 @@ var holodrumNodesAnd = map[string]Point{
 	// start->d1
 	"horon village": And{}, // start
 	"enter d0":      And{"horon village"},
-	"maku key fall": And{"horon village", "pop maku bubble"},
+	"maku key fall": AndSlot{"horon village", "pop maku bubble"},
 	"enter d1":      And{"horon village", "remove bush", "gnarled key"},
 
 	// d1->d2
@@ -75,7 +75,7 @@ var holodrumNodesAnd = map[string]Point{
 	"post-d2 stump 2": And{"sokra stump", "cross water gap"},
 	"post-d2 stump 3": And{"sunken city"},
 	"post-d2 stump 4": And{"mystery tree"},
-	"shovel gift":     And{"post-d2 stump", "winter"},
+	"shovel gift":     AndSlot{"post-d2 stump", "winter"},
 	"mystery tree 1":  And{"shovel gift", "shovel", "winter"},
 	"mystery tree 2":  And{"post-d2 stump", "winter", "shovel"},
 	"mystery tree 3":  And{"post-d2 stump", "jump"},
@@ -102,7 +102,7 @@ var holodrumNodesAnd = map[string]Point{
 	"pegasus tree 1":     And{"ghastly stump", "animal"},
 	"pegasus tree 2":     And{"ghastly stump", "feather L-2"},
 	"pegasus tree 3":     And{"ghastly stump", "summer"},
-	"floodgate key gift": And{"pegasus tree", "hit lever"},
+	"floodgate key gift": AndSlot{"pegasus tree", "hit lever"},
 	"square jewel 1":     And{"open floodgate", "winter", "animal"},
 	"square jewel 2":     And{"open floodgate", "winter", "long jump", "bombs"},
 	"square jewel 3":     And{"open floodgate", "winter", "flippers", "bombs"},
@@ -118,7 +118,7 @@ var holodrumNodesAnd = map[string]Point{
 	"enter d5":      And{"eyeglass lake", "autumn", "remove mushroom"},
 
 	// d5->d6 TODO
-	"x-shaped jewel chest": And{"horon village", "mystery slingshot", "kill moldorm"},
+	"x-shaped jewel chest": AndSlot{"horon village", "mystery slingshot", "kill moldorm"},
 
 	// d6->d7 TODO
 	"eastern coast": And{"horon village", "ember seeds"},
@@ -136,7 +136,7 @@ var holodrumNodesOr = map[string]Point{
 	"ricky":              Or{"ricky 1", "ricky 2", "ricky 3"},
 	"ghastly stump":      Or{"ghastly stump 1", "ghastly stump 2", "ghastly stump 3", "ghastly stump 4", "ghastly stump 5"},
 	"pegasus tree":       Or{"pegasus tree 1", "pegasus tree 2", "pegasus tree 3"},
-	"square jewel chest": Or{"square jewel 1", "square jewel 2", "square jewel 3"},
+	"square jewel chest": OrSlot{"square jewel 1", "square jewel 2", "square jewel 3"},
 	"gale tree":          Or{"gale tree 1", "gale tree 2"},
 
 	// referenced things that i don't want to deal with yet

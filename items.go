@@ -5,54 +5,54 @@ package main
 // OR nodes without parents are false. if these are given parents (i.e. a
 // chest/gift/whatever node), then they can become a valid part of the
 // route
-var baseItemNodes = []string{
+var baseItemNodes = map[string]Point{
 	// ring box L-1 is free, but these nodes are "find" because it costs
 	// rupees to appraise (and therefore use) rings
-	"find energy ring",
-	"find fist ring",
-	"find expert's ring",
-	"find toss ring",
+	"find energy ring":   Or{},
+	"find fist ring":     Or{},
+	"find expert's ring": Or{},
+	"find toss ring":     Or{},
 
 	// shield, bombs, and flute can be bought
-	"sword L-1",
-	"gnarled key",
-	"satchel",
-	"boomerang L-1",
+	"sword L-1":     Or{},
+	"gnarled key":   Or{},
+	"satchel":       Or{},
+	"boomerang L-1": Or{},
 	// rod?
-	"shovel",
-	"bracelet",
-	"ricky's gloves",
-	"floodgate key",
-	"square jewel",
+	"shovel":         Or{},
+	"bracelet":       Or{},
+	"ricky's gloves": Or{},
+	"floodgate key":  Or{},
+	"square jewel":   Or{},
 	// member's card?
-	"star-shaped ore",
-	"ribbon",
-	"feather L-1",
-	"master's plaque",
-	"flippers",
+	"star-shaped ore": Or{},
+	"ribbon":          Or{},
+	"feather L-1":     Or{},
+	"master's plaque": Or{},
+	"flippers":        Or{},
 	// no fool's ore, see comment in subrosia.go
-	"spring banana",
-	"dragon key",
-	"ring box L-2", // TODO where is this?
-	"slingshot L-1",
-	"pyramid jewel",
-	"bomb flower",
-	"magnet gloves",
-	"x-shaped jewel",
-	"round jewel",
+	"spring banana":  Or{},
+	"dragon key":     Or{},
+	"ring box L-2":   Or{}, // TODO where is this?
+	"slingshot L-1":  Or{},
+	"pyramid jewel":  Or{},
+	"bomb flower":    Or{},
+	"magnet gloves":  Or{},
+	"x-shaped jewel": Or{},
+	"round jewel":    Or{},
 	// sword L-2 is fixed
-	"boomerang L-2",
-	"rusty bell",
-	"feather L-2",
-	"slingshot L-2",
+	"boomerang L-2": Or{},
+	"rusty bell":    Or{},
+	"feather L-2":   Or{},
+	"slingshot L-2": Or{},
 }
 
 var itemNodesAnd = map[string]Point{
-	"harvest ember seeds":   And{"ember tree", "harvest seeds"},
-	"harvest mystery seeds": And{"mystery tree", "harvest seeds"},
-	"harvest scent seeds":   And{"scent tree", "harvest seeds"},
-	"harvest pegasus seeds": And{"pegasus tree", "harvest seeds"},
-	"harvest gale seeds":    And{"gale tree", "harvest seeds"},
+	"harvest ember seeds":   And{"ember tree", "satchel", "harvest item"},
+	"harvest mystery seeds": And{"mystery tree", "satchel", "harvest item"},
+	"harvest scent seeds":   And{"scent tree", "satchel", "harvest item"},
+	"harvest pegasus seeds": And{"pegasus tree", "satchel", "harvest item"},
+	"harvest gale seeds":    And{"gale tree", "satchel", "harvest item"},
 
 	"find d1 ember seeds":   And{"enter d1", "remove bush"},
 	"find d2 ember seeds":   And{"mystery tree", "remove bush"},
@@ -103,7 +103,7 @@ var itemNodesOr = map[string]Point{
 	"bombs":      Or{"rupees", "find bombs"},
 	"jump":       Or{"feather L-1", "feather L-2"},
 
-	"harvest seeds":      Or{"sword", "rod", "fool's ore", "punch"},
+	"harvest item":       Or{"sword", "rod", "fool's ore", "punch"},
 	"find ember seeds":   Or{"find d1 ember seeds", "find d2 ember seeds"}, // TODO
 	"ember seeds":        Or{"harvest ember seeds", "find ember seeds"},
 	"find mystery seeds": Or{"find d2 mystery seeds"}, // TODO
