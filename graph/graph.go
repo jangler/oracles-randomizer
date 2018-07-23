@@ -13,32 +13,32 @@ func NewGraph() *Graph {
 }
 
 // panics if node with name already exists
-func (r *Graph) AddAndNodes(names ...string) {
+func (g *Graph) AddAndNodes(names ...string) {
 	for _, name := range names {
-		r.CheckDuplicateName(name)
-		r.Map[name] = &AndNode{Name: name, Parents: make([]Node, 0)}
+		g.CheckDuplicateName(name)
+		g.Map[name] = &AndNode{Name: name, Parents: make([]Node, 0)}
 	}
 }
 
 // panics if node with name already exists
-func (r *Graph) AddOrNodes(names ...string) {
+func (g *Graph) AddOrNodes(names ...string) {
 	for _, name := range names {
-		r.CheckDuplicateName(name)
-		r.Map[name] = &OrNode{Name: name, Parents: make([]Node, 0)}
+		g.CheckDuplicateName(name)
+		g.Map[name] = &OrNode{Name: name, Parents: make([]Node, 0)}
 	}
 }
 
-func (r *Graph) CheckDuplicateName(name string) {
-	if r.Map[name] != nil {
+func (g *Graph) CheckDuplicateName(name string) {
+	if g.Map[name] != nil {
 		panic("node named " + name + " already in route map")
 	}
 }
 
-func (r *Graph) AddParents(links map[string][]string) {
+func (g *Graph) AddParents(links map[string][]string) {
 	for childName, parentNames := range links {
-		if child, ok := r.Map[childName]; ok {
+		if child, ok := g.Map[childName]; ok {
 			for _, parentName := range parentNames {
-				child.AddParents(r.Map[parentName])
+				child.AddParents(g.Map[parentName])
 			}
 		} else {
 			panic("no child named " + childName)
