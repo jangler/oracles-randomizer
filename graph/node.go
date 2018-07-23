@@ -59,11 +59,12 @@ func (n *AndNode) GetMark(path *list.List) Mark {
 		}
 
 		n.Mark = MarkPending
+	AndLoop:
 		for i, parent := range n.Parents {
 			switch parent.GetMark(path) {
 			case MarkFalse:
 				n.Mark = MarkFalse
-				break
+				break AndLoop
 			// if we encounter a pending node, this node isn't satisfied now,
 			// but it could be in the future of the same graph.
 			case MarkPending:
@@ -143,13 +144,14 @@ func (n *OrNode) GetMark(path *list.List) Mark {
 		var parentName string
 
 		// prioritize already satisfied nodes
+	OrPeekLoop:
 		for _, parent := range n.Parents {
 			switch parent.PeekMark() {
 			case MarkTrue:
 				n.Mark = MarkTrue
 				allPending = false
 				parentName = parent.GetName()
-				break
+				break OrPeekLoop
 			case MarkFalse:
 				allPending = false
 			}
@@ -157,13 +159,14 @@ func (n *OrNode) GetMark(path *list.List) Mark {
 
 		// then actually check them otherwise
 		if n.Mark == MarkPending {
+		OrGetLoop:
 			for _, parent := range n.Parents {
 				switch parent.GetMark(path) {
 				case MarkTrue:
 					n.Mark = MarkTrue
 					allPending = false
 					parentName = parent.GetName()
-					break
+					break OrGetLoop
 				case MarkFalse:
 					allPending = false
 				}

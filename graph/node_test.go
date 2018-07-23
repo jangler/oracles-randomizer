@@ -151,7 +151,10 @@ func TestNodeGetMark(t *testing.T) {
 		t.Fatalf("want %d, got %d", MarkFalse, mark)
 	}
 
-	or1.AddParents(and2)
+	// (clear and re-add w/ true child in front to make sure breaks in switch
+	// statements are breaking to loop labels)
+	or1.ClearParents()
+	or1.AddParents(and2, and1, or2)
 	clearMarks(and1, or1, and2, or2)
 
 	// and only one
