@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
@@ -64,12 +65,12 @@ func main() {
 		}
 
 		// try to find a valid path to the target node
-		g, _, _ := initRoute() // ignore errors; they're diagnostic only
-		target, ok := g.Map[flag.Arg(0)]
+		r, _ := initRoute() // ignore errors; they're diagnostic only
+		target, ok := r.Graph.Map[flag.Arg(0)]
 		if !ok {
 			log.Fatal("target node not found")
 		}
-		if path := findPath(g, target); path != nil {
+		if path := findPath(r.Graph, target); path != nil {
 			for path.Len() > 0 {
 				step := path.Remove(path.Front()).(string)
 				log.Print(step)
@@ -82,8 +83,8 @@ func main() {
 			log.Fatalf("makeRoute takes 0 arguments; got %d", flag.NArg())
 		}
 
-		g, openSlots, _ := initRoute()
-		_ = makeRoute(g, openSlots, []string{"d1 essence", "d2 essence"})
+		r, _ := initRoute()
+		_ = makeRoute(r, []string{"d1 essence", "d2 essence"})
 	case "randomize":
 		if flag.NArg() != 2 {
 			log.Fatalf("randomize takes 2 arguments; got %d", flag.NArg())
@@ -110,7 +111,7 @@ func main() {
 // make sure the base route graph is ok (before randomizing anything)
 func checkGraph() []error {
 	// TODO initRoute() does this automatically and i'm not sure it should
-	_, _, errs := initRoute()
+	_, errs := initRoute()
 	return errs
 }
 
@@ -138,18 +139,18 @@ func findPath(g *graph.Graph, target graph.Node) *list.List {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func makeRoute(g *graph.Graph, openSlots map[string]Point, targets []string) *list.List {
+func makeRoute(r *Route, targets []string) *list.List {
 	// make stacks out of the item names and slot names for backtracking
 	itemList := list.New()
 	slotList := list.New()
 	{
 		// shuffle names in slices
 		items := make([]string, 0, len(baseItemNodes))
-		slots := make([]string, 0, len(openSlots))
+		slots := make([]string, 0, len(r.Slots))
 		for itemName, _ := range baseItemNodes {
 			items = append(items, itemName)
 		}
-		for slotName, _ := range openSlots {
+		for slotName, _ := range r.Slots {
 			slots = append(slots, slotName)
 		}
 		rand.Shuffle(len(items), func(i, j int) {
@@ -173,82 +174,101 @@ func makeRoute(g *graph.Graph, openSlots map[string]Point, targets []string) *li
 	usedItems := list.New()
 	usedSlots := list.New()
 
-	// loop until all targets are reachable
-	for {
-		// try to reach an open slot
-		reachedSlot := false
-		for i := 0; i < slotList.Len(); i++ {
-			// iterate the unused slot list by rotating it
-			slot := slotList.Back()
-			slotName := slot.Value.(string)
-			slotList.MoveToFront(slot)
-
-			// see if a path to the slot exists
-			g.ClearMarks()
-			if path := findPath(g, g.Map[slotName]); path != nil {
-				// move slot from unused to used list
-				usedSlots.PushBack(slotName)
-				slotList.Remove(slot)
-
-				// try placing the item at the back of the item list
-				itemName := itemList.Remove(itemList.Back()).(string)
-				usedItems.PushBack(itemName)
-				g.Map[itemName].AddParents(g.Map[slotName])
-				log.Printf("-- placing %s in %s", itemName, slotName)
-
-				// we're good
-				reachedSlot = true
-				break
-			}
-		}
-		if !reachedSlot {
-			// no slot could be reached w/ new item in new slot; pop them both
-			// off and put them at the front of their respective lists. iterate
-			// by rotating again
-			//
-			// and don't forget to remove the item's parents
-			log.Print("-- failure to find open slot")
-			item := usedItems.Remove(usedItems.Back()).(string)
-			g.Map[item].ClearParents()
-			itemList.PushFront(item)
-			slotList.PushFront(usedSlots.Remove(usedSlots.Back()))
-			continue
-		}
-		// TODO the above isn't proper about actually bracktracking if *no*
-		//      item gets you anywhere from the current slot.
-
-		// if you can reach all targets from here, yr done
-		reachAll := true
+	if tryReachTargets(r.Graph, targets, itemList, slotList, usedItems, usedSlots) {
+		log.Print("-- success")
 		for _, target := range targets {
-			g.ClearMarks()
-			if findPath(g, g.Map[target]) == nil {
-				reachAll = false
-				break
+			log.Print("-- path to " + target)
+			r.Graph.ClearMarks()
+			path := findPath(r.Graph, r.Graph.Map[target])
+			for path.Len() > 0 {
+				step := path.Remove(path.Front()).(string)
+				log.Print(step)
 			}
 		}
-		if reachAll {
-			log.Print("-- success")
-			for _, target := range targets {
-				log.Print("-- path to " + target)
-				g.ClearMarks()
-				path := findPath(g, g.Map[target])
-				for path.Len() > 0 {
-					step := path.Remove(path.Front()).(string)
-					log.Print(step)
-				}
-			}
-			log.Print("-- used items")
-			if usedItems.Len() != usedSlots.Len() {
-				log.Fatalf("FATAL: usedItems.Len() == %d; usedSlots.Len() == %d", usedItems.Len(), usedSlots.Len())
-			}
-			for usedItems.Len() > 0 {
-				log.Printf("%s <- %s", usedItems.Remove(usedItems.Front()), usedSlots.Remove(usedSlots.Front()))
-			}
-			break
+		log.Print("-- slotted items")
+		if usedItems.Len() != usedSlots.Len() {
+			log.Fatalf("FATAL: usedItems.Len() == %d; usedSlots.Len() == %d", usedItems.Len(), usedSlots.Len())
 		}
+		for usedItems.Len() > 0 {
+			log.Printf("%s <- %s", usedItems.Remove(usedItems.Front()), usedSlots.Remove(usedSlots.Front()))
+		}
+	} else {
+		log.Print("-- failure; something is wrong")
 	}
 
 	return nil // TODO
+}
+
+// try to reach all the given targets using the current graph status. if
+// targets are unreachable, try placing an unused item in a reachable unused
+// slot, and call recursively. if no combination of slots and items works,
+// return false.
+func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedItems, usedSlots *list.List) bool {
+	// try to reach all targets
+	if canReachTargets(g, targets) {
+		return true
+	}
+
+	// try to reach each unused slot
+	for i := 0; i < slotList.Len(); i++ {
+		// iterate by rotating the list
+		slot := slotList.Back()
+		slotList.MoveToFront(slot)
+
+		slotName := slot.Value.(string)
+		g.ClearMarks() // probably redundant but safe
+		if findPath(g, g.Map[slotName]) == nil {
+			continue
+		}
+
+		// move slot from unused to used
+		usedSlots.PushBack(slotName)
+		slotList.Remove(slot)
+
+		// try placing each unused item into the slot
+		for j := 0; j < itemList.Len(); j++ {
+			// slot the item and move it to the used list
+			itemName := itemList.Remove(itemList.Back()).(string)
+			usedItems.PushBack(itemName)
+			g.Map[itemName].AddParents(g.Map[slotName])
+
+			{
+				items := make([]string, 0, usedItems.Len())
+				for e := usedItems.Front(); e != usedItems.Back(); e = e.Next() {
+					items = append(items, e.Value.(string))
+				}
+				log.Print("trying " + strings.Join(items, " -> "))
+			}
+
+			// recurse with new state
+			if tryReachTargets(g, targets, itemList, slotList, usedItems, usedSlots) {
+				return true
+			}
+
+			// item didn't work; unslot it and pop it onto the front of the unused list
+			usedItems.Remove(usedItems.Back())
+			itemList.PushFront(itemName)
+			g.Map[itemName].ClearParents()
+		}
+
+		// slot didn't work; pop it onto the front of the unused list
+		usedSlots.Remove(usedSlots.Back())
+		slotList.PushFront(slotName)
+	}
+
+	// nothing worked
+	return false
+}
+
+// check if the targets are reachable using the current graph state
+func canReachTargets(g *graph.Graph, targets []string) bool {
+	g.ClearMarks()
+	for _, target := range targets {
+		if g.Map[target].GetMark(nil) != graph.MarkTrue {
+			return false
+		}
+	}
+	return true
 }
 
 // messes up rom data and writes it to a file.
