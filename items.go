@@ -139,5 +139,5 @@ var itemNodesOr = map[string]Point{
 	// access those enemies without another item that already collects rupees.
 	// i'm also not including expendable items in this list just because it
 	// could be super tedious to farm rupees using them.
-	"rupees": Or{"sword", "boomerang L-2", "shovel", "bracelet", "animal", "fool's ore", "punch"},
+	"rupees": Or{"sword", "boomerang", "shovel", "bracelet", "animal", "fool's ore", "punch"},
 }
