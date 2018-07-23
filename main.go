@@ -120,7 +120,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		// randomize
+		// randomize (TODO)
 		if errs := randomize(romData, flag.Arg(1)); errs != nil {
 			for _, err := range errs {
 				log.Print(err)

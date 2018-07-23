@@ -39,7 +39,6 @@ var portalNodesAnd = map[string]Point{
 	"d8 portal 1": And{"remains portal", "summer", "long jump", "magnet gloves"},
 	"d8 portal 2": And{"remains portal", "summer", "pegasus jump L-2"},
 
-	// TODO swamp portal seems bugged and acts like it doesn't have parents ???
 	"swamp portal":    And{"swamp portal unsafe", "remove stuck bush"},
 	"mountain portal": And{"mountain portal unsafe", "remove stuck bush"},
 	"lake portal":     And{"lake portal unsafe", "remove stuck bush"},
