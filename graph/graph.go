@@ -38,10 +38,21 @@ func (g *Graph) AddParents(links map[string][]string) {
 	for childName, parentNames := range links {
 		if child, ok := g.Map[childName]; ok {
 			for _, parentName := range parentNames {
-				child.AddParents(g.Map[parentName])
+				if parent, ok := g.Map[parentName]; ok {
+					child.AddParents(parent)
+					parent.AddChildren(child)
+				} else {
+					panic("no node named " + parentName)
+				}
 			}
 		} else {
 			panic("no child named " + childName)
 		}
+	}
+}
+
+func (g *Graph) ClearMarks() {
+	for _, node := range g.Map {
+		node.SetMark(MarkNone)
 	}
 }

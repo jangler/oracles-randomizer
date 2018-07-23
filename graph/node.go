@@ -29,14 +29,17 @@ type Node interface {
 	SetMark(Mark)
 	AddParents(...Node)
 	HasParents() bool
+	ClearParents()
+	AddChildren(...Node)
 }
 
 // AndNode is satisfied if all of its parents are satisfied, or if it has no
 // parents.
 type AndNode struct {
-	Name    string
-	Mark    Mark
-	Parents []Node
+	Name     string
+	Mark     Mark
+	Parents  []Node
+	Children []Node
 }
 
 func (n *AndNode) GetName() string { return n.Name }
@@ -90,12 +93,21 @@ func (n *AndNode) HasParents() bool {
 	return len(n.Parents) > 0
 }
 
+func (n *AndNode) ClearParents() {
+	n.Parents = n.Parents[:0]
+}
+
+func (n *AndNode) AddChildren(children ...Node) {
+	n.Children = append(n.Children, children...)
+}
+
 // OrNode is satisfied if any of its parents is satisfied, unless it has no
 // parents.
 type OrNode struct {
-	Name    string
-	Mark    Mark
-	Parents []Node
+	Name     string
+	Mark     Mark
+	Parents  []Node
+	Children []Node
 }
 
 func (n *OrNode) GetName() string { return n.Name }
@@ -119,6 +131,7 @@ func (n *OrNode) GetMark(path *list.List) Mark {
 			for _, parent := range n.Parents {
 				if parent.GetMark(path) == MarkTrue {
 					n.Mark = MarkTrue
+					parentName = parent.GetName()
 					break
 				}
 			}
@@ -144,6 +157,14 @@ func (n *OrNode) AddParents(parents ...Node) {
 	n.Parents = append(n.Parents, parents...)
 }
 
+func (n *OrNode) ClearParents() {
+	n.Parents = n.Parents[:0]
+}
+
 func (n *OrNode) HasParents() bool {
 	return len(n.Parents) > 0
+}
+
+func (n *OrNode) AddChildren(children ...Node) {
+	n.Children = append(n.Children, children...)
 }
