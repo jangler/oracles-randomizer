@@ -234,7 +234,7 @@ func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedI
 
 			{
 				items := make([]string, 0, usedItems.Len())
-				for e := usedItems.Front(); e != usedItems.Back(); e = e.Next() {
+				for e := usedItems.Front(); e != nil; e = e.Next() {
 					items = append(items, e.Value.(string))
 				}
 				log.Print("trying " + strings.Join(items, " -> "))
