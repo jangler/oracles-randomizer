@@ -19,6 +19,9 @@ const (
 	MarkTrue                // succeed an OrNode, continue an AndNode
 	MarkFalse               // continue an OrNode, fail an AndNode
 	MarkPending             // prevents circular dependencies
+
+	// nodes will not ever set themselves to MarkFalse, but they will return it
+	// if they are set to MarkNone and are not satisfied
 )
 
 // Node is the general interface that encompasses everything in the graph.
@@ -59,15 +62,9 @@ func (n *AndNode) GetMark(path *list.List) Mark {
 		}
 
 		n.Mark = MarkPending
-	AndLoop:
 		for i, parent := range n.Parents {
 			switch parent.GetMark(path) {
-			case MarkFalse:
-				n.Mark = MarkFalse
-				break AndLoop
-			// if we encounter a pending node, this node isn't satisfied now,
-			// but it could be in the future of the same graph.
-			case MarkPending:
+			case MarkPending, MarkFalse:
 				n.Mark = MarkNone
 				return MarkFalse
 			}
@@ -173,12 +170,9 @@ func (n *OrNode) GetMark(path *list.List) Mark {
 			}
 		}
 
-		if allPending && len(n.Parents) > 0 {
-			// if everything else is pending; don't give up Forever
+		if (allPending && len(n.Parents) > 0) || n.Mark == MarkPending {
 			n.Mark = MarkNone
 			return MarkFalse
-		} else if n.Mark == MarkPending {
-			n.Mark = MarkFalse
 		}
 
 		if path != nil && n.Mark == MarkTrue {
