@@ -13,14 +13,6 @@ func NewGraph() *Graph {
 }
 
 // panics if node with name already exists
-func (r *Graph) AddRootNodes(names ...string) {
-	for _, name := range names {
-		r.CheckDuplicateName(name)
-		r.Map[name] = &RootNode{Name: name}
-	}
-}
-
-// panics if node with name already exists
 func (r *Graph) AddAndNodes(names ...string) {
 	for _, name := range names {
 		r.CheckDuplicateName(name)

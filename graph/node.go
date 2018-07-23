@@ -35,35 +35,6 @@ type ChildNode interface {
 	HasParents() bool
 }
 
-// RootNode has no parents and is set to MarkTrue when queried if its mark is
-// MarkNone.
-type RootNode struct {
-	Name string
-	Mark Mark
-}
-
-func (n *RootNode) GetName() string { return n.Name }
-
-func (n *RootNode) GetMark(path *list.List) Mark {
-	if n.Mark == MarkNone {
-		n.Mark = MarkTrue
-	}
-
-	if path != nil && n.Mark != MarkFalse {
-		path.PushBack(n.Name)
-	}
-
-	return n.Mark
-}
-
-func (n *RootNode) PeekMark(path *list.List) Mark {
-	return n.Mark
-}
-
-func (n *RootNode) SetMark(m Mark) {
-	n.Mark = m
-}
-
 // AndNode is satisfied if all of its parents are satisfied, or if it has no
 // parents.
 type AndNode struct {
