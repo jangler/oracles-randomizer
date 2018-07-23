@@ -15,9 +15,10 @@ import (
 type Mark int
 
 const (
-	MarkNone  Mark = iota // satisfied depending on parents
-	MarkTrue              // succeed an OrNode, continue an AndNode
-	MarkFalse             // continue an OrNode, fail an AndNode
+	MarkNone    Mark = iota // satisfied depending on parents
+	MarkTrue                // succeed an OrNode, continue an AndNode
+	MarkFalse               // continue an OrNode, fail an AndNode
+	MarkPending             // prevents circular dependencies
 )
 
 // Node is the general interface that encompasses everything in the graph.
@@ -47,9 +48,9 @@ func (n *AndNode) GetMark(path *list.List) Mark {
 			parentNames = make([]string, len(n.Parents))
 		}
 
-		n.Mark = MarkTrue
+		n.Mark = MarkPending
 		for i, parent := range n.Parents {
-			if parent.GetMark(path) == MarkFalse {
+			if parent.GetMark(path) != MarkTrue {
 				n.Mark = MarkFalse
 				break
 			}
@@ -57,6 +58,10 @@ func (n *AndNode) GetMark(path *list.List) Mark {
 				parentNames[i] = parent.GetName()
 			}
 		}
+		if n.Mark == MarkPending {
+			n.Mark = MarkTrue
+		}
+
 		if path != nil && n.Mark == MarkTrue {
 			if len(parentNames) > 0 {
 				path.PushBack(n.Name + " <- " + strings.Join(parentNames, ", "))
