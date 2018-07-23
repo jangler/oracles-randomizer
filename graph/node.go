@@ -108,6 +108,10 @@ func (n *AndNode) HasChildren() bool {
 	return len(n.Children) > 0
 }
 
+func (n *AndNode) String() string {
+	return n.Name
+}
+
 // OrNode is satisfied if any of its parents is satisfied, unless it has no
 // parents.
 type OrNode struct {
@@ -183,15 +187,21 @@ func (n *OrNode) HasChildren() bool {
 	return len(n.Children) > 0
 }
 
+func (n *OrNode) String() string {
+	return n.Name
+}
+
 // helper functions
 
 func addChild(child Node, parents ...Node) {
 	// both types don't work as a single case for whatever reason
-	switch nt := child.(type) {
-	case *AndNode:
-		nt.Children = append(nt.Children, parents...)
-	case *OrNode:
-		nt.Children = append(nt.Children, parents...)
+	for _, parent := range parents {
+		switch nt := parent.(type) {
+		case *AndNode:
+			nt.Children = append(nt.Children, child)
+		case *OrNode:
+			nt.Children = append(nt.Children, child)
+		}
 	}
 }
 
