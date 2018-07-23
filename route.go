@@ -38,15 +38,16 @@ type OrSlot []string
 
 func (p OrSlot) Parents() []string { return p }
 
-func initRoute() (*graph.Graph, []error) {
+func initRoute() (*graph.Graph, map[string]Point, []error) {
 	g := graph.NewGraph()
 
 	totalPoints := make(map[string]Point, 0)
 	appendNodes(totalPoints,
-		itemNodesAnd, itemNodesOr,
+		baseItemNodes, itemNodesAnd, itemNodesOr,
 		killNodesAnd, killNodesOr,
 		holodrumNodesAnd, holodrumNodesOr,
 		subrosiaNodesAnd, subrosiaNodesOr,
+		portalNodesAnd, portalNodesOr,
 		d0NodesAnd, d0NodesOr,
 		d1NodesAnd, d1NodesOr,
 		d2NodesAnd, d2NodesOr,
@@ -74,7 +75,7 @@ func initRoute() (*graph.Graph, []error) {
 		}
 	}
 
-	return g, errs
+	return g, openSlots, errs
 }
 
 func appendNodes(total map[string]Point, pointMaps ...map[string]Point) {
