@@ -51,7 +51,7 @@ func main() {
 		}
 
 		// verify program data vs rom data
-		if errs := rom.Verify(romData); err != nil {
+		if errs := rom.Verify(romData); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
