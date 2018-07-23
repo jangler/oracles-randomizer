@@ -30,7 +30,6 @@ type Node interface {
 	AddParents(...Node)
 	HasParents() bool
 	ClearParents()
-	AddChildren(...Node)
 }
 
 // AndNode is satisfied if all of its parents are satisfied, or if it has no
@@ -87,6 +86,7 @@ func (n *AndNode) SetMark(m Mark) {
 
 func (n *AndNode) AddParents(parents ...Node) {
 	n.Parents = append(n.Parents, parents...)
+	addChild(n, parents...)
 }
 
 func (n *AndNode) HasParents() bool {
@@ -94,11 +94,8 @@ func (n *AndNode) HasParents() bool {
 }
 
 func (n *AndNode) ClearParents() {
+	removeChild(n, n.Parents...)
 	n.Parents = n.Parents[:0]
-}
-
-func (n *AndNode) AddChildren(children ...Node) {
-	n.Children = append(n.Children, children...)
 }
 
 // OrNode is satisfied if any of its parents is satisfied, unless it has no
@@ -155,9 +152,11 @@ func (n *OrNode) SetMark(m Mark) {
 
 func (n *OrNode) AddParents(parents ...Node) {
 	n.Parents = append(n.Parents, parents...)
+	addChild(n, parents...)
 }
 
 func (n *OrNode) ClearParents() {
+	removeChild(n, n.Parents...)
 	n.Parents = n.Parents[:0]
 }
 
@@ -165,6 +164,36 @@ func (n *OrNode) HasParents() bool {
 	return len(n.Parents) > 0
 }
 
-func (n *OrNode) AddChildren(children ...Node) {
-	n.Children = append(n.Children, children...)
+// helper functions
+
+func addChild(child Node, parents ...Node) {
+	// both types don't work as a single case for whatever reason
+	switch nt := child.(type) {
+	case *AndNode:
+		nt.Children = append(nt.Children, parents...)
+	case *OrNode:
+		nt.Children = append(nt.Children, parents...)
+	}
+}
+
+func removeChild(child Node, parents ...Node) {
+	// same deal as above
+	for _, parent := range parents {
+		switch nt := parent.(type) {
+		case *AndNode:
+			removeNodeFromSlice(child, &nt.Children)
+		case *OrNode:
+			removeNodeFromSlice(child, &nt.Children)
+		}
+	}
+}
+
+func removeNodeFromSlice(node Node, slice *[]Node) {
+	// O(n)
+	for i, match := range *slice {
+		if match == node {
+			*slice = append((*slice)[:i], (*slice)[i+1:]...)
+			break
+		}
+	}
 }

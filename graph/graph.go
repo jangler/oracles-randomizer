@@ -16,7 +16,7 @@ func NewGraph() *Graph {
 func (g *Graph) AddAndNodes(names ...string) {
 	for _, name := range names {
 		g.CheckDuplicateName(name)
-		g.Map[name] = &AndNode{Name: name, Parents: make([]Node, 0)}
+		g.Map[name] = &AndNode{Name: name, Parents: make([]Node, 0), Children: make([]Node, 0)}
 	}
 }
 
@@ -24,7 +24,7 @@ func (g *Graph) AddAndNodes(names ...string) {
 func (g *Graph) AddOrNodes(names ...string) {
 	for _, name := range names {
 		g.CheckDuplicateName(name)
-		g.Map[name] = &OrNode{Name: name, Parents: make([]Node, 0)}
+		g.Map[name] = &OrNode{Name: name, Parents: make([]Node, 0), Children: make([]Node, 0)}
 	}
 }
 
@@ -40,7 +40,6 @@ func (g *Graph) AddParents(links map[string][]string) {
 			for _, parentName := range parentNames {
 				if parent, ok := g.Map[parentName]; ok {
 					child.AddParents(parent)
-					parent.AddChildren(child)
 				} else {
 					panic("no node named " + parentName)
 				}
