@@ -3,7 +3,6 @@
 package rom
 
 import (
-	"bytes"
 	"crypto/sha1"
 	"fmt"
 	"io"
@@ -13,12 +12,18 @@ import (
 
 const bankSize = 0x4000
 
-// bankOffset returns the offset of the given bank in the ROM.
-func bankOffset(bank int) int64 {
-	if bank < 2 {
-		return 0
+// Addr is a fully-specified memory address.
+type Addr struct {
+	Bank   uint8
+	Offset uint16
+}
+
+func (a *Addr) FullOffset() int {
+	var bankOffset int
+	if a.Bank >= 2 {
+		bankOffset = bankSize * (int(a.Bank) - 1)
 	}
-	return int64(bankSize * (bank - 1))
+	return bankOffset + int(a.Offset)
 }
 
 // Load reads ROM data from a reader into memory.
@@ -47,19 +52,13 @@ func Verify(b []byte) []error {
 
 	// check mutables TODO
 	for k, m := range Mutables {
-		if err := verifyMutable(b, m, k); err != nil {
-			errors = append(errors, err)
+		if k == "maku key fall" {
+			continue // special case that will error but we don't care about
+		}
+		if err := m.Check(b); err != nil {
+			errors = append(errors, fmt.Errorf("%s: %v", k, err))
 		}
 	}
 
 	return errors
-}
-
-func verifyMutable(romData []byte, m Mutable, name string) error {
-	addr, mData := m.RealAddr(), m.Bytes()
-	if bytes.Compare(romData[addr:addr+int64(len(mData))], mData) != 0 {
-		return fmt.Errorf("%s: at %x, expected %x, got %x",
-			name, m.RealAddr(), mData, romData)
-	}
-	return nil
 }

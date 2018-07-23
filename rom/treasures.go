@@ -1,15 +1,27 @@
 package rom
 
+import (
+	"bytes"
+	"fmt"
+)
+
+// collection modes
+const (
+	CollectChest = 0x38
+	CollectFind  = 0x0a
+	CollectFall  = 0x29
+)
+
 type Treasure struct {
-	id, param byte
+	id, subID byte
 	addr      uint16 // bank 15, value of hl at $15:466b
 
 	// in order, starting at addr - 1
 	mode, value, text, sprite byte
 }
 
-func (t Treasure) RealAddr() int64 {
-	return bankOffset(0x15) + int64(t.addr) - 1
+func (t Treasure) RealAddr() int {
+	return (&Addr{0x15, t.addr}).FullOffset() - 1
 }
 
 func (t Treasure) Bytes() []byte {
@@ -19,13 +31,22 @@ func (t Treasure) Bytes() []byte {
 func (t Treasure) Mutate(b []byte) error {
 	addr, data := t.RealAddr(), t.Bytes()
 	for i := 0; i < 4; i++ {
-		b[addr+int64(i)] = data[i]
+		b[addr+i] = data[i]
+	}
+	return nil
+}
+
+func (t Treasure) Check(b []byte) error {
+	addr, data := t.RealAddr(), t.Bytes()
+	if bytes.Compare(b[addr:addr+4], data) != 0 {
+		return fmt.Errorf("expected %x at %x; found %x",
+			data, addr, b[addr:addr+4])
 	}
 	return nil
 }
 
 // treasure item info
-var Treasures = map[string]Mutable{
+var Treasures = map[string]Treasure{
 	"shield L-1":    Treasure{0x01, 0x00, 0x5701, 0x0a, 0x01, 0x1f, 0x13},
 	"bombs":         Treasure{0x03, 0x00, 0x570d, 0x38, 0x10, 0x4d, 0x05},
 	"sword L-1":     Treasure{0x05, 0x00, 0x571d, 0x38, 0x01, 0x1c, 0x10},
