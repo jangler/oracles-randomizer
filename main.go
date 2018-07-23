@@ -21,11 +21,11 @@ Valid operations are checkGraph, verifyData, findPath, and randomize.
 
 func main() {
 	flag.Usage = usage
-	flagOp := flag.String("op", "chedkGraph", "operation")
+	flagOp := flag.String("op", "checkGraph", "operation")
 	flag.Parse()
 
 	switch *flagOp {
-	case "chedkGraph":
+	case "checkGraph":
 		if flag.NArg() != 0 {
 			log.Fatalf("findPath takes 0 arguments; got %d", flag.NArg())
 		}
