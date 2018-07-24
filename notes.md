@@ -61,12 +61,3 @@ other things:
 - $15:57FD + $4X = index of ring given by param X; params below 4 don't
   (normally?) work. this is a generalization of the information described for
   $15:466b.
-
-## stuff just about the sword
-
-- $0A:7B47 is the routine that runs every frame in the room. this is the object
-  with interaction c6.
-- $0A:7B63 executes when the box is opened. it plays the animation and gives
-  you the item.
-- $0A:7B9C executes when the text is cleared. it gives you the item *again*,
-  spin slashes, and fades to white.
