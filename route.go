@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
 )
@@ -43,11 +44,12 @@ type Route struct {
 	Slots map[string]Point
 }
 
-func initRoute() (*Route, []error) {
-	g := graph.NewGraph()
+// total
+var nonGeneratedPoints map[string]Point
 
-	totalPoints := make(map[string]Point, 0)
-	appendNodes(totalPoints,
+func init() {
+	nonGeneratedPoints = make(map[string]Point)
+	appendPoints(nonGeneratedPoints,
 		baseItemNodes, ignoredBaseItemNodes,
 		itemNodesAnd, itemNodesOr,
 		killNodesAnd, killNodesOr,
@@ -58,6 +60,20 @@ func initRoute() (*Route, []error) {
 		d1NodesAnd, d1NodesOr,
 		d2NodesAnd, d2NodesOr,
 	)
+}
+
+func initRoute() (*Route, []error) {
+	g := graph.NewGraph()
+
+	totalPoints := make(map[string]Point, 0)
+	appendPoints(totalPoints, nonGeneratedPoints, generatedPoints)
+
+	// ignore semicolon-delimited points; they're only used for generation
+	for key := range totalPoints {
+		if strings.ContainsRune(key, ';') {
+			delete(totalPoints, key)
+		}
+	}
 
 	addPointNodes(g, totalPoints)
 	addPointParents(g, totalPoints)
@@ -97,7 +113,7 @@ func initRoute() (*Route, []error) {
 	return &Route{Graph: g, Slots: openSlots}, errs
 }
 
-func appendNodes(total map[string]Point, pointMaps ...map[string]Point) {
+func appendPoints(total map[string]Point, pointMaps ...map[string]Point) {
 	for _, pointMap := range pointMaps {
 		for k, v := range pointMap {
 			total[k] = v

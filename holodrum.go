@@ -29,7 +29,7 @@ var portalNodesAnd = map[string]Point{
 	"village portal 2": And{"horon village", "pegasus jump L-2"},
 	"village portal 3": And{"pirate house", "hit lever"},
 
-	"desert portal": And{"samasa desert", "remove stuck bush"}, // one-way
+	"desert portal": And{"samasa desert"}, // one-way
 
 	// effectively one-way
 	"remains portal 1": And{"temple remains", "shovel", "remove bush", "pegasus jump L-2"},
@@ -43,17 +43,9 @@ var portalNodesAnd = map[string]Point{
 }
 
 var portalNodesOr = map[string]Point{
-	"open floodgate": Or{"open floodgate 1", "open floodgate 2", "open floodgate 3"},
-
 	// "unsafe" refers to the "remove stuck bush" issue
 	"rosa portal in wrapper": Or{"rosa portal in"}, // dumb hack for safety checking; see safety.go
 	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
-	"swamp portal":           Or{"swamp portal 1", "swamp portal 2", "swamp portal 3", "swamp portal 4"},
-	"mountain portal":        Or{"mountain portal 1", "mountain portal 2"},
-	"lake portal":            Or{"lake portal 1", "lake portal 2", "lake portal 3"},
-	"village portal":         Or{"village portal 1", "village portal 2", "village portal 3"},
-	"remains portal":         Or{"remains portal 1", "remains portal 2", "remains portal 3", "remains portal 4"},
-	"d8 portal":              Or{"d8 portal 1", "d8 portal 2"},
 }
 
 var holodrumNodesAnd = map[string]Point{
@@ -79,9 +71,9 @@ var holodrumNodesAnd = map[string]Point{
 	"mystery tree 3":  And{"post-d2 stump", "jump"},
 	"mystery tree 4":  And{"sokra stump", "cross water gap"},
 	"mystery tree 5":  And{"sunken city"},
-	"enter d2 1":      And{"mystery tree", "remove bush"},
-	"enter d2 2":      And{"mystery tree", "bracelet", "remove bush"},
-	"enter d2 3":      And{"mystery tree", "bracelet", "remove bush"},
+	"enter d2 A":      And{"mystery tree", "remove bush"},
+	"enter d2 B":      And{"mystery tree", "bracelet", "remove bush"},
+	"enter d2 C":      And{"mystery tree", "bracelet", "remove bush"},
 
 	// d2->d3
 	"north horon stump":  And{"horon village", "remove bush"},
@@ -128,16 +120,7 @@ var holodrumNodesAnd = map[string]Point{
 }
 
 var holodrumNodesOr = map[string]Point{
-	"cross water gap":    Or{"flippers", "jump"},
-	"sokra stump":        Or{"sokra stump 1", "sokra stump 2", "sokra stump 3", "sokra stump 4"},
-	"post-d2 stump":      Or{"post-d2 stump 1", "post-d2 stump 2", "post-d2 stump 3", "post-d2 stump 4"},
-	"mystery tree":       Or{"mystery tree 1", "mystery tree 2", "mystery tree 3", "mystery tree 4", "mystery tree 5"},
-	"scent tree":         Or{"scent tree 1", "scent tree 2", "scent tree 3", "scent tree 4"},
-	"ricky":              Or{"ricky 1", "ricky 2", "ricky 3"},
-	"ghastly stump":      Or{"ghastly stump 1", "ghastly stump 2", "ghastly stump 3", "ghastly stump 4", "ghastly stump 5"},
-	"pegasus tree":       Or{"pegasus tree 1", "pegasus tree 2", "pegasus tree 3"},
-	"square jewel chest": OrSlot{"square jewel 1", "square jewel 2", "square jewel 3"},
-	"gale tree":          Or{"gale tree 1", "gale tree 2"},
+	"cross water gap": Or{"flippers", "jump"},
 
 	// referenced things that i don't want to deal with yet
 	"sunken city":    Or{},

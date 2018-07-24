@@ -21,6 +21,13 @@ Valid operations are checkGraph, verifyData, findPath, and randomize.
 `[1:])
 }
 
+func checkNumArgs(flagOp *string, expected int) {
+	if flag.NArg() != expected {
+		log.Fatalf("%s takes %d arguments; got %d",
+			*flagOp, expected, flag.NArg())
+	}
+}
+
 func main() {
 	flag.Usage = usage
 	flagOp := flag.String("op", "checkGraph", "operation")
@@ -39,6 +46,16 @@ func main() {
 			}
 			os.Exit(1)
 		}
+	case "pointgen":
+		checkNumArgs(flagOp, 1)
+
+		f, err := os.Create(flag.Arg(0))
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer f.Close()
+
+		generatePoints(f)
 	case "verifyData":
 		if flag.NArg() != 1 {
 			log.Fatalf("verify takes 1 argument; got %d", flag.NArg())

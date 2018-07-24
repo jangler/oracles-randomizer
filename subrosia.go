@@ -73,21 +73,11 @@ var subrosiaNodesOr = map[string]Point{
 	// usable items are: sword (spin slash), bombs, gale seeds, slingshot w/
 	// ember seeds but NOT satchel, bracelet, and L-2 boomerang. bombs and
 	// seeds are not renewable and it's possible to reach this portal via, say,
-	// the village portal with only satchel, pegasus seeds, and cape, so this
-	// node needs to be a requirement for entering subrosia via the swamp,
-	// mountain, lake, village, and desert portals. the remains portal and d8
-	// portal are ok.
+	// the village portal with only satchel, pegasus seeds, and cape. this node
+	// is used for checking for softlocks, but should not be a parent of any
+	// other node.
 	"remove stuck bush": Or{"sword", "boomerang L-2", "bracelet"},
 
-	// large areas
-	"temple":        Or{"temple 1", "temple 2", "temple 3", "temple 4", "temple 5"},
-	"beach":         Or{"beach 1", "beach 2", "beach 3", "beach 4", "beach 5", "beach 6", "beach 7"},
-	"hide and seek": Or{"hide and seek 1", "hide and seek 2", "hide and seek 3", "hide and seek 4"},
-	"pirate house":  Or{"pirate house 1", "pirate house 2", "pirate house 3"},
-	"furnace":       Or{"furnace 1", "furnace 2", "furnace 3"},
-	"bridge":        Or{"bridge 1", "bridge 2", "bridge 3"},
-
-	// isolated areas
 	"eruption room": Or{"remains portal"},
 	"enter d8":      Or{"d8 portal"},
 
