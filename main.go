@@ -74,7 +74,7 @@ func main() {
 		if start, ok := r.Graph.Map[flag.Arg(0)]; ok {
 			start.ClearParents()
 		} else {
-			log.Fatal("node %s not found", flag.Arg(0))
+			log.Fatalf("node %s not found", flag.Arg(0))
 		}
 		dest, ok := r.Graph.Map[flag.Arg(1)]
 		if !ok {

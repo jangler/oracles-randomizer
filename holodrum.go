@@ -39,11 +39,6 @@ var portalNodesAnd = map[string]Point{
 	// dead end
 	"d8 portal 1": And{"remains portal", "summer", "long jump", "magnet gloves"},
 	"d8 portal 2": And{"remains portal", "summer", "pegasus jump L-2"},
-
-	"swamp portal":    And{"swamp portal unsafe", "remove stuck bush"},
-	"mountain portal": And{"mountain portal unsafe", "remove stuck bush"},
-	"lake portal":     And{"lake portal unsafe", "remove stuck bush"},
-	"village portal":  And{"village portal unsafe", "remove stuck bush"},
 }
 
 var portalNodesOr = map[string]Point{
@@ -52,10 +47,10 @@ var portalNodesOr = map[string]Point{
 	// "unsafe" refers to the "remove stuck bush" issue
 	"rosa portal in wrapper": Or{"rosa portal in"}, // dumb hack for safety checking; see safety.go
 	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
-	"swamp portal unsafe":    Or{"swamp portal 1", "swamp portal 2", "swamp portal 3", "swamp portal 4"},
-	"mountain portal unsafe": Or{"mountain portal 1", "mountain portal 2"},
-	"lake portal unsafe":     Or{"lake portal 1", "lake portal 2"},
-	"village portal unsafe":  Or{"village portal 1", "village portal 2", "village portal 3"},
+	"swamp portal":           Or{"swamp portal 1", "swamp portal 2", "swamp portal 3", "swamp portal 4"},
+	"mountain portal":        Or{"mountain portal 1", "mountain portal 2"},
+	"lake portal":            Or{"lake portal 1", "lake portal 2"},
+	"village portal":         Or{"village portal 1", "village portal 2", "village portal 3"},
 	"remains portal":         Or{"remains portal 1", "remains portal 2", "remains portal 3", "remains portal 4"},
 	"d8 portal":              Or{"d8 portal 1", "d8 portal 2"},
 }
@@ -87,11 +82,12 @@ var holodrumNodesAnd = map[string]Point{
 	"enter d2 2":      And{"mystery tree", "bracelet", "remove bush"},
 	"enter d2 3":      And{"mystery tree", "bracelet", "remove bush"},
 
-	// d2->d3 TODO
+	// d2->d3
 	"north horon stump":  And{"horon village", "remove bush"},
 	"scent tree 1":       And{"north horon stump", "bracelet"},
 	"scent tree 2":       And{"natzu", "animal"},
 	"scent tree 3":       And{"natzu", "remove bush"}, // defaults to prairie if no animal
+	"scent tree 4":       And{"north horon stump", "flippers"},
 	"blaino":             And{"scent tree"},
 	"blaino gift":        AndSlot{"blaino", "rupees"},
 	"ricky 1":            And{"scent tree"},
@@ -135,7 +131,7 @@ var holodrumNodesOr = map[string]Point{
 	"sokra stump":        Or{"sokra stump 1", "sokra stump 2", "sokra stump 3", "sokra stump 4"},
 	"post-d2 stump":      Or{"post-d2 stump 1", "post-d2 stump 2", "post-d2 stump 3", "post-d2 stump 4"},
 	"mystery tree":       Or{"mystery tree 1", "mystery tree 2", "mystery tree 3", "mystery tree 4", "mystery tree 5"},
-	"scent tree":         Or{"scent tree 1", "scent tree 2", "scent tree 3"},
+	"scent tree":         Or{"scent tree 1", "scent tree 2", "scent tree 3", "scent tree 4"},
 	"ricky":              Or{"ricky 1", "ricky 2", "ricky 3"},
 	"ghastly stump":      Or{"ghastly stump 1", "ghastly stump 2", "ghastly stump 3", "ghastly stump 4", "ghastly stump 5"},
 	"pegasus tree":       Or{"pegasus tree 1", "pegasus tree 2", "pegasus tree 3"},
