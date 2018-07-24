@@ -6,8 +6,8 @@ package main
 // see subrosia.go for the note about "remove stuck bush"
 
 var portalNodesAnd = map[string]Point{
-	"rosa portal 1": And{"sokra stump", "remove bush"},
-	"rosa portal 2": And{"temple"},
+	"rosa portal in":  And{"sokra stump", "remove bush"},
+	"rosa portal out": And{"temple"},
 
 	"open floodgate 1": And{"pegasus tree", "floodgate key", "pegasus satchel", "bracelet"},
 	"open floodgate 2": And{"pegasus tree", "floodgate key", "feather L-2", "bracelet"},
@@ -50,7 +50,8 @@ var portalNodesOr = map[string]Point{
 	"open floodgate": Or{"open floodgate 1", "open floodgate 2", "open floodgate 3"},
 
 	// "unsafe" refers to the "remove stuck bush" issue
-	"rosa portal":            Or{"rosa portal 1", "rosa portal 2"},
+	"rosa portal in wrapper": Or{"rosa portal in"}, // dumb hack for safety checking; see safety.go
+	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
 	"swamp portal unsafe":    Or{"swamp portal 1", "swamp portal 2", "swamp portal 3", "swamp portal 4"},
 	"mountain portal unsafe": Or{"mountain portal 1", "mountain portal 2"},
 	"lake portal unsafe":     Or{"lake portal 1", "lake portal 2"},

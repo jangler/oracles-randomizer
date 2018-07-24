@@ -231,8 +231,12 @@ func makeRoute(r *Route,
 // return false.
 func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedItems, usedSlots *list.List) bool {
 	// try to reach all targets
-	if canReachTargets(g, targets) {
+	if canReachTargets(g, targets...) {
 		return true
+	}
+	// prevent any known softlocks
+	if canSoftlock(g) {
+		return false
 	}
 
 	// try to reach each unused slot
@@ -243,7 +247,7 @@ func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedI
 
 		slotName := slot.Value.(string)
 		g.ClearMarks() // probably redundant but safe
-		if !canReachTargets(g, []string{slotName}) {
+		if !canReachTargets(g, slotName) {
 			continue
 		}
 
@@ -297,7 +301,7 @@ func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedI
 }
 
 // check if the targets are reachable using the current graph state
-func canReachTargets(g *graph.Graph, targets []string) bool {
+func canReachTargets(g *graph.Graph, targets ...string) bool {
 	for _, target := range targets {
 		g.ClearMarks()
 		if g.Map[target].GetMark(nil) != graph.MarkTrue {
