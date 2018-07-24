@@ -93,18 +93,19 @@ var itemNodesAnd = map[string]Point{
 
 	"sword L-2": And{"lost woods", "winter", "autumn", "spring", "summer"},
 
-	"ribbon":      Or{"star ore", "beach"},
-	"bomb flower": Or{"furnace", "jump"},
+	"ribbon":      And{"star ore", "beach"},
+	"bomb flower": And{"furnace", "jump"},
 
 	"winter": And{"rod", "winter tower"},
 	"summer": And{"rod", "summer tower"},
 	"spring": And{"rod", "spring tower"},
 	"autumn": And{"rod", "autumn tower"},
+
+	"animal": And{"ricky", "ricky's gloves"}, // TODO flute stuff
 }
 
 var itemNodesOr = map[string]Point{
 	"rod":        Or{"temple"}, // keep in place for now
-	"animal":     Or{"ricky"},  // TODO there may be other ways to get one
 	"fool's ore": Or{},         // disregard for now
 	"shield L-1": Or{"rupees"},
 	"shield L-2": Or{}, // TODO as if it matters
