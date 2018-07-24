@@ -61,10 +61,10 @@ var itemNodesAnd = map[string]Point{
 	"harvest pegasus seeds": And{"pegasus tree", "satchel", "harvest item"},
 	"harvest gale seeds":    And{"gale tree", "satchel", "harvest item"},
 
-	"find d1 ember seeds":   And{"enter d1", "remove bush"},
-	"find d2 ember seeds":   And{"mystery tree", "remove bush"},
-	"find d2 mystery seeds": And{"d2 bomb wall", "remove bush"},
-	"find d2 bombs":         And{"d2 bomb wall", "remove bush"},
+	"find d1 ember seeds":   And{"enter d1", "satchel", "remove bush"},
+	"find d2 ember seeds":   And{"mystery tree", "satchel", "remove bush"},
+	"find d2 mystery seeds": And{"d2 bomb wall", "satchel", "remove bush"},
+	"find d2 bombs":         And{"d2 bomb wall", "satchel", "remove bush"},
 
 	"ember satchel":   And{"get ember seeds", "satchel"},
 	"mystery satchel": And{"get mystery seeds", "satchel"},
