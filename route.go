@@ -135,7 +135,7 @@ func addPointNodes(g *graph.Graph, points map[string]Point) {
 }
 
 func addPointParents(g *graph.Graph, points map[string]Point) {
-	// TODO optimize?
+	// ugly but w/e
 	for k, p := range points {
 		g.AddParents(map[string][]string{k: p.Parents()})
 	}
