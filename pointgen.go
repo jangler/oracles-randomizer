@@ -2,6 +2,8 @@ package main
 
 //go:generate go build
 //go:generate ./oos-randomizer -op pointgen generated.go
+//go:generate go fmt
+//go:generate go build
 
 // this file contains logic for automaticaly generating graph "points" based on
 // special syntax in the keys:
