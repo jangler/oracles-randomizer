@@ -55,7 +55,7 @@ func (mw MutableWord) Check(b []byte) error {
 // A MutableSlot is an item slot (chest, gift, etc). It references room data
 // and treasure data.
 type MutableSlot struct {
-	Treasure            Treasure
+	Treasure            *Treasure
 	IDAddrs, SubIDAddrs []Addr
 	CollectMode         byte
 }
@@ -95,43 +95,73 @@ func (ms MutableSlot) Check(b []byte) error {
 // XXX: so far, this file only handles items and obstacles enocuntered in
 //      normal gameplay up through D2.
 
-var ItemSlots = map[string]MutableSlot{
-	"d0 sword chest": MutableSlot{
+var ItemSlots = map[string]*MutableSlot{
+	"d0 sword chest": &MutableSlot{
 		Treasure:    Treasures["sword L-1"],
 		IDAddrs:     []Addr{{0x15, 0x53fc}},
 		SubIDAddrs:  []Addr{{0x15, 0x53fd}},
 		CollectMode: CollectChest,
 	},
-	"maku key fall": MutableSlot{
+	"maku key fall": &MutableSlot{
 		Treasure:    Treasures["gnarled key"],
 		IDAddrs:     []Addr{{0x15, 0x657d}, {0x09, 0x7dff}, {0x09, 0x7de6}},
 		SubIDAddrs:  []Addr{{0x15, 0x6580}, {0x09, 0x7e02}},
 		CollectMode: CollectFall,
 	},
-	"boomerang L-1 gift": MutableSlot{
+	"boomerang gift": &MutableSlot{
 		Treasure:    Treasures["boomerang L-1"],
 		IDAddrs:     []Addr{{0x0b, 0x6648}},
 		SubIDAddrs:  []Addr{{0x0b, 0x6649}},
-		CollectMode: CollectFind,
+		CollectMode: CollectFind2,
 	},
-	"shovel gift": MutableSlot{
+	"shovel gift": &MutableSlot{
 		Treasure:    Treasures["shovel"],
 		IDAddrs:     []Addr{{0x0b, 0x6a6e}},
 		SubIDAddrs:  []Addr{{0x0b, 0x6a6f}},
-		CollectMode: CollectFind,
+		CollectMode: CollectFind2,
 	},
-	"d1 satchel": MutableSlot{
+	"d1 satchel": &MutableSlot{
 		// addresses are backwards from a normal slot
 		Treasure:    Treasures["satchel"],
 		IDAddrs:     []Addr{{0x09, 0x669b}},
 		SubIDAddrs:  []Addr{{0x09, 0x669a}},
-		CollectMode: CollectFind,
+		CollectMode: CollectFind2,
 	},
-	"d2 bracelet chest": MutableSlot{
+	"d2 bracelet chest": &MutableSlot{
 		Treasure:    Treasures["bracelet"],
 		IDAddrs:     []Addr{{0x15, 0x5424}},
 		SubIDAddrs:  []Addr{{0x15, 0x5425}},
 		CollectMode: CollectChest,
+	},
+	"blaino gift": &MutableSlot{
+		Treasure:    Treasures["ricky's gloves"],
+		IDAddrs:     []Addr{{0x0b, 0x64ce}},
+		SubIDAddrs:  []Addr{{0x0b, 0x64cf}},
+		CollectMode: CollectFind1,
+	},
+	"floodgate key gift": &MutableSlot{
+		Treasure:    Treasures["floodgate key"],
+		IDAddrs:     []Addr{{0x09, 0x626b}},
+		SubIDAddrs:  []Addr{{0x09, 0x626a}},
+		CollectMode: CollectFind1,
+	},
+	"square jewel chest": &MutableSlot{
+		Treasure:    Treasures["square jewel"],
+		IDAddrs:     []Addr{{0x0b, 0x7397}},
+		SubIDAddrs:  []Addr{{0x0b, 0x739b}},
+		CollectMode: CollectChest,
+	},
+	"x-shaped jewel chest": &MutableSlot{
+		Treasure:    Treasures["x-shaped jewel"],
+		IDAddrs:     []Addr{{0x15, 0x53cd}},
+		SubIDAddrs:  []Addr{{0x15, 0x53ce}},
+		CollectMode: CollectXChest,
+	},
+	"star ore spot": &MutableSlot{
+		Treasure:    Treasures["star ore"],
+		IDAddrs:     []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
+		SubIDAddrs:  []Addr{}, // special case, not set at all
+		CollectMode: CollectDig,
 	},
 }
 
@@ -144,10 +174,13 @@ var holodrumMutables = map[string]Mutable{
 	"horon shop stock check": MutableByte{Addr{0x08, 0x4adb}, 0x05, 0x02},
 	"horon shop sell check":  MutableByte{Addr{0x08, 0x48d0}, 0x05, 0x02},
 
-	// also stock the strange flute without needing essences
+	// remove checks against specific essence flags. changing 0xcb to 0xf6
+	// turns the check from a bit check to an or against next byte in the code,
+	// which is always nonzero.
 	"horon shop flute check": MutableByte{Addr{0x08, 0x4b02}, 0xcb, 0xf6},
+	"ricky spawn check":      MutableByte{Addr{0x09, 0x4e68}, 0xcb, 0xf6},
 
-	// spawn rosa without having an essence
+	// spawn rosa without having an essence (she checks for the treasure ID)
 	"rosa spawn check": MutableByte{Addr{0x09, 0x678c}, 0x40, 0x02},
 }
 

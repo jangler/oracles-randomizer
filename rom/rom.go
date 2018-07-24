@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"log"
+	"strings"
 )
 
 const bankSize = 0x4000
@@ -52,7 +53,7 @@ func Verify(b []byte) []error {
 
 	// check mutables TODO
 	for k, m := range Mutables {
-		if k == "maku key fall" {
+		if k == "maku key fall" || strings.HasSuffix(k, "ring") {
 			continue // special case that will error but we don't care about
 		}
 		if err := m.Check(b); err != nil {
@@ -60,5 +61,8 @@ func Verify(b []byte) []error {
 		}
 	}
 
-	return errors
+	if len(errors) > 0 {
+		return errors
+	}
+	return nil
 }
