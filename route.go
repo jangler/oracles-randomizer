@@ -96,13 +96,13 @@ func initRoute() (*Route, []error) {
 		}
 
 		// check for parents and children
-		if len(node.Parents()) > 0 {
+		if len(node.Parents()) == 0 {
 			if errs == nil {
 				errs = make([]error, 0)
 			}
 			errs = append(errs, fmt.Errorf("orphan node: %s", name))
 		}
-		if len(node.Children()) > 0 {
+		if len(node.Children()) == 0 {
 			if errs == nil {
 				errs = make([]error, 0)
 			}
