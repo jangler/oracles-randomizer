@@ -46,16 +46,14 @@ package main
 //   - fool's ore
 //   - punch
 
-var killNodesAnd = map[string]Point{
+var killPoints = map[string]Point{
 	"slingshot kill normal":   And{"slingshot", "seed kill normal"},
 	"jump kill normal":        And{"jump", "kill normal"},
 	"jump pit normal":         And{"jump", "pit kill normal"},
 	"slingshot gale seeds":    And{"slingshot", "gale seeds"},
 	"slingshot mystery seeds": And{"slingshot", "mystery seeds"},
 	"kill dodongo":            And{"bombs", "bracelet"},
-}
 
-var killNodesOr = map[string]Point{
 	// required enemies in normal route-ish order, but with prereqs first
 	"seed kill normal":          Or{"ember seeds", "scent seeds", "gale seeds", "mystery seeds"},
 	"pop maku bubble":           Or{"sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"},

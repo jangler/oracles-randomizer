@@ -13,7 +13,7 @@ package main
 // not that keys can NOT be numbered 1..n because of the code generation
 // syntax; label them A..N instead.
 
-var d0NodesAnd = map[string]Point{
+var d0Points = map[string]Point{
 	"d0 key chest":   And{"enter d0"},
 	"d0 sword chest": AndSlot{"enter d0", "d0 small key"},
 	"d0 rupee chest": And{"remove bush"},
@@ -21,9 +21,7 @@ var d0NodesAnd = map[string]Point{
 	"d0 small key": And{"d0 key chest"},
 }
 
-var d0NodesOr = map[string]Point{}
-
-var d1NodesAnd = map[string]Point{
+var d1Points = map[string]Point{
 	"d1 key fall":       And{"enter d1", "kill stalfos (throw)"},
 	"d1 map chest":      And{"d1 key A", "kill stalfos"},
 	"d1 compass chest":  And{"d1 map chest"},
@@ -42,8 +40,6 @@ var d1NodesAnd = map[string]Point{
 	"d1 boss key": And{"d1 boss key chest"},
 }
 
-var d1NodesOr = map[string]Point{}
-
 // this is tricky because of the multiple entrances. the nexus is what
 // i'll call the "arrow room" because of the arrow-shaped block arrangement in
 // it. you can either get to this room by entering the main way and lighting
@@ -58,7 +54,7 @@ var d1NodesOr = map[string]Point{}
 // you can actually complete this entire dungeon without ember seeds, since
 // they're only required to open one door, which you can circumvent via the
 // various entrances.
-var d2NodesAnd = map[string]Point{
+var d2Points = map[string]Point{
 	"d2 5-rupee chest":     And{"d2 torch room"},
 	"d2 key fall":          And{"d2 torch room", "kill rope"},
 	"d2 arrow room 1":      And{"d2 torch room", "ember seeds"},
@@ -85,8 +81,6 @@ var d2NodesAnd = map[string]Point{
 	"d2 key B":    And{"d2 bomb key chest"},
 	"d2 key C":    And{"d2 blade key chest"},
 	"d2 boss key": And{"d2 boss key chest"},
-}
 
-var d2NodesOr = map[string]Point{
 	"d2 torch room": Or{"enter d2 A", "d2 compass chest"},
 }

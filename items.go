@@ -10,7 +10,7 @@ package main
 //      are interchangeable, fist ring and expert's ring are interchangeable.
 //      it would also be nice if the randomizer checked whether a L-1 item is
 //      sufficient before trying a L-2 one.
-var baseItemNodes = map[string]Point{
+var baseItemPoints = map[string]Point{
 	// ring box L-1 is free, but these nodes are "find" because it costs
 	// rupees to appraise (and therefore use) rings
 	"find energy ring":   Or{},
@@ -40,7 +40,7 @@ var baseItemNodes = map[string]Point{
 }
 
 // don't slot these for now; they don't satisfy anything
-var ignoredBaseItemNodes = map[string]Point{
+var ignoredBaseItemPoints = map[string]Point{
 	"spring banana":   Or{},
 	"dragon key":      Or{},
 	"ring box L-2":    Or{}, // TODO where is this?
@@ -54,7 +54,7 @@ var ignoredBaseItemNodes = map[string]Point{
 	"slingshot L-2":   Or{},
 }
 
-var itemNodesAnd = map[string]Point{
+var itemPoints = map[string]Point{
 	"harvest ember seeds":   And{"ember tree", "satchel", "harvest item"},
 	"harvest mystery seeds": And{"mystery tree", "satchel", "harvest item"},
 	"harvest scent seeds":   And{"scent tree", "satchel", "harvest item"},
@@ -106,9 +106,7 @@ var itemNodesAnd = map[string]Point{
 	"autumn": And{"rod", "autumn tower"},
 
 	"animal": And{"ricky", "ricky's gloves"}, // TODO flute stuff
-}
 
-var itemNodesOr = map[string]Point{
 	"rod":        Or{"temple"}, // keep in place for now
 	"fool's ore": Or{},         // disregard for now
 	"shield L-1": Or{"rupees"},

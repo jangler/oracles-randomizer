@@ -5,7 +5,7 @@ package main
 // portal parents are defined here since they're mostly overworld nodes
 // see subrosia.go for the note about "remove stuck bush"
 
-var portalNodesAnd = map[string]Point{
+var portalPoints = map[string]Point{
 	"rosa portal in":  And{"sokra stump", "remove bush"},
 	"rosa portal out": And{"temple"},
 
@@ -40,15 +40,13 @@ var portalNodesAnd = map[string]Point{
 	// dead end
 	"d8 portal 1": And{"remains portal", "summer", "long jump", "magnet gloves"},
 	"d8 portal 2": And{"remains portal", "summer", "pegasus jump L-2"},
-}
 
-var portalNodesOr = map[string]Point{
 	// "unsafe" refers to the "remove stuck bush" issue
 	"rosa portal in wrapper": Or{"rosa portal in"}, // dumb hack for safety checking; see safety.go
 	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
 }
 
-var holodrumNodesAnd = map[string]Point{
+var holodrumPoints = map[string]Point{
 	// start->d1
 	"horon village": And{}, // start
 	"enter d0":      And{"horon village"},
@@ -117,9 +115,7 @@ var holodrumNodesAnd = map[string]Point{
 	"samasa desert": And{"pirate house", "eastern coast"},
 
 	// d7->d8 TODO
-}
 
-var holodrumNodesOr = map[string]Point{
 	"cross water gap": Or{"flippers", "jump"},
 
 	// referenced things that i don't want to deal with yet

@@ -50,15 +50,10 @@ var nonGeneratedPoints map[string]Point
 func init() {
 	nonGeneratedPoints = make(map[string]Point)
 	appendPoints(nonGeneratedPoints,
-		baseItemNodes, ignoredBaseItemNodes,
-		itemNodesAnd, itemNodesOr,
-		killNodesAnd, killNodesOr,
-		holodrumNodesAnd, holodrumNodesOr,
-		subrosiaNodesAnd, subrosiaNodesOr,
-		portalNodesAnd, portalNodesOr,
-		d0NodesAnd, d0NodesOr,
-		d1NodesAnd, d1NodesOr,
-		d2NodesAnd, d2NodesOr,
+		baseItemPoints, ignoredBaseItemPoints,
+		itemPoints, killPoints,
+		holodrumPoints, subrosiaPoints, portalPoints,
+		d0Points, d1Points, d2Points,
 	)
 }
 
@@ -89,7 +84,7 @@ func initRoute() (*Route, []error) {
 	// validate
 	var errs []error
 	for name, node := range g.Map {
-		if baseItemNodes[name] != nil || ignoredBaseItemNodes[name] != nil ||
+		if baseItemPoints[name] != nil || ignoredBaseItemPoints[name] != nil ||
 			name == "horon village" {
 			// it's supposed to be orphan/childless; skip it
 			continue

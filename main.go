@@ -100,7 +100,7 @@ func main() {
 
 		// place items in slots
 		for i := 2; i < flag.NArg(); i += 2 {
-			if _, ok := baseItemNodes[flag.Arg(i)]; !ok {
+			if _, ok := baseItemPoints[flag.Arg(i)]; !ok {
 				log.Fatalf("%s is not an item", flag.Arg(i))
 			}
 			if _, ok := r.Slots[flag.Arg(i+1)]; !ok {
@@ -186,9 +186,9 @@ func makeRoute(r *Route,
 	slotList = list.New()
 	{
 		// shuffle names in slices
-		items := make([]string, 0, len(baseItemNodes))
+		items := make([]string, 0, len(baseItemPoints))
 		slots := make([]string, 0, len(r.Slots))
-		for itemName, _ := range baseItemNodes {
+		for itemName, _ := range baseItemPoints {
 			items = append(items, itemName)
 		}
 		for slotName, _ := range r.Slots {
