@@ -11,8 +11,8 @@ ages-disasm. the most useful are:
   specifically at $c692 (treasure flags), and $30b3 does this specifically at
   $c6ca (global flags).
 - $0b:4409 = when this executes, (hl) and (hl+1) are the given item ID and sub ID.
-  this is for keys falling from ceilings, npcs giving items, basically anything
-  other than chests and some very special cases.
+  this is for keys falling from ceilings, npcs giving items, most other items
+  you don't receive from chests.
 - $11:58df = parseGivenObjectData. when this executes, de is the address of the
   start of an object's data. it is called n+1 times if there are n objects in a
   room as you enter. objects include enemies, puzzles, and special behaviors
@@ -20,16 +20,18 @@ ages-disasm. the most useful are:
 - $15:466b = hl-1 here is the index of the treasure item's info (collection
   mode, param, text, and sprite, in that order). in other words, (hl) is the
   treasure item's param.
+- $3ab2 = getFreeInteractionSlot, called when a new "interaction" is needed.
+  this is used when a room's interactions are loaded (almost anything that's
+  not a static tile), but it's also used when creating new objects, like the
+  floodgate key. if there's a `ld (hl),60` afterward, that means it's an item
+  interaction, and the item ID and subID are usually in registers b and c.
 
 others that might be good to know:
 
 - $0e3b = drawObject
-- $16eb = giveTreasure, which i believe offsets the treasure paramsuch that it
+- $16eb = giveTreasure, which i believe offsets the treasure param such that it
   needs to be passed as one higher than usual. e.g. if you want $00, pass $01.
 - $271a = createTreasure
-- $3ab2 = getFreeInteractionSlot, called when a new "interaction" is needed.
-  this is used when a room's interactions are loaded, and when some other event
-  happens, like a monster falling into a pit.
 
 ## notable ram addresses
 
@@ -50,8 +52,7 @@ other things:
 - $c643-$c646 = companion state (ricky, dimitri, moosh, then misc.)
 	- shop checks for bit 5 of ricky
 - $c692-$c6a1 = item flags
-- $c6bb = essences obtained?
-	- shop checks for bit 1… wait, that means second essence. damn it
+- $c6bb = obtained essence flags
 - $cc77 = ?
 - $cc48 = high byte of link object address (in object table starting at $d000)
 
