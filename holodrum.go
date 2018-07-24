@@ -11,6 +11,7 @@ var portalNodesAnd = map[string]Point{
 
 	"open floodgate 1": And{"pegasus tree", "floodgate key", "pegasus satchel", "bracelet"},
 	"open floodgate 2": And{"pegasus tree", "floodgate key", "feather L-2", "bracelet"},
+	"open floodgate 3": And{"floodgate key", "flippers", "bracelet"},
 	"swamp portal 1":   And{"horon village", "remove bush", "flippers", "bracelet"},
 	"swamp portal 2":   And{"open floodgate", "long jump", "bracelet"},
 	"swamp portal 3":   And{"open floodgate", "animal", "bracelet"},
@@ -46,7 +47,7 @@ var portalNodesAnd = map[string]Point{
 }
 
 var portalNodesOr = map[string]Point{
-	"open floodgate": Or{"open floodgate 1", "open floodgate 2"},
+	"open floodgate": Or{"open floodgate 1", "open floodgate 2", "open floodgate 3"},
 
 	// "unsafe" refers to the "remove stuck bush" issue
 	"rosa portal":            Or{"rosa portal 1", "rosa portal 2"},
