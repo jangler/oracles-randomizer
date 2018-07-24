@@ -22,7 +22,8 @@ var portalNodesAnd = map[string]Point{
 	"mountain portal 2": And{"hide and seek", "jump"},
 
 	"lake portal 1": And{"eyeglass lake", "flippers"},
-	"lake portal 2": And{"furnace"},
+	"lake portal 2": And{"eyeglass lake", "pegasus jump L-2"},
+	"lake portal 3": And{"furnace"},
 
 	"village portal 1": And{"horon village", "boomerang L-2"},
 	"village portal 2": And{"horon village", "pegasus jump L-2"},
@@ -49,7 +50,7 @@ var portalNodesOr = map[string]Point{
 	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
 	"swamp portal":           Or{"swamp portal 1", "swamp portal 2", "swamp portal 3", "swamp portal 4"},
 	"mountain portal":        Or{"mountain portal 1", "mountain portal 2"},
-	"lake portal":            Or{"lake portal 1", "lake portal 2"},
+	"lake portal":            Or{"lake portal 1", "lake portal 2", "lake portal 3"},
 	"village portal":         Or{"village portal 1", "village portal 2", "village portal 3"},
 	"remains portal":         Or{"remains portal 1", "remains portal 2", "remains portal 3", "remains portal 4"},
 	"d8 portal":              Or{"d8 portal 1", "d8 portal 2"},

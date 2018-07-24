@@ -61,28 +61,32 @@ var itemNodesAnd = map[string]Point{
 	"harvest pegasus seeds": And{"pegasus tree", "satchel", "harvest item"},
 	"harvest gale seeds":    And{"gale tree", "satchel", "harvest item"},
 
-	"find d1 ember seeds":   And{"enter d1", "satchel", "remove bush"},
-	"find d2 ember seeds":   And{"mystery tree", "satchel", "remove bush"},
-	"find d2 mystery seeds": And{"d2 bomb wall", "satchel", "remove bush"},
-	"find d2 bombs":         And{"d2 bomb wall", "satchel", "remove bush"},
+	"find d1 ember seeds": And{"enter d1", "satchel", "remove bush"},
+	"find d2 ember seeds": And{"mystery tree", "satchel", "remove bush"},
+	"find d2 bombs":       And{"d2 bomb wall", "satchel", "remove bush"},
+
+	// you can usually only get seed drops if you already have that type of
+	// seed, meaning the first way to obtain it has to be harvesting from a
+	// tree. the exception is ember seeds, since the satchel comes loaded with
+	// them from the start.
 
 	"ember satchel":   And{"get ember seeds", "satchel"},
-	"mystery satchel": And{"get mystery seeds", "satchel"},
-	"scent satchel":   And{"get scent seeds", "satchel"},
-	"pegasus satchel": And{"get pegasus seeds", "satchel"},
-	"gale satchel":    And{"get gale seeds", "satchel"},
+	"mystery satchel": And{"harvest mystery seeds", "satchel"},
+	"scent satchel":   And{"harvest scent seeds", "satchel"},
+	"pegasus satchel": And{"harvest pegasus seeds", "satchel"},
+	"gale satchel":    And{"harvest gale seeds", "satchel"},
 
 	"ember slingshot":   And{"get ember seeds", "slingshot"},
-	"mystery slingshot": And{"get mystery seeds", "slingshot"},
-	"scent slingshot":   And{"get scent seeds", "slingshot"},
-	"pegasus slingshot": And{"get pegasus seeds", "slingshot"},
-	"gale slingshot":    And{"get gale seeds", "slingshot"},
+	"mystery slingshot": And{"harvest mystery seeds", "slingshot"},
+	"scent slingshot":   And{"harvest scent seeds", "slingshot"},
+	"pegasus slingshot": And{"harvest pegasus seeds", "slingshot"},
+	"gale slingshot":    And{"harvest gale seeds", "slingshot"},
 
 	"ember seeds":   And{"get ember seeds", "seed item"},
-	"mystery seeds": And{"get ember seeds", "seed item"},
-	"scent seeds":   And{"get ember seeds", "seed item"},
-	"pegasus seeds": And{"get ember seeds", "seed item"},
-	"gale seeds":    And{"get ember seeds", "seed item"},
+	"mystery seeds": And{"harvest mystery seeds", "seed item"},
+	"scent seeds":   And{"harvest scent seeds", "seed item"},
+	"pegasus seeds": And{"harvest pegasus seeds", "seed item"},
+	"gale seeds":    And{"harvest gale seeds", "seed item"},
 
 	"punch":           And{"find punch ring", "rupees"},
 	"energy ring":     And{"find energy ring", "rupees"},
@@ -120,17 +124,9 @@ var itemNodesOr = map[string]Point{
 	"bombs":      Or{"rupees", "find bombs"},
 	"jump":       Or{"feather L-1", "feather L-2"},
 
-	"harvest item":       Or{"sword", "rod", "fool's ore", "punch"},
-	"find ember seeds":   Or{"find d1 ember seeds", "find d2 ember seeds"}, // TODO
-	"get ember seeds":    Or{"harvest ember seeds", "find ember seeds"},
-	"find mystery seeds": Or{"find d2 mystery seeds"}, // TODO
-	"get mystery seeds":  Or{"harvest mystery seeds", "find mystery seeds"},
-	"find scent seeds":   Or{}, // TODO
-	"get scent seeds":    Or{"harvest scent seeds", "find scent seeds"},
-	"find pegasus seeds": Or{}, // TODO
-	"get pegasus seeds":  Or{"harvest pegasus seeds", "find pegasus seeds"},
-	"find gale seeds":    Or{}, // TODO
-	"get gale seeds":     Or{"harvest gale seeds", "find gale seeds"},
+	"harvest item":     Or{"sword", "rod", "fool's ore", "punch"},
+	"find ember seeds": Or{"find d1 ember seeds", "find d2 ember seeds"}, // TODO
+	"get ember seeds":  Or{"harvest ember seeds", "find ember seeds"},
 
 	"long jump": Or{"feather L-2", "pegasus jump L-1"},
 

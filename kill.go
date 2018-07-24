@@ -36,7 +36,7 @@ package main
 //   - sword
 //   - beams
 //   - shield
-//   - NOT boomerangs; they only push if they damage already
+//   - boomerangs (they work on hardhats!)
 //   - seeds (satchel first, slingshot if satchel doesn't work)
 //   - rod
 //   - bombs
@@ -71,7 +71,7 @@ var killNodesOr = map[string]Point{
 	"kill goriya (pit)":         Or{"kill goriya", "pit kill normal"},
 	"kill aquamentus":           Or{"sword", "beams", "scent seeds", "bombs", "fool's ore", "punch"},
 	"kill rope":                 Or{"kill normal"},
-	"kill hardhat (pit, throw)": Or{"gale seeds", "sword", "beams", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "bracelet"},
+	"kill hardhat (pit, throw)": Or{"gale seeds", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "bracelet"},
 	"kill moblin (gap, throw)":  Or{"sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"},
 	"kill gel":                  Or{"sword", "beams", "ember seeds", "slingshot gale seeds", "slingshot mystery seeds", "bombs", "fool's ore", "punch"},
 	"kill facade":               Or{"bombs"},
