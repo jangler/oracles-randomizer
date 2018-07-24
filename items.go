@@ -28,12 +28,11 @@ var baseItemNodes = map[string]Point{
 	"ricky's gloves": Or{},
 	"floodgate key":  Or{},
 	// member's card?
-	"star-shaped ore": Or{},
-	"feather L-1":     Or{},
-	"flippers":        Or{},
+	"star ore":    Or{},
+	"feather L-1": Or{},
+	"flippers":    Or{},
 	// no fool's ore, see comment in subrosia.go
 	"slingshot L-1": Or{},
-	"bomb flower":   Or{},
 	"magnet gloves": Or{},
 	// sword L-2 is fixed
 	"boomerang L-2": Or{},
@@ -94,7 +93,8 @@ var itemNodesAnd = map[string]Point{
 
 	"sword L-2": And{"lost woods", "winter", "autumn", "spring", "summer"},
 
-	"ribbon": Or{"star-shaped ore", "beach"},
+	"ribbon":      Or{"star ore", "beach"},
+	"bomb flower": Or{"furnace", "jump"},
 
 	"winter": And{"rod", "winter tower"},
 	"summer": And{"rod", "summer tower"},

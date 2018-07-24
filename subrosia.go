@@ -48,7 +48,7 @@ var subrosiaNodesAnd = map[string]Point{
 	"hide and seek 4": And{"bridge", "pegasus jump L-2"},
 
 	"pirate house 1": And{"village portal"},
-	"pirate house 2": And{"desert portal"}, // XXX how are we counting this again?
+	"pirate house 2": And{"desert portal"},
 	"pirate house 3": And{"hide and seek", "jump"},
 
 	"furnace 1": And{"lake portal"},
@@ -60,6 +60,7 @@ var subrosiaNodesAnd = map[string]Point{
 	"bridge 3": And{"hide and seek", "pegasus jump L-2"},
 
 	"boomerang gift": AndSlot{"temple"},
+	"star ore spot":  AndSlot{"beach", "shovel"},
 	"winter tower":   And{"temple"},
 	"summer tower":   And{"beach", "ribbon"},
 	"spring tower":   And{"hide and seek", "jump"},
