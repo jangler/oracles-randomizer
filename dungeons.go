@@ -84,3 +84,50 @@ var d2Points = map[string]Point{
 
 	"d2 torch room": Or{"enter d2 A", "d2 compass chest"},
 }
+
+// TODO small keys haven't been made parents
+var d3Points = map[string]Point{
+	// first floor
+	"d3 mimic stairs 1":      And{"enter d3", "kill spiked beetle (throw)"},
+	"d3 mimic stairs 2":      And{"d3 feather stairs"},
+	"d3 roller key chest":    And{"d3 mimic stairs", "bracelet"},
+	"d3 feather stairs 1":    And{"enter d3", "jump"},
+	"d3 feather stairs 2":    And{"d3 mimic stairs"},
+	"d3 feather stairs 3":    And{"d3 basement B in"},
+	"d3 basement B in 1":     And{"d3 feather stairs", "jump"},
+	"d3 basement B in 2":     And{"d3 basement B out", "jump"},
+	"d3 basement B out 1":    And{"d3 basement B in", "jump"},
+	"d3 basement B out 2":    And{"d3 trampoline stairs", "bracelet"},
+	"d3 rupee chest":         And{"d3 feather stairs"},
+	"enter omuai":            And{"d3 mimic stairs", "jump"},
+	"d3 gasha chest":         And{"d3 mimic stairs", "jump"},
+	"d3 omuai stairs":        And{"enter omuai", "kill omuai"},
+	"d3 boss key chest":      And{"d3 omuai stairs", "jump"},
+	"d3 basement A in 1":     And{"d3 feather stairs", "jump"},
+	"d3 basement A in 2":     And{"d3 basement A out", "jump"},
+	"d3 basement A out 1":    And{"d3 basement A in", "jump"},
+	"d3 basement A out 2":    And{"d3 trampoline stairs"},
+	"d3 trampoline stairs 1": And{"d3 basement A out"},
+	"d3 trampoline stairs 2": And{"d3 compass chest", "bracelet"},
+	"d3 map chest":           And{"d3 basement B out", "jump"},
+
+	// second floor
+	"d3 bomb chest":           And{"d3 mimic stairs"},
+	"d3 compass chest":        And{"d3 bomb chest", "bombs"},
+	"d3 feather room":         And{"d3 rupee chest"},
+	"d3 feather chest":        AndSlot{"d3 feather room", "kill mimic"},
+	"d3 trampoline key chest": And{"d3 trampoline stairs", "jump"},
+	"enter mothula":           And{"d3 omuai stairs", "d3 boss key"},
+	"d3 essence":              And{"enter mothula", "kill mothula"},
+
+	// fixed items
+	"d3 key A":    And{"d3 roller key chest"},
+	"d3 key B":    And{"d3 trampoline key chest"},
+	"d3 boss key": And{"d3 boss key chest"},
+}
+
+// TODO d4
+// TODO d5
+// TODO d6
+// TODO d7
+// TODO d8

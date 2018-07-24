@@ -163,6 +163,12 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{}, // special case, not set at all
 		CollectMode: CollectDig,
 	},
+	"d3 feather chest": &MutableSlot{
+		Treasure:    Treasures["feather L-1"],
+		IDAddrs:     []Addr{{0x15, 0x5458}},
+		SubIDAddrs:  []Addr{{0x15, 0x5459}},
+		CollectMode: CollectChest,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{
