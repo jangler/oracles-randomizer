@@ -327,7 +327,6 @@ func randomize(romData []byte, outFilename string) []error {
 		treasureName := usedItems.Remove(usedItems.Front()).(string)
 		if slot, ok := rom.ItemSlots[slotName]; ok {
 			if treasure, ok := rom.Treasures[treasureName]; ok {
-				log.Printf("slot %s, treasure %s", slotName, treasureName)
 				slot.Treasure = treasure
 			} else {
 				return []error{
