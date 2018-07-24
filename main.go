@@ -108,7 +108,7 @@ func main() {
 		}
 
 		r, _ := initRoute()
-		_ = makeRoute(r, []string{"d1 essence", "d2 essence"})
+		_, _, _ = makeRoute(r, []string{"d1 essence", "d2 essence"})
 	case "randomize":
 		if flag.NArg() != 2 {
 			log.Fatalf("randomize takes 2 arguments; got %d", flag.NArg())
@@ -120,7 +120,6 @@ func main() {
 			log.Fatal(err)
 		}
 
-		// randomize (TODO)
 		if errs := randomize(romData, flag.Arg(1)); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
@@ -163,10 +162,11 @@ func findPath(g *graph.Graph, target graph.Node) *list.List {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func makeRoute(r *Route, targets []string) *list.List {
+func makeRoute(r *Route,
+	targets []string) (usedItems, usedSlots, slotList *list.List) {
 	// make stacks out of the item names and slot names for backtracking
 	itemList := list.New()
-	slotList := list.New()
+	slotList = list.New()
 	{
 		// shuffle names in slices
 		items := make([]string, 0, len(baseItemNodes))
@@ -195,8 +195,8 @@ func makeRoute(r *Route, targets []string) *list.List {
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
-	usedItems := list.New()
-	usedSlots := list.New()
+	usedItems = list.New()
+	usedSlots = list.New()
 
 	if tryReachTargets(r.Graph, targets, itemList, slotList, usedItems, usedSlots) {
 		log.Print("-- success")
@@ -213,14 +213,16 @@ func makeRoute(r *Route, targets []string) *list.List {
 		if usedItems.Len() != usedSlots.Len() {
 			log.Fatalf("FATAL: usedItems.Len() == %d; usedSlots.Len() == %d", usedItems.Len(), usedSlots.Len())
 		}
-		for usedItems.Len() > 0 {
-			log.Printf("%s <- %s", usedItems.Remove(usedItems.Front()), usedSlots.Remove(usedSlots.Front()))
+		for i := 0; i < usedItems.Len(); i++ {
+			log.Printf("%s <- %s", usedItems.Front().Value.(string), usedSlots.Front().Value.(string))
+			usedItems.MoveToBack(usedItems.Front())
+			usedSlots.MoveToBack(usedSlots.Front())
 		}
 	} else {
 		log.Print("-- failure; something is wrong")
 	}
 
-	return nil // TODO
+	return
 }
 
 // try to reach all the given targets using the current graph status. if
@@ -264,8 +266,14 @@ func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedI
 				log.Print("trying " + strings.Join(items, " -> "))
 			}
 
-			// recurse with new state
-			if tryReachTargets(g, targets, itemList, slotList, usedItems, usedSlots) {
+			// the star ore code is unique in that it doesn't set the sub ID at
+			// all, leaving it zeroed. so if we're looking at the star ore
+			// slot, then skip any items that have a nonzero sub ID.
+			//
+			// if that's not a problem, then recurse with new state
+			if slotName == "star ore spot" && rom.Treasures[itemName].SubID() != 0 {
+				// skip
+			} else if tryReachTargets(g, targets, itemList, slotList, usedItems, usedSlots) {
 				return true
 			}
 
@@ -303,29 +311,49 @@ func canReachTargets(g *graph.Graph, targets []string) bool {
 //
 // this also calls verify.
 func randomize(romData []byte, outFilename string) []error {
+	// make sure rom data matches first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
 	}
 
-	// XXX old code, but could be used as reference for new code
-	/*
-		if len(os.Args) > 2 {
-			// randomize rom
-			b := loadedRom.Bytes()
-			rom.Mutate(b)
+	// find a viable random route
+	r, _ := initRoute()
+	usedItems, usedSlots, unusedSlots :=
+		makeRoute(r, []string{"d1 essence", "d2 essence"})
 
-			// write to file
-			f, err := os.Create(os.Args[2])
-			if err != nil {
-				log.Fatal(err)
+	// apply changes to rom data
+	for usedItems.Len() > 0 {
+		slotName := usedSlots.Remove(usedSlots.Front()).(string)
+		treasureName := usedItems.Remove(usedItems.Front()).(string)
+		if slot, ok := rom.ItemSlots[slotName]; ok {
+			if treasure, ok := rom.Treasures[treasureName]; ok {
+				log.Printf("slot %s, treasure %s", slotName, treasureName)
+				slot.Treasure = treasure
+			} else {
+				return []error{
+					fmt.Errorf("no treasure '%s' in ROM code", treasureName)}
 			}
-			defer f.Close()
-			if _, err := f.Write(b); err != nil {
-				log.Fatal(err)
-			}
-			log.Printf("wrote new ROM to %s", os.Args[2])
+		} else {
+			return []error{
+				fmt.Errorf("no item slot '%s' in ROM code", slotName)}
 		}
-	*/
+	}
+	for unusedSlots.Len() > 0 {
+		unusedSlots.Remove(unusedSlots.Front())
+		// TODO put a heart container or something there
+	}
+	rom.Mutate(romData)
 
-	return []error{fmt.Errorf("NYI")}
+	// write to file
+	f, err := os.Create(flag.Arg(1))
+	if err != nil {
+		return []error{err}
+	}
+	defer f.Close()
+	if _, err := f.Write(romData); err != nil {
+		return []error{err}
+	}
+	log.Printf("wrote new ROM to %s", flag.Arg(1))
+
+	return nil
 }
