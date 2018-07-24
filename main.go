@@ -13,31 +13,20 @@ import (
 	"github.com/jangler/oos-randomizer/rom"
 )
 
-func usage() {
-	fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
-	flag.PrintDefaults()
-	fmt.Fprintf(flag.CommandLine.Output(), `
-Valid operations are checkGraph, verifyData, findPath, and randomize.
-`[1:])
-}
-
 func checkNumArgs(flagOp *string, expected int) {
 	if flag.NArg() != expected {
-		log.Fatalf("%s takes %d arguments; got %d",
+		log.Fatalf("%s takes %d argument(s); got %d",
 			*flagOp, expected, flag.NArg())
 	}
 }
 
 func main() {
-	flag.Usage = usage
 	flagOp := flag.String("op", "checkGraph", "operation")
 	flag.Parse()
 
 	switch *flagOp {
 	case "checkGraph":
-		if flag.NArg() != 0 {
-			log.Fatalf("checkGraph takes 0 arguments; got %d", flag.NArg())
-		}
+		checkNumArgs(flagOp, 0)
 
 		// validate
 		if errs := checkGraph(); errs != nil {
@@ -57,9 +46,7 @@ func main() {
 
 		generatePoints(f)
 	case "verifyData":
-		if flag.NArg() != 1 {
-			log.Fatalf("verify takes 1 argument; got %d", flag.NArg())
-		}
+		checkNumArgs(flagOp, 1)
 
 		// load rom
 		romData, err := loadROM(flag.Arg(0))
@@ -120,16 +107,12 @@ func main() {
 			log.Print("path not found")
 		}
 	case "makeRoute":
-		if flag.NArg() != 0 {
-			log.Fatalf("makeRoute takes 0 arguments; got %d", flag.NArg())
-		}
+		checkNumArgs(flagOp, 0)
 
 		r, _ := initRoute()
 		_, _, _ = makeRoute(r, []string{"d1 essence", "d2 essence", "d3 essence"})
 	case "randomize":
-		if flag.NArg() != 2 {
-			log.Fatalf("randomize takes 2 arguments; got %d", flag.NArg())
-		}
+		checkNumArgs(flagOp, 2)
 
 		// load rom
 		romData, err := loadROM(flag.Arg(0))
