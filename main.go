@@ -303,8 +303,8 @@ func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedI
 
 // check if the targets are reachable using the current graph state
 func canReachTargets(g *graph.Graph, targets ...string) bool {
+	g.ClearMarks()
 	for _, target := range targets {
-		g.ClearMarks()
 		if g.Map[target].GetMark(nil) != graph.MarkTrue {
 			return false
 		}
