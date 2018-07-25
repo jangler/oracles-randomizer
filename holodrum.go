@@ -11,9 +11,9 @@ var portalPoints = map[string]Point{
 	"rosa portal in wrapper": Or{"rosa portal in"}, // hack for safety.go
 	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
 
-	"open floodgate 1": And{"pegasus tree", "floodgate key", "pegasus satchel", "bracelet"},
-	"open floodgate 2": And{"pegasus tree", "floodgate key", "feather L-2", "bracelet"},
-	"open floodgate 3": And{"floodgate key", "flippers", "bracelet"},
+	"open floodgate 1": And{"pegasus tree", "hit lever", "floodgate key", "pegasus satchel", "bracelet"},
+	"open floodgate 2": And{"pegasus tree", "hit lever", "floodgate key", "feather L-2", "bracelet"},
+	"open floodgate 3": And{"floodgate key", "hit lever", "flippers", "bracelet"},
 	"swamp portal 1":   And{"horon village", "remove bush", "flippers", "bracelet"},
 	"swamp portal 2":   And{"open floodgate", "long jump", "bracelet"},
 	"swamp portal 3":   And{"open floodgate", "animal", "bracelet"},
