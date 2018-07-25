@@ -230,7 +230,7 @@ func makeRoute(r *Route, goal, forbid []string,
 			usedSlots.MoveToBack(usedSlots.Front())
 		}
 	} else {
-		log.Print("-- failure; something is wrong")
+		log.Fatal("-- could not find route")
 	}
 
 	return
