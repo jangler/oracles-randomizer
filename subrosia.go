@@ -66,16 +66,6 @@ var subrosiaPoints = map[string]Point{
 	"spring tower":   And{"hide and seek", "jump"},
 	"autumn tower":   And{"temple", "jump", "bomb flower"},
 
-	// exiting subrosia via the rosa portal without having activated it from
-	// holodrum gets you stuck in a bush unless you have a way to cut it down.
-	// usable items are: sword (spin slash), bombs, gale seeds, slingshot w/
-	// ember seeds but NOT satchel, bracelet, and L-2 boomerang. bombs and
-	// seeds are not renewable and it's possible to reach this portal via, say,
-	// the village portal with only satchel, pegasus seeds, and cape. this node
-	// is used for checking for softlocks, but should not be a parent of any
-	// other node.
-	"remove stuck bush": Or{"sword", "boomerang L-2", "bracelet"},
-
 	"eruption room": Or{"remains portal"},
 	"enter d8":      Or{"d8 portal"},
 

@@ -6,8 +6,10 @@ package main
 // see subrosia.go for the note about "remove stuck bush"
 
 var portalPoints = map[string]Point{
-	"rosa portal in":  And{"sokra stump", "remove bush"},
-	"rosa portal out": And{"temple"},
+	"rosa portal in":         And{"sokra stump", "remove bush"},
+	"rosa portal out":        And{"temple"},
+	"rosa portal in wrapper": Or{"rosa portal in"}, // hack for safety.go
+	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
 
 	"open floodgate 1": And{"pegasus tree", "floodgate key", "pegasus satchel", "bracelet"},
 	"open floodgate 2": And{"pegasus tree", "floodgate key", "feather L-2", "bracelet"},
@@ -41,9 +43,15 @@ var portalPoints = map[string]Point{
 	"d8 portal 1": And{"remains portal", "summer", "long jump", "magnet gloves"},
 	"d8 portal 2": And{"remains portal", "summer", "pegasus jump L-2"},
 
-	// "unsafe" refers to the "remove stuck bush" issue
-	"rosa portal in wrapper": Or{"rosa portal in"}, // dumb hack for safety checking; see safety.go
-	"rosa portal":            Or{"rosa portal in wrapper", "rosa portal out"},
+	// exiting subrosia via the rosa portal without having activated it from
+	// holodrum gets you stuck in a bush unless you have a way to cut it down.
+	// usable items are: sword (spin slash), bombs, gale seeds, slingshot w/
+	// ember seeds but NOT satchel, bracelet, and L-2 boomerang. bombs and
+	// seeds are not renewable and it's possible to reach this portal via, say,
+	// the village portal with only satchel, pegasus seeds, and cape. this node
+	// is used for checking for softlocks, but should not be a parent of any
+	// other node.
+	"remove stuck bush": Or{"sword", "boomerang L-2", "bracelet"},
 }
 
 var holodrumPoints = map[string]Point{
@@ -64,11 +72,10 @@ var holodrumPoints = map[string]Point{
 	"post-d2 stump 3": And{"sunken city"},
 	"post-d2 stump 4": And{"mystery tree"},
 	"shovel gift":     AndSlot{"post-d2 stump", "winter"},
-	"mystery tree 1":  And{"shovel gift", "shovel", "winter"},
-	"mystery tree 2":  And{"post-d2 stump", "winter", "shovel"},
-	"mystery tree 3":  And{"post-d2 stump", "jump"},
-	"mystery tree 4":  And{"sokra stump", "cross water gap"},
-	"mystery tree 5":  And{"sunken city"},
+	"mystery tree 1":  And{"post-d2 stump", "winter", "shovel"},
+	"mystery tree 2":  And{"post-d2 stump", "jump"},
+	"mystery tree 3":  And{"sokra stump", "cross water gap"},
+	"mystery tree 4":  And{"sunken city"},
 	"enter d2 A":      And{"mystery tree", "remove bush"},
 	"enter d2 B":      And{"mystery tree", "bracelet", "remove bush"},
 	"enter d2 C":      And{"mystery tree", "bracelet", "remove bush"},
@@ -77,8 +84,7 @@ var holodrumPoints = map[string]Point{
 	"north horon stump":  And{"horon village", "remove bush"},
 	"scent tree 1":       And{"north horon stump", "bracelet"},
 	"scent tree 2":       And{"natzu", "animal"},
-	"scent tree 3":       And{"natzu", "remove bush"}, // defaults to prairie if no animal
-	"scent tree 4":       And{"north horon stump", "flippers"},
+	"scent tree 3":       And{"north horon stump", "flippers"},
 	"blaino":             And{"scent tree"},
 	"blaino gift":        AndSlot{"blaino", "rupees"},
 	"ricky pen 1":        And{"scent tree"},
@@ -99,19 +105,20 @@ var holodrumPoints = map[string]Point{
 	"enter d3":           And{"open floodgate", "summer"},
 
 	// d3->d4
-	"natzu 1":               And{"scent tree", "jump"},
+	"natzu 1":               And{"scent tree", "jump", "animal"},
 	"natzu 2":               And{"goron mountain", "flippers"},
-	"natzu 3":               And{"gale tree", "cross water gap", "animal"},
-	"gale tree 1":           And{"natzu", "cross water gap"},
-	"gale tree 2":           And{"mount cucco", "flippers"},
+	"natzu 3":               And{"sunken city", "animal"},
+	"sunken city 1":         And{"natzu", "animal"},
+	"sunken city 2":         And{"mount cucco", "flippers"},
+	"gale tree":             And{"sunken city", "cross water gap"},
 	"dimitri":               And{"gale tree", "bombs"},
 	"master's plaque chest": AndSlot{"gale tree", "dimitri", "sword", "cross water gap"},
 	"flippers gift":         AndSlot{"gale tree", "dimitri", "master's plaque"},
-	"mount cucco 1":         And{"gale tree", "flippers"},
+	"mount cucco 1":         And{"sunken city", "flippers"},
 	"mount cucco 2":         And{"goron mountain", "shovel", "bracelet"},
 	"mount cucco 3":         And{"mountain portal"},
 	"banana harvest item":   Or{"sword", "fool's ore"},
-	"spring banana tree":    AndSlot{"mount cucco", "spring", "bracelet", "feather", "banana harvest item"},
+	"spring banana tree":    AndSlot{"mount cucco", "spring", "bracelet", "jump", "banana harvest item"},
 	"moosh":                 And{"mount cucco", "spring banana"},
 	"dragon key cross 1":    And{"mount cucco", "moosh"},
 	"dragon key cross 2":    And{"mount cucco", "pegasus jump L-2"},
