@@ -230,13 +230,13 @@ func makeRoute(r *Route,
 // slot, and call recursively. if no combination of slots and items works,
 // return false.
 func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedItems, usedSlots *list.List) bool {
-	// try to reach all targets
-	if canReachTargets(g, targets...) {
-		return true
-	}
 	// prevent any known softlocks
 	if canSoftlock(g) {
 		return false
+	}
+	// try to reach all targets
+	if canReachTargets(g, targets...) {
+		return true
 	}
 
 	// try to reach each unused slot

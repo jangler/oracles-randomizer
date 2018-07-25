@@ -15,13 +15,15 @@ func canSoftlock(g *graph.Graph) bool {
 }
 
 // make sure you can't reach the shovel gift without either having a shovel
-// already or getting a shovel there
+// already or getting a shovel there, *if* the shovel gift has been assigned
+// yet.
 func canShovelSoftlock(g *graph.Graph) bool {
 	gift, shovel := g.Map["shovel gift"], g.Map["shovel"]
 	parents := shovel.Parents()
 
-	// check whether gift *is* shovel
-	if !graph.IsNodeInSlice(gift, shovel.Parents()) {
+	// if the slot hasn't been assigned yet or it *is* the shovel, it's fine
+	if len(gift.Children()) > 0 &&
+		!graph.IsNodeInSlice(gift, shovel.Parents()) {
 		// check whether gift is reachable if shovel is unreachable
 		shovel.ClearParents()
 		defer shovel.AddParents(parents...)
