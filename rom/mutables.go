@@ -182,7 +182,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"flippers gift": &MutableSlot{
 		Treasure:    Treasures["flippers"],
-		IDAddrs:     []Addr{{0x0b, 0x7310}},
+		IDAddrs:     []Addr{{0x0b, 0x7310}, {0x0b, 0x72f3}},
 		SubIDAddrs:  []Addr{{0x0b, 0x7311}},
 		CollectMode: CollectFind2,
 	},
@@ -194,7 +194,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"dragon key spot": &MutableSlot{
 		Treasure:    Treasures["dragon key"],
-		IDAddrs:     []Addr{{0x09, 0x628d}}, // i *think* this is the only one
+		IDAddrs:     []Addr{{0x09, 0x628d}},
 		SubIDAddrs:  []Addr{{0x09, 0x628c}},
 		CollectMode: CollectFind1,
 	},
