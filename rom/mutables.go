@@ -169,6 +169,36 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x15, 0x5459}},
 		CollectMode: CollectChest,
 	},
+	"master's plaque chest": &MutableSlot{
+		Treasure:    Treasures["master's plaque"],
+		IDAddrs:     []Addr{{0x15, 0x554d}},
+		SubIDAddrs:  []Addr{{0x15, 0x554e}},
+		CollectMode: CollectChest,
+	},
+	"flippers gift": &MutableSlot{
+		Treasure:    Treasures["flippers"],
+		IDAddrs:     []Addr{{0x0b, 0x7310}},
+		SubIDAddrs:  []Addr{{0x0b, 0x7311}},
+		CollectMode: CollectFind2,
+	},
+	"spring banana tree": &MutableSlot{
+		Treasure:    Treasures["spring banana"],
+		IDAddrs:     []Addr{{0x09, 0x66b0}},
+		SubIDAddrs:  []Addr{{0x09, 0x66af}},
+		CollectMode: CollectFind2,
+	},
+	"dragon key spot": &MutableSlot{
+		Treasure:    Treasures["dragon key"],
+		IDAddrs:     []Addr{{0x09, 0x628d}}, // i *think* this is the only one
+		SubIDAddrs:  []Addr{{0x09, 0x628c}},
+		CollectMode: CollectFind1,
+	},
+	"pyramid jewel spot": &MutableSlot{
+		Treasure:    Treasures["pyramid jewel"],
+		IDAddrs:     []Addr{{0x0b, 0x7350}},
+		SubIDAddrs:  []Addr{{0x0b, 0x7351}},
+		CollectMode: CollectUnderwater,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{
@@ -188,6 +218,14 @@ var holodrumMutables = map[string]Mutable{
 
 	// spawn rosa without having an essence (she checks for the treasure ID)
 	"rosa spawn check": MutableByte{Addr{0x09, 0x678c}, 0x40, 0x02},
+
+	// spawn dimitri without having essences, and even with flippers
+	"dimitri essence check": MutableByte{Addr{0x09, 0x4e36}, 0xcb, 0xf6},
+	"dimitri flipper check": MutableByte{Addr{0x09, 0x4e4c}, 0x2e, 0x00},
+
+	// master who gives flippers checks essences two ways
+	"master essence check 2": MutableByte{Addr{0x0a, 0x4bea}, 0x40, 0x02},
+	"master essence check 1": MutableByte{Addr{0x0a, 0x4bf5}, 0x02, 0x00},
 }
 
 // hero's cave

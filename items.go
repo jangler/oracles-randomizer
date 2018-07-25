@@ -105,7 +105,7 @@ var itemPoints = map[string]Point{
 	"spring": And{"rod", "spring tower"},
 	"autumn": And{"rod", "autumn tower"},
 
-	"animal": And{"ricky", "ricky's gloves"}, // TODO flute stuff
+	"animal": And{"ricky pen", "ricky's gloves"}, // TODO flute stuff
 
 	"rod":        Or{"temple"}, // keep in place for now
 	"fool's ore": Or{},         // disregard for now

@@ -81,12 +81,12 @@ var holodrumPoints = map[string]Point{
 	"scent tree 4":       And{"north horon stump", "flippers"},
 	"blaino":             And{"scent tree"},
 	"blaino gift":        AndSlot{"blaino", "rupees"},
-	"ricky 1":            And{"scent tree"},
-	"ricky 2":            And{"ghastly stump", "jump"},
-	"ricky 3":            And{"pegasus tree", "jump"},
+	"ricky pen 1":        And{"scent tree"},
+	"ricky pen 2":        And{"ghastly stump", "jump"},
+	"ricky pen 3":        And{"pegasus tree", "jump"},
 	"ghastly stump 1":    And{"horon village", "remove bush", "flippers"},
-	"ghastly stump 2":    And{"ricky", "animal"},
-	"ghastly stump 3":    And{"ricky", "jump"},
+	"ghastly stump 2":    And{"ricky pen", "animal"},
+	"ghastly stump 3":    And{"ricky pen", "jump"},
 	"ghastly stump 4":    And{"pegasus tree"},
 	"ghastly stump 5":    And{"swamp portal", "bracelet", "remove bush"},
 	"pegasus tree 1":     And{"ghastly stump", "animal"},
@@ -98,10 +98,34 @@ var holodrumPoints = map[string]Point{
 	"square jewel 3":     And{"open floodgate", "winter", "flippers", "bombs"},
 	"enter d3":           And{"open floodgate", "summer"},
 
-	// d3->d4 TODO
-	"natzu":       And{"scent tree", "jump"},
-	"gale tree 1": And{"sunken city", "cross water gap"},
-	"gale tree 2": And{"mount cucco", "flippers"},
+	// d3->d4
+	"natzu 1":               And{"scent tree", "jump"},
+	"natzu 2":               And{"goron mountain", "flippers"},
+	"natzu 3":               And{"gale tree", "cross water gap", "animal"},
+	"gale tree 1":           And{"natzu", "cross water gap"},
+	"gale tree 2":           And{"mount cucco", "flippers"},
+	"dimitri":               And{"gale tree", "bombs"},
+	"master's plaque chest": AndSlot{"gale tree", "dimitri", "sword", "cross water gap"},
+	"flippers gift":         AndSlot{"gale tree", "dimitri", "master's plaque"},
+	"mount cucco 1":         And{"gale tree", "flippers"},
+	"mount cucco 2":         And{"goron mountain", "shovel", "bracelet"},
+	"mount cucco 3":         And{"mountain portal"},
+	"banana harvest item":   Or{"sword", "fool's ore"},
+	"spring banana tree":    AndSlot{"mount cucco", "spring", "bracelet", "feather", "banana harvest item"},
+	"moosh":                 And{"mount cucco", "spring banana"},
+	"dragon key cross 1":    And{"mount cucco", "moosh"},
+	"dragon key cross 2":    And{"mount cucco", "pegasus jump L-2"},
+	"dragon key spot":       AndSlot{"dragon key cross"}, // wraps generated node
+	"mario cave":            And{"mount cucco", "spring"},
+	"dragon keyhole":        And{"mario cave", "winter", "jump", "bracelet"},
+	"enter d4":              And{"dragon key", "dragon keyhole", "summer", "cross water gap"},
+	"pyramid jewel spot":    AndSlot{"mario cave", "flippers"},
+
+	// goron mountain
+	"goron mountain 1": And{"mount cucco", "bracelet", "shovel"},
+	"goron mountain 2": And{"temple remains", "flippers"},
+	"goron mountain 3": And{"temple remains", "pegasus jump L-2"},
+	"goron mountain 4": And{"natzu", "animal", "flippers"},
 
 	// d4->d5 TODO
 	"eyeglass lake": And{"north horon stump", "jump"},
@@ -115,12 +139,12 @@ var holodrumPoints = map[string]Point{
 	"samasa desert": And{"pirate house", "eastern coast"},
 
 	// d7->d8 TODO
+	"temple remains 1": And{"goron mountain", "pegasus jump L-2"},
+	"temple remains 2": And{"goron mountain", "flippers"},
+	"temple remains 3": And{"ricky pen", "long jump"},
 
 	"cross water gap": Or{"flippers", "jump"},
 
 	// referenced things that i don't want to deal with yet
-	"sunken city":    Or{},
-	"mount cucco":    Or{},
-	"lost woods":     Or{},
-	"temple remains": Or{},
+	"lost woods": Or{},
 }
