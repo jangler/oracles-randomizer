@@ -58,7 +58,7 @@ func init() {
 		baseItemPoints, ignoredBaseItemPoints,
 		itemPoints, killPoints,
 		holodrumPoints, subrosiaPoints, portalPoints,
-		d0Points, d1Points, d2Points, d3Points, d4Points, d5Points,
+		d0Points, d1Points, d2Points, d3Points, d4Points, d5Points, d6Points,
 	)
 }
 
@@ -279,6 +279,7 @@ func tryReachTargets(g *graph.Graph, goal, forbid []string, maxlen int,
 		slotList.Remove(slot)
 
 		// try placing each unused item into the slot
+		jewelChecked := false
 		for j := 0; j < itemList.Len(); j++ {
 			// slot the item and move it to the used list
 			itemName := itemList.Remove(itemList.Back()).(string)
@@ -293,14 +294,24 @@ func tryReachTargets(g *graph.Graph, goal, forbid []string, maxlen int,
 				log.Print("trying " + strings.Join(items, " -> "))
 			}
 
+			// check whether this item should be skipped
+			skip := false
+			// only check one jewel per loop, since they're functionally identical
+			if strings.HasSuffix(itemName, " jewel") {
+				if !jewelChecked {
+					jewelChecked = true
+				} else {
+					skip = true
+				}
+			}
 			// the star ore code is unique in that it doesn't set the sub ID at
 			// all, leaving it zeroed. so if we're looking at the star ore
 			// slot, then skip any items that have a nonzero sub ID.
-			//
-			// if that's not a problem, then recurse with new state
 			if slotName == "star ore spot" && rom.Treasures[itemName].SubID() != 0 {
-				// skip
-			} else if tryReachTargets(g, goal, forbid, maxlen-1,
+				skip = true
+			}
+
+			if !skip && tryReachTargets(g, goal, forbid, maxlen-1,
 				itemList, slotList, usedItems, usedSlots) {
 				return true
 			}

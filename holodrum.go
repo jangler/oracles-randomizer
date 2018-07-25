@@ -105,6 +105,9 @@ var holodrumPoints = map[string]Point{
 	"pegasus tree 2":     And{"ghastly stump", "feather L-2"},
 	"pegasus tree 3":     And{"ghastly stump", "summer"},
 	"floodgate key gift": AndSlot{"pegasus tree", "hit lever"},
+	"spool swamp 1":      And{"open floodgate"},
+	"spool swamp 2":      And{"ghastly stump", "remove bush", "flippers"},
+	"spool swamp 3":      And{"scent tree", "flippers"},
 	"square jewel 1":     And{"open floodgate", "winter", "animal"},
 	"square jewel 2":     And{"open floodgate", "winter", "long jump", "bombs"},
 	"square jewel 3":     And{"open floodgate", "winter", "flippers", "bombs"},
@@ -116,10 +119,10 @@ var holodrumPoints = map[string]Point{
 	"natzu 3":               And{"sunken city", "animal"},
 	"sunken city 1":         And{"natzu", "animal"},
 	"sunken city 2":         And{"mount cucco", "flippers"},
-	"gale tree":             And{"sunken city", "cross water gap"},
-	"dimitri":               And{"gale tree", "bombs"},
-	"master's plaque chest": AndSlot{"gale tree", "dimitri", "sword", "cross water gap"},
-	"flippers gift":         AndSlot{"gale tree", "dimitri", "master's plaque"},
+	"sunken gale tree":      And{"sunken city", "cross water gap"},
+	"dimitri":               And{"sunken gale tree", "bombs"},
+	"master's plaque chest": AndSlot{"sunken gale tree", "dimitri", "sword", "cross water gap"},
+	"flippers gift":         AndSlot{"sunken gale tree", "dimitri", "master's plaque"},
 	"mount cucco 1":         And{"sunken city", "flippers"},
 	"mount cucco 2":         And{"goron mountain", "shovel", "bracelet"},
 	"mount cucco 3":         And{"mountain portal"},
@@ -141,22 +144,23 @@ var holodrumPoints = map[string]Point{
 	"goron mountain 3": And{"temple remains", "pegasus jump L-2"},
 	"goron mountain 4": And{"natzu", "animal", "flippers"},
 
-	// d4->d5 TODO
+	// d4->d5
 	"eyeglass lake": And{"north horon stump", "jump"},
 	"enter d5":      And{"eyeglass lake", "autumn", "remove mushroom"},
 
-	// d5->d6 TODO
+	// d5->d6; i'm treating tarm ruins like it's one way (like it normally is)
 	"x-shaped jewel chest": AndSlot{"horon village", "mystery slingshot", "kill moldorm"},
+	"round jewel gift":     AndSlot{"spool swamp", "flippers"},
+	"tarm ruins":           And{"pegasus tree", "square jewel", "pyramid jewel", "round jewel", "x-shaped jewel"},
+	"lost woods":           And{"tarm ruins", "summer", "winter", "autumn", "bracelet"},
+	"tarm gale tree":       And{"lost woods", "winter", "autumn", "spring", "summer"},
+	"enter d6":             And{"tarm gale tree", "winter", "shovel", "spring", "remove flower"},
 
 	// d6->d7 TODO
 	"eastern coast": And{"horon village", "ember seeds"},
 	"samasa desert": And{"pirate house", "eastern coast"},
 
-	// d7->d8 TODO
 	"temple remains 1": And{"goron mountain", "pegasus jump L-2"},
 	"temple remains 2": And{"goron mountain", "flippers"},
 	"temple remains 3": And{"ricky pen", "long jump"},
-
-	// referenced things that i don't want to deal with yet
-	"lost woods": Or{},
 }

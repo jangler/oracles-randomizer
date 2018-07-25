@@ -22,8 +22,8 @@ func main() {
 	// init flags
 	flagStart := flag.String("start", "horon village",
 		"comma-separated list of nodes treated as given")
-	flagGoal := flag.String(
-		"goal", "d1 essence,d2 essence,d3 essence,d4 essence,d5 essence",
+	flagGoal := flag.String("goal",
+		"d1 essence,d2 essence,d3 essence,d4 essence,d5 essence,d6 essence",
 		"comma-separated list of nodes that must be reachable")
 	flagForbid := flag.String("forbid", "",
 		"comma-separated list of nodes that must not be reachable")

@@ -218,6 +218,18 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x15, 0x5481}},
 		CollectMode: CollectChest,
 	},
+	"round jewel gift": &MutableSlot{
+		Treasure:    Treasures["round jewel"],
+		IDAddrs:     []Addr{{0x0b, 0x7334}},
+		SubIDAddrs:  []Addr{{0x0b, 0x7335}},
+		CollectMode: CollectFind2,
+	},
+	"d6 boomerang chest": &MutableSlot{
+		Treasure:    Treasures["boomerang L-2"],
+		IDAddrs:     []Addr{{0x15, 0x54c0}},
+		SubIDAddrs:  []Addr{{0x15, 0x54c1}},
+		CollectMode: CollectChest,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{
@@ -245,6 +257,9 @@ var holodrumMutables = map[string]Mutable{
 	// master who gives flippers checks essences two ways
 	"master essence check 2": MutableByte{Addr{0x0a, 0x4bea}, 0x40, 0x02},
 	"master essence check 1": MutableByte{Addr{0x0a, 0x4bf5}, 0x02, 0x00},
+
+	// round jewel giver checks for number of essences
+	"round jewel essence check": MutableByte{Addr{0x0a, 0x4f8b}, 0x05, 0x00},
 }
 
 // hero's cave

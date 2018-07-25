@@ -26,10 +26,9 @@ var baseItemPoints = map[string]Point{
 	"bracelet":       Or{},
 	"ricky's gloves": Or{},
 	"floodgate key":  Or{},
-	// member's card?
-	"star ore":    Or{},
-	"feather L-1": Or{},
-	"flippers":    Or{},
+	"star ore":       Or{},
+	"feather L-1":    Or{},
+	"flippers":       Or{},
 	// no fool's ore, see comment in subrosia.go
 	"slingshot L-1": Or{},
 	"magnet gloves": Or{},
@@ -40,6 +39,10 @@ var baseItemPoints = map[string]Point{
 	"spring banana":   Or{},
 	"dragon key":      Or{},
 	"slingshot L-2":   Or{},
+	"square jewel":    Or{},
+	"pyramid jewel":   Or{},
+	"x-shaped jewel":  Or{},
+	"round jewel":     Or{},
 }
 
 // don't slot these for now; they don't satisfy anything
@@ -47,10 +50,6 @@ var ignoredBaseItemPoints = map[string]Point{
 	"find energy ring": Or{},
 	"ring box L-2":     Or{},
 	"find toss ring":   Or{},
-	"square jewel":     Or{},
-	"pyramid jewel":    Or{},
-	"x-shaped jewel":   Or{},
-	"round jewel":      Or{},
 	"rusty bell":       Or{},
 }
 
@@ -59,6 +58,7 @@ var itemPoints = map[string]Point{
 	"harvest mystery seeds": And{"mystery tree", "satchel", "harvest item"},
 	"harvest scent seeds":   And{"scent tree", "satchel", "harvest item"},
 	"harvest pegasus seeds": And{"pegasus tree", "satchel", "harvest item"},
+	"gale tree":             Or{"sunken gale tree", "tarm gale tree"},
 	"harvest gale seeds":    And{"gale tree", "satchel", "harvest item"},
 
 	"find d1 ember seeds": And{"enter d1", "satchel", "remove bush"},
@@ -90,6 +90,7 @@ var itemPoints = map[string]Point{
 
 	"punch":           And{"find punch ring", "rupees"},
 	"energy ring":     And{"find energy ring", "rupees"},
+	"toss ring":       And{"find toss ring", "rupees"},
 	"sword beams L-1": And{"sword L-1", "energy ring"},
 
 	"pegasus jump L-1": And{"pegasus satchel", "feather L-1"},

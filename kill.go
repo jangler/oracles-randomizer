@@ -68,6 +68,8 @@ var killPoints = map[string]Point{
 	"kill goriya (pit)":               Or{"kill goriya", "pit kill normal"},
 	"kill aquamentus":                 Or{"sword", "beams", "scent seeds", "bombs", "fool's ore", "punch"},
 	"hit far switch":                  Or{"beams", "boomerang", "bombs", "slingshot"},
+	"toss bombs":                      And{"bombs", "toss ring"},
+	"hit very far switch":             Or{"beams", "boomerang", "toss bombs", "slingshot"},
 	"kill rope":                       Or{"kill normal"},
 	"kill hardhat (pit, throw)":       Or{"gale seeds", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "bracelet"},
 	"kill moblin (gap, throw)":        Or{"sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"},
@@ -105,4 +107,9 @@ var killPoints = map[string]Point{
 	"kill darknut (pit)":              Or{"sword", "bombs", "beams", "scent seeds", "fool's ore", "punch", "shield", "rod", "shovel"},
 	"kill syger":                      Or{"sword", "bombs", "scent seeds", "fool's ore", "punch"},
 	"kill digdogger":                  Or{"magnet gloves"},
+	"break crystal":                   Or{"sword", "bombs", "punch", "bracelet"},
+	"kill hardhat beetle (magnet)":    Or{"magnet gloves", "gale seeds"},
+	"kill vire":                       Or{"sword", "bombs", "fool's ore", "punch"},
+	"finish manhandla":                Or{"sword", "bombs", "slingshot", "fool's ore"},
+	"kill manhandla":                  And{"boomerang L-2", "finish manhandla"},
 }

@@ -207,6 +207,51 @@ var d5Points = map[string]Point{
 	"d5 boss key": And{"d5 boss key spot"},
 }
 
-// TODO d6
+// i didn't note some of the non-essential chests in this dungeon
+var d6Points = map[string]Point{
+	// 1F
+	"d6 spinner":         And{"enter d6"},
+	"d6 magkey ball":     And{"d6 spinner", "magnet gloves", "jump"},
+	"d6 magkey jump":     And{"pegasus jump L-2"},
+	"d6 magnet key fall": Or{"d6 magkey ball", "d6 magkey jump"},
+	"d6 compass chest":   And{"d6 spinner", "d6 key A"},
+	"d6 crumble stairs":  And{"d6 spinner", "d6 key A", "long jump"},
+	"d6 key skip":        And{"d6 armos room", "jump", "break crystal"},
+	"d6 map chest 1":     And{"d6 key skip"},
+	"d6 map chest 2":     And{"d6 spinner"},
+	"avoid traps":        Or{"pegasus satchel", "jump"},
+	"d6 switch stairs":   And{"d6 map chest", "break crystal", "avoid traps", "boomerang L-2"},
+	"d6 U-room":          And{"d6 cracked room", "boomerang L-2"},
+	"d6 torch stairs":    And{"d6 U-room", "ember seeds"},
+
+	// 2F
+	"d6 skipped key chest": And{"d6 spinner", "magnet gloves", "break crystal", "jump"}, // being nice
+	"d6 bomb chest":        And{"d6 crumble stairs"},
+	"d6 armos room":        And{"d6 crumble stairs", "bombs"},
+	"d6 boomerang chest":   AndSlot{"d6 armos room", "jump"},
+	"d6 cracked room":      And{"d6 switch stairs"},
+	"d6 boss key chest":    And{"d6 torch stairs", "long jump"},
+	"d6 gauntlet stairs":   And{"d6 boss key chest"},
+
+	// 3F
+	"d6 vire key chest": And{"d6 gauntlet stairs", "kill stalfos", "jump"},
+	"enter vire":        And{"d6 gauntlet stairs", "kill stalfos", "d6 key B"},
+	"d6 rng stairs":     And{"enter vire", "kill vire"},
+
+	// 4F
+	"d6 3-switch room": And{"d6 rng stairs", "kill hardhat beetle (magnet)"},
+
+	// 5F
+	"d6 pre-boss room": And{"d6 3-switch room", "hit very far switch"},
+	"enter manhandla":  And{"d6 pre-boss room", "jump", "hit far switch", "d6 boss key"},
+	"d6 essence":       And{"enter manhandla", "kill manhandla"},
+
+	// fixed items
+	"d6 key A":    And{"d6 magnet key fall"},
+	"d6 key B":    And{"d6 vire key chest"},
+	"d6 key C":    And{"d6 skipped key chest"},
+	"d6 boss key": And{"d6 boss key chest"},
+}
+
 // TODO d7
 // TODO d8
