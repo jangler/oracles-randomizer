@@ -180,6 +180,17 @@ func randomize(romData []byte, outFilename string,
 		}
 	}
 
+	// TODO these checks should go somewhere where they don't have to fatal
+	if canSoftlock(r.Graph) {
+		log.Fatal("fatal: softlock introduced by unused item placement")
+	}
+	for _, node := range forbid {
+		if canReachTargets(r.Graph, node) {
+			log.Fatal(
+				"fatal: forbidden node reachable from unused item placement")
+		}
+	}
+
 	rom.Mutate(romData)
 
 	return nil

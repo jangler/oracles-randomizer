@@ -2,7 +2,6 @@
 
 ## high priority
 
-- only clear marks when necessary
 - maybe only return true/false from getmark/peekmark?
 
 ## mid priority
