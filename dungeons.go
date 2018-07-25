@@ -145,7 +145,7 @@ var d4Points = map[string]Point{
 	"enter agunima":      And{"d4 pre-mid key", "jump"}, // being nice
 	"d4 final minecart":  And{"enter agunima", "kill agunima"},
 	"d4 torch key chest": And{"enter agunima", "ember slingshot", "jump"},
-	"d4 slingshot chest": And{"d4 final minecart", "d4 key C"},
+	"d4 slingshot chest": AndSlot{"d4 final minecart", "d4 key C"},
 	"d4 boss key chest":  And{"d4 final minecart", "hit very far lever", "jump", "d4 key D", "flippers"},
 	"d4 basement stairs": And{"d4 final minecart", "hit far lever", "kill wizzrobe (pit, throw)", "d4 key E"},
 
