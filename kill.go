@@ -84,6 +84,8 @@ var killPoints = map[string]Point{
 	"kill omuai":                      And{"damage omuai", "bracelet"},
 	"damage mothula":                  Or{"sword", "bombs", "scent seeds", "fool's ore", "punch"},
 	"kill mothula":                    And{"damage mothula", "jump"}, // you will basically die without feather
+	"remove flower":                   Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot"},
+	"remove flower sustainable":       Or{"sword", "boomerang L-2"},
 	"kill shrouded stalfos (throw)":   Or{"kill stalfos", "bracelet"},
 	"kill like-like (pit, throw)":     Or{"kill normal", "bracelet", "rod", "shovel"},
 	"kill water tektite (throw)":      Or{"kill normal", "bracelet"},
@@ -103,7 +105,4 @@ var killPoints = map[string]Point{
 	"kill darknut (pit)":              Or{"sword", "bombs", "beams", "scent seeds", "fool's ore", "punch", "shield", "rod", "shovel"},
 	"kill syger":                      Or{"sword", "bombs", "scent seeds", "fool's ore", "punch"},
 	"kill digdogger":                  Or{"magnet gloves"},
-
-	// enemies not required to kill until later
-	"remove flower": Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot"},
 }

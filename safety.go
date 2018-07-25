@@ -11,7 +11,8 @@ import (
 
 // check for known softlock conditions
 func canSoftlock(g *graph.Graph) bool {
-	return canShovelSoftlock(g) || canRosaPortalSoftlock(g)
+	return canShovelSoftlock(g) || canRosaPortalSoftlock(g) ||
+		canFlowerSoftlock(g)
 }
 
 // make sure you can't reach the shovel gift without either having a shovel
@@ -52,4 +53,25 @@ func canRosaPortalSoftlock(g *graph.Graph) bool {
 
 	// see if you can still reach the exit
 	return canReachTargets(g, exit.Name())
+}
+
+// make sure you can't reach the spring banana cucco before having an item that
+// removes flowers. you can still softlock if you forget to change season to
+// spring, of course
+func canFlowerSoftlock(g *graph.Graph) bool {
+	// temporarily make entrance and bush items unavailable
+	disabledNodes := append(g.Map["remove flower sustainable"].Parents())
+	disabledParents := make([][]graph.Node, len(disabledNodes))
+	for i, node := range disabledNodes {
+		disabledParents[i] = node.Parents()
+		node.ClearParents()
+	}
+	defer func() {
+		for i, node := range disabledNodes {
+			node.AddParents(disabledParents[i]...)
+		}
+	}()
+
+	// see if you can still reach the exit
+	return canReachTargets(g, "spring banana cucco")
 }
