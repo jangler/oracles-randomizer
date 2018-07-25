@@ -68,7 +68,7 @@ func (ms MutableSlot) Mutate(b []byte) error {
 		b[addr.FullOffset()] = ms.Treasure.subID
 	}
 
-	// use normal chest mode instead of the x-shaped jewel once
+	// use normal chest mode instead of the x-shaped jewel one
 	// since the x-shaped jewel one can lock the game
 	if ms.CollectMode == CollectXChest {
 		ms.Treasure.mode = CollectChest
@@ -99,9 +99,6 @@ func (ms MutableSlot) Check(b []byte) error {
 
 	return nil
 }
-
-// XXX: so far, this file only handles items and obstacles enocuntered in
-//      normal gameplay up through D2.
 
 var ItemSlots = map[string]*MutableSlot{
 	"d0 sword chest": &MutableSlot{
@@ -250,6 +247,7 @@ var holodrumMutables = map[string]Mutable{
 
 // hero's cave
 var d0Mutables = map[string]Mutable{
+	// unused
 	"d0 key chest":   MutableWord{Addr{0x15, 0x53f4}, 0x3003, 0x3003},
 	"d0 rupee chest": MutableWord{Addr{0x15, 0x53f8}, 0x2804, 0x2804},
 
@@ -258,7 +256,7 @@ var d0Mutables = map[string]Mutable{
 	"d0 sword event": MutableByte{Addr{0x11, 0x70ec}, 0xf2, 0xff},
 }
 
-// dungeon 1
+// dungeon 1 (unused)
 var d1Mutables = map[string]Mutable{
 	"d1 key fall":       MutableWord{Addr{0x0b, 0x466f}, 0x3001, 0x3001},
 	"d1 map chest":      MutableWord{Addr{0x15, 0x5418}, 0x3302, 0x3302},
@@ -270,7 +268,7 @@ var d1Mutables = map[string]Mutable{
 	"d1 ring chest":     MutableWord{Addr{0x15, 0x5414}, 0x2d04, 0x2d04},
 }
 
-// dungeon 2
+// dungeon 2 (unused)
 var d2Mutables = map[string]Mutable{
 	"d2 5-rupee chest":   MutableWord{Addr{0x15, 0x5438}, 0x2801, 0x2801},
 	"d2 key fall":        MutableWord{Addr{0x0b, 0x466f}, 0x3001, 0x3001},
