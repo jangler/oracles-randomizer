@@ -8,6 +8,7 @@ import (
 // collection modes
 // i don't know what the difference between the two find modes are
 const (
+	CollectGoronGift  = 0x02 // for the L-2 ring box only ??
 	CollectUnderwater = 0x08
 	CollectFind1      = 0x09
 	CollectFind2      = 0x0a
@@ -104,6 +105,7 @@ var Treasures = map[string]*Treasure{
 	"dragon key":      &Treasure{0x44, 0x00, 0x567d, 0x09, 0x00, 0x44, 0x46},
 	"pyramid jewel":   &Treasure{0x4d, 0x00, 0x58bd, 0x08, 0x00, 0x4a, 0x37},
 	"x-shaped jewel":  &Treasure{0x4f, 0x00, 0x537d, 0x12, 0x05, 0x18, 0x18},
+	"ring box L-2":    &Treasure{0x2c, 0x02, 0x57f1, 0x02, 0x03, 0x34, 0x35},
 
 	// TODO
 	/*

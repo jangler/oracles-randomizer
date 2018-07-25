@@ -199,6 +199,12 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x0b, 0x7351}},
 		CollectMode: CollectUnderwater,
 	},
+	"ring box L-2 gift": &MutableSlot{
+		Treasure:    Treasures["ring box L-2"],
+		IDAddrs:     []Addr{{0x0b, 0x5c1a}},
+		SubIDAddrs:  []Addr{{0x0b, 0x5c1b}},
+		CollectMode: CollectGoronGift,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{
