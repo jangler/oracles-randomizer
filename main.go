@@ -27,6 +27,8 @@ func main() {
 		"comma-separated list of nodes that must be reachable")
 	flagForbid := flag.String("forbid", "",
 		"comma-separated list of nodes that must not be reachable")
+	flagMaxlen := flag.Int("maxlen", -1,
+		"if >= 0, maximum number of slotted items in the route")
 	flagDryrun := flag.Bool(
 		"dryrun", false, "don't write an output file for any operation")
 	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
@@ -95,7 +97,7 @@ func main() {
 
 		// randomize according to params
 		if errs := randomize(romData, flag.Arg(1),
-			start, goal, forbid); errs != nil {
+			start, goal, forbid, *flagMaxlen); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
@@ -135,7 +137,7 @@ func loadROM(filename string) ([]byte, error) {
 //
 // this also calls verify.
 func randomize(romData []byte, outFilename string,
-	start, goal, forbid []string) []error {
+	start, goal, forbid []string, maxlen int) []error {
 	// make sure rom data matches first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
@@ -144,7 +146,7 @@ func randomize(romData []byte, outFilename string,
 	// find a viable random route
 	r := initRoute(start)
 	usedItems, usedSlots, unusedItems, unusedSlots :=
-		makeRoute(r, goal, forbid)
+		makeRoute(r, goal, forbid, maxlen)
 
 	// place selected treasures in slots
 	for usedItems.Len() > 0 {

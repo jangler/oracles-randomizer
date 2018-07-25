@@ -172,8 +172,8 @@ func findPath(g *graph.Graph, target graph.Node) *list.List {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func makeRoute(r *Route, goal,
-	forbid []string) (usedItems, usedSlots, itemList, slotList *list.List) {
+func makeRoute(r *Route, goal, forbid []string,
+	maxlen int) (usedItems, usedSlots, itemList, slotList *list.List) {
 	// make stacks out of the item names and slot names for backtracking
 	itemList = list.New()
 	slotList = list.New()
@@ -208,7 +208,7 @@ func makeRoute(r *Route, goal,
 	usedItems = list.New()
 	usedSlots = list.New()
 
-	if tryReachTargets(r.Graph, goal, forbid,
+	if tryReachTargets(r.Graph, goal, forbid, maxlen,
 		itemList, slotList, usedItems, usedSlots) {
 		log.Print("-- success")
 		for _, target := range goal {
@@ -240,7 +240,7 @@ func makeRoute(r *Route, goal,
 // targets are unreachable, try placing an unused item in a reachable unused
 // slot, and call recursively. if no combination of slots and items works,
 // return false.
-func tryReachTargets(g *graph.Graph, goal, forbid []string,
+func tryReachTargets(g *graph.Graph, goal, forbid []string, maxlen int,
 	itemList, slotList, usedItems, usedSlots *list.List) bool {
 	// prevent any known softlocks
 	g.ClearMarks() // not strictly necessary
@@ -257,6 +257,10 @@ func tryReachTargets(g *graph.Graph, goal, forbid []string,
 	// try to reach all targets
 	if canReachTargets(g, goal...) {
 		return true
+	}
+	// can't slot any more items
+	if maxlen == 0 {
+		return false
 	}
 
 	// try to reach each unused slot
@@ -296,7 +300,7 @@ func tryReachTargets(g *graph.Graph, goal, forbid []string,
 			// if that's not a problem, then recurse with new state
 			if slotName == "star ore spot" && rom.Treasures[itemName].SubID() != 0 {
 				// skip
-			} else if tryReachTargets(g, goal, forbid,
+			} else if tryReachTargets(g, goal, forbid, maxlen-1,
 				itemList, slotList, usedItems, usedSlots) {
 				return true
 			}
