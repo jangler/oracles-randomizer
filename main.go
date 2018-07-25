@@ -110,7 +110,7 @@ func main() {
 		checkNumArgs(flagOp, 0)
 
 		r, _ := initRoute()
-		_, _, _ = makeRoute(r,
+		_, _, _, _ = makeRoute(r,
 			[]string{"d1 essence", "d2 essence", "d3 essence", "d4 essence"})
 	case "randomize":
 		checkNumArgs(flagOp, 2)
@@ -164,9 +164,9 @@ func findPath(g *graph.Graph, target graph.Node) *list.List {
 // attempts to create a path to the given targets by placing different items in
 // slots.
 func makeRoute(r *Route,
-	targets []string) (usedItems, usedSlots, slotList *list.List) {
+	targets []string) (usedItems, usedSlots, itemList, slotList *list.List) {
 	// make stacks out of the item names and slot names for backtracking
-	itemList := list.New()
+	itemList = list.New()
 	slotList = list.New()
 	{
 		// shuffle names in slices
@@ -323,28 +323,29 @@ func randomize(romData []byte, outFilename string) []error {
 
 	// find a viable random route
 	r, _ := initRoute()
-	usedItems, usedSlots, unusedSlots := makeRoute(r,
+	usedItems, usedSlots, unusedItems, unusedSlots := makeRoute(r,
 		[]string{"d1 essence", "d2 essence", "d3 essence", "d4 essence"})
 
 	// apply changes to rom data
 	for usedItems.Len() > 0 {
 		slotName := usedSlots.Remove(usedSlots.Front()).(string)
 		treasureName := usedItems.Remove(usedItems.Front()).(string)
-		if slot, ok := rom.ItemSlots[slotName]; ok {
-			if treasure, ok := rom.Treasures[treasureName]; ok {
-				slot.Treasure = treasure
-			} else {
-				return []error{
-					fmt.Errorf("no treasure '%s' in ROM code", treasureName)}
-			}
-		} else {
-			return []error{
-				fmt.Errorf("no item slot '%s' in ROM code", slotName)}
+		if err := placeTreasureInSlot(treasureName, slotName); err != nil {
+			return []error{err}
 		}
 	}
 	for unusedSlots.Len() > 0 {
-		unusedSlots.Remove(unusedSlots.Front())
-		// TODO put a heart container or something there
+		// fill unused slots with unused items
+		slotName := unusedSlots.Remove(unusedSlots.Front()).(string)
+		if unusedItems.Len() > 0 {
+			treasureName := unusedItems.Remove(unusedItems.Front()).(string)
+			if err := placeTreasureInSlot(treasureName, slotName); err != nil {
+				return []error{err}
+			}
+			log.Printf("placed %s in unused slot %s", treasureName, slotName)
+		} else {
+			log.Printf("can't fill unused slot %s; no unused items", slotName)
+		}
 	}
 	rom.Mutate(romData)
 
@@ -358,6 +359,20 @@ func randomize(romData []byte, outFilename string) []error {
 		return []error{err}
 	}
 	log.Printf("wrote new ROM to %s", flag.Arg(1))
+
+	return nil
+}
+
+func placeTreasureInSlot(treasureName, slotName string) error {
+	if slot, ok := rom.ItemSlots[slotName]; ok {
+		if treasure, ok := rom.Treasures[treasureName]; ok {
+			slot.Treasure = treasure
+		} else {
+			return fmt.Errorf("no treasure '%s' in ROM code", treasureName)
+		}
+	} else {
+		return fmt.Errorf("no item slot '%s' in ROM code", slotName)
+	}
 
 	return nil
 }
