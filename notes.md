@@ -39,7 +39,7 @@ these all get checked in a normal frame, just for display purposes:
 
 - $c680-$c6?? = inventory (starting with equipped items)
 - $c6a2/$c6a3 = health / max health
-- $c6a6 = rupees
+- $c6a5-$c6a6 = rupees
 - $c6b5-$c6b9 = seed count (ember, ?, ?, ?, ?)
 - $c6c5 = active ring
 - $c6ca-$c6d9 = some global flags
