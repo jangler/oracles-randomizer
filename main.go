@@ -184,6 +184,7 @@ func randomize(romData []byte, outFilename string,
 	if canSoftlock(r.Graph) {
 		log.Fatal("fatal: softlock introduced by unused item placement")
 	}
+	r.Graph.ClearMarks()
 	for _, node := range forbid {
 		if canReachTargets(r.Graph, node) {
 			log.Fatal(

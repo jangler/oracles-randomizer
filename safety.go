@@ -28,6 +28,7 @@ func canShovelSoftlock(g *graph.Graph) bool {
 		// check whether gift is reachable if shovel is unreachable
 		shovel.ClearParents()
 		defer shovel.AddParents(parents...)
+		g.ClearMarks()
 		return canReachTargets(g, gift.Name())
 	}
 
@@ -52,6 +53,7 @@ func canRosaPortalSoftlock(g *graph.Graph) bool {
 	}()
 
 	// see if you can still reach the exit
+	g.ClearMarks()
 	return canReachTargets(g, exit.Name())
 }
 
@@ -73,5 +75,6 @@ func canFlowerSoftlock(g *graph.Graph) bool {
 	}()
 
 	// see if you can still reach the exit
+	g.ClearMarks()
 	return canReachTargets(g, "spring banana cucco")
 }

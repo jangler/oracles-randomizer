@@ -243,9 +243,11 @@ func makeRoute(r *Route, goal,
 func tryReachTargets(g *graph.Graph, goal, forbid []string,
 	itemList, slotList, usedItems, usedSlots *list.List) bool {
 	// prevent any known softlocks
+	g.ClearMarks() // not strictly necessary
 	if canSoftlock(g) {
 		return false
 	}
+	g.ClearMarks()
 	// make sure no forbidden nodes are reachable
 	for _, node := range forbid {
 		if canReachTargets(g, node) {
@@ -264,7 +266,6 @@ func tryReachTargets(g *graph.Graph, goal, forbid []string,
 		slotList.MoveToFront(slot)
 
 		slotName := slot.Value.(string)
-		g.ClearMarks() // probably redundant but safe
 		if !canReachTargets(g, slotName) {
 			continue
 		}
@@ -321,7 +322,6 @@ func tryReachTargets(g *graph.Graph, goal, forbid []string,
 
 // check if the targets are reachable using the current graph state
 func canReachTargets(g *graph.Graph, targets ...string) bool {
-	g.ClearMarks()
 	for _, target := range targets {
 		if g.Map[target].GetMark(nil) != graph.MarkTrue {
 			return false
