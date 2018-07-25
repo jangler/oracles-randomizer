@@ -4,6 +4,11 @@ import (
 	"github.com/jangler/oos-randomizer/graph"
 )
 
+// TODO: write similar functions to make sure dungeon navigation is possible w/
+//       the locations of small keys and given item state
+//
+// TODO: write one that makes sure you can't get to slingshot before satchel
+
 // check for known softlock conditions
 func canSoftlock(g *graph.Graph) bool {
 	return canShovelSoftlock(g) || canRosaPortalSoftlock(g)
