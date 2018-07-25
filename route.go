@@ -58,7 +58,7 @@ func init() {
 		baseItemPoints, ignoredBaseItemPoints,
 		itemPoints, killPoints,
 		holodrumPoints, subrosiaPoints, portalPoints,
-		d0Points, d1Points, d2Points, d3Points, d4Points,
+		d0Points, d1Points, d2Points, d3Points, d4Points, d5Points,
 	)
 }
 

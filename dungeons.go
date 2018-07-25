@@ -163,7 +163,50 @@ var d4Points = map[string]Point{
 	"d4 boss key": And{"d4 boss key chest"},
 }
 
-// TODO d5
+var d5Points = map[string]Point{
+	// general
+	"cross magnet gap":   Or{"pegasus jump L-2", "magnet gloves"},
+	"magnet jump":        And{"jump", "magnet gloves"},
+	"sidescroll magnets": Or{"magnet jump", "pegasus jump L-2"},
+
+	// 1F (it's the only F)
+	"d5 cart bay":       And{"enter d5", "cross large pool"},
+	"d5 cart key chest": And{"d5 cart bay", "hit lever"},
+	"d5 underground A":  Or{"d5 stairs A in", "d5 stairs C in"},
+	"d5 stairs A in":    And{"d5 cart bay"},
+	"d5 stairs A out 1": And{"d5 stairs A in", "jump"},
+	"d5 stairs A out 2": And{"d5 stairs C in", "bombs", "jump"},
+	"d5 stairs B out 1": And{"d5 stairs A in", "jump"},
+	"d5 stairs B out 2": And{"d5 stairs C in", "bombs", "jump"},
+	// stairs B out is one-way
+	"d5 map chest":           And{"d5 stairs B out"},
+	"d5 magnet gloves chest": AndSlot{"d5 stairs B out", "cross large pool", "d5 key A"},
+	"d5 left key chest":      And{"enter d5", "cross magnet gap"},
+	"d5 stairs C out":        And{"d5 underground A", "bombs", "jump"},
+	"d5 stairs C in":         And{"enter d5", "magnet gloves"},
+	"d5 large rupee chest 1": And{"d5 stairs C out"},
+	"d5 large rupee chest 2": And{"enter d5", "magnet gloves"},
+	"d5 compass chest":       And{"enter d5", "kill moldorm", "kill iron mask"},
+	"d5 armos key chest":     And{"d5 stairs C out", "kill moldorm", "kill iron mask", "kill armos"},
+	"d5 float key chest":     And{"d5 cart bay", "cross magnet gap"},
+	"d5 drop ball":           And{"d5 cart bay", "hit lever", "kill darknut (pit)"},
+	"d5 pre-mid key chest":   And{"d5 cart bay", "cross magnet gap"},
+	"enter syger":            And{"d5 cart bay", "cross magnet gap", "d5 key B"},
+	"d5 post-syger":          And{"enter syger", "kill syger"},
+	"d5 push ball":           And{"d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"},
+	"d5 boss key spot":       And{"d5 push ball", "d5 key D", "long jump", "sidescroll magnets"}, // being nice
+	"enter digdogger":        And{"d5 post-syger", "d5 key E", "jump", "magnet gloves", "d5 boss key"},
+	"d5 essence":             And{"enter digdogger", "kill digdogger"},
+
+	// fixed items
+	"d5 key A":    And{"d5 cart key chest"},
+	"d5 key B":    And{"d5 left key chest"},
+	"d5 key C":    And{"d5 armos key chest"},
+	"d5 key D":    And{"d5 float key chest"},
+	"d5 key E":    And{"d5 pre-mid key chest"},
+	"d5 boss key": And{"d5 boss key spot"},
+}
+
 // TODO d6
 // TODO d7
 // TODO d8

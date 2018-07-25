@@ -212,6 +212,12 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x15, 0x5471}},
 		CollectMode: CollectChest,
 	},
+	"d5 magnet gloves chest": &MutableSlot{
+		Treasure:    Treasures["magnet gloves"],
+		IDAddrs:     []Addr{{0x15, 0x5480}},
+		SubIDAddrs:  []Addr{{0x15, 0x5481}},
+		CollectMode: CollectChest,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{

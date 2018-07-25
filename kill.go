@@ -71,7 +71,7 @@ var killPoints = map[string]Point{
 	"kill rope":                       Or{"kill normal"},
 	"kill hardhat (pit, throw)":       Or{"gale seeds", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "bracelet"},
 	"kill moblin (gap, throw)":        Or{"sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"},
-	"kill gel":                        Or{"sword", "beams", "ember seeds", "slingshot gale seeds", "slingshot mystery seeds", "bombs", "fool's ore", "punch"},
+	"kill zol":                        Or{"sword", "beams", "ember seeds", "slingshot gale seeds", "slingshot mystery seeds", "bombs", "fool's ore", "punch"},
 	"remove pot":                      Or{"sword L-2", "bracelet"},
 	"kill facade":                     Or{"bombs"},
 	"flip spiked beetle":              Or{"shield", "shovel"},
@@ -96,9 +96,14 @@ var killPoints = map[string]Point{
 	"hit far lever":                   Or{"jump hit lever", "long jump hit lever", "boomerang", "slingshot"},
 	"kill wizzrobe (pit, throw)":      Or{"pit kill normal", "bracelet"},
 	"kill gohma":                      Or{"scent slingshot", "ember slingshot"},
+	"remove mushroom":                 Or{"boomerang L-2", "bracelet"},
+	"kill moldorm":                    Or{"sword", "bombs", "punch", "scent seeds"},
+	"kill iron mask":                  Or{"sword", "bombs", "beams", "ember seeds", "scent seeds", "fool's ore", "punch"},
+	"kill armos":                      Or{"sword", "bombs", "beams", "boomerang L-2", "scent seeds", "fool's ore"},
+	"kill darknut (pit)":              Or{"sword", "bombs", "beams", "scent seeds", "fool's ore", "punch", "shield", "rod", "shovel"},
+	"kill syger":                      Or{"sword", "bombs", "scent seeds", "fool's ore", "punch"},
+	"kill digdogger":                  Or{"magnet gloves"},
 
 	// enemies not required to kill until later
-	"remove flower":   Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot"},
-	"remove mushroom": Or{"boomerang L-2", "bracelet"},
-	"kill moldorm":    Or{"sword", "bombs", "punch", "scent seeds"},
+	"remove flower": Or{"sword", "boomerang L-2", "ember seeds", "gale slingshot"},
 }
