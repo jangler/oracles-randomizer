@@ -101,7 +101,7 @@ var itemPoints = map[string]Point{
 	"sword L-2": And{"lost woods", "winter", "autumn", "spring", "summer"},
 
 	"ribbon":      And{"star ore", "beach"},
-	"bomb flower": And{"furnace", "jump"},
+	"bomb flower": And{"furnace", "jump", "bracelet"},
 
 	"winter": And{"rod", "winter tower"},
 	"summer": And{"rod", "summer tower"},
