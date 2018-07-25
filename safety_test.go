@@ -5,7 +5,7 @@ import (
 )
 
 func TestShovelLockCheck(t *testing.T) {
-	r, _ := initRoute()
+	r := initRoute([]string{"horon village"})
 	g := r.Graph
 
 	// make sure that needing a shovel in advance passes
@@ -48,7 +48,7 @@ func TestShovelLockCheck(t *testing.T) {
 }
 
 func TestPortalLockCheck(t *testing.T) {
-	r, _ := initRoute()
+	r := initRoute([]string{"horon village"})
 	g := r.Graph
 
 	// make sure that an obviously safe graph passes

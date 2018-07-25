@@ -56,10 +56,15 @@ var portalPoints = map[string]Point{
 
 var holodrumPoints = map[string]Point{
 	// start->d1
-	"horon village": And{}, // start
-	"enter d0":      And{"horon village"},
-	"maku key fall": AndSlot{"horon village", "pop maku bubble"},
-	"enter d1":      And{"horon village", "remove bush", "gnarled key"},
+	"horon village 1": And{"north horon stump", "remove bush"},
+	"horon village 2": And{"ghastly stump", "remove bush", "flippers"},
+	"horon village 3": And{"eastern coast", "ember seeds"},
+	"horon village 4": And{"sokra stump", "ember seeds"},
+	"horon village 5": And{"village portal", "hit lever"},
+	"horon village 6": And{"swamp portal", "bracelet", "flippers", "remove bush"},
+	"enter d0":        And{"horon village"},
+	"maku key fall":   AndSlot{"horon village", "pop maku bubble"},
+	"enter d1":        And{"horon village", "remove bush", "gnarled key"},
 
 	// d1->d2
 	"ember tree":      And{"horon village"},

@@ -2,8 +2,8 @@
 
 ## high priority
 
-- rewrite flags
-- clean up the routing logic and actually put it in route.go instead of main.go
+- only clear marks when necessary
+- maybe only return true/false from getmark/peekmark?
 
 ## mid priority
 

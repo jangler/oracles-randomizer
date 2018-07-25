@@ -1,7 +1,7 @@
 package main
 
 //go:generate go build
-//go:generate ./oos-randomizer -op pointgen generated.go
+//go:generate ./oos-randomizer -devcmd pointgen generated.go
 //go:generate go fmt
 //go:generate go build
 

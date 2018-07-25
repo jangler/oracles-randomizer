@@ -19,6 +19,7 @@ var generatedPoints = map[string]Point{
 	"ghastly stump":        Or{"ghastly stump 1", "ghastly stump 2", "ghastly stump 3", "ghastly stump 4", "ghastly stump 5"},
 	"goron mountain":       Or{"goron mountain 1", "goron mountain 2", "goron mountain 3", "goron mountain 4"},
 	"hide and seek":        Or{"hide and seek 1", "hide and seek 2", "hide and seek 3", "hide and seek 4"},
+	"horon village":        Or{"horon village 1", "horon village 2", "horon village 3", "horon village 4", "horon village 5", "horon village 6"},
 	"lake portal":          Or{"lake portal 1", "lake portal 2", "lake portal 3"},
 	"mount cucco":          Or{"mount cucco 1", "mount cucco 2", "mount cucco 3"},
 	"mountain portal":      Or{"mountain portal 1", "mountain portal 2"},

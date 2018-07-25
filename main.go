@@ -1,42 +1,51 @@
 package main
 
 import (
-	"container/list"
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"os"
 	"strings"
 
-	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
 )
 
-func checkNumArgs(flagOp *string, expected int) {
+func checkNumArgs(op string, expected int) {
 	if flag.NArg() != expected {
-		log.Fatalf("%s takes %d argument(s); got %d",
-			*flagOp, expected, flag.NArg())
+		log.Printf("%s takes %d argument(s); got %d",
+			op, expected, flag.NArg())
+		os.Exit(2)
 	}
 }
 
 func main() {
-	flagOp := flag.String("op", "checkGraph", "operation")
+	// init flags
+	flagStart := flag.String("start", "horon village",
+		"comma-separated list of nodes treated as given")
+	flagGoal := flag.String(
+		"goal", "d1 essence,d2 essence,d3 essence,d4 essence",
+		"comma-separated list of nodes that must be reachable")
+	flagForbid := flag.String("forbid", "",
+		"comma-separated list of nodes that must not be reachable")
+	flagDryrun := flag.Bool(
+		"dryrun", false, "don't write an output file for any operation")
+	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
 	flag.Parse()
 
-	switch *flagOp {
-	case "checkGraph":
-		checkNumArgs(flagOp, 0)
+	// perform given command (or default, randomize)
+	switch *flagDevcmd {
+	case "checkgraph":
+		checkNumArgs(*flagDevcmd, 0)
 
-		// validate
-		if errs := checkGraph(); errs != nil {
+		// check for orphan/childless nodes
+		r := initRoute(strings.Split(*flagStart, ","))
+		if errs := r.CheckGraph(); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
-			os.Exit(1)
 		}
 	case "pointgen":
-		checkNumArgs(flagOp, 1)
+		checkNumArgs(*flagDevcmd, 1)
 
 		f, err := os.Create(flag.Arg(0))
 		if err != nil {
@@ -45,8 +54,8 @@ func main() {
 		defer f.Close()
 
 		generatePoints(f)
-	case "verifyData":
-		checkNumArgs(flagOp, 1)
+	case "verify":
+		checkNumArgs(*flagDevcmd, 1)
 
 		// load rom
 		romData, err := loadROM(flag.Arg(0))
@@ -63,57 +72,12 @@ func main() {
 		} else {
 			log.Print("everything OK")
 		}
-	case "findPath":
-		if flag.NArg() < 2 {
-			log.Fatalf("findPath takes 2+ arguments; got %d", flag.NArg())
-		}
-		if flag.NArg()%2 != 0 {
-			log.Fatalf("findPath requires an even number of arguments; got %d",
-				flag.NArg())
-		}
-
-		r, _ := initRoute() // ignore errors; they're diagnostic only
-
-		// get start and end nodes
-		if start, ok := r.Graph.Map[flag.Arg(0)]; ok {
-			start.ClearParents()
+	case "":
+		if *flagDryrun {
+			checkNumArgs("dryrun", 1)
 		} else {
-			log.Fatalf("node %s not found", flag.Arg(0))
+			checkNumArgs("randomizer", 2)
 		}
-		dest, ok := r.Graph.Map[flag.Arg(1)]
-		if !ok {
-			log.Fatalf("node %s not found", flag.Arg(1))
-		}
-
-		// place items in slots
-		for i := 2; i < flag.NArg(); i += 2 {
-			if _, ok := baseItemPoints[flag.Arg(i)]; !ok {
-				log.Fatalf("%s is not an item", flag.Arg(i))
-			}
-			if _, ok := r.Slots[flag.Arg(i+1)]; !ok {
-				log.Fatalf("%s is not a slot", flag.Arg(i+1))
-			}
-			r.Graph.AddParents(
-				map[string][]string{flag.Arg(i): []string{flag.Arg(i + 1)}})
-		}
-
-		// try to find a valid path
-		if path := findPath(r.Graph, dest); path != nil {
-			for path.Len() > 0 {
-				step := path.Remove(path.Front()).(string)
-				log.Print(step)
-			}
-		} else {
-			log.Print("path not found")
-		}
-	case "makeRoute":
-		checkNumArgs(flagOp, 0)
-
-		r, _ := initRoute()
-		_, _, _, _ = makeRoute(r,
-			[]string{"d1 essence", "d2 essence", "d3 essence", "d4 essence"})
-	case "randomize":
-		checkNumArgs(flagOp, 2)
 
 		// load rom
 		romData, err := loadROM(flag.Arg(0))
@@ -121,22 +85,39 @@ func main() {
 			log.Fatal(err)
 		}
 
-		if errs := randomize(romData, flag.Arg(1)); errs != nil {
+		// split node params
+		start := strings.Split(*flagStart, ",")
+		goal := strings.Split(*flagGoal, ",")
+		forbid := []string{}
+		if *flagForbid != "" {
+			forbid = strings.Split(*flagForbid, ",")
+		}
+
+		// randomize according to params
+		if errs := randomize(romData, flag.Arg(1),
+			start, goal, forbid); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
 			os.Exit(1)
 		}
-	default:
-		log.Fatalf("no such operation: %s", *flagOp)
-	}
-}
 
-// make sure the base route graph is ok (before randomizing anything)
-func checkGraph() []error {
-	// TODO initRoute() does this automatically and i'm not sure it should
-	_, errs := initRoute()
-	return errs
+		// write to file unless it's a dry run
+		if !*flagDryrun {
+			f, err := os.Create(flag.Arg(1))
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer f.Close()
+			if _, err := f.Write(romData); err != nil {
+				log.Fatal(err)
+			}
+			log.Printf("wrote new ROM to %s", flag.Arg(1))
+		}
+	default:
+		log.Printf("no such devcmd: %s", *flagDevcmd)
+		os.Exit(2)
+	}
 }
 
 // can be used for loading pretty much anything, really, as long as you want it
@@ -150,183 +131,22 @@ func loadROM(filename string) ([]byte, error) {
 	return rom.Load(f)
 }
 
-// attempts to find a path from the start to the given node in the graph.
-// returns nil if no path was found.
-func findPath(g *graph.Graph, target graph.Node) *list.List {
-	path := list.New()
-	mark := target.GetMark(path)
-	if mark == graph.MarkTrue {
-		return path
-	}
-	return nil
-}
-
-// attempts to create a path to the given targets by placing different items in
-// slots.
-func makeRoute(r *Route,
-	targets []string) (usedItems, usedSlots, itemList, slotList *list.List) {
-	// make stacks out of the item names and slot names for backtracking
-	itemList = list.New()
-	slotList = list.New()
-	{
-		// shuffle names in slices
-		items := make([]string, 0, len(baseItemPoints))
-		slots := make([]string, 0, len(r.Slots))
-		for itemName, _ := range baseItemPoints {
-			items = append(items, itemName)
-		}
-		for slotName, _ := range r.Slots {
-			slots = append(slots, slotName)
-		}
-		rand.Shuffle(len(items), func(i, j int) {
-			items[i], items[j] = items[j], items[i]
-		})
-		rand.Shuffle(len(slots), func(i, j int) {
-			slots[i], slots[j] = slots[j], slots[i]
-		})
-
-		// push the shuffled items onto the stacks
-		for _, itemName := range items {
-			itemList.PushBack(itemName)
-		}
-		for _, slotName := range slots {
-			slotList.PushBack(slotName)
-		}
-	}
-
-	// also keep track of which items we've popped off the stacks.
-	// these lists are parallel; i.e. the first item is in the first slot
-	usedItems = list.New()
-	usedSlots = list.New()
-
-	if tryReachTargets(r.Graph, targets, itemList, slotList, usedItems, usedSlots) {
-		log.Print("-- success")
-		for _, target := range targets {
-			log.Print("-- path to " + target)
-			r.Graph.ClearMarks()
-			path := findPath(r.Graph, r.Graph.Map[target])
-			for path.Len() > 0 {
-				step := path.Remove(path.Front()).(string)
-				log.Print(step)
-			}
-		}
-		log.Print("-- slotted items")
-		if usedItems.Len() != usedSlots.Len() {
-			log.Fatalf("FATAL: usedItems.Len() == %d; usedSlots.Len() == %d", usedItems.Len(), usedSlots.Len())
-		}
-		for i := 0; i < usedItems.Len(); i++ {
-			log.Printf("%s <- %s", usedItems.Front().Value.(string), usedSlots.Front().Value.(string))
-			usedItems.MoveToBack(usedItems.Front())
-			usedSlots.MoveToBack(usedSlots.Front())
-		}
-	} else {
-		log.Print("-- failure; something is wrong")
-	}
-
-	return
-}
-
-// try to reach all the given targets using the current graph status. if
-// targets are unreachable, try placing an unused item in a reachable unused
-// slot, and call recursively. if no combination of slots and items works,
-// return false.
-func tryReachTargets(g *graph.Graph, targets []string, itemList, slotList, usedItems, usedSlots *list.List) bool {
-	// prevent any known softlocks
-	if canSoftlock(g) {
-		return false
-	}
-	// try to reach all targets
-	if canReachTargets(g, targets...) {
-		return true
-	}
-
-	// try to reach each unused slot
-	for i := 0; i < slotList.Len(); i++ {
-		// iterate by rotating the list
-		slot := slotList.Back()
-		slotList.MoveToFront(slot)
-
-		slotName := slot.Value.(string)
-		g.ClearMarks() // probably redundant but safe
-		if !canReachTargets(g, slotName) {
-			continue
-		}
-
-		// move slot from unused to used
-		usedSlots.PushBack(slotName)
-		slotList.Remove(slot)
-
-		// try placing each unused item into the slot
-		for j := 0; j < itemList.Len(); j++ {
-			// slot the item and move it to the used list
-			itemName := itemList.Remove(itemList.Back()).(string)
-			usedItems.PushBack(itemName)
-			g.Map[itemName].AddParents(g.Map[slotName])
-
-			{
-				items := make([]string, 0, usedItems.Len())
-				for e := usedItems.Front(); e != nil; e = e.Next() {
-					items = append(items, e.Value.(string))
-				}
-				log.Print("trying " + strings.Join(items, " -> "))
-			}
-
-			// the star ore code is unique in that it doesn't set the sub ID at
-			// all, leaving it zeroed. so if we're looking at the star ore
-			// slot, then skip any items that have a nonzero sub ID.
-			//
-			// if that's not a problem, then recurse with new state
-			if slotName == "star ore spot" && rom.Treasures[itemName].SubID() != 0 {
-				// skip
-			} else if tryReachTargets(g, targets, itemList, slotList, usedItems, usedSlots) {
-				return true
-			}
-
-			// item didn't work; unslot it and pop it onto the front of the unused list
-			usedItems.Remove(usedItems.Back())
-			itemList.PushFront(itemName)
-			g.Map[itemName].ClearParents()
-		}
-
-		// slot didn't work; pop it onto the front of the unused list
-		usedSlots.Remove(usedSlots.Back())
-		slotList.PushFront(slotName)
-
-		// reachable slots usually equivalent in terms of routing, so don't
-		// bother checking more at this point
-		break
-	}
-
-	// nothing worked
-	return false
-}
-
-// check if the targets are reachable using the current graph state
-func canReachTargets(g *graph.Graph, targets ...string) bool {
-	g.ClearMarks()
-	for _, target := range targets {
-		if g.Map[target].GetMark(nil) != graph.MarkTrue {
-			return false
-		}
-	}
-	return true
-}
-
 // messes up rom data and writes it to a file.
 //
 // this also calls verify.
-func randomize(romData []byte, outFilename string) []error {
+func randomize(romData []byte, outFilename string,
+	start, goal, forbid []string) []error {
 	// make sure rom data matches first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
 	}
 
 	// find a viable random route
-	r, _ := initRoute()
-	usedItems, usedSlots, unusedItems, unusedSlots := makeRoute(r,
-		[]string{"d1 essence", "d2 essence", "d3 essence", "d4 essence"})
+	r := initRoute(start)
+	usedItems, usedSlots, unusedItems, unusedSlots :=
+		makeRoute(r, goal, forbid)
 
-	// apply changes to rom data
+	// place selected treasures in slots
 	for usedItems.Len() > 0 {
 		slotName := usedSlots.Remove(usedSlots.Front()).(string)
 		treasureName := usedItems.Remove(usedItems.Front()).(string)
@@ -334,6 +154,17 @@ func randomize(romData []byte, outFilename string) []error {
 			return []error{err}
 		}
 	}
+
+	// remove forbidden unused items
+	for _, name := range forbid {
+		for e := unusedItems.Front(); e != nil; e = e.Next() {
+			if e.Value.(string) == name {
+				unusedItems.Remove(e)
+				break
+			}
+		}
+	}
+
 	for unusedSlots.Len() > 0 {
 		// fill unused slots with unused items
 		slotName := unusedSlots.Remove(unusedSlots.Front()).(string)
@@ -344,21 +175,12 @@ func randomize(romData []byte, outFilename string) []error {
 			}
 			log.Printf("placed %s in unused slot %s", treasureName, slotName)
 		} else {
-			log.Printf("can't fill unused slot %s; no unused items", slotName)
+			log.Fatalf("fatal: can't fill unused slot %s; no unused items",
+				slotName)
 		}
 	}
-	rom.Mutate(romData)
 
-	// write to file
-	f, err := os.Create(flag.Arg(1))
-	if err != nil {
-		return []error{err}
-	}
-	defer f.Close()
-	if _, err := f.Write(romData); err != nil {
-		return []error{err}
-	}
-	log.Printf("wrote new ROM to %s", flag.Arg(1))
+	rom.Mutate(romData)
 
 	return nil
 }
