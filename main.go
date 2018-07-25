@@ -110,7 +110,8 @@ func main() {
 		checkNumArgs(flagOp, 0)
 
 		r, _ := initRoute()
-		_, _, _ = makeRoute(r, []string{"d1 essence", "d2 essence", "d3 essence"})
+		_, _, _ = makeRoute(r,
+			[]string{"d1 essence", "d2 essence", "d3 essence", "d4 essence"})
 	case "randomize":
 		checkNumArgs(flagOp, 2)
 
@@ -322,8 +323,8 @@ func randomize(romData []byte, outFilename string) []error {
 
 	// find a viable random route
 	r, _ := initRoute()
-	usedItems, usedSlots, unusedSlots :=
-		makeRoute(r, []string{"d1 essence", "d2 essence", "d3 essence"})
+	usedItems, usedSlots, unusedSlots := makeRoute(r,
+		[]string{"d1 essence", "d2 essence", "d3 essence", "d4 essence"})
 
 	// apply changes to rom data
 	for usedItems.Len() > 0 {

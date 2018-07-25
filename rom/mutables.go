@@ -205,6 +205,12 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x0b, 0x5c1b}},
 		CollectMode: CollectGoronGift,
 	},
+	"d4 slingshot chest": &MutableSlot{
+		Treasure:    Treasures["slingshot L-1"],
+		IDAddrs:     []Addr{{0x15, 0x5470}},
+		SubIDAddrs:  []Addr{{0x15, 0x5471}},
+		CollectMode: CollectChest,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{

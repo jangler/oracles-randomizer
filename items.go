@@ -35,23 +35,23 @@ var baseItemPoints = map[string]Point{
 	"slingshot L-1": Or{},
 	"magnet gloves": Or{},
 	// sword L-2 is fixed
-	"boomerang L-2": Or{},
-	"feather L-2":   Or{},
+	"boomerang L-2":   Or{},
+	"feather L-2":     Or{},
+	"master's plaque": Or{},
+	"spring banana":   Or{},
+	"dragon key":      Or{},
+	"slingshot L-2":   Or{},
+	"ring box L-2":    Or{},
 }
 
 // don't slot these for now; they don't satisfy anything
 var ignoredBaseItemPoints = map[string]Point{
-	"spring banana":   Or{},
-	"dragon key":      Or{},
-	"ring box L-2":    Or{}, // TODO where is this?
-	"find toss ring":  Or{},
-	"master's plaque": Or{},
-	"square jewel":    Or{},
-	"pyramid jewel":   Or{},
-	"x-shaped jewel":  Or{},
-	"round jewel":     Or{},
-	"rusty bell":      Or{},
-	"slingshot L-2":   Or{},
+	"find toss ring": Or{},
+	"square jewel":   Or{},
+	"pyramid jewel":  Or{},
+	"x-shaped jewel": Or{},
+	"round jewel":    Or{},
+	"rusty bell":     Or{},
 }
 
 var itemPoints = map[string]Point{
@@ -94,6 +94,9 @@ var itemPoints = map[string]Point{
 
 	"pegasus jump L-1": And{"pegasus satchel", "feather L-1"},
 	"pegasus jump L-2": And{"pegasus satchel", "feather L-2"},
+	"long jump":        Or{"feather L-2", "pegasus jump L-1"},
+	"cross water gap":  Or{"flippers", "jump"},
+	"cross large pool": Or{"flippers", "pegasus jump L-2"},
 
 	"sword L-2": And{"lost woods", "winter", "autumn", "spring", "summer"},
 
@@ -112,21 +115,20 @@ var itemPoints = map[string]Point{
 	"shield L-1": Or{"rupees"},
 	"shield L-2": Or{}, // TODO as if it matters
 
-	"sword":      Or{"sword L-1", "sword L-2"},
-	"shield":     Or{"shield L-1", "shield L-2"},
-	"beams":      Or{"sword L-1", "sword beams L-1"},
-	"boomerang":  Or{"boomerang L-1", "boomerang L-2"},
-	"slingshot":  Or{"slingshot L-1", "slingshot L-2"},
-	"seed item":  Or{"satchel", "slingshot"},
-	"find bombs": Or{"find d2 bombs"},
-	"bombs":      Or{"rupees", "find bombs"},
-	"jump":       Or{"feather L-1", "feather L-2"},
+	"sword":          Or{"sword L-1", "sword L-2"},
+	"shield":         Or{"shield L-1", "shield L-2"},
+	"beams":          Or{"sword L-1", "sword beams L-1"},
+	"boomerang":      Or{"boomerang L-1", "boomerang L-2"},
+	"find slingshot": Or{"slingshot L-1", "slingshot L-2"},
+	"slingshot":      And{"find slingshot", "satchel"}, // need satchel to use
+	"seed item":      Or{"satchel", "slingshot"},
+	"find bombs":     Or{"find d2 bombs"},
+	"bombs":          Or{"rupees", "find bombs"},
+	"jump":           Or{"feather L-1", "feather L-2"},
 
 	"harvest item":     Or{"sword", "rod", "fool's ore", "punch"},
 	"find ember seeds": Or{"find d1 ember seeds", "find d2 ember seeds"}, // TODO
 	"get ember seeds":  Or{"harvest ember seeds", "find ember seeds"},
-
-	"long jump": Or{"feather L-2", "pegasus jump L-1"},
 
 	"find punch ring": Or{"find fist ring", "find expert's ring"},
 

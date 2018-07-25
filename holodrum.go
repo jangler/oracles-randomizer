@@ -150,8 +150,6 @@ var holodrumPoints = map[string]Point{
 	"temple remains 2": And{"goron mountain", "flippers"},
 	"temple remains 3": And{"ricky pen", "long jump"},
 
-	"cross water gap": Or{"flippers", "jump"},
-
 	// referenced things that i don't want to deal with yet
 	"lost woods": Or{},
 }
