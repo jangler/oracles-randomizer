@@ -67,7 +67,15 @@ func (ms MutableSlot) Mutate(b []byte) error {
 	for _, addr := range ms.SubIDAddrs {
 		b[addr.FullOffset()] = ms.Treasure.subID
 	}
-	ms.Treasure.mode = ms.CollectMode
+
+	// use normal chest mode instead of the x-shaped jewel once
+	// since the x-shaped jewel one can lock the game
+	if ms.CollectMode == CollectXChest {
+		ms.Treasure.mode = CollectChest
+	} else {
+		ms.Treasure.mode = ms.CollectMode
+	}
+
 	return ms.Treasure.Mutate(b)
 }
 
