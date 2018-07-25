@@ -196,12 +196,16 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x0b, 0x7351}},
 		CollectMode: CollectUnderwater,
 	},
-	"ring box L-2 gift": &MutableSlot{
-		Treasure:    Treasures["ring box L-2"],
-		IDAddrs:     []Addr{{0x0b, 0x5c1a}},
-		SubIDAddrs:  []Addr{{0x0b, 0x5c1b}},
-		CollectMode: CollectGoronGift,
-	},
+	// don't use this slot; no one knows about it and it's not required for
+	// anything in a normal playthrough
+	/*
+		"ring box L-2 gift": &MutableSlot{
+			Treasure:    Treasures["ring box L-2"],
+			IDAddrs:     []Addr{{0x0b, 0x5c1a}},
+			SubIDAddrs:  []Addr{{0x0b, 0x5c1b}},
+			CollectMode: CollectGoronGift,
+		},
+	*/
 	"d4 slingshot chest": &MutableSlot{
 		Treasure:    Treasures["slingshot L-1"],
 		IDAddrs:     []Addr{{0x15, 0x5470}},

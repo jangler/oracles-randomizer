@@ -41,11 +41,11 @@ var baseItemPoints = map[string]Point{
 	"spring banana":   Or{},
 	"dragon key":      Or{},
 	"slingshot L-2":   Or{},
-	"ring box L-2":    Or{},
 }
 
 // don't slot these for now; they don't satisfy anything
 var ignoredBaseItemPoints = map[string]Point{
+	"ring box L-2":   Or{},
 	"find toss ring": Or{},
 	"square jewel":   Or{},
 	"pyramid jewel":  Or{},
