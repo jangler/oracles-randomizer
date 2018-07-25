@@ -84,6 +84,7 @@ var holodrumPoints = map[string]Point{
 	"enter d2 A":      And{"mystery tree", "remove bush"},
 	"enter d2 B":      And{"mystery tree", "bracelet", "remove bush"},
 	"enter d2 C":      And{"mystery tree", "bracelet", "remove bush"},
+	"enter d2":        Or{"enter d2 A", "enter d2 B", "enter d2 C"}, // just for -forbid
 
 	// d2->d3
 	"north horon stump":  And{"horon village", "remove bush"},
