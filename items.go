@@ -13,7 +13,6 @@ package main
 var baseItemPoints = map[string]Point{
 	// ring box L-1 is free, but these nodes are "find" because it costs
 	// rupees to appraise (and therefore use) rings
-	"find energy ring":   Or{},
 	"find fist ring":     Or{},
 	"find expert's ring": Or{},
 
@@ -45,13 +44,14 @@ var baseItemPoints = map[string]Point{
 
 // don't slot these for now; they don't satisfy anything
 var ignoredBaseItemPoints = map[string]Point{
-	"ring box L-2":   Or{},
-	"find toss ring": Or{},
-	"square jewel":   Or{},
-	"pyramid jewel":  Or{},
-	"x-shaped jewel": Or{},
-	"round jewel":    Or{},
-	"rusty bell":     Or{},
+	"find energy ring": Or{},
+	"ring box L-2":     Or{},
+	"find toss ring":   Or{},
+	"square jewel":     Or{},
+	"pyramid jewel":    Or{},
+	"x-shaped jewel":   Or{},
+	"round jewel":      Or{},
+	"rusty bell":       Or{},
 }
 
 var itemPoints = map[string]Point{
