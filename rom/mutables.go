@@ -242,6 +242,12 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x15, 0x54e2}},
 		CollectMode: CollectChest,
 	},
+	"d8 HSS chest": &MutableSlot{
+		Treasure:    Treasures["slingshot L-2"],
+		IDAddrs:     []Addr{{0x15, 0x551d}},
+		SubIDAddrs:  []Addr{{0x15, 0x551e}},
+		CollectMode: CollectChest,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{
@@ -275,6 +281,11 @@ var holodrumMutables = map[string]Mutable{
 
 	// pirate captain and pirate on guard both check this (maybe others too)
 	"pirate essence check": MutableByte{Addr{0x08, 0x6c32}, 0x20, 0x00},
+
+	// looks like there's a check specifically for bit 6 too, but it doesn't
+	// seem to make a difference
+	"eruption check 1": MutableByte{Addr{0x08, 0x7c41}, 0x07, 0x00},
+	"eruption check 2": MutableByte{Addr{0x08, 0x7cd3}, 0x07, 0x00},
 }
 
 // hero's cave

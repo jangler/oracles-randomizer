@@ -237,7 +237,7 @@ var d6Points = map[string]Point{
 	"d6 rng stairs":     And{"enter vire", "kill vire"},
 
 	// 4F
-	"d6 3-switch room": And{"d6 rng stairs", "kill hardhat beetle (magnet)"},
+	"d6 3-switch room": And{"d6 rng stairs", "kill hardhat (magnet)"},
 
 	// 5F
 	"d6 pre-boss room": And{"d6 3-switch room", "hit very far switch"},
@@ -298,4 +298,56 @@ var d7Points = map[string]Point{
 	"d7 boss key": And{"d7 boss key chest"},
 }
 
-// TODO d8
+// ignoring everything unnecessary in a route that does obtain HSS.
+// keys get wonky but i'm just using the ones you'd get in an HSS skip route,
+// except for the locked doors that aren't in that route.
+var d8Points = map[string]Point{
+	// 1F
+	"d8 eye key fall":      And{"enter d8", "slingshot", "remove pot"},
+	"d8 hardhat room":      And{"enter d8", "kill magunesu"},
+	"d8 hardhat key fall":  And{"d8 hardhat room", "kill hardhat (magnet)"},
+	"d8 cross bridge A 1":  And{"d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"},
+	"d8 cross bridge A 2":  And{"d8 ice puzzle room", "long jump"},
+	"d8 bomb room":         And{"d8 HSS stairs", "slingshot L-2"},
+	"d8 bomb key chest":    And{"d8 bomb room", "bombs", "kill darknut"}, // just being reasonable
+	"d8 ice puzzle room 1": And{"d8 cross bridge A", "long jump"},
+	"d8 ice puzzle room 2": And{"d8 frypolar stairs"},
+	"d8 cross bridge B":    Or{"boomerang L-2", "pegasus jump L-2"},
+	// technically there are pots to throw in this room but i don't care
+	"d8 boss key chest": And{"d8 cross bridge B", "kill keese", "kill pols voice (pit)"},
+	"d8 crystal room":   And{"d8 ice puzzle room", "d8 key A"},
+	"d8 armos key fall": And{"d8 crystal room", "bombs"},
+	"d8 NW crystal":     And{"d8 crystal room", "d8 key B"},
+	"d8 NE crystal":     And{"d8 crystal room", "hit lever"},
+	"d8 SE crystal":     And{"d8 crystal room"},
+	"d8 SW crystal":     And{"d8 crystal room", "d8 key E"},
+	"d8 pot key chest":  And{"d8 SE crystal", "d8 NE crystal", "remove pot"},
+
+	// B1F
+	"d8 cross pot path":    Or{"remove pot", "jump"},
+	"d8 double rollers":    And{"d8 hardhat room", "d8 key A", "d8 cross pot path"},
+	"d8 blade room":        And{"d8 double rollers", "long jump"},
+	"d8 spinner":           And{"d8 blade room", "d8 key B"},
+	"d8 place ball":        And{"d8 spinner", "magnet gloves"},
+	"d8 HSS chest":         AndSlot{"d8 spinner", "magnet gloves"},
+	"d8 HSS stairs 1":      And{"d8 HSS chest", "pegasus jump L-2"},
+	"d8 HSS stairs 2":      And{"d8 HSS chest", "d8 place ball"},
+	"d8 spinner key chest": And{"d8 HSS stairs"},
+	"enter frypolar":       And{"d8 HSS stairs", "d8 key C"},
+	"d8 frypolar stairs":   And{"enter frypolar", "kill frypolar", "ember seeds", "slingshot L-2"},
+	"d8 lava key chest":    And{"d8 SE crystal"},
+	"enter medusa head":    And{"d8 SW crystal", "d8 SE crystal", "d8 NW crystal", "d8 key F", "d8 boss key"},
+	"d8 essence":           And{"enter medusa head", "kill medusa head"},
+
+	// fixed items
+	"d8 key A":    And{"d8 eye key fall"},
+	"d8 key B":    And{"d8 hardhat key fall"},
+	"d8 key C":    And{"d8 spinner key chest"},
+	"d8 key D":    And{"d8 bomb key chest"},
+	"d8 key E":    And{"d8 armos key fall"},
+	"d8 key F":    And{"d8 lava key chest"},
+	"d8 key G":    And{"d8 pot key chest"},
+	"d8 boss key": And{"d8 boss key chest"},
+}
+
+// TODO onox's castle

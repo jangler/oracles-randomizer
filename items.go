@@ -109,7 +109,11 @@ var itemPoints = map[string]Point{
 	"spring": And{"rod", "spring tower"},
 	"autumn": And{"rod", "autumn tower"},
 
-	"animal": And{"ricky pen", "ricky's gloves"}, // TODO flute stuff
+	"ricky":         And{"ricky pen", "ricky's gloves"},
+	"strange flute": And{"rupees"}, // TODO subrosian dancing
+	"moosh flute":   And{"strange flute", "spool swamp", "kill moblin"},
+	"animal flute":  Or{"ricky", "moosh flute"},
+	"flute":         Or{"strange flute", "animal flute"},
 
 	"rod":        Or{"temple"}, // keep in place for now
 	"fool's ore": Or{},         // disregard for now
@@ -137,5 +141,5 @@ var itemPoints = map[string]Point{
 	// access those enemies without another item that already collects rupees.
 	// i'm also not including expendable items in this list just because it
 	// could be super tedious to farm rupees using them.
-	"rupees": Or{"sword", "boomerang", "shovel", "bracelet", "animal", "fool's ore", "punch"},
+	"rupees": Or{"sword", "boomerang", "shovel", "bracelet", "ricky", "animal flute", "fool's ore", "punch"},
 }
