@@ -350,4 +350,8 @@ var d8Points = map[string]Point{
 	"d8 boss key": And{"d8 boss key chest"},
 }
 
-// TODO onox's castle
+// onox's castle
+var d9Points = map[string]Point{
+	"enter onox": And{"enter d9", "kill wizzrobe", "kill floormaster", "kill darknut", "kill facade"},
+	"done":       And{"enter onox", "kill onox"},
+}

@@ -59,7 +59,7 @@ func init() {
 		itemPoints, killPoints,
 		holodrumPoints, subrosiaPoints, portalPoints,
 		d0Points, d1Points, d2Points, d3Points, d4Points,
-		d5Points, d6Points, d7Points, d8Points,
+		d5Points, d6Points, d7Points, d8Points, d9Points,
 	)
 }
 

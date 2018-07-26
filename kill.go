@@ -127,4 +127,6 @@ var killPoints = map[string]Point{
 	"kill frypolar":                   And{"mystery slingshot", "bracelet"},
 	"kill pols voice (pit)":           Or{"sword", "beams", "boomerang", "rod", "scent seeds", "gale seeds", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"},
 	"kill medusa head":                Or{"sword", "fool's ore"},
+	"kill floormaster":                Or{"kill normal"},
+	"kill onox":                       And{"sword", "jump"}, // probably, idc
 }

@@ -169,4 +169,8 @@ var holodrumPoints = map[string]Point{
 	"temple remains 1": And{"goron mountain", "pegasus jump L-2"},
 	"temple remains 2": And{"goron mountain", "flippers"},
 	"temple remains 3": And{"ricky pen", "long jump"},
+
+	// d8->d9
+	"maku seed": And{"d1 essence", "d2 essence", "d3 essence", "d4 essence", "d5 essence", "d6 essence", "d7 essence", "d8 essence"},
+	"enter d9":  And{"scent tree", "maku seed"},
 }
