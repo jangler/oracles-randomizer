@@ -316,6 +316,16 @@ func tryReachTargets(g *graph.Graph, goal, forbid []string, maxlen int,
 			if slotName == "star ore spot" && rom.Treasures[itemName].SubID() != 0 {
 				skip = true
 			}
+			// don't place a L-1 item if you can already get the L-2 one
+			if strings.HasSuffix(itemName, " L-1") {
+				if canReachTargets(g, strings.Replace(itemName, "L-1", "L-2", 1)) {
+					skip = true
+				}
+			} else if itemName == "find fist ring" {
+				if canReachTargets(g, "find expert's ring") {
+					skip = true
+				}
+			}
 
 			if !skip && tryReachTargets(g, goal, forbid, maxlen-1,
 				itemList, slotList, usedItems, usedSlots) {
