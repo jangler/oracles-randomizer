@@ -33,24 +33,24 @@ var baseItemPoints = map[string]Point{
 	"slingshot L-1": Or{},
 	"magnet gloves": Or{},
 	// sword L-2 is fixed
-	"boomerang L-2":   Or{},
-	"feather L-2":     Or{},
-	"master's plaque": Or{},
-	"spring banana":   Or{},
-	"dragon key":      Or{},
-	"slingshot L-2":   Or{},
-	"square jewel":    Or{},
-	"pyramid jewel":   Or{},
-	"x-shaped jewel":  Or{},
-	"round jewel":     Or{},
+	"boomerang L-2":    Or{},
+	"feather L-2":      Or{},
+	"master's plaque":  Or{},
+	"spring banana":    Or{},
+	"dragon key":       Or{},
+	"slingshot L-2":    Or{},
+	"square jewel":     Or{},
+	"pyramid jewel":    Or{},
+	"x-shaped jewel":   Or{},
+	"round jewel":      Or{},
+	"rusty bell":       Or{},
+	"find energy ring": Or{},
+	"find toss ring":   Or{},
 }
 
 // don't slot these for now; they don't satisfy anything
 var ignoredBaseItemPoints = map[string]Point{
-	"find energy ring": Or{},
-	"ring box L-2":     Or{},
-	"find toss ring":   Or{},
-	"rusty bell":       Or{},
+	"ring box L-2": Or{},
 }
 
 var itemPoints = map[string]Point{

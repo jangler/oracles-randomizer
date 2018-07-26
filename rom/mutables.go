@@ -230,6 +230,18 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x15, 0x54c1}},
 		CollectMode: CollectChest,
 	},
+	"rusty bell spot": &MutableSlot{
+		Treasure:    Treasures["rusty bell"],
+		IDAddrs:     []Addr{{0x09, 0x6476}},
+		SubIDAddrs:  []Addr{{0x09, 0x6475}},
+		CollectMode: CollectFind2,
+	},
+	"d7 cape chest": &MutableSlot{
+		Treasure:    Treasures["feather L-2"],
+		IDAddrs:     []Addr{{0x15, 0x54e1}},
+		SubIDAddrs:  []Addr{{0x15, 0x54e2}},
+		CollectMode: CollectChest,
+	},
 }
 
 var holodrumMutables = map[string]Mutable{
@@ -254,12 +266,15 @@ var holodrumMutables = map[string]Mutable{
 	"dimitri essence check": MutableByte{Addr{0x09, 0x4e36}, 0xcb, 0xf6},
 	"dimitri flipper check": MutableByte{Addr{0x09, 0x4e4c}, 0x2e, 0x00},
 
-	// master who gives flippers checks essences two ways
+	// master who gives flippers checks essences two ways (?)
 	"master essence check 2": MutableByte{Addr{0x0a, 0x4bea}, 0x40, 0x02},
 	"master essence check 1": MutableByte{Addr{0x0a, 0x4bf5}, 0x02, 0x00},
 
 	// round jewel giver checks for number of essences
 	"round jewel essence check": MutableByte{Addr{0x0a, 0x4f8b}, 0x05, 0x00},
+
+	// pirate captain and pirate on guard both check this (maybe others too)
+	"pirate essence check": MutableByte{Addr{0x08, 0x6c32}, 0x20, 0x00},
 }
 
 // hero's cave

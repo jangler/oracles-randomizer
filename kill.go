@@ -112,4 +112,14 @@ var killPoints = map[string]Point{
 	"kill vire":                       Or{"sword", "bombs", "fool's ore", "punch"},
 	"finish manhandla":                Or{"sword", "bombs", "slingshot", "fool's ore"},
 	"kill manhandla":                  And{"boomerang L-2", "finish manhandla"},
+	"kill wizzrobe":                   Or{"kill normal"},
+	"kill keese":                      Or{"kill normal", "boomerang"},
+	"kill magunesu":                   Or{"sword", "fool's ore", "punch"}, // even bombs don't work!
+	"kill poe sister":                 Or{"sword", "beams", "ember seeds", "scent seeds", "bombs", "fool's ore", "punch"},
+	"kill darknut (across pit) 1":     Or{"beams", "toss bombs", "scent slingshot", "magnet gloves"},
+	"kill darknut (across pit) 2":     And{"feather L-2", "kill darknut (pit)"},
+	"kill wizzrobe (pit)":             Or{"pit kill normal"},
+	"kill stalfos (pit)":              Or{"kill stalfos", "pit kill normal"},
+	"kill gleeok":                     Or{"sword", "beams", "bombs", "fool's ore", "punch"},
+	"hit switch":                      Or{"sword", "beams", "boomerang", "rod", "satchel", "bombs", "fool's ore", "punch", "shovel"},
 }

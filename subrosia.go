@@ -61,6 +61,7 @@ var subrosiaPoints = map[string]Point{
 
 	"boomerang gift":     AndSlot{"temple"},
 	"star ore spot":      AndSlot{"beach", "shovel"},
+	"pirate's bell":      And{"temple", "rusty bell"},
 	"cross winter tower": Or{"hit far switch", "jump"},
 	"winter tower":       And{"temple", "cross winter tower"},
 	"summer tower":       And{"beach", "ribbon"},

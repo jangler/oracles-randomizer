@@ -156,10 +156,16 @@ var holodrumPoints = map[string]Point{
 	"tarm gale tree":       And{"lost woods", "winter", "autumn", "spring", "summer"},
 	"enter d6":             And{"tarm gale tree", "winter", "shovel", "spring", "remove flower"},
 
-	// d6->d7 TODO
-	"eastern coast": And{"horon village", "ember seeds"},
-	"samasa desert": And{"pirate house", "eastern coast"},
+	// d6->d7
+	"eastern coast":   And{"horon village", "ember seeds"},
+	"samasa desert":   And{"pirate house", "eastern coast"},
+	"rusty bell spot": AndSlot{"samasa desert", "bracelet"},
+	"pirate ship":     And{"pirate's bell"},
+	"graveyard 1":     And{"pirate ship", "long jump"},
+	"graveyard 2":     And{"pirate ship", "bombs", "jump", "summer"},
+	"enter d7":        And{"graveyard", "shovel"},
 
+	// d7->d8
 	"temple remains 1": And{"goron mountain", "pegasus jump L-2"},
 	"temple remains 2": And{"goron mountain", "flippers"},
 	"temple remains 3": And{"ricky pen", "long jump"},
