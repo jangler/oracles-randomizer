@@ -119,6 +119,7 @@ var holodrumPoints = map[string]Point{
 	"natzu 3":               And("sunken city", "animal flute"),
 	"sunken city 1":         And("natzu", "animal flute"),
 	"sunken city 2":         And("mount cucco", "flippers"),
+	"sunken city 3":         And("post-d2 stump", "spring"),
 	"sunken gale tree":      And("sunken city", "cross water gap"),
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("sunken gale tree", "dimitri", "sword", "cross water gap"),

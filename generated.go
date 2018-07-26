@@ -47,7 +47,7 @@ var generatedPoints = map[string]Point{
 	"sokra stump":               Point{Parents: []string{"sokra stump 1", "sokra stump 2", "sokra stump 3", "sokra stump 4"}, Type: 2},
 	"spool swamp":               Point{Parents: []string{"spool swamp 1", "spool swamp 2", "spool swamp 3"}, Type: 2},
 	"square jewel":              Point{Parents: []string{"square jewel 1", "square jewel 2", "square jewel 3"}, Type: 2},
-	"sunken city":               Point{Parents: []string{"sunken city 1", "sunken city 2"}, Type: 2},
+	"sunken city":               Point{Parents: []string{"sunken city 1", "sunken city 2", "sunken city 3"}, Type: 2},
 	"swamp portal":              Point{Parents: []string{"swamp portal 1", "swamp portal 2", "swamp portal 3", "swamp portal 4"}, Type: 2},
 	"temple":                    Point{Parents: []string{"temple 1", "temple 2", "temple 3", "temple 4", "temple 5"}, Type: 2},
 	"temple remains":            Point{Parents: []string{"temple remains 1", "temple remains 2", "temple remains 3"}, Type: 2},
