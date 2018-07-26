@@ -174,8 +174,6 @@ var d5Points = map[string]Point{
 	"d5 cart key chest": And{"d5 cart bay", "hit lever"},
 	"d5 underground A":  Or{"d5 stairs A in", "d5 stairs C in"},
 	"d5 stairs A in":    And{"d5 cart bay"},
-	"d5 stairs A out 1": And{"d5 stairs A in", "jump"},
-	"d5 stairs A out 2": And{"d5 stairs C in", "bombs", "jump"},
 	"d5 stairs B out 1": And{"d5 stairs A in", "jump"},
 	"d5 stairs B out 2": And{"d5 stairs C in", "bombs", "jump"},
 	// stairs B out is one-way

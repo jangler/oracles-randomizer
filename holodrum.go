@@ -40,8 +40,8 @@ var portalPoints = map[string]Point{
 	"remains portal 4": And{"temple remains", "autumn", "remove bush", "jump", "winter"},
 
 	// dead end
-	"d8 portal 1": And{"remains portal", "summer", "long jump", "magnet gloves"},
-	"d8 portal 2": And{"remains portal", "summer", "pegasus jump L-2"},
+	"d8 portal 1": And{"remains portal", "bombs", "summer", "long jump", "magnet gloves"},
+	"d8 portal 2": And{"remains portal", "bombs", "summer", "pegasus jump L-2"},
 
 	// exiting subrosia via the rosa portal without having activated it from
 	// holodrum gets you stuck in a bush unless you have a way to cut it down.
