@@ -92,11 +92,11 @@ func makeNumberPoints(pointMaps ...map[string]Point) map[string]Point {
 				realKey := matches[0][1]
 				if pt, ok := numberPoints[realKey]; ok {
 					// sort for consistent order and minimal difs
-					parents := sort.StringSlice(append(pt.Parents(), key))
+					parents := sort.StringSlice(append(pt.Parents, key))
 					parents.Sort()
-					numberPoints[realKey] = Or(parents)
+					numberPoints[realKey] = Or(parents...)
 				} else {
-					numberPoints[realKey] = Or{key}
+					numberPoints[realKey] = Or(key)
 				}
 			}
 		}

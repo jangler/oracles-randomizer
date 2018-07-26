@@ -18,33 +18,35 @@ import (
 //     need both energy ring and fist ring, but if you did, then you'd need to
 //     have the L-2 ring box to do so without danger of soft locking.
 
+type PointType int
+
+const (
+	RootType PointType = iota
+	AndType
+	OrType
+	AndSlotType
+	OrSlotType
+)
+
 // A Point is a mapping of point strings that will become And or Or nodes in
 // the graph.
-type Point interface {
-	Parents() []string
+type Point struct {
+	Parents []string
+	Type    PointType
 }
 
 // the different types of points are all just string slices; the reason for
 // having different ones is purely for type assertions
-//
-// TODO i think this doesn't work because they're all []strings and not structs
-//      or anything
 
-type And []string
+func Root(a ...string) Point { return Point{a, RootType} }
 
-func (p And) Parents() []string { return p }
+func And(a ...string) Point { return Point{a, AndType} }
 
-type Or []string
+func Or(a ...string) Point { return Point{a, OrType} }
 
-func (p Or) Parents() []string { return p }
+func AndSlot(a ...string) Point { return Point{a, AndSlotType} }
 
-type AndSlot []string
-
-func (p AndSlot) Parents() []string { return p }
-
-type OrSlot []string
-
-func (p OrSlot) Parents() []string { return p }
+func OrSlot(a ...string) Point { return Point{a, OrSlotType} }
 
 type Route struct {
 	Graph  *graph.Graph
@@ -81,7 +83,7 @@ func initRoute(start []string) *Route {
 
 	// make start nodes given
 	for _, key := range start {
-		totalPoints[key] = And{}
+		totalPoints[key] = And()
 	}
 
 	addPointNodes(g, totalPoints)
@@ -89,8 +91,8 @@ func initRoute(start []string) *Route {
 
 	openSlots := make(map[string]Point, 0)
 	for name, point := range totalPoints {
-		switch point.(type) {
-		case AndSlot, OrSlot:
+		switch point.Type {
+		case AndSlotType, OrSlotType:
 			openSlots[name] = point
 		}
 	}
@@ -107,8 +109,8 @@ func (r *Route) CheckGraph() []error {
 	for name, node := range r.Graph.Map {
 		// check for parents and children
 		if len(node.Parents()) == 0 {
-			// base items are supposed to be parentless
-			if baseItemPoints[name] != nil || ignoredBaseItemPoints[name] != nil {
+			// root nodes are supposed to be parentless
+			if r.Points[name].Type == RootType {
 				// it's supposed to be orphan/childless; skip it
 				continue
 			}
@@ -120,8 +122,8 @@ func (r *Route) CheckGraph() []error {
 		}
 		if len(node.Children()) == 0 {
 			// item slots are supposed to be childless
-			switch r.Points[name].(type) {
-			case AndSlot, OrSlot:
+			switch r.Points[name].Type {
+			case AndSlotType, OrSlotType:
 				continue
 			}
 
@@ -145,10 +147,10 @@ func appendPoints(total map[string]Point, pointMaps ...map[string]Point) {
 
 func addPointNodes(g *graph.Graph, points map[string]Point) {
 	for key, pt := range points {
-		switch pt.(type) {
-		case And, AndSlot:
+		switch pt.Type {
+		case AndType, AndSlotType:
 			g.AddAndNodes(key)
-		case Or, OrSlot:
+		case OrType, OrSlotType, RootType:
 			g.AddOrNodes(key)
 		default:
 			panic("unknown point type for " + key)
@@ -159,7 +161,7 @@ func addPointNodes(g *graph.Graph, points map[string]Point) {
 func addPointParents(g *graph.Graph, points map[string]Point) {
 	// ugly but w/e
 	for k, p := range points {
-		g.AddParents(map[string][]string{k: p.Parents()})
+		g.AddParents(map[string][]string{k: p.Parents})
 	}
 }
 
