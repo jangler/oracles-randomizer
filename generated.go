@@ -18,7 +18,6 @@ var generatedPoints = map[string]Point{
 	"d6 map chest":              Point{Parents: []string{"d6 map chest 1", "d6 map chest 2"}, Type: 2},
 	"d7 armos room":             Point{Parents: []string{"d7 armos room 1", "d7 armos room 2"}, Type: 2},
 	"d7 cross bridge":           Point{Parents: []string{"d7 cross bridge 1", "d7 cross bridge 2", "d7 cross bridge 3"}, Type: 2},
-	"d7 enter skipped":          Point{Parents: []string{"d7 enter skipped 1", "d7 enter skipped 2"}, Type: 2},
 	"d8 HSS stairs":             Point{Parents: []string{"d8 HSS stairs 1", "d8 HSS stairs 2"}, Type: 2},
 	"d8 cross bridge A":         Point{Parents: []string{"d8 cross bridge A 1", "d8 cross bridge A 2"}, Type: 2},
 	"d8 ice puzzle room":        Point{Parents: []string{"d8 ice puzzle room 1", "d8 ice puzzle room 2"}, Type: 2},
