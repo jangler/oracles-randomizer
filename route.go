@@ -26,6 +26,9 @@ type Point interface {
 
 // the different types of points are all just string slices; the reason for
 // having different ones is purely for type assertions
+//
+// TODO i think this doesn't work because they're all []strings and not structs
+//      or anything
 
 type And []string
 
