@@ -66,15 +66,11 @@ func makeNumberPrenodes(
 
 	for _, prenodes := range maps {
 		for key := range prenodes {
-			if strings.ContainsRune(key, ';') {
-				continue
-			}
-
 			matches := numberRegexp.FindAllStringSubmatch(key, 1)
 			if matches != nil {
 				realKey := matches[0][1]
 				if pt, ok := numberPrenodes[realKey]; ok {
-					// sort for consistent order and minimal difs
+					// sort for consistent order and minimal diffs
 					parents := sort.StringSlice(append(pt.Parents, key))
 					parents.Sort()
 					numberPrenodes[realKey] = prenode.Or(parents...)

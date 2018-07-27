@@ -168,7 +168,8 @@ func makeRoute(r *Route, start, goal, forbid []string,
 		}
 		log.Print("-- slotted items")
 		if usedItems.Len() != usedSlots.Len() {
-			log.Fatalf("FATAL: usedItems.Len() == %d; usedSlots.Len() == %d", usedItems.Len(), usedSlots.Len())
+			log.Fatalf("FATAL: usedItems.Len() == %d; usedSlots.Len() == %d",
+				usedItems.Len(), usedSlots.Len())
 		}
 		for i := 0; i < usedItems.Len(); i++ {
 			log.Printf("%v <- %v",

@@ -78,6 +78,8 @@ func (g Graph) Explore(start map[*Node]bool, add, sub []*Node) map[*Node]bool {
 
 	// subtract nodes from the reached set and add their reached children to
 	// the frontier
+	//
+	// XXX i'm not 100% sure this works correctly since it's never used
 	for _, node := range sub {
 		delete(reached, node)
 		for _, child := range node.Children {

@@ -18,6 +18,7 @@
 	- try randomizing trees
 - rod
 - verify that dungeons are completeable in *any* possible key order
+- parallelize?
 
 ## low priority
 
