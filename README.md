@@ -48,6 +48,12 @@ available slots. The flag just limits the number of slotted items that are
 *necessary* in order to reach the goal(s).
 
 
+## Download
+
+You can download executables for Windows, MacOS, and Linux from the
+[releases](https://github.com/jangler/oos-randomizer/releases) page.
+
+
 ## Randomization notes
 
 Most inventory items (equippable and non-equippable) that are necessary to
