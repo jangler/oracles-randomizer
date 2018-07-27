@@ -9,9 +9,15 @@ to the goal, although you may have to be inventive to find it.
 
 The randomizer has not been publicly tested yet, so consider it "beta" for now.
 I've done a full run without problems, but it doesn't mean that there aren't
-any bugs. I particularly recommend saving before opening any chest, because if
-the randomizer screwed up then you'll be stuck in cutscene mode and have to
-hard reset.
+any bugs. I particularly recommend saving before opening an important chest,
+because if the randomizer screwed up then you'll be stuck in cutscene mode and
+have to hard reset.
+
+
+## Download
+
+You can download executables for Windows, MacOS, and Linux from the
+[releases](https://github.com/jangler/oos-randomizer/releases) page.
 
 
 ## Usage
@@ -46,12 +52,6 @@ abbreviated list of possible `-goal` and `-forbid` nodes.
 Regardless of the value of `-maxlen`, the randomizer will place items in all
 available slots. The flag just limits the number of slotted items that are
 *necessary* in order to reach the goal(s).
-
-
-## Download
-
-You can download executables for Windows, MacOS, and Linux from the
-[releases](https://github.com/jangler/oos-randomizer/releases) page.
 
 
 ## Randomization notes
