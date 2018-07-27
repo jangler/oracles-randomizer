@@ -5,7 +5,7 @@ import (
 )
 
 func TestShovelLockCheck(t *testing.T) {
-	r := initRoute([]string{"horon village"})
+	r := NewRoute([]string{"horon village"})
 	g := r.Graph
 
 	// make sure that needing a shovel in advance passes

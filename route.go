@@ -17,7 +17,7 @@ type Route struct {
 	Slots map[string]*graph.Node
 }
 
-func initRoute(start []string) *Route {
+func NewRoute(start []string) *Route {
 	g := graph.New()
 	totalPrenodes := prenode.GetAll()
 

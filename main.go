@@ -41,7 +41,7 @@ func main() {
 		checkNumArgs(*flagDevcmd, 0)
 
 		// check for orphan/childless nodes
-		r := initRoute(strings.Split(*flagStart, ","))
+		r := NewRoute(strings.Split(*flagStart, ","))
 		if errs := r.CheckGraph(); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
@@ -143,7 +143,7 @@ func randomize(romData []byte, outFilename string,
 	}
 
 	// find a viable random route
-	r := initRoute(start)
+	r := NewRoute(start)
 	usedItems, usedSlots := makeRoute(r, start, goal, forbid, maxlen)
 
 	// place selected treasures in slots
