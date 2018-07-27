@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
 	"os"
 	"strings"
@@ -59,7 +60,7 @@ func main() {
 		checkNumArgs(*flagDevcmd, 1)
 
 		// load rom
-		romData, err := loadROM(flag.Arg(0))
+		romData, err := readFileBytes(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -81,7 +82,7 @@ func main() {
 		}
 
 		// load rom
-		romData, err := loadROM(flag.Arg(0))
+		romData, err := readFileBytes(flag.Arg(0))
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -121,15 +122,14 @@ func main() {
 	}
 }
 
-// can be used for loading pretty much anything, really, as long as you want it
-// as a slice of bytes.
-func loadROM(filename string) ([]byte, error) {
+// return the contents of the names file as a slice of bytes
+func readFileBytes(filename string) ([]byte, error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	return rom.Load(f)
+	return ioutil.ReadAll(f)
 }
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().

@@ -5,8 +5,6 @@ package rom
 import (
 	"crypto/sha1"
 	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
 	"strings"
 )
@@ -25,11 +23,6 @@ func (a *Addr) FullOffset() int {
 		bankOffset = bankSize * (int(a.Bank) - 1)
 	}
 	return bankOffset + int(a.Offset)
-}
-
-// Load reads ROM data from a reader into memory.
-func Load(f io.Reader) ([]byte, error) {
-	return ioutil.ReadAll(f)
 }
 
 // Mutate changes the contents of loaded ROM bytes in place.
