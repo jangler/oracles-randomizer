@@ -22,6 +22,7 @@ type Mark int
 // and an Or node with no parents always returns MarkFalse.
 type NodeType int
 
+// See Mark and NodeType comments for information.
 const (
 	MarkNone    Mark = iota // satisfied depending on parents
 	MarkTrue                // succeed an OrNode, continue an AndNode

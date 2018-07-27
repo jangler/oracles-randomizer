@@ -12,11 +12,14 @@ import (
 	"github.com/jangler/oos-randomizer/rom"
 )
 
+// A Route is a set of information needed for finding an item placement route.
 type Route struct {
 	Graph graph.Graph
 	Slots map[string]*graph.Node
 }
 
+// NewRoute returns an initialized route with all prenodes, and those prenodes
+// with the names in start functioning as givens (always satisfied).
 func NewRoute(start []string) *Route {
 	g := graph.New()
 	totalPrenodes := prenode.GetAll()
@@ -112,10 +115,10 @@ func makeRoute(r *Route, start, goal, forbid []string,
 		// shuffle names in slices
 		items := make([]*graph.Node, 0, len(prenode.BaseItems()))
 		slots := make([]*graph.Node, 0, len(r.Slots))
-		for itemName, _ := range prenode.BaseItems() {
+		for itemName := range prenode.BaseItems() {
 			items = append(items, r.Graph[itemName])
 		}
-		for slotName, _ := range r.Slots {
+		for slotName := range r.Slots {
 			slots = append(slots, r.Graph[slotName])
 		}
 		rand.Shuffle(len(items), func(i, j int) {

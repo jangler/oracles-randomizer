@@ -17,6 +17,7 @@ const (
 	CollectDig        = 0x5a
 )
 
+// A Treasure is data associated with a particular item ID and sub ID.
 type Treasure struct {
 	id, subID byte
 	addr      uint16 // bank 15, value of hl at $15:466b
@@ -25,18 +26,23 @@ type Treasure struct {
 	mode, value, text, sprite byte
 }
 
+// SubID returns item sub ID of the treasure.
 func (t Treasure) SubID() byte {
 	return t.subID
 }
 
+// RealAddr returns the total offset of the treasure data in the ROM.
 func (t Treasure) RealAddr() int {
 	return (&Addr{0x15, t.addr}).FullOffset() - 1
 }
 
+// Bytes returns a slice of consecutive bytes of treasure data, as they would
+// appear in the ROM.
 func (t Treasure) Bytes() []byte {
 	return []byte{t.mode, t.value, t.text, t.sprite}
 }
 
+// Mutate replaces the associated treasure in the given ROM data with this one.
 func (t Treasure) Mutate(b []byte) error {
 	addr, data := t.RealAddr(), t.Bytes()
 	for i := 0; i < 4; i++ {
@@ -45,6 +51,7 @@ func (t Treasure) Mutate(b []byte) error {
 	return nil
 }
 
+// Check verifies that the treasure's data matches the given ROM data.
 func (t Treasure) Check(b []byte) error {
 	addr, data := t.RealAddr(), t.Bytes()
 	if bytes.Compare(b[addr:addr+4], data) != 0 {
@@ -54,7 +61,7 @@ func (t Treasure) Check(b []byte) error {
 	return nil
 }
 
-// treasure item info
+// Treasures maps item names to associated treasure data.
 var Treasures = map[string]*Treasure{
 	"shield L-1":    &Treasure{0x01, 0x00, 0x5701, 0x0a, 0x01, 0x1f, 0x13},
 	"bombs":         &Treasure{0x03, 0x00, 0x570d, 0x38, 0x10, 0x4d, 0x05},

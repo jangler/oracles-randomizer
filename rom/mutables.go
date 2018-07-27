@@ -11,45 +11,37 @@ type Mutable interface {
 	Check([]byte) error  // verify that the mutable matches the ROM
 }
 
-// A MutableByte is a single mutable byte.
-type MutableByte struct {
+// A MutableRange is a length of mutable bytes starting at a given address.
+type MutableRange struct {
 	Addr     Addr
-	Old, New byte
+	Old, New []byte
 }
 
-func (mb MutableByte) Mutate(b []byte) error {
-	b[mb.Addr.FullOffset()] = mb.New
+// MutableByte returns a special case of MutableRange with a range of a single
+// byte.
+func MutableByte(addr Addr, old, new byte) MutableRange {
+	return MutableRange{Addr: addr, Old: []byte{old}, New: []byte{new}}
+}
+
+// Mutate replaces bytes in its range.
+func (mr MutableRange) Mutate(b []byte) error {
+	addr := mr.Addr.FullOffset()
+	for i, value := range mr.New {
+		b[addr+i] = value
+	}
 	return nil
 }
 
-func (mb MutableByte) Check(b []byte) error {
-	addr := mb.Addr.FullOffset()
-	if b[addr] == mb.Old {
-		return nil
+// Check verifies that the range matches the given ROM data.
+func (mr MutableRange) Check(b []byte) error {
+	addr := mr.Addr.FullOffset()
+	for i, value := range mr.Old {
+		if b[addr+i] != value {
+			return fmt.Errorf("expected %x at %x; found %x",
+				mr.Old, addr+i, b[addr])
+		}
 	}
-	return fmt.Errorf("expected %x at %x; found %x", mb.Old, addr, b[addr])
-}
-
-// A MutableWord is two consecutive mutable bytes (not necessarily aligned).
-type MutableWord struct {
-	Addr     Addr
-	Old, New uint16
-}
-
-func (mw MutableWord) Mutate(b []byte) error {
-	addr := mw.Addr.FullOffset()
-	b[addr] = byte(mw.New >> 8)
-	b[addr+1] = byte(mw.New)
 	return nil
-}
-
-func (mw MutableWord) Check(b []byte) error {
-	addr := mw.Addr.FullOffset()
-	if b[addr] == byte(mw.Old>>8) && b[addr+1] == byte(mw.Old) {
-		return nil
-	}
-	return fmt.Errorf("expected %x at %x; found %x",
-		mw.Old, addr, b[addr:addr+2])
 }
 
 // A MutableSlot is an item slot (chest, gift, etc). It references room data
@@ -60,6 +52,8 @@ type MutableSlot struct {
 	CollectMode         byte
 }
 
+// Mutate replaces the given IDs and subIDs in the given ROM data, and changes
+// the associated treasure's collection mode as appropriate.
 func (ms MutableSlot) Mutate(b []byte) error {
 	for _, addr := range ms.IDAddrs {
 		b[addr.FullOffset()] = ms.Treasure.id
@@ -71,6 +65,7 @@ func (ms MutableSlot) Mutate(b []byte) error {
 	return ms.Treasure.Mutate(b)
 }
 
+// Check verifies that the slot's data matches the given ROM data.
 func (ms MutableSlot) Check(b []byte) error {
 	for _, addr := range ms.IDAddrs {
 		if b[addr.FullOffset()] != ms.Treasure.id {
@@ -252,29 +247,29 @@ var ItemSlots = map[string]*MutableSlot{
 
 var codeMutables = map[string]Mutable{
 	// have maku gate open from start
-	"maku gate check": MutableByte{Addr{0x04, 0x61a3}, 0x7e, 0x66},
+	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
 
 	// have horon village shop stock *and* sell items from the start, including
 	// the flute
-	"horon shop stock check": MutableByte{Addr{0x08, 0x4adb}, 0x05, 0x02},
-	"horon shop sell check":  MutableByte{Addr{0x08, 0x48d0}, 0x05, 0x02},
-	"horon shop flute check": MutableByte{Addr{0x08, 0x4b02}, 0xcb, 0xf6},
+	"horon shop stock check": MutableByte(Addr{0x08, 0x4adb}, 0x05, 0x02),
+	"horon shop sell check":  MutableByte(Addr{0x08, 0x48d0}, 0x05, 0x02),
+	"horon shop flute check": MutableByte(Addr{0x08, 0x4b02}, 0xcb, 0xf6),
 
 	// disable the "get sword" interaction that messes up the chest.
 	// unfortunately this also disables the fade to white (just s+q instead)
-	"d0 sword event": MutableByte{Addr{0x11, 0x70ec}, 0xf2, 0xff},
+	"d0 sword event": MutableByte(Addr{0x11, 0x70ec}, 0xf2, 0xff),
 
 	// initiate all these events without requiring essences
-	"ricky spawn check":         MutableByte{Addr{0x09, 0x4e68}, 0xcb, 0xf6},
-	"rosa spawn check":          MutableByte{Addr{0x09, 0x678c}, 0x40, 0x02},
-	"dimitri essence check":     MutableByte{Addr{0x09, 0x4e36}, 0xcb, 0xf6},
-	"dimitri flipper check":     MutableByte{Addr{0x09, 0x4e4c}, 0x2e, 0x00},
-	"master essence check 2":    MutableByte{Addr{0x0a, 0x4bea}, 0x40, 0x02},
-	"master essence check 1":    MutableByte{Addr{0x0a, 0x4bf5}, 0x02, 0x00},
-	"round jewel essence check": MutableByte{Addr{0x0a, 0x4f8b}, 0x05, 0x00},
-	"pirate essence check":      MutableByte{Addr{0x08, 0x6c32}, 0x20, 0x00},
-	"eruption check 1":          MutableByte{Addr{0x08, 0x7c41}, 0x07, 0x00},
-	"eruption check 2":          MutableByte{Addr{0x08, 0x7cd3}, 0x07, 0x00},
+	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68}, 0xcb, 0xf6),
+	"rosa spawn check":          MutableByte(Addr{0x09, 0x678c}, 0x40, 0x02),
+	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e36}, 0xcb, 0xf6),
+	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e4c}, 0x2e, 0x00),
+	"master essence check 2":    MutableByte(Addr{0x0a, 0x4bea}, 0x40, 0x02),
+	"master essence check 1":    MutableByte(Addr{0x0a, 0x4bf5}, 0x02, 0x00),
+	"round jewel essence check": MutableByte(Addr{0x0a, 0x4f8b}, 0x05, 0x00),
+	"pirate essence check":      MutableByte(Addr{0x08, 0x6c32}, 0x20, 0x00),
+	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
+	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
 }
 
 // Mutables is a collated map of all mutables.
