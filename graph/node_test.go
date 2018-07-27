@@ -11,12 +11,12 @@ var andCounter, orCounter int
 
 func makeAndNode() Node {
 	andCounter++
-	return NewAndNode(fmt.Sprintf("and%d", andCounter))
+	return NewAndNode(fmt.Sprintf("and%d", andCounter), false)
 }
 
 func makeOrNode() Node {
 	orCounter++
-	return NewOrNode(fmt.Sprintf("or%d", orCounter))
+	return NewOrNode(fmt.Sprintf("or%d", orCounter), false)
 }
 
 func clearMarks(nodes ...Node) {
@@ -27,13 +27,13 @@ func clearMarks(nodes ...Node) {
 
 // tests
 
-func TestNodeGetName(t *testing.T) {
+func TestNodeName(t *testing.T) {
 	names := []string{"foo", "bar"}
-	nodes := []Node{NewAndNode(names[0]), NewOrNode(names[1])}
+	nodes := []Node{NewAndNode(names[0], false), NewOrNode(names[1], false)}
 
 	for i, node := range nodes {
-		if node.GetName() != names[i] {
-			t.Errorf("want %s, got %s", names[i], node.GetName())
+		if node.Name() != names[i] {
+			t.Errorf("want %s, got %s", names[i], node.Name())
 		}
 	}
 }
@@ -63,10 +63,10 @@ func TestNodeRelationships(t *testing.T) {
 		n1, n2 := perm[0](), perm[1]()
 
 		// new nodes shouldn't have relationships
-		if n1.HasParents() {
+		if len(n1.Parents()) > 0 {
 			t.Errorf("node has parents: %+v", n1)
 		}
-		if n1.HasChildren() {
+		if len(n1.Children()) > 0 {
 			t.Errorf("node has children: %+v", n1)
 		}
 		if t.Failed() {
@@ -75,16 +75,16 @@ func TestNodeRelationships(t *testing.T) {
 
 		// test adding a parent
 		n1.AddParents(n2)
-		if !n1.HasParents() {
+		if len(n1.Parents()) == 0 {
 			t.Errorf("node has no parents: %+v", n1)
 		}
-		if n1.HasChildren() {
+		if len(n1.Children()) > 0 {
 			t.Errorf("node has children: %+v", n1)
 		}
-		if n2.HasParents() {
+		if len(n2.Parents()) > 0 {
 			t.Errorf("node has parents: %+v", n2)
 		}
-		if !n2.HasChildren() {
+		if len(n2.Children()) == 0 {
 			t.Errorf("node has no children: %+v", n2)
 		}
 		if t.Failed() {
@@ -93,10 +93,10 @@ func TestNodeRelationships(t *testing.T) {
 
 		// test clearing parents
 		n1.ClearParents()
-		if n1.HasParents() {
+		if len(n1.Parents()) > 0 {
 			t.Errorf("node has parents: %+v", n1)
 		}
-		if n2.HasChildren() {
+		if len(n2.Children()) > 0 {
 			t.Errorf("node has children: %+v", n2)
 		}
 	}
@@ -105,7 +105,7 @@ func TestNodeRelationships(t *testing.T) {
 // make sure nodes convert to string correctly
 func TestNodeString(t *testing.T) {
 	andName, orName := "and1", "or1"
-	and1, or1 := NewAndNode(andName), NewOrNode(orName)
+	and1, or1 := NewAndNode(andName, false), NewOrNode(orName, false)
 
 	if s := and1.String(); s != andName {
 		t.Errorf("want %s, got %s", andName, s)
