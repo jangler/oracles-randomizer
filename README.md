@@ -3,19 +3,20 @@
 This program reads a Zelda: Oracle of Seasons ROM (probably JP version only; I
 haven't tested on EN/EU), shuffles the locations of key items, and writes the
 modified ROM to a new file. It also bypasses essence checks for overworld
-events that allow progress, so the dungeons can be done in any order that the
-randomized items facilitate. And they *will* facilitate a path to the goal,
-although you may have to be inventive to find it.
+events that are necessary for progress, so the dungeons can be done in any
+order that the randomized items facilitate. And they *will* facilitate a path
+to the goal, although you may have to be inventive to find it.
 
 The randomizer has not been publicly tested yet, so consider it "beta" for now.
 I've done a full run without problems, but it doesn't mean that there aren't
 any bugs. I particularly recommend saving before opening any chest, because if
-the randomizer screwed up then you'll be stuck and have to hard reset.
+the randomizer screwed up then you'll be stuck in cutscene mode and have to
+hard reset.
 
 
 ## Usage
 
-The randomizer is a command-line interface, and I currently have no plans to
+The randomizer uses a command-line interface, and I currently have no plans to
 implement a graphical one. It's a simple program (from the user's perspective),
 and command lines are not very hard.
 
@@ -64,15 +65,15 @@ key item.**
 Sometimes useful rings (primarily the fist/expert's rings) are placed in slots
 instead of normal items.
 
-Speedrunners should note that the Subrosian dancing prize could be important!
+Speedrunners should note that the Subrosian dancing prize could be important.
 
 
 ## Potentially useful goal/forbid nodes
 
-- 'done', meaning defeating Onox
-- 'dX essence', where X is a number from 1-8
-- 'sword L-1'
-- really just look at the files in the prenodes/ folder if you want more
+- `done`, meaning defeating Onox
+- `dX essence`, where X is a number from 1-8
+- `sword L-1`
+- really just look at the files in the "prenode" folder if you want more
 
 Remember that you can specify multiple nodes as goals/forbids by separating
 them with commas. Also remember to quote the strings lol
