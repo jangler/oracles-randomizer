@@ -4,9 +4,9 @@
 
 - clean up the code, make it logical, comprehensible, and presentable for a
   third party
-	- maybe only return true/false from getmark/peekmark?
 - write readme
 - make tests pass
+- make some of the devcmds tests instead (checkgraph and… others?)
 
 ## mid priority
 
