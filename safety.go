@@ -11,7 +11,9 @@ import (
 
 // check for known softlock conditions
 func canSoftlock(g graph.Graph) bool {
-	return canShovelSoftlock(g) || canFlowerSoftlock(g)
+	return canShovelSoftlock(g) ||
+		canFlowerSoftlock(g) ||
+		canFeatherSoftlock(g)
 }
 
 // make sure you can't reach the shovel gift without either having a shovel
@@ -61,5 +63,24 @@ func canFlowerSoftlock(g graph.Graph) bool {
 		log.Print("-- cucco softlock")
 		return true
 	}
+	return false
+}
+
+// make sure you can't reach the hide & seek area in subrosia without getting a
+// shovel first. if your feather is stolen and you can't dig it back up, you
+// can't exit that area.
+func canFeatherSoftlock(g graph.Graph) bool {
+	hideAndSeek, shovel := g["hide and seek"], g["shovel"]
+	parents := shovel.Parents
+
+	// check whether hide and seek is reachable if shovel is unreachable
+	shovel.ClearParents()
+	defer shovel.AddParents(parents...)
+	g.ClearMarks()
+	if hideAndSeek.GetMark(hideAndSeek, nil) == graph.MarkTrue {
+		log.Print("-- feather softlock")
+		return true
+	}
+
 	return false
 }

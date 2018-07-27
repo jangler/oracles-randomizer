@@ -48,3 +48,31 @@ func TestShovelLockCheck(t *testing.T) {
 		t.Error("false negative shovel softlock w/ optional shovel")
 	}
 }
+
+func TestFeatherLockCheck(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+	g := r.Graph
+
+	// make sure that it doesn't detect softlock if you can't reach H&S
+	g["sword L-1"].AddParents(g["d0 sword chest"])
+	g["gnarled key"].AddParents(g["maku key fall"])
+	g["satchel"].AddParents(g["d1 satchel"])
+	if canFeatherSoftlock(g) {
+		t.Error("false positive feather softlock w/o reaching H&S")
+	}
+
+	// make sure that it detects softlock if you have don't shovel before H&S
+	g["bracelet"].AddParents(g["boomerang gift"])
+	g["feather L-2"].AddParents(g["blaino gift"])
+	if !canFeatherSoftlock(g) {
+		t.Error("false negative feather softlock")
+	}
+
+	// make sure that it detects softlock if you don't have shovel before H&S
+	g["feather L-2"].ClearParents()
+	g["shovel"].AddParents(g["blaino gift"])
+	g["feather L-2"].AddParents(g["d2 bracelet chest"])
+	if canFeatherSoftlock(g) {
+		t.Error("false positive feather softlock reaching H&S after shovel")
+	}
+}
