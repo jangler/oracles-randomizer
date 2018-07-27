@@ -162,7 +162,8 @@ func makeRoute(r *Route, start, goal, forbid []string,
 		log.Print("-- success")
 		for _, target := range goal {
 			r.Graph.ClearMarks()
-			if !canReachTargets(r.Graph, target) {
+			targetNode := r.Graph[target]
+			if targetNode.GetMark(targetNode, nil) != graph.MarkTrue {
 				log.Fatalf("fatal: no path to %s!", target)
 			}
 		}
@@ -336,14 +337,4 @@ func countSteps(nodes map[*graph.Node]bool) int {
 		}
 	}
 	return count
-}
-
-// check if the targets are reachable using the current graph state
-func canReachTargets(g graph.Graph, targets ...string) bool {
-	for _, target := range targets {
-		if g[target].GetMark(g[target], nil) != graph.MarkTrue {
-			return false
-		}
-	}
-	return true
 }

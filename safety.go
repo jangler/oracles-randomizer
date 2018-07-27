@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/jangler/oos-randomizer/graph"
 	"log"
+
+	"github.com/jangler/oos-randomizer/graph"
 )
 
 // TODO: write similar (?) functions to make sure dungeon navigation is
@@ -27,7 +28,7 @@ func canShovelSoftlock(g graph.Graph) bool {
 		shovel.ClearParents()
 		defer shovel.AddParents(parents...)
 		g.ClearMarks()
-		if canReachTargets(g, gift.Name) {
+		if gift.GetMark(gift, nil) == graph.MarkTrue {
 			log.Print("shovel softlock")
 			return true
 		}
@@ -55,7 +56,8 @@ func canFlowerSoftlock(g graph.Graph) bool {
 
 	// see if you can still reach the exit
 	g.ClearMarks()
-	if canReachTargets(g, "spring banana cucco") {
+	cucco := g["spring banana cucco"]
+	if cucco.GetMark(cucco, nil) == graph.MarkTrue {
 		log.Print("cucco softlock")
 		return true
 	}
