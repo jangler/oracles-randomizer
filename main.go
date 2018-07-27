@@ -7,6 +7,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
 )
 
@@ -44,6 +45,28 @@ func main() {
 			for _, err := range errs {
 				log.Print(err)
 			}
+		}
+	case "explore":
+		r := initRoute([]string{})
+
+		// args are starting nodes
+		reached := make(map[graph.Node]bool)
+		for _, arg := range flag.Args() {
+			log.Print("adding ", arg)
+			reached = r.Graph.Explore(reached,
+				[]graph.Node{r.Graph.Map[arg]}, nil)
+			/*
+				log.Print(len(reached), " nodes")
+				log.Print(reached)
+			*/
+			steps := make(map[graph.Node]bool)
+			for node := range reached {
+				if node.IsStep() {
+					steps[node] = true
+				}
+			}
+			log.Print(len(steps), " step nodes")
+			log.Print(steps)
 		}
 	case "pointgen":
 		checkNumArgs(*flagDevcmd, 1)
@@ -145,12 +168,12 @@ func randomize(romData []byte, outFilename string,
 	// find a viable random route
 	r := initRoute(start)
 	usedItems, usedSlots, unusedItems, unusedSlots :=
-		makeRoute(r, goal, forbid, maxlen)
+		makeRoute(r, start, goal, forbid, maxlen)
 
 	// place selected treasures in slots
 	for usedItems.Len() > 0 {
-		slotName := usedSlots.Remove(usedSlots.Front()).(string)
-		treasureName := usedItems.Remove(usedItems.Front()).(string)
+		slotName := usedSlots.Remove(usedSlots.Front()).(graph.Node).Name()
+		treasureName := usedItems.Remove(usedItems.Front()).(graph.Node).Name()
 		if err := placeTreasureInSlot(treasureName, slotName); err != nil {
 			return []error{err}
 		}
@@ -159,7 +182,7 @@ func randomize(romData []byte, outFilename string,
 	// remove forbidden unused items
 	for _, name := range forbid {
 		for e := unusedItems.Front(); e != nil; e = e.Next() {
-			if e.Value.(string) == name {
+			if e.Value.(graph.Node).Name() == name {
 				unusedItems.Remove(e)
 				break
 			}
@@ -168,9 +191,10 @@ func randomize(romData []byte, outFilename string,
 
 	for unusedSlots.Len() > 0 {
 		// fill unused slots with unused items
-		slotName := unusedSlots.Remove(unusedSlots.Front()).(string)
+		slotName := unusedSlots.Remove(unusedSlots.Front()).(graph.Node).Name()
 		if unusedItems.Len() > 0 {
-			treasureName := unusedItems.Remove(unusedItems.Front()).(string)
+			treasureName :=
+				unusedItems.Remove(unusedItems.Front()).(graph.Node).Name()
 			if err := placeTreasureInSlot(treasureName, slotName); err != nil {
 				return []error{err}
 			}

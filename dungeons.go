@@ -33,7 +33,7 @@ var d1Points = map[string]Point{
 	"d1 boss key chest": And("d1 map chest", "ember seeds", "kill goriya (pit)"),
 	"d1 ring chest":     And("enter d1", "ember seeds"),
 	"enter aquamentus":  And("enter d1", "ember seeds", "d1 boss key"),
-	"d1 essence":        And("enter aquamentus", "kill aquamentus"),
+	"d1 essence":        AndStep("enter aquamentus", "kill aquamentus"),
 
 	"d1 key A":    And("d1 key fall"),
 	"d1 key B":    And("d1 key chest"),
@@ -75,7 +75,7 @@ var d2Points = map[string]Point{
 	"enter facade":      And("d2 10-rupee chest", "remove pot", "d2 key B"),
 	"d2 boss key chest": And("enter facade", "kill facade", "d2 key C", "bombs"),
 	"enter dodongo":     And("d2 boss key chest", "d2 boss key"),
-	"d2 essence":        And("enter dodongo", "kill dodongo"),
+	"d2 essence":        AndStep("enter dodongo", "kill dodongo"),
 
 	"d2 key A":    And("d2 key fall"),
 	"d2 key B":    And("d2 bomb key chest"),
@@ -117,7 +117,7 @@ var d3Points = map[string]Point{
 	"d3 feather chest":        AndSlot("d3 feather room", "kill mimic"),
 	"d3 trampoline key chest": And("d3 trampoline stairs", "jump"),
 	"enter mothula":           And("d3 omuai stairs", "d3 boss key"),
-	"d3 essence":              And("enter mothula", "kill mothula"),
+	"d3 essence":              AndStep("enter mothula", "kill mothula"),
 
 	// fixed items
 	"d3 key A":    And("d3 roller key chest"),
@@ -152,7 +152,7 @@ var d4Points = map[string]Point{
 	// B1F
 	"d4 cross bridge": Or("ember slingshot", "long jump"),
 	"enter gohma":     And("d4 basement stairs", "d4 cross bridge", "d4 boss key"),
-	"d4 essence":      And("enter gohma", "kill gohma"),
+	"d4 essence":      AndStep("enter gohma", "kill gohma"),
 
 	// fixed items
 	"d4 key A":    And("d4 pot key fall"),
@@ -194,7 +194,7 @@ var d5Points = map[string]Point{
 	"d5 push ball":           And("d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"),
 	"d5 boss key spot":       And("d5 push ball", "d5 key D", "long jump", "sidescroll magnets"), // being nice
 	"enter digdogger":        And("d5 post-syger", "d5 key E", "jump", "magnet gloves", "d5 boss key"),
-	"d5 essence":             And("enter digdogger", "kill digdogger"),
+	"d5 essence":             AndStep("enter digdogger", "kill digdogger"),
 
 	// fixed items
 	"d5 key A":    And("d5 cart key chest"),
@@ -242,7 +242,7 @@ var d6Points = map[string]Point{
 	// 5F
 	"d6 pre-boss room": And("d6 3-switch room", "hit very far switch"),
 	"enter manhandla":  And("d6 pre-boss room", "jump", "hit far switch", "d6 boss key"),
-	"d6 essence":       And("enter manhandla", "kill manhandla"),
+	"d6 essence":       AndStep("enter manhandla", "kill manhandla"),
 
 	// fixed items
 	"d6 key A":    And("d6 magnet key fall"),
@@ -286,7 +286,7 @@ var d7Points = map[string]Point{
 	"d7 skipped key poof": And("d7 enter skipped", "kill wizzrobe (pit)", "kill stalfos (pit)"),
 	"d7 boss key chest":   And("d7 stairs room", "d7 key D", "pegasus jump L-2", "hit switch", "kill stalfos"),
 	"enter gleeok":        And("d7 stairs room", "d7 boss key"),
-	"d7 essence":          And("enter gleeok", "kill gleeok"),
+	"d7 essence":          AndStep("enter gleeok", "kill gleeok"),
 
 	// fixed items
 	"d7 key A":    And("d7 wizzrobe key chest"),
@@ -336,7 +336,7 @@ var d8Points = map[string]Point{
 	"d8 frypolar stairs":   And("enter frypolar", "kill frypolar", "ember seeds", "slingshot L-2"),
 	"d8 lava key chest":    And("d8 SE crystal"),
 	"enter medusa head":    And("d8 SW crystal", "d8 SE crystal", "d8 NW crystal", "d8 key F", "d8 boss key"),
-	"d8 essence":           And("enter medusa head", "kill medusa head"),
+	"d8 essence":           AndStep("enter medusa head", "kill medusa head"),
 
 	// fixed items
 	"d8 key A":    And("d8 eye key fall"),
@@ -352,5 +352,5 @@ var d8Points = map[string]Point{
 // onox's castle
 var d9Points = map[string]Point{
 	"enter onox": And("enter d9", "kill wizzrobe", "kill floormaster", "kill darknut", "kill facade"),
-	"done":       And("enter onox", "kill onox"),
+	"done":       AndStep("enter onox", "kill onox"),
 }

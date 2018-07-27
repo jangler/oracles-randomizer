@@ -62,12 +62,12 @@ var holodrumPoints = map[string]Point{
 	"horon village 4": And("sokra stump", "ember seeds"),
 	"horon village 5": And("village portal", "hit lever"),
 	"horon village 6": And("swamp portal", "bracelet", "flippers", "remove bush"),
-	"enter d0":        And("horon village"),
+	"enter d0":        AndStep("horon village"),
 	"maku key fall":   AndSlot("horon village", "pop maku bubble"),
-	"enter d1":        And("horon village", "remove bush", "gnarled key"),
+	"enter d1":        AndStep("horon village", "remove bush", "gnarled key"),
 
 	// d1->d2
-	"ember tree":      And("horon village"),
+	"ember tree":      AndStep("horon village"),
 	"sokra stump 1":   And("horon village", "ember seeds"),
 	"sokra stump 2":   And("rosa portal", "remove bush"),
 	"sokra stump 3":   And("post-d2 stump", "winter"),
@@ -84,34 +84,37 @@ var holodrumPoints = map[string]Point{
 	"enter d2 A":      And("mystery tree", "remove bush"),
 	"enter d2 B":      And("mystery tree", "bracelet", "remove bush"),
 	"enter d2 C":      And("mystery tree", "bracelet", "remove bush"),
-	"enter d2":        Or("enter d2 A", "enter d2 B", "enter d2 C"), // just for -forbid
+	"enter d2":        OrStep("enter d2 A", "enter d2 B", "enter d2 C"),
 
 	// d2->d3
-	"north horon stump":  And("horon village", "remove bush"),
-	"scent tree 1":       And("north horon stump", "bracelet"),
-	"scent tree 2":       And("natzu", "animal flute"),
-	"scent tree 3":       And("north horon stump", "flippers"),
-	"blaino":             And("scent tree"),
-	"blaino gift":        AndSlot("blaino", "rupees"),
-	"ricky pen 1":        And("scent tree"),
-	"ricky pen 2":        And("ghastly stump", "jump"),
-	"ricky pen 3":        And("pegasus tree", "jump"),
-	"ghastly stump 1":    And("horon village", "remove bush", "flippers"),
-	"ghastly stump 2":    And("ricky pen", "ricky"),
-	"ghastly stump 3":    And("ricky pen", "jump"),
-	"ghastly stump 4":    And("pegasus tree"),
-	"ghastly stump 5":    And("swamp portal", "bracelet", "remove bush"),
-	"pegasus tree 1":     And("ghastly stump", "ricky"),
-	"pegasus tree 2":     And("ghastly stump", "feather L-2"),
-	"pegasus tree 3":     And("ghastly stump", "summer"),
-	"floodgate key gift": AndSlot("pegasus tree", "hit lever"),
-	"spool swamp 1":      And("open floodgate"),
-	"spool swamp 2":      And("ghastly stump", "remove bush", "flippers"),
-	"spool swamp 3":      And("scent tree", "flippers"),
-	"square jewel 1":     And("open floodgate", "winter", "animal flute"),
-	"square jewel 2":     And("open floodgate", "winter", "long jump", "bombs"),
-	"square jewel 3":     And("open floodgate", "winter", "flippers", "bombs"),
-	"enter d3":           And("open floodgate", "summer"),
+	"north horon stump":    And("horon village", "remove bush"),
+	"scent tree":           OrStep("scent tree A", "scent tree B", "scent tree C"),
+	"scent tree A":         And("north horon stump", "bracelet"),
+	"scent tree B":         And("natzu", "animal flute"),
+	"scent tree C":         And("north horon stump", "flippers"),
+	"blaino":               And("scent tree"),
+	"blaino gift":          AndSlot("blaino", "rupees"),
+	"ricky pen 1":          And("scent tree"),
+	"ricky pen 2":          And("ghastly stump", "jump"),
+	"ricky pen 3":          And("pegasus tree", "jump"),
+	"ghastly stump 1":      And("horon village", "remove bush", "flippers"),
+	"ghastly stump 2":      And("ricky pen", "ricky"),
+	"ghastly stump 3":      And("ricky pen", "jump"),
+	"ghastly stump 4":      And("pegasus tree"),
+	"ghastly stump 5":      And("swamp portal", "bracelet", "remove bush"),
+	"pegasus tree":         OrStep("pegasus tree A", "pegasus tree B", "pegasus tree C"),
+	"pegasus tree 1":       And("ghastly stump", "ricky"),
+	"pegasus tree 2":       And("ghastly stump", "feather L-2"),
+	"pegasus tree 3":       And("ghastly stump", "summer"),
+	"floodgate key gift":   AndSlot("pegasus tree", "hit lever"),
+	"spool swamp 1":        And("open floodgate"),
+	"spool swamp 2":        And("ghastly stump", "remove bush", "flippers"),
+	"spool swamp 3":        And("scent tree", "flippers"),
+	"square jewel chest":   AndSlot("square jewel chest A", "square jewel chest B", "square jewel chest C"),
+	"square jewel chest A": And("open floodgate", "winter", "animal flute"),
+	"square jewel chest B": And("open floodgate", "winter", "long jump", "bombs"),
+	"square jewel chest C": And("open floodgate", "winter", "flippers", "bombs"),
+	"enter d3":             AndStep("open floodgate", "summer"),
 
 	// d3->d4
 	"natzu 1":               And("scent tree", "jump", "animal flute"),
@@ -120,7 +123,7 @@ var holodrumPoints = map[string]Point{
 	"sunken city 1":         And("natzu", "animal flute"),
 	"sunken city 2":         And("mount cucco", "flippers"),
 	"sunken city 3":         And("post-d2 stump", "spring"),
-	"sunken gale tree":      And("sunken city", "cross water gap"),
+	"sunken gale tree":      AndStep("sunken city", "cross water gap"),
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("sunken gale tree", "dimitri", "sword", "cross water gap"),
 	"flippers gift":         AndSlot("sunken gale tree", "dimitri", "master's plaque"),
@@ -136,7 +139,7 @@ var holodrumPoints = map[string]Point{
 	"dragon key spot":       AndSlot("dragon key cross"), // wraps generated node
 	"mario cave":            And("mount cucco", "spring"),
 	"dragon keyhole":        And("mario cave", "winter", "jump", "bracelet"),
-	"enter d4":              And("dragon key", "dragon keyhole", "summer", "cross water gap"),
+	"enter d4":              AndStep("dragon key", "dragon keyhole", "summer", "cross water gap"),
 	"pyramid jewel spot":    AndSlot("mario cave", "flippers"),
 
 	// goron mountain
@@ -147,15 +150,15 @@ var holodrumPoints = map[string]Point{
 
 	// d4->d5
 	"eyeglass lake": And("north horon stump", "jump"),
-	"enter d5":      And("eyeglass lake", "autumn", "remove mushroom"),
+	"enter d5":      AndStep("eyeglass lake", "autumn", "remove mushroom"),
 
 	// d5->d6; i'm treating tarm ruins like it's one way (like it normally is)
 	"x-shaped jewel chest": AndSlot("horon village", "mystery slingshot", "kill moldorm"),
 	"round jewel gift":     AndSlot("spool swamp", "flippers"),
 	"tarm ruins":           And("pegasus tree", "square jewel", "pyramid jewel", "round jewel", "x-shaped jewel"),
 	"lost woods":           And("tarm ruins", "summer", "winter", "autumn", "bracelet"),
-	"tarm gale tree":       And("lost woods", "winter", "autumn", "spring", "summer"),
-	"enter d6":             And("tarm gale tree", "winter", "shovel", "spring", "remove flower"),
+	"tarm gale tree":       AndStep("lost woods", "winter", "autumn", "spring", "summer"),
+	"enter d6":             AndStep("tarm gale tree", "winter", "shovel", "spring", "remove flower"),
 
 	// d6->d7
 	"eastern coast":   And("horon village", "ember seeds"),
@@ -164,7 +167,7 @@ var holodrumPoints = map[string]Point{
 	"pirate ship":     And("pirate's bell"),
 	"graveyard 1":     And("pirate ship", "long jump"),
 	"graveyard 2":     And("pirate ship", "bombs", "jump", "summer"),
-	"enter d7":        And("graveyard", "shovel"),
+	"enter d7":        AndStep("graveyard", "shovel"),
 
 	// d7->d8
 	"temple remains 1": And("goron mountain", "pegasus jump L-2"),
@@ -173,5 +176,5 @@ var holodrumPoints = map[string]Point{
 
 	// d8->d9
 	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence", "d5 essence", "d6 essence", "d7 essence", "d8 essence"),
-	"enter d9":  And("scent tree", "maku seed"),
+	"enter d9":  AndStep("scent tree", "maku seed"),
 }

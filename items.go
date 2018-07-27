@@ -104,19 +104,19 @@ var itemPoints = map[string]Point{
 	"ribbon":      And("star ore", "beach"),
 	"bomb flower": And("furnace", "jump", "bracelet"),
 
-	"winter": And("rod", "winter tower"),
-	"summer": And("rod", "summer tower"),
-	"spring": And("rod", "spring tower"),
-	"autumn": And("rod", "autumn tower"),
+	"winter": AndStep("rod", "winter tower"),
+	"summer": AndStep("rod", "summer tower"),
+	"spring": AndStep("rod", "spring tower"),
+	"autumn": AndStep("rod", "autumn tower"),
 
 	"ricky":         And("ricky pen", "ricky's gloves"),
 	"strange flute": And("rupees"), // TODO subrosian dancing
 	"moosh flute":   And("strange flute", "spool swamp", "kill moblin"),
-	"animal flute":  Or("ricky", "moosh flute"),
+	"animal flute":  OrStep("ricky", "moosh flute"),
 	"flute":         Or("strange flute", "animal flute"),
 
-	"rod":        Or("temple"), // keep in place for now
-	"fool's ore": Or(),         // disregard for now
+	"rod":        OrStep("temple"), // keep in place for now
+	"fool's ore": Or(),             // disregard for now
 	"shield L-1": Or("rupees"),
 	"shield L-2": Or(), // TODO as if it matters
 
@@ -141,5 +141,5 @@ var itemPoints = map[string]Point{
 	// access those enemies without another item that already collects rupees.
 	// i'm also not including expendable items in this list just because it
 	// could be super tedious to farm rupees using them.
-	"rupees": Or("sword", "boomerang", "shovel", "bracelet", "ricky", "animal flute", "fool's ore", "punch"),
+	"rupees": OrStep("sword", "boomerang", "shovel", "bracelet", "ricky", "animal flute", "fool's ore", "punch"),
 }

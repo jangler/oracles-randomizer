@@ -29,6 +29,7 @@ type Node interface {
 	fmt.Stringer
 
 	Name() string
+	IsStep() bool
 	GetMark(*list.List) Mark // list to append path to if non-nil
 	PeekMark() Mark          // like GetMark but doesn't check parents
 	SetMark(Mark)
@@ -42,17 +43,20 @@ type Node interface {
 // parents.
 type AndNode struct {
 	name     string
+	isStep   bool
 	mark     Mark
 	parents  []Node
 	children []Node
 }
 
-func NewAndNode(name string) *AndNode {
-	return &AndNode{name: name,
+func NewAndNode(name string, isStep bool) *AndNode {
+	return &AndNode{name: name, isStep: isStep,
 		parents: make([]Node, 0), children: make([]Node, 0)}
 }
 
 func (n *AndNode) Name() string { return n.name }
+
+func (n *AndNode) IsStep() bool { return n.isStep }
 
 func (n *AndNode) GetMark(path *list.List) Mark {
 	if n.mark == MarkNone {
@@ -112,17 +116,20 @@ func (n *AndNode) String() string { return n.name }
 // parents.
 type OrNode struct {
 	name     string
+	isStep   bool
 	mark     Mark
 	parents  []Node
 	children []Node
 }
 
-func NewOrNode(name string) *OrNode {
-	return &OrNode{name: name,
+func NewOrNode(name string, isStep bool) *OrNode {
+	return &OrNode{name: name, isStep: isStep,
 		parents: make([]Node, 0), children: make([]Node, 0)}
 }
 
 func (n *OrNode) Name() string { return n.name }
+
+func (n *OrNode) IsStep() bool { return n.isStep }
 
 func (n *OrNode) GetMark(path *list.List) Mark {
 	if n.mark == MarkNone {
