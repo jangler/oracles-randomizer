@@ -308,11 +308,14 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 		return true
 	}
 
-	// if the new state doesn't reach any more steps, abandon this branch
-	if countSteps(reached) <= countSteps(start) {
-		log.Printf("-- false; reached steps %d <= start steps %d",
-			countSteps(reached), countSteps(start))
-		return false
+	// if the new state doesn't reach any more steps, abandon this branch,
+	// *unless* the new item is a jewel.
+	if !strings.HasSuffix(add[0].Name(), " jewel") {
+		if countSteps(reached) <= countSteps(start) {
+			log.Printf("-- false; reached steps %d <= start steps %d",
+				countSteps(reached), countSteps(start))
+			return false
+		}
 	}
 
 	// can't slot any more items
