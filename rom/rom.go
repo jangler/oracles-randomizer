@@ -17,6 +17,8 @@ type Addr struct {
 	Offset uint16
 }
 
+// FullOffset returns the actual offset of the address in the ROM, based on
+// bank number and relative address.
 func (a *Addr) FullOffset() int {
 	var bankOffset int
 	if a.Bank >= 2 {
@@ -44,7 +46,6 @@ func Mutate(b []byte) error {
 func Verify(b []byte) []error {
 	errors := make([]error, 0)
 
-	// check mutables TODO
 	for k, m := range Mutables {
 		if k == "maku key fall" || strings.HasSuffix(k, "ring") {
 			continue // special case that will error but we don't care about

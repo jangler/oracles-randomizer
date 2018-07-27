@@ -277,6 +277,7 @@ var codeMutables = map[string]Mutable{
 	"eruption check 2":          MutableByte{Addr{0x08, 0x7cd3}, 0x07, 0x00},
 }
 
+// Mutables is a collated map of all mutables.
 var Mutables map[string]Mutable
 
 func init() {
