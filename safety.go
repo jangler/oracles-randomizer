@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/jangler/oos-randomizer/graph"
+	"log"
 )
 
 // TODO: write similar functions to make sure dungeon navigation is possible w/
@@ -29,7 +30,10 @@ func canShovelSoftlock(g *graph.Graph) bool {
 		shovel.ClearParents()
 		defer shovel.AddParents(parents...)
 		g.ClearMarks()
-		return canReachTargets(g, gift.Name())
+		if canReachTargets(g, gift.Name()) {
+			log.Print("shovel softlock")
+			return true
+		}
 	}
 
 	return false
@@ -54,7 +58,11 @@ func canRosaPortalSoftlock(g *graph.Graph) bool {
 
 	// see if you can still reach the exit
 	g.ClearMarks()
-	return canReachTargets(g, exit.Name())
+	if canReachTargets(g, exit.Name()) {
+		log.Print("portal softlock")
+		return true
+	}
+	return false
 }
 
 // make sure you can't reach the spring banana cucco before having an item that
@@ -76,5 +84,9 @@ func canFlowerSoftlock(g *graph.Graph) bool {
 
 	// see if you can still reach the exit
 	g.ClearMarks()
-	return canReachTargets(g, "spring banana cucco")
+	if canReachTargets(g, "spring banana cucco") {
+		log.Print("cucco softlock")
+		return true
+	}
+	return false
 }

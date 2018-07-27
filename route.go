@@ -246,22 +246,13 @@ func makeRoute(r *Route, start, goal, forbid []string,
 	for i, name := range forbid {
 		forbidNodes[i] = r.Graph.Map[name]
 	}
-	log.Print(startNodes)
-	log.Print(goalNodes)
-	log.Print(forbidNodes)
 
 	if tryExploreTargets(r.Graph, nil, startNodes, goalNodes,
 		forbidNodes, maxlen, itemList, usedItems, slotList, usedSlots) {
 		log.Print("-- success")
 		for _, target := range goal {
-			log.Print("-- path to " + target)
 			r.Graph.ClearMarks()
-			if path := findPath(r.Graph, r.Graph.Map[target]); path != nil {
-				for path.Len() > 0 {
-					step := path.Remove(path.Front()).(string)
-					log.Print(step)
-				}
-			} else {
+			if !canReachTargets(r.Graph, target) {
 				log.Fatalf("fatal: no path to %s!", target)
 			}
 		}
