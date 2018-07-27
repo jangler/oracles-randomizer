@@ -96,7 +96,7 @@ func main() {
 		} else {
 			log.Print("everything OK")
 		}
-	case "":
+	case "": // normal behavior (randomize)
 		if *flagDryrun {
 			checkNumArgs("dryrun", 1)
 		} else {
@@ -155,12 +155,10 @@ func loadROM(filename string) ([]byte, error) {
 	return rom.Load(f)
 }
 
-// messes up rom data and writes it to a file.
-//
-// this also calls verify.
+// messes up rom data and writes it to a file. this also calls rom.Verify().
 func randomize(romData []byte, outFilename string,
 	start, goal, forbid []string, maxlen int) []error {
-	// make sure rom data matches first
+	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
 	}

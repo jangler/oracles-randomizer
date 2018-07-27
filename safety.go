@@ -5,8 +5,8 @@ import (
 	"log"
 )
 
-// TODO: write similar functions to make sure dungeon navigation is possible w/
-//       the locations of small keys and given item state
+// TODO: write similar (?) functions to make sure dungeon navigation is
+//       possible w/ the locations of small keys and given item state
 
 // check for known softlock conditions
 func canSoftlock(g *graph.Graph) bool {

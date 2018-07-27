@@ -43,14 +43,7 @@ var portalPoints = map[string]Point{
 	"d8 portal 1": And("remains portal", "bombs", "summer", "long jump", "magnet gloves"),
 	"d8 portal 2": And("remains portal", "bombs", "summer", "pegasus jump L-2"),
 
-	// exiting subrosia via the rosa portal without having activated it from
-	// holodrum gets you stuck in a bush unless you have a way to cut it down.
-	// usable items are: sword (spin slash), bombs, gale seeds, slingshot w/
-	// ember seeds but NOT satchel, bracelet, and L-2 boomerang. bombs and
-	// seeds are not renewable and it's possible to reach this portal via, say,
-	// the village portal with only satchel, pegasus seeds, and cape. this node
-	// is used for checking for softlocks, but should not be a parent of any
-	// other node.
+	// this is strictly for softlock checking; see safety.go
 	"remove stuck bush": Or("sword", "boomerang L-2", "bracelet"),
 }
 
