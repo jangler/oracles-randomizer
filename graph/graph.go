@@ -98,7 +98,7 @@ func (g Graph) Explore(start map[*Node]bool, add, sub []*Node) map[*Node]bool {
 		for node := range frontier {
 			// if we can reach the node, add it to the reached set and add its
 			// (previously unchecked) children to the frontier
-			if node.GetMark(nil) == MarkTrue {
+			if node.GetMark(node, nil) == MarkTrue {
 				reached[node] = true
 				node.Mark = MarkTrue
 				for _, child := range node.Children {

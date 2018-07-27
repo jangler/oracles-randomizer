@@ -341,7 +341,7 @@ func countSteps(nodes map[*graph.Node]bool) int {
 // check if the targets are reachable using the current graph state
 func canReachTargets(g graph.Graph, targets ...string) bool {
 	for _, target := range targets {
-		if g[target].GetMark(nil) != graph.MarkTrue {
+		if g[target].GetMark(g[target], nil) != graph.MarkTrue {
 			return false
 		}
 	}

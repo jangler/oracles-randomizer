@@ -41,6 +41,7 @@ const (
 type Node struct {
 	Name     string
 	Type     NodeType
+	GetMark  func(*Node, *list.List) Mark
 	IsStep   bool
 	Mark     Mark
 	Parents  []*Node
@@ -49,7 +50,8 @@ type Node struct {
 
 // NewNode returns a new unconnected graph node, not yet part of any graph.
 func NewNode(name string, nodeType NodeType, isStep bool) *Node {
-	return &Node{
+	// create node
+	n := Node{
 		Name:     name,
 		Type:     nodeType,
 		IsStep:   isStep,
@@ -57,25 +59,27 @@ func NewNode(name string, nodeType NodeType, isStep bool) *Node {
 		Parents:  make([]*Node, 0),
 		Children: make([]*Node, 0),
 	}
-}
 
-// GetMark evaluates the node in the context of its graph, determining whether
-// it's reachable from the given root nodes (or those specifically marked as
-// true).
-func (n *Node) GetMark(path *list.List) Mark {
+	// set node's GetMark function based on type
 	switch n.Type {
 	case RootType:
-		return MarkFalse
+		n.GetMark = getRootMark
 	case AndType:
-		return n.getAndMark(path)
+		n.GetMark = getAndMark
 	case OrType:
-		return n.getOrMark(path)
+		n.GetMark = getOrMark
 	default:
-		panic("unknown node type for node " + n.Name)
+		panic("unknown node type for node " + name)
 	}
+
+	return &n
 }
 
-func (n *Node) getAndMark(path *list.List) Mark {
+func getRootMark(n *Node, path *list.List) Mark {
+	return MarkFalse
+}
+
+func getAndMark(n *Node, path *list.List) Mark {
 	if n.Mark == MarkNone {
 		var parentNames []string
 		if path != nil {
@@ -84,7 +88,7 @@ func (n *Node) getAndMark(path *list.List) Mark {
 
 		n.Mark = MarkPending
 		for i, parent := range n.Parents {
-			switch parent.GetMark(path) {
+			switch parent.GetMark(parent, path) {
 			case MarkPending, MarkFalse:
 				n.Mark = MarkNone
 				return MarkFalse
@@ -109,7 +113,7 @@ func (n *Node) getAndMark(path *list.List) Mark {
 	return n.Mark
 }
 
-func (n *Node) getOrMark(path *list.List) Mark {
+func getOrMark(n *Node, path *list.List) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
 		allPending := true
@@ -133,7 +137,7 @@ func (n *Node) getOrMark(path *list.List) Mark {
 		if n.Mark == MarkPending {
 		OrGetLoop:
 			for _, parent := range n.Parents {
-				switch parent.GetMark(path) {
+				switch parent.GetMark(parent, path) {
 				case MarkTrue:
 					n.Mark = MarkTrue
 					allPending = false
