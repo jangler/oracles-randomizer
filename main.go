@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -171,26 +170,11 @@ func randomize(romData []byte, outFilename string,
 	for usedItems.Len() > 0 {
 		slotName := usedSlots.Remove(usedSlots.Front()).(graph.Node).Name()
 		treasureName := usedItems.Remove(usedItems.Front()).(graph.Node).Name()
-		if err := placeTreasureInSlot(treasureName, slotName); err != nil {
-			return []error{err}
-		}
+		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 	}
 
+	// do it! (but don't write anything)
 	rom.Mutate(romData)
-
-	return nil
-}
-
-func placeTreasureInSlot(treasureName, slotName string) error {
-	if slot, ok := rom.ItemSlots[slotName]; ok {
-		if treasure, ok := rom.Treasures[treasureName]; ok {
-			slot.Treasure = treasure
-		} else {
-			return fmt.Errorf("no treasure '%s' in ROM code", treasureName)
-		}
-	} else {
-		return fmt.Errorf("no item slot '%s' in ROM code", slotName)
-	}
 
 	return nil
 }
