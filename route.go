@@ -101,17 +101,6 @@ func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 	}
 }
 
-// attempts to find a path from the start to the given node in the graph.
-// returns nil if no path was found.
-func findPath(g graph.Graph, target *graph.Node) *list.List {
-	path := list.New()
-	mark := target.GetMark(path)
-	if mark == graph.MarkTrue {
-		return path
-	}
-	return nil
-}
-
 // attempts to create a path to the given targets by placing different items in
 // slots.
 func makeRoute(r *Route, start, goal, forbid []string,
