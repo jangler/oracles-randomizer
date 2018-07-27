@@ -122,7 +122,7 @@ var itemPoints = map[string]Point{
 
 	"sword":          Or("sword L-1", "sword L-2"),
 	"shield":         Or("shield L-1", "shield L-2"),
-	"beams":          Or("sword L-1", "sword beams L-1"),
+	"beams":          Or("sword L-2", "sword beams L-1"),
 	"boomerang":      Or("boomerang L-1", "boomerang L-2"),
 	"find slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"slingshot":      And("find slingshot", "satchel"), // need satchel to use
