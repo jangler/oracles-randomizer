@@ -324,7 +324,20 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 		return false
 	}
 
-	// TODO: check softlocks
+	// check softlocks, but not strictly
+	if reached[g.Map["shovel gift"]] && !reached[g.Map["shovel"]] {
+		log.Print("-- false; shovel softlock")
+		return false
+	} else if reached[g.Map["spring banana cucco"]] &&
+		!reached[g.Map["spring"]] {
+		log.Print("-- false; cucco softlock")
+		return false
+	} else if reached[g.Map["rosa portal out"]] &&
+		!reached[g.Map["remove stuck bush"]] {
+		// i don't think this one can actually happen
+		log.Print("-- false; portal softlock")
+		return false
+	}
 
 	// TODO: move some of this logic to its own function(s)
 	// try to reach each unused slot
