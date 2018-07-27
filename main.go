@@ -45,28 +45,6 @@ func main() {
 				log.Print(err)
 			}
 		}
-	case "explore":
-		r := initRoute([]string{})
-
-		// args are starting nodes
-		reached := make(map[graph.Node]bool)
-		for _, arg := range flag.Args() {
-			log.Print("adding ", arg)
-			reached = r.Graph.Explore(reached,
-				[]graph.Node{r.Graph.Map[arg]}, nil)
-			/*
-				log.Print(len(reached), " nodes")
-				log.Print(reached)
-			*/
-			steps := make(map[graph.Node]bool)
-			for node := range reached {
-				if node.IsStep() {
-					steps[node] = true
-				}
-			}
-			log.Print(len(steps), " step nodes")
-			log.Print(steps)
-		}
 	case "pointgen":
 		checkNumArgs(*flagDevcmd, 1)
 
