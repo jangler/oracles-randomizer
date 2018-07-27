@@ -167,8 +167,7 @@ func randomize(romData []byte, outFilename string,
 
 	// find a viable random route
 	r := initRoute(start)
-	usedItems, usedSlots, unusedItems, unusedSlots :=
-		makeRoute(r, start, goal, forbid, maxlen)
+	usedItems, usedSlots := makeRoute(r, start, goal, forbid, maxlen)
 
 	// place selected treasures in slots
 	for usedItems.Len() > 0 {
@@ -176,44 +175,6 @@ func randomize(romData []byte, outFilename string,
 		treasureName := usedItems.Remove(usedItems.Front()).(graph.Node).Name()
 		if err := placeTreasureInSlot(treasureName, slotName); err != nil {
 			return []error{err}
-		}
-	}
-
-	// remove forbidden unused items
-	for _, name := range forbid {
-		for e := unusedItems.Front(); e != nil; e = e.Next() {
-			if e.Value.(graph.Node).Name() == name {
-				unusedItems.Remove(e)
-				break
-			}
-		}
-	}
-
-	for unusedSlots.Len() > 0 {
-		// fill unused slots with unused items
-		slotName := unusedSlots.Remove(unusedSlots.Front()).(graph.Node).Name()
-		if unusedItems.Len() > 0 {
-			treasureName :=
-				unusedItems.Remove(unusedItems.Front()).(graph.Node).Name()
-			if err := placeTreasureInSlot(treasureName, slotName); err != nil {
-				return []error{err}
-			}
-			log.Printf("placed %s in unused slot %s", treasureName, slotName)
-		} else {
-			log.Fatalf("fatal: can't fill unused slot %s; no unused items",
-				slotName)
-		}
-	}
-
-	// TODO these checks should go somewhere where they don't have to fatal
-	if canSoftlock(r.Graph) {
-		log.Fatal("fatal: softlock introduced by unused item placement")
-	}
-	r.Graph.ClearMarks()
-	for _, node := range forbid {
-		if canReachTargets(r.Graph, node) {
-			log.Fatal(
-				"fatal: forbidden node reachable from unused item placement")
 		}
 	}
 

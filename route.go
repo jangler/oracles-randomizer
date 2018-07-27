@@ -198,10 +198,10 @@ func findPath(g *graph.Graph, target graph.Node) *list.List {
 // attempts to create a path to the given targets by placing different items in
 // slots.
 func makeRoute(r *Route, start, goal, forbid []string,
-	maxlen int) (usedItems, usedSlots, itemList, slotList *list.List) {
+	maxlen int) (usedItems, usedSlots *list.List) {
 	// make stacks out of the item names and slot names for backtracking
-	itemList = list.New()
-	slotList = list.New()
+	itemList := list.New()
+	slotList := list.New()
 	{
 		// shuffle names in slices
 		items := make([]graph.Node, 0, len(baseItemPoints))
@@ -295,7 +295,7 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 		}
 	}
 
-	// success if all goal nodes are reached
+	// success if all goal nodes are reached *and* all slots are filled
 	allReached := true
 	for _, node := range goal {
 		if !reached[node] {
@@ -305,12 +305,16 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 		}
 	}
 	if allReached {
-		return true
+		log.Printf("-- all goals reached with %d items", usedItems.Len())
+		if slotList.Len() == 0 {
+			log.Printf("-- true; all goals reached and slots filled")
+			return true
+		}
 	}
 
 	// if the new state doesn't reach any more steps, abandon this branch,
-	// *unless* the new item is a jewel.
-	if !strings.HasSuffix(add[0].Name(), " jewel") {
+	// *unless* the new item is a jewel, or we've already reached the goals.
+	if !allReached && !strings.HasSuffix(add[0].Name(), " jewel") {
 		if countSteps(reached) <= countSteps(start) {
 			log.Printf("-- false; reached steps %d <= start steps %d",
 				countSteps(reached), countSteps(start))
@@ -319,23 +323,14 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 	}
 
 	// can't slot any more items
-	if maxlen == 0 {
+	if !allReached && maxlen == 0 {
 		log.Print("-- false; slotted maxlen items")
 		return false
 	}
 
-	// check softlocks, but not strictly
-	if reached[g.Map["shovel gift"]] && !reached[g.Map["shovel"]] {
-		log.Print("-- false; shovel softlock")
-		return false
-	} else if reached[g.Map["spring banana cucco"]] &&
-		!reached[g.Map["spring"]] {
-		log.Print("-- false; cucco softlock")
-		return false
-	} else if reached[g.Map["rosa portal out"]] &&
-		!reached[g.Map["remove stuck bush"]] {
-		// i don't think this one can actually happen
-		log.Print("-- false; portal softlock")
+	// check for softlocks
+	if canSoftlock(g) {
+		log.Print("-- false; route blocked by softlock")
 		return false
 	}
 
