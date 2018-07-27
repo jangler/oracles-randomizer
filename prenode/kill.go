@@ -1,4 +1,4 @@
-package main
+package prenode
 
 // these nodes do not define items, only which items can kill which enemies
 // under what circumstances, assuming that you've arrived in the room
@@ -14,11 +14,9 @@ package main
 // if an enemy is in the same room as a throwable object and is vulnerable to
 // thrown objects, than just adding "bracelet" as an OR is sufficient.
 //
-// animal companions are not (yet?) included in this logic.
-//
-// these conditions are added only as necessary: if there's no point in the
-// route so far that requires killing ropes in a room with pits, there won't be
-// any "kill rope (pit)" node.
+// animal companions are not included in this logic, since all the times you
+// are *required* to kill enemies are inside dungeons, or when saving moosh
+// from moblins.
 
 // when testing how to kill enemies, remember to try:
 // - sword
@@ -46,7 +44,7 @@ package main
 //   - fool's ore
 //   - punch
 
-var killPoints = map[string]Point{
+var killPrenodes = map[string]*Prenode{
 	"slingshot kill normal":   And("slingshot", "seed kill normal"),
 	"jump kill normal":        And("jump", "kill normal"),
 	"jump pit normal":         And("jump", "pit kill normal"),

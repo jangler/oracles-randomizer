@@ -8,108 +8,31 @@ import (
 	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
+	"github.com/jangler/oos-randomizer/prenode"
 	"github.com/jangler/oos-randomizer/rom"
 )
-
-// this file contains the actual connection of nodes in the game graph, and
-// tracks them as they update.
-
-// XXX need to be careful about rings. i can't imagine a situation where you'd
-//     need both energy ring and fist ring, but if you did, then you'd need to
-//     have the L-2 ring box to do so without danger of soft locking.
-
-type PointType int
-
-const (
-	RootType PointType = iota
-	AndType
-	OrType
-	AndSlotType
-	OrSlotType
-	AndStepType
-	OrStepType
-)
-
-// A Point is a mapping of point strings that will become And or Or nodes in
-// the graph.
-type Point struct {
-	Parents []string
-	Type    PointType
-}
-
-// And, Or, and Root are pretty self-explanatory. One with a Slot suffix is an
-// item slot, and one with a Step suffix is treated as a milestone for routing
-// purposes. Slot types are also treated as steps; see the Point.IsStep()
-// function.
-//
-// The following function are half syntactic sugar for declaring large lists of
-// node relationships.
-
-func Root(a ...string) Point { return Point{a, RootType} }
-
-func And(a ...string) Point { return Point{a, AndType} }
-
-func Or(a ...string) Point { return Point{a, OrType} }
-
-func AndSlot(a ...string) Point { return Point{a, AndSlotType} }
-
-func OrSlot(a ...string) Point { return Point{a, OrSlotType} }
-
-func AndStep(a ...string) Point { return Point{a, AndStepType} }
-
-func OrStep(a ...string) Point { return Point{a, OrStepType} }
-
-// IsStep returns true iff the node is considered a milestone for routing
-// purposes.
-func (p *Point) IsStep() bool {
-	switch p.Type {
-	case AndSlotType, OrSlotType, AndStepType, OrStepType:
-		return true
-	}
-	return false
-}
 
 type Route struct {
 	Graph graph.Graph
 	Slots map[string]*graph.Node
 }
 
-func getNonGeneratedPoints() map[string]Point {
-	points := make(map[string]Point, 0)
-	appendPoints(points,
-		baseItemPoints, ignoredBaseItemPoints,
-		itemPoints, killPoints,
-		holodrumPoints, subrosiaPoints, portalPoints,
-		d0Points, d1Points, d2Points, d3Points, d4Points,
-		d5Points, d6Points, d7Points, d8Points, d9Points)
-	return points
-}
-
 func initRoute(start []string) *Route {
 	g := graph.New()
-
-	totalPoints := make(map[string]Point, 0)
-	appendPoints(getNonGeneratedPoints(), generatedPoints)
-
-	// ignore semicolon-delimited points; they're only used for generation
-	for key := range totalPoints {
-		if strings.ContainsRune(key, ';') {
-			delete(totalPoints, key)
-		}
-	}
+	totalPrenodes := prenode.GetAll()
 
 	// make start nodes given
 	for _, key := range start {
-		totalPoints[key] = And()
+		totalPrenodes[key] = prenode.And()
 	}
 
-	addPointNodes(g, totalPoints)
-	addPointParents(g, totalPoints)
+	addNodes(g, totalPrenodes)
+	addNodeParents(g, totalPrenodes)
 
 	openSlots := make(map[string]*graph.Node, 0)
-	for name, point := range totalPoints {
-		switch point.Type {
-		case AndSlotType, OrSlotType:
+	for name, pn := range totalPrenodes {
+		switch pn.Type {
+		case prenode.AndSlotType, prenode.OrSlotType:
 			openSlots[name] = g[name]
 		}
 	}
@@ -153,30 +76,27 @@ func (r *Route) CheckGraph() []error {
 	return errs
 }
 
-func appendPoints(total map[string]Point, pointMaps ...map[string]Point) {
-	for _, pointMap := range pointMaps {
-		for k, v := range pointMap {
-			total[k] = v
-		}
-	}
-}
-
-func addPointNodes(g graph.Graph, points map[string]Point) {
-	for key, pt := range points {
+func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode) {
+	for key, pt := range prenodes {
 		switch pt.Type {
-		case AndType, AndSlotType, AndStepType:
-			g.AddNodes(graph.NewNode(key, graph.AndType, pt.IsStep()))
-		case OrType, OrSlotType, OrStepType, RootType:
-			g.AddNodes(graph.NewNode(key, graph.OrType, pt.IsStep()))
+		case prenode.AndType, prenode.AndSlotType, prenode.AndStepType:
+			isStep := pt.Type == prenode.AndSlotType ||
+				pt.Type == prenode.AndStepType
+			g.AddNodes(graph.NewNode(key, graph.AndType, isStep))
+		case prenode.OrType, prenode.OrSlotType, prenode.OrStepType,
+			prenode.RootType:
+			isStep := pt.Type == prenode.OrSlotType ||
+				pt.Type == prenode.OrStepType
+			g.AddNodes(graph.NewNode(key, graph.OrType, isStep))
 		default:
-			panic("unknown point type for " + key)
+			panic("unknown prenode type for " + key)
 		}
 	}
 }
 
-func addPointParents(g graph.Graph, points map[string]Point) {
+func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 	// ugly but w/e
-	for k, p := range points {
+	for k, p := range prenodes {
 		g.AddParents(map[string][]string{k: p.Parents})
 	}
 }
@@ -201,9 +121,9 @@ func makeRoute(r *Route, start, goal, forbid []string,
 	slotList := list.New()
 	{
 		// shuffle names in slices
-		items := make([]*graph.Node, 0, len(baseItemPoints))
+		items := make([]*graph.Node, 0, len(prenode.BaseItems()))
 		slots := make([]*graph.Node, 0, len(r.Slots))
-		for itemName, _ := range baseItemPoints {
+		for itemName, _ := range prenode.BaseItems() {
 			items = append(items, r.Graph[itemName])
 		}
 		for slotName, _ := range r.Slots {
@@ -224,6 +144,7 @@ func makeRoute(r *Route, start, goal, forbid []string,
 			slotList.PushBack(slotNode)
 		}
 	}
+	log.Print(len(r.Graph))
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot

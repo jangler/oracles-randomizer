@@ -47,7 +47,7 @@ func main() {
 				log.Print(err)
 			}
 		}
-	case "pointgen":
+	case "pregen":
 		// auto-generate some graph nodes
 		checkNumArgs(*flagDevcmd, 1)
 
@@ -57,7 +57,7 @@ func main() {
 		}
 		defer f.Close()
 
-		generatePoints(f)
+		generatePrenodes(f)
 	case "verify":
 		checkNumArgs(*flagDevcmd, 1)
 

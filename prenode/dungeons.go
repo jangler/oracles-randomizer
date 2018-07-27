@@ -1,4 +1,4 @@
-package main
+package prenode
 
 // keep chests and chest items separate, so they can be altered later
 // if possible
@@ -13,7 +13,7 @@ package main
 // not that keys can NOT be numbered 1..n because of the code generation
 // syntax; label them A..N instead.
 
-var d0Points = map[string]Point{
+var d0Prenodes = map[string]*Prenode{
 	"d0 key chest":   And("enter d0"),
 	"d0 sword chest": AndSlot("enter d0", "d0 small key"),
 	"d0 rupee chest": And("remove bush"),
@@ -21,7 +21,7 @@ var d0Points = map[string]Point{
 	"d0 small key": And("d0 key chest"),
 }
 
-var d1Points = map[string]Point{
+var d1Prenodes = map[string]*Prenode{
 	"d1 key fall":       And("enter d1", "kill stalfos (throw)"),
 	"d1 map chest":      And("d1 key A", "kill stalfos"),
 	"d1 compass chest":  And("d1 map chest"),
@@ -54,7 +54,7 @@ var d1Points = map[string]Point{
 // you can actually complete this entire dungeon without ember seeds, since
 // they're only required to open one door, which you can circumvent via the
 // various entrances.
-var d2Points = map[string]Point{
+var d2Prenodes = map[string]*Prenode{
 	"d2 5-rupee chest":     And("d2 torch room"),
 	"d2 key fall":          And("d2 torch room", "kill rope"),
 	"d2 arrow room 1":      And("d2 torch room", "ember seeds"),
@@ -85,7 +85,7 @@ var d2Points = map[string]Point{
 	"d2 torch room": Or("enter d2 A", "d2 compass chest"),
 }
 
-var d3Points = map[string]Point{
+var d3Prenodes = map[string]*Prenode{
 	// first floor
 	"d3 mimic stairs 1":      And("enter d3", "kill spiked beetle (throw)", "bracelet"),
 	"d3 mimic stairs 2":      And("d3 feather stairs"),
@@ -126,7 +126,7 @@ var d3Points = map[string]Point{
 }
 
 // this whole dungeon is basically a tree so all the links are one-way
-var d4Points = map[string]Point{
+var d4Prenodes = map[string]*Prenode{
 	// left branch from entrance
 	"d4 bomb chest":     And("enter d4", "cross large pool"),
 	"d4 pot key fall":   And("d4 bomb chest", "bombs", "bracelet"),
@@ -163,7 +163,7 @@ var d4Points = map[string]Point{
 	"d4 boss key": And("d4 boss key chest"),
 }
 
-var d5Points = map[string]Point{
+var d5Prenodes = map[string]*Prenode{
 	// general
 	"cross magnet gap":   Or("pegasus jump L-2", "magnet gloves"),
 	"magnet jump":        And("jump", "magnet gloves"),
@@ -206,7 +206,7 @@ var d5Points = map[string]Point{
 }
 
 // i didn't note some of the non-essential chests in this dungeon
-var d6Points = map[string]Point{
+var d6Prenodes = map[string]*Prenode{
 	// 1F
 	"d6 spinner":         And("enter d6"),
 	"d6 magkey ball":     And("d6 spinner", "magnet gloves", "jump"),
@@ -251,7 +251,7 @@ var d6Points = map[string]Point{
 	"d6 boss key": And("d6 boss key chest"),
 }
 
-var d7Points = map[string]Point{
+var d7Prenodes = map[string]*Prenode{
 	// 1F
 	"d7 wizzrobe key chest": And("enter d7", "kill wizzrobe"),
 	"d7 ring chest":         And("enter d7", "d7 key E"),
@@ -300,7 +300,7 @@ var d7Points = map[string]Point{
 // ignoring everything unnecessary in a route that does obtain HSS.
 // keys get wonky but i'm just using the ones you'd get in an HSS skip route,
 // except for the locked doors that aren't in that route.
-var d8Points = map[string]Point{
+var d8Prenodes = map[string]*Prenode{
 	// 1F
 	"d8 eye key fall":      And("enter d8", "slingshot", "remove pot"),
 	"d8 hardhat room":      And("enter d8", "kill magunesu"),
@@ -350,7 +350,7 @@ var d8Points = map[string]Point{
 }
 
 // onox's castle
-var d9Points = map[string]Point{
+var d9Prenodes = map[string]*Prenode{
 	"enter onox": And("enter d9", "kill wizzrobe", "kill floormaster", "kill darknut", "kill facade"),
 	"done":       AndStep("enter onox", "kill onox"),
 }

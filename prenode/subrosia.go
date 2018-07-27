@@ -1,4 +1,4 @@
-package main
+package prenode
 
 // subrosia has several large areas which are guaranteed to be traverseable as
 // long as you can get there in the first place:
@@ -27,7 +27,7 @@ package main
 // ore. another would be not to randomize fool's ore at all, which is what i'm
 // going to do for now.
 
-var subrosiaPoints = map[string]Point{
+var subrosiaPrenodes = map[string]*Prenode{
 	"temple 1": And("rosa portal"),
 	"temple 4": And("beach", "ribbon"),
 	"temple 5": And("beach", "jump"),

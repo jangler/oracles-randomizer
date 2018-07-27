@@ -1,11 +1,11 @@
-package main
+package prenode
 
 // overworld route logic
 
 // portal parents are defined here since they're mostly overworld nodes
 // see subrosia.go for the note about "remove stuck bush"
 
-var portalPoints = map[string]Point{
+var portalPrenodes = map[string]*Prenode{
 	"rosa portal in":         And("sokra stump", "remove bush"),
 	"rosa portal out":        And("temple"),
 	"rosa portal in wrapper": Or("rosa portal in"), // hack for safety.go
@@ -47,7 +47,7 @@ var portalPoints = map[string]Point{
 	"remove stuck bush": Or("sword", "boomerang L-2", "bracelet"),
 }
 
-var holodrumPoints = map[string]Point{
+var holodrumPrenodes = map[string]*Prenode{
 	// start->d1
 	"horon village 1": And("north horon stump", "remove bush"),
 	"horon village 2": And("ghastly stump", "remove bush", "flippers"),

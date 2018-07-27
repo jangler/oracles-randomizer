@@ -1,16 +1,11 @@
-package main
+package prenode
 
 // these are items that can be shuffled around in the route as OR nodes
 //
 // OR nodes without parents are false. if these are given parents (i.e. a
 // chest/gift/whatever node), then they can become a valid part of the
 // route
-//
-// TODO there are some optimizations that could be made here: the four jewels
-//      are interchangeable, fist ring and expert's ring are interchangeable.
-//      it would also be nice if the randomizer checked whether a L-1 item is
-//      sufficient before trying a L-2 one.
-var baseItemPoints = map[string]Point{
+var baseItemPrenodes = map[string]*Prenode{
 	// ring box L-1 is free, but these nodes are "find" because it costs
 	// rupees to appraise (and therefore use) rings
 	"find fist ring":     Root(),
@@ -49,11 +44,11 @@ var baseItemPoints = map[string]Point{
 }
 
 // don't slot these for now; they don't satisfy anything
-var ignoredBaseItemPoints = map[string]Point{
+var ignoredBaseItemPrenodes = map[string]*Prenode{
 	"ring box L-2": Root(),
 }
 
-var itemPoints = map[string]Point{
+var itemPrenodes = map[string]*Prenode{
 	"harvest ember seeds":   And("ember tree", "satchel", "harvest item"),
 	"harvest mystery seeds": And("mystery tree", "satchel", "harvest item"),
 	"harvest scent seeds":   And("scent tree", "satchel", "harvest item"),
