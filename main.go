@@ -144,7 +144,7 @@ func randomize(romData []byte, outFilename string,
 
 	// find a viable random route
 	r := NewRoute(start)
-	usedItems, usedSlots := makeRoute(r, start, goal, forbid, maxlen)
+	usedItems, usedSlots := findRoute(r, start, goal, forbid, maxlen)
 
 	// place selected treasures in slots
 	for usedItems.Len() > 0 {

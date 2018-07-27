@@ -30,12 +30,6 @@ func TestShovelLockCheck(t *testing.T) {
 	g["feather L-1"].AddParents(g["maku key fall"])
 	g["sword L-1"].ClearParents()
 	g["sword L-1"].AddParents(g["shovel gift"])
-	if !canReachTargets(g, "shovel gift") {
-		t.Fatal("can't reach shovel gift in example")
-	}
-	if canReachTargets(g, "shovel") {
-		t.Fatal("can reach shovel in example")
-	}
 	if !canShovelSoftlock(g) {
 		t.Error("false negative shovel softlock w/ no shovel")
 	}

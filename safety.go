@@ -29,7 +29,7 @@ func canShovelSoftlock(g graph.Graph) bool {
 		defer shovel.AddParents(parents...)
 		g.ClearMarks()
 		if gift.GetMark(gift, nil) == graph.MarkTrue {
-			log.Print("shovel softlock")
+			log.Print("-- shovel softlock")
 			return true
 		}
 	}
@@ -58,7 +58,7 @@ func canFlowerSoftlock(g graph.Graph) bool {
 	g.ClearMarks()
 	cucco := g["spring banana cucco"]
 	if cucco.GetMark(cucco, nil) == graph.MarkTrue {
-		log.Print("cucco softlock")
+		log.Print("-- cucco softlock")
 		return true
 	}
 	return false
