@@ -2,11 +2,14 @@
 
 ## high priority
 
-- have a routine that finds all absolutely required items for a given goal
+- clean up the code, make it logical, comprehensible, and presentable for a
+  third party
+	- maybe only return true/false from getmark/peekmark?
+- write readme
+- make tests pass
 
 ## mid priority
 
-- have pointgen optimize nodes
 - seeds
 	- try changing satchel to start with a different type of seed
 	- try putting seeds in chests and see if it affects the drops you can get
@@ -16,6 +19,5 @@
 
 ## low priority
 
-- maybe only return true/false from getmark/peekmark?
 - subrosian dance hall -> dimitri's flute
 - scramble dungeons? before the randomization step
