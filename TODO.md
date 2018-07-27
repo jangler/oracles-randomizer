@@ -2,6 +2,9 @@
 
 ## high priority
 
+- use function values for node types instead of switching into a subfunction
+  for every GetMark() call—should reduce overhead and speed up the code, since
+  most of what happens is calling GetMark()
 - clean up the code, make it logical, comprehensible, and presentable for a
   third party
 - write readme

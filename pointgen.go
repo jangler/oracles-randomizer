@@ -30,6 +30,9 @@ var generatedPoints = map[string]Point{
 `
 
 func generatePoints(w io.Writer) error {
+	// get list of non-generated points
+	nonGeneratedPoints := getNonGeneratedPoints()
+
 	// get list of generated points
 	resultPoints := makeNumberPoints(nonGeneratedPoints)
 

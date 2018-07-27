@@ -70,29 +70,26 @@ func (p *Point) IsStep() bool {
 }
 
 type Route struct {
-	Graph  graph.Graph
-	Points map[string]Point
-	Slots  map[string]Point
+	Graph graph.Graph
+	Slots map[string]*graph.Node
 }
 
-var nonGeneratedPoints map[string]Point
-
-func init() {
-	nonGeneratedPoints = make(map[string]Point)
-	appendPoints(nonGeneratedPoints,
+func getNonGeneratedPoints() map[string]Point {
+	points := make(map[string]Point, 0)
+	appendPoints(points,
 		baseItemPoints, ignoredBaseItemPoints,
 		itemPoints, killPoints,
 		holodrumPoints, subrosiaPoints, portalPoints,
 		d0Points, d1Points, d2Points, d3Points, d4Points,
-		d5Points, d6Points, d7Points, d8Points, d9Points,
-	)
+		d5Points, d6Points, d7Points, d8Points, d9Points)
+	return points
 }
 
 func initRoute(start []string) *Route {
 	g := graph.New()
 
 	totalPoints := make(map[string]Point, 0)
-	appendPoints(totalPoints, nonGeneratedPoints, generatedPoints)
+	appendPoints(getNonGeneratedPoints(), generatedPoints)
 
 	// ignore semicolon-delimited points; they're only used for generation
 	for key := range totalPoints {
@@ -109,15 +106,15 @@ func initRoute(start []string) *Route {
 	addPointNodes(g, totalPoints)
 	addPointParents(g, totalPoints)
 
-	openSlots := make(map[string]Point, 0)
+	openSlots := make(map[string]*graph.Node, 0)
 	for name, point := range totalPoints {
 		switch point.Type {
 		case AndSlotType, OrSlotType:
-			openSlots[name] = point
+			openSlots[name] = g[name]
 		}
 	}
 
-	return &Route{Graph: g, Points: totalPoints, Slots: openSlots}
+	return &Route{Graph: g, Slots: openSlots}
 }
 
 // CheckGraph returns an error for each orphan and childless node in the graph,
@@ -130,7 +127,7 @@ func (r *Route) CheckGraph() []error {
 		// check for parents and children
 		if len(node.Parents) == 0 {
 			// root nodes are supposed to be parentless
-			if r.Points[name].Type == RootType {
+			if node.Type == graph.RootType {
 				// it's supposed to be orphan/childless; skip it
 				continue
 			}
@@ -142,8 +139,7 @@ func (r *Route) CheckGraph() []error {
 		}
 		if len(node.Children) == 0 {
 			// item slots are supposed to be childless
-			switch r.Points[name].Type {
-			case AndSlotType, OrSlotType:
+			if r.Slots[name] != nil {
 				continue
 			}
 
