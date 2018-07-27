@@ -8,7 +8,6 @@
 - clean up the code, make it logical, comprehensible, and presentable for a
   third party
 - write readme
-- make tests pass
 - make some of the devcmds tests instead (checkgraph and… others?)
 
 ## mid priority
