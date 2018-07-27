@@ -1,41 +1,31 @@
 package graph
 
-import (
-	"log"
-)
+// A Graph maps names to a set of (hopeully) connected nodes. The graph is
+// directed.
+type Graph map[string]*Node
 
-// this file contains facilities for linking nodes into a graph
-
-type Graph struct {
-	Map map[string]Node
+// New returns an initialized, empty graph.
+func New() Graph {
+	return Graph(make(map[string]*Node))
 }
 
-func NewGraph() *Graph {
-	return &Graph{
-		Map: make(map[string]Node),
-	}
-}
-
-// AddNodes adds the given nodes to the graph. It panics if a given node has
-// the same name as one already in the graph.
-func (g *Graph) AddNodes(nodes ...Node) {
+// AddNodes adds the given nodes to the graph. Name collision is a fatal error.
+func (g Graph) AddNodes(nodes ...*Node) {
 	for _, node := range nodes {
-		g.CheckDuplicateName(node.Name())
-		g.Map[node.Name()] = node
+		if g[node.Name] != nil {
+			panic("node name already in graph: " + node.Name)
+		}
+		g[node.Name] = node
 	}
 }
 
-func (g *Graph) CheckDuplicateName(name string) {
-	if g.Map[name] != nil {
-		panic("node named " + name + " already in route map")
-	}
-}
-
-func (g *Graph) AddParents(links map[string][]string) {
+// AddParents adds relationships in bulk between existing nodes in the graph,
+// by name. Attempting to link a name not in the graph results in a panic.
+func (g Graph) AddParents(links map[string][]string) {
 	for childName, parentNames := range links {
-		if child, ok := g.Map[childName]; ok {
+		if child, ok := g[childName]; ok {
 			for _, parentName := range parentNames {
-				if parent, ok := g.Map[parentName]; ok {
+				if parent, ok := g[parentName]; ok {
 					child.AddParents(parent)
 				} else {
 					panic("no node named " + parentName)
@@ -47,9 +37,11 @@ func (g *Graph) AddParents(links map[string][]string) {
 	}
 }
 
-func (g *Graph) ClearMarks() {
-	for _, node := range g.Map {
-		node.SetMark(MarkNone)
+// ClearMarks resets all the nodes in a graph to an "unknown" state. This is
+// required any time relationships in the graph change.
+func (g Graph) ClearMarks() {
+	for _, node := range g {
+		node.Mark = MarkNone
 	}
 }
 
@@ -59,25 +51,25 @@ func (g *Graph) ClearMarks() {
 // return set set to MarkTrue and the rest set to MarkNone.
 //
 // add and sub can be nil.
-func (g *Graph) Explore(start map[Node]bool, add, sub []Node) map[Node]bool {
+func (g Graph) Explore(start map[*Node]bool, add, sub []*Node) map[*Node]bool {
 	// copy set, and mark nodes accordingly
 	g.ClearMarks()
-	reached := make(map[Node]bool, len(start))
+	reached := make(map[*Node]bool, len(start))
 	for node := range start {
 		reached[node] = true
-		node.SetMark(MarkTrue)
+		node.Mark = MarkTrue
 	}
 
 	// make set of unchecked children
-	frontier := make(map[Node]bool)
+	frontier := make(map[*Node]bool)
 
 	// add nodes to the reached set and add their unreached children to the
 	// frontier.
 	for _, node := range add {
 		reached[node] = true
-		node.SetMark(MarkTrue)
+		node.Mark = MarkTrue
 
-		for _, child := range node.Children() {
+		for _, child := range node.Children {
 			if !reached[child] {
 				frontier[child] = true
 			}
@@ -88,29 +80,33 @@ func (g *Graph) Explore(start map[Node]bool, add, sub []Node) map[Node]bool {
 	// the frontier
 	for _, node := range sub {
 		delete(reached, node)
-		for _, child := range node.Children() {
+		for _, child := range node.Children {
 			if reached[child] {
 				frontier[child] = true
-				child.SetMark(MarkNone)
+				child.Mark = MarkNone
 			}
 		}
 	}
 
-	log.Print(len(frontier), " nodes in frontier")
-	tried := make(map[Node]bool) // and set of nodes that were already tried
+	// make set of nodes that were already processed as parents
+	tried := make(map[*Node]bool)
 
 	// explore. done when no new nodes are reached in an iteration
 	for len(frontier) > 0 {
 		for node := range frontier {
+			// if we can reach the node, add it to the reached set and add its
+			// (previously unchecked) children to the frontier
 			if node.GetMark(nil) == MarkTrue {
 				reached[node] = true
-				node.SetMark(MarkTrue)
-				for _, child := range node.Children() {
+				node.Mark = MarkTrue
+				for _, child := range node.Children {
 					if !reached[child] && !tried[child] {
 						frontier[child] = true
 					}
 				}
 			}
+
+			// get this node out of my sight
 			delete(frontier, node)
 			tried[node] = true
 		}

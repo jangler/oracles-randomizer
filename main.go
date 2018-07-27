@@ -11,6 +11,7 @@ import (
 	"github.com/jangler/oos-randomizer/rom"
 )
 
+// fatals if the command got the wrong number of arguments
 func checkNumArgs(op string, expected int) {
 	if flag.NArg() != expected {
 		log.Printf("%s takes %d argument(s); got %d",
@@ -47,6 +48,7 @@ func main() {
 			}
 		}
 	case "pointgen":
+		// auto-generate some graph nodes
 		checkNumArgs(*flagDevcmd, 1)
 
 		f, err := os.Create(flag.Arg(0))
@@ -146,8 +148,8 @@ func randomize(romData []byte, outFilename string,
 
 	// place selected treasures in slots
 	for usedItems.Len() > 0 {
-		slotName := usedSlots.Remove(usedSlots.Front()).(graph.Node).Name()
-		treasureName := usedItems.Remove(usedItems.Front()).(graph.Node).Name()
+		slotName := usedSlots.Remove(usedSlots.Front()).(*graph.Node).Name
+		treasureName := usedItems.Remove(usedItems.Front()).(*graph.Node).Name
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 	}
 

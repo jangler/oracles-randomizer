@@ -37,13 +37,13 @@ type Point struct {
 	Type    PointType
 }
 
-// the different types of points are all just string slices; the reason for
-// having different ones is purely for type assertions.
-//
-// And, Or, and Root are pretty self-explanatory; one with a Slot suffix is
-// an item slot; one with a Step suffix is treated as a milestone for routing
+// And, Or, and Root are pretty self-explanatory. One with a Slot suffix is an
+// item slot, and one with a Step suffix is treated as a milestone for routing
 // purposes. Slot types are also treated as steps; see the Point.IsStep()
 // function.
+//
+// The following function are half syntactic sugar for declaring large lists of
+// node relationships.
 
 func Root(a ...string) Point { return Point{a, RootType} }
 
@@ -59,6 +59,8 @@ func AndStep(a ...string) Point { return Point{a, AndStepType} }
 
 func OrStep(a ...string) Point { return Point{a, OrStepType} }
 
+// IsStep returns true iff the node is considered a milestone for routing
+// purposes.
 func (p *Point) IsStep() bool {
 	switch p.Type {
 	case AndSlotType, OrSlotType, AndStepType, OrStepType:
@@ -68,12 +70,11 @@ func (p *Point) IsStep() bool {
 }
 
 type Route struct {
-	Graph  *graph.Graph
+	Graph  graph.Graph
 	Points map[string]Point
 	Slots  map[string]Point
 }
 
-// total
 var nonGeneratedPoints map[string]Point
 
 func init() {
@@ -88,7 +89,7 @@ func init() {
 }
 
 func initRoute(start []string) *Route {
-	g := graph.NewGraph()
+	g := graph.New()
 
 	totalPoints := make(map[string]Point, 0)
 	appendPoints(totalPoints, nonGeneratedPoints, generatedPoints)
@@ -125,9 +126,9 @@ func initRoute(start []string) *Route {
 func (r *Route) CheckGraph() []error {
 	var errs []error
 
-	for name, node := range r.Graph.Map {
+	for name, node := range r.Graph {
 		// check for parents and children
-		if len(node.Parents()) == 0 {
+		if len(node.Parents) == 0 {
 			// root nodes are supposed to be parentless
 			if r.Points[name].Type == RootType {
 				// it's supposed to be orphan/childless; skip it
@@ -139,7 +140,7 @@ func (r *Route) CheckGraph() []error {
 			}
 			errs = append(errs, fmt.Errorf("orphan node: %s", name))
 		}
-		if len(node.Children()) == 0 {
+		if len(node.Children) == 0 {
 			// item slots are supposed to be childless
 			switch r.Points[name].Type {
 			case AndSlotType, OrSlotType:
@@ -164,20 +165,20 @@ func appendPoints(total map[string]Point, pointMaps ...map[string]Point) {
 	}
 }
 
-func addPointNodes(g *graph.Graph, points map[string]Point) {
+func addPointNodes(g graph.Graph, points map[string]Point) {
 	for key, pt := range points {
 		switch pt.Type {
 		case AndType, AndSlotType, AndStepType:
-			g.AddNodes(graph.NewAndNode(key, pt.IsStep()))
+			g.AddNodes(graph.NewNode(key, graph.AndType, pt.IsStep()))
 		case OrType, OrSlotType, OrStepType, RootType:
-			g.AddNodes(graph.NewOrNode(key, pt.IsStep()))
+			g.AddNodes(graph.NewNode(key, graph.OrType, pt.IsStep()))
 		default:
 			panic("unknown point type for " + key)
 		}
 	}
 }
 
-func addPointParents(g *graph.Graph, points map[string]Point) {
+func addPointParents(g graph.Graph, points map[string]Point) {
 	// ugly but w/e
 	for k, p := range points {
 		g.AddParents(map[string][]string{k: p.Parents})
@@ -186,7 +187,7 @@ func addPointParents(g *graph.Graph, points map[string]Point) {
 
 // attempts to find a path from the start to the given node in the graph.
 // returns nil if no path was found.
-func findPath(g *graph.Graph, target graph.Node) *list.List {
+func findPath(g graph.Graph, target *graph.Node) *list.List {
 	path := list.New()
 	mark := target.GetMark(path)
 	if mark == graph.MarkTrue {
@@ -204,13 +205,13 @@ func makeRoute(r *Route, start, goal, forbid []string,
 	slotList := list.New()
 	{
 		// shuffle names in slices
-		items := make([]graph.Node, 0, len(baseItemPoints))
-		slots := make([]graph.Node, 0, len(r.Slots))
+		items := make([]*graph.Node, 0, len(baseItemPoints))
+		slots := make([]*graph.Node, 0, len(r.Slots))
 		for itemName, _ := range baseItemPoints {
-			items = append(items, r.Graph.Map[itemName])
+			items = append(items, r.Graph[itemName])
 		}
 		for slotName, _ := range r.Slots {
-			slots = append(slots, r.Graph.Map[slotName])
+			slots = append(slots, r.Graph[slotName])
 		}
 		rand.Shuffle(len(items), func(i, j int) {
 			items[i], items[j] = items[j], items[i]
@@ -234,17 +235,17 @@ func makeRoute(r *Route, start, goal, forbid []string,
 	usedSlots = list.New()
 
 	// convert name lists into node lists
-	startNodes := make([]graph.Node, len(start))
+	startNodes := make([]*graph.Node, len(start))
 	for i, name := range start {
-		startNodes[i] = r.Graph.Map[name]
+		startNodes[i] = r.Graph[name]
 	}
-	goalNodes := make([]graph.Node, len(goal))
+	goalNodes := make([]*graph.Node, len(goal))
 	for i, name := range goal {
-		goalNodes[i] = r.Graph.Map[name]
+		goalNodes[i] = r.Graph[name]
 	}
-	forbidNodes := make([]graph.Node, len(forbid))
+	forbidNodes := make([]*graph.Node, len(forbid))
 	for i, name := range forbid {
-		forbidNodes[i] = r.Graph.Map[name]
+		forbidNodes[i] = r.Graph[name]
 	}
 
 	if tryExploreTargets(r.Graph, nil, startNodes, goalNodes,
@@ -262,8 +263,8 @@ func makeRoute(r *Route, start, goal, forbid []string,
 		}
 		for i := 0; i < usedItems.Len(); i++ {
 			log.Printf("%v <- %v",
-				usedItems.Front().Value.(graph.Node),
-				usedSlots.Front().Value.(graph.Node))
+				usedItems.Front().Value.(*graph.Node),
+				usedSlots.Front().Value.(*graph.Node))
 			usedItems.MoveToBack(usedItems.Front())
 			usedSlots.MoveToBack(usedSlots.Front())
 		}
@@ -280,12 +281,13 @@ func makeRoute(r *Route, start, goal, forbid []string,
 // return false.
 //
 // the lists are lists of nodes.
-func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
-	add, goal, forbid []graph.Node, maxlen int,
+func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
+	add, goal, forbid []*graph.Node, maxlen int,
 	itemList, usedItems, slotList, usedSlots *list.List) bool {
 	// explore given the old state and changes
 	reached := g.Explore(start, add, nil)
-	log.Print(len(reached), " steps reached")
+	log.Print(len(reached), " nodes reached")
+	log.Print(countSteps(reached), " steps reached")
 
 	// abort if any forbidden node is reached
 	for _, node := range forbid {
@@ -305,7 +307,7 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 		}
 	}
 	if allReached {
-		log.Printf("-- all goals reached with %d items", usedItems.Len())
+		log.Printf("-- all goals reached")
 		if slotList.Len() == 0 {
 			log.Printf("-- true; all goals reached and slots filled")
 			return true
@@ -314,7 +316,7 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 
 	// if the new state doesn't reach any more steps, abandon this branch,
 	// *unless* the new item is a jewel, or we've already reached the goals.
-	if !allReached && !strings.HasSuffix(add[0].Name(), " jewel") {
+	if !allReached && !strings.HasSuffix(add[0].Name, " jewel") {
 		if countSteps(reached) <= countSteps(start) {
 			log.Printf("-- false; reached steps %d <= start steps %d",
 				countSteps(reached), countSteps(start))
@@ -342,7 +344,7 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 		slotList.MoveToFront(slotElem)
 
 		// see if slot node has been reached
-		slotNode := slotElem.Value.(graph.Node)
+		slotNode := slotElem.Value.(*graph.Node)
 		if !reached[slotNode] {
 			continue
 		}
@@ -355,15 +357,15 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 		jewelChecked := false
 		for j := 0; j < itemList.Len(); j++ {
 			// slot the item and move it to the used list
-			itemNode := itemList.Remove(itemList.Back()).(graph.Node)
+			itemNode := itemList.Remove(itemList.Back()).(*graph.Node)
 			usedItems.PushBack(itemNode)
-			g.Map[itemNode.Name()].AddParents(g.Map[slotNode.Name()])
+			g[itemNode.Name].AddParents(g[slotNode.Name])
 
 			// print currently evaluating sequence of items
 			{
 				items := make([]string, 0, usedItems.Len())
 				for e := usedItems.Front(); e != nil; e = e.Next() {
-					items = append(items, e.Value.(graph.Node).Name())
+					items = append(items, e.Value.(*graph.Node).Name)
 				}
 				log.Print("trying " + strings.Join(items, " -> "))
 			}
@@ -372,7 +374,7 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 			skip := false
 			// only check one jewel per loop, since they're functionally
 			// identical
-			if strings.HasSuffix(itemNode.Name(), " jewel") {
+			if strings.HasSuffix(itemNode.Name, " jewel") {
 				if !jewelChecked {
 					jewelChecked = true
 				} else {
@@ -382,14 +384,14 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 			// the star ore code is unique in that it doesn't set the sub ID at
 			// all, leaving it zeroed. so if we're looking at the star ore
 			// slot, then skip any items that have a nonzero sub ID.
-			if slotNode.Name() == "star ore spot" &&
-				rom.Treasures[itemNode.Name()].SubID() != 0 {
+			if slotNode.Name == "star ore spot" &&
+				rom.Treasures[itemNode.Name].SubID() != 0 {
 				skip = true
 			}
 
 			// recurse
 			if !skip && tryExploreTargets(
-				g, reached, []graph.Node{itemNode}, goal, forbid, maxlen-1,
+				g, reached, []*graph.Node{itemNode}, goal, forbid, maxlen-1,
 				itemList, usedItems, slotList, usedSlots) {
 				return true
 			}
@@ -398,7 +400,7 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 			// unused list
 			usedItems.Remove(usedItems.Back())
 			itemList.PushFront(itemNode)
-			g.Map[itemNode.Name()].ClearParents()
+			g[itemNode.Name].ClearParents()
 		}
 
 		// slot didn't work; pop it onto the front of the unused list
@@ -416,19 +418,20 @@ func tryExploreTargets(g *graph.Graph, start map[graph.Node]bool,
 }
 
 // return the number of "step" nodes in the given set
-func countSteps(nodes map[graph.Node]bool) (count int) {
+func countSteps(nodes map[*graph.Node]bool) int {
+	count := 0
 	for node := range nodes {
-		if node.IsStep() {
+		if node.IsStep {
 			count++
 		}
 	}
-	return
+	return count
 }
 
 // check if the targets are reachable using the current graph state
-func canReachTargets(g *graph.Graph, targets ...string) bool {
+func canReachTargets(g graph.Graph, targets ...string) bool {
 	for _, target := range targets {
-		if g.Map[target].GetMark(nil) != graph.MarkTrue {
+		if g[target].GetMark(nil) != graph.MarkTrue {
 			return false
 		}
 	}
