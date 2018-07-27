@@ -250,77 +250,31 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 }
 
-var holodrumMutables = map[string]Mutable{
-	// want to have maku gate open from start
+var codeMutables = map[string]Mutable{
+	// have maku gate open from start
 	"maku gate check": MutableByte{Addr{0x04, 0x61a3}, 0x7e, 0x66},
 
-	// want to have the horon village shop stock *and* sell items from the
-	// start; replace each with $02
+	// have horon village shop stock *and* sell items from the start, including
+	// the flute
 	"horon shop stock check": MutableByte{Addr{0x08, 0x4adb}, 0x05, 0x02},
 	"horon shop sell check":  MutableByte{Addr{0x08, 0x48d0}, 0x05, 0x02},
-
-	// remove checks against specific essence flags. changing 0xcb to 0xf6
-	// turns the check from a bit check to an or against next byte in the code,
-	// which is always nonzero.
 	"horon shop flute check": MutableByte{Addr{0x08, 0x4b02}, 0xcb, 0xf6},
-	"ricky spawn check":      MutableByte{Addr{0x09, 0x4e68}, 0xcb, 0xf6},
 
-	// spawn rosa without having an essence (she checks for the treasure ID)
-	"rosa spawn check": MutableByte{Addr{0x09, 0x678c}, 0x40, 0x02},
-
-	// spawn dimitri without having essences, and even with flippers
-	"dimitri essence check": MutableByte{Addr{0x09, 0x4e36}, 0xcb, 0xf6},
-	"dimitri flipper check": MutableByte{Addr{0x09, 0x4e4c}, 0x2e, 0x00},
-
-	// master who gives flippers checks essences two ways (?)
-	"master essence check 2": MutableByte{Addr{0x0a, 0x4bea}, 0x40, 0x02},
-	"master essence check 1": MutableByte{Addr{0x0a, 0x4bf5}, 0x02, 0x00},
-
-	// round jewel giver checks for number of essences
-	"round jewel essence check": MutableByte{Addr{0x0a, 0x4f8b}, 0x05, 0x00},
-
-	// pirate captain and pirate on guard both check this (maybe others too)
-	"pirate essence check": MutableByte{Addr{0x08, 0x6c32}, 0x20, 0x00},
-
-	// looks like there's a check specifically for bit 6 too, but it doesn't
-	// seem to make a difference
-	"eruption check 1": MutableByte{Addr{0x08, 0x7c41}, 0x07, 0x00},
-	"eruption check 2": MutableByte{Addr{0x08, 0x7cd3}, 0x07, 0x00},
-}
-
-// hero's cave
-var d0Mutables = map[string]Mutable{
-	// unused
-	"d0 key chest":   MutableWord{Addr{0x15, 0x53f4}, 0x3003, 0x3003},
-	"d0 rupee chest": MutableWord{Addr{0x15, 0x53f8}, 0x2804, 0x2804},
-
-	// disable the "get sword" event that messes up the chest.
-	// unfortunately this also disables the fade to white.
+	// disable the "get sword" interaction that messes up the chest.
+	// unfortunately this also disables the fade to white (just s+q instead)
 	"d0 sword event": MutableByte{Addr{0x11, 0x70ec}, 0xf2, 0xff},
-}
 
-// dungeon 1 (unused)
-var d1Mutables = map[string]Mutable{
-	"d1 key fall":       MutableWord{Addr{0x0b, 0x466f}, 0x3001, 0x3001},
-	"d1 map chest":      MutableWord{Addr{0x15, 0x5418}, 0x3302, 0x3302},
-	"d1 compass chest":  MutableWord{Addr{0x15, 0x5404}, 0x3202, 0x3202},
-	"d1 gasha chest":    MutableWord{Addr{0x15, 0x5400}, 0x3401, 0x3401},
-	"d1 bomb chest":     MutableWord{Addr{0x15, 0x5408}, 0x0300, 0x0300},
-	"d1 key chest":      MutableWord{Addr{0x15, 0x540c}, 0x3003, 0x3003},
-	"d1 boss key chest": MutableWord{Addr{0x15, 0x5410}, 0x3103, 0x3103},
-	"d1 ring chest":     MutableWord{Addr{0x15, 0x5414}, 0x2d04, 0x2d04},
-}
-
-// dungeon 2 (unused)
-var d2Mutables = map[string]Mutable{
-	"d2 5-rupee chest":   MutableWord{Addr{0x15, 0x5438}, 0x2801, 0x2801},
-	"d2 key fall":        MutableWord{Addr{0x0b, 0x466f}, 0x3001, 0x3001},
-	"d2 compass chest":   MutableWord{Addr{0x15, 0x5434}, 0x3202, 0x3202},
-	"d2 map chest":       MutableWord{Addr{0x15, 0x5428}, 0x3302, 0x3302},
-	"d2 bomb key chest":  MutableWord{Addr{0x15, 0x542c}, 0x3003, 0x3003},
-	"d2 blade key chest": MutableWord{Addr{0x15, 0x5430}, 0x3003, 0x3003},
-	"d2 10-rupee chest":  MutableWord{Addr{0x15, 0x541c}, 0x2802, 0x2802},
-	"d2 boss key chest":  MutableWord{Addr{0x15, 0x5420}, 0x3103, 0x3103},
+	// initiate all these events without requiring essences
+	"ricky spawn check":         MutableByte{Addr{0x09, 0x4e68}, 0xcb, 0xf6},
+	"rosa spawn check":          MutableByte{Addr{0x09, 0x678c}, 0x40, 0x02},
+	"dimitri essence check":     MutableByte{Addr{0x09, 0x4e36}, 0xcb, 0xf6},
+	"dimitri flipper check":     MutableByte{Addr{0x09, 0x4e4c}, 0x2e, 0x00},
+	"master essence check 2":    MutableByte{Addr{0x0a, 0x4bea}, 0x40, 0x02},
+	"master essence check 1":    MutableByte{Addr{0x0a, 0x4bf5}, 0x02, 0x00},
+	"round jewel essence check": MutableByte{Addr{0x0a, 0x4f8b}, 0x05, 0x00},
+	"pirate essence check":      MutableByte{Addr{0x08, 0x6c32}, 0x20, 0x00},
+	"eruption check 1":          MutableByte{Addr{0x08, 0x7c41}, 0x07, 0x00},
+	"eruption check 2":          MutableByte{Addr{0x08, 0x7cd3}, 0x07, 0x00},
 }
 
 var Mutables map[string]Mutable
@@ -336,10 +290,7 @@ func init() {
 	}
 
 	mutableSets := []map[string]Mutable{
-		holodrumMutables,
-		d0Mutables,
-		d1Mutables,
-		d2Mutables,
+		codeMutables,
 		treasureMutables,
 		slotMutables,
 	}
