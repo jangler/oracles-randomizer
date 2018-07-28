@@ -1,7 +1,11 @@
 package main
 
 import (
+	"math/rand"
 	"testing"
+
+	"github.com/jangler/oos-randomizer/graph"
+	"github.com/jangler/oos-randomizer/prenode"
 )
 
 func TestShovelLockCheck(t *testing.T) {
@@ -72,7 +76,61 @@ func TestFeatherLockCheck(t *testing.T) {
 	g["feather L-2"].ClearParents()
 	g["shovel"].AddParents(g["blaino gift"])
 	g["feather L-2"].AddParents(g["d2 bracelet chest"])
-	if canFeatherSoftlock(g) {
+	if canFeatherSoftlock(g) != nil {
 		t.Error("false positive feather softlock reaching H&S after shovel")
 	}
+}
+
+// helper function used for the other benchmarks
+func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
+	// make a list of base item nodes to use for testing
+	r := NewRoute([]string{"horon village"})
+	g := r.Graph
+	baseItems := make([]*graph.Node, 0, len(prenode.BaseItems()))
+	for name := range prenode.BaseItems() {
+		baseItems = append(baseItems, g[name])
+	}
+
+	for i := 0; i < b.N; i++ {
+		// create a fresh graph and shuffle the item list
+		b.StopTimer()
+		r = NewRoute([]string{"horon village"})
+		g = r.Graph
+		reached := map[*graph.Node]bool{g["horon village"]: true}
+
+		rand.Shuffle(len(baseItems), func(i, j int) {
+			baseItems[i], baseItems[j] = baseItems[j], baseItems[i]
+		})
+		b.StartTimer()
+
+		// gradually add items to the graph to get a picture of performance at
+		// various stages in the exploration
+		for _, itemNode := range baseItems {
+			itemNode.AddParents(g["d0 sword chest"])
+			reached = g.Explore(reached, []*graph.Node{itemNode})
+
+			// run 10 times to get a better proportion of check runtime vs
+			// explore runtime. just ignoring the explore runtime results in
+			// really long tests
+			for j := 0; j < 10; j++ {
+				check(g)
+			}
+		}
+	}
+}
+
+func BenchmarkCanSoftlock(b *testing.B) {
+	benchGraphCheck(b, canSoftlock)
+}
+
+func BenchmarkCanShovelSoftlock(b *testing.B) {
+	benchGraphCheck(b, canShovelSoftlock)
+}
+
+func BenchmarkCanFlowerSoftlock(b *testing.B) {
+	benchGraphCheck(b, canFlowerSoftlock)
+}
+
+func BenchmarkCanFeatherSoftlock(b *testing.B) {
+	benchGraphCheck(b, canFeatherSoftlock)
 }

@@ -9,6 +9,7 @@ import (
 // TODO: write similar (?) functions to make sure dungeon navigation is
 //       possible w/ the locations of small keys and given item state
 
+// these are ordered, roughly, from least to most costly to check
 var softlockChecks = [](func(graph.Graph) error){
 	canShovelSoftlock,
 	canFlowerSoftlock,
