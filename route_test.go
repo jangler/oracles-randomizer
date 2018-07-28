@@ -19,6 +19,6 @@ func BenchmarkGraphExplore(b *testing.B) {
 	// explore all items from the d0 sword chest
 	for name := range prenode.BaseItems() {
 		r.Graph.Explore(
-			make(map[*graph.Node]bool), []*graph.Node{r.Graph[name]}, nil)
+			make(map[*graph.Node]bool), []*graph.Node{r.Graph[name]})
 	}
 }
