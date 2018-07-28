@@ -22,8 +22,6 @@ func checkNumArgs(op string, expected int) {
 
 func main() {
 	// init flags
-	flagStart := flag.String("start", "horon village",
-		"comma-separated list of nodes treated as given")
 	flagGoal := flag.String("goal", "done",
 		"comma-separated list of nodes that must be reachable")
 	flagForbid := flag.String("forbid", "",
@@ -41,7 +39,7 @@ func main() {
 		checkNumArgs(*flagDevcmd, 0)
 
 		// check for orphan/childless nodes
-		r := NewRoute(strings.Split(*flagStart, ","))
+		r := NewRoute([]string{"horon village"})
 		if errs := r.CheckGraph(); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
@@ -90,7 +88,6 @@ func main() {
 		}
 
 		// split node params
-		start := strings.Split(*flagStart, ",")
 		goal := strings.Split(*flagGoal, ",")
 		forbid := []string{}
 		if *flagForbid != "" {
@@ -98,8 +95,8 @@ func main() {
 		}
 
 		// randomize according to params
-		if errs := randomize(romData, flag.Arg(1),
-			start, goal, forbid, *flagMaxlen); errs != nil {
+		if errs := randomize(romData, flag.Arg(1), []string{"horon village"},
+			goal, forbid, *flagMaxlen); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
