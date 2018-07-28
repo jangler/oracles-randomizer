@@ -250,10 +250,17 @@ var codeMutables = map[string]Mutable{
 	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
 
 	// have horon village shop stock *and* sell items from the start, including
-	// the flute
-	"horon shop stock check": MutableByte(Addr{0x08, 0x4adb}, 0x05, 0x02),
-	"horon shop sell check":  MutableByte(Addr{0x08, 0x48d0}, 0x05, 0x02),
-	"horon shop flute check": MutableByte(Addr{0x08, 0x4b02}, 0xcb, 0xf6),
+	// the flute. also don't disable the flute appearing until actually getting
+	// ricky's flute; normally it disappears as soon as you enter the screen
+	// northeast of d1 (or ricky's spot, whichever comes first).
+	"horon shop stock check":   MutableByte(Addr{0x08, 0x4adb}, 0x05, 0x02),
+	"horon shop sell check":    MutableByte(Addr{0x08, 0x48d0}, 0x05, 0x02),
+	"horon shop flute check 1": MutableByte(Addr{0x08, 0x4b02}, 0xcb, 0xf6),
+	"horon shop flute check 2": MutableByte(Addr{0x08, 0x4afc}, 0x6f, 0x7f),
+
+	// subrosian dancing's flute prize is normally disabled by visiting the
+	// same areas as the horon shop's flute.
+	"dance hall flute check": MutableByte(Addr{0x09, 0x5e21}, 0x20, 0x80),
 
 	// disable the "get sword" interaction that messes up the chest.
 	// unfortunately this also disables the fade to white (just s+q instead)
