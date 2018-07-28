@@ -270,6 +270,10 @@ var codeMutables = map[string]Mutable{
 	"pirate essence check":      MutableByte(Addr{0x08, 0x6c32}, 0x20, 0x00),
 	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
 	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
+
+	// count number of essences, not highest number essence
+	"maku seed check 1": MutableByte(Addr{0x09, 0x7d8d}, 0xea, 0x76),
+	"maku seed check 2": MutableByte(Addr{0x09, 0x7d8f}, 0x30, 0x18),
 }
 
 // Mutables is a collated map of all mutables.
