@@ -61,14 +61,14 @@ func TestFeatherLockCheck(t *testing.T) {
 		t.Error("false positive feather softlock w/o reaching H&S")
 	}
 
-	// make sure that it detects softlock if you have don't shovel before H&S
+	// make sure that it detects softlock if you don't have shovel before H&S
 	g["bracelet"].AddParents(g["boomerang gift"])
 	g["feather L-2"].AddParents(g["blaino gift"])
 	if !canFeatherSoftlock(g) {
 		t.Error("false negative feather softlock")
 	}
 
-	// make sure that it detects softlock if you don't have shovel before H&S
+	// make sure that it doesn't detect softlock if you must have shovel first
 	g["feather L-2"].ClearParents()
 	g["shovel"].AddParents(g["blaino gift"])
 	g["feather L-2"].AddParents(g["d2 bracelet chest"])
