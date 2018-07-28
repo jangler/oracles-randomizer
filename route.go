@@ -308,8 +308,8 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	}
 
 	// check for softlocks
-	if canSoftlock(g) {
-		log.Print("-- false; route blocked by softlock")
+	if err := canSoftlock(g); err != nil {
+		log.Print("-- false; ", err)
 		return RouteInvalid
 	}
 

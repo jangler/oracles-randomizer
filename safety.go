@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"errors"
 
 	"github.com/jangler/oos-randomizer/graph"
 )
@@ -9,17 +9,26 @@ import (
 // TODO: write similar (?) functions to make sure dungeon navigation is
 //       possible w/ the locations of small keys and given item state
 
+var softlockChecks = [](func(graph.Graph) error){
+	canShovelSoftlock,
+	canFlowerSoftlock,
+	canFeatherSoftlock,
+}
+
 // check for known softlock conditions
-func canSoftlock(g graph.Graph) bool {
-	return canShovelSoftlock(g) ||
-		canFlowerSoftlock(g) ||
-		canFeatherSoftlock(g)
+func canSoftlock(g graph.Graph) error {
+	for _, check := range softlockChecks {
+		if err := check(g); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // make sure you can't reach the shovel gift without either having a shovel
 // already or getting a shovel there, *if* the shovel gift has been assigned
 // yet.
-func canShovelSoftlock(g graph.Graph) bool {
+func canShovelSoftlock(g graph.Graph) error {
 	gift, shovel := g["shovel gift"], g["shovel"]
 	parents := shovel.Parents
 
@@ -31,18 +40,17 @@ func canShovelSoftlock(g graph.Graph) bool {
 		defer shovel.AddParents(parents...)
 		g.ClearMarks()
 		if gift.GetMark(gift, nil) == graph.MarkTrue {
-			log.Print("-- shovel softlock")
-			return true
+			return errors.New("shovel softlock")
 		}
 	}
 
-	return false
+	return nil
 }
 
 // make sure you can't reach the spring banana cucco before having an item that
 // removes flowers. you can still softlock if you forget to change season to
 // spring, of course
-func canFlowerSoftlock(g graph.Graph) bool {
+func canFlowerSoftlock(g graph.Graph) error {
 	// temporarily make entrance and bush items unavailable
 	disabledNodes := append(g["remove flower sustainable"].Parents)
 	disabledParents := make([][]*graph.Node, len(disabledNodes))
@@ -60,16 +68,15 @@ func canFlowerSoftlock(g graph.Graph) bool {
 	g.ClearMarks()
 	cucco := g["spring banana cucco"]
 	if cucco.GetMark(cucco, nil) == graph.MarkTrue {
-		log.Print("-- cucco softlock")
-		return true
+		return errors.New("cucco softlock")
 	}
-	return false
+	return nil
 }
 
 // make sure you can't reach the hide & seek area in subrosia without getting a
 // shovel first. if your feather is stolen and you can't dig it back up, you
 // can't exit that area.
-func canFeatherSoftlock(g graph.Graph) bool {
+func canFeatherSoftlock(g graph.Graph) error {
 	hideAndSeek, shovel := g["hide and seek"], g["shovel"]
 	parents := shovel.Parents
 
@@ -78,9 +85,8 @@ func canFeatherSoftlock(g graph.Graph) bool {
 	defer shovel.AddParents(parents...)
 	g.ClearMarks()
 	if hideAndSeek.GetMark(hideAndSeek, nil) == graph.MarkTrue {
-		log.Print("-- feather softlock")
-		return true
+		return errors.New("feather softlock")
 	}
 
-	return false
+	return nil
 }
