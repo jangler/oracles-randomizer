@@ -105,10 +105,11 @@ var itemPrenodes = map[string]*Prenode{
 	"autumn": AndStep("rod", "autumn tower"),
 
 	"ricky":         And("ricky pen", "ricky's gloves"),
-	"strange flute": And("rupees"), // TODO subrosian dancing
-	"moosh flute":   And("strange flute", "spool swamp", "kill moblin"),
-	"animal flute":  OrStep("ricky", "moosh flute"),
-	"flute":         Or("strange flute", "animal flute"),
+	"strange flute": Or("rupees", "temple"),
+	"moosh flute":   And("rupees", "spool swamp", "kill moblin"),
+	"dimitri flute": And("temple", "spool swamp", "rupees"),
+	"animal flute":  OrStep("ricky", "moosh flute", "dimitri flute"),
+	"flute":         OrStep("strange flute", "animal flute"),
 
 	"rod":        OrStep("temple"), // keep in place for now
 	"fool's ore": Or(),             // disregard for now
