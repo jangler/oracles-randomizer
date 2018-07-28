@@ -42,9 +42,8 @@ var baseItemPrenodes = map[string]*Prenode{
 	"find energy ring": Root(),
 	"find toss ring":   Root(),
 
-	// filler item, doesn't satisfy any requirements so it's only placed after
-	// the route is complete. just for fun.
-	"bombchus": Root(),
+	// could be uncommented and function as a filler item
+	// "bombchus": Root(),
 }
 
 // don't slot these for now; they don't satisfy anything
