@@ -8,10 +8,8 @@ order that the randomized items facilitate. And they *will* facilitate a path
 to the goal, although you may have to be inventive to find it.
 
 The randomizer has not been publicly tested yet, so consider it "beta" for now.
-I've done a full run without problems, but it doesn't mean that there aren't
-any bugs. I particularly recommend saving before opening an important chest,
-because if the randomizer screwed up then you'll be stuck in cutscene mode and
-have to hard reset.
+See the [issue tracker](https://github.com/jangler/oos-randomizer/issues) for
+known problems.
 
 
 ## Download
