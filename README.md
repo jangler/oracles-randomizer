@@ -12,12 +12,6 @@ See the [issue tracker](https://github.com/jangler/oos-randomizer/issues) for
 known problems.
 
 
-## Download
-
-You can download executables for Windows, MacOS, and Linux from the
-[releases](https://github.com/jangler/oos-randomizer/releases) page.
-
-
 ## Usage
 
 The randomizer uses a command-line interface, and I currently have no plans to
@@ -48,6 +42,12 @@ abbreviated list of possible `-goal` and `-forbid` nodes.
 Regardless of the value of `-maxlen`, the randomizer will place items in all
 available slots. The flag just limits the number of slotted items that are
 *necessary* in order to reach the goal(s).
+
+
+## Download
+
+You can download executables for Windows, MacOS, and Linux from the
+[releases](https://github.com/jangler/oos-randomizer/releases) page.
 
 
 ## Randomization notes
