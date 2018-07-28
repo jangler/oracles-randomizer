@@ -65,19 +65,19 @@ var itemPrenodes = map[string]*Prenode{
 	// tree. the exception is ember seeds, since the satchel comes loaded with
 	// them from the start.
 
-	"ember satchel":   And("get ember seeds", "satchel"),
+	"ember satchel":   And("harvest ember seeds", "satchel"),
 	"mystery satchel": And("harvest mystery seeds", "satchel"),
 	"scent satchel":   And("harvest scent seeds", "satchel"),
 	"pegasus satchel": And("harvest pegasus seeds", "satchel"),
 	"gale satchel":    And("harvest gale seeds", "satchel"),
 
-	"ember slingshot":   And("get ember seeds", "slingshot"),
+	"ember slingshot":   And("harvest ember seeds", "slingshot"),
 	"mystery slingshot": And("harvest mystery seeds", "slingshot"),
 	"scent slingshot":   And("harvest scent seeds", "slingshot"),
 	"pegasus slingshot": And("harvest pegasus seeds", "slingshot"),
 	"gale slingshot":    And("harvest gale seeds", "slingshot"),
 
-	"ember seeds":   And("get ember seeds", "seed item"),
+	"ember seeds":   And("harvest ember seeds", "seed item"),
 	"mystery seeds": And("harvest mystery seeds", "seed item"),
 	"scent seeds":   And("harvest scent seeds", "seed item"),
 	"pegasus seeds": And("harvest pegasus seeds", "seed item"),
@@ -123,13 +123,10 @@ var itemPrenodes = map[string]*Prenode{
 	"find slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"slingshot":      And("find slingshot", "satchel"), // need satchel to use
 	"seed item":      Or("satchel", "slingshot"),
-	"find bombs":     Or("find d2 bombs"),
-	"bombs":          Or("rupees", "find bombs"),
+	"bombs":          Or("rupees"),
 	"jump":           Or("feather L-1", "feather L-2"),
 
-	"harvest item":     Or("sword", "rod", "fool's ore", "punch"),
-	"find ember seeds": Or("find d1 ember seeds", "find d2 ember seeds"), // TODO
-	"get ember seeds":  Or("harvest ember seeds", "find ember seeds"),
+	"harvest item": Or("sword", "rod", "fool's ore", "punch"),
 
 	"find punch ring": Or("find fist ring", "find expert's ring"),
 
