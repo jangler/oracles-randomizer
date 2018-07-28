@@ -18,6 +18,7 @@ func TestShovelLockCheck(t *testing.T) {
 	g["bracelet"].AddParents(g["maku key fall"])
 	g["flippers"].AddParents(g["blaino gift"])
 	g["feather L-1"].AddParents(g["star ore spot"])
+	g["shovel gift"].GetMark(g["shovel gift"], nil)
 	if canShovelSoftlock(g) != nil {
 		t.Error("false positive shovel softlock w/ shovel prereq")
 	}
@@ -34,6 +35,8 @@ func TestShovelLockCheck(t *testing.T) {
 	g["feather L-1"].AddParents(g["maku key fall"])
 	g["sword L-1"].ClearParents()
 	g["sword L-1"].AddParents(g["shovel gift"])
+	g.ClearMarks()
+	g["shovel gift"].GetMark(g["shovel gift"], nil)
 	if canShovelSoftlock(g) == nil {
 		t.Error("false negative shovel softlock w/ no shovel")
 	}
@@ -41,6 +44,8 @@ func TestShovelLockCheck(t *testing.T) {
 	// make sure that getting a shovel as the gift passes
 	g["shovel"].ClearParents()
 	g["shovel"].AddParents(g["shovel gift"])
+	g.ClearMarks()
+	g["shovel gift"].GetMark(g["shovel gift"], nil)
 	if canShovelSoftlock(g) != nil {
 		t.Error("false positive shovel softlock w/ shovel as gift")
 	}
@@ -48,6 +53,8 @@ func TestShovelLockCheck(t *testing.T) {
 	// and make sure that getting there with an optional shovel fails
 	g["shovel"].ClearParents()
 	g["shovel"].AddParents(g["boomerang gift"])
+	g.ClearMarks()
+	g["shovel gift"].GetMark(g["shovel gift"], nil)
 	if canShovelSoftlock(g) == nil {
 		t.Error("false negative shovel softlock w/ optional shovel")
 	}
@@ -61,6 +68,7 @@ func TestFeatherLockCheck(t *testing.T) {
 	g["sword L-1"].AddParents(g["d0 sword chest"])
 	g["gnarled key"].AddParents(g["maku key fall"])
 	g["satchel"].AddParents(g["d1 satchel"])
+	g["hide and seek"].GetMark(g["hide and seek"], nil) // init marks for check
 	if canFeatherSoftlock(g) != nil {
 		t.Error("false positive feather softlock w/o reaching H&S")
 	}
@@ -68,6 +76,7 @@ func TestFeatherLockCheck(t *testing.T) {
 	// make sure that it detects softlock if you don't have shovel before H&S
 	g["bracelet"].AddParents(g["boomerang gift"])
 	g["feather L-2"].AddParents(g["blaino gift"])
+	g["hide and seek"].GetMark(g["hide and seek"], nil)
 	if canFeatherSoftlock(g) == nil {
 		t.Error("false negative feather softlock")
 	}
@@ -76,6 +85,8 @@ func TestFeatherLockCheck(t *testing.T) {
 	g["feather L-2"].ClearParents()
 	g["shovel"].AddParents(g["blaino gift"])
 	g["feather L-2"].AddParents(g["d2 bracelet chest"])
+	g.ClearMarks()
+	g["hide and seek"].GetMark(g["hide and seek"], nil)
 	if canFeatherSoftlock(g) != nil {
 		t.Error("false positive feather softlock reaching H&S after shovel")
 	}

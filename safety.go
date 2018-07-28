@@ -30,7 +30,13 @@ func canSoftlock(g graph.Graph) error {
 // already or getting a shovel there, *if* the shovel gift has been assigned
 // yet.
 func canShovelSoftlock(g graph.Graph) error {
-	gift, shovel := g["shovel gift"], g["shovel"]
+	// first check if the gift has been reached
+	gift := g["shovel gift"]
+	if gift.Mark != graph.MarkTrue {
+		return nil
+	}
+
+	shovel := g["shovel"]
 	parents := shovel.Parents
 
 	// if the slot hasn't been assigned yet or it *is* the shovel, it's fine
@@ -52,6 +58,12 @@ func canShovelSoftlock(g graph.Graph) error {
 // removes flowers. you can still softlock if you forget to change season to
 // spring, of course
 func canFlowerSoftlock(g graph.Graph) error {
+	// first check if cucco has been reached
+	cucco := g["spring banana cucco"]
+	if cucco.Mark != graph.MarkTrue {
+		return nil
+	}
+
 	// temporarily make entrance and bush items unavailable
 	disabledNodes := append(g["remove flower sustainable"].Parents)
 	disabledParents := make([][]*graph.Node, len(disabledNodes))
@@ -67,7 +79,6 @@ func canFlowerSoftlock(g graph.Graph) error {
 
 	// see if you can still reach the exit
 	g.ClearMarks()
-	cucco := g["spring banana cucco"]
 	if cucco.GetMark(cucco, nil) == graph.MarkTrue {
 		return errors.New("cucco softlock")
 	}
@@ -78,10 +89,22 @@ func canFlowerSoftlock(g graph.Graph) error {
 // shovel first. if your feather is stolen and you can't dig it back up, you
 // can't exit that area.
 func canFeatherSoftlock(g graph.Graph) error {
-	hideAndSeek, shovel := g["hide and seek"], g["shovel"]
+	// first check whether hide and seek has been reached
+	hideAndSeek := g["hide and seek"]
+	if hideAndSeek.Mark != graph.MarkTrue {
+		return nil
+	}
+	// also test that you can jump, since you can't H&S without jumping (and it
+	// would be beneficial if you could)
+	if g["jump"].Mark != graph.MarkTrue {
+		return nil
+	}
+
+	shovel := g["shovel"]
 	parents := shovel.Parents
 
 	// check whether hide and seek is reachable if shovel is unreachable
+
 	shovel.ClearParents()
 	defer shovel.AddParents(parents...)
 	g.ClearMarks()
