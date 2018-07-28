@@ -152,7 +152,7 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 	add, goal, forbid []*graph.Node, maxlen int,
 	itemList, usedItems, slotList, usedSlots *list.List) bool {
 	// explore given the old state and changes
-	reached := g.Explore(start, add, nil)
+	reached := g.Explore(start, add)
 	log.Print(countSteps(reached), " steps reached")
 
 	// check whether to return right now

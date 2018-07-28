@@ -46,12 +46,10 @@ func (g Graph) ClearMarks() {
 }
 
 // Explore returns a new set of all nodes reachable from the set of nodes in
-// start, adding the nodes in add and subtracting the nodes in sub. This is a
-// destructive operation; at the end, the graph will have all nodes in the
-// return set set to MarkTrue and the rest set to MarkNone.
-//
-// add and sub can be nil.
-func (g Graph) Explore(start map[*Node]bool, add, sub []*Node) map[*Node]bool {
+// start, adding the nodes in add. This is a destructive operation; at the end,
+// the graph will have all nodes in the return set set to MarkTrue and the rest
+// set to MarkNone.
+func (g Graph) Explore(start map[*Node]bool, add []*Node) map[*Node]bool {
 	// copy set, and mark nodes accordingly
 	g.ClearMarks()
 	reached := make(map[*Node]bool, len(start))
@@ -72,20 +70,6 @@ func (g Graph) Explore(start map[*Node]bool, add, sub []*Node) map[*Node]bool {
 		for _, child := range node.Children {
 			if !reached[child] {
 				frontier[child] = true
-			}
-		}
-	}
-
-	// subtract nodes from the reached set and add their reached children to
-	// the frontier
-	//
-	// XXX i'm not 100% sure this works correctly since it's never used
-	for _, node := range sub {
-		delete(reached, node)
-		for _, child := range node.Children {
-			if reached[child] {
-				frontier[child] = true
-				child.Mark = MarkNone
 			}
 		}
 	}
