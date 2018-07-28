@@ -15,8 +15,7 @@ package prenode
 // thrown objects, than just adding "bracelet" as an OR is sufficient.
 //
 // animal companions are not included in this logic, since all the times you
-// are *required* to kill enemies are inside dungeons, or when saving moosh
-// from moblins.
+// are *required* to kill enemies are in areas where you can't use a companion.
 
 // when testing how to kill enemies, remember to try:
 // - sword
