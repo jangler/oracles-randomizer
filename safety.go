@@ -14,6 +14,7 @@ var softlockChecks = [](func(graph.Graph) error){
 	canShovelSoftlock,
 	canFlowerSoftlock,
 	canFeatherSoftlock,
+	canEarlySlingshot,
 }
 
 // check for known softlock conditions
@@ -104,12 +105,35 @@ func canFeatherSoftlock(g graph.Graph) error {
 	parents := shovel.Parents
 
 	// check whether hide and seek is reachable if shovel is unreachable
-
 	shovel.ClearParents()
 	defer shovel.AddParents(parents...)
 	g.ClearMarks()
 	if hideAndSeek.GetMark(hideAndSeek, nil) == graph.MarkTrue {
 		return errors.New("feather softlock")
+	}
+
+	return nil
+}
+
+// the slingshot is useless and displays an incorrect "92" seeds if you get it
+// before the satchel. this isn't any kind of softlock problem, but it'd still
+// be nice if you had to get the satchel first.
+func canEarlySlingshot(g graph.Graph) error {
+	// check whether either slingshot has been reached
+	slingshot := g["slingshot"]
+	if slingshot.Mark != graph.MarkTrue {
+		return nil
+	}
+
+	satchel := g["satchel"]
+	parents := satchel.Parents
+
+	// check whether slingshot is reachable if satchel is not
+	satchel.ClearParents()
+	defer satchel.AddParents(parents...)
+	g.ClearMarks()
+	if slingshot.GetMark(slingshot, nil) == graph.MarkTrue {
+		return errors.New("slingshot obtained before satchel")
 	}
 
 	return nil
