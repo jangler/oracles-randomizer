@@ -46,6 +46,7 @@ var subrosiaPrenodes = map[string]*Prenode{
 	"bridge 3": And("hide and seek", "pegasus jump L-2"),
 
 	"boomerang gift":     AndSlot("temple"),
+	"rod gift":           AndSlot("temple"),
 	"star ore spot":      AndSlot("beach", "shovel"),
 	"pirate's bell":      And("temple", "rusty bell"),
 	"cross winter tower": Or("hit far switch", "jump"),

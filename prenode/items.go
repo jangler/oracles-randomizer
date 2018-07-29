@@ -12,11 +12,11 @@ var baseItemPrenodes = map[string]*Prenode{
 	"find expert's ring": Root(),
 
 	// shield, bombs, and flute can be bought
-	"sword L-1":     Root(),
-	"gnarled key":   Root(),
-	"satchel":       Root(),
-	"boomerang L-1": Root(),
-	// rod?
+	"sword L-1":      Root(),
+	"gnarled key":    Root(),
+	"satchel":        Root(),
+	"boomerang L-1":  Root(),
+	"rod":            Root(),
 	"shovel":         Root(),
 	"bracelet":       Root(),
 	"ricky's gloves": Root(),
@@ -114,7 +114,6 @@ var itemPrenodes = map[string]*Prenode{
 	"animal flute":  OrStep("ricky", "moosh flute", "dimitri flute"),
 	"flute":         OrStep("strange flute", "animal flute"),
 
-	"rod":        OrStep("temple"), // keep in place for now
 	"shield L-1": Or("rupees"),
 	"shield L-2": Or(), // TODO as if it matters
 

@@ -31,7 +31,7 @@ const (
 	spriteFeatherL2       = 0x17
 	spriteMagnetGlove     = 0x18
 	spriteBracelet        = 0x19
-	spriteOreChunk2       = 0x1a
+	spriteFoolsOre        = 0x1a
 	spriteShovel          = 0x1b
 	spriteBoomerangL1     = 0x1c
 	spriteBoomerangL2     = 0x1d
@@ -109,3 +109,51 @@ const (
 	spriteEngineGrease = 0x7a
 	spritePhonograph   = 0x7b
 )
+
+// the graphics for the rod of seasons differ somewhat from the sprite IDs in
+// the treasure table. only single-wide items display correctly, and i'm not
+// really interested in investigating further. so these are the inventory /
+// collection items i know how to display correctly in the rod cutscene.
+//
+// first two bytes determine sprite; final one determines graphics flags.
+var rodGraphics = map[string]int{
+	"ring":       0x5d0811,
+	"gasha seed": 0x5d0a11,
+	"ring box":   0x5d1401, // L-1 is 01, L-2 is 11, L-3 is 21
+
+	"gnarled root key": 0x5e0e51,
+	"floodgate key":    0x5e1041,
+	"dragon key":       0x5e1211,
+
+	"satchel":       0x5f0051,
+	"slingshot L-1": 0x5f0241,
+	"slingshot L-2": 0x5f0451,
+	"ember seeds":   0x5f0621,
+	"scent seeds":   0x5f0831,
+	"pegasus seeds": 0x5f0a11,
+	"gale seeds":    0x5f0c11,
+	"mystery seeds": 0x5f0e01,
+	"magnet gloves": 0x5f1021,
+
+	"sword L-1":     0x600001,
+	"sword L-2":     0x600251,
+	"sword L-3":     0x600441,
+	"shield L-1":    0x600601,
+	"shield L-2":    0x600851,
+	"shield L-3":    0x600a41,
+	"feather L-1":   0x600c41,
+	"feather L-2":   0x600e51,
+	"rod":           0x601021,
+	"bracelet":      0x601251,
+	"fool's ore":    0x601401,
+	"shovel":        0x601641,
+	"boomerang L-1": 0x601851,
+	"boomerang L-2": 0x601a41,
+	"bombs":         0x601c41,
+}
+
+// CanReplaceRod returns true iff the item with the given name can display
+// correctly in the rod of seasons cutscene.
+func CanReplaceRod(itemName string) bool {
+	return rodGraphics[itemName] != 0
+}

@@ -346,6 +346,11 @@ func shouldSkipItem(itemNode, slotNode *graph.Node,
 		rom.Treasures[itemNode.Name].SubID() != 0 {
 		skip = true
 	}
+	// some items can't graphically replace the rod in the cutscene where it's
+	// received.
+	if slotNode.Name == "rod gift" && !rom.CanReplaceRod(itemNode.Name) {
+		skip = true
+	}
 
 	return
 }

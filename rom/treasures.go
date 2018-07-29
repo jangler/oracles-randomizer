@@ -116,3 +116,13 @@ var Treasures = map[string]*Treasure{
 	"rusty bell":      &Treasure{0x4a, 0x00, 0x58b1, 0x0a, 0x00, 0x55, 0x5b},
 	"ring box L-2":    &Treasure{0x2c, 0x02, 0x57f1, 0x02, 0x03, 0x34, 0x35},
 }
+
+// reverse lookup the treasure name; returns empty string if not found
+func treasureNameFromIDs(id, subID byte) string {
+	for k, v := range Treasures {
+		if v.id == id && v.subID == subID {
+			return k
+		}
+	}
+	return ""
+}

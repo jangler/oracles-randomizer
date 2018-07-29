@@ -49,6 +49,7 @@ func (mr MutableRange) Check(b []byte) error {
 type MutableSlot struct {
 	Treasure            *Treasure
 	IDAddrs, SubIDAddrs []Addr
+	SubIDOffset         byte // routine $16eb requires subID+1
 	CollectMode         byte
 }
 
@@ -59,7 +60,7 @@ func (ms MutableSlot) Mutate(b []byte) error {
 		b[addr.FullOffset()] = ms.Treasure.id
 	}
 	for _, addr := range ms.SubIDAddrs {
-		b[addr.FullOffset()] = ms.Treasure.subID
+		b[addr.FullOffset()] = ms.Treasure.subID + ms.SubIDOffset
 	}
 	ms.Treasure.mode = ms.CollectMode
 	return ms.Treasure.Mutate(b)
@@ -105,6 +106,13 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:     []Addr{{0x0b, 0x6648}},
 		SubIDAddrs:  []Addr{{0x0b, 0x6649}},
 		CollectMode: CollectFind2,
+	},
+	"rod gift": &MutableSlot{
+		Treasure:    Treasures["rod"],
+		IDAddrs:     []Addr{{0x15, 0x7511}},
+		SubIDAddrs:  []Addr{{0x15, 0x750f}},
+		SubIDOffset: 1,
+		CollectMode: CollectChest, // it's what the data says
 	},
 	"shovel gift": &MutableSlot{
 		Treasure:    Treasures["shovel"],
@@ -289,10 +297,16 @@ var codeMutables = map[string]Mutable{
 	"lose fools ore":  MutableByte(Addr{0x3f, 0x454b}, 0x1e, 0x00),
 }
 
-// Mutables is a collated map of all mutables.
-var Mutables map[string]Mutable
+// special case, need to change the rod's cutscene graphics directly instead of
+// through ID
+var rodGfxMutable = MutableRange{
+	Addr: Addr{0x3f, 0x6ba3},
+	Old:  []byte{0x60, 0x10, 0x21},
+	New:  []byte{0x60, 0x10, 0x21},
+}
 
-func init() {
+// get a collated map of all mutables
+func getAllMutables() map[string]Mutable {
 	slotMutables := make(map[string]Mutable)
 	for k, v := range ItemSlots {
 		slotMutables[k] = v
@@ -313,15 +327,18 @@ func init() {
 	for _, set := range mutableSets {
 		count += len(set)
 	}
-	Mutables = make(map[string]Mutable, count)
+	allMutables := make(map[string]Mutable, count)
 
 	// add mutables to master map
 	for _, set := range mutableSets {
 		for k, v := range set {
-			if _, ok := Mutables[k]; ok {
+			if _, ok := allMutables[k]; ok {
 				log.Fatalf("duplicate mutable key: %s", k)
 			}
-			Mutables[k] = v
+			allMutables[k] = v
 		}
 	}
+	allMutables["rod graphics"] = rodGfxMutable
+
+	return allMutables
 }
