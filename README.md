@@ -56,10 +56,8 @@ Most inventory items (equippable and non-equippable) that are necessary to
 complete a casual playthrough are shuffled, with some exceptions:
 
 - Purchasable items (bombs, shield, and strange flute) are not shuffled.
-- The rod of seasons is always in the temple.
 - The L-2 sword is always in the lost woods.
 - The ribbon and pirate's bell are not shuffled.
-- Maybe other stuff I'm forgetting
 
 **Items are only placed in locations where you would normally obtain another
 key item.**
