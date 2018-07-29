@@ -13,20 +13,6 @@ package prenode
 // the other locations are isolated and only traverseable with some combination
 // of jumping and boulder removal.
 
-// semi-unrelated note:
-//
-// if you run into the screen where the subrosians steal your feather, they
-// will steal it, regardless of whether you have it or what level it is. if
-// you had the cape then you'll get it back as a cape, and if you didn't have
-// it at all then you'll get it as a feather. it's impossible to get to this
-// area without at least a L-1 feather, though.
-//
-// the main problem is that you lose your fool's ore when you reclaim your
-// feather, and if fool's ore is a randomizable item then you could be relying
-// on it. one solution would be to disable the event if you already have fool's
-// ore. another would be not to randomize fool's ore at all, which is what i'm
-// going to do for now.
-
 var subrosiaPrenodes = map[string]*Prenode{
 	"temple 1": And("rosa portal"),
 	"temple 4": And("beach", "ribbon"),

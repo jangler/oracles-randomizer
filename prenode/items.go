@@ -24,9 +24,9 @@ var baseItemPrenodes = map[string]*Prenode{
 	"star ore":       Root(),
 	"feather L-1":    Root(),
 	"flippers":       Root(),
-	// no fool's ore, see comment in subrosia.go
-	"slingshot L-1": Root(),
-	"magnet gloves": Root(),
+	"fool's ore":     Root(),
+	"slingshot L-1":  Root(),
+	"magnet gloves":  Root(),
 	// sword L-2 is fixed
 	"boomerang L-2":    Root(),
 	"feather L-2":      Root(),
@@ -115,7 +115,6 @@ var itemPrenodes = map[string]*Prenode{
 	"flute":         OrStep("strange flute", "animal flute"),
 
 	"rod":        OrStep("temple"), // keep in place for now
-	"fool's ore": Or(),             // disregard for now
 	"shield L-1": Or("rupees"),
 	"shield L-2": Or(), // TODO as if it matters
 
