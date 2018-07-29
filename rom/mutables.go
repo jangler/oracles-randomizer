@@ -281,6 +281,12 @@ var codeMutables = map[string]Mutable{
 	// count number of essences, not highest number essence
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7d8d}, 0xea, 0x76),
 	"maku seed check 2": MutableByte(Addr{0x09, 0x7d8f}, 0x30, 0x18),
+
+	// feather game: don't give fools ore, and don't return fools ore
+	"get fools ore 1": MutableByte(Addr{0x14, 0x4111}, 0xe0, 0xf0),
+	"get fools ore 2": MutableByte(Addr{0x14, 0x4112}, 0x2e, 0xf0),
+	"get fools ore 3": MutableByte(Addr{0x14, 0x4113}, 0x5d, 0xf0),
+	"lose fools ore":  MutableByte(Addr{0x3f, 0x454b}, 0x1e, 0x00),
 }
 
 // Mutables is a collated map of all mutables.
