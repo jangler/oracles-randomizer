@@ -150,6 +150,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"round jewel gift":     AndSlot("spool swamp", "flippers"),
 	"tarm ruins":           And("pegasus tree", "square jewel", "pyramid jewel", "round jewel", "x-shaped jewel"),
 	"lost woods":           And("tarm ruins", "summer", "winter", "autumn", "bracelet"),
+	"noble sword spot":     AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
 	"tarm gale tree":       AndStep("lost woods", "winter", "autumn", "spring", "summer"),
 	"enter d6":             AndStep("tarm gale tree", "winter", "shovel", "spring", "remove flower"),
 

@@ -23,6 +23,16 @@ func MutableByte(addr Addr, old, new byte) MutableRange {
 	return MutableRange{Addr: addr, Old: []byte{old}, New: []byte{new}}
 }
 
+// MutableWord returns a special case of MutableRange with a range of a two
+// bytes.
+func MutableWord(addr Addr, old, new uint16) MutableRange {
+	return MutableRange{
+		Addr: addr,
+		Old:  []byte{byte(old >> 8), byte(old)},
+		New:  []byte{byte(new >> 8), byte(new)},
+	}
+}
+
 // Mutate replaces bytes in its range.
 func (mr MutableRange) Mutate(b []byte) error {
 	addr := mr.Addr.FullOffset()
@@ -227,6 +237,13 @@ var ItemSlots = map[string]*MutableSlot{
 		SubIDAddrs:  []Addr{{0x0b, 0x7335}},
 		CollectMode: CollectFind2,
 	},
+	"noble sword spot": &MutableSlot{
+		// two cases depending on which sword you enter with
+		Treasure:    Treasures["sword L-2"],
+		IDAddrs:     []Addr{{0x0b, 0x6417}, {0x0b, 0x641e}},
+		SubIDAddrs:  []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
+		CollectMode: CollectFind1,
+	},
 	"d6 boomerang chest": &MutableSlot{
 		Treasure:    Treasures["boomerang L-2"],
 		IDAddrs:     []Addr{{0x15, 0x54c0}},
@@ -295,14 +312,37 @@ var codeMutables = map[string]Mutable{
 	"get fools ore 2": MutableByte(Addr{0x14, 0x4112}, 0x2e, 0xf0),
 	"get fools ore 3": MutableByte(Addr{0x14, 0x4113}, 0x5d, 0xf0),
 	"lose fools ore":  MutableByte(Addr{0x3f, 0x454b}, 0x1e, 0x00),
+
+	// change the noble sword's animation pointers to match regular items
+	"noble sword anim 1": MutableWord(Addr{0x14, 0x4c67}, 0xe951, 0xa94f),
+	"noble sword anim 2": MutableWord(Addr{0x14, 0x4e37}, 0x8364, 0xdf60),
+
+	// getting the L-2 (or L-3) sword in the lost woods gives you two items;
+	// one for the item itself and another that gives you the item and also
+	// makes you do a spin slash animation. zero the second ID bytes so that
+	// one slot doesn't give two items / the same item twice.
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x00),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x00),
 }
 
-// special case, need to change the rod's cutscene graphics directly instead of
-// through ID
-var rodGfxMutable = MutableRange{
-	Addr: Addr{0x3f, 0x6ba3},
-	Old:  []byte{0x60, 0x10, 0x21},
-	New:  []byte{0x60, 0x10, 0x21},
+// like the item slots, these are unchanged by default until the randomizer
+// touches them.
+var dataMutables = map[string]Mutable{
+	"rod graphics": MutableRange{
+		Addr: Addr{0x3f, 0x6ba3},
+		Old:  []byte{0x60, 0x10, 0x21},
+		New:  []byte{0x60, 0x10, 0x21},
+	},
+	"noble sword graphics": MutableRange{
+		Addr: Addr{0x3f, 0x6975},
+		Old:  []byte{0x4e, 0x1a, 0x50},
+		New:  []byte{0x4e, 0x1a, 0x50},
+	},
+	"master sword graphics": MutableRange{
+		Addr: Addr{0x3f, 0x6978},
+		Old:  []byte{0x4e, 0x1a, 0x40},
+		New:  []byte{0x4e, 0x1a, 0x40},
+	},
 }
 
 // get a collated map of all mutables
@@ -320,6 +360,7 @@ func getAllMutables() map[string]Mutable {
 		codeMutables,
 		treasureMutables,
 		slotMutables,
+		dataMutables,
 	}
 
 	// initialize master map w/ adequate capacity
@@ -338,7 +379,6 @@ func getAllMutables() map[string]Mutable {
 			allMutables[k] = v
 		}
 	}
-	allMutables["rod graphics"] = rodGfxMutable
 
 	return allMutables
 }

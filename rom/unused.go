@@ -1,15 +1,5 @@
 package rom
 
-// MutableWord returns a special case of MutableRange with a range of a two
-// bytes.
-func MutableWord(addr Addr, old, new uint16) MutableRange {
-	return MutableRange{
-		Addr: addr,
-		Old:  []byte{byte(old >> 8), byte(old)},
-		New:  []byte{byte(new >> 8), byte(new)},
-	}
-}
-
 var unusedMutables = map[string]Mutable{
 	"d0 key chest":   MutableWord(Addr{0x15, 0x53f4}, 0x3003, 0x3003),
 	"d0 rupee chest": MutableWord(Addr{0x15, 0x53f8}, 0x2804, 0x2804),

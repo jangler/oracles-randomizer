@@ -115,8 +115,10 @@ const (
 // really interested in investigating further. so these are the inventory /
 // collection items i know how to display correctly in the rod cutscene.
 //
+// these are now also used to replace the noble sword.
+//
 // first two bytes determine sprite; final one determines graphics flags.
-var rodGraphics = map[string]int{
+var sceneItemGfx = map[string]int{
 	"ring":       0x5d0811,
 	"gasha seed": 0x5d0a11,
 	"ring box":   0x5d1401, // L-1 is 01, L-2 is 11, L-3 is 21
@@ -152,8 +154,8 @@ var rodGraphics = map[string]int{
 	"bombs":         0x601c41,
 }
 
-// CanReplaceRod returns true iff the item with the given name can display
-// correctly in the rod of seasons cutscene.
-func CanReplaceRod(itemName string) bool {
-	return rodGraphics[itemName] != 0
+// CanSlotInScene returns true iff the item with the given name can display
+// correctly in the rod of seasons and noble sword scenes.
+func CanSlotInScene(itemName string) bool {
+	return sceneItemGfx[itemName] != 0
 }

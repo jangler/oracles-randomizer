@@ -29,7 +29,9 @@ func (a *Addr) FullOffset() int {
 
 // Mutate changes the contents of loaded ROM bytes in place.
 func Mutate(b []byte) error {
-	setRodGraphics()
+	setSceneGfx("rod gift", "rod graphics")
+	setSceneGfx("noble sword spot", "noble sword graphics")
+	setSceneGfx("noble sword spot", "master sword graphics")
 
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
@@ -50,7 +52,7 @@ func Verify(b []byte) []error {
 
 	for k, m := range getAllMutables() {
 		if k == "maku key fall" || k == "rod gift" || k == "fool's ore" ||
-			strings.HasSuffix(k, "ring") {
+			k == "noble sword spot" || strings.HasSuffix(k, "ring") {
 			continue // special cases that will error but we don't care about
 		}
 		if err := m.Check(b); err != nil {
@@ -64,15 +66,17 @@ func Verify(b []byte) []error {
 	return nil
 }
 
-// sets the rod's cutscene graphics based on the treasure assigned to its slot
-func setRodGraphics() {
-	slot := ItemSlots["rod gift"]
+// sets a mutable's cutscene graphics from the treasure assigned to its slot
+func setSceneGfx(slotName, gfxName string) {
+	slot := ItemSlots[slotName]
 	treasure := slot.Treasure
 	itemName := treasureNameFromIDs(treasure.id, treasure.subID)
-	if gfx := rodGraphics[itemName]; gfx == 0 {
-		log.Fatalf("fatal: no rod graphics for %s (%02x%02x)",
-			itemName, treasure.id, treasure.subID)
+	if gfx := sceneItemGfx[itemName]; gfx == 0 {
+		log.Fatalf("fatal: no %s graphics for %s (%02x%02x)",
+			gfxName, itemName, treasure.id, treasure.subID)
 	} else {
-		rodGfxMutable.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
+		mut := dataMutables[gfxName].(MutableRange)
+		mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
+		dataMutables[gfxName] = mut
 	}
 }
