@@ -348,7 +348,7 @@ func shouldSkipItem(itemNode, slotNode *graph.Node,
 	}
 	// some items can't be drawn correctly in "scene" item slots.
 	switch slotNode.Name {
-	case "rod gift", "noble sword spot":
+	case "d0 sword chest", "rod gift", "noble sword spot":
 		if !rom.CanSlotInScene(itemNode.Name) {
 			skip = true
 		}

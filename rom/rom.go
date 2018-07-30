@@ -32,6 +32,7 @@ func Mutate(b []byte) error {
 	setSceneGfx("rod gift", "rod graphics")
 	setSceneGfx("noble sword spot", "noble sword graphics")
 	setSceneGfx("noble sword spot", "master sword graphics")
+	setSceneGfx("d0 sword chest", "wooden sword graphics")
 
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
@@ -51,12 +52,18 @@ func Verify(b []byte) []error {
 	errors := make([]error, 0)
 
 	for k, m := range getAllMutables() {
-		if k == "maku key fall" || k == "rod gift" || k == "fool's ore" ||
-			k == "noble sword spot" || strings.HasSuffix(k, "ring") {
-			continue // special cases that will error but we don't care about
-		}
-		if err := m.Check(b); err != nil {
-			errors = append(errors, fmt.Errorf("%s: %v", k, err))
+		switch k {
+		// special cases that will error normally
+		case "d0 sword chest", "maku key fall", "rod gift", "fool's ore",
+			"noble sword spot":
+			break
+		default:
+			if strings.HasSuffix(k, " ring") {
+				break
+			}
+			if err := m.Check(b); err != nil {
+				errors = append(errors, fmt.Errorf("%s: %v", k, err))
+			}
 		}
 	}
 

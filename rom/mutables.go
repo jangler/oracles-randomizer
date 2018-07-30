@@ -101,8 +101,9 @@ func (ms MutableSlot) Check(b []byte) error {
 var ItemSlots = map[string]*MutableSlot{
 	"d0 sword chest": &MutableSlot{
 		Treasure:    Treasures["sword L-1"],
-		IDAddrs:     []Addr{{0x15, 0x53fc}},
-		SubIDAddrs:  []Addr{{0x15, 0x53fd}},
+		IDAddrs:     []Addr{{0x0a, 0x7b86}},
+		SubIDAddrs:  []Addr{{0x0a, 0x7b88}},
+		SubIDOffset: 1,
 		CollectMode: CollectChest,
 	},
 	"maku key fall": &MutableSlot{
@@ -287,10 +288,6 @@ var codeMutables = map[string]Mutable{
 	// same areas as the horon shop's flute.
 	"dance hall flute check": MutableByte(Addr{0x09, 0x5e21}, 0x20, 0x80),
 
-	// disable the "get sword" interaction that messes up the chest.
-	// unfortunately this also disables the fade to white (just s+q instead)
-	"d0 sword event": MutableByte(Addr{0x11, 0x70ec}, 0xf2, 0xff),
-
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68}, 0xcb, 0xf6),
 	"rosa spawn check":          MutableByte(Addr{0x09, 0x678c}, 0x40, 0x02),
@@ -313,6 +310,10 @@ var codeMutables = map[string]Mutable{
 	"get fools ore 3": MutableByte(Addr{0x14, 0x4113}, 0x5d, 0xf0),
 	"lose fools ore":  MutableByte(Addr{0x3f, 0x454b}, 0x1e, 0x00),
 
+	// stop the hero's cave event from giving you a second wooden sword that
+	// you use to spin slash
+	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x00),
+
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x4c67}, 0xe951, 0xa94f),
 	"noble sword anim 2": MutableWord(Addr{0x14, 0x4e37}, 0x8364, 0xdf60),
@@ -328,6 +329,11 @@ var codeMutables = map[string]Mutable{
 // like the item slots, these are unchanged by default until the randomizer
 // touches them.
 var dataMutables = map[string]Mutable{
+	"wooden sword graphics": MutableRange{
+		Addr: Addr{0x3f, 0x65f4},
+		Old:  []byte{0x60, 0x00, 0x00},
+		New:  []byte{0x60, 0x00, 0x00},
+	},
 	"rod graphics": MutableRange{
 		Addr: Addr{0x3f, 0x6ba3},
 		Old:  []byte{0x60, 0x10, 0x21},
