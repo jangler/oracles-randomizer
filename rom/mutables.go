@@ -38,7 +38,7 @@ func (mr MutableRange) Check(b []byte) error {
 	for i, value := range mr.Old {
 		if b[addr+i] != value {
 			return fmt.Errorf("expected %x at %x; found %x",
-				mr.Old, addr+i, b[addr])
+				mr.Old[i], addr+i, b[addr+i])
 		}
 	}
 	return nil
