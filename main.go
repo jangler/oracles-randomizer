@@ -4,8 +4,10 @@ import (
 	"flag"
 	"io/ioutil"
 	"log"
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
@@ -80,6 +82,8 @@ func main() {
 		} else {
 			checkNumArgs("randomizer", 2)
 		}
+
+		rand.Seed(time.Now().UnixNano())
 
 		// load rom
 		romData, err := readFileBytes(flag.Arg(0))
