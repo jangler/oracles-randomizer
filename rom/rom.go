@@ -49,7 +49,7 @@ func Verify(b []byte) []error {
 	errors := make([]error, 0)
 
 	for k, m := range getAllMutables() {
-		if k == "maku key fall" || k == "rod gift" ||
+		if k == "maku key fall" || k == "rod gift" || k == "fool's ore" ||
 			strings.HasSuffix(k, "ring") {
 			continue // special cases that will error but we don't care about
 		}
