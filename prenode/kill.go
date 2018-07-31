@@ -80,7 +80,7 @@ var killPrenodes = map[string]*Prenode{
 	"gale kill spiked beetle":         And("gale seeds"),
 	"kill spiked beetle (throw)":      Or("flip kill spiked beetle (throw)", "gale kill spiked beetle"),
 	"kill mimic":                      Or("kill normal"),
-	"damage omuai":                    Or("sword", "bombs", "fool's ore", "punch"),
+	"damage omuai":                    Or("sword", "bombs", "scent seeds", "fool's ore", "punch"),
 	"kill omuai":                      And("damage omuai", "bracelet"),
 	"damage mothula":                  Or("sword", "bombs", "scent seeds", "fool's ore", "punch"),
 	"kill mothula":                    And("damage mothula", "jump"), // you will basically die without feather
