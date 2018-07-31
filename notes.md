@@ -25,14 +25,34 @@ ages-disasm. the most useful are:
   not a static tile), but it's also used when creating new objects, like the
   floodgate key. if there's a `ld (hl),60` afterward, that means it's an item
   interaction, and the item ID and subID are usually in registers b and c.
+- $3f:440a = when this executes, hl-1 is the start of the object's three-byte
+  graphics data starting at the $3f:63a3 (see the rom addresses section below
+  for details).
 
 others that might be good to know:
 
 - $0e3b = drawObject
+	- ID $60 animation = $13:409a
+	- ID $59 animation = $14:4130
 - $16eb = giveTreasure, which i believe offsets the treasure param such that it
   needs to be passed as one higher than usual. e.g. if you want $00, pass $01.
 - $271a = createTreasure
-- $15e9 = interactionInitGraphics
+- graphics:
+	- $15e9 = interactionInitGraphics, which calls the following:
+	- $3f:4404 = interactionLoadGraphics
+		- takes d = object struct high byte, returns a = animation index
+		- returns a = animation index
+		- looks up the interaction's graphics data in 3-byte table $3f:63a3
+		  based on ID, loads the results into d+$1c to d+$1f (?)
+	- $25ca = interactionSetAnimation
+		- takes a = anim index, d = object struct high byte
+		- looks up the interataction's animation data in table $3f:4bb5 based
+		  on ID, loads the results into object struct
+	- $1e41 = objectSetVisible
+	- $1e57 = objectSetVisible80 (redundant)
+	- $24fd = maybe not present in ages? copies some object data to other parts
+	  of itself, like… direction?
+- $239a = interactionIncState
 - $3b22 = updateInteraction
 - $074e = copy byte from hl to de, incrementing both
 
@@ -43,10 +63,9 @@ these all get checked in a normal frame, just for display purposes:
 - $c680-$c6?? = inventory (starting with equipped items)
 - $c6a2/$c6a3 = health / max health
 - $c6a5-$c6a6 = rupees
-- $c6b5-$c6b9 = seed count (ember, ?, ?, ?, ?)
+- $c6b5-$c6b9 = seed count (ember, scent, pegasus, gale, mystery)
 - $c6c5 = active ring
 - $c6ca-$c6d9 = some global flags
-- $c8a6 = ?
 - $cc4c = active room
 
 other things:
@@ -56,7 +75,6 @@ other things:
 	- shop checks for bit 5 of ricky
 - $c692-$c6a1 = item flags
 - $c6bb = obtained essence flags
-- $cc77 = ?
 - $cc48 = high byte of link object address (in object table starting at $d000)
 - $ccea = disable interactions (?)
 
@@ -74,6 +92,8 @@ other things:
   (nybbles swapped) for palette/transform flags. i don't remember where the
   first nybble of $5c goes or what it's for. it looks like these are in the
   same order as the shop item data table.
+- $3f:4bb5 = interactionAnimationTable
+- $14:4d85 = interactionOamDataTable
 
 ## horon village shop (also syrup?)
 
