@@ -12,6 +12,11 @@ import (
 	"github.com/jangler/oos-randomizer/rom"
 )
 
+const (
+	maxIterations = 1000 // restart if routing runs for too long
+	maxTries      = 10   // give up if routing fails too many times
+)
+
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
 	Graph graph.Graph
@@ -130,13 +135,25 @@ func findRoute(r *Route, start, goal, forbid []string,
 		forbidNodes[i] = r.Graph[name]
 	}
 
-	// try to find the route
-	if tryExploreTargets(r.Graph, nil, startNodes, goalNodes,
-		forbidNodes, maxlen, itemList, usedItems, slotList, usedSlots) {
-		log.Print("-- success")
-		announceSuccessDetails(r, goal, usedItems, usedSlots)
-	} else {
-		log.Fatal("-- fatal: could not find route")
+	// try to find the route, retrying if needed
+	iteration, tries := 0, 0
+	for tries = 0; tries < maxTries; tries++ {
+		if tryExploreTargets(r.Graph, nil, startNodes, goalNodes, forbidNodes,
+			maxlen, &iteration, itemList, usedItems, slotList, usedSlots) {
+			log.Print("-- success")
+			announceSuccessDetails(r, goal, usedItems, usedSlots)
+			break
+		} else if iteration > maxIterations {
+			log.Print("-- routing took too long; retrying")
+			itemList, slotList = initRouteLists(r)
+			usedItems, usedSlots = list.New(), list.New()
+			iteration = 0
+		} else {
+			log.Fatal("-- fatal: could not find route")
+		}
+	}
+	if tries >= maxTries {
+		log.Fatalf("-- fatal: could not find route after %d tries", maxTries)
 	}
 
 	return
@@ -149,8 +166,15 @@ func findRoute(r *Route, start, goal, forbid []string,
 //
 // the lists are lists of nodes.
 func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
-	add, goal, forbid []*graph.Node, maxlen int,
+	add, goal, forbid []*graph.Node, maxlen int, iteration *int,
 	itemList, usedItems, slotList, usedSlots *list.List) bool {
+	*iteration++
+	log.Print("iteration ", *iteration)
+	if *iteration > maxIterations {
+		log.Print("-- false; maximum iterations reached")
+		return false
+	}
+
 	// explore given the old state and changes
 	reached := g.Explore(start, add)
 	log.Print(countSteps(reached), " steps reached")
@@ -195,7 +219,7 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 			skip, jewelChecked = shouldSkipItem(itemNode, slotNode, jewelChecked)
 			if !skip && tryExploreTargets(
 				g, reached, []*graph.Node{itemNode}, goal, forbid, maxlen-1,
-				itemList, usedItems, slotList, usedSlots) {
+				iteration, itemList, usedItems, slotList, usedSlots) {
 				return true
 			}
 
