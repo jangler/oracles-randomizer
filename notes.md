@@ -13,10 +13,11 @@ ages-disasm. the most useful are:
 - $0b:4409 = when this executes, (hl) and (hl+1) are the given item ID and sub ID.
   this is for keys falling from ceilings, npcs giving items, most other items
   you don't receive from chests.
+- $11:58b5 = parseObjectData. falls through to parseGivenObjectData.
 - $11:58df = parseGivenObjectData. when this executes, de is the address of the
-  start of an object's data. it is called n+1 times if there are n objects in a
-  room as you enter. objects include enemies, puzzles, and special behaviors
-  like what normally happens in the sword room of the hero's cave.
+  start of an object's data. objects include enemies, puzzles, and special
+  behaviors like what normally happens in the sword room of the hero's cave.
+  **this is not always called directly when parsing interations.**
 - $15:466b = hl-1 here is the index of the treasure item's info (collection
   mode, param, text, and sprite, in that order). in other words, (hl) is the
   treasure item's param.
@@ -110,3 +111,54 @@ other things:
 - after changing *all* these values, i still can't get item replacement to
   work. after you say yes to buying the item, it just goes back to its place
   without any other text.
+
+## room loading
+
+### wram
+
+- c65c = wGashaMaturity
+- cc49 = wActiveGroup (overworld, subrosia, dungeons, etc)
+- cc4c = wActiveRoom
+- cc63-cc65 = loading room info
+- ccc5 = seasons-specific? wRotatingCubePos in ages-disasm
+
+### rom
+
+- 09a8 = flagLocationGroupTable, for rooms
+- 01:4662 = ? something to do with room loading ?
+- 01:5db5 = ? something to do with room loading ?
+- 04:483c = groupMusicPointerTable (offset = wActiveGroup * 2, then
+  (hl) + wActiveRoom into actual music table)
+- 04:6d4e = pointer table for room transitions?
+	- plus group * 2?
+	- then that value plus cc64 * 3? but it's zero when entering hero's cave
+	- then (cc64) <- (hl), (cc66) <- (hl+1), (cc65) <- (hl+2) | 80, (cc6a) <-
+	  0a
+	- then (ff8b) <- (cc49), (cc49) <- (cc63), so (cc63) was the group, and
+	  (cc4c) <- (cc64), so (cc64) was the room (so (hl) was the room).
+- 04:7457 = pointer table for room transitions?
+	- when entering hero's cave (thru main entrance), group * 2 is added to
+	  this number, then (hl+1) is loaded into (cc64), and the high and low
+	  nybbles of (hl+2) are loaded into (cc63) and (cc65) respectively.
+		- for hero's cave entrance, hl+1 is 00 and hl+2 is 44. hero's cave's
+		  room and group are both 04.
+	- when leaving hero's cave, group * 2 added, … and then some things happen.
+- 07:4219 = ? something to do with room loading ?
+- 11:5b38 = objectDataGroupTable (pointers to object data by group)
+- 15:53af = chest treasure pointer table, offset by 2 * group, then increment
+  hl in steps of 4 bytes until (hl+1) == the room number, but abort if (hl) ==
+  ff. the next two bytes are the treasure ID and sub ID.
+
+### code
+
+- 1955 = getThisRoomFlags; a <- flags, hl <- addr of flags
+	- 1962 = getRoomFlags; takes a = group, b = room; a <- flags, hl <- addr of
+	  flags (h = (table + group), l = room)
+- 3003 = initializeRoom
+- 01:5ece = ld a,(wActiveGroup); or a; ret nz
+- 17fa = add a to wGashaMaturity, +5 when entering room
+- 3276 = loadScreenMusic
+- getObjectDataAddress:
+	- uses group * 2 as index into pointer table, adds room * 2 to the value,
+	  loads the address at that value into de… not present in seasons lol, it's
+	  inlined in getObjectData
