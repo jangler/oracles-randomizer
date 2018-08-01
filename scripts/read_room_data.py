@@ -1,11 +1,24 @@
 #!/usr/bin/env python3
 
+import argparse
 import struct
 import sys
 
 # because of pyyaml's serialization, we're going to be using lists instead of
 # tuples in this script.
 import yaml
+
+
+parser = argparse.ArgumentParser(description="read data from an oos rom.",
+        epilog="""
+if action is "getroom", two additional hex integer parameters must be
+privided for the group ID and room ID of a specific room to get data
+from.
+""".strip())
+parser.add_argument("romfile", type=str, help="file path of rom to read")
+parser.add_argument("action", type=str, help="type of operation to perform")
+parser.add_argument("args", type=str, nargs="*", help="action parameters")
+args = parser.parse_args()
 
 
 def dict_presenter(dumper, data):
@@ -307,22 +320,25 @@ def read_chest(buf, group, room):
     return None
 
 
-if len(sys.argv) != 4:
-    print("usage: %s <romfile> <group> <room>" % __file__)
-    exit(2)
-
-with open(sys.argv[1], 'rb') as f:
+with open(args.romfile, "rb") as f:
     rom = f.read()
 
-group = int(sys.argv[2], 16)
-room = int(sys.argv[3], 16)
 
-room_data = {
-    "group": group,
-    "room": room,
-    "music": read_music(rom, group, room),
-    "objects": read_objects(rom, group, room),
-    "chest": read_chest(rom, group, room),
-}
+if args.action == "getroom":
+    if len(args.args) != 2:
+        print("fatal: getroom expects 2 args, got", len(args.args),
+                file=sys.stderr)
+        exit(2)
 
-yaml.dump(room_data, sys.stdout)
+    group = int(args.args[0], 16)
+    room = int(args.args[1], 16)
+
+    room_data = {
+        "group": group,
+        "room": room,
+        "music": read_music(rom, group, room),
+        "objects": read_objects(rom, group, room),
+        "chest": read_chest(rom, group, room),
+    }
+
+    yaml.dump(room_data, sys.stdout)
