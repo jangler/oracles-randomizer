@@ -3,6 +3,16 @@
 import struct
 import sys
 
+# because of pyyaml's serialization, we're going to be using lists instead of
+# tuples in this script.
+import yaml
+
+
+def hexint_presenter(dumper, data):
+    return dumper.represent_int('0x%02x' % data)
+
+yaml.add_representer(int, hexint_presenter)
+
 
 def full_addr(bank_num, offset):
     if bank_num > 2:
@@ -176,5 +186,12 @@ with open(sys.argv[1], 'rb') as f:
 group = int(sys.argv[2], 16)
 room = int(sys.argv[3], 16)
 
-print("music: %02x" % read_music(rom, group, room))
-print("objects:", read_objects(rom, group, room))
+room_data = {
+    "group": group,
+    "room": room,
+    "music": read_music(rom, group, room),
+    "objects": read_objects(rom, group, room),
+    "chest": read_chest(rom, group, room),
+}
+
+yaml.dump(room_data, sys.stdout)
