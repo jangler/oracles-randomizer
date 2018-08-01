@@ -8,9 +8,13 @@ import sys
 import yaml
 
 
+def dict_presenter(dumper, data):
+    return dumper.represent_dict(data.items())
+
 def hexint_presenter(dumper, data):
     return dumper.represent_int('0x%02x' % data)
 
+yaml.add_representer(dict, dict_presenter)
 yaml.add_representer(int, hexint_presenter)
 
 
@@ -161,7 +165,11 @@ def read_interaction(buf, bank, addr):
             x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
 
-            objects.append(["DV interaction", kind, [x, y]])
+            objects.append({
+                "mode": "DV interaction",
+                "variety": kind,
+                "coords": [x, y],
+            })
     elif mode in (0xf3, 0xf4, 0xf5):
         # pointer to other interaction
         ptr = read_ptr(buf, bank, addr)
@@ -178,7 +186,12 @@ def read_interaction(buf, bank, addr):
                 read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
         addr += 2
 
-        objects.append(["random entities", count, param, kind])
+        objects.append({
+            "mode": "random entities",
+            "count": count,
+            "param": param,
+            "variety": kind,
+        })
     elif mode == 0xf7:
         # specifically placed entities
         param, addr = read_byte(buf, bank, addr, 1)
@@ -191,7 +204,12 @@ def read_interaction(buf, bank, addr):
             x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
 
-            objects.append(["specific entity", param, kind, [x, y]])
+            objects.append({
+                "mode": "specific entity",
+                "param": param,
+                "variety": kind,
+                "coords": [x, y]
+            }),
     elif mode in (0xf8, 0xf9, 0xfa):
         # TODO
         while read_byte(buf, bank, addr) < 0xf0:
