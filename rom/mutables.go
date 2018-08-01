@@ -318,7 +318,7 @@ var codeMutables = map[string]Mutable{
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68}, 0xcb, 0xf6),
 	"rosa spawn check":          MutableByte(Addr{0x09, 0x678c}, 0x40, 0x02),
 	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e36}, 0xcb, 0xf6),
-	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e4c}, 0x2e, 0x00),
+	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e4c}, 0x2e, 0x04),
 	"master essence check 2":    MutableByte(Addr{0x0a, 0x4bea}, 0x40, 0x02),
 	"master essence check 1":    MutableByte(Addr{0x0a, 0x4bf5}, 0x02, 0x00),
 	"round jewel essence check": MutableByte(Addr{0x0a, 0x4f8b}, 0x05, 0x00),
@@ -338,7 +338,7 @@ var codeMutables = map[string]Mutable{
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
-	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x02),
+	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x00),
 
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x4c67}, 0xe951, 0xa94f),
@@ -348,13 +348,14 @@ var codeMutables = map[string]Mutable{
 	// one for the item itself and another that gives you the item and also
 	// makes you do a spin slash animation. zero the second ID bytes so that
 	// one slot doesn't give two items / the same item twice.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x02),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x02),
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x00),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x00),
 }
 
 // like the item slots, these are unchanged by default until the randomizer
 // touches them.
 var dataMutables = map[string]Mutable{
+	// these scenes use specific item sprites not tied to treasure data
 	"wooden sword graphics": MutableRange{
 		Addr: Addr{0x3f, 0x65f4},
 		Old:  []byte{0x60, 0x00, 0x00},
