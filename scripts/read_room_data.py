@@ -24,6 +24,10 @@ MUSIC_PTR_TABLE = 0x04, 0x483c
 OBJECT_PTR_TABLE = 0x11, 0x5b38
 CHEST_PTR_TABLE = 0x15, 0x53af
 
+MUSIC = {
+    0x13: "gnarled root dungeon",
+}
+
 ENTITIES = {
     0x0a: ("goriya", {
         0x00: "boomerang",
@@ -104,7 +108,12 @@ def read_ptr(buf, bank, addr):
 def read_music(buf, group, room):
     bank, addr = MUSIC_PTR_TABLE
     addr = read_ptr(buf, bank, addr + group * 2) + room
-    return read_byte(buf, bank, addr)
+
+    value = read_byte(buf, bank, addr)
+    if value in MUSIC:
+        return MUSIC[value]
+
+    return value
 
 
 def read_objects(buf, group, room):
