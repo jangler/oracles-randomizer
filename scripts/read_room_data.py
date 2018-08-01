@@ -476,11 +476,8 @@ elif args.action == "searchobjects":
 
         # loop through rooms until the high byte is fxxx, which means that the
         # interaction pointers have ended and the interaction data has started
-        room = 0
-        while True:
+        for room in range(0x100):
             room_addr = read_ptr(rom, bank, addr + room * 2)
-            if room > 0xff or room_addr > 0xf000:
-                break
 
             # read objects (recursively if more pointers are involved)
             room_objects = []
