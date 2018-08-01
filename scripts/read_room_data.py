@@ -14,6 +14,9 @@ parser = argparse.ArgumentParser(description="read data from an oos rom.",
 if action is "getroom", two additional hex integer parameters must be
 privided for the group ID and room ID of a specific room to get data
 from.
+
+if action is "searchchests", an optional hex integer parameters may be
+provided to limit the search to a given group ID and music ID.
 """.strip())
 parser.add_argument("romfile", type=str, help="file path of rom to read")
 parser.add_argument("action", type=str, help="type of operation to perform")
@@ -55,6 +58,8 @@ MUSIC = {
     0x12: "hero's cave",
     0x13: "gnarled root dungeon",
 }
+
+NV_INTERACTIONS = {}
 
 ENTITIES = {
     0x09: ("octorok", {
@@ -129,9 +134,12 @@ DV_INTERACTIONS = {
 }
 
 TREASURES = {
-    0x03: ("bombs", {}),
+    0x03: ("bombs", {
+        0x00: "10 count",
+    }),
     0x28: ("rupees", {
-        0x04: 30,
+        0x03: "20 count",
+        0x04: "30 count",
     }),
     0x2d: ("ring", {
         0x04: "discovery ring",
@@ -175,13 +183,14 @@ def read_ptr(buf, bank, addr):
     return struct.unpack_from('<H', buf, offset=full_addr(bank, addr))[0]
 
 
-def read_music(buf, group, room):
+def read_music(buf, group, room, name=True):
     bank, addr = MUSIC_PTR_TABLE
     addr = read_ptr(buf, bank, addr + group * 2) + room
 
     value = read_byte(buf, bank, addr)
-    if value in MUSIC:
-        return MUSIC[value]
+    if name:
+        if value in MUSIC:
+            return MUSIC[value]
 
     return value
 
@@ -325,9 +334,32 @@ def read_chest(buf, group, room):
     return None
 
 
+def get_chests(buf, group):
+    bank, addr = CHEST_PTR_TABLE
+    addr = read_ptr(buf, bank, addr + group * 2)
+
+    # loop through group chests until marker 0xff is reached
+    chests = []
+    while True:
+        info, room, treasure_id, treasure_subid = \
+            buf[full_addr(bank, addr):full_addr(bank, addr+4)]
+        if info == 0xff:
+            break
+
+        chests.append({
+            "group": group,
+            "room": room,
+            "music": read_music(rom, group, room, name=False),
+            "treasure": list(lookup_entry(TREASURES,
+                    treasure_id, treasure_subid))
+        })
+
+        addr += 4
+
+    return chests
+
 with open(args.romfile, "rb") as f:
     rom = f.read()
-
 
 if args.action == "getroom":
     if len(args.args) != 2:
@@ -345,3 +377,31 @@ if args.action == "getroom":
     }
 
     yaml.dump(room_data, sys.stdout)
+elif args.action == "searchchests":
+    if len(args.args) == 0: # all groups
+        chests = []
+        for group in range(8):
+            chests += get_chests(rom, group)
+    elif len(args.args) == 1: # specific group
+        group = int(args.args[0], 16)
+        chests = get_chests(rom, group)
+    elif len(args.args) == 2: # specific group and music
+        group = int(args.args[0], 16)
+        music = int(args.args[1], 16)
+
+        chests = get_chests(rom, group)
+
+        # filter by music and print music name if possible
+        chests = [chest for chest in chests if chest["music"] == music]
+        for chest in chests:
+            if chest["music"] in MUSIC:
+                chest["music"] = MUSIC[chest["music"]]
+    elif len(args.args) > 2:
+        fatal("searchchests expects 0-2 args, got", len(args.args))
+
+    yaml.dump(chests, sys.stdout)
+elif args.action == "searchobjects":
+    # like searchchests, but for an object type
+    fatal("searchobjects not yet implemented")
+else:
+    fatal("unknown action:", args.action)
