@@ -102,6 +102,14 @@ ENTITIES = {
         0x00: "fairy",
         0x05: "ember seeds",
     }),
+    0x5a: ("seed tree", {
+        0x00: "ember",
+        0x01: "mystery",
+        0x02: "scent",
+        0x03: "pegasus",
+        0x04: "gale (sunken city)",
+        0x05: "gale (tarm ruins)",
+    }),
     0x70: ("goriya bros", {}),
     0x78: ("aquamentus", {}),
 }
@@ -130,9 +138,14 @@ DV_INTERACTIONS = {
     # 0x21 and 0x22 are outside the d1 entrance
     # 0x25 0x00 and 0x01 are on the cat-stuck-in-tree screen
     # 0x26 0x00 and 0x01 are also on the cat-stuck-in-tree screen
+    # 0x37 0x82 is on the ember tree screen
     0x38: ("d1 old man", {}),
     # 0x44 0x09 is in impa's house
+    0x46: ("shopkeeper", {}),
+    0x47: ("shop item", {}),
     0x6b: ("placed item", {
+        0x0a: "piece of heart",
+        # 0x17 is the bridge in the horon subrosia portal cave?
         0x1f: "gasha seed",
         0x20: "seed satchel",
     }),
@@ -145,6 +158,7 @@ DV_INTERACTIONS = {
         0x01: "doorway",
         0x02: "chimney",
     }),
+    0x31: ("subrosia portal", {}),
     # 0xa5 0x09 used on screen where link falls in the intro
     # 0xdc 0x01 and 0x02 outside hero's cave. entrance ??
     0xe2: ("statue eyes", {}),
