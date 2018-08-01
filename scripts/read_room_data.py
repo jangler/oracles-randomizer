@@ -29,6 +29,7 @@ OBJECT_PTR_TABLE = 0x11, 0x5b38
 CHEST_PTR_TABLE = 0x15, 0x53af
 
 MUSIC = {
+    0x0d: "essence room",
     0x13: "gnarled root dungeon",
 }
 
@@ -36,8 +37,9 @@ ENTITIES = {
     0x0a: ("goriya", {
         0x00: "boomerang",
     }),
-    0x0e: ("blade trap", {
-        0x01: "blue",
+    0x0e: ("trap", {
+        0x00: "spinner",
+        0x01: "blade",
     }),
     0x31: ("stalfos", {
         0x00: "blue",
@@ -48,10 +50,13 @@ ENTITIES = {
     0x34: ("zol", {
         0x01: "red",
     }),
+    0x35: ("floormaster", {}),
     0x59: ("fixed drop", {
         0x00: "fairy",
         0x05: "ember seeds",
     }),
+    0x70: ("goriya bros", {}),
+    0x78: ("aquamentus", {}),
 }
 
 DV_INTERACTIONS = {
@@ -62,27 +67,44 @@ DV_INTERACTIONS = {
     }),
     0x13: ("push block trigger", {}),
     0x1e: ("doors", {
+        0x08: "N opens when room cleared",
+        0x09: "E opens when room cleared",
         0x0a: "S opens when room cleared",
         0x0b: "W opens when room cleared",
         0x14: "N opens for torches",
         0x15: "W opens for torches",
     }),
+    # 0x20 0x00 used in d1 mid boss room
+    # 0x20 0x02 used for button -> small key chest in d1
+    # 0x20 0x03 used for boss room in d1
     0x38: ("d1 old man", {}),
+    0x6b: ("placed item", {
+        0x20: "seed satchel",
+    }),
     0x78: ("toggle tile", {}),
-    0x7e: ("minecart?", {}),
+    0x7e: ("miniboss portal", {}),
+    0x7f: ("essence", {}),
     0xe2: ("statue eyes", {}),
 }
 
 TREASURES = {
+    0x03: ("bombs", {}),
+    0x2d: ("ring", {
+        0x04: "armor ring L-1",
+    }),
+    0x30: ("small key", {
+        0x03: "in chest",
+    }),
+    0x31: ("boss key", {
+        0x03: "in chest",
+    }),
     0x32: ("compass", {
         0x02: "in chest",
     }),
     0x33: ("dungeon map", {
         0x02: "in chest",
     }),
-    0x34: ("gasha seed", {
-        0x01: "in chest",
-    }),
+    0x34: ("gasha seed", {}),
 }
 
 
