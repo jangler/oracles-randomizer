@@ -19,7 +19,9 @@ if action is "searchchests", an optional hex integer parameters may be
 provided to limit the search to a given group ID and music ID.
 
 if action is "searchobjects", two additional hex integer parameters must
-be provided for the interaction mode and ID of the objects to search for.
+be provided for the interaction mode and ID of the objects to search
+for. an additional optional hex integer parameters may be provided for
+the sub-ID of the objects.
 """.strip())
 parser.add_argument("romfile", type=str, help="file path of rom to read")
 parser.add_argument("action", type=str, help="type of operation to perform")
@@ -458,11 +460,12 @@ elif args.action == "searchchests":
 
     yaml.dump(chests, sys.stdout)
 elif args.action == "searchobjects":
-    if len(args.args) != 2:
-        fatal("searchobjects expects 2 args, got", len(args.args))
+    if len(args.args) not in (2, 3):
+        fatal("searchobjects expects 2-3 args, got", len(args.args))
 
     mode = int(args.args[0], 16)
     obj_id = int(args.args[1], 16)
+    obj_subid = int(args.args[2], 16) if len(args.args) > 2 else None
 
     # read all interactions in all rooms in all groups, and collate the
     # accumulated objects that match the given ID.
@@ -488,13 +491,14 @@ elif args.action == "searchobjects":
 
             for obj in room_objects:
                 if obj["mode"] == mode and obj["variety"][0] == obj_id:
-                    full_obj = {
-                        "group": group,
-                        "room": room,
-                        "music": read_music(rom, group, room),
-                    }
-                    full_obj.update(obj)
-                    objects.append(full_obj)
+                    if obj_subid is None or obj["variety"][1] == obj_subid:
+                        full_obj = {
+                            "group": group,
+                            "room": room,
+                            "music": read_music(rom, group, room),
+                        }
+                        full_obj.update(obj)
+                        objects.append(full_obj)
 
             room += 1
 
