@@ -17,6 +17,9 @@ from.
 
 if action is "searchchests", an optional hex integer parameters may be
 provided to limit the search to a given group ID and music ID.
+
+if action is "searchobjects", two additional hex integer parameters must
+be provided for the interaction mode and ID of the objects to search for.
 """.strip())
 parser.add_argument("romfile", type=str, help="file path of rom to read")
 parser.add_argument("action", type=str, help="type of operation to perform")
@@ -59,11 +62,19 @@ MUSIC = {
     0x13: "gnarled root dungeon",
 }
 
+INTERACTION_MODES = {
+    0xf1: "NV interaction",
+    0xf2: "DV interaction",
+    0xf6: "random entities",
+    0xf7: "specific entity",
+}
+
 NV_INTERACTIONS = {}
 
 ENTITIES = {
     0x09: ("octorok", {
-        0x01: "red",
+        0x00: "red 0x00",
+        0x01: "red 0x01",
     }),
     0x0a: ("goriya", {
         0x00: "boomerang",
@@ -128,6 +139,10 @@ DV_INTERACTIONS = {
     0x7f: ("essence", {}),
     0x9d: ("impa", {}),
     0xc6: ("wooden sword", {}),
+    0xdc: ("warp", {
+        0x01: "doorway",
+        0x02: "chimney",
+    }),
     # 0xa5 0x09 used on screen where link falls in the intro
     # 0xdc 0x01 and 0x02 outside hero's cave. entrance ??
     0xe2: ("statue eyes", {}),
@@ -195,7 +210,7 @@ def read_music(buf, group, room, name=True):
     return value
 
 
-def read_objects(buf, group, room):
+def read_objects(buf, group, room, name=True):
     # read initial pointer
     bank, addr = OBJECT_PTR_TABLE
     addr = read_ptr(buf, bank, addr + group * 2) + room * 2
@@ -204,30 +219,31 @@ def read_objects(buf, group, room):
     # read objects (recursively if more pointers are involved)
     objects = []
     while read_byte(buf, bank, addr) != 0xff:
-        new_objects, addr = read_interaction(buf, bank, addr)
+        new_objects, addr = read_interaction(buf, bank, addr, name)
         objects += new_objects
 
     return objects
 
 
-def loop_read_interaction(buf, bank, addr):
+def loop_read_interaction(buf, bank, addr, name=True):
     objects = []
 
     while read_byte(buf, bank, addr) not in (0xfe, 0xff):
-        new_objects, addr = read_interaction(buf, bank, addr)
+        new_objects, addr = read_interaction(buf, bank, addr, name)
         objects += new_objects
 
     return objects, addr
 
 
-def read_interaction(buf, bank, addr):
+def read_interaction(buf, bank, addr, name=True):
     objects = []
 
     # read interaction type
     mode, addr = read_byte(buf, bank, addr, 1)
 
     if mode == 0xf0:
-        print("skipped interaction type", mode)
+        print("skipped interaction type", hex(mode), "@", hex(addr - 1),
+                file=sys.stderr)
         # TODO
         while read_byte(buf, bank, addr) < 0xf0:
             addr += 1
@@ -235,26 +251,37 @@ def read_interaction(buf, bank, addr):
         # "no-value interaction"
         nv_interactions = []
         while read_byte(buf, bank, addr) < 0xf0:
-            kind = list(lookup_entry(NV_INTERACTIONS,
-                    read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
+            if name:
+                kind = list(lookup_entry(NV_INTERACTIONS,
+                        read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)))
+            else:
+                kind = [read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)]
             addr += 2
 
             objects.append({
-                "mode": "NV interaction",
+                "mode": "NV interaction" if name else mode,
                 "variety": kind,
             })
     elif mode == 0xf2:
         # "double-value interaction"
         dv_interactions = []
         while read_byte(buf, bank, addr) < 0xf0:
-            kind = list(lookup_entry(DV_INTERACTIONS,
-                    read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
+            if name:
+                kind = list(lookup_entry(DV_INTERACTIONS,
+                        read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)))
+            else:
+                kind = [read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)]
             addr += 2
+
             x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
-                "mode": "DV interaction",
+                "mode": "DV interaction" if name else mode,
                 "variety": kind,
                 "coords": [x, y],
             })
@@ -262,7 +289,7 @@ def read_interaction(buf, bank, addr):
         # pointer to other interaction
         ptr = read_ptr(buf, bank, addr)
         addr += 2
-        new_objects, _ = loop_read_interaction(buf, bank, ptr)
+        new_objects, _ = loop_read_interaction(buf, bank, ptr, name)
         objects += new_objects
     elif mode == 0xf6:
         # randomly placed entities
@@ -270,12 +297,15 @@ def read_interaction(buf, bank, addr):
         param = read_byte(buf, bank, addr) & 0x0f
         addr += 1
 
-        kind = list(lookup_entry(ENTITIES,
-                read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
+        if name:
+            kind = list(lookup_entry(ENTITIES,
+                    read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
+        else:
+            kind = [read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)]
         addr += 2
 
         objects.append({
-            "mode": "random entities",
+            "mode": "random entities" if name else mode,
             "count": count,
             "param": param,
             "variety": kind,
@@ -286,21 +316,28 @@ def read_interaction(buf, bank, addr):
 
         entities = []
         while read_byte(buf, bank, addr) < 0xf0:
-            kind = list(lookup_entry(ENTITIES,
-                    read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
+            if name:
+                kind = list(lookup_entry(ENTITIES,
+                        read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)))
+            else:
+                kind = [read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)]
             addr += 2
+
             x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
-                "mode": "specific entity",
+                "mode": "specific entity" if name else mode,
                 "param": param,
                 "variety": kind,
                 "coords": [x, y]
             }),
     elif mode in (0xf8, 0xf9, 0xfa):
-        print("skipped interaction type", mode)
         # TODO
+        print("skipped interaction type", hex(mode), "@", hex(addr - 1),
+                file=sys.stderr)
         while read_byte(buf, bank, addr) < 0xf0:
             addr += 1
     elif mode == 0xfe:
@@ -309,6 +346,9 @@ def read_interaction(buf, bank, addr):
     elif mode == 0xff:
         # no more interactions to read
         pass
+    else:
+        print("unknown interaction type", hex(mode), "@", hex(addr - 1),
+                file=sys.stderr)
 
     return objects, addr
 
@@ -358,6 +398,20 @@ def get_chests(buf, group):
 
     return chests
 
+
+def name_objects(objects):
+    for obj in objects:
+        obj["mode"] = INTERACTION_MODES[obj["mode"]]
+        if obj["mode"] == "NV interaction":
+            obj["variety"] = list(lookup_entry(NV_INTERACTIONS,
+                    *obj["variety"]))
+        elif obj["mode"] in ("random entities", "specific entity"):
+            obj["variety"] = list(lookup_entry(ENTITIES, *obj["variety"]))
+        elif obj["mode"] in "DV interaction":
+            obj["variety"] = list(lookup_entry(DV_INTERACTIONS,
+                    *obj["variety"]))
+
+
 with open(args.romfile, "rb") as f:
     rom = f.read()
 
@@ -401,7 +455,48 @@ elif args.action == "searchchests":
 
     yaml.dump(chests, sys.stdout)
 elif args.action == "searchobjects":
-    # like searchchests, but for an object type
-    fatal("searchobjects not yet implemented")
+    if len(args.args) != 2:
+        fatal("searchobjects expects 2 args, got", len(args.args))
+
+    mode = int(args.args[0], 16)
+    obj_id = int(args.args[1], 16)
+
+    # read all interactions in all rooms in all groups, and collate the
+    # accumulated objects that match the given ID.
+    objects = []
+    for group in range(8):
+        bank, addr = OBJECT_PTR_TABLE
+        addr = read_ptr(rom, bank, addr + group * 2)
+
+        # loop through rooms until the high byte is fxxx, which means that the
+        # interaction pointers have ended and the interaction data has started
+        room = 0
+        while True:
+            room_addr = read_ptr(rom, bank, addr + room * 2)
+            if room > 0xff or room_addr > 0xf000:
+                break
+
+            # read objects (recursively if more pointers are involved)
+            room_objects = []
+            while read_byte(rom, bank, room_addr) != 0xff:
+                new_objects, room_addr = read_interaction(
+                        rom, bank, room_addr, name=False)
+                room_objects += new_objects
+
+            for obj in room_objects:
+                if obj["mode"] == mode and obj["variety"][0] == obj_id:
+                    full_obj = {
+                        "group": group,
+                        "room": room,
+                        "music": read_music(rom, group, room),
+                    }
+                    full_obj.update(obj)
+                    objects.append(full_obj)
+
+            room += 1
+
+    name_objects(objects)
+
+    yaml.dump(objects, sys.stdout)
 else:
     fatal("unknown action:", args.action)
