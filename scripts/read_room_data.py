@@ -116,7 +116,7 @@ TREASURES = {
         0x04: 30,
     }),
     0x2d: ("ring", {
-        0x04: "armor ring L-1",
+        0x04: "discovery ring",
     }),
     0x30: ("small key", {
         0x03: "in chest",
