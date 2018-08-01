@@ -22,10 +22,23 @@ def full_addr(bank_num, offset):
 
 MUSIC_PTR_TABLE = 0x04, 0x483c
 OBJECT_PTR_TABLE = 0x11, 0x5b38
+CHEST_PTR_TABLE = 0x15, 0x53af
 
 ENTITIES = {
+    0x0a: ("goriya", {
+        0x00: "boomerang",
+    }),
+    0x0e: ("blade trap", {
+        0x01: "blue",
+    }),
     0x31: ("stalfos", {
         0x00: "blue",
+    }),
+    0x32: ("keese", {
+        0x00: "normal",
+    }),
+    0x34: ("zol", {
+        0x01: "red",
     }),
     0x59: ("fixed drop", {
         0x00: "fairy",
@@ -35,37 +48,46 @@ ENTITIES = {
 
 DV_INTERACTIONS = {
     0x12: ("dungeon", {
-        0x01: "small key falls when room cleared",
+        0x00: "entry text",
+        0x01: "small key when room cleared",
+        0x02: "chest when room cleared",
     }),
+    0x13: ("push block trigger", {}),
     0x1e: ("doors", {
-        0x14: "north shutter",
-        0x0b: "open when room cleared",
+        0x0a: "S opens when room cleared",
+        0x0b: "W opens when room cleared",
+        0x14: "N opens for torches",
+        0x15: "W opens for torches",
+    }),
+    0x38: ("d1 old man", {}),
+    0x78: ("toggle tile", {}),
+    0x7e: ("minecart?", {}),
+    0xe2: ("statue eyes", {}),
+}
+
+TREASURES = {
+    0x32: ("compass", {
+        0x02: "in chest",
+    }),
+    0x33: ("dungeon map", {
+        0x02: "in chest",
+    }),
+    0x34: ("gasha seed", {
+        0x01: "in chest",
     }),
 }
 
 
-def lookup_entity(entityID, param):
-    if entityID in ENTITIES:
-        entity = ENTITIES[entityID]
+def lookup_entry(table, entry_id, param):
+    if entry_id in table:
+        entry = table[entry_id]
 
-        if param in entity[1]:
-            return entity[0], entity[1][param]
+        if param in entry[1]:
+            return entry[0], entry[1][param]
 
-        return entity[0], hex(param)
+        return entry[0], param
 
-    return hex(entityID), hex(param)
-
-
-def lookup_DV(dvID, param):
-    if dvID in DV_INTERACTIONS:
-        dv = DV_INTERACTIONS[dvID]
-
-        if param in dv[1]:
-            return dv[0], dv[1][param]
-
-        return dv[0], hex(param)
-
-    return hex(dvID), hex(param)
+    return entry_id, param
 
 
 def read_byte(buf, bank, addr, increment=0):
@@ -124,13 +146,13 @@ def read_interaction(buf, bank, addr):
         # "double-value interaction"
         dv_interactions = []
         while read_byte(buf, bank, addr) < 0xf0:
-            kind = lookup_DV(read_byte(buf, bank, addr),
-                    read_byte(buf, bank, addr+1))
+            kind = list(lookup_entry(DV_INTERACTIONS,
+                    read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
             addr += 2
             x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
 
-            objects.append(("DV interaction", kind, hex(x), hex(y)))
+            objects.append(["DV interaction", kind, [x, y]])
     elif mode in (0xf3, 0xf4, 0xf5):
         # pointer to other interaction
         ptr = read_ptr(buf, bank, addr)
@@ -143,25 +165,24 @@ def read_interaction(buf, bank, addr):
         param = read_byte(buf, bank, addr) & 0x0f
         addr += 1
 
-        kind = lookup_entity(read_byte(buf, bank, addr),
-                read_byte(buf, bank, addr+1))
+        kind = list(lookup_entry(ENTITIES,
+                read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
         addr += 2
 
-        objects.append(("random entities", hex(count), hex(param), kind))
+        objects.append(["random entities", count, param, kind])
     elif mode == 0xf7:
         # specifically placed entities
         param, addr = read_byte(buf, bank, addr, 1)
 
         entities = []
         while read_byte(buf, bank, addr) < 0xf0:
-            kind = lookup_entity(read_byte(buf, bank, addr),
-                    read_byte(buf, bank, addr+1))
+            kind = list(lookup_entry(ENTITIES,
+                    read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
             addr += 2
             x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
 
-            objects.append(("specific entity",
-                    hex(param), kind, hex(x), hex(y)))
+            objects.append(["specific entity", param, kind, [x, y]])
     elif mode in (0xf8, 0xf9, 0xfa):
         # TODO
         while read_byte(buf, bank, addr) < 0xf0:
@@ -174,6 +195,27 @@ def read_interaction(buf, bank, addr):
         pass
 
     return objects, addr
+
+
+def read_chest(buf, group, room):
+    # read initial pointer
+    bank, addr = CHEST_PTR_TABLE
+    addr = read_ptr(buf, bank, addr + group * 2)
+
+    # loop through group chests until marker 0xff is reached.
+    # that byte must be used for something else too, but i don't know what.
+    while True:
+        info, chest_room, treasure_id, treasure_subid = \
+                buf[full_addr(bank, addr):full_addr(bank, addr)+4]
+        if info == 0xff:
+            break
+
+        if chest_room == room:
+            return list(lookup_entry(TREASURES, treasure_id, treasure_subid))
+
+        addr += 4
+
+    return None
 
 
 if len(sys.argv) != 4:
