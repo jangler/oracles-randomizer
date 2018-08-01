@@ -115,6 +115,16 @@ var Treasures = map[string]*Treasure{
 	"round jewel":     &Treasure{0x4c, 0x00, 0x569d, 0x0a, 0x00, 0x47, 0x36},
 	"rusty bell":      &Treasure{0x4a, 0x00, 0x58b1, 0x0a, 0x00, 0x55, 0x5b},
 	"ring box L-2":    &Treasure{0x2c, 0x02, 0x57f1, 0x02, 0x03, 0x34, 0x35},
+
+	// these seeds are "fake" treasures. real treasures corresponding to each
+	// type of seed exist, but those can't be used for changing which tree
+	// yields which seeds.
+	"ember tree seeds":   &Treasure{id: 0x00},
+	"mystery tree seeds": &Treasure{id: 0x01},
+	"scent tree seeds":   &Treasure{id: 0x02},
+	"pegasus tree seeds": &Treasure{id: 0x03},
+	"gale tree seeds 1":  &Treasure{id: 0x04},
+	"gale tree seeds 2":  &Treasure{id: 0x05},
 }
 
 // reverse lookup the treasure name; returns empty string if not found

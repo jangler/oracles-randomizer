@@ -130,11 +130,16 @@ var sceneItemGfx = map[string]int{
 	"satchel":       0x5f0051,
 	"slingshot L-1": 0x5f0241,
 	"slingshot L-2": 0x5f0451,
-	"ember seeds":   0x5f0621,
-	"scent seeds":   0x5f0831,
-	"pegasus seeds": 0x5f0a11,
-	"gale seeds":    0x5f0c11,
-	"mystery seeds": 0x5f0e01,
+
+	// don't slot these in scenes
+	/*
+		"ember seeds":   0x5f0621,
+		"scent seeds":   0x5f0831,
+		"pegasus seeds": 0x5f0a11,
+		"gale seeds":    0x5f0c11,
+		"mystery seeds": 0x5f0e01,
+	*/
+
 	"magnet gloves": 0x5f1021,
 
 	"sword L-1":     0x600001,

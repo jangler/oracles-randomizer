@@ -42,6 +42,14 @@ var baseItemPrenodes = map[string]*Prenode{
 	"find energy ring": Root(),
 	"find toss ring":   Root(),
 
+	// these can only be placed in seed tree slots
+	"ember tree seeds":   Root(),
+	"mystery tree seeds": Root(),
+	"scent tree seeds":   Root(),
+	"pegasus tree seeds": Root(),
+	"gale tree seeds 1":  Root(),
+	"gale tree seeds 2":  Root(),
+
 	// could be uncommented and function as a filler item
 	// "bombchus": Root(),
 }
@@ -52,16 +60,12 @@ var ignoredBaseItemPrenodes = map[string]*Prenode{
 }
 
 var itemPrenodes = map[string]*Prenode{
-	"harvest ember seeds":   And("ember tree", "satchel", "harvest item"),
-	"harvest mystery seeds": And("mystery tree", "satchel", "harvest item"),
-	"harvest scent seeds":   And("scent tree", "satchel", "harvest item"),
-	"harvest pegasus seeds": And("pegasus tree", "satchel", "harvest item"),
-	"gale tree":             Or("sunken gale tree", "tarm gale tree"),
-	"harvest gale seeds":    And("gale tree", "satchel", "harvest item"),
-
-	"find d1 ember seeds": And("enter d1", "satchel", "remove bush"),
-	"find d2 ember seeds": And("mystery tree", "satchel", "remove bush"),
-	"find d2 bombs":       And("d2 bomb wall", "satchel", "remove bush"),
+	// XXX this will need to change once slingshot gives seeds
+	"harvest ember seeds":   And("ember tree seeds", "satchel", "harvest item"),
+	"harvest mystery seeds": And("mystery tree seeds", "satchel", "harvest item"),
+	"harvest scent seeds":   And("scent tree seeds", "satchel", "harvest item"),
+	"harvest pegasus seeds": And("pegasus tree seeds", "satchel", "harvest item"),
+	"harvest gale seeds":    And("gale tree seeds", "satchel", "harvest item"),
 
 	// you can usually only get seed drops if you already have that type of
 	// seed, meaning the first way to obtain it has to be harvesting from a

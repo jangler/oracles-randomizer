@@ -216,7 +216,9 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 
 			// recurse unless the item should be skipped
 			var skip bool
-			skip, jewelChecked = shouldSkipItem(itemNode, slotNode, jewelChecked)
+			skip, jewelChecked = shouldSkipItem(
+				g, reached, itemNode, slotNode, jewelChecked)
+			log.Print("trying slot " + slotNode.Name)
 			if !skip && tryExploreTargets(
 				g, reached, []*graph.Node{itemNode}, goal, forbid, maxlen-1,
 				iteration, itemList, usedItems, slotList, usedSlots) {
@@ -233,10 +235,6 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 		// slot didn't work; pop it onto the front of the unused list
 		usedSlots.Remove(usedSlots.Back())
 		slotList.PushFront(slotNode)
-
-		// reachable slots usually equivalent in terms of routing, so don't
-		// bother checking more at this point
-		break
 	}
 
 	// nothing worked
@@ -312,13 +310,36 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 			log.Print("-- true; all goals reached and slots filled")
 			return RouteSuccess
 		}
-		log.Print("-- slotting extra items")
+		log.Print("-- filling extra slots")
 	}
 
 	// if the new state doesn't reach any more steps, abandon this branch,
-	// *unless* the new item is a jewel, or we've already reached the goals.
+	// *unless* the new item is a jewel, seed item, gale seed, or we've already
+	// reached the goals. jewels need this logic because they won't reach any
+	// more steps until all four have been slotted, and seed items need this
+	// logic because they're useless until seeds have been slotted too.
+	//
+	// gale seeds don't *need* this logic, strictly speaking, but they're very
+	// convenient for the player to have. but still don't slot them until the
+	// player already has a seed item, or else they'll probably end up in horon
+	// village a lot. also only slot the first one this way! the second one can
+	// be filler.
 	if !allReached && !strings.HasSuffix(add[0].Name, " jewel") {
-		if countSteps(reached) <= countSteps(start) {
+		needCount := true
+
+		// still, don't slot seed stuff until the player can at least harvest
+		if reached[g["harvest item"]] {
+			switch add[0].Name {
+			case "satchel", "slingshot L-1", "slingshot L-2":
+				needCount = false
+			case "gale tree seeds 1":
+				if reached[g["seed item"]] {
+					needCount = false
+				}
+			}
+		}
+
+		if needCount && countSteps(reached) <= countSteps(start) {
 			log.Printf("-- false; reached steps %d <= start steps %d",
 				countSteps(reached), countSteps(start))
 			return RouteInvalid
@@ -352,10 +373,10 @@ func printItemSequence(usedItems *list.List) {
 // return skip = true iff conditions mean this item shouldn't be checked, and
 // checked = true iff a jewel (round, square, pyramid, x-shaped) has been
 // checked by now.
-func shouldSkipItem(itemNode, slotNode *graph.Node,
-	jewelChecked bool) (skip, checked bool) {
+func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool,
+	itemNode, slotNode *graph.Node, jewelChecked bool) (skip, checked bool) {
 	// only check one jewel per loop, since they're functionally
-	// identical
+	// identical.
 	if strings.HasSuffix(itemNode.Name, " jewel") {
 		if !jewelChecked {
 			checked = true
@@ -363,6 +384,7 @@ func shouldSkipItem(itemNode, slotNode *graph.Node,
 			skip = true
 		}
 	}
+
 	// the star ore code is unique in that it doesn't set the sub ID at
 	// all, leaving it zeroed. so if we're looking at the star ore
 	// slot, then skip any items that have a nonzero sub ID.
@@ -377,8 +399,84 @@ func shouldSkipItem(itemNode, slotNode *graph.Node,
 			skip = true
 		}
 	}
+	// and only seeds can be slotted in seed trees, of course
+	switch itemNode.Name {
+	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
+		"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
+		switch slotNode.Name {
+		case "ember tree", "mystery tree", "scent tree",
+			"pegasus tree", "sunken gale tree", "tarm gale tree":
+			if canReachInSeasonSeeds(g, reached, itemNode, slotNode) {
+				break
+			}
+			skip = true
+		default:
+			skip = true
+		}
+	default:
+		switch slotNode.Name {
+		case "ember tree", "mystery tree", "scent tree",
+			"pegasus tree", "sunken gale tree", "tarm gale tree":
+			skip = true
+		}
+	}
 
 	return
+}
+
+// seeds only grow during certain seasons
+var seedSeasons = map[string]string{
+	"ember":   "winter",
+	"scent":   "spring",
+	"pegasus": "autumn",
+	"gale":    "summer",
+	"mystery": "all",
+}
+
+// ok, this is super tricky. a seed should not be slotted if the
+// player can't actually reach it due to it being out-of-season and
+// them being unable to change the season. mystery trees grow in
+// all seasons, so they don't need to be checked.
+//
+// this assumes that the player can already reach the tree itself.
+func canReachInSeasonSeeds(g graph.Graph, reached map[*graph.Node]bool,
+	itemNode, slotNode *graph.Node) bool {
+	season := seedSeasons[itemNode.Name]
+	if season == "all" {
+		return true
+	}
+
+	switch slotNode.Name {
+	case "ember tree":
+		return true // horon village has all seasons
+	case "mystery tree":
+		if season == "summer" || reached[g["summer"]] {
+			return true
+		}
+	case "scent tree":
+		if season == "spring" ||
+			(reached[g["spring"]] && reached[g["ghastly stump"]]) {
+			return true
+		}
+	case "pegasus tree":
+		if season == "autumn" ||
+			(reached[g["autumn"]] && reached[g["spool swamp"]]) {
+			return true
+		}
+	case "sunken gale tree":
+		if season == "summer" || (reached[g["summer"]] &&
+			(reached[g["flippers"]] || reached[g["dimitri"]])) {
+			return true
+		}
+	case "tarm gale tree":
+		// if you got here, you already have all the seasons, but just in case
+		// something changes…
+		if season == "summer" || reached[g["summer"]] {
+			return true
+		}
+	}
+
+	return false
 }
 
 // print item/slot info on a succeeded route
