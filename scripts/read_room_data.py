@@ -152,6 +152,9 @@ TREASURES = {
     0x03: ("bombs", {
         0x00: "10 count",
     }),
+    0x05: ("sword", {
+        0x00: "L-1",
+    }),
     0x28: ("rupees", {
         0x03: "20 count",
         0x04: "30 count",
@@ -464,7 +467,7 @@ elif args.action == "searchobjects":
     # read all interactions in all rooms in all groups, and collate the
     # accumulated objects that match the given ID.
     objects = []
-    for group in range(8):
+    for group in range(6):
         bank, addr = OBJECT_PTR_TABLE
         addr = read_ptr(rom, bank, addr + group * 2)
 
