@@ -15,6 +15,7 @@ var softlockChecks = [](func(graph.Graph) error){
 	canFlowerSoftlock,
 	canFeatherSoftlock,
 	canEarlySlingshot,
+	canEmberSeedSoftlock,
 }
 
 // check for known softlock conditions
@@ -65,7 +66,7 @@ func canFlowerSoftlock(g graph.Graph) error {
 		return nil
 	}
 
-	// temporarily make entrance and bush items unavailable
+	// temporarily make ammoless flower-removal items unavailable
 	disabledNodes := append(g["remove flower sustainable"].Parents)
 	disabledParents := make([][]*graph.Node, len(disabledNodes))
 	for i, node := range disabledNodes {
@@ -136,5 +137,37 @@ func canEarlySlingshot(g graph.Graph) error {
 		return errors.New("slingshot obtained before satchel")
 	}
 
+	return nil
+}
+
+// since ember seeds can burn down bushes, make sure that the player doesn't
+// have access to ember seeds without having a sustainable means of removing
+// bushes first. flowers are covered by canFlowerSoftlock.
+func canEmberSeedSoftlock(g graph.Graph) error {
+	// first check if a seed item has been obtained (either gives ember seeds
+	// currently, so just having one would be enough to softlock)
+	seedItem := g["seed item"]
+	if seedItem.Mark != graph.MarkTrue {
+		return nil
+	}
+
+	// temporarily make ammoless bush-removal items unavailable
+	disabledNodes := append(g["remove bush sustainable"].Parents)
+	disabledParents := make([][]*graph.Node, len(disabledNodes))
+	for i, node := range disabledNodes {
+		disabledParents[i] = node.Parents
+		node.ClearParents()
+	}
+	defer func() {
+		for i, node := range disabledNodes {
+			node.AddParents(disabledParents[i]...)
+		}
+	}()
+
+	// see if you can still reach the exit
+	g.ClearMarks()
+	if seedItem.GetMark(seedItem, nil) == graph.MarkTrue {
+		return errors.New("ember seed softlock")
+	}
 	return nil
 }

@@ -55,6 +55,7 @@ var killPrenodes = map[string]*Prenode{
 	"seed kill normal":                Or("ember seeds", "scent seeds", "gale seeds", "mystery seeds"),
 	"pop maku bubble":                 Or("sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"),
 	"remove bush":                     Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet"),
+	"remove bush sustainable":         Or("sword", "boomerang L-2", "bracelet"),
 	"kill normal":                     Or("sword", "bombs", "beams", "seed kill normal", "fool's ore", "punch"),
 	"pit kill normal":                 Or("sword", "beams", "shield", "scent seeds", "rod", "bombs", "shovel", "fool's ore", "punch"),
 	"kill stalfos":                    Or("kill normal", "rod"),
