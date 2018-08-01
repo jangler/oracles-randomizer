@@ -29,11 +29,19 @@ OBJECT_PTR_TABLE = 0x11, 0x5b38
 CHEST_PTR_TABLE = 0x15, 0x53af
 
 MUSIC = {
+    0x03: "overworld",
+    0x0a: "horon village",
     0x0d: "essence room",
+    0x0e: "house",
+    0x0f: "fairy fountain",
+    0x12: "hero's cave",
     0x13: "gnarled root dungeon",
 }
 
 ENTITIES = {
+    0x09: ("octorok", {
+        0x01: "red",
+    }),
     0x0a: ("goriya", {
         0x00: "boomerang",
     }),
@@ -51,6 +59,9 @@ ENTITIES = {
         0x01: "red",
     }),
     0x35: ("floormaster", {}),
+    0x38: ("great fairy", {}),
+    0x43: ("gel", {}),
+    0x53: ("dragonfly", {}),
     0x59: ("fixed drop", {
         0x00: "fairy",
         0x05: "ember seeds",
@@ -64,9 +75,11 @@ DV_INTERACTIONS = {
         0x00: "entry text",
         0x01: "small key when room cleared",
         0x02: "chest when room cleared",
+        0x04: "stairs when room cleared",
     }),
     0x13: ("push block trigger", {}),
     0x1e: ("doors", {
+        0x04: "N opens on trigger",
         0x08: "N opens when room cleared",
         0x09: "E opens when room cleared",
         0x0a: "S opens when room cleared",
@@ -75,20 +88,33 @@ DV_INTERACTIONS = {
         0x15: "W opens for torches",
     }),
     # 0x20 0x00 used in d1 mid boss room
+    # 0x20 0x01 used for button -> small key chest in d0
     # 0x20 0x02 used for button -> small key chest in d1
     # 0x20 0x03 used for boss room in d1
+    # 0x21 and 0x22 are outside the d1 entrance
+    # 0x25 0x00 and 0x01 are on the cat-stuck-in-tree screen
+    # 0x26 0x00 and 0x01 are also on the cat-stuck-in-tree screen
     0x38: ("d1 old man", {}),
+    # 0x44 0x09 is in impa's house
     0x6b: ("placed item", {
+        0x1f: "gasha seed",
         0x20: "seed satchel",
     }),
     0x78: ("toggle tile", {}),
     0x7e: ("miniboss portal", {}),
     0x7f: ("essence", {}),
+    0x9d: ("impa", {}),
+    0xc6: ("wooden sword", {}),
+    # 0xa5 0x09 used on screen where link falls in the intro
+    # 0xdc 0x01 and 0x02 outside hero's cave. entrance ??
     0xe2: ("statue eyes", {}),
 }
 
 TREASURES = {
     0x03: ("bombs", {}),
+    0x28: ("rupees", {
+        0x04: 30,
+    }),
     0x2d: ("ring", {
         0x04: "armor ring L-1",
     }),
@@ -174,9 +200,22 @@ def read_interaction(buf, bank, addr):
     mode, addr = read_byte(buf, bank, addr, 1)
 
     if mode == 0xf0:
+        print("skipped interaction type", mode)
         # TODO
         while read_byte(buf, bank, addr) < 0xf0:
             addr += 1
+    elif mode == 0xf1:
+        # "no-value interaction"
+        nv_interactions = []
+        while read_byte(buf, bank, addr) < 0xf0:
+            kind = list(lookup_entry(NV_INTERACTIONS,
+                    read_byte(buf, bank, addr), read_byte(buf, bank, addr+1)))
+            addr += 2
+
+            objects.append({
+                "mode": "NV interaction",
+                "variety": kind,
+            })
     elif mode == 0xf2:
         # "double-value interaction"
         dv_interactions = []
@@ -233,6 +272,7 @@ def read_interaction(buf, bank, addr):
                 "coords": [x, y]
             }),
     elif mode in (0xf8, 0xf9, 0xfa):
+        print("skipped interaction type", mode)
         # TODO
         while read_byte(buf, bank, addr) < 0xf0:
             addr += 1
