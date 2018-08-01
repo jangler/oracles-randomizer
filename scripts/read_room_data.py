@@ -21,6 +21,11 @@ parser.add_argument("args", type=str, nargs="*", help="action parameters")
 args = parser.parse_args()
 
 
+def fatal(*args):
+    print("%s: error:" % __file__, *args, file=sys.stderr)
+    exit(2)
+
+
 def dict_presenter(dumper, data):
     return dumper.represent_dict(data.items())
 
@@ -326,9 +331,7 @@ with open(args.romfile, "rb") as f:
 
 if args.action == "getroom":
     if len(args.args) != 2:
-        print("fatal: getroom expects 2 args, got", len(args.args),
-                file=sys.stderr)
-        exit(2)
+        fatal("getroom expects 2 args, got", len(args.args))
 
     group = int(args.args[0], 16)
     room = int(args.args[1], 16)
