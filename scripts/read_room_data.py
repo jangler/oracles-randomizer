@@ -280,6 +280,7 @@ def read_interaction(buf, bank, addr, name=True):
             addr += 2
 
             objects.append({
+                "address": [bank, addr - 2],
                 "mode": "NV interaction" if name else mode,
                 "variety": kind,
             })
@@ -300,6 +301,7 @@ def read_interaction(buf, bank, addr, name=True):
             y, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
+                "address": [bank, addr - 4],
                 "mode": "DV interaction" if name else mode,
                 "variety": kind,
                 "coords": [x, y],
@@ -324,6 +326,7 @@ def read_interaction(buf, bank, addr, name=True):
         addr += 2
 
         objects.append({
+            "address": [bank, addr - 3],
             "mode": "random entities" if name else mode,
             "count": count,
             "param": param,
@@ -348,6 +351,7 @@ def read_interaction(buf, bank, addr, name=True):
             y, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
+                "address": [bank, addr - 4],
                 "mode": "specific entity" if name else mode,
                 "param": param,
                 "variety": kind,
