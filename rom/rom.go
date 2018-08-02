@@ -27,8 +27,9 @@ func (a *Addr) FullOffset() int {
 	return bankOffset + int(a.Offset)
 }
 
-// Mutate changes the contents of loaded ROM bytes in place.
-func Mutate(b []byte) error {
+// Mutate changes the contents of loaded ROM bytes in place. It returns a
+// checksum of the result or an error.
+func Mutate(b []byte) ([]byte, error) {
 	setSceneGfx("rod gift", "rod graphics")
 	setSceneGfx("noble sword spot", "noble sword graphics")
 	setSceneGfx("noble sword spot", "master sword graphics")
@@ -41,11 +42,12 @@ func Mutate(b []byte) error {
 	for _, m := range getAllMutables() {
 		err = m.Mutate(b)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	log.Printf("new bytes: sha-1 %x", sha1.Sum(b))
-	return nil
+	outSum := sha1.Sum(b)
+	log.Printf("new bytes: sha-1 %x", outSum)
+	return outSum[:], nil
 }
 
 // Verify checks all the package's data against the ROM to see if it matches.

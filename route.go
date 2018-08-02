@@ -112,10 +112,11 @@ func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func findRoute(r *Route, start, goal, forbid []string,
-	maxlen int) (usedItems, usedSlots *list.List) {
+func findRoute(r *Route, start, goal, forbid []string, maxlen int,
+	summary chan string) (usedItems, itemList, usedSlots *list.List) {
 	// make stacks out of the item names and slot names for backtracking
-	itemList, slotList := initRouteLists(r)
+	var slotList *list.List
+	itemList, slotList = initRouteLists(r)
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
