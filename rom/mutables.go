@@ -334,7 +334,13 @@ var codeMutables = map[string]Mutable{
 	"get fools ore 1": MutableByte(Addr{0x14, 0x4111}, 0xe0, 0xf0),
 	"get fools ore 2": MutableByte(Addr{0x14, 0x4112}, 0x2e, 0xf0),
 	"get fools ore 3": MutableByte(Addr{0x14, 0x4113}, 0x5d, 0xf0),
-	"lose fools ore":  MutableByte(Addr{0x3f, 0x454b}, 0x1e, 0x00),
+	// There are tables indicating extra items to "get" and "lose" upon getting an item.
+	// We remove the "lose fools ore" entry and insert a "get ember seeds from
+	// slingshot" entry.
+	"lose fools, get ember from slingshot 1": MutableRange{Addr{0x3f, 0x4543},
+		[]byte{0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51, 0x17, 0x1e, 0x00},
+		[]byte{0x13, 0x20, 0x20, 0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51}},
+	"lose fools, get ember from slingshot 2": MutableByte(Addr{0x3f, 0x44cf}, 0x44, 0x47),
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
