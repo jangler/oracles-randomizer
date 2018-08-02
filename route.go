@@ -434,10 +434,10 @@ var seedSeasons = map[string]string{
 	"mystery": "all",
 }
 
-// ok, this is super tricky. a seed should not be slotted if the
-// player can't actually reach it due to it being out-of-season and
-// them being unable to change the season. mystery trees grow in
-// all seasons, so they don't need to be checked.
+// ok, this is tricky. a seed should not be slotted if the player can't
+// actually reach it due to it being out-of-season and them being unable to
+// change the season. mystery trees grow in all seasons, so they don't need to
+// be checked.
 //
 // this assumes that the player can already reach the tree itself.
 func canReachInSeasonSeeds(g graph.Graph, reached map[*graph.Node]bool,
