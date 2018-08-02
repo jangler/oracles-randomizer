@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	maxIterations = 2000 // restart if routing runs for too long
+	maxIterations = 1000 // restart if routing runs for too long
 	maxTries      = 10   // give up if routing fails too many times
 )
 
