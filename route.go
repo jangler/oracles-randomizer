@@ -181,8 +181,11 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 	log.Print(countSteps(reached), " steps reached")
 
 	// check whether to return right now
+	fillUnused := false
 	switch checkRouteState(
 		g, start, reached, add, goal, forbid, slotList, maxlen) {
+	case RouteFillUnused:
+		fillUnused = true
 	case RouteSuccess:
 		return true
 	case RouteInvalid:
@@ -195,9 +198,9 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 		slotElem := slotList.Back()
 		slotList.MoveToFront(slotElem)
 
-		// see if slot node has been reached
+		// see if slot node has been reached OR we don't care anymore
 		slotNode := slotElem.Value.(*graph.Node)
-		if !reached[slotNode] {
+		if !reached[slotNode] && !fillUnused {
 			continue
 		}
 
@@ -280,6 +283,7 @@ type RouteState int
 // possible return values of checkRouteState
 const (
 	RouteIndeterminate = iota
+	RouteFillUnused    // goals reached, some slots still open
 	RouteSuccess
 	RouteInvalid
 )
@@ -294,6 +298,12 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 			log.Printf("-- false; reached forbidden node %s", node)
 			return RouteInvalid
 		}
+	}
+
+	// check for softlocks
+	if err := canSoftlock(g); err != nil {
+		log.Print("-- false; ", err)
+		return RouteInvalid
 	}
 
 	// success if all goal nodes are reached *and* all slots are filled
@@ -312,6 +322,7 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 			return RouteSuccess
 		}
 		log.Print("-- filling extra slots")
+		return RouteFillUnused
 	}
 
 	// if the new state doesn't reach any more steps, abandon this branch,
@@ -325,7 +336,7 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	// player already has a seed item, or else they'll probably end up in horon
 	// village a lot. also only slot the first one this way! the second one can
 	// be filler.
-	if !allReached && !strings.HasSuffix(add[0].Name, " jewel") {
+	if !strings.HasSuffix(add[0].Name, " jewel") {
 		needCount := true
 
 		// still, don't slot seed stuff until the player can at least harvest
@@ -348,14 +359,8 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	}
 
 	// can't slot any more items
-	if !allReached && maxlen == 0 {
+	if maxlen == 0 {
 		log.Print("-- false; slotted maxlen items")
-		return RouteInvalid
-	}
-
-	// check for softlocks
-	if err := canSoftlock(g); err != nil {
-		log.Print("-- false; ", err)
 		return RouteInvalid
 	}
 
