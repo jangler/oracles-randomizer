@@ -346,6 +346,9 @@ var codeMutables = map[string]Mutable{
 	"satchel capacity": MutableRange{Addr{0x3f, 0x4617},
 		[]byte{0x20, 0x50, 0x99}, []byte{0x20, 0x20, 0x50}},
 	"satchel capacity pointer": MutableByte(Addr{0x3f, 0x460e}, 0x16, 0x17),
+	// and allow seed collection if you have a slingshot, by checking for ember
+	// seeds (which all seed items give) instead of satchel
+	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash

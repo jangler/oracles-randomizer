@@ -60,12 +60,11 @@ var ignoredBaseItemPrenodes = map[string]*Prenode{
 }
 
 var itemPrenodes = map[string]*Prenode{
-	// XXX this will need to change once slingshot gives seeds
-	"harvest ember seeds":   And("ember tree seeds", "satchel", "harvest item"),
-	"harvest mystery seeds": And("mystery tree seeds", "satchel", "harvest item"),
-	"harvest scent seeds":   And("scent tree seeds", "satchel", "harvest item"),
-	"harvest pegasus seeds": And("pegasus tree seeds", "satchel", "harvest item"),
-	"harvest gale seeds":    And("gale tree seeds", "satchel", "harvest item"),
+	"harvest ember seeds":   And("ember tree seeds", "seed item", "harvest item"),
+	"harvest mystery seeds": And("mystery tree seeds", "seed item", "harvest item"),
+	"harvest scent seeds":   And("scent tree seeds", "seed item", "harvest item"),
+	"harvest pegasus seeds": And("pegasus tree seeds", "seed item", "harvest item"),
+	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest item"),
 
 	// you can usually only get seed drops if you already have that type of
 	// seed, meaning the first way to obtain it has to be harvesting from a
@@ -121,15 +120,14 @@ var itemPrenodes = map[string]*Prenode{
 	"shield L-1": Or("rupees"),
 	"shield L-2": Or(), // TODO as if it matters
 
-	"sword":          Or("sword L-1", "sword L-2"),
-	"shield":         Or("shield L-1", "shield L-2"),
-	"beams":          Or("sword L-2", "sword beams L-1"),
-	"boomerang":      Or("boomerang L-1", "boomerang L-2"),
-	"find slingshot": Or("slingshot L-1", "slingshot L-2"),
-	"slingshot":      And("find slingshot", "satchel"), // need satchel to use
-	"seed item":      Or("satchel", "slingshot"),
-	"bombs":          Or("rupees"),
-	"jump":           Or("feather L-1", "feather L-2"),
+	"sword":     Or("sword L-1", "sword L-2"),
+	"shield":    Or("shield L-1", "shield L-2"),
+	"beams":     Or("sword L-2", "sword beams L-1"),
+	"boomerang": Or("boomerang L-1", "boomerang L-2"),
+	"slingshot": Or("slingshot L-1", "slingshot L-2"),
+	"seed item": Or("satchel", "slingshot"),
+	"bombs":     Or("rupees"),
+	"jump":      Or("feather L-1", "feather L-2"),
 
 	"harvest item": Or("sword", "rod", "fool's ore", "punch"),
 
