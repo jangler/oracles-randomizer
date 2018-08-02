@@ -81,7 +81,7 @@ func setSceneGfx(slotName, gfxName string) {
 	treasure := slot.Treasure
 	itemName := treasureNameFromIDs(treasure.id, treasure.subID)
 	if gfx := sceneItemGfx[itemName]; gfx == 0 {
-		log.Fatalf("fatal: no %s graphics for %s (%02x%02x)",
+		log.Fatalf("fatal: no %s for %s (%02x%02x)",
 			gfxName, itemName, treasure.id, treasure.subID)
 	} else {
 		mut := dataMutables[gfxName].(MutableRange)
