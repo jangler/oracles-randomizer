@@ -222,11 +222,13 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(
 				g, reached, itemNode, slotNode, jewelChecked, fillUnused)
-			log.Print("trying slot " + slotNode.Name)
-			if !skip && tryExploreTargets(
-				g, reached, []*graph.Node{itemNode}, goal, forbid, maxlen-1,
-				iteration, itemList, usedItems, slotList, usedSlots) {
-				return true
+			if !skip {
+				log.Print("trying slot " + slotNode.Name)
+				if tryExploreTargets(g, reached, []*graph.Node{itemNode}, goal,
+					forbid, maxlen-1, iteration, itemList, usedItems, slotList,
+					usedSlots) {
+					return true
+				}
 			}
 
 			// item didn't work; unslot it and pop it onto the front of the
