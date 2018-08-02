@@ -118,7 +118,10 @@ func canFeatherSoftlock(g graph.Graph) error {
 // before the satchel. this isn't any kind of softlock problem, but it'd still
 // be nice if you had to get the satchel first.
 func canEarlySlingshot(g graph.Graph) error {
-	if canReachWithoutPrereq(g, g["slingshot"], g["satchel"]) {
+	if canReachWithoutPrereq(g, g["slingshot L-1"], g["satchel"]) {
+		return errors.New("slingshot obtained before satchel")
+	}
+	if canReachWithoutPrereq(g, g["slingshot L-2"], g["satchel"]) {
 		return errors.New("slingshot obtained before satchel")
 	}
 	return nil
