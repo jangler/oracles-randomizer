@@ -221,7 +221,7 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 			// recurse unless the item should be skipped
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(
-				g, reached, itemNode, slotNode, jewelChecked)
+				g, reached, itemNode, slotNode, jewelChecked, fillUnused)
 			log.Print("trying slot " + slotNode.Name)
 			if !skip && tryExploreTargets(
 				g, reached, []*graph.Node{itemNode}, goal, forbid, maxlen-1,
@@ -379,8 +379,8 @@ func printItemSequence(usedItems *list.List) {
 // return skip = true iff conditions mean this item shouldn't be checked, and
 // checked = true iff a jewel (round, square, pyramid, x-shaped) has been
 // checked by now.
-func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool,
-	itemNode, slotNode *graph.Node, jewelChecked bool) (skip, checked bool) {
+func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool, itemNode,
+	slotNode *graph.Node, jewelChecked, fillUnused bool) (skip, checked bool) {
 	// only check one jewel per loop, since they're functionally
 	// identical.
 	if strings.HasSuffix(itemNode.Name, " jewel") {
@@ -412,7 +412,8 @@ func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool,
 		switch slotNode.Name {
 		case "ember tree", "mystery tree", "scent tree",
 			"pegasus tree", "sunken gale tree", "tarm gale tree":
-			if canReachInSeasonSeeds(g, reached, itemNode, slotNode) {
+			if fillUnused ||
+				canReachInSeasonSeeds(g, reached, itemNode, slotNode) {
 				break
 			}
 			skip = true
