@@ -364,6 +364,13 @@ var codeMutables = map[string]Mutable{
 	// one slot doesn't give two items / the same item twice.
 	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x00),
 	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x00),
+
+	// by default the cliff from sunken city to woods of winter is a one-way
+	// door, which can lead to tricky softlock problems. until the routing
+	// algorithm is capable of handling that kind of thing, the default season
+	// for that area is just going to be spring, so that you can use the flower
+	// to get back up.
+	"cliff default season": MutableByte(Addr{0x01, 0x7e43}, 0x02, 0x00),
 }
 
 // like the item slots, these are unchanged by default until the randomizer
