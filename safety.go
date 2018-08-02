@@ -168,7 +168,7 @@ func canReachWithoutPrereq(g graph.Graph, goal, prereq *graph.Node) bool {
 		return false
 	}
 
-	// check whether slingshot is reachable if satchel is not
+	// check whether goal node is reachable if prereq is not
 	parents := prereq.Parents
 	prereq.ClearParents()
 	defer g.ExploreFromStart()
