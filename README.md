@@ -56,7 +56,7 @@ Most inventory items (equippable and non-equippable) that are necessary to
 complete a casual playthrough are shuffled, with some exceptions:
 
 - Purchasable items (bombs, shield, and strange flute) are not shuffled.
-- The ribbon and pirate's bell are not shuffled.
+- The ribbon and pirate's bell are not shuffled (but the rusty bell is).
 
 **Items are only placed in locations where you would normally obtain another
 key item.**
