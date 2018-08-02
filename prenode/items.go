@@ -8,10 +8,14 @@ package prenode
 var baseItemPrenodes = map[string]*Prenode{
 	// ring box L-1 is free, but these nodes are "find" because it costs
 	// rupees to appraise (and therefore use) rings
-	"find fist ring":     Root(),
-	"find expert's ring": Root(),
-	"find energy ring":   Root(),
-	"find toss ring":     Root(),
+	//
+	// XXX temporarily disabled; see note in rom/treasures.go
+	/*
+		"find fist ring":     Root(),
+		"find expert's ring": Root(),
+		"find energy ring":   Root(),
+		"find toss ring":     Root(),
+	*/
 
 	// shield, bombs, and flute can be bought
 	"sword L-1":       Root(),

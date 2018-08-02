@@ -89,10 +89,17 @@ var Treasures = map[string]*Treasure{
 
 	// ignore these ones for the purpose of rom validation, since they're going
 	// to be custom from the start.
-	"find expert's ring": &Treasure{0x2d, 0x04, 0x580d, 0x38, 0x0b, 0x54, 0x0e},
-	"find toss ring":     &Treasure{0x2d, 0x05, 0x5811, 0x38, 0x12, 0x54, 0x0e},
-	"find energy ring":   &Treasure{0x2d, 0x06, 0x5815, 0x38, 0x31, 0x54, 0x0e},
-	"find fist ring":     &Treasure{0x2d, 0x07, 0x5819, 0x38, 0x3d, 0x54, 0x0e},
+	//
+	// XXX disable these, at least temporarily, since they can cause softlocks
+	//     if they appear in non-chest locations *and* normal chests. it's
+	//     probably possible to use the first four unused(?) ring slots for
+	//     these instead.
+	/*
+		"find expert's ring": &Treasure{0x2d, 0x04, 0x580d, 0x38, 0x0b, 0x54, 0x0e},
+		"find toss ring":     &Treasure{0x2d, 0x05, 0x5811, 0x38, 0x12, 0x54, 0x0e},
+		"find energy ring":   &Treasure{0x2d, 0x06, 0x5815, 0x38, 0x31, 0x54, 0x0e},
+		"find fist ring":     &Treasure{0x2d, 0x07, 0x5819, 0x38, 0x3d, 0x54, 0x0e},
+	*/
 
 	// the keys have several params that indicate which mode to use (fall,
 	// appear, exist, chest?). the compass and map have the same, but without
