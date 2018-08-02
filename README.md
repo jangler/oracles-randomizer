@@ -27,7 +27,7 @@ the usage (`./oos-randomizer -h`) message:
       -devcmd string
         	if given, run developer command
       -dryrun
-        	don't write an output file for any operation
+        	don't write an output ROM file
       -forbid string
         	comma-separated list of nodes that must not be reachable
       -goal string
@@ -38,8 +38,8 @@ the usage (`./oos-randomizer -h`) message:
 Note that some combinations of these flags can result in impossible conditions,
 like `-goal 'd1 essence' -forbid 'ember seeds'`. If you specify an early goal,
 like `enter d3`, you'll probably want to use `-maxlen` or `-forbid` to make
-sure the game doesn't make the floodgate key, for instance, the D8 dungeon
-item. See further below for an abbreviated list of possible `-goal` and
+sure the randomizer doesn't make the floodgate key, for instance, the D8
+dungeon item. See further below for an abbreviated list of possible `-goal` and
 `-forbid` nodes.
 
 Regardless of the value of `-maxlen`, the randomizer will place items in all
@@ -74,7 +74,8 @@ Speedrunners should note that the Subrosian dancing prize could be important.
 
 - `done`, meaning defeating Onox
 - `dX essence`, where X is a number from 1-8
-- `sword L-1`
+- `boomerang L-1`
+- `sword`
 - really just look at the files in the "prenode" folder if you want more
 
 Remember that you can specify multiple nodes as goals/forbids by separating
