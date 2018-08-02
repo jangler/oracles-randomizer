@@ -16,6 +16,7 @@ var softlockChecks = [](func(graph.Graph) error){
 	canFeatherSoftlock,
 	canEarlySlingshot,
 	canEmberSeedSoftlock,
+	canPiratesBellSoftlock,
 }
 
 // check for known softlock conditions
@@ -38,17 +39,12 @@ func canShovelSoftlock(g graph.Graph) error {
 		return nil
 	}
 
-	shovel := g["shovel"]
-	parents := shovel.Parents
-
 	// if the slot hasn't been assigned yet or it *is* the shovel, it's fine
+	shovel := g["shovel"]
 	if len(gift.Children) > 0 &&
 		!graph.IsNodeInSlice(gift, shovel.Parents) {
 		// check whether gift is reachable if shovel is unreachable
-		shovel.ClearParents()
-		defer shovel.AddParents(parents...)
-		g.ClearMarks()
-		if gift.GetMark(gift, nil) == graph.MarkTrue {
+		if canReachWithoutPrereq(g, gift, shovel) {
 			return errors.New("shovel softlock")
 		}
 	}
@@ -73,6 +69,7 @@ func canFlowerSoftlock(g graph.Graph) error {
 		disabledParents[i] = node.Parents
 		node.ClearParents()
 	}
+	defer g.ExploreFromStart()
 	defer func() {
 		for i, node := range disabledNodes {
 			node.AddParents(disabledParents[i]...)
@@ -97,7 +94,7 @@ func canFeatherSoftlock(g graph.Graph) error {
 		return nil
 	}
 	// also test that you can jump, since you can't H&S without jumping (and it
-	// would be beneficial if you could)
+	// would be beneficial even if you could)
 	if g["jump"].Mark != graph.MarkTrue {
 		return nil
 	}
@@ -107,6 +104,7 @@ func canFeatherSoftlock(g graph.Graph) error {
 
 	// check whether hide and seek is reachable if shovel is unreachable
 	shovel.ClearParents()
+	defer g.ExploreFromStart()
 	defer shovel.AddParents(parents...)
 	g.ClearMarks()
 	if hideAndSeek.GetMark(hideAndSeek, nil) == graph.MarkTrue {
@@ -120,23 +118,9 @@ func canFeatherSoftlock(g graph.Graph) error {
 // before the satchel. this isn't any kind of softlock problem, but it'd still
 // be nice if you had to get the satchel first.
 func canEarlySlingshot(g graph.Graph) error {
-	// check whether either slingshot has been reached
-	slingshot := g["slingshot"]
-	if slingshot.Mark != graph.MarkTrue {
-		return nil
-	}
-
-	satchel := g["satchel"]
-	parents := satchel.Parents
-
-	// check whether slingshot is reachable if satchel is not
-	satchel.ClearParents()
-	defer satchel.AddParents(parents...)
-	g.ClearMarks()
-	if slingshot.GetMark(slingshot, nil) == graph.MarkTrue {
+	if canReachWithoutPrereq(g, g["slingshot"], g["satchel"]) {
 		return errors.New("slingshot obtained before satchel")
 	}
-
 	return nil
 }
 
@@ -158,6 +142,7 @@ func canEmberSeedSoftlock(g graph.Graph) error {
 		disabledParents[i] = node.Parents
 		node.ClearParents()
 	}
+	defer g.ExploreFromStart()
 	defer func() {
 		for i, node := range disabledNodes {
 			node.AddParents(disabledParents[i]...)
@@ -170,4 +155,35 @@ func canEmberSeedSoftlock(g graph.Graph) error {
 		return errors.New("ember seed softlock")
 	}
 	return nil
+}
+
+// if the player gives the captain his bell before talking to the ghost pirate,
+// the ship will leave samasa desert and the player won't be able to get the
+// item there. make sure the player can't get the bell before talking to the
+// captain.
+func canPiratesBellSoftlock(g graph.Graph) error {
+	if canReachWithoutPrereq(g, g["pirate's bell"], g["samasa desert"]) {
+		return errors.New("pirate's bell softlock")
+	}
+	return nil
+}
+
+// returns true iff the player can reach the goal node without the prerequisite
+// one, given the current state of the graph.
+func canReachWithoutPrereq(g graph.Graph, goal, prereq *graph.Node) bool {
+	// check whether the goal node has been reached
+	if goal.Mark != graph.MarkTrue {
+		return false
+	}
+
+	// check whether slingshot is reachable if satchel is not
+	parents := prereq.Parents
+	prereq.ClearParents()
+	defer g.ExploreFromStart()
+	defer prereq.AddParents(parents...)
+	g.ClearMarks()
+	if goal.GetMark(goal, nil) == graph.MarkTrue {
+		return true
+	}
+	return false
 }

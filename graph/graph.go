@@ -100,3 +100,9 @@ func (g Graph) Explore(start map[*Node]bool, add []*Node) map[*Node]bool {
 
 	return reached
 }
+
+// ExploreFromStart calls explore without specific start and add nodes, instead
+// exploring the entirety of the existing graph.
+func (g Graph) ExploreFromStart() map[*Node]bool {
+	return g.Explore(nil, []*Node{g["horon village"]})
+}

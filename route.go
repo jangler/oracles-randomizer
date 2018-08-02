@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	maxIterations = 1000 // restart if routing runs for too long
+	maxIterations = 2000 // restart if routing runs for too long
 	maxTries      = 10   // give up if routing fails too many times
 )
 
@@ -27,6 +27,7 @@ type Route struct {
 // with the names in start functioning as givens (always satisfied).
 func NewRoute(start []string) *Route {
 	g := graph.New()
+
 	totalPrenodes := prenode.GetAll()
 
 	// make start nodes given
