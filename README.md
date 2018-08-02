@@ -59,14 +59,17 @@ complete a casual playthrough are shuffled, with some exceptions:
 - The ribbon and pirate's bell are not shuffled.
 
 **Items are only placed in locations where you would normally obtain another
-key item.**
+key item.** Speedrunners should note that the Subrosian dancing prize could be
+important.
 
 Seed trees are also shuffled, and the satchel and slingshot will start with the
 type of seeds on the tree in Horon Village. Remember that each type of seed
 (except for mystery seeds) only grows in one season, which may not always be
 the default season for the region the tree is in.
 
-Speedrunners should note that the Subrosian dancing prize could be important.
+Eastern commons (the area immediately east of Horon Village) defaults to spring
+instead of autumn in the randomizer, so that the flower can be used to get back
+up the normally one-way cliff from Natzu / Sunken City.
 
 
 ## Potentially useful goal/forbid nodes
