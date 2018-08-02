@@ -194,7 +194,6 @@ func IsNodeInSlice(node *Node, slice []*Node) bool {
 func addChild(child *Node, parents ...*Node) {
 	for _, parent := range parents {
 		parent.Children = append(parent.Children, child)
-		parent.Children = append(parent.Children, child)
 	}
 }
 
