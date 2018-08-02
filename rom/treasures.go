@@ -127,6 +127,8 @@ var Treasures = map[string]*Treasure{
 	"gale tree seeds 2":  &Treasure{id: 0x05},
 }
 
+var seedIndexByTreeID = []byte{0, 4, 1, 2, 3, 3}
+
 // reverse lookup the treasure name; returns empty string if not found. this
 // ignores fake seed treasures.
 func treasureNameFromIDs(id, subID byte) string {

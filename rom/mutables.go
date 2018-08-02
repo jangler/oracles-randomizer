@@ -334,21 +334,19 @@ var codeMutables = map[string]Mutable{
 	"get fools ore 1": MutableByte(Addr{0x14, 0x4111}, 0xe0, 0xf0),
 	"get fools ore 2": MutableByte(Addr{0x14, 0x4112}, 0x2e, 0xf0),
 	"get fools ore 3": MutableByte(Addr{0x14, 0x4113}, 0x5d, 0xf0),
-	// There are tables indicating extra items to "get" and "lose" upon getting an item.
-	// We remove the "lose fools ore" entry and insert a "get ember seeds from
-	// slingshot" entry.
-	"lose fools, get ember from slingshot 1": MutableRange{Addr{0x3f, 0x4543},
-		[]byte{0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51, 0x17, 0x1e, 0x00},
-		[]byte{0x13, 0x20, 0x20, 0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51}},
-	"lose fools, get ember from slingshot 2": MutableByte(Addr{0x3f, 0x44cf}, 0x44, 0x47),
+	// There are tables indicating extra items to "get" and "lose" upon getting
+	// an item. We remove the "lose fools ore" entry and insert a "get seeds
+	// from slingshot" entry.
+	"lose fools, get seeds from slingshot 1": MutableByte(Addr{0x3f, 0x4543}, 0x00, 0x13),
+	"lose fools, get seeds from slingshot 2": MutableRange{Addr{0x3f, 0x4545},
+		[]byte{0x45, 0x00, 0x52, 0x50, 0x51, 0x17, 0x1e, 0x00},
+		[]byte{0x20, 0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51}},
+	"lose fools, get seeds from slingshot 3": MutableByte(Addr{0x3f, 0x44cf}, 0x44, 0x47),
 	// since slingshot doesn't increment seed capacity, set the level-zero
 	// capacity of seeds to 20, and move the pointer up by one byte.
 	"satchel capacity": MutableRange{Addr{0x3f, 0x4617},
 		[]byte{0x20, 0x50, 0x99}, []byte{0x20, 0x20, 0x50}},
 	"satchel capacity pointer": MutableByte(Addr{0x3f, 0x460e}, 0x16, 0x17),
-	// and allow seed collection if you have a slingshot, by checking for ember
-	// seeds (which all seed items give) instead of satchel
-	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
@@ -397,6 +395,25 @@ var dataMutables = map[string]Mutable{
 		Old:  []byte{0x4e, 0x1a, 0x40},
 		New:  []byte{0x4e, 0x1a, 0x40},
 	},
+
+	// the satchel and slingshot should contain the type of seeds that grow on
+	// the horon village tree.
+	"satchel initial seeds":   MutableByte(Addr{0x3f, 0x453b}, 0x20, 0x20),
+	"slingshot initial seeds": MutableByte(Addr{0x3f, 0x4544}, 0x46, 0x20),
+
+	// the correct type of seed needs to be selected by default, otherwise the
+	// player may be unable to use seeds when they only have one type. there
+	// could also be serious problems with the submenu when they *do* obtain a
+	// second type if the selection isn't either of them.
+	//
+	// this works by overwriting a couple of unimportant bytes in file
+	// initialization.
+	"satchel initial selection":   MutableWord(Addr{0x07, 0x418e}, 0xa210, 0xbe00),
+	"slingshot initial selection": MutableWord(Addr{0x07, 0x419a}, 0x2e02, 0xbf00),
+
+	// allow seed collection if you have a slingshot, by checking for the given
+	// initial seed type
+	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
 }
 
 // get a collated map of all mutables

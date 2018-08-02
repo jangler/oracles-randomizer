@@ -34,6 +34,8 @@ func Mutate(b []byte) error {
 	setSceneGfx("noble sword spot", "master sword graphics")
 	setSceneGfx("d0 sword chest", "wooden sword graphics")
 
+	setInitialSeeds()
+
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
 	for _, m := range getAllMutables() {
@@ -87,5 +89,25 @@ func setSceneGfx(slotName, gfxName string) {
 		mut := dataMutables[gfxName].(MutableRange)
 		mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
 		dataMutables[gfxName] = mut
+	}
+}
+
+// set the initial satchel and slingshot seeds (and selections) based on what
+// grows on the horon village tree.
+func setInitialSeeds() {
+	seedIndex := seedIndexByTreeID[int(ItemSlots["ember tree"].Treasure.id)]
+
+	for _, name := range []string{"satchel initial seeds",
+		"slingshot initial seeds", "carry seeds in slingshot"} {
+		mut := dataMutables[name].(MutableRange)
+		mut.New[0] = 0x20 + seedIndex
+		dataMutables[name] = mut
+	}
+
+	for _, name := range []string{
+		"satchel initial selection", "slingshot initial selection"} {
+		mut := dataMutables[name].(MutableRange)
+		mut.New[1] = seedIndex
+		dataMutables[name] = mut
 	}
 }
