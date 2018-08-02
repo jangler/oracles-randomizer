@@ -36,8 +36,11 @@ the usage (`./oos-randomizer -h`) message:
         	if >= 0, maximum number of slotted items in the route (default -1)
 
 Note that some combinations of these flags can result in impossible conditions,
-like `-goal 'd1 essence' -forbid 'ember seeds'`. See further below for an
-abbreviated list of possible `-goal` and `-forbid` nodes.
+like `-goal 'd1 essence' -forbid 'ember seeds'`. If you specify an early goal,
+like `enter d3`, you'll probably want to use `-maxlen` or `-forbid` to make
+sure the game doesn't make the floodgate key, for instance, the D8 dungeon
+item. See further below for an abbreviated list of possible `-goal` and
+`-forbid` nodes.
 
 Regardless of the value of `-maxlen`, the randomizer will place items in all
 available slots. The flag just limits the number of slotted items that are
