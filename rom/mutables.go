@@ -341,6 +341,11 @@ var codeMutables = map[string]Mutable{
 		[]byte{0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51, 0x17, 0x1e, 0x00},
 		[]byte{0x13, 0x20, 0x20, 0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51}},
 	"lose fools, get ember from slingshot 2": MutableByte(Addr{0x3f, 0x44cf}, 0x44, 0x47),
+	// since slingshot doesn't increment seed capacity, set the level-zero
+	// capacity of seeds to 20, and move the pointer up by one byte.
+	"satchel capacity": MutableRange{Addr{0x3f, 0x4617},
+		[]byte{0x20, 0x50, 0x99}, []byte{0x20, 0x20, 0x50}},
+	"satchel capacity pointer": MutableByte(Addr{0x3f, 0x460e}, 0x16, 0x17),
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
