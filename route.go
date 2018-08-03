@@ -440,7 +440,7 @@ var seedSeasons = map[string]string{
 	"scent":   "spring",
 	"pegasus": "autumn",
 	"gale":    "summer",
-	"mystery": "all",
+	"mystery": "summer",
 }
 
 // ok, this is tricky. a seed should not be slotted if the player can't
@@ -452,9 +452,6 @@ var seedSeasons = map[string]string{
 func canReachInSeasonSeeds(g graph.Graph, reached map[*graph.Node]bool,
 	itemNode, slotNode *graph.Node) bool {
 	season := seedSeasons[itemNode.Name]
-	if season == "all" {
-		return true
-	}
 
 	switch slotNode.Name {
 	case "ember tree":
