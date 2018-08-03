@@ -390,7 +390,11 @@ def read_chest(buf, group, room):
             break
 
         if chest_room == room:
-            return list(lookup_entry(TREASURES, treasure_id, treasure_subid))
+            return {
+                "address": [bank, addr+2],
+                "treasure": list(lookup_entry(TREASURES,
+                    treasure_id, treasure_subid)),
+            }
 
         addr += 4
 
