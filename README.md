@@ -34,6 +34,8 @@ the usage (`./oos-randomizer -h`) message:
         	comma-separated list of nodes that must be reachable (default "done")
       -maxlen int
         	if >= 0, maximum number of slotted items in the route (default -1)
+      -update
+        	update randomized ROM to this version
 
 Note that some combinations of these flags can result in impossible conditions,
 like `-goal 'd1 essence' -forbid 'ember seeds'`. If you specify an early goal,

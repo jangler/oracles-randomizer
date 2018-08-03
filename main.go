@@ -33,6 +33,8 @@ func main() {
 		"if >= 0, maximum number of slotted items in the route")
 	flagDryrun := flag.Bool(
 		"dryrun", false, "don't write an output ROM file")
+	flagUpdate := flag.Bool(
+		"update", false, "update randomized ROM to this version")
 	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
 	flag.Parse()
 
@@ -89,18 +91,26 @@ func main() {
 			forbid = strings.Split(*flagForbid, ",")
 		}
 
-		summary := getSummaryChannel()
-
-		// randomize according to params
-		if errs := randomize(romData, flag.Arg(1), []string{"horon village"},
-			goal, forbid, *flagMaxlen, summary); errs != nil {
-			for _, err := range errs {
-				log.Print(err)
+		// randomize according to params, unless we're just updating
+		if *flagUpdate {
+			_, err := rom.Update(romData)
+			if err != nil {
+				log.Fatal(err)
 			}
-			os.Exit(1)
-		}
+		} else {
+			summary := getSummaryChannel()
 
-		close(summary)
+			if errs := randomize(romData, flag.Arg(1),
+				[]string{"horon village"}, goal, forbid,
+				*flagMaxlen, summary); errs != nil {
+				for _, err := range errs {
+					log.Print(err)
+				}
+				os.Exit(1)
+			}
+
+			close(summary)
+		}
 
 		// write to file unless it's a dry run
 		if !*flagDryrun {

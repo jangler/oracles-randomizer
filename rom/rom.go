@@ -50,6 +50,38 @@ func Mutate(b []byte) ([]byte, error) {
 	return outSum[:], nil
 }
 
+// Update changes the content of loaded ROM bytes, but does not re-randomize
+// any fields.
+func Update(b []byte) ([]byte, error) {
+	var err error
+	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
+
+	// change fixed mutables
+	for _, m := range codeMutables {
+		err = m.Mutate(b)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// change seed mechanics based on the ROM's existing tree information
+	emberTree := ItemSlots["ember tree"]
+	emberTree.Treasure.id = b[emberTree.IDAddrs[0].FullOffset()]
+	setInitialSeeds()
+	for _, name := range []string{"satchel initial seeds",
+		"slingshot initial seeds", "satchel initial selection",
+		"slingshot initial selection", "carry seeds in slingshot"} {
+		err = dataMutables[name].Mutate(b)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	outSum := sha1.Sum(b)
+	log.Printf("new bytes: sha-1 %x", outSum)
+	return outSum[:], nil
+}
+
 // Verify checks all the package's data against the ROM to see if it matches.
 // It returns a slice of errors describing each mismatch.
 func Verify(b []byte) []error {
