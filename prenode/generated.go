@@ -32,6 +32,7 @@ var generatedPrenodes = map[string]*Prenode{
 	"hide and seek":             &Prenode{Parents: []string{"hide and seek 1", "hide and seek 2", "hide and seek 3", "hide and seek 4"}, Type: 2},
 	"horon village":             &Prenode{Parents: []string{"horon village 1", "horon village 2", "horon village 3", "horon village 4", "horon village 5", "horon village 6"}, Type: 2},
 	"kill darknut (across pit)": &Prenode{Parents: []string{"kill darknut (across pit) 1", "kill darknut (across pit) 2"}, Type: 2},
+	"kill frypolar":             &Prenode{Parents: []string{"kill frypolar 1", "kill frypolar 2"}, Type:2},
 	"lake portal":               &Prenode{Parents: []string{"lake portal 1", "lake portal 2", "lake portal 3"}, Type: 2},
 	"mount cucco":               &Prenode{Parents: []string{"mount cucco 1", "mount cucco 2", "mount cucco 3"}, Type: 2},
 	"mountain portal":           &Prenode{Parents: []string{"mountain portal 1", "mountain portal 2"}, Type: 2},
