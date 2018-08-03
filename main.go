@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -31,7 +32,7 @@ func main() {
 	flagMaxlen := flag.Int("maxlen", -1,
 		"if >= 0, maximum number of slotted items in the route")
 	flagDryrun := flag.Bool(
-		"dryrun", false, "don't write an output file for any operation")
+		"dryrun", false, "don't write an output ROM file")
 	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
 	flag.Parse()
 
@@ -98,14 +99,18 @@ func main() {
 			forbid = strings.Split(*flagForbid, ",")
 		}
 
+		summary := getSummaryChannel()
+
 		// randomize according to params
 		if errs := randomize(romData, flag.Arg(1), []string{"horon village"},
-			goal, forbid, *flagMaxlen); errs != nil {
+			goal, forbid, *flagMaxlen, summary); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
 			os.Exit(1)
 		}
+
+		close(summary)
 
 		// write to file unless it's a dry run
 		if !*flagDryrun {
@@ -137,7 +142,7 @@ func readFileBytes(filename string) ([]byte, error) {
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
 func randomize(romData []byte, outFilename string,
-	start, goal, forbid []string, maxlen int) []error {
+	start, goal, forbid []string, maxlen int, summary chan string) []error {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
@@ -145,17 +150,40 @@ func randomize(romData []byte, outFilename string,
 
 	// find a viable random route
 	r := NewRoute(start)
-	usedItems, usedSlots := findRoute(r, start, goal, forbid, maxlen)
+	usedItems, unusedItems, usedSlots :=
+		findRoute(r, start, goal, forbid, maxlen, summary)
 
 	// place selected treasures in slots
-	for usedItems.Len() > 0 {
+	usedLines := make([]string, 0, usedSlots.Len())
+	for usedSlots.Len() > 0 {
 		slotName := usedSlots.Remove(usedSlots.Front()).(*graph.Node).Name
 		treasureName := usedItems.Remove(usedItems.Front()).(*graph.Node).Name
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
+
+		usedLines =
+			append(usedLines, fmt.Sprintf("%s <- %s", slotName, treasureName))
 	}
 
 	// do it! (but don't write anything)
-	rom.Mutate(romData)
+	checksum, err := rom.Mutate(romData)
+	if err != nil {
+		return []error{err}
+	}
+
+	// write info to summary file
+	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
+	summary <- ""
+	summary <- "used items, in order:"
+	summary <- ""
+	for _, usedLine := range usedLines {
+		summary <- usedLine
+	}
+	summary <- ""
+	summary <- "unused items:"
+	summary <- ""
+	for e := unusedItems.Front(); e != nil; e = e.Next() {
+		summary <- e.Value.(*graph.Node).Name
+	}
 
 	return nil
 }

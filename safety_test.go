@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"math/rand"
 	"testing"
 
@@ -13,96 +12,66 @@ func TestShovelLockCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
 
-	// make sure that needing a shovel in advance passes
-	// this route is via the swamp portal
-	g["shovel"].AddParents(g["d0 sword chest"])
-	g["bracelet"].AddParents(g["maku key fall"])
-	g["flippers"].AddParents(g["blaino gift"])
-	g["feather L-1"].AddParents(g["star ore spot"])
-	g["shovel gift"].GetMark(g["shovel gift"], nil)
-	if canShovelSoftlock(g) != nil {
-		t.Error("false positive shovel softlock w/ shovel prereq")
-	}
-	// and make sure the shovel's parents are unchanged
-	if len(g["shovel"].Parents) != 1 {
-		t.Fatal("shovel parents altered by safety check")
-	}
+	// make sure that getting there with a shovel does not error
+	checkSoftlockWithSlots(t, canShovelSoftlock, g,
+		map[string]string{
+			"sword L-1":        "d0 sword chest",
+			"satchel":          "maku key fall",
+			"ember tree seeds": "ember tree",
+			"feather L-1":      "boomerang gift",
+			"shovel":           "rod gift",
+			"rod":              "star ore spot",
+			"fool's ore":       "shovel gift",
+		}, "shovel gift", false)
 
-	// make sure that getting there with no shovel fails
-	// TODO this test might be broken. test whether it's broken
-	/*
-		g["shovel"].ClearParents()
-		g["bracelet"].ClearParents()
-		g["bracelet"].AddParents(g["d0 sword chest"])
-		g["feather L-1"].ClearParents()
-		g["feather L-1"].AddParents(g["maku key fall"])
-		g["sword L-1"].ClearParents()
-		g["sword L-1"].AddParents(g["shovel gift"])
-		g.ClearMarks()
-		g["shovel gift"].GetMark(g["shovel gift"], nil)
-		if canShovelSoftlock(g) == nil {
-			t.Error("false negative shovel softlock w/ no shovel")
-		}
-	*/
+	// make sure that getting a shovel there does not error
+	checkSoftlockWithSlots(t, canShovelSoftlock, g,
+		map[string]string{
+			"sword L-1":        "d0 sword chest",
+			"satchel":          "maku key fall",
+			"ember tree seeds": "ember tree",
+			"rod":              "rod gift",
+			"shovel":           "shovel gift",
+		}, "shovel gift", false)
 
-	// make sure that getting a shovel as the gift passes
-	g["shovel"].ClearParents()
-	g["shovel"].AddParents(g["shovel gift"])
-	g.ClearMarks()
-	g["shovel gift"].GetMark(g["shovel gift"], nil)
-	if canShovelSoftlock(g) != nil {
-		t.Error("false positive shovel softlock w/ shovel as gift")
-	}
-
-	// and make sure that getting there with an optional shovel fails
-	// TODO this test might also be broken. test whether it's broken
-	/*
-		g["shovel"].ClearParents()
-		g["shovel"].AddParents(g["boomerang gift"])
-		g.ClearMarks()
-		g["shovel gift"].GetMark(g["shovel gift"], nil)
-		if canShovelSoftlock(g) == nil {
-			t.Error("false negative shovel softlock w/ optional shovel")
-		}
-	*/
+	// and make sure that getting there with an optional shovel errors
+	checkSoftlockWithSlots(t, canShovelSoftlock, g,
+		map[string]string{
+			"sword L-1":        "d0 sword chest",
+			"satchel":          "maku key fall",
+			"ember tree seeds": "ember tree",
+			"rod":              "rod gift",
+			"fool's ore":       "shovel gift",
+			"shovel":           "boomerang gift",
+		}, "shovel gift", true)
 }
 
 func TestFeatherLockCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
 
-	// make sure that it doesn't detect softlock if you can't reach H&S
-	g["sword L-1"].AddParents(g["d0 sword chest"])
-	g["gnarled key"].AddParents(g["maku key fall"])
-	g["satchel"].AddParents(g["d1 satchel"])
-	g["hide and seek"].GetMark(g["hide and seek"], nil) // init marks for check
-	if canFeatherSoftlock(g) != nil {
-		t.Error("false positive feather softlock w/o reaching H&S")
-	}
+	// make sure reaching H&S with mandatory shovel does not error
+	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
+		map[string]string{
+			"bracelet":           "d0 sword chest",
+			"flippers":           "maku key fall",
+			"shovel":             "blaino gift",
+			"feather L-2":        "star ore spot",
+			"rod":                "rod gift",
+			"satchel":            "shovel gift",
+			"pegasus tree seeds": "ember tree",
+		}, "hide and seek", false)
 
-	// make sure that it detects softlock if you don't have shovel before H&S
-	// TODO this test is broken
-	g["bracelet"].AddParents(g["boomerang gift"])
-	g["feather L-2"].AddParents(g["blaino gift"])
-	l := list.New() // XXX checking that that previous test is legit
-	mark := g["hide and seek"].GetMark(g["hide and seek"], l)
-	if canFeatherSoftlock(g) == nil {
-		t.Log(mark)
-		for e := l.Front(); e != nil; e = e.Next() {
-			t.Log(e)
-		}
-		t.Error("false negative feather softlock")
-	}
-
-	// make sure that it doesn't detect softlock if you must have shovel first
-	g["feather L-2"].ClearParents()
-	g["shovel"].AddParents(g["blaino gift"])
-	g["feather L-2"].AddParents(g["d2 bracelet chest"])
-	g.ClearMarks()
-	g["hide and seek"].GetMark(g["hide and seek"], nil)
-	if canFeatherSoftlock(g) != nil {
-		t.Error("false positive feather softlock reaching H&S after shovel")
-	}
+	// make sure reaching H&S with optional shovel errors
+	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
+		map[string]string{
+			"bracelet":           "d0 sword chest",
+			"flippers":           "maku key fall",
+			"feather L-2":        "blaino gift",
+			"rod":                "rod gift",
+			"pegasus tree seeds": "ember tree",
+			"shovel":             "boomerang gift",
+		}, "hide and seek", true)
 }
 
 // helper function used for the other benchmarks
@@ -157,4 +126,43 @@ func BenchmarkCanFlowerSoftlock(b *testing.B) {
 
 func BenchmarkCanFeatherSoftlock(b *testing.B) {
 	benchGraphCheck(b, canFeatherSoftlock)
+}
+
+func BenchmarkCanEmberSeedSoftlock(b *testing.B) {
+	benchGraphCheck(b, canEmberSeedSoftlock)
+}
+
+func BenchmarkCanPiratesBellSoftlock(b *testing.B) {
+	benchGraphCheck(b, canPiratesBellSoftlock)
+}
+
+// the keys in the "parents" map MUST be root nodes. this function errors if
+// the target node cannot be reached (meaning the test setup is incorrect), or
+// if the target node can be reached with the children having the assigned
+// parents.
+func checkSoftlockWithSlots(t *testing.T, check func(g graph.Graph) error,
+	g graph.Graph, parents map[string]string, target string,
+	expectError bool) {
+	t.Helper()
+
+	// add parents at the start of the function, and remove them at the end
+	for child, parent := range parents {
+		g[child].AddParents(g[parent])
+	}
+	defer func() {
+		for child := range parents {
+			g[child].ClearParents()
+		}
+	}()
+	g.ExploreFromStart()
+
+	softlock := check(g)
+
+	if g[target].GetMark(g[target], nil) != graph.MarkTrue {
+		t.Errorf("test invalid: cannot reach %s", target)
+	} else if !expectError && softlock != nil {
+		t.Errorf("false positive %s softlock", target)
+	} else if expectError && softlock == nil {
+		t.Errorf("false negative %s softlock", target)
+	}
 }

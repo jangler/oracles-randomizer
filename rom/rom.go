@@ -27,23 +27,27 @@ func (a *Addr) FullOffset() int {
 	return bankOffset + int(a.Offset)
 }
 
-// Mutate changes the contents of loaded ROM bytes in place.
-func Mutate(b []byte) error {
+// Mutate changes the contents of loaded ROM bytes in place. It returns a
+// checksum of the result or an error.
+func Mutate(b []byte) ([]byte, error) {
 	setSceneGfx("rod gift", "rod graphics")
 	setSceneGfx("noble sword spot", "noble sword graphics")
 	setSceneGfx("noble sword spot", "master sword graphics")
 	setSceneGfx("d0 sword chest", "wooden sword graphics")
+
+	setInitialSeeds()
 
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
 	for _, m := range getAllMutables() {
 		err = m.Mutate(b)
 		if err != nil {
-			return err
+			return nil, err
 		}
 	}
-	log.Printf("new bytes: sha-1 %x", sha1.Sum(b))
-	return nil
+	outSum := sha1.Sum(b)
+	log.Printf("new bytes: sha-1 %x", outSum)
+	return outSum[:], nil
 }
 
 // Verify checks all the package's data against the ROM to see if it matches.
@@ -54,10 +58,9 @@ func Verify(b []byte) []error {
 	for k, m := range getAllMutables() {
 		switch k {
 		// special cases that will error normally
-		case "d0 sword chest", "maku key fall", "rod gift", "fool's ore",
-			"noble sword spot", "ember tree seeds", "mystery tree seeds",
-			"scent tree seeds", "pegasus tree seeds", "gale tree seeds 1",
-			"gale tree seeds 2":
+		case "maku key fall", "rod gift", "fool's ore", "noble sword spot",
+			"ember tree seeds", "mystery tree seeds", "scent tree seeds",
+			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
 			break
 		default:
 			if strings.HasSuffix(k, " ring") {
@@ -87,5 +90,25 @@ func setSceneGfx(slotName, gfxName string) {
 		mut := dataMutables[gfxName].(MutableRange)
 		mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
 		dataMutables[gfxName] = mut
+	}
+}
+
+// set the initial satchel and slingshot seeds (and selections) based on what
+// grows on the horon village tree.
+func setInitialSeeds() {
+	seedIndex := seedIndexByTreeID[int(ItemSlots["ember tree"].Treasure.id)]
+
+	for _, name := range []string{"satchel initial seeds",
+		"slingshot initial seeds", "carry seeds in slingshot"} {
+		mut := dataMutables[name].(MutableRange)
+		mut.New[0] = 0x20 + seedIndex
+		dataMutables[name] = mut
+	}
+
+	for _, name := range []string{
+		"satchel initial selection", "slingshot initial selection"} {
+		mut := dataMutables[name].(MutableRange)
+		mut.New[1] = seedIndex
+		dataMutables[name] = mut
 	}
 }

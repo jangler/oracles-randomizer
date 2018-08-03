@@ -1,11 +1,11 @@
 # Oracle of Seasons randomizer
 
 This program reads a Zelda: Oracle of Seasons ROM (probably JP version only; I
-haven't tested on EN/EU), shuffles the locations of key items, and writes the
-modified ROM to a new file. It also bypasses essence checks for overworld
-events that are necessary for progress, so the dungeons can be done in any
-order that the randomized items facilitate. However, you do have to collect all
-8 essences to get the Maku Seed and finish the game.
+haven't tested on EN/EU), shuffles the locations of key items and seeds, and
+writes the modified ROM to a new file. It also bypasses essence checks for
+overworld events that are necessary for progress, so the dungeons can be done
+in any order that the randomized items facilitate. However, you do have to
+collect all 8 essences to get the Maku Seed and finish the game.
 
 The randomizer is relatively new, so consider it "beta" for now. See the
 [issue tracker](https://github.com/jangler/oos-randomizer/issues) for known
@@ -62,12 +62,17 @@ complete a casual playthrough are shuffled, with some exceptions:
 - The ribbon and pirate's bell are not shuffled (but the rusty bell is).
 
 **Items are only placed in locations where you would normally obtain another
-key item.**
+key item.** Speedrunners should note that the Subrosian dancing prize could be
+important.
 
-Sometimes useful rings (primarily the fist/expert's rings) are placed in slots
-instead of normal items.
+Seed trees are also shuffled, and the satchel and slingshot will start with the
+type of seeds on the tree in Horon Village. Remember that each type of seed
+(except for mystery seeds) only grows in one season, which may not always be
+the default season for the region the tree is in.
 
-Speedrunners should note that the Subrosian dancing prize could be important.
+Eastern commons (the area immediately east of Horon Village) defaults to spring
+instead of autumn in the randomizer, so that the flower can be used to get back
+up the normally one-way cliff from Natzu / Sunken City.
 
 
 ## Potentially useful goal/forbid nodes

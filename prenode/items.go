@@ -1,18 +1,7 @@
 package prenode
 
-// these are items that can be shuffled around in the route as OR nodes
-//
-// OR nodes without parents are false. if these are given parents (i.e. a
-// chest/gift/whatever node), then they can become a valid part of the
-// route
+// these are items that can be shuffled around in the route as root nodes
 var baseItemPrenodes = map[string]*Prenode{
-	// ring box L-1 is free, but these nodes are "find" because it costs
-	// rupees to appraise (and therefore use) rings
-	"find fist ring":     Root(),
-	"find expert's ring": Root(),
-	"find energy ring":   Root(),
-	"find toss ring":     Root(),
-
 	// shield, bombs, and flute can be bought
 	"sword L-1":       Root(),
 	"gnarled key":     Root(),
@@ -60,6 +49,15 @@ var ignoredBaseItemPrenodes = map[string]*Prenode{
 }
 
 var itemPrenodes = map[string]*Prenode{
+	// ring box L-1 is free, but these nodes are "find" because it costs
+	// rupees to appraise (and therefore use) rings
+	//
+	// XXX temporarily disable these; see note in rom/treasures.go
+	"find fist ring":     Or(),
+	"find expert's ring": Or(),
+	"find energy ring":   Or(),
+	"find toss ring":     Or(),
+
 	"harvest ember seeds":   And("ember tree seeds", "seed item", "harvest item"),
 	"harvest mystery seeds": And("mystery tree seeds", "seed item", "harvest item"),
 	"harvest scent seeds":   And("scent tree seeds", "seed item", "harvest item"),

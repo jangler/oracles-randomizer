@@ -112,10 +112,11 @@ func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func findRoute(r *Route, start, goal, forbid []string,
-	maxlen int) (usedItems, usedSlots *list.List) {
+func findRoute(r *Route, start, goal, forbid []string, maxlen int,
+	summary chan string) (usedItems, itemList, usedSlots *list.List) {
 	// make stacks out of the item names and slot names for backtracking
-	itemList, slotList := initRouteLists(r)
+	var slotList *list.List
+	itemList, slotList = initRouteLists(r)
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
@@ -222,11 +223,13 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(
 				g, reached, itemNode, slotNode, jewelChecked, fillUnused)
-			log.Print("trying slot " + slotNode.Name)
-			if !skip && tryExploreTargets(
-				g, reached, []*graph.Node{itemNode}, goal, forbid, maxlen-1,
-				iteration, itemList, usedItems, slotList, usedSlots) {
-				return true
+			if !skip {
+				log.Print("trying slot " + slotNode.Name)
+				if tryExploreTargets(g, reached, []*graph.Node{itemNode}, goal,
+					forbid, maxlen-1, iteration, itemList, usedItems, slotList,
+					usedSlots) {
+					return true
+				}
 			}
 
 			// item didn't work; unslot it and pop it onto the front of the
@@ -437,7 +440,7 @@ var seedSeasons = map[string]string{
 	"scent":   "spring",
 	"pegasus": "autumn",
 	"gale":    "summer",
-	"mystery": "all",
+	"mystery": "summer",
 }
 
 // ok, this is tricky. a seed should not be slotted if the player can't
@@ -449,9 +452,6 @@ var seedSeasons = map[string]string{
 func canReachInSeasonSeeds(g graph.Graph, reached map[*graph.Node]bool,
 	itemNode, slotNode *graph.Node) bool {
 	season := seedSeasons[itemNode.Name]
-	if season == "all" {
-		return true
-	}
 
 	switch slotNode.Name {
 	case "ember tree":
