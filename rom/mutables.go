@@ -59,8 +59,13 @@ func (mr MutableRange) Check(b []byte) error {
 type MutableSlot struct {
 	Treasure            *Treasure
 	IDAddrs, SubIDAddrs []Addr
-	SubIDOffset         byte // routine $16eb requires subID+1
 	CollectMode         byte
+
+	// TODO this is an incorrect model that happens to work for all currently
+	//      slotted items except for the rod. for now the rod can have special
+	//      logic, but this field really needs to be replaced with something
+	//      more accurate (see treasureCollectionBehaviourTable in ages-disasm)
+	SubIDOffset byte
 }
 
 // Mutate replaces the given IDs and subIDs in the given ROM data, and changes
@@ -70,7 +75,14 @@ func (ms MutableSlot) Mutate(b []byte) error {
 		b[addr.FullOffset()] = ms.Treasure.id
 	}
 	for _, addr := range ms.SubIDAddrs {
-		b[addr.FullOffset()] = ms.Treasure.subID + ms.SubIDOffset
+		// TODO see the comment on the SubIDOffset field of MutableSlot. for
+		//      now, the rod needs special logic so it doesn't set an obtained
+		//      season flag.
+		if ms.SubIDOffset != 0 && ms.Treasure.id == 0x07 {
+			b[addr.FullOffset()] = 0x07
+		} else {
+			b[addr.FullOffset()] = ms.Treasure.subID + ms.SubIDOffset
+		}
 	}
 	ms.Treasure.mode = ms.CollectMode
 	return ms.Treasure.Mutate(b)
@@ -85,9 +97,10 @@ func (ms MutableSlot) Check(b []byte) error {
 		}
 	}
 	for _, addr := range ms.SubIDAddrs {
-		if b[addr.FullOffset()] != ms.Treasure.subID {
+		if b[addr.FullOffset()] != ms.Treasure.subID+ms.SubIDOffset {
 			return fmt.Errorf("expected %x at %x; found %x",
-				ms.Treasure.subID, addr.FullOffset(), b[addr.FullOffset()])
+				ms.Treasure.subID+ms.SubIDOffset, addr.FullOffset(),
+				b[addr.FullOffset()])
 		}
 	}
 	if ms.CollectMode != ms.Treasure.mode {
