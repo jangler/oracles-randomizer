@@ -38,16 +38,6 @@ func main() {
 
 	// perform given command (or default, randomize)
 	switch *flagDevcmd {
-	case "checkgraph":
-		checkNumArgs(*flagDevcmd, 0)
-
-		// check for orphan/childless nodes
-		r := NewRoute([]string{"horon village"})
-		if errs := r.CheckGraph(); errs != nil {
-			for _, err := range errs {
-				log.Print(err)
-			}
-		}
 	case "pregen":
 		// auto-generate some graph nodes
 		checkNumArgs(*flagDevcmd, 1)

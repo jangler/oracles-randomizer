@@ -43,20 +43,21 @@ var baseItemPrenodes = map[string]*Prenode{
 	// "bombchus": Root(),
 }
 
-// don't slot these for now; they don't satisfy anything
+// don't slot these for now; they don't satisfy anything or cause problems
 var ignoredBaseItemPrenodes = map[string]*Prenode{
-	"ring box L-2": Root(),
-}
+	// "ring box L-2": Root(),
 
-var itemPrenodes = map[string]*Prenode{
 	// ring box L-1 is free, but these nodes are "find" because it costs
 	// rupees to appraise (and therefore use) rings
 	//
 	// XXX temporarily disable these; see note in rom/treasures.go
-	"find fist ring":     Or(),
-	"find expert's ring": Or(),
-	"find energy ring":   Or(),
-	"find toss ring":     Or(),
+	"find fist ring":     Root(),
+	"find expert's ring": Root(),
+	"find energy ring":   Root(),
+	"find toss ring":     Root(),
+}
+
+var itemPrenodes = map[string]*Prenode{
 
 	"harvest ember seeds":   And("ember tree seeds", "seed item", "harvest item"),
 	"harvest mystery seeds": And("mystery tree seeds", "seed item", "harvest item"),
@@ -116,7 +117,7 @@ var itemPrenodes = map[string]*Prenode{
 	"flute":         OrStep("strange flute", "animal flute"),
 
 	"shield L-1": Or("rupees"),
-	"shield L-2": Or(), // TODO as if it matters
+	"shield L-2": Root(), // TODO as if it matters
 
 	"sword":     Or("sword L-1", "sword L-2"),
 	"shield":    Or("shield L-1", "shield L-2"),

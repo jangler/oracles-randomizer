@@ -2,7 +2,6 @@ package main
 
 import (
 	"container/list"
-	"fmt"
 	"log"
 	"math/rand"
 	"strings"
@@ -47,42 +46,6 @@ func NewRoute(start []string) *Route {
 	}
 
 	return &Route{Graph: g, Slots: openSlots}
-}
-
-// CheckGraph returns an error for each orphan and childless node in the graph,
-// ignoring nodes which are *supposed* to be orphans or childless. If there are
-// no errors, it returns nil.
-func (r *Route) CheckGraph() []error {
-	var errs []error
-
-	for name, node := range r.Graph {
-		// check for parents and children
-		if len(node.Parents) == 0 {
-			// root nodes are supposed to be parentless
-			if node.Type == graph.RootType {
-				// it's supposed to be orphan/childless; skip it
-				continue
-			}
-
-			if errs == nil {
-				errs = make([]error, 0)
-			}
-			errs = append(errs, fmt.Errorf("orphan node: %s", name))
-		}
-		if len(node.Children) == 0 {
-			// item slots are supposed to be childless
-			if r.Slots[name] != nil {
-				continue
-			}
-
-			if errs == nil {
-				errs = make([]error, 0)
-			}
-			errs = append(errs, fmt.Errorf("childless node: %s", name))
-		}
-	}
-
-	return errs
 }
 
 func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode) {
