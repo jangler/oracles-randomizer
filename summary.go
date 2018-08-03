@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-const version = "1.1.0"
+const version = "1.2.0"
 
 // returns a channel that will write strings to a text file with CRLF line
 // endings.
