@@ -19,3 +19,7 @@ GOOS=linux GOARCH=amd64 go build
 apack "dist/$version/$appname"_linux64_"$version.zip" "$appname" README.txt
 
 rm README.txt
+
+echo "============================="
+echo "MAKE SURE TO UPDATE VERSION!!"
+echo "============================="
