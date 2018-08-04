@@ -35,7 +35,7 @@ func Mutate(b []byte) ([]byte, error) {
 	setSceneGfx("noble sword spot", "master sword graphics")
 	setSceneGfx("d0 sword chest", "wooden sword graphics")
 
-	setInitialSeeds()
+	setSeedData()
 
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
@@ -65,12 +65,17 @@ func Update(b []byte) ([]byte, error) {
 	}
 
 	// change seed mechanics based on the ROM's existing tree information
-	emberTree := ItemSlots["ember tree"]
-	emberTree.Treasure.id = b[emberTree.IDAddrs[0].FullOffset()]
-	setInitialSeeds()
+	for _, name := range []string{"ember tree", "scent tree", "mystery tree",
+		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
+		ItemSlots[name].Treasure.id = b[ItemSlots[name].IDAddrs[0].FullOffset()]
+	}
+	setSeedData()
 	for _, name := range []string{"satchel initial seeds",
 		"slingshot initial seeds", "satchel initial selection",
-		"slingshot initial selection", "carry seeds in slingshot"} {
+		"slingshot initial selection", "carry seeds in slingshot",
+		"ember tree map icon", "scent tree map icon", "mystery tree map icon",
+		"pegasus tree map icon", "sunken gale tree map icon",
+		"tarm gale tree map icon"} {
 		err = dataMutables[name].Mutate(b)
 		if err != nil {
 			return nil, err
@@ -126,8 +131,9 @@ func setSceneGfx(slotName, gfxName string) {
 }
 
 // set the initial satchel and slingshot seeds (and selections) based on what
-// grows on the horon village tree.
-func setInitialSeeds() {
+// grows on the horon village tree, and set the map icon for each tree to match
+// the seed type.
+func setSeedData() {
 	seedIndex := seedIndexByTreeID[int(ItemSlots["ember tree"].Treasure.id)]
 
 	for _, name := range []string{"satchel initial seeds",
@@ -141,6 +147,15 @@ func setInitialSeeds() {
 		"satchel initial selection", "slingshot initial selection"} {
 		mut := dataMutables[name].(MutableRange)
 		mut.New[1] = seedIndex
+		dataMutables[name] = mut
+	}
+
+	for _, name := range []string{"ember tree map icon", "scent tree map icon",
+		"mystery tree map icon", "pegasus tree map icon",
+		"sunken gale tree map icon", "tarm gale tree map icon"} {
+		mut := dataMutables[name].(MutableRange)
+		id := ItemSlots[strings.Replace(name, " map icon", "", 1)].Treasure.id
+		mut.New[0] = mapIconByTreeID[int(id)]
 		dataMutables[name] = mut
 	}
 }

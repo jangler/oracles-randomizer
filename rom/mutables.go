@@ -385,9 +385,19 @@ var codeMutables = map[string]Mutable{
 	"cliff default season": MutableByte(Addr{0x01, 0x7e43}, 0x02, 0x00),
 }
 
+var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
+
 // like the item slots, these are unchanged by default until the randomizer
 // touches them.
 var dataMutables = map[string]Mutable{
+	// map pop-up icons for seed trees
+	"tarm gale tree map icon":   MutableByte(Addr{0x02, 0x6cb3}, 0x18, 0x18),
+	"sunken gale tree map icon": MutableByte(Addr{0x02, 0x6cb6}, 0x18, 0x18),
+	"scent tree map icon":       MutableByte(Addr{0x02, 0x6cb9}, 0x16, 0x16),
+	"pegasus tree map icon":     MutableByte(Addr{0x02, 0x6cbc}, 0x17, 0x17),
+	"mystery tree map icon":     MutableByte(Addr{0x02, 0x6cbf}, 0x19, 0x19),
+	"ember tree map icon":       MutableByte(Addr{0x02, 0x6cc2}, 0x15, 0x15),
+
 	// these scenes use specific item sprites not tied to treasure data
 	"wooden sword graphics": MutableRange{
 		Addr: Addr{0x3f, 0x65f4},
