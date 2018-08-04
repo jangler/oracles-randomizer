@@ -70,7 +70,8 @@ important.
 Seed trees are also shuffled, and the satchel and slingshot will start with the
 type of seeds on the tree in Horon Village. Remember that each type of seed
 (except for mystery seeds) only grows in one season, which may not always be
-the default season for the region the tree is in.
+the default season for the region the tree is in. You can check the map icon
+for a tree to see what kind of seeds it grows.
 
 Eastern commons (the area immediately east of Horon Village) defaults to spring
 instead of autumn in the randomizer, so that the flower can be used to get back
