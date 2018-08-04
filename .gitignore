@@ -1,3 +1,6 @@
 oos-randomizer
-experimental/
+dist/
 gbc/
+*.out
+*.prof
+*log*.txt
