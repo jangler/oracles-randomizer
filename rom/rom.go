@@ -45,6 +45,7 @@ func Mutate(b []byte) ([]byte, error) {
 			return nil, err
 		}
 	}
+
 	outSum := sha1.Sum(b)
 	log.Printf("new bytes: sha-1 %x", outSum)
 	return outSum[:], nil
@@ -124,9 +125,8 @@ func setSceneGfx(slotName, gfxName string) {
 		log.Fatalf("fatal: no %s for %s (%02x%02x)",
 			gfxName, itemName, treasure.id, treasure.subID)
 	} else {
-		mut := dataMutables[gfxName].(MutableRange)
+		mut := dataMutables[gfxName].(*MutableRange)
 		mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
-		dataMutables[gfxName] = mut
 	}
 }
 
@@ -138,24 +138,21 @@ func setSeedData() {
 
 	for _, name := range []string{"satchel initial seeds",
 		"slingshot initial seeds", "carry seeds in slingshot"} {
-		mut := dataMutables[name].(MutableRange)
+		mut := dataMutables[name].(*MutableRange)
 		mut.New[0] = 0x20 + seedIndex
-		dataMutables[name] = mut
 	}
 
 	for _, name := range []string{
 		"satchel initial selection", "slingshot initial selection"} {
-		mut := dataMutables[name].(MutableRange)
+		mut := dataMutables[name].(*MutableRange)
 		mut.New[1] = seedIndex
-		dataMutables[name] = mut
 	}
 
 	for _, name := range []string{"ember tree map icon", "scent tree map icon",
 		"mystery tree map icon", "pegasus tree map icon",
 		"sunken gale tree map icon", "tarm gale tree map icon"} {
-		mut := dataMutables[name].(MutableRange)
+		mut := dataMutables[name].(*MutableRange)
 		id := ItemSlots[strings.Replace(name, " map icon", "", 1)].Treasure.id
 		mut.New[0] = mapIconByTreeID[int(id)]
-		dataMutables[name] = mut
 	}
 }

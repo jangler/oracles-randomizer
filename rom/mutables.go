@@ -19,14 +19,14 @@ type MutableRange struct {
 
 // MutableByte returns a special case of MutableRange with a range of a single
 // byte.
-func MutableByte(addr Addr, old, new byte) MutableRange {
-	return MutableRange{Addr: addr, Old: []byte{old}, New: []byte{new}}
+func MutableByte(addr Addr, old, new byte) *MutableRange {
+	return &MutableRange{Addr: addr, Old: []byte{old}, New: []byte{new}}
 }
 
 // MutableWord returns a special case of MutableRange with a range of a two
 // bytes.
-func MutableWord(addr Addr, old, new uint16) MutableRange {
-	return MutableRange{
+func MutableWord(addr Addr, old, new uint16) *MutableRange {
+	return &MutableRange{
 		Addr: addr,
 		Old:  []byte{byte(old >> 8), byte(old)},
 		New:  []byte{byte(new >> 8), byte(new)},
@@ -34,7 +34,7 @@ func MutableWord(addr Addr, old, new uint16) MutableRange {
 }
 
 // Mutate replaces bytes in its range.
-func (mr MutableRange) Mutate(b []byte) error {
+func (mr *MutableRange) Mutate(b []byte) error {
 	addr := mr.Addr.FullOffset()
 	for i, value := range mr.New {
 		b[addr+i] = value
@@ -43,7 +43,7 @@ func (mr MutableRange) Mutate(b []byte) error {
 }
 
 // Check verifies that the range matches the given ROM data.
-func (mr MutableRange) Check(b []byte) error {
+func (mr *MutableRange) Check(b []byte) error {
 	addr := mr.Addr.FullOffset()
 	for i, value := range mr.Old {
 		if b[addr+i] != value {
@@ -70,7 +70,7 @@ type MutableSlot struct {
 
 // Mutate replaces the given IDs and subIDs in the given ROM data, and changes
 // the associated treasure's collection mode as appropriate.
-func (ms MutableSlot) Mutate(b []byte) error {
+func (ms *MutableSlot) Mutate(b []byte) error {
 	for _, addr := range ms.IDAddrs {
 		b[addr.FullOffset()] = ms.Treasure.id
 	}
@@ -89,7 +89,7 @@ func (ms MutableSlot) Mutate(b []byte) error {
 }
 
 // Check verifies that the slot's data matches the given ROM data.
-func (ms MutableSlot) Check(b []byte) error {
+func (ms *MutableSlot) Check(b []byte) error {
 	for _, addr := range ms.IDAddrs {
 		if b[addr.FullOffset()] != ms.Treasure.id {
 			return fmt.Errorf("expected %x at %x; found %x",
@@ -352,13 +352,13 @@ var codeMutables = map[string]Mutable{
 	// an item. We remove the "lose fools ore" entry and insert a "get seeds
 	// from slingshot" entry.
 	"lose fools, get seeds from slingshot 1": MutableByte(Addr{0x3f, 0x4543}, 0x00, 0x13),
-	"lose fools, get seeds from slingshot 2": MutableRange{Addr{0x3f, 0x4545},
+	"lose fools, get seeds from slingshot 2": &MutableRange{Addr{0x3f, 0x4545},
 		[]byte{0x45, 0x00, 0x52, 0x50, 0x51, 0x17, 0x1e, 0x00},
 		[]byte{0x20, 0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51}},
 	"lose fools, get seeds from slingshot 3": MutableByte(Addr{0x3f, 0x44cf}, 0x44, 0x47),
 	// since slingshot doesn't increment seed capacity, set the level-zero
 	// capacity of seeds to 20, and move the pointer up by one byte.
-	"satchel capacity": MutableRange{Addr{0x3f, 0x4617},
+	"satchel capacity": &MutableRange{Addr{0x3f, 0x4617},
 		[]byte{0x20, 0x50, 0x99}, []byte{0x20, 0x20, 0x50}},
 	"satchel capacity pointer": MutableByte(Addr{0x3f, 0x460e}, 0x16, 0x17),
 
@@ -399,22 +399,22 @@ var dataMutables = map[string]Mutable{
 	"ember tree map icon":       MutableByte(Addr{0x02, 0x6cc2}, 0x15, 0x15),
 
 	// these scenes use specific item sprites not tied to treasure data
-	"wooden sword graphics": MutableRange{
+	"wooden sword graphics": &MutableRange{
 		Addr: Addr{0x3f, 0x65f4},
 		Old:  []byte{0x60, 0x00, 0x00},
 		New:  []byte{0x60, 0x00, 0x00},
 	},
-	"rod graphics": MutableRange{
+	"rod graphics": &MutableRange{
 		Addr: Addr{0x3f, 0x6ba3},
 		Old:  []byte{0x60, 0x10, 0x21},
 		New:  []byte{0x60, 0x10, 0x21},
 	},
-	"noble sword graphics": MutableRange{
+	"noble sword graphics": &MutableRange{
 		Addr: Addr{0x3f, 0x6975},
 		Old:  []byte{0x4e, 0x1a, 0x50},
 		New:  []byte{0x4e, 0x1a, 0x50},
 	},
-	"master sword graphics": MutableRange{
+	"master sword graphics": &MutableRange{
 		Addr: Addr{0x3f, 0x6978},
 		Old:  []byte{0x4e, 0x1a, 0x40},
 		New:  []byte{0x4e, 0x1a, 0x40},
