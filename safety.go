@@ -11,7 +11,6 @@ import (
 
 // these are ordered, roughly, from least to most costly to check
 var softlockChecks = [](func(graph.Graph) error){
-	canShovelSoftlock,
 	canFlowerSoftlock,
 	canFeatherSoftlock,
 	canEmberSeedSoftlock,
@@ -25,29 +24,6 @@ func canSoftlock(g graph.Graph) error {
 			return err
 		}
 	}
-	return nil
-}
-
-// make sure you can't reach the shovel gift without either having a shovel
-// already or getting a shovel there, *if* the shovel gift has been assigned
-// yet.
-func canShovelSoftlock(g graph.Graph) error {
-	// first check if the gift has been reached
-	gift := g["shovel gift"]
-	if gift.Mark != graph.MarkTrue {
-		return nil
-	}
-
-	// if the slot hasn't been assigned yet or it *is* the shovel, it's fine
-	shovel := g["shovel"]
-	if len(gift.Children) > 0 &&
-		!graph.IsNodeInSlice(gift, shovel.Parents) {
-		// check whether gift is reachable if shovel is unreachable
-		if canReachWithoutPrereq(g, gift, shovel) {
-			return errors.New("shovel softlock")
-		}
-	}
-
 	return nil
 }
 

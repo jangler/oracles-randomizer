@@ -8,44 +8,6 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
-func TestShovelLockCheck(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
-	g := r.Graph
-
-	// make sure that getting there with a shovel does not error
-	checkSoftlockWithSlots(t, canShovelSoftlock, g,
-		map[string]string{
-			"sword L-1":        "d0 sword chest",
-			"satchel":          "maku key fall",
-			"ember tree seeds": "ember tree",
-			"feather L-1":      "boomerang gift",
-			"shovel":           "rod gift",
-			"rod":              "star ore spot",
-			"fool's ore":       "shovel gift",
-		}, "shovel gift", false)
-
-	// make sure that getting a shovel there does not error
-	checkSoftlockWithSlots(t, canShovelSoftlock, g,
-		map[string]string{
-			"sword L-1":        "d0 sword chest",
-			"satchel":          "maku key fall",
-			"ember tree seeds": "ember tree",
-			"rod":              "rod gift",
-			"shovel":           "shovel gift",
-		}, "shovel gift", false)
-
-	// and make sure that getting there with an optional shovel errors
-	checkSoftlockWithSlots(t, canShovelSoftlock, g,
-		map[string]string{
-			"sword L-1":        "d0 sword chest",
-			"satchel":          "maku key fall",
-			"ember tree seeds": "ember tree",
-			"rod":              "rod gift",
-			"fool's ore":       "shovel gift",
-			"shovel":           "boomerang gift",
-		}, "shovel gift", true)
-}
-
 func TestFeatherLockCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
@@ -114,10 +76,6 @@ func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 
 func BenchmarkCanSoftlock(b *testing.B) {
 	benchGraphCheck(b, canSoftlock)
-}
-
-func BenchmarkCanShovelSoftlock(b *testing.B) {
-	benchGraphCheck(b, canShovelSoftlock)
 }
 
 func BenchmarkCanFlowerSoftlock(b *testing.B) {
