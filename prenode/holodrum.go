@@ -3,7 +3,6 @@ package prenode
 // overworld route logic
 
 // portal parents are defined here since they're mostly overworld nodes
-// see subrosia.go for the note about "remove stuck bush"
 
 var portalPrenodes = map[string]*Prenode{
 	"rosa portal in":         And("sokra stump", "remove bush"),
@@ -42,9 +41,6 @@ var portalPrenodes = map[string]*Prenode{
 	// dead end
 	"d8 portal 1": And("remains portal", "bombs", "summer", "long jump", "magnet gloves"),
 	"d8 portal 2": And("remains portal", "bombs", "summer", "pegasus jump L-2"),
-
-	// this is strictly for softlock checking; see safety.go
-	"remove stuck bush": Or("sword", "boomerang L-2", "bracelet"),
 }
 
 var holodrumPrenodes = map[string]*Prenode{

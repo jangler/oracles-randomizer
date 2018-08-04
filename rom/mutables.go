@@ -331,7 +331,6 @@ var constMutables = map[string]Mutable{
 
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68}, 0xcb, 0xf6),
-	"rosa spawn check":          MutableByte(Addr{0x09, 0x678c}, 0x40, 0x02),
 	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e36}, 0xcb, 0xf6),
 	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e4c}, 0x2e, 0x04),
 	"master essence check 1":    MutableByte(Addr{0x0a, 0x4bf5}, 0x02, 0x00),
@@ -341,6 +340,12 @@ var constMutables = map[string]Mutable{
 	"pirate essence check":      MutableByte(Addr{0x08, 0x6c32}, 0x20, 0x00),
 	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
 	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
+
+	// stop rosa from spawning and activate her portal by default. the first is
+	// an essence check and the second is an edit to tile replacement data.
+	"rosa spawn check": MutableByte(Addr{0x09, 0x678c}, 0x40, 0x04),
+	"activate rosa portal": &MutableRange{Addr{0x04, 0x6016},
+		[]byte{0x40, 0x33, 0xc5}, []byte{0x10, 0x33, 0xe6}},
 
 	// count number of essences, not highest number essence
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7d8d}, 0xea, 0x76),
