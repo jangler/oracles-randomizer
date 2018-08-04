@@ -383,6 +383,11 @@ var codeMutables = map[string]Mutable{
 	// for that area is just going to be spring, so that you can use the flower
 	// to get back up.
 	"cliff default season": MutableByte(Addr{0x01, 0x7e43}, 0x02, 0x00),
+
+	// remove the snow piles in front of the shovel house so that shovel isn't
+	// required not to softlock there (it's still required not to softlock in
+	// hide and seek 2)
+	"remove snow piles": MutableByte(Addr{0x24, 0x5dfe}, 0xd9, 0x04),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
