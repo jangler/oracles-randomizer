@@ -310,7 +310,9 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 }
 
-var codeMutables = map[string]Mutable{
+// consider these mutables constants; they aren't changed in the randomization
+// process.
+var constMutables = map[string]Mutable{
 	// have maku gate open from start
 	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
 
@@ -387,9 +389,9 @@ var codeMutables = map[string]Mutable{
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
 
-// like the item slots, these are unchanged by default until the randomizer
-// touches them.
-var dataMutables = map[string]Mutable{
+// like the item slots, these are (usually) no-ops until the randomizer touches
+// them.
+var varMutables = map[string]Mutable{
 	// map pop-up icons for seed trees
 	"tarm gale tree map icon":   MutableByte(Addr{0x02, 0x6cb3}, 0x18, 0x18),
 	"sunken gale tree map icon": MutableByte(Addr{0x02, 0x6cb6}, 0x18, 0x18),
@@ -452,10 +454,10 @@ func getAllMutables() map[string]Mutable {
 	}
 
 	mutableSets := []map[string]Mutable{
-		codeMutables,
+		constMutables,
 		treasureMutables,
 		slotMutables,
-		dataMutables,
+		varMutables,
 	}
 
 	// initialize master map w/ adequate capacity
