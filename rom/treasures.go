@@ -44,6 +44,11 @@ func (t Treasure) Bytes() []byte {
 
 // Mutate replaces the associated treasure in the given ROM data with this one.
 func (t Treasure) Mutate(b []byte) error {
+	// fake treasure
+	if t.addr == 0 {
+		return nil
+	}
+
 	addr, data := t.RealAddr(), t.Bytes()
 	for i := 0; i < 4; i++ {
 		b[addr+i] = data[i]
