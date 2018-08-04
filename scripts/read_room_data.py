@@ -100,7 +100,9 @@ ENTITIES = {
     0x53: ("dragonfly", {}),
     0x59: ("fixed drop", {
         0x00: "fairy",
+        0x04: "bombs",
         0x05: "ember seeds",
+        0x09: "mystery seeds",
     }),
     0x5a: ("seed tree", {
         0x00: "ember",
@@ -512,8 +514,7 @@ elif args.action == "searchobjects":
                 if obj["mode"] == mode and obj["variety"][0] == obj_id:
                     if obj_subid is None or obj["variety"][1] == obj_subid:
                         full_obj = {
-                            "group": group,
-                            "room": room,
+                            "location": [group, room],
                             "music": read_music(rom, group, room),
                         }
                         full_obj.update(obj)
