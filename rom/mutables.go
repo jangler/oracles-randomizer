@@ -388,6 +388,12 @@ var codeMutables = map[string]Mutable{
 	// required not to softlock there (it's still required not to softlock in
 	// hide and seek 2)
 	"remove snow piles": MutableByte(Addr{0x24, 0x5dfe}, 0xd9, 0x04),
+
+	// restrict the area triggering sokra to talk to link in horon village to
+	// the left side of the burnable trees (prevents softlock)
+	"resize sokra trigger": &MutableRange{Addr{0x08, 0x5ba5},
+		[]byte{0xfa, 0x0b, 0xd0, 0xfe, 0x3c, 0xd8, 0xfe, 0x60, 0xd0},
+		[]byte{0xfe, 0x88, 0xd0, 0xfa, 0x0b, 0xd0, 0xfe, 0x3c, 0xd8}},
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
