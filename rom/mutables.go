@@ -342,10 +342,15 @@ var constMutables = map[string]Mutable{
 	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
 
 	// stop rosa from spawning and activate her portal by default. the first is
-	// an essence check and the second is an edit to tile replacement data.
+	// an essence check and the second is an edit to tile replacement data. the
+	// *third* sets the room to explored before loading its tile replacement
+	// data, which ordinarily happens during normal screen transitions but not
+	// portal ones.
 	"rosa spawn check": MutableByte(Addr{0x09, 0x678c}, 0x40, 0x04),
 	"activate rosa portal": &MutableRange{Addr{0x04, 0x6016},
 		[]byte{0x40, 0x33, 0xc5}, []byte{0x10, 0x33, 0xe6}},
+	"set explored before load": &MutableRange{Addr{0x04, 0x5fdf},
+		[]byte{0x55, 0x19, 0x4f}, []byte{0x23, 0x2d, 0x4e}},
 
 	// count number of essences, not highest number essence
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7d8d}, 0xea, 0x76),
