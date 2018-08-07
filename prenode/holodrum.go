@@ -125,7 +125,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"spring banana tree":    AndSlot("spring banana cucco", "spring", "jump", "banana harvest item"),
 	"moosh":                 And("mount cucco", "spring banana"),
 	"dragon key cross 1":    And("mount cucco", "moosh"),
-	"dragon key cross 2":    And("mount cucco", "pegasus jump L-2"),
+	"dragon key cross 2":    And("mount cucco", "feather L-2"),
 	"dragon key spot":       AndSlot("dragon key cross"), // wraps generated node
 	"mario cave":            And("mount cucco", "spring"),
 	"dragon keyhole":        And("mario cave", "winter", "jump", "bracelet"),
