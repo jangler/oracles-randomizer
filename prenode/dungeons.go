@@ -254,18 +254,18 @@ var d6Prenodes = map[string]*Prenode{
 var d7Prenodes = map[string]*Prenode{
 	// 1F
 	"d7 wizzrobe key chest": And("enter d7", "kill wizzrobe"),
-	"d7 ring chest":         And("enter d7", "d7 key E"),
+	"d7 ring chest":         And("enter d7", "d7 key A"),
 	"enter poe A":           And("d7 ring chest", "ember slingshot"),
 	"d7 compass chest":      And("enter d7", "bombs"),
-	"d7 map chest":          And("d7 pot room", "d7 key A"), // not sure but doesn't matter
+	"d7 map chest":          And("d7 pot room", "d7 key B"), // not sure but doesn't matter
 
 	// B1F
+	// don't consider poe skip for now
 	"d7 armos room 1":       And("enter d7", "enter poe A", "kill poe sister", "bracelet"),
-	"d7 armos room 2":       And("d7 compass chest", "pegasus satchel", "bracelet", "jump"),
 	"d7 zol key fall":       And("d7 armos room", "jump"),
 	"d7 pot room":           And("d7 armos room", "kill armos"), // being nice
 	"d7 magunesu key chest": And("d7 magunesu room", "kill magunesu", "jump", "magnet gloves"),
-	"enter poe B":           And("d7 pot room", "d7 key A", "d7 key B"),
+	"enter poe B":           And("d7 pot room", "d7 key B", "d7 key C"),
 	"d7 water stairs":       And("enter poe B", "pegasus satchel", "ember seeds", "kill poe sister", "flippers"),
 	"d7 cape chest":         AndSlot("d7 trampoline pair", "jump", "kill stalfos (pit)"),
 
@@ -278,13 +278,13 @@ var d7Prenodes = map[string]*Prenode{
 	"d7 cross bridge 2":   And("feather L-2"),
 	"d7 cross bridge 3":   And("jump", "magnet gloves"),
 	"d7 trampoline pair":  And("d7 water stairs", "d7 cross bridge"),
-	"d7 moldorm room":     And("d7 water stairs", "d7 key C", "feather L-2"),
+	"d7 moldorm room":     And("d7 water stairs", "d7 key D", "feather L-2"),
 	"enter poe sisters 1": And("d7 moldorm room", "kill moldorm", "remove pot", "feather L-2"),
 	"enter poe sisters 2": And("d7 moldorm room", "kill moldorm", "pegasus jump L-2"),
 	"d7 stairs room":      And("enter poe sisters", "kill poe sister"),
 	"d7 enter skipped":    And("d7 stairs room", "magnet gloves", "jump"),
 	"d7 skipped key poof": And("d7 enter skipped", "kill wizzrobe (pit)", "kill stalfos (pit)"),
-	"d7 boss key chest":   And("d7 stairs room", "d7 key D", "pegasus jump L-2", "hit switch", "kill stalfos"),
+	"d7 boss key chest":   And("d7 stairs room", "d7 key E", "pegasus jump L-2", "hit switch", "kill stalfos"),
 	"enter gleeok":        And("d7 stairs room", "d7 boss key"),
 	"d7 essence":          AndStep("enter gleeok", "kill gleeok"),
 

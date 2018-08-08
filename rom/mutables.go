@@ -410,7 +410,7 @@ var constMutables = map[string]Mutable{
 	// remove one-way diving spot on the south end of sunken city to prevent
 	// softlock on moblin road without winter. this requires moving
 	// interactions around.
-	"remove diving spot": MutableRange{Addr{0x11, 0x69ca},
+	"remove diving spot": &MutableRange{Addr{0x11, 0x69ca},
 		[]byte{0x1f, 0x0d, 0x68, 0x68, 0x3e, 0x31, 0x18, 0x68},
 		[]byte{0x3e, 0x31, 0x18, 0x68, 0xff, 0xff, 0xff, 0xff}},
 
