@@ -401,6 +401,11 @@ var codeMutables = map[string]Mutable{
 	"remove diving spot": MutableRange{Addr{0x11, 0x69ca},
 		[]byte{0x1f, 0x0d, 0x68, 0x68, 0x3e, 0x31, 0x18, 0x68},
 		[]byte{0x3e, 0x31, 0x18, 0x68, 0xff, 0xff, 0xff, 0xff}},
+
+	// if you go up the stairs into the room in d8 with the magnet ball and
+	// can't move it, you don't have room to go back down the stairs. this
+	// moves the magnet ball's starting position one more tile away.
+	"move magnet ball": MutableByte(Addr{0x15, 0x53a5}, 0x48, 0x38),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
