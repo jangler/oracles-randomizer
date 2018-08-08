@@ -418,6 +418,12 @@ var constMutables = map[string]Mutable{
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
 	"move magnet ball": MutableByte(Addr{0x15, 0x53a5}, 0x48, 0x38),
+
+	// move the trigger for the bridge from holodrum plain to natzu to the
+	// top-left corner of the screen, where it can't be hit, and replace the
+	// lever tile as well. this prevents the bridge from blocking the waterway.
+	"remove bridge trigger": MutableWord(Addr{0x11, 0x6734}, 0x6868, 0x0000),
+	"remove bridge lever":   MutableByte(Addr{0x21, 0x5bf1}, 0xb1, 0x04),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}

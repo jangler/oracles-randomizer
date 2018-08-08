@@ -78,10 +78,11 @@ var holodrumPrenodes = map[string]*Prenode{
 
 	// d2->d3
 	"north horon stump":    And("horon village", "remove bush"),
-	"scent tree":           OrSlot("scent tree A", "scent tree B", "scent tree C"),
+	"scent tree":           OrSlot("scent tree A", "scent tree B", "scent tree C", "scent tree D"),
 	"scent tree A":         And("north horon stump", "bracelet"),
 	"scent tree B":         And("natzu", "animal flute"),
 	"scent tree C":         And("north horon stump", "flippers"),
+	"scent tree D":         And("goron mountain", "flippers"),
 	"blaino":               And("scent tree"),
 	"blaino gift":          AndSlot("blaino", "rupees"),
 	"ricky pen 1":          And("scent tree"),
@@ -134,7 +135,7 @@ var holodrumPrenodes = map[string]*Prenode{
 
 	// goron mountain
 	"goron mountain 1": And("mount cucco", "bracelet", "shovel"),
-	"goron mountain 2": And("temple remains", "flippers"),
+	"goron mountain 2": And("scent tree", "flippers"),
 	"goron mountain 3": And("temple remains", "pegasus jump L-2"),
 	"goron mountain 4": And("natzu", "animal flute", "flippers"),
 
