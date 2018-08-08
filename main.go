@@ -85,10 +85,10 @@ func main() {
 		}
 
 		// split node params
-		goal := strings.Split(*flagGoal, ",")
+		goal := parseDelimitedArg(*flagGoal, ",")
 		forbid := []string{}
 		if *flagForbid != "" {
-			forbid = strings.Split(*flagForbid, ",")
+			forbid = parseDelimitedArg(*flagForbid, ",")
 		}
 
 		// randomize according to params, unless we're just updating
@@ -128,6 +128,18 @@ func main() {
 		log.Printf("no such devcmd: %s", *flagDevcmd)
 		os.Exit(2)
 	}
+}
+
+// parses a delimited (e.g. with comma) command-line argument, stripping spaces
+// around each entry.
+func parseDelimitedArg(arg, delimiter string) []string {
+	a := make([]string, 0)
+
+	for _, s := range strings.Split(arg, delimiter) {
+		a = append(a, strings.TrimSpace(s))
+	}
+
+	return a
 }
 
 // return the contents of the names file as a slice of bytes
