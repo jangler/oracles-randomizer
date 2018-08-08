@@ -424,6 +424,9 @@ var constMutables = map[string]Mutable{
 	// lever tile as well. this prevents the bridge from blocking the waterway.
 	"remove bridge trigger": MutableWord(Addr{0x11, 0x6734}, 0x6868, 0x0000),
 	"remove bridge lever":   MutableByte(Addr{0x21, 0x5bf1}, 0xb1, 0x04),
+
+	// grow seeds in all seasons
+	"seeds grow always": MutableByte(Addr{0x0d, 0x68b3}, 0xb8, 0xbf),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
