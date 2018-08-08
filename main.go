@@ -85,10 +85,10 @@ func main() {
 		}
 
 		// split node params
-		goal := strings.Split(*flagGoal, ",")
+		goal := parseDelimitedArg(*flagGoal, ",")
 		forbid := []string{}
 		if *flagForbid != "" {
-			forbid = strings.Split(*flagForbid, ",")
+			forbid = parseDelimitedArg(*flagForbid, ",")
 		}
 
 		// randomize according to params, unless we're just updating
@@ -130,6 +130,18 @@ func main() {
 	}
 }
 
+// parses a delimited (e.g. with comma) command-line argument, stripping spaces
+// around each entry.
+func parseDelimitedArg(arg, delimiter string) []string {
+	a := make([]string, 0)
+
+	for _, s := range strings.Split(arg, delimiter) {
+		a = append(a, strings.TrimSpace(s))
+	}
+
+	return a
+}
+
 // return the contents of the names file as a slice of bytes
 func readFileBytes(filename string) ([]byte, error) {
 	f, err := os.Open(filename)
@@ -148,8 +160,20 @@ func randomize(romData []byte, outFilename string,
 		return errs
 	}
 
-	// find a viable random route
+	// check args against graph
 	r := NewRoute(start)
+	for _, name := range goal {
+		if _, ok := r.Graph[name]; !ok {
+			log.Fatal("fatal: unknown goal node: ", name)
+		}
+	}
+	for _, name := range forbid {
+		if _, ok := r.Graph[name]; !ok {
+			log.Fatal("fatal: unknown forbid node: ", name)
+		}
+	}
+
+	// find a viable random route
 	usedItems, unusedItems, usedSlots :=
 		findRoute(r, start, goal, forbid, maxlen, summary)
 
