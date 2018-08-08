@@ -162,7 +162,11 @@ var holodrumPrenodes = map[string]*Prenode{
 	"pirate ship":     And("pirate's bell"),
 	"graveyard 1":     And("pirate ship", "long jump"),
 	"graveyard 2":     And("pirate ship", "bombs", "jump", "summer"),
-	"enter d7":        AndStep("graveyard", "shovel"),
+	"enter d7":        OrStep("enter d7 A", "enter d7 B", "enter d7 C", "enter d7 D"),
+	"enter d7 A":      And("graveyard", "shovel"),
+	"enter d7 B":      And("graveyard", "spring"),
+	"enter d7 C":      And("graveyard", "summer"),
+	"enter d7 D":      And("graveyard", "autumn"),
 
 	// d7->d8
 	"temple remains 1": And("goron mountain", "pegasus jump L-2"),

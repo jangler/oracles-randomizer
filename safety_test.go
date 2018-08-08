@@ -8,6 +8,41 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
+var testAllocation = map[string]string{
+	"rod":                "d0 sword chest",
+	"bracelet":           "maku key fall",
+	"gnarled key":        "blaino gift",
+	"satchel":            "d1 satchel",
+	"gale tree seeds 1":  "scent tree",
+	"ember tree seeds":   "ember tree",
+	"feather L-1":        "rod gift",
+	"magnet gloves":      "shovel gift",
+	"slingshot L-2":      "boomerang gift",
+	"mystery tree seeds": "sunken gale tree",
+	"star ore":           "x-shaped jewel chest",
+	"pegasus tree seeds": "pegasus tree",
+	"master's plaque":    "floodgate key gift",
+	"fool's ore":         "flippers gift",
+	"shovel":             "d8 HSS chest",
+	"x-shaped jewel":     "star ore spot",
+	"sword L-1":          "d2 bracelet chest",
+	"feather L-2":        "master's plaque chest",
+	"round jewel":        "dragon key spot",
+	"dragon key":         "spring banana tree",
+	"floodgate key":      "rusty bell spot",
+	"square jewel":       "d5 magnet gloves chest",
+	"flippers":           "d3 feather chest",
+	"pyramid jewel":      "d4 slingshot chest",
+	"slingshot L-1":      "pyramid jewel spot",
+	"boomerang L-2":      "square jewel chest",
+	"rusty bell":         "round jewel gift",
+	"gale tree seeds 2":  "mystery tree",
+	"sword L-2":          "d6 boomerang chest",
+	"spring banana":      "d7 cape chest",
+	"boomerang L-1":      "noble sword spot",
+	"scent tree seeds":   "tarm gale tree",
+}
+
 func TestFeatherLockCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
@@ -36,41 +71,17 @@ func TestFeatherLockCheck(t *testing.T) {
 		}, "hide and seek", true)
 
 	// a softlock case from a real rom produced by 1.2.2
-	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
-		map[string]string{
-			"rod":                "d0 sword chest",
-			"bracelet":           "maku key fall",
-			"gnarled key":        "blaino gift",
-			"satchel":            "d1 satchel",
-			"gale tree seeds 1":  "scent tree",
-			"ember tree seeds":   "ember tree",
-			"feather L-1":        "rod gift",
-			"magnet gloves":      "shovel gift",
-			"slingshot L-2":      "boomerang gift",
-			"mystery tree seeds": "sunken gale tree",
-			"star ore":           "x-shaped jewel chest",
-			"pegasus tree seeds": "pegasus tree",
-			"master's plaque":    "floodgate key gift",
-			"fool's ore":         "flippers gift",
-			"shovel":             "d8 HSS chest",
-			"x-shaped jewel":     "star ore spot",
-			"sword L-1":          "d2 bracelet chest",
-			"feather L-2":        "master's plaque chest",
-			"round jewel":        "dragon key spot",
-			"dragon key":         "spring banana tree",
-			"floodgate key":      "rusty bell spot",
-			"square jewel":       "d5 magnet gloves chest",
-			"flippers":           "d3 feather chest",
-			"pyramid jewel":      "d4 slingshot chest",
-			"slingshot L-1":      "pyramid jewel spot",
-			"boomerang L-2":      "square jewel chest",
-			"rusty bell":         "round jewel gift",
-			"gale tree seeds 2":  "mystery tree",
-			"sword L-2":          "d6 boomerang chest",
-			"spring banana":      "d7 cape chest",
-			"boomerang L-1":      "noble sword spot",
-			"scent tree seeds":   "tarm gale tree",
-		}, "hide and seek", true)
+	checkSoftlockWithSlots(t, canFeatherSoftlock, g, testAllocation,
+		"hide and seek", true)
+}
+
+func TestD7ExitLockChest(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+	g := r.Graph
+
+	// a softlock case from a real rom produced by 1.2.2
+	checkSoftlockWithSlots(t, canD7ExitSoftlock, g, testAllocation,
+		"enter d7", true)
 }
 
 // helper function used for the other benchmarks

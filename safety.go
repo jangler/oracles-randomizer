@@ -15,6 +15,7 @@ var softlockChecks = [](func(graph.Graph) error){
 	canFeatherSoftlock,
 	canEmberSeedSoftlock,
 	canPiratesBellSoftlock,
+	canD7ExitSoftlock,
 }
 
 // check for known softlock conditions
@@ -132,6 +133,18 @@ func canEmberSeedSoftlock(g graph.Graph) error {
 func canPiratesBellSoftlock(g graph.Graph) error {
 	if canReachWithoutPrereq(g, g["rusty bell"], g["pirate house"]) {
 		return errors.New("pirate's bell softlock")
+	}
+	return nil
+}
+
+// the player needs shovel before they can enter D7, or else then can be stuck
+// if the default season is winter when they exit.
+//
+// TODO: once default seasons are randomized, disable this check if
+//       graveyard/coast isn't winter.
+func canD7ExitSoftlock(g graph.Graph) error {
+	if canReachWithoutPrereq(g, g["enter d7"], g["shovel"]) {
+		return errors.New("d7 exit softlock")
 	}
 	return nil
 }
