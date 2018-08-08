@@ -378,11 +378,7 @@ func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool, itemNode,
 		switch slotNode.Name {
 		case "ember tree", "mystery tree", "scent tree",
 			"pegasus tree", "sunken gale tree", "tarm gale tree":
-			if fillUnused ||
-				canReachInSeasonSeeds(g, reached, itemNode, slotNode) {
-				break
-			}
-			skip = true
+			break
 		default:
 			skip = true
 		}
@@ -395,58 +391,6 @@ func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool, itemNode,
 	}
 
 	return
-}
-
-// seeds only grow during certain seasons
-var seedSeasons = map[string]string{
-	"ember":   "winter",
-	"scent":   "spring",
-	"pegasus": "autumn",
-	"gale":    "summer",
-	"mystery": "summer",
-}
-
-// ok, this is tricky. a seed should not be slotted if the player can't
-// actually reach it due to it being out-of-season and them being unable to
-// change the season. mystery trees grow in all seasons, so they don't need to
-// be checked.
-//
-// this assumes that the player can already reach the tree itself.
-func canReachInSeasonSeeds(g graph.Graph, reached map[*graph.Node]bool,
-	itemNode, slotNode *graph.Node) bool {
-	season := seedSeasons[itemNode.Name]
-
-	switch slotNode.Name {
-	case "ember tree":
-		return true // horon village has all seasons
-	case "mystery tree":
-		if season == "summer" || reached[g["summer"]] {
-			return true
-		}
-	case "scent tree":
-		if season == "spring" ||
-			(reached[g["spring"]] && reached[g["ghastly stump"]]) {
-			return true
-		}
-	case "pegasus tree":
-		if season == "autumn" ||
-			(reached[g["autumn"]] && reached[g["spool swamp"]]) {
-			return true
-		}
-	case "sunken gale tree":
-		if season == "summer" || (reached[g["summer"]] &&
-			(reached[g["flippers"]] || reached[g["dimitri"]])) {
-			return true
-		}
-	case "tarm gale tree":
-		// if you got here, you already have all the seasons, but just in case
-		// something changes…
-		if season == "summer" || reached[g["summer"]] {
-			return true
-		}
-	}
-
-	return false
 }
 
 // print item/slot info on a succeeded route

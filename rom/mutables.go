@@ -406,6 +406,9 @@ var codeMutables = map[string]Mutable{
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
 	"move magnet ball": MutableByte(Addr{0x15, 0x53a5}, 0x48, 0x38),
+
+	// grow seeds in all seasons
+	"seeds grow always": MutableByte(Addr{0x0d, 0x68b3}, 0xb8, 0xbf),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
