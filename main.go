@@ -160,8 +160,20 @@ func randomize(romData []byte, outFilename string,
 		return errs
 	}
 
-	// find a viable random route
+	// check args against graph
 	r := NewRoute(start)
+	for _, name := range goal {
+		if _, ok := r.Graph[name]; !ok {
+			log.Fatal("fatal: unknown goal node: ", name)
+		}
+	}
+	for _, name := range forbid {
+		if _, ok := r.Graph[name]; !ok {
+			log.Fatal("fatal: unknown forbid node: ", name)
+		}
+	}
+
+	// find a viable random route
 	usedItems, unusedItems, usedSlots :=
 		findRoute(r, start, goal, forbid, maxlen, summary)
 
