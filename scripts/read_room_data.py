@@ -62,6 +62,7 @@ MUSIC = {
     0x0f: "fairy fountain",
     0x12: "hero's cave",
     0x13: "gnarled root dungeon",
+    0x1a: "sword and shield maze",
 }
 
 INTERACTION_MODES = {
@@ -88,14 +89,13 @@ ENTITIES = {
     0x31: ("stalfos", {
         0x00: "blue",
     }),
-    0x32: ("keese", {
-        0x00: "normal",
-    }),
+    0x32: ("keese", {}),
     0x34: ("zol", {
         0x01: "red",
     }),
     0x35: ("floormaster", {}),
     0x38: ("great fairy", {}),
+    0x39: ("fire keese", {}),
     0x43: ("gel", {}),
     0x53: ("dragonfly", {}),
     0x59: ("fixed drop", {
