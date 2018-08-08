@@ -70,7 +70,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"post-d2 stump 3": And("sunken city"),
 	"post-d2 stump 4": And("mystery tree"),
 	"shovel gift":     AndSlot("post-d2 stump", "winter"),
-	"mystery tree A":  And("post-d2 stump", "winter", "shovel"),
+	"mystery tree A":  And("post-d2 stump", "winter"),
 	"mystery tree B":  And("post-d2 stump", "jump"),
 	"mystery tree C":  And("sokra stump", "cross water gap"),
 	"mystery tree D":  And("sunken city"),
