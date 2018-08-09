@@ -1,15 +1,16 @@
 # Oracle of Seasons randomizer
 
 This program reads a Zelda: Oracle of Seasons ROM (probably JP version only; I
-haven't tested on EN/EU), shuffles the locations of key items and seeds, and
-writes the modified ROM to a new file. It also bypasses essence checks for
-overworld events that are necessary for progress, so the dungeons can be done
-in any order that the randomized items facilitate. However, you do have to
-collect all 8 essences to get the Maku Seed and finish the game.
+haven't tested on EN/EU), shuffles the locations of key items and seeds,
+randomizes the default season for each area, and writes the modified ROM to a
+new file. It also bypasses essence checks for overworld events that are
+necessary for progress, so the dungeons can be done in any order that the
+randomized items facilitate. However, you do have to collect all 8 essences to
+get the Maku Seed and finish the game.
 
-The randomizer is relatively new, so consider it "beta" for now. See the
-[issue tracker](https://github.com/jangler/oos-randomizer/issues) for known
-problems.
+The randomizer is relatively new and under active development, so consider it
+"beta" for now. See the [issue
+tracker](https://github.com/jangler/oos-randomizer/issues) for known problems.
 
 
 ## Usage
@@ -68,14 +69,20 @@ key item.** Speedrunners should note that the Subrosian dancing prize could be
 important.
 
 Seed trees are also shuffled, and the satchel and slingshot will start with the
-type of seeds on the tree in Horon Village. Remember that each type of seed
-(except for mystery seeds) only grows in one season, which may not always be
-the default season for the region the tree is in. You can check the map icon
-for a tree to see what kind of seeds it grows.
+type of seeds on the tree in Horon Village.
 
-Eastern commons (the area immediately east of Horon Village) defaults to spring
-instead of autumn in the randomizer, so that the flower can be used to get back
-up the normally one-way cliff from Natzu / Sunken City.
+
+## Other notable changes
+
+Other small changes have been made for convenience, to simplify randomization
+logic, or to prevent softlocks. The most notable are:
+
+- Mystical seeds grow in all seasons.
+- Seeds can be collected if the player has either slingshot or satchel.
+- The cliff between Eastern Suburbs and Sunken City has stairs instead of a
+  spring flower.
+- Rosa doesn't appear in the overworld, and her portal is activated by default.
+- The diving spot at the south end of Sunken City is removed.
 
 
 ## Potentially useful goal/forbid nodes
