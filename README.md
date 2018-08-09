@@ -1,12 +1,11 @@
 # Oracle of Seasons randomizer
 
-This program reads a Zelda: Oracle of Seasons ROM (probably JP version only; I
-haven't tested on EN/EU), shuffles the locations of key items and seeds,
-randomizes the default season for each area, and writes the modified ROM to a
-new file. It also bypasses essence checks for overworld events that are
-necessary for progress, so the dungeons can be done in any order that the
-randomized items facilitate. However, you do have to collect all 8 essences to
-get the Maku Seed and finish the game.
+This program reads a Zelda: Oracle of Seasons ROM (JP version only) shuffles
+the locations of key items and seeds, randomizes the default season for each
+area, and writes the modified ROM to a new file. It also bypasses essence
+checks for overworld events that are necessary for progress, so the dungeons
+can be done in any order that the randomized items facilitate. However, you do
+have to collect all 8 essences to get the Maku Seed and finish the game.
 
 The randomizer is relatively new and under active development, so consider it
 "beta" for now. See the [issue
