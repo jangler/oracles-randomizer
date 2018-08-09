@@ -21,7 +21,9 @@ var holodrumPrenodes = map[string]*Prenode{
 		"western coast default summer",
 		And("bombs", "jump", "summer"))),
 	"enter d7": And("graveyard", Or("shovel",
-		Or("western coast default summer", "summer"))),
+		Or("western coast default summer", "summer"),
+		Or("western coast default spring", "spring"),
+		Or("western coast default autumn", "autumn"))),
 
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump
@@ -33,7 +35,8 @@ var holodrumPrenodes = map[string]*Prenode{
 	"shovel gift": AndSlot("fairy fountain", Or("eastern suburbs default winter", "winter"),
 		Or("woods of winter default winter", "winter")),
 	"mystery tree": OrSlot(
-		And("fairy fountain", Or("eastern suburbs default winter", "winter", "shovel")),
+		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
+			Or("shovel", And("jump", "bracelet"))),
 		And("fairy fountain", Or(
 			"eastern suburbs default spring", "spring",
 			"eastern suburbs default summer", "summer",
@@ -55,8 +58,9 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("north horon stump", "bracelet"),
 		And("temple remains", "long jump"),
 		And("goron mountain", "flippers")),
-	"blaino gift": AndSlot("scent tree", "rupees"),
-	"ricky":       And("scent tree", "ricky's gloves"),
+	"blaino gift":      AndSlot("scent tree", "rupees"),
+	"ricky":            And("scent tree", "ricky's gloves"),
+	"round jewel gift": AndSlot("scent tree", "flippers"),
 
 	// spool swamp
 	"pegasus tree": AndSlot("ghastly stump",

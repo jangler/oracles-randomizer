@@ -16,10 +16,10 @@ type Mark int
 
 // NodeType determines how a node approaches GetMark(). And nodes return
 // MarkTrue only if all of their parents do, Or nodes return MarkTrue if any of
-// their parents do, and Root nodes always return MarkTrue.
+// their parents do, and Root act as Or nodes, but conventionally start without
+// parents (Or nodes without parents return MarkFalse).
 //
-// Technically an And node with no parents functions the same as a Root node,
-// and an Or node with no parents always returns MarkFalse.
+// An And node with no parents always returns MarkTrue.
 type NodeType int
 
 // See Mark and NodeType comments for information.
@@ -63,7 +63,7 @@ func NewNode(name string, nodeType NodeType, isStep bool) *Node {
 	// set node's GetMark function based on type
 	switch n.Type {
 	case RootType:
-		n.GetMark = getRootMark
+		n.GetMark = getOrMark
 	case AndType:
 		n.GetMark = getAndMark
 	case OrType:
@@ -73,10 +73,6 @@ func NewNode(name string, nodeType NodeType, isStep bool) *Node {
 	}
 
 	return &n
-}
-
-func getRootMark(n *Node, path *list.List) Mark {
-	return MarkFalse
 }
 
 func getAndMark(n *Node, path *list.List) Mark {
