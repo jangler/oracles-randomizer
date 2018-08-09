@@ -163,10 +163,15 @@ func getOrMark(n *Node, path *list.List) Mark {
 }
 
 // AddParents makes the given nodes parents of the node, and likewise adds this
-// node to each parent's list of children.
+// node to each parent's list of children. If a given parent is already a
+// parent of the node, nothing is done.
 func (n *Node) AddParents(parents ...*Node) {
-	n.Parents = append(n.Parents, parents...)
-	addChild(n, parents...)
+	for _, parent := range parents {
+		if !IsNodeInSlice(parent, n.Parents) {
+			n.Parents = append(n.Parents, parent)
+			addChild(n, parent)
+		}
+	}
 }
 
 // ClearParents makes the node into an effective root node (though not a Root
@@ -193,7 +198,9 @@ func IsNodeInSlice(node *Node, slice []*Node) bool {
 
 func addChild(child *Node, parents ...*Node) {
 	for _, parent := range parents {
-		parent.Children = append(parent.Children, child)
+		if !IsNodeInSlice(child, parent.Children) {
+			parent.Children = append(parent.Children, child)
+		}
 	}
 }
 

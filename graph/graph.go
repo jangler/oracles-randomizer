@@ -1,5 +1,9 @@
 package graph
 
+import (
+	"fmt"
+)
+
 // A Graph maps names to a set of (hopeully) connected nodes. The graph is
 // directed.
 type Graph map[string]*Node
@@ -105,4 +109,102 @@ func (g Graph) Explore(start map[*Node]bool, add []*Node) map[*Node]bool {
 // exploring the entirety of the existing graph.
 func (g Graph) ExploreFromStart() map[*Node]bool {
 	return g.Explore(nil, []*Node{g["horon village"]})
+}
+
+// Reduce returns a version of the graph that is 1. only relevant to the given
+// target and 2. reduced to as few nodes as possible.
+func (g Graph) Reduce(target string) (Graph, error) {
+	if g[target] == nil {
+		return nil, fmt.Errorf("target node %s not in graph", target)
+	}
+
+	// copy graph but remove start node
+	reduced := copyGraph(g)
+	if start := g["start"]; start != nil {
+		for _, child := range start.Children {
+			removeParent(child, start)
+		}
+		delete(g, "start")
+	}
+
+	// iteratively cut out parents with only one child, or zero children, as
+	// long as the parent type matches the type of its single child. direct
+	// parents of the target node also don't need to be parents of any other
+	// node. (TODO this principle can be applied recursively)
+	done := false
+	for !done {
+		done = true
+
+		// collapse single-parent lines
+		for name, node := range reduced {
+			if name == target || node.Type == RootType {
+				continue
+			}
+
+			switch len(node.Children) {
+			case 0:
+				node.ClearParents()
+				delete(reduced, name)
+			case 1:
+				if len(node.Parents) == 1 ||
+					node.Type == node.Children[0].Type {
+					done = false
+					node.Children[0].AddParents(node.Parents...)
+					removeParent(node.Children[0], node)
+					removeChild(node, node.Parents...)
+					delete(reduced, name)
+				}
+			}
+		}
+
+		// make direct parents of the target node parents only of that node
+		for _, node := range reduced {
+			if IsNodeInSlice(reduced[target], node.Children) {
+				for i := 0; i < len(node.Children); i++ {
+					if node.Children[i] != reduced[target] {
+						done = false
+						removeParent(node.Children[i], node)
+						node.Children =
+							append(node.Children[:i], node.Children[i+1:]...)
+						i--
+					}
+				}
+			}
+		}
+	}
+
+	return reduced, nil
+}
+
+// returns a new copy of the graph with new but identical nodes and
+// relationships.
+func copyGraph(old Graph) Graph {
+	new := New()
+
+	// add nodes
+	for name, node := range old {
+		new[name] = NewNode(node.Name, node.Type, node.IsStep)
+	}
+
+	// add relationships
+	for name, node := range old {
+		for _, parent := range node.Parents {
+			newNode := new[name]
+			newNode.Parents = append(newNode.Parents, new[parent.Name])
+			children := new[parent.Name].Children
+			new[parent.Name].Children = append(children, newNode)
+		}
+	}
+
+	return new
+}
+
+// doesn't do anything if the child already doesn't have the parent
+func removeParent(child, removal *Node) {
+	for i, parent := range child.Parents {
+		if parent == removal {
+			child.Parents = append(child.Parents[:i], child.Parents[i+1:]...)
+			break
+		}
+	}
 }
