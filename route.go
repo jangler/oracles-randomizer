@@ -13,8 +13,8 @@ import (
 )
 
 const (
-	maxIterations = 1000 // restart if routing runs for too long
-	maxTries      = 10   // give up if routing fails too many times
+	maxIterations = 200 // restart if routing runs for too long
+	maxTries      = 10  // give up if routing fails too many times
 )
 
 // A Route is a set of information needed for finding an item placement route.
