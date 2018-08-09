@@ -31,17 +31,17 @@ const (
 )
 
 // A Prenode is a mapping of strings that will become And or Or nodes in the
-// graph.
+// graph. A prenode can have nested prenodes as parents instead of strings.
 type Prenode struct {
-	Parents []string
+	Parents []interface{}
 	Type    Type
 }
 
-// CreateFunc returns a function that creates a graph node from a list of
-// key strings, based on the given prenode type.
-func CreateFunc(prenodeType Type) func(a ...string) *Prenode {
-	return func(a ...string) *Prenode {
-		return &Prenode{Parents: a, Type: prenodeType}
+// CreateFunc returns a function that creates graph nodes from a list of key
+// strings or sub-prenodes, based on the given prenode type.
+func CreateFunc(prenodeType Type) func(parents ...interface{}) *Prenode {
+	return func(parents ...interface{}) *Prenode {
+		return &Prenode{Parents: parents, Type: prenodeType}
 	}
 }
 
@@ -62,22 +62,14 @@ func BaseItems() map[string]*Prenode {
 	return baseItemPrenodes
 }
 
-// GetNonGenerated returns a map of all prenodes that are explicitly declared,
-// and not automatically generated.
-func GetNonGenerated() map[string]*Prenode {
-	nonGenerated := make(map[string]*Prenode)
-	appendPrenodes(nonGenerated,
+// GetAll returns all prenodes.
+func GetAll() map[string]*Prenode {
+	total := make(map[string]*Prenode)
+	appendPrenodes(total,
 		itemPrenodes, baseItemPrenodes, ignoredBaseItemPrenodes, killPrenodes,
 		holodrumPrenodes, subrosiaPrenodes, portalPrenodes,
 		d0Prenodes, d1Prenodes, d2Prenodes, d3Prenodes, d4Prenodes,
 		d5Prenodes, d6Prenodes, d7Prenodes, d8Prenodes, d9Prenodes)
-	return nonGenerated
-}
-
-// GetAll returns all generated and non-generated prenodes.
-func GetAll() map[string]*Prenode {
-	total := GetNonGenerated()
-	appendPrenodes(total, generatedPrenodes)
 	return total
 }
 

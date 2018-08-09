@@ -116,16 +116,16 @@ var killPrenodes = map[string]*Prenode{
 	"kill keese":                      Or("kill normal", "boomerang"),
 	"kill magunesu":                   Or("sword", "fool's ore", "punch"), // even bombs don't work!
 	"kill poe sister":                 Or("sword", "beams", "ember seeds", "scent seeds", "bombs", "fool's ore", "punch"),
-	"kill darknut (across pit) 1":     Or("beams", "toss bombs", "scent slingshot", "magnet gloves"),
-	"kill darknut (across pit) 2":     And("feather L-2", "kill darknut (pit)"),
-	"kill wizzrobe (pit)":             Or("pit kill normal"),
-	"kill stalfos (pit)":              Or("kill stalfos", "pit kill normal"),
-	"kill gleeok":                     Or("sword", "beams", "bombs", "fool's ore", "punch"),
-	"hit switch":                      Or("sword", "beams", "boomerang", "rod", "satchel", "bombs", "fool's ore", "punch", "shovel"),
-	"kill frypolar 1":                 And("mystery seeds", "bracelet"),
-	"kill frypolar 2":                 And("mystery seeds", "ember seeds"),
-	"kill pols voice (pit)":           Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seeds", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
-	"kill medusa head":                Or("sword", "fool's ore"),
-	"kill floormaster":                Or("kill normal"),
-	"kill onox":                       And("sword", "jump"), // probably, idc
+	"kill darknut (across pit)": Or(
+		Or("beams", "toss bombs", "scent slingshot", "magnet gloves"),
+		And("feather L-2", "kill darknut (pit)")),
+	"kill wizzrobe (pit)":   Or("pit kill normal"),
+	"kill stalfos (pit)":    Or("kill stalfos", "pit kill normal"),
+	"kill gleeok":           Or("sword", "beams", "bombs", "fool's ore", "punch"),
+	"hit switch":            Or("sword", "beams", "boomerang", "rod", "satchel", "bombs", "fool's ore", "punch", "shovel"),
+	"kill frypolar":         And("mystery seeds", Or("bracelet", "ember seeds")),
+	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seeds", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
+	"kill medusa head":      Or("sword", "fool's ore"),
+	"kill floormaster":      Or("kill normal"),
+	"kill onox":             And("sword", "jump"), // probably, idc
 }

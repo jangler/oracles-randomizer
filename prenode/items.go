@@ -58,7 +58,7 @@ var ignoredBaseItemPrenodes = map[string]*Prenode{
 }
 
 var itemPrenodes = map[string]*Prenode{
-
+	"gale tree seeds":       Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds":   And("ember tree seeds", "seed item", "harvest item"),
 	"harvest mystery seeds": And("mystery tree seeds", "seed item", "harvest item"),
 	"harvest scent seeds":   And("scent tree seeds", "seed item", "harvest item"),
@@ -82,12 +82,13 @@ var itemPrenodes = map[string]*Prenode{
 	"pegasus slingshot": And("harvest pegasus seeds", "slingshot"),
 	"gale slingshot":    And("harvest gale seeds", "slingshot"),
 
-	"ember seeds":     And("harvest ember seeds", "seed item"),
-	"mystery seeds":   And("harvest mystery seeds", "seed item"),
-	"scent seeds":     And("harvest scent seeds", "seed item"),
-	"pegasus seeds 1": And("harvest pegasus seeds", "seed item"),
-	"pegasus seeds 2": And("beach", "shield", "ore chunks"), // subrosian market
-	"gale seeds":      And("harvest gale seeds", "seed item"),
+	"ember seeds":   And("harvest ember seeds", "seed item"),
+	"mystery seeds": And("harvest mystery seeds", "seed item"),
+	"scent seeds":   And("harvest scent seeds", "seed item"),
+	"pegasus seeds": Or(
+		And("harvest pegasus seeds", "seed item"),
+		And("beach", "shield", "ore chunks", "seed item")), // subrosian market
+	"gale seeds": And("harvest gale seeds", "seed item"),
 
 	"punch":           And("find punch ring", "rupees"),
 	"energy ring":     And("find energy ring", "rupees"),

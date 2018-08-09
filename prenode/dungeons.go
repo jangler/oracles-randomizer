@@ -55,18 +55,21 @@ var d1Prenodes = map[string]*Prenode{
 // they're only required to open one door, which you can circumvent via the
 // various entrances.
 var d2Prenodes = map[string]*Prenode{
-	"d2 5-rupee chest":     And("d2 torch room"),
-	"d2 key fall":          And("d2 torch room", "kill rope"),
-	"d2 arrow room 1":      And("d2 torch room", "ember seeds"),
-	"d2 arrow room 2":      And("enter d2 C", "bracelet"),
-	"d2 hardhat room":      And("d2 arrow room", "d2 key A"),
-	"d2 map chest":         And("d2 hardhat room", "remove pot"),
-	"d2 compass chest 1":   And("d2 torch room", "ember seeds", "kill rope"),
-	"d2 compass chest 2":   And("d2 arrow room", "kill goriya", "kill rope"),
-	"d2 bracelet chest":    AndSlot("d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"),
-	"d2 bomb key chest":    And("enter d2 B", "remove bush", "bombs"),
-	"d2 blade key chest 1": And("enter d2 C", "bracelet"),
-	"d2 blade key chest 2": And("d2 arrow room", "kill rope", "kill goriya"),
+	"d2 5-rupee chest": And("d2 torch room"),
+	"d2 key fall":      And("d2 torch room", "kill rope"),
+	"d2 arrow room": Or(
+		And("d2 torch room", "ember seeds"),
+		And("enter d2 C", "bracelet")),
+	"d2 hardhat room": And("d2 arrow room", "d2 key A"),
+	"d2 map chest":    And("d2 hardhat room", "remove pot"),
+	"d2 compass chest": Or(
+		And("d2 torch room", "ember seeds", "kill rope"),
+		And("d2 arrow room", "kill goriya", "kill rope")),
+	"d2 bracelet chest": AndSlot("d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"),
+	"d2 bomb key chest": And("enter d2 B", "remove bush", "bombs"),
+	"d2 blade key chest": Or(
+		And("enter d2 C", "bracelet"),
+		And("d2 arrow room", "kill rope", "kill goriya")),
 
 	"d2 bomb wall": And("d2 blade key chest"), // alias for external reference
 
@@ -87,28 +90,26 @@ var d2Prenodes = map[string]*Prenode{
 
 var d3Prenodes = map[string]*Prenode{
 	// first floor
-	"d3 mimic stairs 1":      And("enter d3", "kill spiked beetle (throw)", "bracelet"),
-	"d3 mimic stairs 2":      And("d3 feather stairs"),
-	"d3 roller key chest":    And("d3 mimic stairs", "bracelet"),
-	"d3 feather stairs 1":    And("enter d3", "jump"),
-	"d3 feather stairs 2":    And("d3 mimic stairs"),
-	"d3 feather stairs 3":    And("d3 basement B in"),
-	"d3 basement B in 1":     And("d3 feather stairs", "jump"),
-	"d3 basement B in 2":     And("d3 basement B out", "jump"),
-	"d3 basement B out 1":    And("d3 basement B in", "jump"),
-	"d3 basement B out 2":    And("d3 trampoline stairs", "bracelet"),
-	"d3 rupee chest":         And("d3 feather stairs"),
-	"enter omuai":            And("d3 mimic stairs", "jump", "d3 key B"),
-	"d3 gasha chest":         And("d3 mimic stairs", "jump"),
-	"d3 omuai stairs":        And("enter omuai", "kill omuai"),
-	"d3 boss key chest":      And("d3 omuai stairs", "jump"),
-	"d3 basement A in 1":     And("d3 feather stairs", "jump"),
-	"d3 basement A in 2":     And("d3 basement A out", "jump"),
-	"d3 basement A out 1":    And("d3 basement A in", "jump"),
-	"d3 basement A out 2":    And("d3 trampoline stairs"),
-	"d3 trampoline stairs 1": And("d3 basement A out"),
-	"d3 trampoline stairs 2": And("d3 compass chest", "bracelet"),
-	"d3 map chest":           And("d3 basement B out", "jump"),
+	"d3 mimic stairs": Or("d3 feather stairs",
+		And("enter d3", "kill spiked beetle (throw)", "bracelet")),
+	"d3 roller key chest": And("d3 mimic stairs", "bracelet"),
+	"d3 feather stairs": Or("d3 mimic stairs", "d3 basement B in",
+		And("enter d3", "jump")),
+	"d3 basement B in": And("jump", Or("d3 feather stairs", "d3 basement B out")),
+	"d3 basement B out": Or(
+		And("d3 basement B in", "jump"),
+		And("d3 trampoline stairs", "bracelet")),
+	"d3 rupee chest":    And("d3 feather stairs"),
+	"enter omuai":       And("d3 mimic stairs", "jump", "d3 key B"),
+	"d3 gasha chest":    And("d3 mimic stairs", "jump"),
+	"d3 omuai stairs":   And("enter omuai", "kill omuai"),
+	"d3 boss key chest": And("d3 omuai stairs", "jump"),
+	"d3 basement A in":  And("jump", Or("d3 feather stairs", "d3 basement A out")),
+	"d3 basement A out": Or("d3 trampoline stairs",
+		And("d3 basement A in", "jump")),
+	"d3 trampoline stairs": Or("d3 basement A out",
+		And("d3 compass chest", "bracelet")),
+	"d3 map chest": And("d3 basement B out", "jump"),
 
 	// second floor
 	"d3 bomb chest":           And("d3 mimic stairs"),
@@ -174,27 +175,28 @@ var d5Prenodes = map[string]*Prenode{
 	"d5 cart key chest": And("d5 cart bay", "hit lever"),
 	"d5 underground A":  Or("d5 stairs A in", "d5 stairs C in"),
 	"d5 stairs A in":    And("d5 cart bay"),
-	"d5 stairs B out 1": And("d5 stairs A in", "jump"),
-	"d5 stairs B out 2": And("d5 stairs C in", "bombs", "jump"),
+	"d5 stairs B out": Or(
+		And("d5 stairs A in", "jump"),
+		And("d5 stairs C in", "bombs", "jump")),
 	// stairs B out is one-way
 	"d5 map chest":           And("d5 stairs B out"),
 	"d5 magnet gloves chest": AndSlot("d5 stairs B out", "cross large pool", "d5 key A"),
 	"d5 left key chest":      And("enter d5", "cross magnet gap"),
 	"d5 stairs C out":        And("d5 underground A", "bombs", "jump"),
 	"d5 stairs C in":         And("enter d5", "magnet gloves"),
-	"d5 large rupee chest 1": And("d5 stairs C out"),
-	"d5 large rupee chest 2": And("enter d5", "magnet gloves"),
-	"d5 compass chest":       And("enter d5", "kill moldorm", "kill iron mask"),
-	"d5 armos key chest":     And("d5 stairs C out", "kill moldorm", "kill iron mask", "kill armos"),
-	"d5 float key chest":     And("d5 cart bay", "cross magnet gap"),
-	"d5 drop ball":           And("d5 cart bay", "hit lever", "kill darknut (pit)"),
-	"d5 pre-mid key chest":   And("d5 cart bay", "cross magnet gap"),
-	"enter syger":            And("d5 cart bay", "cross magnet gap", "d5 key B"),
-	"d5 post-syger":          And("enter syger", "kill syger"),
-	"d5 push ball":           And("d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"),
-	"d5 boss key spot":       And("d5 push ball", "d5 key D", "long jump", "sidescroll magnets"), // being nice
-	"enter digdogger":        And("d5 post-syger", "d5 key E", "jump", "magnet gloves", "d5 boss key"),
-	"d5 essence":             AndStep("enter digdogger", "kill digdogger"),
+	"d5 large rupee chest": Or("d5 stairs C out",
+		And("enter d5", "magnet gloves")),
+	"d5 compass chest":     And("enter d5", "kill moldorm", "kill iron mask"),
+	"d5 armos key chest":   And("d5 stairs C out", "kill moldorm", "kill iron mask", "kill armos"),
+	"d5 float key chest":   And("d5 cart bay", "cross magnet gap"),
+	"d5 drop ball":         And("d5 cart bay", "hit lever", "kill darknut (pit)"),
+	"d5 pre-mid key chest": And("d5 cart bay", "cross magnet gap"),
+	"enter syger":          And("d5 cart bay", "cross magnet gap", "d5 key B"),
+	"d5 post-syger":        And("enter syger", "kill syger"),
+	"d5 push ball":         And("d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"),
+	"d5 boss key spot":     And("d5 push ball", "d5 key D", "long jump", "sidescroll magnets"), // being nice
+	"enter digdogger":      And("d5 post-syger", "d5 key E", "jump", "magnet gloves", "d5 boss key"),
+	"d5 essence":           AndStep("enter digdogger", "kill digdogger"),
 
 	// fixed items
 	"d5 key A":    And("d5 cart key chest"),
@@ -215,8 +217,7 @@ var d6Prenodes = map[string]*Prenode{
 	"d6 compass chest":   And("d6 spinner", "d6 key A"),
 	"d6 crumble stairs":  And("d6 spinner", "d6 key A", "long jump"),
 	"d6 key skip":        And("d6 armos room", "jump", "break crystal"),
-	"d6 map chest 1":     And("d6 key skip"),
-	"d6 map chest 2":     And("d6 spinner"),
+	"d6 map chest":       Or("d6 key skip", "d6 spinner"),
 	"avoid traps":        Or("pegasus satchel", "jump"),
 	"d6 switch stairs":   And("d6 map chest", "break crystal", "avoid traps", "boomerang L-2"),
 	"d6 U-room":          And("d6 cracked room", "boomerang L-2"),
@@ -261,7 +262,7 @@ var d7Prenodes = map[string]*Prenode{
 
 	// B1F
 	// don't consider poe skip for now
-	"d7 armos room 1":       And("enter d7", "enter poe A", "kill poe sister", "bracelet"),
+	"d7 armos room":         And("enter d7", "enter poe A", "kill poe sister", "bracelet"),
 	"d7 zol key fall":       And("d7 armos room", "jump"),
 	"d7 pot room":           And("d7 armos room", "kill armos"), // being nice
 	"d7 magunesu key chest": And("d7 magunesu room", "kill magunesu", "jump", "magnet gloves"),
@@ -270,17 +271,17 @@ var d7Prenodes = map[string]*Prenode{
 	"d7 cape chest":         AndSlot("d7 trampoline pair", "jump", "kill stalfos (pit)"),
 
 	// B2F
-	"d7 fool's gap":       Or("long jump", "magnet gloves"),
-	"d7 armos puzzle":     And("d7 pot room", "kill keese", "d7 fool's gap"), // being nice again
-	"d7 armos key fall":   And("d7 armos puzzle"),
-	"d7 magunesu room":    And("d7 armos puzzle", "long jump"),
-	"d7 cross bridge 1":   And("kill darknut (across pit)"),
-	"d7 cross bridge 2":   And("feather L-2"),
-	"d7 cross bridge 3":   And("jump", "magnet gloves"),
-	"d7 trampoline pair":  And("d7 water stairs", "d7 cross bridge"),
-	"d7 moldorm room":     And("d7 water stairs", "d7 key D", "feather L-2"),
-	"enter poe sisters 1": And("d7 moldorm room", "kill moldorm", "remove pot", "feather L-2"),
-	"enter poe sisters 2": And("d7 moldorm room", "kill moldorm", "pegasus jump L-2"),
+	"d7 fool's gap":     Or("long jump", "magnet gloves"),
+	"d7 armos puzzle":   And("d7 pot room", "kill keese", "d7 fool's gap"), // being nice again
+	"d7 armos key fall": And("d7 armos puzzle"),
+	"d7 magunesu room":  And("d7 armos puzzle", "long jump"),
+	"d7 cross bridge": Or("feather L-2", "kill darknut (across pit)",
+		And("jump", "magnet gloves")),
+	"d7 trampoline pair": And("d7 water stairs", "d7 cross bridge"),
+	"d7 moldorm room":    And("d7 water stairs", "d7 key D", "feather L-2"),
+	"enter poe sisters": Or(
+		And("d7 moldorm room", "kill moldorm", "remove pot", "feather L-2"),
+		And("d7 moldorm room", "kill moldorm", "pegasus jump L-2")),
 	"d7 stairs room":      And("enter poe sisters", "kill poe sister"),
 	"d7 enter skipped":    And("d7 stairs room", "magnet gloves", "jump"),
 	"d7 skipped key poof": And("d7 enter skipped", "kill wizzrobe (pit)", "kill stalfos (pit)"),
@@ -300,18 +301,21 @@ var d7Prenodes = map[string]*Prenode{
 // ignoring everything unnecessary in a route that does obtain HSS.
 // keys get wonky but i'm just using the ones you'd get in an HSS skip route,
 // except for the locked doors that aren't in that route.
+//
+// TODO: ignore HSS completely
 var d8Prenodes = map[string]*Prenode{
 	// 1F
-	"d8 eye key fall":      And("enter d8", "slingshot", "remove pot"),
-	"d8 hardhat room":      And("enter d8", "kill magunesu"),
-	"d8 hardhat key fall":  And("d8 hardhat room", "kill hardhat (magnet)"),
-	"d8 cross bridge A 1":  And("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),
-	"d8 cross bridge A 2":  And("d8 ice puzzle room", "long jump"),
-	"d8 bomb room":         And("d8 HSS stairs", "slingshot L-2"),
-	"d8 bomb key chest":    And("d8 bomb room", "bombs", "kill darknut"), // just being reasonable
-	"d8 ice puzzle room 1": And("d8 cross bridge A", "long jump"),
-	"d8 ice puzzle room 2": And("d8 frypolar stairs"),
-	"d8 cross bridge B":    Or("boomerang L-2", "pegasus jump L-2"),
+	"d8 eye key fall":     And("enter d8", "slingshot", "remove pot"),
+	"d8 hardhat room":     And("enter d8", "kill magunesu"),
+	"d8 hardhat key fall": And("d8 hardhat room", "kill hardhat (magnet)"),
+	"d8 cross bridge A": Or(
+		And("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),
+		And("d8 ice puzzle room", "long jump")),
+	"d8 bomb room":      And("d8 HSS stairs", "slingshot L-2"),
+	"d8 bomb key chest": And("d8 bomb room", "bombs", "kill darknut"), // just being reasonable
+	"d8 ice puzzle room": Or("d8 frypolar stairs",
+		And("d8 cross bridge A", "long jump")),
+	"d8 cross bridge B": And("d8 ice puzzle room", Or("boomerang L-2", "pegasus jump L-2")),
 	// technically there are pots to throw in this room but i don't care
 	"d8 boss key chest": And("d8 cross bridge B", "kill keese", "kill pols voice (pit)"),
 	"d8 crystal room":   And("d8 ice puzzle room", "d8 key A"),
@@ -329,8 +333,7 @@ var d8Prenodes = map[string]*Prenode{
 	"d8 spinner":           And("d8 blade room", "d8 key B"),
 	"d8 place ball":        And("d8 spinner", "magnet gloves"),
 	"d8 HSS chest":         AndSlot("d8 spinner", "magnet gloves"),
-	"d8 HSS stairs 1":      And("d8 HSS chest", "pegasus jump L-2"),
-	"d8 HSS stairs 2":      And("d8 HSS chest", "d8 place ball"),
+	"d8 HSS stairs":        And("d8 HSS chest", Or("pegasus jump L-2", "d8 place ball")),
 	"d8 spinner key chest": And("d8 HSS stairs"),
 	"enter frypolar":       And("d8 HSS stairs", "d8 key C"),
 	"d8 frypolar stairs":   And("enter frypolar", "kill frypolar", "ember seeds", "slingshot L-2"),

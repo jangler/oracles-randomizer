@@ -2,6 +2,7 @@ package main
 
 import (
 	"container/list"
+	"fmt"
 	"log"
 	"math/rand"
 	"strings"
@@ -28,6 +29,7 @@ func NewRoute(start []string) *Route {
 	g := graph.New()
 
 	totalPrenodes := prenode.GetAll()
+	expandNestedPrenodes(totalPrenodes)
 
 	// make start nodes given
 	for _, key := range start {
@@ -48,17 +50,41 @@ func NewRoute(start []string) *Route {
 	return &Route{Graph: g, Slots: openSlots}
 }
 
+// flatten nested prenodes
+func expandNestedPrenodes(prenodes map[string]*prenode.Prenode) {
+	done := true
+
+	for name, pn := range prenodes {
+		subID := 0
+		for i, parent := range pn.Parents {
+			switch parent := parent.(type) {
+			case *prenode.Prenode:
+				subID++
+				subName := fmt.Sprintf("%s %d", name, subID)
+				pn.Parents[i] = subName
+				prenodes[subName] = parent
+				done = false
+			}
+		}
+	}
+
+	// recurse if prenodes were added
+	if !done {
+		expandNestedPrenodes(prenodes)
+	}
+}
+
 func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode) {
-	for key, pt := range prenodes {
-		switch pt.Type {
+	for key, pn := range prenodes {
+		switch pn.Type {
 		case prenode.AndType, prenode.AndSlotType, prenode.AndStepType:
-			isStep := pt.Type == prenode.AndSlotType ||
-				pt.Type == prenode.AndStepType
+			isStep := pn.Type == prenode.AndSlotType ||
+				pn.Type == prenode.AndStepType
 			g.AddNodes(graph.NewNode(key, graph.AndType, isStep))
 		case prenode.OrType, prenode.OrSlotType, prenode.OrStepType,
 			prenode.RootType:
-			isStep := pt.Type == prenode.OrSlotType ||
-				pt.Type == prenode.OrStepType
+			isStep := pn.Type == prenode.OrSlotType ||
+				pn.Type == prenode.OrStepType
 			g.AddNodes(graph.NewNode(key, graph.OrType, isStep))
 		default:
 			panic("unknown prenode type for " + key)
@@ -67,9 +93,10 @@ func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 }
 
 func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
-	// ugly but w/e
-	for k, p := range prenodes {
-		g.AddParents(map[string][]string{k: p.Parents})
+	for k, pn := range prenodes {
+		for _, parent := range pn.Parents {
+			g.AddParents(map[string][]string{k: []string{parent.(string)}})
+		}
 	}
 }
 

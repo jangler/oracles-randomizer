@@ -40,17 +40,6 @@ func main() {
 
 	// perform given command (or default, randomize)
 	switch *flagDevcmd {
-	case "pregen":
-		// auto-generate some graph nodes
-		checkNumArgs(*flagDevcmd, 1)
-
-		f, err := os.Create(flag.Arg(0))
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer f.Close()
-
-		generatePrenodes(f)
 	case "verify":
 		checkNumArgs(*flagDevcmd, 1)
 
