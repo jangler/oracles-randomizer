@@ -475,6 +475,23 @@ var varMutables = map[string]Mutable{
 	// allow seed collection if you have a slingshot, by checking for the given
 	// initial seed type
 	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
+
+	// the one-way sunken city -> eastern suburbs cliff makes routing
+	// complicated. this replaces the flower and wall with stairs, so that the
+	// wall can be climbed in all seasons.
+	"remove cliff flower":    MutableByte(Addr{0x11, 0x6566}, 0x9c, 0xff),
+	"replace cliff spring 1": MutableByte(Addr{0x21, 0x65d5}, 0xce, 0xd0),
+	"replace cliff spring 2": MutableByte(Addr{0x21, 0x65df}, 0x54, 0xd0),
+	"replace cliff spring 3": MutableByte(Addr{0x21, 0x65e9}, 0x2c, 0x04),
+	"replace cliff summer 1": MutableByte(Addr{0x22, 0x621c}, 0xce, 0xd0),
+	"replace cliff summer 2": MutableByte(Addr{0x22, 0x6226}, 0x54, 0xd0),
+	"replace cliff summer 3": MutableByte(Addr{0x22, 0x6230}, 0x93, 0x04),
+	"replace cliff autumn 1": MutableByte(Addr{0x23, 0x6035}, 0xce, 0xd0),
+	"replace cliff autumn 2": MutableByte(Addr{0x23, 0x603f}, 0x54, 0xd0),
+	"replace cliff autumn 3": MutableByte(Addr{0x23, 0x6049}, 0x93, 0x04),
+	"replace cliff winter 1": MutableByte(Addr{0x24, 0x5d15}, 0xce, 0xd0),
+	"replace cliff winter 2": MutableByte(Addr{0x24, 0x5d1f}, 0x54, 0xd0),
+	"replace cliff winter 3": MutableByte(Addr{0x24, 0x5d29}, 0x93, 0x04),
 }
 
 var Seasons = map[string]*MutableRange{

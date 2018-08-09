@@ -95,9 +95,8 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("north horon stump", "north horon default winter", Or("jump", "animal flute")))),
 
 	// sunken city
-	"sunken city": Or(
+	"sunken city": Or("fairy fountain",
 		And("scent tree", Or("jump", "flippers"), "animal flute"),
-		And("fairy fountain", Or("eastern suburbs default spring", "spring")),
 		And("mount cucco", "flippers")),
 	"sunken gale tree":      AndSlot("sunken city", "cross water gap"),
 	"dimitri":               And("sunken gale tree", "bombs"),
