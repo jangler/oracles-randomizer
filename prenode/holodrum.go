@@ -2,6 +2,58 @@ package prenode
 
 // overworld route logic
 
+var seasonPrenodes = map[string]*Prenode{
+	"north horon default spring": Root(),
+	"north horon default summer": Root(),
+	"north horon default autumn": Root(),
+	"north horon default winter": Root(),
+
+	"eastern suburbs default spring": Root(),
+	"eastern suburbs default summer": Root(),
+	"eastern suburbs default autumn": Root(),
+	"eastern suburbs default winter": Root(),
+
+	"woods of winter default spring": Root(),
+	"woods of winter default summer": Root(),
+	"woods of winter default autumn": Root(),
+	"woods of winter default winter": Root(),
+
+	"spool swamp default spring": Root(),
+	"spool swamp default summer": Root(),
+	"spool swamp default autumn": Root(),
+	"spool swamp default winter": Root(),
+
+	"holodrum plain default spring": Root(),
+	"holodrum plain default summer": Root(),
+	"holodrum plain default autumn": Root(),
+	"holodrum plain default winter": Root(),
+
+	"sunken city default spring": Root(),
+	"sunken city default summer": Root(),
+	"sunken city default autumn": Root(),
+	"sunken city default winter": Root(),
+
+	"lost woods default spring": Root(),
+	"lost woods default summer": Root(),
+	"lost woods default autumn": Root(),
+	"lost woods default winter": Root(),
+
+	"tarm ruins default spring": Root(),
+	"tarm ruins default summer": Root(),
+	"tarm ruins default autumn": Root(),
+	"tarm ruins default winter": Root(),
+
+	"western coast default spring": Root(),
+	"western coast default summer": Root(),
+	"western coast default autumn": Root(),
+	"western coast default winter": Root(),
+
+	"temple remains default spring": Root(),
+	"temple remains default summer": Root(),
+	"temple remains default autumn": Root(),
+	"temple remains default winter": Root(),
+}
+
 // portal parents are defined here since they're mostly overworld nodes
 
 var portalPrenodes = map[string]*Prenode{

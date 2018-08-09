@@ -102,8 +102,8 @@ func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func findRoute(r *Route, start, goal, forbid []string, maxlen int,
-	summary chan string) (usedItems, itemList, usedSlots *list.List) {
+func findRoute(r *Route, start, goal, forbid []string,
+	maxlen int) (usedItems, itemList, usedSlots *list.List) {
 	// make stacks out of the item names and slot names for backtracking
 	var slotList *list.List
 	itemList, slotList = initRouteLists(r)
@@ -130,6 +130,8 @@ func findRoute(r *Route, start, goal, forbid []string, maxlen int,
 	// try to find the route, retrying if needed
 	iteration, tries := 0, 0
 	for tries = 0; tries < maxTries; tries++ {
+		rollSeasons(r.Graph)
+
 		if tryExploreTargets(r.Graph, nil, startNodes, goalNodes, forbidNodes,
 			maxlen, &iteration, itemList, usedItems, slotList, usedSlots) {
 			log.Print("-- success")
@@ -149,6 +151,33 @@ func findRoute(r *Route, start, goal, forbid []string, maxlen int,
 	}
 
 	return
+}
+
+var (
+	seasonsByID = []string{"spring", "summer", "autumn", "winter"}
+	seasonAreas = []string{
+		"north horon", "eastern suburbs", "woods of winter", "spool swamp",
+		"holodrum plain", "sunken city", "lost woods", "tarm ruins",
+		"western coast", "temple remains",
+	}
+)
+
+// set the default seasons for all the applicable areas in the game. also set
+// the values in the ROM.
+func rollSeasons(g graph.Graph) {
+	for _, area := range seasonAreas {
+		// reset default seasons
+		for _, season := range seasonsByID {
+			g[fmt.Sprintf("%s default %s", area, season)].ClearParents()
+		}
+
+		// roll new default season
+		id := rand.Intn(len(seasonsByID))
+		season := seasonsByID[id]
+		g.AddParents(map[string][]string{fmt.Sprintf(
+			"%s default %s", area, season): []string{"horon village"}})
+		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{byte(id)}
+	}
 }
 
 // try to reach all the given targets using the current graph status. if

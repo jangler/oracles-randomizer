@@ -67,7 +67,7 @@ func GetAll() map[string]*Prenode {
 	total := make(map[string]*Prenode)
 	appendPrenodes(total,
 		itemPrenodes, baseItemPrenodes, ignoredBaseItemPrenodes, killPrenodes,
-		holodrumPrenodes, subrosiaPrenodes, portalPrenodes,
+		holodrumPrenodes, subrosiaPrenodes, portalPrenodes, seasonPrenodes,
 		d0Prenodes, d1Prenodes, d2Prenodes, d3Prenodes, d4Prenodes,
 		d5Prenodes, d6Prenodes, d7Prenodes, d8Prenodes, d9Prenodes)
 	return total

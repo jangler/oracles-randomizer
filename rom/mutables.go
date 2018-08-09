@@ -389,13 +389,6 @@ var constMutables = map[string]Mutable{
 	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x10),
 	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x10),
 
-	// by default the cliff from sunken city to woods of winter is a one-way
-	// door, which can lead to tricky softlock problems. until the routing
-	// algorithm is capable of handling that kind of thing, the default season
-	// for that area is just going to be spring, so that you can use the flower
-	// to get back up.
-	"cliff default season": MutableByte(Addr{0x01, 0x7e43}, 0x02, 0x00),
-
 	// remove the snow piles in front of the shovel house so that shovel isn't
 	// required not to softlock there (it's still required not to softlock in
 	// hide and seek 2)
@@ -484,6 +477,27 @@ var varMutables = map[string]Mutable{
 	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
 }
 
+var Seasons = map[string]*MutableRange{
+	// randomize default seasons (before routing). sunken city also applies to
+	// mt. cucco; eastern suburbs applies to the vertical part of moblin road
+	// but not the horizontal part. note that "tarm ruins" here refers only to
+	// the part beyond the lost woods.
+	//
+	// horon village is random, natzu and desert can only be summer, and goron
+	// mountain can only be winter. not sure about northern peak but it doesn't
+	// matter.
+	"north horon season":     MutableByte(Addr{0x01, 0x7e42}, 0x03, 0x03),
+	"eastern suburbs season": MutableByte(Addr{0x01, 0x7e43}, 0x02, 0x02),
+	"woods of winter season": MutableByte(Addr{0x01, 0x7e44}, 0x01, 0x01),
+	"spool swamp season":     MutableByte(Addr{0x01, 0x7e45}, 0x02, 0x02),
+	"holodrum plain season":  MutableByte(Addr{0x01, 0x7e46}, 0x00, 0x00),
+	"sunken city season":     MutableByte(Addr{0x01, 0x7e47}, 0x01, 0x01),
+	"lost woods season":      MutableByte(Addr{0x01, 0x7e49}, 0x02, 0x02),
+	"tarm ruins season":      MutableByte(Addr{0x01, 0x7e4a}, 0x00, 0x00),
+	"western coast season":   MutableByte(Addr{0x01, 0x7e4d}, 0x03, 0x03),
+	"temple remains season":  MutableByte(Addr{0x01, 0x7e4e}, 0x03, 0x03),
+}
+
 // get a collated map of all mutables
 func getAllMutables() map[string]Mutable {
 	slotMutables := make(map[string]Mutable)
@@ -494,12 +508,17 @@ func getAllMutables() map[string]Mutable {
 	for k, v := range Treasures {
 		treasureMutables[k] = v
 	}
+	seasonMutables := make(map[string]Mutable)
+	for k, v := range Seasons {
+		seasonMutables[k] = v
+	}
 
 	mutableSets := []map[string]Mutable{
 		constMutables,
 		treasureMutables,
 		slotMutables,
 		varMutables,
+		seasonMutables,
 	}
 
 	// initialize master map w/ adequate capacity

@@ -98,6 +98,7 @@ func main() {
 				os.Exit(1)
 			}
 
+			summary <- ""
 			close(summary)
 		}
 
@@ -164,7 +165,7 @@ func randomize(romData []byte, outFilename string,
 
 	// find a viable random route
 	usedItems, unusedItems, usedSlots :=
-		findRoute(r, start, goal, forbid, maxlen, summary)
+		findRoute(r, start, goal, forbid, maxlen)
 
 	// place selected treasures in slots
 	usedLines := make([]string, 0, usedSlots.Len())
@@ -196,6 +197,13 @@ func randomize(romData []byte, outFilename string,
 	summary <- ""
 	for e := unusedItems.Front(); e != nil; e = e.Next() {
 		summary <- e.Value.(*graph.Node).Name
+	}
+
+	summary <- ""
+	summary <- "default seasons:"
+	summary <- ""
+	for name, area := range rom.Seasons {
+		summary <- fmt.Sprintf("%s - %s", name, seasonsByID[int(area.New[0])])
 	}
 
 	return nil
