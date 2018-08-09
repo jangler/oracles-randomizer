@@ -5,10 +5,9 @@ package prenode
 // portal parents are defined here since they're mostly overworld nodes
 
 var portalPrenodes = map[string]*Prenode{
-	"rosa portal in":         And("sokra stump", "remove bush"),
-	"rosa portal out":        And("temple"),
-	"rosa portal in wrapper": Or("rosa portal in"), // hack for safety.go
-	"rosa portal":            Or("rosa portal in wrapper", "rosa portal out"),
+	"rosa portal in":  And("sokra stump", "remove bush"),
+	"rosa portal out": And("temple"),
+	"rosa portal":     Or("rosa portal in", "rosa portal out"),
 
 	"open floodgate": Or(
 		And("pegasus tree", "hit lever", "floodgate key", "pegasus satchel", "bracelet"),
