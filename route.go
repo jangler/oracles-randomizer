@@ -175,7 +175,7 @@ func rollSeasons(g graph.Graph) {
 		id := rand.Intn(len(seasonsByID))
 		season := seasonsByID[id]
 		g.AddParents(map[string][]string{fmt.Sprintf(
-			"%s default %s", area, season): []string{"horon village"}})
+			"%s default %s", area, season): []string{"start"}})
 		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{byte(id)}
 	}
 }

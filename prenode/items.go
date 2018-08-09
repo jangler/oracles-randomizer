@@ -113,8 +113,8 @@ var itemPrenodes = map[string]*Prenode{
 
 	"ricky":         And("ricky pen", "ricky's gloves"),
 	"strange flute": Or("rupees", "temple"),
-	"moosh flute":   And("rupees", "spool swamp", "kill moblin"),
-	"dimitri flute": And("temple", "spool swamp", "rupees"),
+	"moosh flute":   And("rupees", "south swamp", "kill moblin"),
+	"dimitri flute": And("temple", "south swamp", "rupees"),
 	"animal flute":  OrStep("ricky", "moosh flute", "dimitri flute"),
 	"flute":         OrStep("strange flute", "animal flute"),
 
