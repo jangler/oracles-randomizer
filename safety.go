@@ -93,10 +93,8 @@ func canFeatherSoftlock(g graph.Graph) error {
 // have access to ember seeds without having a sustainable means of removing
 // bushes first. flowers are covered by canFlowerSoftlock.
 func canEmberSeedSoftlock(g graph.Graph) error {
-	// first check if a seed item has been obtained (either gives ember seeds
-	// currently, so just having one would be enough to softlock)
-	seedItem := g["seed item"]
-	if seedItem.Mark != graph.MarkTrue {
+	emberSeeds := g["ember seeds"]
+	if emberSeeds.Mark != graph.MarkTrue {
 		return nil
 	}
 
@@ -116,7 +114,7 @@ func canEmberSeedSoftlock(g graph.Graph) error {
 
 	// see if you can still reach the exit
 	g.ClearMarks()
-	if seedItem.GetMark(seedItem, nil) == graph.MarkTrue {
+	if emberSeeds.GetMark(emberSeeds, nil) == graph.MarkTrue {
 		return errors.New("ember seed softlock")
 	}
 	return nil
