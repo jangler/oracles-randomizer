@@ -81,8 +81,8 @@ type RouteLists struct {
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(r *Route, start, goal, forbid []string,
-	maxlen int, verbose bool, logChan chan string) *RouteLists {
+func findRoute(r *Route, start, goal, forbid []string, maxlen int, verbose bool,
+	logChan chan string, doneChan chan int) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
 	itemList, slotList := initRouteLists(r)
 
@@ -108,6 +108,13 @@ func findRoute(r *Route, start, goal, forbid []string,
 	// try to find the route, retrying if needed
 	iteration, tries := 0, 0
 	for tries = 0; tries < maxTries; tries++ {
+		// abort if route was already found on another thread
+		select {
+		case <-doneChan:
+			return nil
+		default:
+		}
+
 		rollSeasons(r.Graph)
 		logChan <- fmt.Sprintf("-- searching for route (%d)", tries+1)
 

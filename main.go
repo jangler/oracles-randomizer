@@ -156,14 +156,14 @@ func randomize(romData []byte, outFilename string, start, goal,
 	// search for route, parallelized
 	routeChan := make(chan *RouteLists)
 	logChan := make(chan string)
+	doneChan := make(chan int)
 	log.Printf("-- using %d threads", runtime.NumCPU())
 	for i := 0; i < runtime.NumCPU(); i++ {
 		go searchAsync(start, goal, forbid, maxlen, verbose,
-			logChan, routeChan)
+			logChan, routeChan, doneChan)
 	}
 
 	// log messages from all threads
-	doneChan := make(chan int)
 	go func() {
 		for {
 			select {
@@ -183,8 +183,13 @@ func randomize(romData []byte, outFilename string, start, goal,
 			break
 		}
 	}
-	doneChan <- 1
-	// TODO should tell other routines to stop too
+
+	// tell all the other routines to stop
+	go func() {
+		for {
+			doneChan <- 1
+		}
+	}()
 
 	// didn't find any route
 	if rl == nil {
@@ -237,10 +242,11 @@ func randomize(romData []byte, outFilename string, start, goal,
 
 // searches for a route and logs and returns a route on the given channels.
 func searchAsync(start, goal, forbid []string, maxlen int, verbose bool,
-	logChan chan string, retChan chan *RouteLists) {
+	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
 	logChan <- "-- beginning search"
 
 	// find a viable random route
 	r := NewRoute(start)
-	retChan <- findRoute(r, start, goal, forbid, maxlen, verbose, logChan)
+	retChan <- findRoute(r, start, goal, forbid, maxlen, verbose,
+		logChan, doneChan)
 }
