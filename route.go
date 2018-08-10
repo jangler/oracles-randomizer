@@ -365,7 +365,9 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 		if reached[g["harvest item"]] {
 			switch add[0].Name {
 			case "satchel", "slingshot L-1", "slingshot L-2":
-				needCount = false
+				if !reached[g["seed item"]] {
+					needCount = false
+				}
 			case "gale tree seeds 1":
 				if reached[g["seed item"]] {
 					needCount = false
