@@ -59,7 +59,7 @@ var d2Prenodes = map[string]*Prenode{
 	"d2 key fall":      And("d2 torch room", "kill rope"),
 	"d2 arrow room": Or(
 		And("d2 torch room", "ember seeds"),
-		And("enter d2 C", "bracelet")),
+		And("enter d2 B", "bracelet")),
 	"d2 hardhat room": And("d2 arrow room", "d2 key A"),
 	"d2 map chest":    And("d2 hardhat room", "remove pot"),
 	"d2 compass chest": Or(
@@ -68,7 +68,7 @@ var d2Prenodes = map[string]*Prenode{
 	"d2 bracelet chest": AndSlot("d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"),
 	"d2 bomb key chest": And("enter d2 B", "remove bush", "bombs"),
 	"d2 blade key chest": Or(
-		And("enter d2 C", "bracelet"),
+		And("enter d2 B", "bracelet"),
 		And("d2 arrow room", "kill rope", "kill goriya")),
 
 	"d2 bomb wall": And("d2 blade key chest"), // alias for external reference

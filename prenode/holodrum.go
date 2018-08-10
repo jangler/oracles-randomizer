@@ -42,9 +42,10 @@ var holodrumPrenodes = map[string]*Prenode{
 			"eastern suburbs default summer", "summer",
 			"eastern suburbs default autumn", "autumn"))),
 	"enter d2 A": And("mystery tree", "remove bush"),
-	"enter d2 B": And("mystery tree", "bracelet"),
-	"enter d2 C": And("mystery tree", "bracelet"),
-	"enter d2":   Or("enter d2 A", "enter d2 B", "enter d2 C"),
+	"enter d2 B": Or(
+		And("mystery tree", "woods of winter default summer", "bracelet"),
+		And("d2 blade key chest", "bracelet")),
+	"enter d2": Or("enter d2 A", "enter d2 B"),
 
 	// holodrum plain
 	"ghastly stump": Or(
