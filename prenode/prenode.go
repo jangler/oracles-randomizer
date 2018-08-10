@@ -1,5 +1,9 @@
 package prenode
 
+import (
+	"fmt"
+)
+
 // This package contains definitions of nodes and node relationships before
 // they are inserted into the graph. This is necessary because nodes
 // relationships can't be made until the nodes are added first (and it's nice
@@ -57,6 +61,42 @@ var (
 	OrStep  = CreateFunc(OrStepType)
 )
 
+var allPrenodes map[string]*Prenode
+
+func init() {
+	allPrenodes = make(map[string]*Prenode)
+	appendPrenodes(allPrenodes,
+		itemPrenodes, baseItemPrenodes, ignoredBaseItemPrenodes, killPrenodes,
+		holodrumPrenodes, subrosiaPrenodes, portalPrenodes, seasonPrenodes,
+		d0Prenodes, d1Prenodes, d2Prenodes, d3Prenodes, d4Prenodes,
+		d5Prenodes, d6Prenodes, d7Prenodes, d8Prenodes, d9Prenodes)
+	flattenNestedPrenodes(allPrenodes)
+}
+
+// add nested prenodes to the map and turn their references into strings
+func flattenNestedPrenodes(prenodes map[string]*Prenode) {
+	done := true
+
+	for name, pn := range prenodes {
+		subID := 0
+		for i, parent := range pn.Parents {
+			switch parent := parent.(type) {
+			case *Prenode:
+				subID++
+				subName := fmt.Sprintf("%s %d", name, subID)
+				pn.Parents[i] = subName
+				prenodes[subName] = parent
+				done = false
+			}
+		}
+	}
+
+	// recurse if prenodes were added
+	if !done {
+		flattenNestedPrenodes(prenodes)
+	}
+}
+
 // BaseItems returns a map of item prenodes that may be assigned to slots.
 func BaseItems() map[string]*Prenode {
 	return baseItemPrenodes
@@ -64,13 +104,7 @@ func BaseItems() map[string]*Prenode {
 
 // GetAll returns all prenodes.
 func GetAll() map[string]*Prenode {
-	total := make(map[string]*Prenode)
-	appendPrenodes(total,
-		itemPrenodes, baseItemPrenodes, ignoredBaseItemPrenodes, killPrenodes,
-		holodrumPrenodes, subrosiaPrenodes, portalPrenodes, seasonPrenodes,
-		d0Prenodes, d1Prenodes, d2Prenodes, d3Prenodes, d4Prenodes,
-		d5Prenodes, d6Prenodes, d7Prenodes, d8Prenodes, d9Prenodes)
-	return total
+	return allPrenodes
 }
 
 // merge the given maps into the first argument

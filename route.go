@@ -30,7 +30,6 @@ func NewRoute(start []string) *Route {
 	g := graph.New()
 
 	totalPrenodes := prenode.GetAll()
-	expandNestedPrenodes(totalPrenodes)
 
 	// make start nodes given
 	for _, key := range start {
@@ -49,30 +48,6 @@ func NewRoute(start []string) *Route {
 	}
 
 	return &Route{Graph: g, Slots: openSlots}
-}
-
-// flatten nested prenodes
-func expandNestedPrenodes(prenodes map[string]*prenode.Prenode) {
-	done := true
-
-	for name, pn := range prenodes {
-		subID := 0
-		for i, parent := range pn.Parents {
-			switch parent := parent.(type) {
-			case *prenode.Prenode:
-				subID++
-				subName := fmt.Sprintf("%s %d", name, subID)
-				pn.Parents[i] = subName
-				prenodes[subName] = parent
-				done = false
-			}
-		}
-	}
-
-	// recurse if prenodes were added
-	if !done {
-		expandNestedPrenodes(prenodes)
-	}
 }
 
 func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode) {
