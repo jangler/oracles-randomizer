@@ -25,17 +25,19 @@ the usage (`./oos-randomizer -h`) message:
 
     Usage of ./oos-randomizer:
       -devcmd string
-        	if given, run developer command
+            if given, run developer command
       -dryrun
-        	don't write an output ROM file
+            don't write an output ROM file
       -forbid string
-        	comma-separated list of nodes that must not be reachable
+            comma-separated list of nodes that must not be reachable
       -goal string
-        	comma-separated list of nodes that must be reachable (default "done")
+            comma-separated list of nodes that must be reachable (default "done")
       -maxlen int
-        	if >= 0, maximum number of slotted items in the route (default -1)
+            if >= 0, maximum number of slotted items in the route (default -1)
+      -seed string
+            specific random seed to use (32-bit hex number)
       -update
-        	update randomized ROM to this version
+            update randomized ROM to this version
 
 Note that some combinations of these flags can result in impossible conditions,
 like `-goal 'd1 essence' -forbid 'ember seeds'`. If you specify an early goal,

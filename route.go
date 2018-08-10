@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"sort"
 	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
@@ -270,30 +271,35 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 
 // return shuffled lists of item and slot nodes
 func initRouteLists(r *Route) (itemList, slotList *list.List) {
-	// shuffle names in slices
-	items := make([]*graph.Node, 0, len(prenode.BaseItems()))
-	slots := make([]*graph.Node, 0, len(r.Slots))
-	for itemName := range prenode.BaseItems() {
-		items = append(items, r.Graph[itemName])
+	// get slices of names
+	itemNames := make([]string, 0, len(prenode.BaseItems()))
+	slotNames := make([]string, 0, len(r.Slots))
+	for key := range prenode.BaseItems() {
+		itemNames = append(itemNames, key)
 	}
-	for slotName := range r.Slots {
-		slots = append(slots, r.Graph[slotName])
+	for key := range r.Slots {
+		slotNames = append(slotNames, key)
 	}
-	rand.Shuffle(len(items), func(i, j int) {
-		items[i], items[j] = items[j], items[i]
+
+	// sort the slices so that order isn't dependent on map implementation,
+	// then shuffle the sorted slices
+	sort.Strings(itemNames)
+	sort.Strings(slotNames)
+	rand.Shuffle(len(itemNames), func(i, j int) {
+		itemNames[i], itemNames[j] = itemNames[j], itemNames[i]
 	})
-	rand.Shuffle(len(slots), func(i, j int) {
-		slots[i], slots[j] = slots[j], slots[i]
+	rand.Shuffle(len(slotNames), func(i, j int) {
+		slotNames[i], slotNames[j] = slotNames[j], slotNames[i]
 	})
 
-	// push the shuffled items onto stacks
+	// push the graph nodes by name onto stacks
 	itemList = list.New()
 	slotList = list.New()
-	for _, itemNode := range items {
-		itemList.PushBack(itemNode)
+	for _, key := range itemNames {
+		itemList.PushBack(r.Graph[key])
 	}
-	for _, slotNode := range slots {
-		slotList.PushBack(slotNode)
+	for _, key := range slotNames {
+		slotList.PushBack(r.Graph[key])
 	}
 
 	return itemList, slotList

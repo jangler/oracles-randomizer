@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -33,6 +34,8 @@ func main() {
 		"if >= 0, maximum number of slotted items in the route")
 	flagDryrun := flag.Bool(
 		"dryrun", false, "don't write an output ROM file")
+	flagSeed := flag.String("seed", "",
+		"specific random seed to use (32-bit hex number)")
 	flagUpdate := flag.Bool(
 		"update", false, "update randomized ROM to this version")
 	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
@@ -65,8 +68,6 @@ func main() {
 			checkNumArgs("randomizer", 2)
 		}
 
-		rand.Seed(time.Now().UnixNano())
-
 		// load rom
 		romData, err := readFileBytes(flag.Arg(0))
 		if err != nil {
@@ -87,7 +88,10 @@ func main() {
 				log.Fatal(err)
 			}
 		} else {
+			seed := setRandomSeed(*flagSeed)
+
 			summary, summaryDone := getSummaryChannel()
+			summary <- fmt.Sprintf("seed: %08x", seed)
 
 			if errs := randomize(romData, flag.Arg(1),
 				[]string{"horon village"}, goal, forbid,
@@ -130,6 +134,23 @@ func parseDelimitedArg(arg, delimiter string) []string {
 	}
 
 	return a
+}
+
+// sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or
+// else the current time, and returns that seed.
+func setRandomSeed(hexString string) uint32 {
+	seed := uint32(time.Now().UnixNano())
+	if hexString != "" {
+		v, err := strconv.ParseUint(
+			strings.Replace(hexString, "0x", "", 1), 16, 32)
+		if err != nil {
+			log.Fatalf(`fatal: invalid seed "%s"`, hexString)
+		}
+		seed = uint32(v)
+	}
+	rand.Seed(int64(seed))
+
+	return seed
 }
 
 // return the contents of the names file as a slice of bytes
