@@ -7,6 +7,7 @@ import (
 	"log"
 	"math/rand"
 	"os"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -152,15 +153,56 @@ func randomize(romData []byte, outFilename string, start, goal,
 		}
 	}
 
-	// find a viable random route
-	usedItems, unusedItems, usedSlots :=
-		findRoute(r, start, goal, forbid, maxlen, verbose)
+	// search for route, parallelized
+	routeChan := make(chan *RouteLists)
+	logChan := make(chan string)
+	doneChan := make(chan int)
+	log.Printf("-- using %d threads", runtime.NumCPU())
+	for i := 0; i < runtime.NumCPU(); i++ {
+		go searchAsync(start, goal, forbid, maxlen, verbose,
+			logChan, routeChan, doneChan)
+	}
+
+	// log messages from all threads
+	go func() {
+		for {
+			select {
+			case msg := <-logChan:
+				log.Print(msg)
+			case <-doneChan:
+				return
+			}
+		}
+	}()
+
+	// get return values
+	var rl *RouteLists
+	for i := 0; i < runtime.NumCPU(); i++ {
+		rl = <-routeChan
+		if rl != nil {
+			break
+		}
+	}
+
+	// tell all the other routines to stop
+	go func() {
+		for {
+			doneChan <- 1
+		}
+	}()
+
+	// didn't find any route
+	if rl == nil {
+		log.Fatal("-- fatal: no route found")
+	}
 
 	// place selected treasures in slots
-	usedLines := make([]string, 0, usedSlots.Len())
-	for usedSlots.Len() > 0 {
-		slotName := usedSlots.Remove(usedSlots.Front()).(*graph.Node).Name
-		treasureName := usedItems.Remove(usedItems.Front()).(*graph.Node).Name
+	usedLines := make([]string, 0, rl.UsedSlots.Len())
+	for rl.UsedSlots.Len() > 0 {
+		slotName :=
+			rl.UsedSlots.Remove(rl.UsedSlots.Front()).(*graph.Node).Name
+		treasureName :=
+			rl.UsedItems.Remove(rl.UsedItems.Front()).(*graph.Node).Name
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 
 		usedLines =
@@ -184,7 +226,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 	summary <- ""
 	summary <- "unused items:"
 	summary <- ""
-	for e := unusedItems.Front(); e != nil; e = e.Next() {
+	for e := rl.UnusedItems.Front(); e != nil; e = e.Next() {
 		summary <- e.Value.(*graph.Node).Name
 	}
 
@@ -196,4 +238,15 @@ func randomize(romData []byte, outFilename string, start, goal,
 	}
 
 	return nil
+}
+
+// searches for a route and logs and returns a route on the given channels.
+func searchAsync(start, goal, forbid []string, maxlen int, verbose bool,
+	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
+	logChan <- "-- beginning search"
+
+	// find a viable random route
+	r := NewRoute(start)
+	retChan <- findRoute(r, start, goal, forbid, maxlen, verbose,
+		logChan, doneChan)
 }
