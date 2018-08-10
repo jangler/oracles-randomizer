@@ -45,12 +45,8 @@ var baseItemPrenodes = map[string]*Prenode{
 
 // don't slot these for now; they don't satisfy anything or cause problems
 var ignoredBaseItemPrenodes = map[string]*Prenode{
-	// "ring box L-2": Root(),
+	"ring box L-2": Root(),
 
-	// ring box L-1 is free, but these nodes are "find" because it costs
-	// rupees to appraise (and therefore use) rings
-	//
-	// XXX temporarily disable these; see note in rom/treasures.go
 	"find fist ring":     Root(),
 	"find expert's ring": Root(),
 	"find energy ring":   Root(),

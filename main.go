@@ -38,6 +38,8 @@ func main() {
 		"specific random seed to use (32-bit hex number)")
 	flagUpdate := flag.Bool(
 		"update", false, "update randomized ROM to this version")
+	flagVerbose := flag.Bool(
+		"verbose", false, "print more detailed output to terminal")
 	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
 	flag.Parse()
 
@@ -95,7 +97,7 @@ func main() {
 
 			if errs := randomize(romData, flag.Arg(1),
 				[]string{"horon village"}, goal, forbid,
-				*flagMaxlen, summary); errs != nil {
+				*flagMaxlen, summary, *flagVerbose); errs != nil {
 				for _, err := range errs {
 					log.Print(err)
 				}
@@ -164,8 +166,8 @@ func readFileBytes(filename string) ([]byte, error) {
 }
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
-func randomize(romData []byte, outFilename string,
-	start, goal, forbid []string, maxlen int, summary chan string) []error {
+func randomize(romData []byte, outFilename string, start, goal,
+	forbid []string, maxlen int, summary chan string, verbose bool) []error {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
@@ -186,7 +188,7 @@ func randomize(romData []byte, outFilename string,
 
 	// find a viable random route
 	usedItems, unusedItems, usedSlots :=
-		findRoute(r, start, goal, forbid, maxlen)
+		findRoute(r, start, goal, forbid, maxlen, verbose)
 
 	// place selected treasures in slots
 	usedLines := make([]string, 0, usedSlots.Len())
