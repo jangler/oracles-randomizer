@@ -87,7 +87,7 @@ func main() {
 				log.Fatal(err)
 			}
 		} else {
-			summary := getSummaryChannel()
+			summary, summaryDone := getSummaryChannel()
 
 			if errs := randomize(romData, flag.Arg(1),
 				[]string{"horon village"}, goal, forbid,
@@ -98,8 +98,8 @@ func main() {
 				os.Exit(1)
 			}
 
-			summary <- ""
 			close(summary)
+			<-summaryDone
 		}
 
 		// write to file unless it's a dry run
