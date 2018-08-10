@@ -171,7 +171,7 @@ var d5Prenodes = map[string]*Prenode{
 	"sidescroll magnets": Or("magnet jump", "pegasus jump L-2"),
 
 	// 1F (it's the only F)
-	"d5 cart bay":       And("enter d5", "cross large pool"),
+	"d5 cart bay":       And("enter d5", Or("flippers", "long jump")),
 	"d5 cart key chest": And("d5 cart bay", "hit lever"),
 	"d5 underground A":  Or("d5 stairs A in", "d5 stairs C in"),
 	"d5 stairs A in":    And("d5 cart bay"),
