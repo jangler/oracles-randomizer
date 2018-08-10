@@ -78,7 +78,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("ghastly stump", "remove bush", "flippers"),
 		And("scent tree", "flippers"),
 		And("swamp portal", "bracelet")),
-	"square jewel chest": AndSlot(Or("spool swamp default winter",
+	"square jewel chest": AndSlot("south swamp", Or("spool swamp default winter",
 		And("spool stump", "winter")), "shovel", Or("animal flute", "bombs")),
 	"enter d3": And("spool stump", Or("spool swamp default summer", "summer")),
 
