@@ -3,7 +3,6 @@ package main
 import (
 	"container/list"
 	"fmt"
-	"log"
 	"math/rand"
 	"sort"
 	"strings"
@@ -76,18 +75,21 @@ func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 	}
 }
 
+type RouteLists struct {
+	UsedItems, UnusedItems, UsedSlots *list.List
+}
+
 // attempts to create a path to the given targets by placing different items in
-// slots.
+// slots. returns nils if no route is found.
 func findRoute(r *Route, start, goal, forbid []string,
-	maxlen int, verbose bool) (usedItems, itemList, usedSlots *list.List) {
+	maxlen int, verbose bool, logChan chan string) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
-	var slotList *list.List
-	itemList, slotList = initRouteLists(r)
+	itemList, slotList := initRouteLists(r)
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
-	usedItems = list.New()
-	usedSlots = list.New()
+	usedItems := list.New()
+	usedSlots := list.New()
 
 	// convert name lists into node lists
 	startNodes := make([]*graph.Node, len(start))
@@ -107,32 +109,34 @@ func findRoute(r *Route, start, goal, forbid []string,
 	iteration, tries := 0, 0
 	for tries = 0; tries < maxTries; tries++ {
 		rollSeasons(r.Graph)
-		log.Printf("-- searching for route (%d)", tries+1)
+		logChan <- fmt.Sprintf("-- searching for route (%d)", tries+1)
 
 		if tryExploreTargets(r.Graph, nil, startNodes, goalNodes, forbidNodes,
 			maxlen, &iteration, itemList, usedItems, slotList, usedSlots,
-			verbose) {
-			log.Print("-- success")
+			verbose, logChan) {
+			logChan <- "-- success"
 			if verbose {
-				announceSuccessDetails(r, goal, usedItems, usedSlots)
+				announceSuccessDetails(r, goal, usedItems, usedSlots, logChan)
 			}
 			break
 		} else if iteration > maxIterations {
 			if verbose {
-				log.Print("-- routing took too long; retrying")
+				logChan <- "-- routing took too long; retrying"
 			}
 			itemList, slotList = initRouteLists(r)
 			usedItems, usedSlots = list.New(), list.New()
 			iteration = 0
 		} else {
-			log.Fatal("-- fatal: could not find route")
+			logChan <- "-- could not find route"
 		}
 	}
 	if tries >= maxTries {
-		log.Fatalf("-- fatal: could not find route after %d tries", maxTries)
+		logChan <- fmt.Sprintf("-- abort; could not find route after %d tries",
+			maxTries)
+		return nil
 	}
 
-	return
+	return &RouteLists{usedItems, itemList, usedSlots}
 }
 
 var (
@@ -170,14 +174,15 @@ func rollSeasons(g graph.Graph) {
 // the lists are lists of nodes.
 func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 	add, goal, forbid []*graph.Node, maxlen int, iteration *int,
-	itemList, usedItems, slotList, usedSlots *list.List, verbose bool) bool {
+	itemList, usedItems, slotList, usedSlots *list.List,
+	verbose bool, logChan chan string) bool {
 	*iteration++
 	if verbose {
-		log.Print("iteration ", *iteration)
+		logChan <- fmt.Sprintf("iteration %d", *iteration)
 	}
 	if *iteration > maxIterations {
 		if verbose {
-			log.Print("-- false; maximum iterations reached")
+			logChan <- "-- false; maximum iterations reached"
 		}
 		return false
 	}
@@ -185,13 +190,13 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 	// explore given the old state and changes
 	reached := g.Explore(start, add)
 	if verbose {
-		log.Print(countSteps(reached), " steps reached")
+		logChan <- fmt.Sprintf("%d steps reached", countSteps(reached))
 	}
 
 	// check whether to return right now
 	fillUnused := false
-	switch checkRouteState(
-		g, start, reached, add, goal, forbid, slotList, maxlen, verbose) {
+	switch checkRouteState(g, start, reached, add, goal, forbid,
+		slotList, maxlen, verbose, logChan) {
 	case RouteFillUnused:
 		fillUnused = true
 	case RouteSuccess:
@@ -225,7 +230,7 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 			g[itemNode.Name].AddParents(g[slotNode.Name])
 
 			if verbose {
-				printItemSequence(usedItems)
+				printItemSequence(usedItems, logChan)
 			}
 
 			// recurse unless the item should be skipped
@@ -234,11 +239,11 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 				g, reached, itemNode, slotNode, jewelChecked, fillUnused)
 			if !skip {
 				if verbose {
-					log.Print("trying slot " + slotNode.Name)
+					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
 				}
 				if tryExploreTargets(g, reached, []*graph.Node{itemNode}, goal,
 					forbid, maxlen-1, iteration, itemList, usedItems, slotList,
-					usedSlots, verbose) {
+					usedSlots, verbose, logChan) {
 					return true
 				}
 			}
@@ -257,7 +262,7 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 
 	// nothing worked
 	if verbose {
-		log.Print("-- false; no slot/item combination worked")
+		logChan <- "-- false; no slot/item combination worked"
 	}
 	return false
 }
@@ -313,12 +318,13 @@ const (
 // needs more work
 func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	add, goal, forbid []*graph.Node, slots *list.List, maxlen int,
-	verbose bool) RouteState {
+	verbose bool, logChan chan string) RouteState {
 	// abort if any forbidden node is reached
 	for _, node := range forbid {
 		if reached[node] {
 			if verbose {
-				log.Printf("-- false; reached forbidden node %s", node)
+				logChan <- fmt.Sprintf(
+					"-- false; reached forbidden node %s", node)
 			}
 			return RouteInvalid
 		}
@@ -327,7 +333,7 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	// check for softlocks
 	if err := canSoftlock(g); err != nil {
 		if verbose {
-			log.Print("-- false; ", err)
+			logChan <- fmt.Sprintf("-- false; %v", err)
 		}
 		return RouteInvalid
 	}
@@ -337,7 +343,8 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	for _, node := range goal {
 		if !reached[node] {
 			if verbose {
-				log.Printf("-- have not reached goal node %s", node)
+				logChan <- fmt.Sprintf(
+					"-- have not reached goal node %s", node)
 			}
 			allReached = false
 			break
@@ -345,16 +352,16 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	}
 	if allReached {
 		if verbose {
-			log.Print("-- all goals reached")
+			logChan <- "-- all goals reached"
 		}
 		if slots.Len() == 0 {
 			if verbose {
-				log.Print("-- true; all goals reached and slots filled")
+				logChan <- "-- true; all goals reached and slots filled"
 			}
 			return RouteSuccess
 		}
 		if verbose {
-			log.Print("-- filling extra slots")
+			logChan <- "-- filling extra slots"
 		}
 		return RouteFillUnused
 	}
@@ -387,7 +394,8 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 
 		if needCount && countSteps(reached) <= countSteps(start) {
 			if verbose {
-				log.Printf("-- false; reached steps %d <= start steps %d",
+				logChan <- fmt.Sprintf(
+					"-- false; reached steps %d <= start steps %d",
 					countSteps(reached), countSteps(start))
 			}
 			return RouteInvalid
@@ -397,7 +405,7 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 	// can't slot any more items
 	if maxlen == 0 {
 		if verbose {
-			log.Print("-- false; slotted maxlen items")
+			logChan <- "-- false; slotted maxlen items"
 		}
 		return RouteInvalid
 	}
@@ -406,12 +414,12 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 }
 
 // print the currently evaluating sequence of slotted items
-func printItemSequence(usedItems *list.List) {
+func printItemSequence(usedItems *list.List, logChan chan string) {
 	items := make([]string, 0, usedItems.Len())
 	for e := usedItems.Front(); e != nil; e = e.Next() {
 		items = append(items, e.Value.(*graph.Node).Name)
 	}
-	log.Print("trying " + strings.Join(items, " -> "))
+	logChan <- fmt.Sprintf("trying %s", strings.Join(items, " -> "))
 }
 
 // return skip = true iff conditions mean this item shouldn't be checked, and
@@ -466,13 +474,13 @@ func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool, itemNode,
 }
 
 // print item/slot info on a succeeded route
-func announceSuccessDetails(
-	r *Route, goal []string, usedItems, usedSlots *list.List) {
-	log.Print("-- slotted items")
+func announceSuccessDetails(r *Route, goal []string,
+	usedItems, usedSlots *list.List, logChan chan string) {
+	logChan <- "-- slotted items"
 
 	// iterate by rotating again for some reason
 	for i := 0; i < usedItems.Len(); i++ {
-		log.Printf("%v <- %v",
+		logChan <- fmt.Sprintf("%v <- %v",
 			usedItems.Front().Value.(*graph.Node),
 			usedSlots.Front().Value.(*graph.Node))
 		usedItems.MoveToBack(usedItems.Front())

@@ -99,12 +99,12 @@ func flattenNestedPrenodes(prenodes map[string]*Prenode) {
 
 // BaseItems returns a map of item prenodes that may be assigned to slots.
 func BaseItems() map[string]*Prenode {
-	return baseItemPrenodes
+	return copyMap(baseItemPrenodes)
 }
 
-// GetAll returns all prenodes.
+// GetAll returns a copy of all prenodes.
 func GetAll() map[string]*Prenode {
-	return allPrenodes
+	return copyMap(allPrenodes)
 }
 
 // merge the given maps into the first argument
@@ -114,4 +114,13 @@ func appendPrenodes(total map[string]*Prenode, maps ...map[string]*Prenode) {
 			total[k] = v
 		}
 	}
+}
+
+// returns a shallow copy of a string/prenode map
+func copyMap(src map[string]*Prenode) map[string]*Prenode {
+	dst := make(map[string]*Prenode, len(src))
+	for k, v := range src {
+		dst[k] = v
+	}
+	return dst
 }
