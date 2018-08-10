@@ -24,10 +24,6 @@ before the filename arguments to fine-tune the randomization, as displayed in
 the usage (`./oos-randomizer -h`) message:
 
     Usage of ./oos-randomizer:
-      -devcmd string
-            if given, run developer command
-      -dryrun
-            don't write an output ROM file
       -forbid string
             comma-separated list of nodes that must not be reachable
       -goal string
@@ -38,6 +34,8 @@ the usage (`./oos-randomizer -h`) message:
             specific random seed to use (32-bit hex number)
       -update
             update randomized ROM to this version
+      -verbose
+            print more detailed output to terminal
 
 Note that some combinations of these flags can result in impossible conditions,
 like `-goal 'd1 essence' -forbid 'ember seeds'`. If you specify an early goal,
