@@ -8,6 +8,7 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
+// item placement from a 1.2.2 rom used for a race
 var testAllocation = map[string]string{
 	"rod":                "d0 sword chest",
 	"bracelet":           "maku key fall",
