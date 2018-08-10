@@ -8,7 +8,7 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
-var testAllocation = map[string]string{
+var testData1 = map[string]string{
 	"rod":                "d0 sword chest",
 	"bracelet":           "maku key fall",
 	"gnarled key":        "blaino gift",
@@ -43,7 +43,58 @@ var testAllocation = map[string]string{
 	"scent tree seeds":   "tarm gale tree",
 }
 
+var testData2 = map[string]string{
+	"fool's ore":         "d0 sword chest",
+	"bracelet":           "maku key fall",
+	"slingshot L-2":      "blaino gift",
+	"mystery tree seeds": "ember tree",
+	"pyramid jewel":      "x-shaped jewel chest",
+	"ember tree seeds":   "scent tree",
+	"rod":                "boomerang gift",
+	"feather L-1":        "d2 bracelet chest",
+	"magnet gloves":      "rod gift",
+	"gale tree seeds 1":  "sunken gale tree",
+	"shovel":             "shovel gift",
+	"gnarled key":        "star ore spot",
+	"master's plaque":    "d1 satchel",
+	"sword L-2":          "flippers gift",
+	"satchel":            "master's plaque chest",
+	"pegasus tree seeds": "mystery tree",
+	"star ore":           "d8 HSS chest",
+	"boomerang L-2":      "floodgate key gift",
+	"spring banana":      "spring banana tree",
+	"round jewel":        "rusty bell spot",
+	"flippers":           "dragon key spot",
+	"slingshot L-1":      "round jewel gift",
+	"square jewel":       "pyramid jewel spot",
+	"floodgate key":      "d5 magnet gloves chest",
+	"rusty bell":         "square jewel chest",
+	"dragon key":         "d7 cape chest",
+	"feather L-2":        "d4 slingshot chest",
+	"x-shaped jewel":     "d3 feather chest",
+	"gale tree seeds 2":  "tarm gale tree",
+	"sword L-1":          "noble sword spot",
+	"scent tree seeds":   "pegasus tree",
+	"ricky's gloves":     "d6 boomerang chest",
+
+	"temple remains default summer": "start",
+	"temple remains default winter": "",
+	"north horon default autumn":    "start",
+	"north horon default winter":    "",
+	"holodrum plain default winter": "start",
+	"holodrum plain default spring": "",
+	"lost woods default spring":     "start",
+	"lost woods default autumn":     "",
+	"tarm ruins default summer":     "start",
+	"tarm ruins default spring":     "",
+	"spool swamp default summer":    "start",
+	"spool swamp default autumn":    "",
+}
+
+// TODO re-enable this once prenode expansions logic isn't once-only
 func TestFeatherLockCheck(t *testing.T) {
+	t.Skip()
+
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
 
@@ -71,19 +122,28 @@ func TestFeatherLockCheck(t *testing.T) {
 		}, "hide and seek", true)
 
 	// a softlock case from a real rom produced by 1.2.2
-	checkSoftlockWithSlots(t, canFeatherSoftlock, g, testAllocation,
+	checkSoftlockWithSlots(t, canFeatherSoftlock, g, testData1,
 		"hide and seek", true)
 }
 
+func TestBellCheck(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+	g := r.Graph
+
+	// a softlock case from a real rom produced by 1.3.1
+	checkSoftlockWithSlots(t, canPiratesBellSoftlock, g, testData2,
+		"rusty bell", true)
+}
+
 // TODO re-enable this once prenode expansions logic isn't once-only
-func TestD7ExitLockChest(t *testing.T) {
+func TestD7ExitLockCheck(t *testing.T) {
 	t.Skip()
 
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
 
 	// a softlock case from a real rom produced by 1.2.2
-	checkSoftlockWithSlots(t, canD7ExitSoftlock, g, testAllocation,
+	checkSoftlockWithSlots(t, canD7ExitSoftlock, g, testData1,
 		"enter d7", true)
 }
 
@@ -154,13 +214,23 @@ func checkSoftlockWithSlots(t *testing.T, check func(g graph.Graph) error,
 	expectError bool) {
 	t.Helper()
 
-	// add parents at the start of the function, and remove them at the end
+	// add parents at the start of the function, and remove them at the end. if
+	// a parent is blank, remove it at the start and add it at the end (only
+	// useful for default seasons).
 	for child, parent := range parents {
-		g[child].AddParents(g[parent])
+		if parent == "" {
+			g[child].ClearParents()
+		} else {
+			g[child].AddParents(g[parent])
+		}
 	}
 	defer func() {
-		for child := range parents {
-			g[child].ClearParents()
+		for child, parent := range parents {
+			if parent == "" {
+				g[child].AddParents(g["start"])
+			} else {
+				g[child].ClearParents()
+			}
 		}
 	}()
 	g.ExploreFromStart()

@@ -121,11 +121,8 @@ func canEmberSeedSoftlock(g graph.Graph) error {
 // the ship will leave samasa desert and the player won't be able to get the
 // item there. make sure the player can't get the bell before talking to the
 // captain.
-//
-// "pirate house" as a prereq causes fewer problems for the algorithm than
-// "samasa desert".
 func canPiratesBellSoftlock(g graph.Graph) error {
-	if canReachWithoutPrereq(g, g["rusty bell"], g["pirate house"]) {
+	if canReachWithoutPrereq(g, g["rusty bell"], g["desert"]) {
 		return errors.New("pirate's bell softlock")
 	}
 	return nil
