@@ -32,98 +32,64 @@ func main() {
 		"comma-separated list of nodes that must not be reachable")
 	flagMaxlen := flag.Int("maxlen", -1,
 		"if >= 0, maximum number of slotted items in the route")
-	flagDryrun := flag.Bool(
-		"dryrun", false, "don't write an output ROM file")
 	flagSeed := flag.String("seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flagUpdate := flag.Bool(
 		"update", false, "update randomized ROM to this version")
 	flagVerbose := flag.Bool(
 		"verbose", false, "print more detailed output to terminal")
-	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
 	flag.Parse()
 
-	// perform given command (or default, randomize)
-	switch *flagDevcmd {
-	case "verify":
-		checkNumArgs(*flagDevcmd, 1)
+	checkNumArgs("randomizer", 2)
 
-		// load rom
-		romData, err := readFileBytes(flag.Arg(0))
+	// load rom
+	romData, err := readFileBytes(flag.Arg(0))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// split node params
+	goal := parseDelimitedArg(*flagGoal, ",")
+	forbid := []string{}
+	if *flagForbid != "" {
+		forbid = parseDelimitedArg(*flagForbid, ",")
+	}
+
+	// randomize according to params, unless we're just updating
+	if *flagUpdate {
+		_, err := rom.Update(romData)
 		if err != nil {
 			log.Fatal(err)
 		}
+	} else {
+		seed := setRandomSeed(*flagSeed)
 
-		// verify program data vs rom data
-		if errs := rom.Verify(romData); errs != nil {
+		summary, summaryDone := getSummaryChannel()
+		summary <- fmt.Sprintf("seed: %08x", seed)
+
+		if errs := randomize(romData, flag.Arg(1),
+			[]string{"horon village"}, goal, forbid,
+			*flagMaxlen, summary, *flagVerbose); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
 			os.Exit(1)
-		} else {
-			log.Print("everything OK")
-		}
-	case "": // normal behavior (randomize)
-		if *flagDryrun {
-			checkNumArgs("dryrun", 1)
-		} else {
-			checkNumArgs("randomizer", 2)
 		}
 
-		// load rom
-		romData, err := readFileBytes(flag.Arg(0))
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		// split node params
-		goal := parseDelimitedArg(*flagGoal, ",")
-		forbid := []string{}
-		if *flagForbid != "" {
-			forbid = parseDelimitedArg(*flagForbid, ",")
-		}
-
-		// randomize according to params, unless we're just updating
-		if *flagUpdate {
-			_, err := rom.Update(romData)
-			if err != nil {
-				log.Fatal(err)
-			}
-		} else {
-			seed := setRandomSeed(*flagSeed)
-
-			summary, summaryDone := getSummaryChannel()
-			summary <- fmt.Sprintf("seed: %08x", seed)
-
-			if errs := randomize(romData, flag.Arg(1),
-				[]string{"horon village"}, goal, forbid,
-				*flagMaxlen, summary, *flagVerbose); errs != nil {
-				for _, err := range errs {
-					log.Print(err)
-				}
-				os.Exit(1)
-			}
-
-			close(summary)
-			<-summaryDone
-		}
-
-		// write to file unless it's a dry run
-		if !*flagDryrun {
-			f, err := os.Create(flag.Arg(1))
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer f.Close()
-			if _, err := f.Write(romData); err != nil {
-				log.Fatal(err)
-			}
-			log.Printf("wrote new ROM to %s", flag.Arg(1))
-		}
-	default:
-		log.Printf("no such devcmd: %s", *flagDevcmd)
-		os.Exit(2)
+		close(summary)
+		<-summaryDone
 	}
+
+	// write to file
+	f, err := os.Create(flag.Arg(1))
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	if _, err := f.Write(romData); err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("wrote new ROM to %s", flag.Arg(1))
 }
 
 // parses a delimited (e.g. with comma) command-line argument, stripping spaces
