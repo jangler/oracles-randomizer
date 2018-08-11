@@ -91,10 +91,7 @@ var testData2 = map[string]string{
 	"spool swamp default autumn":    "",
 }
 
-// TODO re-enable this once prenode expansions logic isn't once-only
 func TestFeatherLockCheck(t *testing.T) {
-	t.Skip()
-
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
 
@@ -124,15 +121,6 @@ func TestFeatherLockCheck(t *testing.T) {
 	// a softlock case from a real rom produced by 1.2.2
 	checkSoftlockWithSlots(t, canFeatherSoftlock, g, testData1,
 		"hide and seek", true)
-}
-
-func TestBellCheck(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
-	g := r.Graph
-
-	// a softlock case from a real rom produced by 1.3.1
-	checkSoftlockWithSlots(t, canPiratesBellSoftlock, g, testData2,
-		"rusty bell", true)
 }
 
 // TODO re-enable this once prenode expansions logic isn't once-only
@@ -199,10 +187,6 @@ func BenchmarkCanFeatherSoftlock(b *testing.B) {
 
 func BenchmarkCanEmberSeedSoftlock(b *testing.B) {
 	benchGraphCheck(b, canEmberSeedSoftlock)
-}
-
-func BenchmarkCanPiratesBellSoftlock(b *testing.B) {
-	benchGraphCheck(b, canPiratesBellSoftlock)
 }
 
 // the keys in the "parents" map MUST be root nodes. this function errors if

@@ -6,7 +6,7 @@ package prenode
 // 1. "temple": rosa portal, dance hall, temple, smithy
 // 2. "beach": swamp portal, market, beach
 // 3. "hide and seek": H&S, mountain portal, spring tower
-// 4. "pirate house": village portal, pirates, desert portal
+// 4. "pirate house": village portal, pirates
 // 5. "furnace": lake portal, furnace, bomb flower
 // 6. "bridge": bridge area (large but not visited in any%)
 //
@@ -33,8 +33,7 @@ var subrosiaPrenodes = map[string]*Prenode{
 		And("temple", "pegasus jump L-2"),
 		And("bridge", "pegasus jump L-2")),
 
-	"pirate house": Or("village portal", "desert portal",
-		And("hide and seek", "jump")),
+	"pirate house": Or("village portal", And("hide and seek", "jump")),
 
 	"furnace": Or("lake portal",
 		And("beach", "feather L-2"),

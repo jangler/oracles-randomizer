@@ -21,8 +21,6 @@ var portalPrenodes = map[string]*Prenode{
 		And("horon village", "pegasus jump L-2"),
 		And("pirate house", "hit lever")),
 
-	"desert portal": And("desert"), // one-way
-
 	// effectively one-way
 	"remains portal": And("temple remains", Or("temple remains default winter", "winter"), Or(
 		And("shovel", "remove bush", "pegasus jump L-2"),
