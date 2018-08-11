@@ -41,8 +41,8 @@ Note that some combinations of these flags can result in impossible conditions,
 like `-goal 'd1 essence' -forbid 'ember seeds'`. If you specify an early goal,
 like `enter d3`, you'll probably want to use `-maxlen` or `-forbid` to make
 sure the randomizer doesn't make the floodgate key, for instance, the D8
-dungeon item. See further below for an abbreviated list of possible `-goal` and
-`-forbid` nodes.
+dungeon item. Possible goal/forbid names can be found in the files in the
+`prenode/` folder.
 
 Regardless of the value of `-maxlen`, the randomizer will place items in all
 available slots. The flag just limits the number of slotted items that are
@@ -77,20 +77,36 @@ Other small changes have been made for convenience, to simplify randomization
 logic, or to prevent softlocks. The most notable are:
 
 - Mystical seeds grow in all seasons.
-- Seeds can be collected if the player has either slingshot or satchel.
+- Seeds can be collected if the player has either slingshot or the satchel.
 - The cliff between Eastern Suburbs and Sunken City has stairs instead of a
   spring flower.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
 - The diving spot at the south end of Sunken City is removed.
 
 
-## Potentially useful goal/forbid nodes
+## FAQ
 
-- `done`, meaning defeating Onox
-- `dX essence`, where X is a number from 1-8
-- `boomerang L-1`
-- `sword`
-- really just look at the files in the "prenode" folder if you want more
+**Q: When I run the randomizer, a command prompt window opens and closes
+without doing anything. What do I do?**
 
-Remember that you can specify multiple nodes as goals/forbids by separating
-them with commas. Also remember to quote the strings lol
+Read the "usage" section of the readme (you can really ignore all the talk
+about the flags), and if you're still lost, either Google how to use the
+command prompt or ask a friend. Replace command prompt with Unix shell if
+you're on macOS.
+
+**Q: The item in the hero's cave was the (shovel/bracelet/boomerang), and it
+doesn't wake up the Maku Tree. Am I softlocked?**
+
+A: Use bombs, which you can buy in the Horon Village shop.
+
+**Q: Do I have to do HSS skip or Poe skip?**
+
+A: No. You can if you want to, but you're sequence breaking the randomizer if
+you do, so there's a chance you could end up softlocked if you're not careful.
+This will be fixed in version 1.4.
+
+**Q: No, really, I'm softlocked. Now what do I do?**
+
+A: Open an issue about it or tell me in Discord, and provide the log file.
+Depending on the problem, you may be able to `-update` your ROM using the next
+patch version to un-softlock.
