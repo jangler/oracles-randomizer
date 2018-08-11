@@ -34,7 +34,7 @@ func main() {
 	flagDryrun := flag.Bool(
 		"dryrun", false, "don't write an output ROM file")
 	flagUpdate := flag.Bool(
-		"update", false, "update randomized ROM to this version")
+		"update", false, "update already randomized ROM to this version")
 	flagDevcmd := flag.String("devcmd", "", "if given, run developer command")
 	flag.Parse()
 
