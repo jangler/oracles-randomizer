@@ -89,7 +89,7 @@ logic, or to prevent softlocks. The most notable are:
 **Q: When I run the randomizer, a command prompt window opens and closes
 without doing anything. What do I do?**
 
-Read the "usage" section of the readme (you can really ignore all the talk
+A: Read the "usage" section of the readme (you can really ignore all the talk
 about the flags), and if you're still lost, either Google how to use the
 command prompt or ask a friend. Replace command prompt with Unix shell if
 you're on macOS.
