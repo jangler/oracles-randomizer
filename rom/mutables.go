@@ -442,6 +442,14 @@ var constMutables = map[string]Mutable{
 	// rusty bell or pirate's bell, they will be unable to get the desert item.
 	"skull always present": &MutableRange{Addr{0x08, 0x7388},
 		[]byte{0xca, 0xc5, 0x3a}, []byte{0x00, 0x00, 0x00}},
+
+	// replace the rock/flower outside of d6 with a normal bush so that the
+	// player doesn't get softlocked if they exit d6 without gale satchel or
+	// default spring.
+	"replace d6 flower spring": MutableByte(Addr{0x21, 0x47fd}, 0xd8, 0xc4),
+	"replace d6 flower summer": MutableByte(Addr{0x22, 0x450d}, 0x92, 0xc4),
+	"replace d6 flower autumn": MutableByte(Addr{0x23, 0x42fd}, 0x92, 0xc4),
+	"replace d6 flower winter": MutableByte(Addr{0x23, 0x7f5a}, 0x92, 0xc4),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}

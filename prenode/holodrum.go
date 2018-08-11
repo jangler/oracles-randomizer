@@ -132,12 +132,11 @@ var holodrumPrenodes = map[string]*Prenode{
 	"tarm ruins": And("pegasus tree",
 		"square jewel", "pyramid jewel", "round jewel", "x-shaped jewel"),
 	"lost woods": And("tarm ruins", Or("lost woods default summer", "summer"),
-		Or("lost woods default winter", "winter"),
-		Or("lost woods default autumn", "autumn"), "remove mushroom"),
+		Or("lost woods default winter", "winter"), "autumn", "remove mushroom"),
 	"noble sword spot": AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
 	"tarm gale tree":   AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
 	"enter d6": And("tarm gale tree", Or("tarm ruins default winter", "winter"),
-		Or("tarm ruins default spring", "spring"), "shovel", "remove flower"),
+		"shovel", "remove bush"),
 
 	// samasa desert
 	"desert":          And("suburbs", "pirate house"),
