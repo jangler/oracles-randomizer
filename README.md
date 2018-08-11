@@ -94,7 +94,7 @@ about the flags), and if you're still lost, either Google how to use the
 command prompt or ask a friend. Replace command prompt with Unix shell if
 you're on macOS.
 
-**Q: The item in the hero's cave was the (shovel/bracelet/boomerang), and it
+**Q: The item in the Hero's Cave was the (shovel/bracelet/boomerang), and it
 doesn't wake up the Maku Tree. Am I softlocked?**
 
 A: Use bombs, which you can buy in the Horon Village shop.
