@@ -81,10 +81,11 @@ type RouteLists struct {
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(r *Route, start, goal, forbid []string, maxlen int, verbose bool,
-	logChan chan string, doneChan chan int) *RouteLists {
+func findRoute(src *rand.Rand, r *Route, start, goal, forbid []string,
+	maxlen int, verbose bool, logChan chan string,
+	doneChan chan int) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
-	itemList, slotList := initRouteLists(r)
+	itemList, slotList := initRouteLists(src, r)
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
@@ -115,7 +116,7 @@ func findRoute(r *Route, start, goal, forbid []string, maxlen int, verbose bool,
 		default:
 		}
 
-		rollSeasons(r.Graph)
+		rollSeasons(src, r.Graph)
 		logChan <- fmt.Sprintf("-- searching for route (%d)", tries+1)
 
 		if tryExploreTargets(r.Graph, nil, startNodes, goalNodes, forbidNodes,
@@ -130,7 +131,7 @@ func findRoute(r *Route, start, goal, forbid []string, maxlen int, verbose bool,
 			if verbose {
 				logChan <- "-- routing took too long; retrying"
 			}
-			itemList, slotList = initRouteLists(r)
+			itemList, slotList = initRouteLists(src, r)
 			usedItems, usedSlots = list.New(), list.New()
 			iteration = 0
 		} else {
@@ -157,7 +158,7 @@ var (
 
 // set the default seasons for all the applicable areas in the game. also set
 // the values in the ROM.
-func rollSeasons(g graph.Graph) {
+func rollSeasons(src *rand.Rand, g graph.Graph) {
 	for _, area := range seasonAreas {
 		// reset default seasons
 		for _, season := range seasonsByID {
@@ -165,7 +166,7 @@ func rollSeasons(g graph.Graph) {
 		}
 
 		// roll new default season
-		id := rand.Intn(len(seasonsByID))
+		id := src.Intn(len(seasonsByID))
 		season := seasonsByID[id]
 		g.AddParents(map[string][]string{fmt.Sprintf(
 			"%s default %s", area, season): []string{"start"}})
@@ -275,7 +276,7 @@ func tryExploreTargets(g graph.Graph, start map[*graph.Node]bool,
 }
 
 // return shuffled lists of item and slot nodes
-func initRouteLists(r *Route) (itemList, slotList *list.List) {
+func initRouteLists(src *rand.Rand, r *Route) (itemList, slotList *list.List) {
 	// get slices of names
 	itemNames := make([]string, 0, len(prenode.BaseItems()))
 	slotNames := make([]string, 0, len(r.Slots))
@@ -290,10 +291,10 @@ func initRouteLists(r *Route) (itemList, slotList *list.List) {
 	// then shuffle the sorted slices
 	sort.Strings(itemNames)
 	sort.Strings(slotNames)
-	rand.Shuffle(len(itemNames), func(i, j int) {
+	src.Shuffle(len(itemNames), func(i, j int) {
 		itemNames[i], itemNames[j] = itemNames[j], itemNames[i]
 	})
-	rand.Shuffle(len(slotNames), func(i, j int) {
+	src.Shuffle(len(slotNames), func(i, j int) {
 		slotNames[i], slotNames[j] = slotNames[j], slotNames[i]
 	})
 
