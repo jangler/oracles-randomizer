@@ -171,7 +171,7 @@ var d5Prenodes = map[string]*Prenode{
 	"sidescroll magnets": Or("magnet jump", "pegasus jump L-2"),
 
 	// 1F (it's the only F)
-	"d5 cart bay":       And("enter d5", "cross large pool"),
+	"d5 cart bay":       And("enter d5", Or("flippers", "long jump")),
 	"d5 cart key chest": And("d5 cart bay", "hit lever"),
 	"d5 underground A":  Or("d5 stairs A in", "d5 stairs C in"),
 	"d5 stairs A in":    And("d5 cart bay"),
@@ -315,7 +315,11 @@ var d8Prenodes = map[string]*Prenode{
 	"d8 bomb key chest": And("d8 bomb room", "bombs", "kill darknut"), // just being reasonable
 	"d8 ice puzzle room": Or("d8 frypolar stairs",
 		And("d8 cross bridge A", "long jump")),
-	"d8 cross bridge B": And("d8 ice puzzle room", Or("boomerang L-2", "pegasus jump L-2")),
+	"d8 cross bridge B": And("d8 ice puzzle room", Or(
+		"boomerang L-2",
+		"pegasus jump L-2",
+		And("jump", Or("boomerang", "slingshot L-2")),
+		And("long jump", Or("bombs", "slingshot L-1")))), // yes
 	// technically there are pots to throw in this room but i don't care
 	"d8 boss key chest": And("d8 cross bridge B", "kill keese", "kill pols voice (pit)"),
 	"d8 crystal room":   And("d8 ice puzzle room", "d8 key A"),

@@ -111,6 +111,9 @@ func GetAll() map[string]*Prenode {
 func appendPrenodes(total map[string]*Prenode, maps ...map[string]*Prenode) {
 	for _, prenodeMap := range maps {
 		for k, v := range prenodeMap {
+			if _, ok := total[k]; ok {
+				panic("fatal: duplicate prenode key: " + k)
+			}
 			total[k] = v
 		}
 	}

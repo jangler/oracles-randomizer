@@ -97,8 +97,6 @@ var itemPrenodes = map[string]*Prenode{
 	"cross water gap":  Or("flippers", "jump"),
 	"cross large pool": Or("flippers", "pegasus jump L-2"),
 
-	"sword L-2": And("lost woods", "winter", "autumn", "spring", "summer"),
-
 	"ribbon":      And("star ore", "beach"),
 	"bomb flower": And("furnace", "jump", "bracelet"),
 
@@ -107,7 +105,6 @@ var itemPrenodes = map[string]*Prenode{
 	"spring": AndStep("rod", "spring tower"),
 	"autumn": AndStep("rod", "autumn tower"),
 
-	"ricky":         And("ricky pen", "ricky's gloves"),
 	"strange flute": Or("rupees", "temple"),
 	"moosh flute":   And("rupees", "south swamp", "kill moblin"),
 	"dimitri flute": And("temple", "south swamp", "rupees"),

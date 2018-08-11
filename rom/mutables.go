@@ -266,7 +266,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"rusty bell spot": &MutableSlot{
 		Treasure:    Treasures["rusty bell"],
-		IDAddrs:     []Addr{{0x09, 0x6476}},
+		IDAddrs:     []Addr{{0x09, 0x6476}, {0x08, 0x739e}, {0x0b, 0x60b0}},
 		SubIDAddrs:  []Addr{{0x09, 0x6475}},
 		CollectMode: CollectFind2,
 	},
@@ -437,6 +437,11 @@ var constMutables = map[string]Mutable{
 	"replace cliff winter 1": MutableByte(Addr{0x24, 0x5d15}, 0xce, 0xd0),
 	"replace cliff winter 2": MutableByte(Addr{0x24, 0x5d1f}, 0x54, 0xd0),
 	"replace cliff winter 3": MutableByte(Addr{0x24, 0x5d29}, 0x93, 0x04),
+
+	// normally if the player talks to the pirate captain after getting the
+	// rusty bell or pirate's bell, they will be unable to get the desert item.
+	"skull always present": &MutableRange{Addr{0x08, 0x7388},
+		[]byte{0xca, 0xc5, 0x3a}, []byte{0x00, 0x00, 0x00}},
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
