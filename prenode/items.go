@@ -45,7 +45,7 @@ var baseItemPrenodes = map[string]*Prenode{
 
 // don't slot these for now; they don't satisfy anything or cause problems
 var ignoredBaseItemPrenodes = map[string]*Prenode{
-	"ring box L-2": Root(),
+	// "ring box L-2": Root(),
 
 	"find fist ring":     Root(),
 	"find expert's ring": Root(),

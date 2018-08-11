@@ -19,7 +19,7 @@ func TestLinks(t *testing.T) {
 
 	for name, p := range prenodes {
 		// check if any non-root nodes are missing parents
-		if p.Type != RootType && len(p.Parents) == 0 {
+		if p.Type != RootType && len(p.Parents) == 0 && name != "start" {
 			t.Errorf("non-root prenode %s has no parents", name)
 		}
 
@@ -29,7 +29,8 @@ func TestLinks(t *testing.T) {
 			break
 		default:
 			// ignore nodes which are present purely for -goal purposes
-			if name == "done" || name == "enter d2" {
+			if name == "done" || name == "enter d2" ||
+				seasonPrenodes[name] != nil {
 				break
 			}
 
