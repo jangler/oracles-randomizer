@@ -76,6 +76,7 @@ type of seeds on the tree in Horon Village.
 Other small changes have been made for convenience, to simplify randomization
 logic, or to prevent softlocks. The most notable are:
 
+- The intro sequence is almost entirely removed.
 - **Save and quit is replaced with a warp to the seed tree in Horon Village,**
   except if you do it from a game over.
 - Mystical seeds grow in all seasons.
