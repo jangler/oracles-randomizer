@@ -324,6 +324,8 @@ var ItemSlots = map[string]*MutableSlot{
 // consider these mutables constants; they aren't changed in the randomization
 // process.
 var constMutables = map[string]Mutable{
+	// start game with link below bushes, not above
+	"initial link placement": MutableByte(Addr{0x07, 0x4197}, 0x38, 0x58),
 	// make link actionable as soon as he drops into the world.
 	"link immediately actionable": MutableString(Addr{0x05, 0x4d98},
 		"\x3e\x08\xcd\x15", "\xcd\x15\x2a\xc9"),
@@ -486,6 +488,10 @@ var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
 // like the item slots, these are (usually) no-ops until the randomizer touches
 // them.
 var varMutables = map[string]Mutable{
+	// set initial season correctly in the init variables. this replaces
+	// null-terminating whoever's son's name, which *should* be zeroed anyway.
+	"initial season": MutableWord(Addr{0x07, 0x4188}, 0x0e00, 0x2d00),
+
 	// map pop-up icons for seed trees
 	"tarm gale tree map icon":   MutableByte(Addr{0x02, 0x6cb3}, 0x18, 0x18),
 	"sunken gale tree map icon": MutableByte(Addr{0x02, 0x6cb6}, 0x18, 0x18),

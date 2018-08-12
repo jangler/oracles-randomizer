@@ -34,6 +34,8 @@ func Mutate(b []byte) ([]byte, error) {
 	setSceneGfx("noble sword spot", "noble sword graphics")
 	setSceneGfx("noble sword spot", "master sword graphics")
 	setSceneGfx("d0 sword chest", "wooden sword graphics")
+	varMutables["initial season"].(*MutableRange).New =
+		[]byte{0x2d, Seasons["north horon season"].New[0]}
 
 	setSeedData()
 
@@ -65,6 +67,9 @@ func Update(b []byte) ([]byte, error) {
 		}
 	}
 
+	varMutables["initial season"].(*MutableRange).New =
+		[]byte{0x2d, b[Seasons["north horon season"].Addr.FullOffset()]}
+
 	// change seed mechanics based on the ROM's existing tree information
 	for _, name := range []string{"ember tree", "scent tree", "mystery tree",
 		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
@@ -76,7 +81,7 @@ func Update(b []byte) ([]byte, error) {
 		"slingshot initial selection", "carry seeds in slingshot",
 		"ember tree map icon", "scent tree map icon", "mystery tree map icon",
 		"pegasus tree map icon", "sunken gale tree map icon",
-		"tarm gale tree map icon"} {
+		"tarm gale tree map icon", "initial season"} {
 		err = varMutables[name].Mutate(b)
 		if err != nil {
 			return nil, err
