@@ -1,6 +1,7 @@
 package rom
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 )
@@ -30,6 +31,16 @@ func MutableWord(addr Addr, old, new uint16) *MutableRange {
 		Addr: addr,
 		Old:  []byte{byte(old >> 8), byte(old)},
 		New:  []byte{byte(new >> 8), byte(new)},
+	}
+}
+
+// MutableWord returns a MutableRange constructed from the bytes in two
+// strings.
+func MutableString(addr Addr, old, new string) *MutableRange {
+	return &MutableRange{
+		Addr: addr,
+		Old:  bytes.NewBufferString(old).Bytes(),
+		New:  bytes.NewBufferString(new).Bytes(),
 	}
 }
 
@@ -505,6 +516,15 @@ var varMutables = map[string]Mutable{
 	// allow seed collection if you have a slingshot, by checking for the given
 	// initial seed type
 	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
+
+	// replace s+q with warp to ember tree. this requires adding some code at
+	// the end of the bank: if health is zero, do a normal s+q, otherwise set
+	// warp group to overworld and tree index to ember tree, warp, and close
+	// menu.
+	"s+q jump redirect": MutableWord(Addr{0x02, 0x73d5}, 0x6901, 0x1d76),
+	"tree warp": MutableString(Addr{0x02, 0x761d},
+		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
+		"\xfa\xa2\xc6\xa7\xca\x69\x01\x21\xb7\xcb\x36\x05\xaf\xcd\xdd\x5e\xcd\xdd\x4f\xc9"),
 }
 
 var Seasons = map[string]*MutableRange{

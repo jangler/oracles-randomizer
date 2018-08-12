@@ -76,6 +76,8 @@ type of seeds on the tree in Horon Village.
 Other small changes have been made for convenience, to simplify randomization
 logic, or to prevent softlocks. The most notable are:
 
+- **Save and quit is replaced with a warp to the seed tree in Horon Village,**
+  except if you do it from a game over.
 - Mystical seeds grow in all seasons.
 - Seeds can be collected if the player has either slingshot or satchel.
 - The cliff between Eastern Suburbs and Sunken City has stairs instead of a
