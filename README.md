@@ -70,6 +70,8 @@ important.
 Seed trees are also shuffled, and the satchel and slingshot will start with the
 type of seeds on the tree in Horon Village.
 
+The default season for each applicable overworld area is also randomized.
+
 
 ## Other notable changes
 
