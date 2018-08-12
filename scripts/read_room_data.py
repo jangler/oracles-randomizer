@@ -62,6 +62,8 @@ MUSIC = {
     0x0f: "fairy fountain",
     0x12: "hero's cave",
     0x13: "gnarled root dungeon",
+    0x14: "snake's remains",
+    0x19: "explorer's crypt",
     0x1a: "sword and shield maze",
 }
 
@@ -133,7 +135,6 @@ DV_INTERACTIONS = {
         0x14: "N opens for torches",
         0x15: "W opens for torches",
     }),
-    # 0x20 0x00 used in d1 mid boss room
     # 0x20 0x01 used for button -> small key chest in d0
     # 0x20 0x02 used for button -> small key chest in d1
     # 0x20 0x03 used for boss room in d1
@@ -165,6 +166,8 @@ DV_INTERACTIONS = {
     # 0xdc 0x01 and 0x02 outside hero's cave. entrance ??
     0xe2: ("statue eyes", {}),
 }
+
+PARTS = {}
 
 TREASURES = {
     0x03: ("bombs", {
@@ -338,7 +341,6 @@ def read_interaction(buf, bank, addr, name=True):
         # specifically placed entities
         param, addr = read_byte(buf, bank, addr, 1)
 
-        entities = []
         while read_byte(buf, bank, addr) < 0xf0:
             if name:
                 kind = list(lookup_entry(ENTITIES,
@@ -358,8 +360,27 @@ def read_interaction(buf, bank, addr, name=True):
                 "param": param,
                 "variety": kind,
                 "coords": [x, y]
-            }),
-    elif mode in (0xf8, 0xf9, 0xfa):
+            })
+    elif mode == 0xf8:
+        while read_byte(buf, bank, addr) < 0xf0:
+            if name:
+                kind = list(lookup_entry(PARTS,
+                        read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)))
+            else:
+                kind = [read_byte(buf, bank, addr),
+                        read_byte(buf, bank, addr+1)]
+            addr += 2
+            xy, addr = read_byte(buf, bank, addr, 1)
+
+            objects.append({
+                "address": [bank, addr - 3],
+                "mode": "part" if name else mode,
+                "variety": kind,
+                "coords": [(xy & 0x0f) * 0x10 + 0x08,
+                           ((xy >> 4) & 0x0f)* 0x10 + 0x08]
+            })
+    elif mode in (0xf9, 0xfa):
         # TODO
         print("skipped interaction type", hex(mode), "@", hex(addr - 1),
                 file=sys.stderr)
