@@ -481,6 +481,14 @@ var constMutables = map[string]Mutable{
 	"replace d6 flower summer": MutableByte(Addr{0x22, 0x450d}, 0x92, 0xc4),
 	"replace d6 flower autumn": MutableByte(Addr{0x23, 0x42fd}, 0x92, 0xc4),
 	"replace d6 flower winter": MutableByte(Addr{0x23, 0x7f5a}, 0x92, 0xc4),
+
+	// skip pirate cutscene. adds flag-setting code at the end of the bank.
+	"pirate flag call": MutableWord(Addr{0x15, 0x5e52}, 0xb930, 0x707d),
+	"pirate flag func": MutableString(Addr{0x15, 0x7d70},
+		"\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15",
+		"\xcd\xb9\x30\x3e\x17\xcd\xb9\x30\x21\xe2\xc7\xcb\xf6\xc9"),
+	"pirate warp": MutableString(Addr{0x15, 0x5e5f},
+		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
