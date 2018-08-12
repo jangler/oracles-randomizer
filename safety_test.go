@@ -93,7 +93,10 @@ var testData2 = map[string]string{
 	"spool swamp default autumn":    "",
 }
 
+// TODO re-enable this once prenode expansions logic isn't once-only
 func TestFeatherLockCheck(t *testing.T) {
+	t.Skip()
+
 	r := NewRoute([]string{"horon village"})
 	g := r.Graph
 
@@ -132,6 +135,27 @@ func TestD7ExitLockChest(t *testing.T) {
 	// a softlock case from a real rom produced by 1.2.2
 	checkSoftlockWithSlots(t, canD7ExitSoftlock, g, testData1,
 		"enter d7", true)
+}
+
+func TestSquareJewelCheck(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+	g := r.Graph
+
+	// check for false positive
+	checkSoftlockWithSlots(t, canSquareJewelSoftlock, g,
+		map[string]string{
+			"sword L-1": "d0 sword chest",
+			"flippers":  "maku key fall",
+		}, "south swamp", false)
+
+	// check for false negative
+	checkSoftlockWithSlots(t, canSquareJewelSoftlock, g,
+		map[string]string{
+			"sword L-1":                  "d0 sword chest",
+			"flippers":                   "maku key fall",
+			"spool swamp default autumn": "",
+			"spool swamp default winter": "start",
+		}, "square jewel chest", true)
 }
 
 // helper function used for the other benchmarks

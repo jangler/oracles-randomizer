@@ -56,7 +56,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("ghastly stump", Or("jump", "ricky", "winter", "holodrum plain default winter")),
 		And("south swamp", "flippers"),
 		And("sunken city", "animal flute"),
-		And("north horon stump", "bracelet"),
+		And("north horon stump", Or("bracelet", And("remove bush", "flippers"))),
 		And("temple remains", "long jump"),
 		And("goron mountain", "flippers")),
 	"blaino gift":      AndSlot("scent tree", "rupees"),
@@ -79,7 +79,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("scent tree", "flippers"),
 		And("swamp portal", "bracelet")),
 	"square jewel chest": AndSlot("south swamp", Or("spool swamp default winter",
-		And("spool stump", "winter")), "shovel", "bombs"),
+		And("spool stump", "winter")), Or("shovel", "animal flute"), "bombs"),
 	"enter d3": And("spool stump", Or("spool swamp default summer", "summer")),
 
 	// north horon / eyeglass lake
