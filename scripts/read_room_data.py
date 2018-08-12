@@ -63,6 +63,7 @@ MUSIC = {
     0x12: "hero's cave",
     0x13: "gnarled root dungeon",
     0x14: "snake's remains",
+    0x16: "dancing dragon dungeon",
     0x19: "explorer's crypt",
     0x1a: "sword and shield maze",
 }
@@ -157,6 +158,9 @@ DV_INTERACTIONS = {
     0x7f: ("essence", {}),
     0x9d: ("impa", {}),
     0xc6: ("wooden sword", {}),
+    0xc7: (0xc7, {
+        0x04: "renewable bush",
+    }),
     0xdc: ("warp", {
         0x01: "doorway",
         0x02: "chimney",
