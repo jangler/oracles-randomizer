@@ -34,7 +34,7 @@ func MutableWord(addr Addr, old, new uint16) *MutableRange {
 	}
 }
 
-// MutableWord returns a MutableRange constructed from the bytes in two
+// MutableString returns a MutableRange constructed from the bytes in two
 // strings.
 func MutableString(addr Addr, old, new string) *MutableRange {
 	return &MutableRange{
