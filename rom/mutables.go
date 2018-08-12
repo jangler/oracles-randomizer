@@ -324,6 +324,15 @@ var ItemSlots = map[string]*MutableSlot{
 // consider these mutables constants; they aren't changed in the randomization
 // process.
 var constMutables = map[string]Mutable{
+	// make link actionable as soon as he drops into the world.
+	"link immediately actionable": MutableString(Addr{0x05, 0x4d98},
+		"\x3e\x08\xcd\x15", "\xcd\x15\x2a\xc9"),
+	// set global flags and room flags that would be set during the intro,
+	// overwriting the initial din interaction.
+	"set intro flags": MutableString(Addr{0x0a, 0x66ed},
+		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb7\x25\xcd\xb7\x25\xcd\x0b\x25\xd0",
+		"\x3e\x0a\xcd\xb9\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
+
 	// replace s+q with warp to ember tree. this requires adding some code at
 	// the end of the bank: if health is zero, do a normal s+q, otherwise set
 	// warp group to overworld and tree index to ember tree, warp, and close
