@@ -449,6 +449,42 @@ def get_chests(buf, group):
     return chests
 
 
+def search_objects(rom, mode, obj_id=None, obj_subid=None):
+    # read all interactions in all rooms in all groups, and collate the
+    # accumulated objects that match the given ID.
+    objects = []
+    for group in range(6):
+        bank, addr = OBJECT_PTR_TABLE
+        addr = read_ptr(rom, bank, addr + group * 2)
+
+        # loop through rooms until the high byte is fxxx, which means that the
+        # interaction pointers have ended and the interaction data has started
+        for room in range(0x100):
+            room_addr = read_ptr(rom, bank, addr + room * 2)
+
+            # read objects (recursively if more pointers are involved)
+            room_objects = []
+            while read_byte(rom, bank, room_addr) != 0xff:
+                new_objects, room_addr = read_interaction(
+                        rom, bank, room_addr, name=False)
+                room_objects += new_objects
+
+            for obj in room_objects:
+                if obj["mode"] == mode:
+                    if obj_id is None or  obj["variety"][0] == obj_id:
+                        if obj_subid is None or obj["variety"][1] == obj_subid:
+                            full_obj = {
+                                "location": [group, room],
+                                "music": read_music(rom, group, room),
+                            }
+                            full_obj.update(obj)
+                            objects.append(full_obj)
+
+            room += 1
+
+    return objects
+
+
 def name_objects(objects):
     for obj in objects:
         obj["mode"] = INTERACTION_MODES[obj["mode"]]
@@ -512,39 +548,25 @@ elif args.action == "searchobjects":
     obj_id = int(args.args[1], 16)
     obj_subid = int(args.args[2], 16) if len(args.args) > 2 else None
 
-    # read all interactions in all rooms in all groups, and collate the
-    # accumulated objects that match the given ID.
-    objects = []
-    for group in range(6):
-        bank, addr = OBJECT_PTR_TABLE
-        addr = read_ptr(rom, bank, addr + group * 2)
-
-        # loop through rooms until the high byte is fxxx, which means that the
-        # interaction pointers have ended and the interaction data has started
-        for room in range(0x100):
-            room_addr = read_ptr(rom, bank, addr + room * 2)
-
-            # read objects (recursively if more pointers are involved)
-            room_objects = []
-            while read_byte(rom, bank, room_addr) != 0xff:
-                new_objects, room_addr = read_interaction(
-                        rom, bank, room_addr, name=False)
-                room_objects += new_objects
-
-            for obj in room_objects:
-                if obj["mode"] == mode and obj["variety"][0] == obj_id:
-                    if obj_subid is None or obj["variety"][1] == obj_subid:
-                        full_obj = {
-                            "location": [group, room],
-                            "music": read_music(rom, group, room),
-                        }
-                        full_obj.update(obj)
-                        objects.append(full_obj)
-
-            room += 1
-
+    objects = search_objects(rom, mode, obj_id, obj_subid)
     name_objects(objects)
 
     yaml.dump(objects, sys.stdout)
+elif args.action == "keesanity":
+    if len(args.args) != 1:
+        fatal("keesanity expects 1 arg, got", len(args.args))
+
+    rand_enemies = search_objects(rom, 0xf6)
+    for enemy in rand_enemies:
+        addr = full_addr(*enemy["address"])
+        rom = rom[:addr] + bytes([0xe0, 0x32, 0x00]) + rom[addr+3:]
+
+    specific_enemies = search_objects(rom, 0xf7)
+    for enemy in specific_enemies:
+        addr = full_addr(*enemy["address"])
+        rom = rom[:addr] + bytes([0x32, 0x00]) + rom[addr+2:]
+
+    with open(args.args[0], 'wb') as f:
+        f.write(rom)
 else:
     fatal("unknown action:", args.action)
