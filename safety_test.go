@@ -93,10 +93,7 @@ var testData2 = map[string]string{
 	"spool swamp default autumn":    "",
 }
 
-// TODO re-enable this once prenode expansions logic isn't once-only
 func TestFeatherLockCheck(t *testing.T) {
-	t.Skip()
-
 	r := NewRoute([]string{"horon village"})
 	g := r.HardGraph
 
