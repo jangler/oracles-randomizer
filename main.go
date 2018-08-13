@@ -64,13 +64,15 @@ func main() {
 		}
 	} else {
 		seed := setRandomSeed(*flagSeed)
+		if *flagSeed == "" {
+			seed = 0 // none specified, not an actual zero seed
+		}
 
 		summary, summaryDone := getSummaryChannel()
-		summary <- fmt.Sprintf("seed: %08x", seed)
 
 		if errs := randomize(romData, flag.Arg(1),
 			[]string{"horon village"}, goal, forbid,
-			*flagMaxlen, summary, *flagVerbose); errs != nil {
+			*flagMaxlen, *flagVerbose, seed, summary); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
@@ -134,7 +136,8 @@ func readFileBytes(filename string) ([]byte, error) {
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
 func randomize(romData []byte, outFilename string, start, goal,
-	forbid []string, maxlen int, summary chan string, verbose bool) []error {
+	forbid []string, maxlen int, verbose bool, seed uint32,
+	summary chan string) []error {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
@@ -153,21 +156,37 @@ func randomize(romData []byte, outFilename string, start, goal,
 		}
 	}
 
-	// give each routine its own random source, so that the same -seed will
-	// yield the same result.
-	sources := make([]rand.Source, runtime.NumCPU())
-	for i := 0; i < runtime.NumCPU(); i++ {
-		sources[i] = rand.NewSource(rand.Int63())
+	// give each routine its own random source, so that they can return the
+	// seeds that they used. if a specific seed was specified, only use one
+	// thread.
+	numThreads := 1
+	if seed == 0 {
+		numThreads = runtime.NumCPU()
+	}
+	log.Printf("using %d thread(s)", numThreads)
+	sources := make([]rand.Source, numThreads)
+	seeds := make([]uint32, numThreads)
+	for i := 0; i < numThreads; i++ {
+		if seed == 0 {
+			randSeed := uint32(rand.Int63())
+			sources[i] = rand.NewSource(int64(randSeed))
+			seeds[i] = randSeed
+			log.Printf("seed is %08x", randSeed)
+		} else {
+			sources[i] = rand.NewSource(int64(seed))
+			seeds[i] = seed
+			log.Printf("seed is %08x", seed)
+		}
 	}
 
 	// search for route, parallelized
 	routeChan := make(chan *RouteLists)
 	logChan := make(chan string)
+	stopLogChan := make(chan int)
 	doneChan := make(chan int)
-	log.Printf("using %d threads", runtime.NumCPU())
-	for i := 0; i < runtime.NumCPU(); i++ {
-		go searchAsync(rand.New(sources[i]), start, goal, forbid, maxlen,
-			verbose, logChan, routeChan, doneChan)
+	for i := 0; i < numThreads; i++ {
+		go searchAsync(rand.New(sources[i]), seeds[i], start, goal, forbid,
+			maxlen, verbose, logChan, routeChan, doneChan)
 	}
 
 	// log messages from all threads
@@ -176,7 +195,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 			select {
 			case msg := <-logChan:
 				log.Print(msg)
-			case <-doneChan:
+			case <-stopLogChan:
 				return
 			}
 		}
@@ -184,7 +203,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 
 	// get return values
 	var rl *RouteLists
-	for i := 0; i < runtime.NumCPU(); i++ {
+	for i := 0; i < numThreads; i++ {
 		rl = <-routeChan
 		if rl != nil {
 			break
@@ -192,6 +211,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 	}
 
 	// tell all the other routines to stop
+	stopLogChan <- 1
 	go func() {
 		for {
 			doneChan <- 1
@@ -202,6 +222,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 	if rl == nil {
 		log.Fatal("fatal: no route found")
 	}
+	log.Printf("route found; seed %08x", rl.Seed)
 
 	// place selected treasures in slots
 	usedLines := make([]string, 0, rl.UsedSlots.Len())
@@ -216,6 +237,11 @@ func randomize(romData []byte, outFilename string, start, goal,
 			append(usedLines, fmt.Sprintf("%s <- %s", slotName, treasureName))
 	}
 
+	// set rom seasons
+	for area, id := range rl.Seasons {
+		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
+	}
+
 	// do it! (but don't write anything)
 	checksum, err := rom.Mutate(romData)
 	if err != nil {
@@ -223,6 +249,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 	}
 
 	// write info to summary file
+	summary <- fmt.Sprintf("seed: %08x", rl.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
 	summary <- ""
 	summary <- "used items, in order:"
@@ -248,11 +275,11 @@ func randomize(romData []byte, outFilename string, start, goal,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, start, goal, forbid []string,
+func searchAsync(src *rand.Rand, seed uint32, start, goal, forbid []string,
 	maxlen int, verbose bool, logChan chan string, retChan chan *RouteLists,
 	doneChan chan int) {
 	// find a viable random route
 	r := NewRoute(start)
-	retChan <- findRoute(src, r, start, goal, forbid, maxlen, verbose,
+	retChan <- findRoute(src, seed, r, start, goal, forbid, maxlen, verbose,
 		logChan, doneChan)
 }

@@ -100,13 +100,15 @@ func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 }
 
 type RouteLists struct {
+	Seed                              uint32
+	Seasons                           map[string]byte
 	UsedItems, UnusedItems, UsedSlots *list.List
 }
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, r *Route, start, goal, forbid []string,
-	maxlen int, verbose bool, logChan chan string,
+func findRoute(src *rand.Rand, seed uint32, r *Route, start, goal,
+	forbid []string, maxlen int, verbose bool, logChan chan string,
 	doneChan chan int) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
 	itemList, slotList := initRouteLists(src, r)
@@ -131,6 +133,7 @@ func findRoute(src *rand.Rand, r *Route, start, goal, forbid []string,
 	}
 
 	// try to find the route, retrying if needed
+	var seasons map[string]byte
 	iteration, tries := 0, 0
 	for tries = 0; tries < maxTries; tries++ {
 		// abort if route was already found on another thread
@@ -140,13 +143,12 @@ func findRoute(src *rand.Rand, r *Route, start, goal, forbid []string,
 		default:
 		}
 
-		rollSeasons(src, r)
+		seasons = rollSeasons(src, r)
 		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
 
 		if tryExploreTargets(r, nil, startNodes, goalNodes, forbidNodes,
 			maxlen, &iteration, itemList, usedItems, slotList, usedSlots,
 			verbose, logChan) {
-			logChan <- "success"
 			if verbose {
 				announceSuccessDetails(r, goal, usedItems, usedSlots, logChan)
 			}
@@ -168,7 +170,7 @@ func findRoute(src *rand.Rand, r *Route, start, goal, forbid []string,
 		return nil
 	}
 
-	return &RouteLists{usedItems, itemList, usedSlots}
+	return &RouteLists{seed, seasons, usedItems, itemList, usedSlots}
 }
 
 var (
@@ -180,9 +182,11 @@ var (
 	}
 )
 
-// set the default seasons for all the applicable areas in the game. also set
-// the values in the ROM.
-func rollSeasons(src *rand.Rand, r *Route) {
+// set the default seasons for all the applicable areas in the game, and return
+// a mapping of area name to season value.
+func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
+	seasonMap := make(map[string]byte, len(seasonAreas))
+
 	for _, area := range seasonAreas {
 		// reset default seasons
 		for _, season := range seasonsByID {
@@ -193,8 +197,10 @@ func rollSeasons(src *rand.Rand, r *Route) {
 		id := src.Intn(len(seasonsByID))
 		season := seasonsByID[id]
 		r.AddParent(fmt.Sprintf("%s default %s", area, season), "start")
-		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{byte(id)}
+		seasonMap[area] = byte(id)
 	}
+
+	return seasonMap
 }
 
 // try to reach all the given targets using the current graph status. if
