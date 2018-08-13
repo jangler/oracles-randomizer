@@ -246,7 +246,6 @@ func tryExploreTargets(r *Route, start map[*graph.Node]bool, add []*graph.Node,
 		slotList.Remove(slotElem)
 
 		// try a piece of heart if we've already slotted everything useful
-		filledByPoH := false
 		if fillUnused {
 			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest {
 				usedItems.PushBack(graph.NewNode(
