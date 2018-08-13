@@ -27,12 +27,6 @@ func checkNumArgs(op string, expected int) {
 
 func main() {
 	// init flags
-	flagGoal := flag.String("goal", "done",
-		"comma-separated list of nodes that must be reachable")
-	flagForbid := flag.String("forbid", "",
-		"comma-separated list of nodes that must not be reachable")
-	flagMaxlen := flag.Int("maxlen", -1,
-		"if >= 0, maximum number of slotted items in the route")
 	flagSeed := flag.String("seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flagUpdate := flag.Bool(
@@ -49,13 +43,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// split node params
-	goal := parseDelimitedArg(*flagGoal, ",")
-	forbid := []string{}
-	if *flagForbid != "" {
-		forbid = parseDelimitedArg(*flagForbid, ",")
-	}
-
 	// randomize according to params, unless we're just updating
 	if *flagUpdate {
 		_, err := rom.Update(romData)
@@ -70,9 +57,8 @@ func main() {
 
 		summary, summaryDone := getSummaryChannel()
 
-		if errs := randomize(romData, flag.Arg(1),
-			[]string{"horon village"}, goal, forbid,
-			*flagMaxlen, *flagVerbose, seed, summary); errs != nil {
+		if errs := randomize(
+			romData, flag.Arg(1), *flagVerbose, seed, summary); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
@@ -135,25 +121,11 @@ func readFileBytes(filename string) ([]byte, error) {
 }
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
-func randomize(romData []byte, outFilename string, start, goal,
-	forbid []string, maxlen int, verbose bool, seed uint32,
+func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 	summary chan string) []error {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
-	}
-
-	// check args against graph
-	r := NewRoute(start)
-	for _, name := range goal {
-		if _, ok := r.Graph[name]; !ok {
-			log.Fatal("fatal: unknown goal node: ", name)
-		}
-	}
-	for _, name := range forbid {
-		if _, ok := r.Graph[name]; !ok {
-			log.Fatal("fatal: unknown forbid node: ", name)
-		}
 	}
 
 	// give each routine its own random source, so that they can return the
@@ -185,8 +157,8 @@ func randomize(romData []byte, outFilename string, start, goal,
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
 	for i := 0; i < numThreads; i++ {
-		go searchAsync(rand.New(sources[i]), seeds[i], start, goal, forbid,
-			maxlen, verbose, logChan, routeChan, doneChan)
+		go searchAsync(rand.New(sources[i]), seeds[i], verbose,
+			logChan, routeChan, doneChan)
 	}
 
 	// log messages from all threads
@@ -275,11 +247,9 @@ func randomize(romData []byte, outFilename string, start, goal,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, seed uint32, start, goal, forbid []string,
-	maxlen int, verbose bool, logChan chan string, retChan chan *RouteLists,
-	doneChan chan int) {
+func searchAsync(src *rand.Rand, seed uint32, verbose bool,
+	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
 	// find a viable random route
-	r := NewRoute(start)
-	retChan <- findRoute(src, seed, r, start, goal, forbid, maxlen, verbose,
-		logChan, doneChan)
+	r := NewRoute([]string{"horon village"})
+	retChan <- findRoute(src, seed, r, verbose, logChan, doneChan)
 }
