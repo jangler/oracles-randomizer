@@ -245,6 +245,26 @@ func tryExploreTargets(r *Route, start map[*graph.Node]bool, add []*graph.Node,
 		usedSlots.PushBack(slotNode)
 		slotList.Remove(slotElem)
 
+		// try a piece of heart if we've already slotted everything useful
+		filledByPoH := false
+		if fillUnused {
+			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest {
+				usedItems.PushBack(graph.NewNode(
+					"piece of heart (chest)", graph.RootType, false))
+
+				if verbose {
+					printItemSequence(usedItems, logChan)
+					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
+				}
+				if tryExploreTargets(r, reached, nil, iteration, itemList,
+					usedItems, slotList, usedSlots, verbose, logChan) {
+					return true
+				}
+
+				usedItems.Remove(usedItems.Back())
+			}
+		}
+
 		// try placing each unused item into the slot
 		jewelChecked := false
 		for j := 0; j < itemList.Len(); j++ {

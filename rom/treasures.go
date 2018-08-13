@@ -31,6 +31,10 @@ func (t Treasure) SubID() byte {
 	return t.subID
 }
 
+func (t Treasure) CollectMode() byte {
+	return t.mode
+}
+
 // RealAddr returns the total offset of the treasure data in the ROM.
 func (t Treasure) RealAddr() int {
 	return (&Addr{0x15, t.addr}).FullOffset() - 1
@@ -127,6 +131,11 @@ var Treasures = map[string]*Treasure{
 	"round jewel":     &Treasure{0x4c, 0x00, 0x569d, 0x0a, 0x00, 0x47, 0x36},
 	"rusty bell":      &Treasure{0x4a, 0x00, 0x58b1, 0x0a, 0x00, 0x55, 0x5b},
 	"ring box L-2":    &Treasure{0x2c, 0x02, 0x57f1, 0x02, 0x03, 0x34, 0x35},
+
+	// this one doesn't seem to work as it should for its collect mode
+	//"piece of heart (find)":  &Treasure{0x2b, 0x01, 0x57d1, 0x0a, 0x01, 0x17, 0x3a},
+
+	"piece of heart (chest)": &Treasure{0x2b, 0x01, 0x57d5, 0x38, 0x01, 0x17, 0x3a},
 
 	// these seeds are "fake" treasures. real treasures corresponding to each
 	// type of seed exist, but those can't be used for changing which tree

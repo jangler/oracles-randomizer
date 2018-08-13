@@ -27,8 +27,8 @@ ages-disasm. the most useful are:
   floodgate key. if there's a `ld (hl),60` afterward, that means it's an item
   interaction, and the item ID and subID are usually in registers b and c.
 - $3f:440a = when this executes, hl-1 is the start of the object's three-byte
-  graphics data starting at the $3f:63a3 (see the rom addresses section below
-  for details).
+  graphics data starting at $3f:63a3 (see the rom addresses section below for
+  details).
 
 others that might be good to know:
 
