@@ -164,7 +164,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 	routeChan := make(chan *RouteLists)
 	logChan := make(chan string)
 	doneChan := make(chan int)
-	log.Printf("-- using %d threads", runtime.NumCPU())
+	log.Printf("using %d threads", runtime.NumCPU())
 	for i := 0; i < runtime.NumCPU(); i++ {
 		go searchAsync(rand.New(sources[i]), start, goal, forbid, maxlen,
 			verbose, logChan, routeChan, doneChan)
@@ -200,7 +200,7 @@ func randomize(romData []byte, outFilename string, start, goal,
 
 	// didn't find any route
 	if rl == nil {
-		log.Fatal("-- fatal: no route found")
+		log.Fatal("fatal: no route found")
 	}
 
 	// place selected treasures in slots
@@ -251,8 +251,6 @@ func randomize(romData []byte, outFilename string, start, goal,
 func searchAsync(src *rand.Rand, start, goal, forbid []string,
 	maxlen int, verbose bool, logChan chan string, retChan chan *RouteLists,
 	doneChan chan int) {
-	logChan <- "-- beginning search"
-
 	// find a viable random route
 	r := NewRoute(start)
 	retChan <- findRoute(src, r, start, goal, forbid, maxlen, verbose,

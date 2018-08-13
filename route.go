@@ -141,29 +141,29 @@ func findRoute(src *rand.Rand, r *Route, start, goal, forbid []string,
 		}
 
 		rollSeasons(src, r)
-		logChan <- fmt.Sprintf("-- searching for route (%d)", tries+1)
+		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
 
 		if tryExploreTargets(r, nil, startNodes, goalNodes, forbidNodes,
 			maxlen, &iteration, itemList, usedItems, slotList, usedSlots,
 			verbose, logChan) {
-			logChan <- "-- success"
+			logChan <- "success"
 			if verbose {
 				announceSuccessDetails(r, goal, usedItems, usedSlots, logChan)
 			}
 			break
 		} else if iteration > maxIterations {
 			if verbose {
-				logChan <- "-- routing took too long; retrying"
+				logChan <- "routing took too long; retrying"
 			}
 			itemList, slotList = initRouteLists(src, r)
 			usedItems, usedSlots = list.New(), list.New()
 			iteration = 0
 		} else {
-			logChan <- "-- could not find route"
+			logChan <- "could not find route"
 		}
 	}
 	if tries >= maxTries {
-		logChan <- fmt.Sprintf("-- abort; could not find route after %d tries",
+		logChan <- fmt.Sprintf("abort; could not find route after %d tries",
 			maxTries)
 		return nil
 	}
@@ -213,7 +213,7 @@ func tryExploreTargets(r *Route, start map[*graph.Node]bool,
 	}
 	if *iteration > maxIterations {
 		if verbose {
-			logChan <- "-- false; maximum iterations reached"
+			logChan <- "false; maximum iterations reached"
 		}
 		return false
 	}
@@ -293,7 +293,7 @@ func tryExploreTargets(r *Route, start map[*graph.Node]bool,
 
 	// nothing worked
 	if verbose {
-		logChan <- "-- false; no slot/item combination worked"
+		logChan <- "false; no slot/item combination worked"
 	}
 	return false
 }
@@ -355,7 +355,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 		if reached[node] {
 			if verbose {
 				logChan <- fmt.Sprintf(
-					"-- false; reached forbidden node %s", node)
+					"false; reached forbidden node %s", node)
 			}
 			return RouteInvalid
 		}
@@ -364,7 +364,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 	// check for softlocks
 	if err := canSoftlock(r.HardGraph); err != nil {
 		if verbose {
-			logChan <- fmt.Sprintf("-- false; %v", err)
+			logChan <- fmt.Sprintf("false; %v", err)
 		}
 		return RouteInvalid
 	}
@@ -375,7 +375,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 		if !reached[node] {
 			if verbose {
 				logChan <- fmt.Sprintf(
-					"-- have not reached goal node %s", node)
+					"have not reached goal node %s", node)
 			}
 			allReached = false
 			break
@@ -383,16 +383,16 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 	}
 	if allReached {
 		if verbose {
-			logChan <- "-- all goals reached"
+			logChan <- "all goals reached"
 		}
 		if slots.Len() == 0 {
 			if verbose {
-				logChan <- "-- true; all goals reached and slots filled"
+				logChan <- "true; all goals reached and slots filled"
 			}
 			return RouteSuccess
 		}
 		if verbose {
-			logChan <- "-- filling extra slots"
+			logChan <- "filling extra slots"
 		}
 		return RouteFillUnused
 	}
@@ -429,7 +429,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 		if needCount && countSteps(reached) <= countSteps(start) {
 			if verbose {
 				logChan <- fmt.Sprintf(
-					"-- false; reached steps %d <= start steps %d",
+					"false; reached steps %d <= start steps %d",
 					countSteps(reached), countSteps(start))
 			}
 			return RouteInvalid
@@ -439,7 +439,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 	// can't slot any more items
 	if maxlen == 0 {
 		if verbose {
-			logChan <- "-- false; slotted maxlen items"
+			logChan <- "false; slotted maxlen items"
 		}
 		return RouteInvalid
 	}
@@ -510,7 +510,7 @@ func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool, itemNode,
 // print item/slot info on a succeeded route
 func announceSuccessDetails(r *Route, goal []string,
 	usedItems, usedSlots *list.List, logChan chan string) {
-	logChan <- "-- slotted items"
+	logChan <- "slotted items:"
 
 	// iterate by rotating again for some reason
 	for i := 0; i < usedItems.Len(); i++ {
