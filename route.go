@@ -140,7 +140,7 @@ func findRoute(src *rand.Rand, r *Route, start, goal, forbid []string,
 		default:
 		}
 
-		rollSeasons(src, r.Graph)
+		rollSeasons(src, r)
 		logChan <- fmt.Sprintf("-- searching for route (%d)", tries+1)
 
 		if tryExploreTargets(r, nil, startNodes, goalNodes, forbidNodes,
@@ -182,18 +182,17 @@ var (
 
 // set the default seasons for all the applicable areas in the game. also set
 // the values in the ROM.
-func rollSeasons(src *rand.Rand, g graph.Graph) {
+func rollSeasons(src *rand.Rand, r *Route) {
 	for _, area := range seasonAreas {
 		// reset default seasons
 		for _, season := range seasonsByID {
-			g[fmt.Sprintf("%s default %s", area, season)].ClearParents()
+			r.ClearParents(fmt.Sprintf("%s default %s", area, season))
 		}
 
 		// roll new default season
 		id := src.Intn(len(seasonsByID))
 		season := seasonsByID[id]
-		g.AddParents(map[string][]string{fmt.Sprintf(
-			"%s default %s", area, season): []string{"start"}})
+		r.AddParent(fmt.Sprintf("%s default %s", area, season), "start")
 		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{byte(id)}
 	}
 }
