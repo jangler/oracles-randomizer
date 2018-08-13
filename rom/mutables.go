@@ -360,6 +360,11 @@ var constMutables = map[string]Mutable{
 	// same areas as the horon shop's flute.
 	"dance hall flute check": MutableByte(Addr{0x09, 0x5e21}, 0x20, 0x80),
 
+	// the member's card isn't in the normal logic currently, but remove the
+	// essence check anyway
+	"member's card essence check": MutableWord(Addr{0x09, 0x7739},
+		0xcb57, 0xf601),
+
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68}, 0xcb, 0xf6),
 	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e36}, 0xcb, 0xf6),
