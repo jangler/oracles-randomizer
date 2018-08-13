@@ -275,7 +275,7 @@ func tryExploreTargets(r *Route, start map[*graph.Node]bool,
 			// recurse unless the item should be skipped
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(
-				r.Graph, reached, itemNode, slotNode, jewelChecked, fillUnused)
+				r.Graph, itemNode, slotNode, jewelChecked, fillUnused)
 			if !skip {
 				if verbose {
 					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
@@ -370,6 +370,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 	}
 
 	// check for softlocks
+	r.HardGraph.ExploreFromStart()
 	if err := canSoftlock(r.HardGraph); err != nil {
 		if verbose {
 			logChan <- fmt.Sprintf("false; %v", err)
@@ -467,8 +468,8 @@ func printItemSequence(usedItems *list.List, logChan chan string) {
 // return skip = true iff conditions mean this item shouldn't be checked, and
 // checked = true iff a jewel (round, square, pyramid, x-shaped) has been
 // checked by now.
-func shouldSkipItem(g graph.Graph, reached map[*graph.Node]bool, itemNode,
-	slotNode *graph.Node, jewelChecked, fillUnused bool) (skip, checked bool) {
+func shouldSkipItem(g graph.Graph, itemNode, slotNode *graph.Node,
+	jewelChecked, fillUnused bool) (skip, checked bool) {
 	// only check one jewel per loop, since they're functionally
 	// identical.
 	if strings.HasSuffix(itemNode.Name, " jewel") {
