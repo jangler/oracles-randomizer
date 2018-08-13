@@ -303,8 +303,6 @@ var d7Prenodes = map[string]*Prenode{
 	"d7 boss key": And("d7 boss key chest"),
 }
 
-// TODO update this for hard nodes
-//
 // keys get pretty wonky; hopefully they're correct between HSS skip and
 // non-HSS skip.
 var d8Prenodes = map[string]*Prenode{
@@ -312,42 +310,51 @@ var d8Prenodes = map[string]*Prenode{
 	"d8 eye key fall":     And("enter d8", "slingshot", "remove pot"),
 	"d8 hardhat room":     And("enter d8", "kill magunesu"),
 	"d8 hardhat key fall": And("d8 hardhat room", "kill hardhat (magnet)"),
-	"d8 cross bridge A": Or(
-		And("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),
-		And("d8 ice puzzle room", "long jump")),
-	"d8 bomb room":      And("d8 HSS stairs", "slingshot L-2"),
-	"d8 bomb key chest": And("d8 bomb room", "bombs", "kill darknut"), // just being reasonable
+	"HSS skip":            HardAnd("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),
+	"d8 cross bridge A":   Or(Hard("HSS skip"), And("d8 ice puzzle room", "long jump")),
+	"d8 bomb room":        And("d8 HSS stairs", "slingshot L-2"),
+	"d8 bomb key chest":   And("d8 bomb room", "bombs", "kill darknut"),
 	"d8 ice puzzle room": Or("d8 frypolar stairs",
 		And("d8 cross bridge A", "long jump")),
 	"d8 cross bridge B": And("d8 ice puzzle room", Or(
-		"boomerang L-2",
-		"pegasus jump L-2",
+		"boomerang L-2", "pegasus jump L-2",
 		And("jump", Or("boomerang", "slingshot L-2")),
-		And("long jump", Or("bombs", "slingshot L-1")))), // yes
+		And("long jump", Or("bombs", "slingshot L-1")),
+		HardAnd("long jump", Or("sword", "fool's ore")))),
 	// technically there are pots to throw in this room but i don't care
 	"d8 boss key chest": And("d8 cross bridge B", "kill keese", "kill pols voice (pit)"),
-	"d8 crystal room":   And("d8 ice puzzle room", "d8 key A"),
+	"d8 crystal room": And("d8 ice puzzle room",
+		Or("d8 key D", HardAnd("d8 key A", "HSS skip"))),
 	"d8 armos key fall": And("d8 crystal room", "bombs"),
-	"d8 NW crystal":     And("d8 crystal room", "d8 key B"),
-	"d8 NE crystal":     And("d8 crystal room", "hit lever"),
-	"d8 SE crystal":     And("d8 crystal room"),
-	"d8 SW crystal":     And("d8 crystal room", "d8 key E"),
-	"d8 pot key chest":  And("d8 SE crystal", "d8 NE crystal", "remove pot"),
+	"d8 NW crystal": And("d8 crystal room",
+		Or("d8 key E", HardAnd("d8 key B", "HSS skip"))),
+	"d8 NE crystal": And("d8 crystal room", "hit lever"),
+	"d8 SE crystal": And("d8 crystal room"),
+	"d8 SW crystal": And("d8 crystal room",
+		Or("d8 key F", HardAnd("d8 key C", "HSS skip"))),
+	"d8 pot key chest": And("d8 SE crystal", "d8 NE crystal", "remove pot"),
 
 	// B1F
-	"d8 cross pot path":    Or("remove pot", "jump"),
-	"d8 double rollers":    And("d8 hardhat room", "d8 key A", "d8 cross pot path"),
-	"d8 blade room":        And("d8 double rollers", "long jump"),
-	"d8 spinner":           And("d8 blade room", "d8 key B"),
+	"d8 cross pot path": Or(Hard("remove pot"), And("remove pot", "kill rope"), "jump"),
+	"d8 double rollers": Or(
+		And("d8 hardhat room", "d8 key A", "d8 cross pot path"),
+		And("d8 blade room", "long jump")),
+	"d8 blade room": Or("d8 spinner", And("d8 double rollers", "long jump")),
+	"d8 spinner": Or(
+		And("d8 blade room", "d8 key B"),
+		And("enter frypolar", "kill frypolar", "magnet gloves"),
+		And("d8 HSS stairs", "jump")),
 	"d8 place ball":        And("d8 spinner", "magnet gloves"),
 	"d8 HSS chest":         AndSlot("d8 spinner", "magnet gloves"),
 	"d8 HSS stairs":        And("d8 HSS chest", Or("pegasus jump L-2", "d8 place ball")),
 	"d8 spinner key chest": And("d8 HSS stairs"),
-	"enter frypolar":       And("d8 HSS stairs", "d8 key C"),
-	"d8 frypolar stairs":   And("enter frypolar", "kill frypolar", "ember seeds", "slingshot L-2"),
-	"d8 lava key chest":    And("d8 SE crystal"),
-	"enter medusa head":    And("d8 SW crystal", "d8 SE crystal", "d8 NW crystal", "d8 key F", "d8 boss key"),
-	"d8 essence":           AndStep("enter medusa head", "kill medusa head"),
+	"enter frypolar":       Or(And("d8 HSS stairs", "d8 key C"), "d8 frypolar stairs"),
+	"d8 frypolar stairs": Or("d8 ice puzzle room",
+		And("enter frypolar", "kill frypolar", "ember seeds", "slingshot L-2")),
+	"d8 lava key chest": And("d8 SE crystal"),
+	"enter medusa head": And("d8 SW crystal", "d8 SE crystal", "d8 NW crystal", "d8 boss key",
+		Or("d8 key G", HardAnd("d8 key D", "HSS skip"))),
+	"d8 essence": AndStep("enter medusa head", "kill medusa head"),
 
 	// fixed items
 	"d8 key A":    And("d8 eye key fall"),
