@@ -53,7 +53,8 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("scent tree", Or("jump", "ricky", "holodrum plain default winter")),
 		And("south swamp", "flippers", "remove bush")),
 	"scent tree": OrSlot(
-		And("ghastly stump", Or("jump", "ricky", "winter", "holodrum plain default winter")),
+		And("ghastly stump", Or("jump", "ricky", Hard("moosh flute"), "winter",
+			"holodrum plain default winter")),
 		And("south swamp", "flippers"),
 		And("sunken city", "animal flute"),
 		And("north horon stump", Or("bracelet", And("remove bush", "flippers"))),
@@ -65,7 +66,7 @@ var holodrumPrenodes = map[string]*Prenode{
 
 	// spool swamp
 	"pegasus tree": AndSlot("ghastly stump",
-		Or("holodrum plain default summer", "summer", "feather L-2")),
+		Or("holodrum plain default summer", "summer", "feather L-2", "ricky", Hard("moosh flute"))),
 	"floodgate key gift": AndSlot("pegasus tree", "hit lever"),
 	"spool stump": And("pegasus tree", "hit lever",
 		Or("pegasus satchel", "flippers", "feather L-2"), "bracelet", "floodgate key"),
@@ -97,7 +98,8 @@ var holodrumPrenodes = map[string]*Prenode{
 	"wet eyeglass lake": Or("not north horon default summer", "spring", "autumn", "winter"),
 	"enter d5": And(Or("north horon default autumn", "autumn"), "remove mushroom", Or(
 		And("lake portal", "not north horon default summer", "flippers"),
-		And("north horon stump", "north horon default winter", "jump"))),
+		And("north horon stump", Or("north horon default winter", And("winter", "autumn")),
+			Or("jump", "ricky", Hard("moosh flute"))))),
 
 	// sunken city
 	"sunken city": Or("fairy fountain",

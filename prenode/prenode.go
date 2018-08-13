@@ -37,6 +37,7 @@ const (
 	AndStepType
 	OrStepType
 	HardAndType
+	HardOrType
 )
 
 // A Prenode is a mapping of strings that will become And or Or nodes in the
@@ -66,6 +67,7 @@ var (
 	OrStep  = CreateFunc(OrStepType)
 	Hard    = CreateFunc(HardAndType) // for wrapping single prenodes
 	HardAnd = CreateFunc(HardAndType)
+	HardOr  = CreateFunc(HardOrType)
 )
 
 var allPrenodes map[string]*Prenode
