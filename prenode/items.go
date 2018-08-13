@@ -54,23 +54,25 @@ var ignoredBaseItemPrenodes = map[string]*Prenode{
 }
 
 var itemPrenodes = map[string]*Prenode{
-	"gale tree seeds":       Or("gale tree seeds 1", "gale tree seeds 2"),
-	"harvest ember seeds":   And("ember tree seeds", "seed item", "harvest item"),
-	"harvest mystery seeds": And("mystery tree seeds", "seed item", "harvest item"),
-	"harvest scent seeds":   And("scent tree seeds", "seed item", "harvest item"),
-	"harvest pegasus seeds": And("pegasus tree seeds", "seed item", "harvest item"),
-	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest item"),
+	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
+	"harvest ember seeds": And("seed item", Or(
+		And("ember tree seeds", "harvest tree"),
+		HardAnd("harvest bush", Or("enter agunima", "enter d7")))),
+	"harvest mystery seeds": And("seed item", Or(
+		And("mystery tree seeds", "harvest tree"),
+		HardAnd("enter frypolar", "harvest bush"))),
+	"harvest scent seeds":   And("scent tree seeds", "seed item", "harvest tree"),
+	"harvest pegasus seeds": And("pegasus tree seeds", "seed item", "harvest tree"),
+	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest tree"),
 
-	// you can usually only get seed drops if you already have that type of
-	// seed, meaning the first way to obtain it has to be harvesting from a
-	// tree. the exception is ember seeds, since the satchel comes loaded with
-	// them from the start.
+	// has to be a different node from the slottable one
+	"buy satchel": HardAnd("beach", "ore chunks", "rupees"),
 
-	"ember satchel":   And("harvest ember seeds", "satchel"),
-	"mystery satchel": And("harvest mystery seeds", "satchel"),
-	"scent satchel":   And("harvest scent seeds", "satchel"),
-	"pegasus satchel": And("harvest pegasus seeds", "satchel"),
-	"gale satchel":    And("harvest gale seeds", "satchel"),
+	"ember satchel":   And("harvest ember seeds", "satchel", Hard("buy satchel")),
+	"mystery satchel": And("harvest mystery seeds", "satchel", Hard("buy satchel")),
+	"scent satchel":   And("harvest scent seeds", "satchel", Hard("buy satchel")),
+	"pegasus satchel": And("harvest pegasus seeds", "satchel", Hard("buy satchel")),
+	"gale satchel":    And("harvest gale seeds", "satchel", Hard("buy satchel")),
 
 	"ember slingshot":   And("harvest ember seeds", "slingshot"),
 	"mystery slingshot": And("harvest mystery seeds", "slingshot"),
@@ -83,7 +85,7 @@ var itemPrenodes = map[string]*Prenode{
 	"scent seeds":   And("harvest scent seeds", "seed item"),
 	"pegasus seeds": Or(
 		And("harvest pegasus seeds", "seed item"),
-		And("beach", "shield", "ore chunks", "seed item")), // subrosian market
+		HardAnd("beach", "shield", "ore chunks", "seed item")), // subrosian market
 	"gale seeds": And("harvest gale seeds", "seed item"),
 
 	"punch":           And("find punch ring", "rupees"),
@@ -119,11 +121,13 @@ var itemPrenodes = map[string]*Prenode{
 	"beams":     Or("sword L-2", "sword beams L-1"),
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
-	"seed item": Or("satchel", "slingshot"),
-	"bombs":     Or("rupees"),
-	"jump":      Or("feather L-1", "feather L-2"),
+	"seed item": Or("satchel", "slingshot", Hard("buy satchel")),
+	"bombs": Or("rupees",
+		HardAnd("harvest bush", Or("d2 bracelet chest", "d2 spinner"))),
+	"jump": Or("feather L-1", "feather L-2"),
 
-	"harvest item": Or("sword", "rod", "fool's ore", "punch"),
+	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
+	"harvest bush": Or("sword", "bombs", "fool's ore"),
 
 	"find punch ring": Or("find fist ring", "find expert's ring"),
 

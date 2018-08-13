@@ -76,6 +76,7 @@ var d2Prenodes = map[string]*Prenode{
 	// from here on it's entirely linear
 	"d2 10-rupee chest": And("d2 bomb wall", "bombs", "bracelet"),
 	"enter facade":      And("d2 10-rupee chest", "remove pot", "d2 key B"),
+	"d2 spinner":        And("enter facade", "kill facade", Or("d2 key C", "bombs")),
 	"d2 boss key chest": And("enter facade", "kill facade", "d2 key C", "bombs"),
 	"enter dodongo":     And("d2 boss key chest", "d2 boss key"),
 	"d2 essence":        AndStep("enter dodongo", "kill dodongo"),
@@ -258,36 +259,40 @@ var d7Prenodes = map[string]*Prenode{
 	"d7 ring chest":         And("enter d7", "d7 key A"),
 	"enter poe A":           And("d7 ring chest", "ember slingshot"),
 	"d7 compass chest":      And("enter d7", "bombs"),
-	"d7 map chest":          And("d7 pot room", "d7 key B"), // not sure but doesn't matter
+	"d7 map chest": And("d7 pot room", "jump",
+		Or("d7 key B", HardAnd("d7 key A", "poe skip"))),
+	"poe skip": HardAnd("enter d7", "bombs", "bracelet", "feather", "pegasus satchel"),
 
 	// B1F
-	// don't consider poe skip for now
-	"d7 armos room":         And("enter d7", "enter poe A", "kill poe sister", "bracelet"),
+	"d7 armos room": And("enter d7", "bracelet",
+		Or(And("enter poe A", "kill poe sister"), Hard("poe skip"))),
 	"d7 zol key fall":       And("d7 armos room", "jump"),
-	"d7 pot room":           And("d7 armos room", "kill armos"), // being nice
+	"d7 pot room":           And("d7 armos room"),
 	"d7 magunesu key chest": And("d7 magunesu room", "kill magunesu", "jump", "magnet gloves"),
-	"enter poe B":           And("d7 pot room", "d7 key B", "d7 key C"),
-	"d7 water stairs":       And("enter poe B", "pegasus satchel", "ember seeds", "kill poe sister", "flippers"),
-	"d7 cape chest":         AndSlot("d7 trampoline pair", "jump", "kill stalfos (pit)"),
+	"enter poe B": And("d7 pot room", "d7 key B",
+		Or("d7 key C", HardAnd("d7 key A", "poe skip"))),
+	"d7 water stairs": And("enter poe B", "pegasus satchel", "ember seeds", "kill poe sister", "flippers"),
+	"d7 cape chest":   AndSlot("d7 trampoline pair", "jump", "kill stalfos (pit)"),
 
 	// B2F
 	"d7 fool's gap":     Or("long jump", "magnet gloves"),
-	"d7 armos puzzle":   And("d7 pot room", "kill keese", "d7 fool's gap"), // being nice again
+	"d7 armos puzzle":   And("d7 pot room", "kill keese", "d7 fool's gap"), // being nice
 	"d7 armos key fall": And("d7 armos puzzle"),
 	"d7 magunesu room":  And("d7 armos puzzle", "long jump"),
 	"d7 cross bridge": Or("feather L-2", "kill darknut (across pit)",
 		And("jump", "magnet gloves")),
 	"d7 trampoline pair": And("d7 water stairs", "d7 cross bridge"),
-	"d7 moldorm room":    And("d7 water stairs", "d7 key D", "feather L-2"),
-	"enter poe sisters": Or(
-		And("d7 moldorm room", "kill moldorm", "remove pot", "feather L-2"),
-		And("d7 moldorm room", "kill moldorm", "pegasus jump L-2")),
-	"d7 stairs room":      And("enter poe sisters", "kill poe sister"),
-	"d7 enter skipped":    And("d7 stairs room", "magnet gloves", "jump"),
+	"d7 moldorm room": And("d7 water stairs", "feather L-2",
+		Or("d7 key D", HardAnd("d7 key C", "poe skip"))),
+	"enter poe sisters": And("d7 moldorm room", "kill moldorm", "feather L-2"),
+	"d7 stairs room":    And("enter poe sisters", "kill poe sister"),
+	"d7 enter skipped": And("d7 stairs room", Or(
+		And("magnet gloves", "jump"), HardAnd("pegasus jump L-2"))),
 	"d7 skipped key poof": And("d7 enter skipped", "kill wizzrobe (pit)", "kill stalfos (pit)"),
-	"d7 boss key chest":   And("d7 stairs room", "d7 key E", "pegasus jump L-2", "hit switch", "kill stalfos"),
-	"enter gleeok":        And("d7 stairs room", "d7 boss key"),
-	"d7 essence":          AndStep("enter gleeok", "kill gleeok"),
+	"d7 boss key chest": And("d7 stairs room", "jump", "hit switch", "kill stalfos",
+		Or("d7 key E", HardAnd("poe skip", "d7 key D", "d7 enter skipped"))),
+	"enter gleeok": And("d7 stairs room", "d7 boss key"),
+	"d7 essence":   AndStep("enter gleeok", "kill gleeok"),
 
 	// fixed items
 	"d7 key A":    And("d7 wizzrobe key chest"),
@@ -298,11 +303,10 @@ var d7Prenodes = map[string]*Prenode{
 	"d7 boss key": And("d7 boss key chest"),
 }
 
-// ignoring everything unnecessary in a route that does obtain HSS.
-// keys get wonky but i'm just using the ones you'd get in an HSS skip route,
-// except for the locked doors that aren't in that route.
+// TODO update this for hard nodes
 //
-// TODO: ignore HSS completely
+// keys get pretty wonky; hopefully they're correct between HSS skip and
+// non-HSS skip.
 var d8Prenodes = map[string]*Prenode{
 	// 1F
 	"d8 eye key fall":     And("enter d8", "slingshot", "remove pot"),

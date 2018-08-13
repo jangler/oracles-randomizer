@@ -22,8 +22,12 @@ type Type int
 // purposes. Slot types are also treated as steps; see the Point.IsStep()
 // function.
 //
-// The following function are half syntactic sugar for declaring large lists of
-// node relationships.
+// "Hard" prenodes are ones that players aren't expected to do because they're
+// too difficult or esoteric, but they're used to prevent softlocks by knowing
+// that players *can* do them.
+//
+// The following functions are half syntactic sugar for declaring large lists
+// of node relationships.
 const (
 	RootType Type = iota
 	AndType
@@ -32,6 +36,7 @@ const (
 	OrSlotType
 	AndStepType
 	OrStepType
+	HardAndType
 )
 
 // A Prenode is a mapping of strings that will become And or Or nodes in the
@@ -59,6 +64,8 @@ var (
 	Or      = CreateFunc(OrType)
 	OrSlot  = CreateFunc(OrSlotType)
 	OrStep  = CreateFunc(OrStepType)
+	Hard    = CreateFunc(HardAndType) // for wrapping single prenodes
+	HardAnd = CreateFunc(HardAndType)
 )
 
 var allPrenodes map[string]*Prenode

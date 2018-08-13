@@ -19,14 +19,14 @@ const (
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph graph.Graph
-	Slots map[string]*graph.Node
+	Graph, HardGraph graph.Graph
+	Slots            map[string]*graph.Node
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes
 // with the names in start functioning as givens (always satisfied).
 func NewRoute(start []string) *Route {
-	g := graph.New()
+	g, hg := graph.New(), graph.New()
 
 	totalPrenodes := prenode.GetAll()
 
@@ -35,8 +35,10 @@ func NewRoute(start []string) *Route {
 		totalPrenodes[key] = prenode.And()
 	}
 
-	addNodes(g, totalPrenodes)
+	addNodes(g, totalPrenodes, false)
 	addNodeParents(g, totalPrenodes)
+	addNodes(hg, totalPrenodes, true)
+	addNodeParents(hg, totalPrenodes)
 
 	openSlots := make(map[string]*graph.Node, 0)
 	for name, pn := range totalPrenodes {
@@ -46,16 +48,22 @@ func NewRoute(start []string) *Route {
 		}
 	}
 
-	return &Route{Graph: g, Slots: openSlots}
+	return &Route{Graph: g, HardGraph: hg, Slots: openSlots}
 }
 
-func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode) {
+// if hard is false, "hard" nodes are omitted
+func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode, hard bool) {
 	for key, pn := range prenodes {
 		switch pn.Type {
-		case prenode.AndType, prenode.AndSlotType, prenode.AndStepType:
+		case prenode.AndType, prenode.AndSlotType, prenode.AndStepType,
+			prenode.HardAndType:
 			isStep := pn.Type == prenode.AndSlotType ||
 				pn.Type == prenode.AndStepType
-			g.AddNodes(graph.NewNode(key, graph.AndType, isStep))
+			if hard || pn.Type != prenode.HardAndType {
+				g.AddNodes(graph.NewNode(key, graph.AndType, isStep))
+			} else {
+				println("skipping hard prenode " + key)
+			}
 		case prenode.OrType, prenode.OrSlotType, prenode.OrStepType,
 			prenode.RootType:
 			isStep := pn.Type == prenode.OrSlotType ||
@@ -67,9 +75,17 @@ func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 	}
 }
 
+// nodes not in the graph are omitted (for example, "hard" nodes in a non-hard
+// graph)
 func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 	for k, pn := range prenodes {
+		if g[k] == nil {
+			continue
+		}
 		for _, parent := range pn.Parents {
+			if g[parent.(string)] == nil {
+				continue
+			}
 			g.AddParents(map[string][]string{k: []string{parent.(string)}})
 		}
 	}
@@ -389,7 +405,7 @@ func checkRouteState(g graph.Graph, start, reached map[*graph.Node]bool,
 		needCount := true
 
 		// still, don't slot seed stuff until the player can at least harvest
-		if reached[g["harvest item"]] {
+		if reached[g["harvest tree"]] {
 			switch add[0].Name {
 			case "satchel", "slingshot L-1", "slingshot L-2":
 				if !(reached[g["slingshot L-2"]] &&
