@@ -93,6 +93,22 @@ var testData2 = map[string]string{
 	"spool swamp default autumn":    "",
 }
 
+// partial item placement from a dev ~1.4 build
+var testData3 = map[string]string{
+	"fool's ore":        "d0 sword chest",
+	"satchel":           "maku key fall",
+	"ember tree seeds":  "ember tree",
+	"feather L-1":       "boomerang gift",
+	"gale tree seeds 1": "sunken gale tree",
+	"rod":               "rod gift",
+	"sword L-1":         "shovel gift",
+	"master's plaque":   "master's plaque chest",
+	"flippers":          "flippers gift",
+
+	"spool swamp default winter": "start",
+	"spool swamp default autumn": "",
+}
+
 func TestFeatherLockCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 	g := r.HardGraph
@@ -136,23 +152,24 @@ func TestD7ExitLockChest(t *testing.T) {
 
 func TestSquareJewelCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
-	g := r.HardGraph
 
 	// check for false positive
-	checkSoftlockWithSlots(t, canSquareJewelSoftlock, g,
+	checkSoftlockWithSlots(t, canSquareJewelSoftlock, r.HardGraph,
 		map[string]string{
-			"sword L-1": "d0 sword chest",
-			"flippers":  "maku key fall",
-		}, "south swamp", false)
+			"sword L-1":        "d0 sword chest",
+			"satchel":          "maku key fall",
+			"ember tree seeds": "ember tree",
+			"shovel":           "boomerang gift",
+			"feather L-1":      "rod gift",
+			"flippers":         "star ore spot",
+
+			"spool swamp default winter": "start",
+			"spool swamp default autumn": "",
+		}, "square jewel chest", false)
 
 	// check for false negative
-	checkSoftlockWithSlots(t, canSquareJewelSoftlock, g,
-		map[string]string{
-			"sword L-1":                  "d0 sword chest",
-			"flippers":                   "maku key fall",
-			"spool swamp default autumn": "",
-			"spool swamp default winter": "start",
-		}, "square jewel chest", true)
+	checkSoftlockWithSlots(t, canSquareJewelSoftlock, r.HardGraph, testData3,
+		"square jewel chest", true)
 }
 
 // helper function used for the other benchmarks
