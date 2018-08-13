@@ -135,8 +135,8 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		seasons = rollSeasons(src, r)
 		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
 
-		if tryExploreTargets(r, nil, start, &iteration, itemList, usedItems,
-			slotList, usedSlots, verbose, logChan) {
+		if tryExploreTargets(src, r, nil, start, &iteration, itemList,
+			usedItems, slotList, usedSlots, verbose, logChan) {
 			if verbose {
 				announceSuccessDetails(r, usedItems, usedSlots, logChan)
 			}
@@ -197,9 +197,9 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 // return false.
 //
 // the lists are lists of nodes.
-func tryExploreTargets(r *Route, start map[*graph.Node]bool, add []*graph.Node,
-	iteration *int, itemList, usedItems, slotList, usedSlots *list.List,
-	verbose bool, logChan chan string) bool {
+func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
+	add []*graph.Node, iteration *int, itemList, usedItems, slotList,
+	usedSlots *list.List, verbose bool, logChan chan string) bool {
 	*iteration++
 	if verbose {
 		logChan <- fmt.Sprintf("iteration %d", *iteration)
@@ -255,7 +255,7 @@ func tryExploreTargets(r *Route, start map[*graph.Node]bool, add []*graph.Node,
 					printItemSequence(usedItems, logChan)
 					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
 				}
-				if tryExploreTargets(r, reached, nil, iteration, itemList,
+				if tryExploreTargets(src, r, reached, nil, iteration, itemList,
 					usedItems, slotList, usedSlots, verbose, logChan) {
 					return true
 				}
@@ -279,12 +279,12 @@ func tryExploreTargets(r *Route, start map[*graph.Node]bool, add []*graph.Node,
 			// recurse unless the item should be skipped
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(
-				r.Graph, itemNode, slotNode, jewelChecked, fillUnused)
+				src, r.Graph, itemNode, slotNode, jewelChecked, fillUnused)
 			if !skip {
 				if verbose {
 					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
 				}
-				if tryExploreTargets(r, reached, []*graph.Node{itemNode},
+				if tryExploreTargets(src, r, reached, []*graph.Node{itemNode},
 					iteration, itemList, usedItems, slotList, usedSlots,
 					verbose, logChan) {
 					return true
@@ -446,8 +446,8 @@ func printItemSequence(usedItems *list.List, logChan chan string) {
 // return skip = true iff conditions mean this item shouldn't be checked, and
 // checked = true iff a jewel (round, square, pyramid, x-shaped) has been
 // checked by now.
-func shouldSkipItem(g graph.Graph, itemNode, slotNode *graph.Node,
-	jewelChecked, fillUnused bool) (skip, checked bool) {
+func shouldSkipItem(src *rand.Rand, g graph.Graph, itemNode,
+	slotNode *graph.Node, jewelChecked, fillUnused bool) (skip, checked bool) {
 	// only check one jewel per loop, since they're functionally
 	// identical.
 	if strings.HasSuffix(itemNode.Name, " jewel") {
@@ -456,6 +456,13 @@ func shouldSkipItem(g graph.Graph, itemNode, slotNode *graph.Node,
 		} else {
 			skip = true
 		}
+	}
+
+	// give only a 1 in 2 change per sword of slotting in the hero's cave chest
+	// to compensate for the fact that there are two of them
+	if slotNode.Name == "d0 sword chest" &&
+		strings.HasPrefix(itemNode.Name, "sword") && src.Intn(2) == 0 {
+		skip = true
 	}
 
 	// the star ore code is unique in that it doesn't set the sub ID at
