@@ -60,11 +60,11 @@ Other small changes have been made for convenience, to simplify randomization
 logic, or to prevent softlocks. The most notable are:
 
 - The intro sequence and pirate cutscene are almost entirely removed.
-- **Save and quit is replaced with a warp to the seed tree in Horon Village,**
-  except if you do it from a game over.
 - Mystical seeds grow in all seasons.
 - Seeds can be collected if the player has either slingshot or satchel.
 - The cliff between Eastern Suburbs and Sunken City has stairs instead of a
   spring flower.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
 - The diving spot at the south end of Sunken City is removed.
+- **Holding start while closing the map screen warps to the seed tree in Horon
+  Village.**

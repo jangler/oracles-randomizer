@@ -335,14 +335,13 @@ var constMutables = map[string]Mutable{
 		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb7\x25\xcd\xb7\x25\xcd\x0b\x25\xd0",
 		"\x3e\x0a\xcd\xb9\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
 
-	// replace s+q with warp to ember tree. this requires adding some code at
-	// the end of the bank: if health is zero, do a normal s+q, otherwise set
-	// warp group to overworld and tree index to ember tree, warp, and close
-	// menu.
-	"s+q jump redirect": MutableWord(Addr{0x02, 0x73d5}, 0x6901, 0x1d76),
+	// warp to ember tree if holding start when closing the map screen. this
+	// requires adding some code at the end of the bank.
+	"outdoor map jump redirect": MutableWord(Addr{0x02, 0x60ec}, 0xdd4f, 0x1d76),
+	"dungeon map jump redirect": MutableWord(Addr{0x02, 0x608f}, 0xdd4f, 0x1d76),
 	"tree warp": MutableString(Addr{0x02, 0x761d},
 		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
-		"\xfa\xa2\xc6\xa7\xca\x69\x01\x21\xb7\xcb\x36\x05\xaf\xcd\xdd\x5e\xcd\xdd\x4f\xc9"),
+		"\xfa\x81\xc4\xe6\x08\x28\x09\x21\xb7\xcb\x36\x05\xaf\xcd\xdd\x5e\xc3\xdd\x4f\xc9"),
 
 	// have maku gate open from start
 	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
