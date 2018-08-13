@@ -66,7 +66,7 @@ var itemPrenodes = map[string]*Prenode{
 	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest tree"),
 
 	// has to be a different node from the slottable one
-	"buy satchel": HardAnd("beach", "ore chunks", "rupees"),
+	"buy satchel": HardAnd("beach", "ore chunks", "big rupees"),
 
 	"ember satchel":   And("harvest ember seeds", "satchel", Hard("buy satchel")),
 	"mystery satchel": And("harvest mystery seeds", "satchel", Hard("buy satchel")),
@@ -88,9 +88,9 @@ var itemPrenodes = map[string]*Prenode{
 		HardAnd("beach", "shield", "ore chunks", "seed item")), // subrosian market
 	"gale seeds": And("harvest gale seeds", "seed item"),
 
-	"punch":           And("find punch ring", "rupees"),
-	"energy ring":     And("find energy ring", "rupees"),
-	"toss ring":       And("find toss ring", "rupees"),
+	"punch":           And("find punch ring", "medium rupees"),
+	"energy ring":     And("find energy ring", "medium rupees"),
+	"toss ring":       And("find toss ring", "medium rupees"),
 	"sword beams L-1": And("sword L-1", "energy ring"),
 
 	"pegasus jump L-1": And("pegasus satchel", "feather L-1"),
@@ -107,13 +107,13 @@ var itemPrenodes = map[string]*Prenode{
 	"spring": AndStep("rod", "spring tower"),
 	"autumn": AndStep("rod", "autumn tower"),
 
-	"strange flute": Or("rupees", "temple"),
-	"moosh flute":   And("rupees", "south swamp", "kill moblin"),
-	"dimitri flute": And("temple", "south swamp", "rupees"),
+	"strange flute": Or("big rupees", "temple"),
+	"moosh flute":   And("big rupees", "south swamp", "kill moblin"),
+	"dimitri flute": HardAnd("temple", "south swamp", "medium rupees"),
 	"animal flute":  OrStep("ricky", "moosh flute", "dimitri flute"),
 	"flute":         OrStep("strange flute", "animal flute"),
 
-	"shield L-1": Or("rupees"),
+	"shield L-1": Or("medium rupees"),
 	"shield L-2": Root(), // TODO as if it matters
 
 	"sword":     Or("sword L-1", "sword L-2"),
@@ -122,7 +122,7 @@ var itemPrenodes = map[string]*Prenode{
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"seed item": Or("satchel", "slingshot", Hard("buy satchel")),
-	"bombs": Or("rupees",
+	"bombs": Or("medium rupees",
 		HardAnd("harvest bush", Or("d2 bracelet chest", "d2 spinner"))),
 	"jump": Or("feather L-1", "feather L-2"),
 
@@ -131,13 +131,18 @@ var itemPrenodes = map[string]*Prenode{
 
 	"find punch ring": Or("find fist ring", "find expert's ring"),
 
-	// technically the rod can kill certain enemies for rupees, but you can't
-	// access those enemies without another item that already collects rupees.
-	// most expendable items aren't included, but ember seeds are because
-	// they're free and can burn down trees leading to old men who give rupees.
-	"rupees": OrStep("sword", Hard("boomerang L-1"), "boomerang L-2", "shovel",
-		"bracelet", "ember seeds", "ricky", Hard("moosh"), "animal flute",
+	// small rupees is ~1-10, and any item that can possibly yield rupees is
+	// included.
+	"small rupees": OrStep("sword", "boomerang", "shovel", "bracelet",
+		"ember seeds", "scent seeds", "ricky", "moosh", Hard("animal flute"),
 		"fool's ore", "punch"),
+	// medium rupees is ~11-99, and only items that can reach rupee chests are
+	// included.
+	"medium rupees": OrStep(Hard("small rupees"), "sword", "boomerang L-2",
+		"bracelet", "ember seeds"),
+	// big rupees is ~100+, and only ember seeds are included since they can
+	// burn down trees leading to generous old men.
+	"big rupees": OrStep(Hard("medium rupees"), "ember seeds"),
 
 	"ore chunks": OrStep("shovel", "temple"),
 }
