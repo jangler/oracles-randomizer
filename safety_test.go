@@ -98,7 +98,7 @@ func TestFeatherLockCheck(t *testing.T) {
 	t.Skip()
 
 	r := NewRoute([]string{"horon village"})
-	g := r.Graph
+	g := r.HardGraph
 
 	// make sure reaching H&S with mandatory shovel does not error
 	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
@@ -130,7 +130,7 @@ func TestFeatherLockCheck(t *testing.T) {
 
 func TestD7ExitLockChest(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
-	g := r.Graph
+	g := r.HardGraph
 
 	// a softlock case from a real rom produced by 1.2.2
 	checkSoftlockWithSlots(t, canD7ExitSoftlock, g, testData1,
@@ -139,7 +139,7 @@ func TestD7ExitLockChest(t *testing.T) {
 
 func TestSquareJewelCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
-	g := r.Graph
+	g := r.HardGraph
 
 	// check for false positive
 	checkSoftlockWithSlots(t, canSquareJewelSoftlock, g,
@@ -162,7 +162,7 @@ func TestSquareJewelCheck(t *testing.T) {
 func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 	// make a list of base item nodes to use for testing
 	r := NewRoute([]string{"horon village"})
-	g := r.Graph
+	g := r.HardGraph
 	baseItems := make([]*graph.Node, 0, len(prenode.BaseItems()))
 	for name := range prenode.BaseItems() {
 		baseItems = append(baseItems, g[name])
@@ -172,7 +172,7 @@ func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 		// create a fresh graph and shuffle the item list
 		b.StopTimer()
 		r = NewRoute([]string{"horon village"})
-		g = r.Graph
+		g = r.HardGraph
 		reached := map[*graph.Node]bool{g["horon village"]: true}
 
 		rand.Shuffle(len(baseItems), func(i, j int) {
