@@ -1,7 +1,5 @@
 package prenode
 
-// TODO update all these for randomized seasons
-
 var portalPrenodes = map[string]*Prenode{
 	"rosa portal": Or("temple",
 		And("suburbs", "remove bush")),
@@ -12,6 +10,7 @@ var portalPrenodes = map[string]*Prenode{
 	// jump added since it's effectively useless otherwise
 	"mountain portal": And("jump", Or("mount cucco", "hide and seek")),
 
+	// TODO maybe can use dimitri from d5 stump area?
 	"lake portal": Or("furnace", And("north horon stump", Or(
 		And("wet eyeglass lake", Or("jump", "animal flute"), "flippers"),
 		And(Or("north horon default winter", "winter"), "pegasus jump L-2")))),
