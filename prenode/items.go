@@ -133,9 +133,11 @@ var itemPrenodes = map[string]*Prenode{
 
 	// technically the rod can kill certain enemies for rupees, but you can't
 	// access those enemies without another item that already collects rupees.
-	// i'm also not including expendable items in this list just because it
-	// could be super tedious to farm rupees using them.
-	"rupees": OrStep("sword", "boomerang", "shovel", "bracelet", "ricky", "animal flute", "fool's ore", "punch"),
+	// most expendable items aren't included, but ember seeds are because
+	// they're free and can burn down trees leading to old men who give rupees.
+	"rupees": OrStep("sword", Hard("boomerang L-1"), "boomerang L-2", "shovel",
+		"bracelet", "ember seeds", "ricky", Hard("moosh"), "animal flute",
+		"fool's ore", "punch"),
 
 	"ore chunks": OrStep("shovel", "temple"),
 }
