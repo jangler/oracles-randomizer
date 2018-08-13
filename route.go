@@ -245,25 +245,6 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 		usedSlots.PushBack(slotNode)
 		slotList.Remove(slotElem)
 
-		// try a piece of heart if we've already slotted everything useful
-		if fillUnused {
-			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest {
-				usedItems.PushBack(graph.NewNode(
-					"piece of heart (chest)", graph.RootType, false))
-
-				if verbose {
-					printItemSequence(usedItems, logChan)
-					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
-				}
-				if tryExploreTargets(src, r, reached, nil, iteration, itemList,
-					usedItems, slotList, usedSlots, verbose, logChan) {
-					return true
-				}
-
-				usedItems.Remove(usedItems.Back())
-			}
-		}
-
 		// try placing each unused item into the slot
 		jewelChecked := false
 		for j := 0; j < itemList.Len(); j++ {
@@ -278,8 +259,8 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 
 			// recurse unless the item should be skipped
 			var skip bool
-			skip, jewelChecked = shouldSkipItem(
-				src, r.Graph, itemNode, slotNode, jewelChecked, fillUnused)
+			skip, jewelChecked = shouldSkipItem(src, r.Graph, reached,
+				itemNode, slotNode, jewelChecked, fillUnused)
 			if !skip {
 				if verbose {
 					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
@@ -296,6 +277,26 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 			usedItems.Remove(usedItems.Back())
 			itemList.PushFront(itemNode)
 			r.ClearParents(itemNode.Name)
+		}
+
+		// if we're just filling unused and no item worked, try a piece of
+		// heart instead
+		if fillUnused {
+			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest {
+				usedItems.PushBack(graph.NewNode(
+					"piece of heart (chest)", graph.RootType, false))
+
+				if verbose {
+					printItemSequence(usedItems, logChan)
+					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
+				}
+				if tryExploreTargets(src, r, reached, nil, iteration, itemList,
+					usedItems, slotList, usedSlots, verbose, logChan) {
+					return true
+				}
+
+				usedItems.Remove(usedItems.Back())
+			}
 		}
 
 		// slot didn't work; pop it onto the front of the unused list
@@ -446,14 +447,23 @@ func printItemSequence(usedItems *list.List, logChan chan string) {
 // return skip = true iff conditions mean this item shouldn't be checked, and
 // checked = true iff a jewel (round, square, pyramid, x-shaped) has been
 // checked by now.
-func shouldSkipItem(src *rand.Rand, g graph.Graph, itemNode,
-	slotNode *graph.Node, jewelChecked, fillUnused bool) (skip, checked bool) {
+func shouldSkipItem(src *rand.Rand, g graph.Graph,
+	reached map[*graph.Node]bool, itemNode, slotNode *graph.Node, jewelChecked,
+	fillUnused bool) (skip, checked bool) {
 	// only check one jewel per loop, since they're functionally
 	// identical.
 	if strings.HasSuffix(itemNode.Name, " jewel") {
 		if !jewelChecked {
 			checked = true
 		} else {
+			skip = true
+		}
+	}
+
+	// don't slot L-1 items if the L-2 one has already been slotted
+	if strings.HasSuffix(itemNode.Name, "L-1") {
+		upgradeName := strings.Replace(itemNode.Name, "L-1", "L-2", 1)
+		if reached[g[upgradeName]] {
 			skip = true
 		}
 	}
