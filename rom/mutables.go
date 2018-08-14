@@ -277,7 +277,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"rusty bell spot": &MutableSlot{
 		Treasure:    Treasures["rusty bell"],
-		IDAddrs:     []Addr{{0x09, 0x6476}, {0x08, 0x739e}, {0x0b, 0x60b0}},
+		IDAddrs:     []Addr{{0x09, 0x6476}, {0x0b, 0x60b0}},
 		SubIDAddrs:  []Addr{{0x09, 0x6475}},
 		CollectMode: CollectFind2,
 	},
@@ -477,6 +477,7 @@ var constMutables = map[string]Mutable{
 	// rusty bell or pirate's bell, they will be unable to get the desert item.
 	"skull always present": &MutableRange{Addr{0x08, 0x7388},
 		[]byte{0xca, 0xc5, 0x3a}, []byte{0x00, 0x00, 0x00}},
+	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x00),
 
 	// replace the rock/flower outside of d6 with a normal bush so that the
 	// player doesn't get softlocked if they exit d6 without gale satchel or
