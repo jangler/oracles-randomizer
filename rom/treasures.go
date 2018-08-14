@@ -20,7 +20,7 @@ const (
 // A Treasure is data associated with a particular item ID and sub ID.
 type Treasure struct {
 	id, subID byte
-	addr      uint16 // bank 15, value of hl at $15:466b
+	addr      uint16 // bank 15, value of hl at $15:466b, minus one
 
 	// in order, starting at addr
 	mode, value, text, sprite byte
