@@ -475,12 +475,18 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		skip = true
 	}
 
-	// the star ore code is unique in that it doesn't set the sub ID at
-	// all, leaving it zeroed. so if we're looking at the star ore
-	// slot, then skip any items that have a nonzero sub ID.
-	if slotNode.Name == "star ore spot" &&
-		rom.Treasures[itemNode.Name].SubID() != 0 {
-		skip = true
+	// the star ore code is unique in that it doesn't set the sub ID at all,
+	// leaving it zeroed. so if we're looking at the star ore slot, then skip
+	// any items that have a nonzero sub ID.
+	//
+	// the master diver is similar in that he decides whether to give his item
+	// based on whether you have on with that ID, meaning that he won't upgrade
+	// L-1 items.
+	switch slotNode.Name {
+	case "star ore spot", "flippers gift":
+		if rom.Treasures[itemNode.Name].SubID() != 0 {
+			skip = true
+		}
 	}
 	// some items can't be drawn correctly in "scene" item slots.
 	switch slotNode.Name {
