@@ -6,17 +6,24 @@ package prenode
 // if you nest them in a way that requires multiple levels of indentation. so
 // try not to do that too much.
 
+// TODO use searchchests function of script to find *all* chests
+// TODO the group 0 chests are done, but the indoor ones aren't
+
 var holodrumPrenodes = map[string]*Prenode{
 	"start": And(), // parent for nodes reachable by default
 
-	// horon village & western coast
-	"horon village": And("start"),
+	// horon village
+	"horon village":    And("start"),
+	"maku key fall":    AndSlot("horon village", "pop maku bubble"),
+	"ember tree":       AndSlot("horon village"),
+	"village SE chest": AndSlot("horon village", "bombs"),
+	"village SW chest": AndSlot("horon village", "remove bush", "remove mushroom"),
+
+	// western coast
 	"x-shaped jewel chest": AndSlot("horon village", Or("ember slingshot", "mystery slingshot"),
 		"mystery seeds", "kill moldorm"),
-	"enter d0":      And("horon village"),
-	"maku key fall": AndSlot("horon village", "pop maku bubble"),
-	"ember tree":    AndSlot("horon village"),
-	"pirate ship":   And("pirate's bell", "pirate house"),
+	"enter d0":    And("horon village"),
+	"pirate ship": And("pirate's bell", "pirate house"),
 	"graveyard": And("pirate ship", Or("long jump",
 		"western coast default summer",
 		And("bombs", "jump", "summer"))),
@@ -24,6 +31,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		Or("western coast default summer", "summer"),
 		Or("western coast default spring", "spring"),
 		Or("western coast default autumn", "autumn"))),
+	"western coast chest": AndSlot("pirate ship"),
 
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump
@@ -45,7 +53,8 @@ var holodrumPrenodes = map[string]*Prenode{
 	"enter d2 B": Or(
 		And("mystery tree", "woods of winter default summer", "bracelet"),
 		And("d2 blade key chest", "bracelet")),
-	"enter d2": Or("enter d2 A", "enter d2 B"),
+	"enter d2":         Or("enter d2 A", "enter d2 B"),
+	"d2 outdoor chest": AndSlot("enter d2 B"),
 
 	// holodrum plain
 	"ghastly stump": Or(
@@ -104,6 +113,13 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("lake portal", "not north horon default summer", "flippers"),
 		And("north horon stump", Or("north horon default winter", And("winter", "autumn")),
 			Or("jump", "ricky", Hard("moosh flute"))))),
+	"lake chest": AndSlot("horon village", Or("feather L-2", And("jump",
+		Or("north horon default autumn",
+			And("autumn", "north horon stump"))))),
+
+	// natzu
+	"great moblin chest": AndSlot(Or("flippers", "jump"), "animal flute",
+		Or("flippers", "pegasus jump L-2"), "bracelet"),
 
 	// sunken city
 	"sunken city": Or("fairy fountain",
@@ -148,6 +164,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	// samasa desert
 	"desert":          And("suburbs", "pirate house"),
 	"rusty bell spot": AndSlot("desert", "bracelet"),
+	"desert chest":    AndSlot("desert", "flippers"),
 
 	// temple remains (the important logic is in the portal prenodes)
 	"temple remains": Or(

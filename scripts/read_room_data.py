@@ -66,6 +66,8 @@ MUSIC = {
     0x16: "dancing dragon dungeon",
     0x19: "explorer's crypt",
     0x1a: "sword and shield maze",
+    0x28: "subrosia",
+    0x35: "samasa desert",
 }
 
 INTERACTION_MODES = {
@@ -187,6 +189,7 @@ TREASURES = {
     0x2d: ("ring", {
         0x04: "discovery ring",
     }),
+    0x2b: ("piece of heart", {}),
     0x30: ("small key", {
         0x03: "in chest",
     }),
@@ -200,6 +203,9 @@ TREASURES = {
         0x02: "in chest",
     }),
     0x34: ("gasha seed", {}),
+    0x4f: ("x-shaped jewel", {}),
+    0x50: ("red ore", {}),
+    0x51: ("blue ore", {}),
 }
 
 
@@ -441,6 +447,7 @@ def get_chests(buf, group):
             break
 
         chests.append({
+            "address": [bank, addr+2],
             "group": group,
             "room": room,
             "music": read_music(rom, group, room, name=False),
@@ -535,13 +542,15 @@ elif args.action == "searchchests":
 
         chests = get_chests(rom, group)
 
-        # filter by music and print music name if possible
+        # filter by music
         chests = [chest for chest in chests if chest["music"] == music]
-        for chest in chests:
-            if chest["music"] in MUSIC:
-                chest["music"] = MUSIC[chest["music"]]
     elif len(args.args) > 2:
         fatal("searchchests expects 0-2 args, got", len(args.args))
+
+    # print music by name if known
+    for chest in chests:
+        if chest["music"] in MUSIC:
+            chest["music"] = MUSIC[chest["music"]]
 
     yaml.dump(chests, sys.stdout)
 elif args.action == "searchobjects":
