@@ -57,7 +57,8 @@ var itemPrenodes = map[string]*Prenode{
 	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds": And("seed item", Or(
 		And("ember tree seeds", "harvest tree"),
-		HardAnd("harvest bush", Or("enter agunima", "enter d7")))),
+		HardAnd("harvest bush", Or(
+			"enter agunima", "d5 armos key chest", "enter d7")))),
 	"harvest mystery seeds": And("seed item", Or(
 		And("mystery tree seeds", "harvest tree"),
 		HardAnd("enter frypolar", "harvest bush"))),
