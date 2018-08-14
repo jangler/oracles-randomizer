@@ -63,7 +63,7 @@ logic, or to prevent softlocks. The most notable are:
 
 - The intro sequence and pirate cutscene are almost entirely removed.
 - Mystical seeds grow in all seasons.
-- Seeds can be collected if the player has either slingshot or satchel.
+- Seeds can be collected if the player has either slingshot or the satchel.
 - The cliff between Eastern Suburbs and Sunken City has stairs instead of a
   spring flower.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
@@ -88,7 +88,7 @@ A: Use bombs, which you can buy in the Horon Village shop.
 
 **Q: Do I have to do HSS skip or Poe skip?**
 
-A: No, but can if you want to, and the randomizer accounts for those and other
+A: No, but you can if you want to, and the randomizer accounts for those and other
 sequence breaks.
 
 **Q: No, really, I'm softlocked. Now what do I do?**
