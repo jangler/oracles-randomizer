@@ -29,14 +29,14 @@ before the filename arguments, as displayed in the usage (`./oos-randomizer
       -seed string
             specific random seed to use (32-bit hex number)
       -update
-            update randomized ROM to this version
+            update already randomized ROM to this version
       -verbose
             print more detailed output to terminal
 
 
 ## Download
 
-You can download executables for Windows, MacOS, and Linux from the
+You can download executables for Windows, macOS, and Linux from the
 [releases](https://github.com/jangler/oos-randomizer/releases) page.
 
 
@@ -50,10 +50,10 @@ complete a casual playthrough are shuffled, with some exceptions:
 
 **Items are only placed in locations where you would normally obtain another
 key item.** Speedrunners should note that the Subrosian dancing prize could be
-important.
+important. An option to randomize all chests is planned for a future release.
 
-Seed trees are also shuffled, and the satchel and slingshot will start with the
-type of seeds on the tree in Horon Village.
+Seasons and seed trees are also shuffled, and the satchel and slingshot will
+start with the type of seeds on the tree in Horon Village.
 
 
 ## Other notable changes
@@ -71,3 +71,29 @@ logic, or to prevent softlocks. The most notable are:
 - **Holding start while closing the map screen warps to the seed tree in Horon
   Village.** Tree warping has a one-hour cooldown unless the `-freewarp` flag
   is specified.
+
+## FAQ
+
+**Q: When I run the randomizer, a command prompt window opens and closes
+without doing anything. What do I do?**
+
+A: If you're still lost after reading the "usage" section of the readme, either
+Google how to use the command prompt or ask a friend. Replace command prompt
+with Unix shell if you're on macOS.
+
+**Q: The item in the Hero's Cave was the [bracelet/boomerang], and it doesn't
+wake up the Maku Tree. Am I softlocked?**
+
+A: Use bombs, which you can buy in the Horon Village shop.
+
+**Q: Do I have to do HSS skip or Poe skip?**
+
+A: No, but can if you want to, and the randomizer accounts for those and other
+sequence breaks.
+
+**Q: No, really, I'm softlocked. Now what do I do?**
+
+A: If you're softlocked by location, use tree warp. Otherwise, open an issue
+about it or tell me in Discord, and provide the log file. Depending on the
+problem, you may be able to `-update` your ROM using the next patch version to
+un-softlock.
