@@ -321,6 +321,16 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 }
 
+// SetFreewarp sets whether tree warp in the generated ROM will have a
+// cooldown (true = no cooldown).
+func SetFreewarp(freewarp bool) {
+	if freewarp {
+		constMutables["tree warp"].(*MutableRange).New[12] = 0x18
+	} else {
+		constMutables["tree warp"].(*MutableRange).New[12] = 0x28
+	}
+}
+
 // consider these mutables constants; they aren't changed in the randomization
 // process.
 var constMutables = map[string]Mutable{
@@ -335,13 +345,20 @@ var constMutables = map[string]Mutable{
 		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb7\x25\xcd\xb7\x25\xcd\x0b\x25\xd0",
 		"\x3e\x0a\xcd\xb9\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
 
-	// warp to ember tree if holding start when closing the map screen. this
-	// requires adding some code at the end of the bank.
-	"outdoor map jump redirect": MutableWord(Addr{0x02, 0x60ec}, 0xdd4f, 0x1d76),
-	"dungeon map jump redirect": MutableWord(Addr{0x02, 0x608f}, 0xdd4f, 0x1d76),
+	// warp to ember tree if holding start when closing the map screen, using
+	// the playtime counter as a cooldown. this requires adding some code at
+	// the end of the bank.
+	"outdoor map jump redirect": MutableString(Addr{0x02, 0x60eb},
+		"\xc2\xdd\x4f", "\xc4\x1d\x76"),
+	"dungeon map jump redirect": MutableString(Addr{0x02, 0x608e},
+		"\xc2\xdd\x4f", "\xc4\x1d\x76"),
 	"tree warp": MutableString(Addr{0x02, 0x761d},
-		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
-		"\xfa\x81\xc4\xe6\x08\x28\x09\x21\xb7\xcb\x36\x05\xaf\xcd\xdd\x5e\xc3\xdd\x4f\xc9"),
+		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
+			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
+			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
+		"\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e\x28\x06\x3e\x5a"+
+			"\xcd\x74\x0c\xc9\x36\xff\x2b\x36\xfc\x2b\x36\xb4\x2b\x36\x40"+
+			"\x21\xb7\xcb\x36\x05\xaf\xcd\xdd\x5e\xc3\xdd\x4f"),
 
 	// have maku gate open from start
 	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),

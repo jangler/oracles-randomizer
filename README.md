@@ -24,6 +24,8 @@ before the filename arguments, as displayed in the usage (`./oos-randomizer
 -h`) message:
 
     Usage of ./oos-randomizer:
+      -freewarp
+            allow unimited tree warp (no cooldown)
       -seed string
             specific random seed to use (32-bit hex number)
       -update
@@ -67,4 +69,5 @@ logic, or to prevent softlocks. The most notable are:
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
 - The diving spot at the south end of Sunken City is removed.
 - **Holding start while closing the map screen warps to the seed tree in Horon
-  Village.**
+  Village.** Tree warping has a one-hour cooldown unless the `-freewarp` flag
+  is specified.
