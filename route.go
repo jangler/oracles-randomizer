@@ -500,7 +500,7 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	// based on whether you have on with that ID, meaning that he won't upgrade
 	// L-1 items.
 	switch slotNode.Name {
-	case "star ore spot", "flippers gift":
+	case "star ore spot", "diver gift":
 		if rom.Treasures[itemNode.Name].SubID() != 0 {
 			skip = true
 		}

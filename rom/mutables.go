@@ -129,12 +129,12 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x0a, 0x7b86}},
 		ParamAddrs: []Addr{{0x0a, 0x7b88}},
 	},
-	"maku key fall": &MutableSlot{
+	"maku tree gift": &MutableSlot{
 		Treasure:   Treasures["gnarled key"],
 		IDAddrs:    []Addr{{0x15, 0x657d}, {0x09, 0x7dff}, {0x09, 0x7de6}},
 		SubIDAddrs: []Addr{{0x15, 0x6580}, {0x09, 0x7e02}},
 	},
-	"boomerang gift": &MutableSlot{
+	"dance hall prize": &MutableSlot{
 		Treasure:   Treasures["boomerang L-1"],
 		IDAddrs:    []Addr{{0x0b, 0x6648}},
 		SubIDAddrs: []Addr{{0x0b, 0x6649}},
@@ -149,7 +149,7 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x0b, 0x6a6e}},
 		SubIDAddrs: []Addr{{0x0b, 0x6a6f}},
 	},
-	"d1 satchel": &MutableSlot{
+	"d1 satchel spot": &MutableSlot{
 		// addresses are backwards from a normal slot
 		Treasure:   Treasures["satchel"],
 		IDAddrs:    []Addr{{0x09, 0x669b}},
@@ -165,7 +165,7 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x0b, 0x64ce}},
 		SubIDAddrs: []Addr{{0x0b, 0x64cf}},
 	},
-	"floodgate key gift": &MutableSlot{
+	"floodgate key spot": &MutableSlot{
 		Treasure:   Treasures["floodgate key"],
 		IDAddrs:    []Addr{{0x09, 0x626b}},
 		SubIDAddrs: []Addr{{0x09, 0x626a}},
@@ -195,7 +195,7 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x15, 0x554d}},
 		SubIDAddrs: []Addr{{0x15, 0x554e}},
 	},
-	"flippers gift": &MutableSlot{
+	"diver gift": &MutableSlot{
 		Treasure:   Treasures["flippers"],
 		IDAddrs:    []Addr{{0x0b, 0x7310}, {0x0b, 0x72f3}},
 		SubIDAddrs: []Addr{{0x0b, 0x7311}},
@@ -250,7 +250,7 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x15, 0x54c0}},
 		SubIDAddrs: []Addr{{0x15, 0x54c1}},
 	},
-	"rusty bell spot": &MutableSlot{
+	"desert pit": &MutableSlot{
 		Treasure:   Treasures["rusty bell"],
 		IDAddrs:    []Addr{{0x09, 0x6476}, {0x0b, 0x60b0}},
 		SubIDAddrs: []Addr{{0x09, 0x6475}},

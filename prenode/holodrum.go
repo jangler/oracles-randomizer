@@ -13,10 +13,10 @@ var holodrumPrenodes = map[string]*Prenode{
 	"horon village": And("start"),
 	"x-shaped jewel chest": AndSlot("horon village", Or("ember slingshot", "mystery slingshot"),
 		"mystery seeds", "kill moldorm"),
-	"enter d0":      And("horon village"),
-	"maku key fall": AndSlot("horon village", "pop maku bubble"),
-	"ember tree":    AndSlot("horon village"),
-	"pirate ship":   And("pirate's bell", "pirate house"),
+	"enter d0":       And("horon village"),
+	"maku tree gift": AndSlot("horon village", "pop maku bubble"),
+	"ember tree":     AndSlot("horon village"),
+	"pirate ship":    And("pirate's bell", "pirate house"),
 	"graveyard": And("pirate ship", Or("long jump",
 		"western coast default summer",
 		And("bombs", "jump", "summer"))),
@@ -76,7 +76,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	// spool swamp
 	"pegasus tree": AndSlot("ghastly stump",
 		Or("holodrum plain default summer", "summer", "feather L-2", "ricky", Hard("moosh flute"))),
-	"floodgate key gift": AndSlot("pegasus tree", "hit lever"),
+	"floodgate key spot": AndSlot("pegasus tree", "hit lever"),
 	"spool stump": And("pegasus tree", "hit lever",
 		Or("pegasus satchel", "flippers", "feather L-2"), "bracelet", "floodgate key"),
 	"dry swamp": Or(
@@ -119,7 +119,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"sunken gale tree":      AndSlot("sunken city", "cross water gap"),
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
-	"flippers gift":         AndSlot("dimitri", "master's plaque"),
+	"diver gift":            AndSlot("dimitri", "master's plaque"),
 
 	// mount cucco
 	"mount cucco": Or("mountain portal",
@@ -153,8 +153,8 @@ var holodrumPrenodes = map[string]*Prenode{
 		"shovel", "remove bush"),
 
 	// samasa desert
-	"desert":          And("suburbs", "pirate house"),
-	"rusty bell spot": AndSlot("desert", "bracelet"),
+	"desert":     And("suburbs", "pirate house"),
+	"desert pit": AndSlot("desert", "bracelet"),
 
 	// temple remains (the important logic is in the portal prenodes)
 	"temple remains": Or(

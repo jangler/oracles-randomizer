@@ -29,7 +29,7 @@ var d1Prenodes = map[string]*Prenode{
 	"d1 bomb chest":     And("d1 map chest", "hit lever"),
 	"d1 key chest":      And("d1 map chest", "hit lever"),
 	"enter goriya bros": And("d1 bomb chest", "bombs", "d1 key B"),
-	"d1 satchel":        AndSlot("enter goriya bros", "kill goriya bros"),
+	"d1 satchel spot":   AndSlot("enter goriya bros", "kill goriya bros"),
 	"d1 boss key chest": And("d1 map chest", "ember seeds", "kill goriya (pit)"),
 	"d1 ring chest":     And("enter d1", "ember seeds"),
 	"enter aquamentus":  And("enter d1", "ember seeds", "d1 boss key"),
