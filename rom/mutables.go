@@ -453,7 +453,7 @@ var constMutables = map[string]Mutable{
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
-	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x10),
+	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x00),
 
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x4c67}, 0xe951, 0xa94f),
@@ -463,8 +463,8 @@ var constMutables = map[string]Mutable{
 	// one for the item itself and another that gives you the item and also
 	// makes you do a spin slash animation. change the second ID bytes to a
 	// fake item so that one slot doesn't give two items / the same item twice.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x10),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x10),
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x00),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x00),
 
 	// remove the snow piles in front of the shovel house so that shovel isn't
 	// required not to softlock there (it's still required not to softlock in
@@ -519,7 +519,7 @@ var constMutables = map[string]Mutable{
 	// rusty bell or pirate's bell, they will be unable to get the desert item.
 	"skull always present": &MutableRange{Addr{0x08, 0x7388},
 		[]byte{0xca, 0xc5, 0x3a}, []byte{0x00, 0x00, 0x00}},
-	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x00),
+	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
 
 	// replace the rock/flower outside of d6 with a normal bush so that the
 	// player doesn't get softlocked if they exit d6 without gale satchel or
