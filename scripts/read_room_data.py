@@ -54,7 +54,7 @@ MUSIC_PTR_TABLE = 0x04, 0x483c
 OBJECT_PTR_TABLE = 0x11, 0x5b38
 CHEST_PTR_TABLE = 0x15, 0x53af
 
-MUSIC = {
+MUSIC = { # and sound effects
     0x03: "overworld",
     0x0a: "horon village",
     0x0d: "essence room",
@@ -68,6 +68,37 @@ MUSIC = {
     0x1a: "sword and shield maze",
     0x28: "subrosia",
     0x35: "samasa desert",
+    0x4c: "got item",
+    0x4d: "puzzle solved (short)",
+    0x4e: "damage enemy",
+    0x4f: "charge sword",
+    0x50: "ping",
+    0x51: "shoot rock",
+    0x52: "engulf",
+    0x53: "jump",
+    0x54: "open menu",
+    0x55: "close menu",
+    0x56: "select option",
+    0x57: "restore heart",
+    0x58: "deflect",
+    0x59: "falling enemy",
+    0x5a: "menu says no",
+    0x5b: "puzzle solved (long)",
+    0x5c: "preparing magic",
+    0x5d: "sword beam",
+    0x5e: "small key",
+    0x4f: "damage link",
+    0x60: "low hearts",
+    0x70: "onox walk",
+    0x80: "minecart",
+    0x90: "gale seed",
+    0xa0: "dimitri?",
+    0xb0: "rumble",
+    0xc0: "spell?",
+    0xd0: "scent seed impact",
+    0xd1: "growl?",
+    0xd2: "thunder",
+    0xd3: "whirlwind",
 }
 
 INTERACTION_MODES = {

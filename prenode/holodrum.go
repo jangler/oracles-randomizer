@@ -14,7 +14,7 @@ var holodrumPrenodes = map[string]*Prenode{
 
 	// horon village
 	"horon village":    And("start"),
-	"maku key fall":    AndSlot("horon village", "pop maku bubble"),
+	"maku tree gift":   AndSlot("horon village", "pop maku bubble"),
 	"ember tree":       AndSlot("horon village"),
 	"village SE chest": AndSlot("horon village", "bombs"),
 	"village SW chest": AndSlot("horon village", "remove bush", "remove mushroom"),
@@ -42,6 +42,13 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("suburbs", Or("eastern suburbs default winter", "winter", "cross water gap"))),
 	"shovel gift": AndSlot("fairy fountain", Or("eastern suburbs default winter", "winter"),
 		Or("woods of winter default winter", "winter")),
+	"central woods of winter": Or(
+		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
+			Or("shovel", "jump")),
+		And("fairy fountain", Or(
+			"eastern suburbs default spring", "spring",
+			"eastern suburbs default summer", "summer",
+			"eastern suburbs default autumn", "autumn"))),
 	"mystery tree": OrSlot(
 		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
 			Or("shovel", And("jump", "bracelet"))),
@@ -78,7 +85,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	// spool swamp
 	"pegasus tree": AndSlot("ghastly stump",
 		Or("holodrum plain default summer", "summer", "feather L-2", "ricky", Hard("moosh flute"))),
-	"floodgate key gift": AndSlot("pegasus tree", "hit lever"),
+	"floodgate key spot": AndSlot("pegasus tree", "hit lever"),
 	"spool stump": And("pegasus tree", "hit lever",
 		Or("pegasus satchel", "flippers", "feather L-2"), "bracelet", "floodgate key"),
 	"dry swamp": Or(
@@ -128,7 +135,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"sunken gale tree":      AndSlot("sunken city", "cross water gap"),
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
-	"flippers gift":         AndSlot("dimitri", "master's plaque"),
+	"diver gift":            AndSlot("dimitri", "master's plaque"),
 
 	// mount cucco
 	"mount cucco": Or("mountain portal",
@@ -162,9 +169,9 @@ var holodrumPrenodes = map[string]*Prenode{
 		"shovel", "remove bush"),
 
 	// samasa desert
-	"desert":          And("suburbs", "pirate house"),
-	"rusty bell spot": AndSlot("desert", "bracelet"),
-	"desert chest":    AndSlot("desert", "flippers"),
+	"desert":       And("suburbs", "pirate house"),
+	"desert pit":   AndSlot("desert", "bracelet"),
+	"desert chest": AndSlot("desert", "flippers"),
 
 	// temple remains (the important logic is in the portal prenodes)
 	"temple remains": Or(

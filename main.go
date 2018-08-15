@@ -27,10 +27,12 @@ func checkNumArgs(op string, expected int) {
 
 func main() {
 	// init flags
+	flagFreewarp := flag.Bool(
+		"freewarp", false, "allow unlimited tree warp (no cooldown)")
 	flagSeed := flag.String("seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flagUpdate := flag.Bool(
-		"update", false, "update randomized ROM to this version")
+		"update", false, "update already randomized ROM to this version")
 	flagVerbose := flag.Bool(
 		"verbose", false, "print more detailed output to terminal")
 	flag.Parse()
@@ -42,6 +44,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	rom.SetFreewarp(*flagFreewarp)
 
 	// randomize according to params, unless we're just updating
 	if *flagUpdate {

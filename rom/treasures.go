@@ -20,10 +20,13 @@ const (
 // A Treasure is data associated with a particular item ID and sub ID.
 type Treasure struct {
 	id, subID byte
-	addr      uint16 // bank 15, value of hl at $15:466b
+	addr      uint16 // bank 15, value of hl at $15:466b, minus one
 
 	// in order, starting at addr
-	mode, value, text, sprite byte
+	mode   byte // collection mode
+	param  byte // parameter value to use for giveTreasure
+	text   byte
+	sprite byte
 }
 
 // SubID returns item sub ID of the treasure.
@@ -43,7 +46,7 @@ func (t Treasure) RealAddr() int {
 // Bytes returns a slice of consecutive bytes of treasure data, as they would
 // appear in the ROM.
 func (t Treasure) Bytes() []byte {
-	return []byte{t.mode, t.value, t.text, t.sprite}
+	return []byte{t.mode, t.param, t.text, t.sprite}
 }
 
 // Mutate replaces the associated treasure in the given ROM data with this one.
@@ -91,6 +94,12 @@ var Treasures = map[string]*Treasure{
 	"satchel":       &Treasure{0x19, 0x00, 0x56f8, 0x0a, 0x01, 0x2d, 0x20},
 	"fool's ore":    &Treasure{0x1e, 0x00, 0x55e4, 0x00, 0x00, 0xff, 0x1a},
 	"flippers":      &Treasure{0x2e, 0x00, 0x5624, 0x0a, 0x00, 0x31, 0x31},
+
+	// seasons are obtained by giving the rod of seasons with differet sub-IDs
+	"winter": &Treasure{0x07, 0x05, 0x5750, 0x09, 0x03, 0x0a, 0x1e},
+	"summer": &Treasure{0x07, 0x03, 0x5748, 0x09, 0x01, 0x0b, 0x1e},
+	"spring": &Treasure{0x07, 0x02, 0x5744, 0x09, 0x00, 0x0d, 0x1e},
+	"autumn": &Treasure{0x07, 0x04, 0x574c, 0x09, 0x02, 0x0c, 0x1e},
 
 	// rings actually have various entries based on param. this is the first
 	// "ring" in the treasure code, but it has a param of 0xff (nothing).

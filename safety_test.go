@@ -8,29 +8,30 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
-// item placement from a 1.2.2 rom used for a race
+// item placement from a 1.2.2 rom used for a race, updated for rod/seasons
+// being slotted
 var testData1 = map[string]string{
-	"rod":                "d0 sword chest",
-	"bracelet":           "maku key fall",
+	"winter":             "d0 sword chest",
+	"bracelet":           "maku tree gift",
 	"gnarled key":        "blaino gift",
-	"satchel":            "d1 satchel",
+	"satchel":            "d1 satchel spot",
 	"gale tree seeds 1":  "scent tree",
 	"ember tree seeds":   "ember tree",
 	"feather L-1":        "rod gift",
 	"magnet gloves":      "shovel gift",
-	"slingshot L-2":      "boomerang gift",
+	"slingshot L-2":      "dance hall prize",
 	"mystery tree seeds": "sunken gale tree",
 	"star ore":           "x-shaped jewel chest",
 	"pegasus tree seeds": "pegasus tree",
-	"master's plaque":    "floodgate key gift",
-	"fool's ore":         "flippers gift",
+	"master's plaque":    "floodgate key spot",
+	"fool's ore":         "diver gift",
 	"shovel":             "d8 HSS chest",
 	"x-shaped jewel":     "star ore spot",
 	"sword L-1":          "d2 bracelet chest",
 	"feather L-2":        "master's plaque chest",
 	"round jewel":        "dragon key spot",
 	"dragon key":         "spring banana tree",
-	"floodgate key":      "rusty bell spot",
+	"floodgate key":      "desert pit",
 	"square jewel":       "d5 magnet gloves chest",
 	"flippers":           "d3 feather chest",
 	"pyramid jewel":      "d4 slingshot chest",
@@ -42,30 +43,35 @@ var testData1 = map[string]string{
 	"spring banana":      "d7 cape chest",
 	"boomerang L-1":      "noble sword spot",
 	"scent tree seeds":   "tarm gale tree",
+
+	"spring": "spring tower",
+	"summer": "summer tower",
+	"autumn": "autumn tower",
 }
 
-// item placement from a 1.3.0 rom used for a race
+// item placement from a 1.3.0 rom used for a race, updated for rod/seasons
+// being slotted
 var testData2 = map[string]string{
 	"fool's ore":         "d0 sword chest",
-	"bracelet":           "maku key fall",
+	"bracelet":           "maku tree gift",
 	"slingshot L-2":      "blaino gift",
 	"mystery tree seeds": "ember tree",
 	"pyramid jewel":      "x-shaped jewel chest",
 	"ember tree seeds":   "scent tree",
-	"rod":                "boomerang gift",
+	"winter":             "dance hall prize",
 	"feather L-1":        "d2 bracelet chest",
 	"magnet gloves":      "rod gift",
 	"gale tree seeds 1":  "sunken gale tree",
 	"shovel":             "shovel gift",
 	"gnarled key":        "star ore spot",
-	"master's plaque":    "d1 satchel",
-	"sword L-2":          "flippers gift",
+	"master's plaque":    "d1 satchel spot",
+	"sword L-2":          "diver gift",
 	"satchel":            "master's plaque chest",
 	"pegasus tree seeds": "mystery tree",
 	"star ore":           "d8 HSS chest",
-	"boomerang L-2":      "floodgate key gift",
+	"boomerang L-2":      "floodgate key spot",
 	"spring banana":      "spring banana tree",
-	"round jewel":        "rusty bell spot",
+	"round jewel":        "desert pit",
 	"flippers":           "dragon key spot",
 	"slingshot L-1":      "round jewel gift",
 	"square jewel":       "pyramid jewel spot",
@@ -91,22 +97,31 @@ var testData2 = map[string]string{
 	"tarm ruins default spring":     "",
 	"spool swamp default summer":    "start",
 	"spool swamp default autumn":    "",
+
+	"spring": "spring tower",
+	"summer": "summer tower",
+	"autumn": "autumn tower",
 }
 
-// partial item placement from a dev ~1.4 build
+// partial item placement from a dev ~1.4 build, updated for rod/seasons being
+// slotted
 var testData3 = map[string]string{
 	"fool's ore":        "d0 sword chest",
-	"satchel":           "maku key fall",
+	"satchel":           "maku tree gift",
 	"ember tree seeds":  "ember tree",
-	"feather L-1":       "boomerang gift",
+	"feather L-1":       "dance hall prize",
 	"gale tree seeds 1": "sunken gale tree",
-	"rod":               "rod gift",
+	"winter":            "rod gift",
 	"sword L-1":         "shovel gift",
 	"master's plaque":   "master's plaque chest",
-	"flippers":          "flippers gift",
+	"flippers":          "diver gift",
 
 	"spool swamp default winter": "start",
 	"spool swamp default autumn": "",
+
+	"spring": "spring tower",
+	"summer": "summer tower",
+	"autumn": "autumn tower",
 }
 
 func TestFeatherLockCheck(t *testing.T) {
@@ -117,10 +132,10 @@ func TestFeatherLockCheck(t *testing.T) {
 	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
 		map[string]string{
 			"bracelet":           "d0 sword chest",
-			"flippers":           "maku key fall",
+			"flippers":           "maku tree gift",
 			"shovel":             "blaino gift",
 			"feather L-2":        "star ore spot",
-			"rod":                "rod gift",
+			"winter":             "rod gift",
 			"satchel":            "shovel gift",
 			"pegasus tree seeds": "ember tree",
 		}, "hide and seek", false)
@@ -129,11 +144,11 @@ func TestFeatherLockCheck(t *testing.T) {
 	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
 		map[string]string{
 			"bracelet":           "d0 sword chest",
-			"flippers":           "maku key fall",
+			"flippers":           "maku tree gift",
 			"feather L-2":        "blaino gift",
-			"rod":                "rod gift",
+			"winter":             "rod gift",
 			"pegasus tree seeds": "ember tree",
-			"shovel":             "boomerang gift",
+			"shovel":             "dance hall prize",
 		}, "hide and seek", true)
 
 	// a softlock case from a real rom produced by 1.2.2
@@ -150,6 +165,34 @@ func TestD7ExitLockChest(t *testing.T) {
 		"enter d7", true)
 }
 
+func TestD2ExitCheck(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+	g := r.HardGraph
+
+	// check for false positive
+	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
+		map[string]string{
+			"bracelet":       "d0 sword chest",
+			"ricky's gloves": "blaino gift",
+			"feather L-1":    "maku tree gift",
+
+			"eastern suburbs default winter": "start",
+			"eastern suburbs default autumn": "",
+		}, "central woods of winter", false)
+
+	// check for false negative
+	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
+		map[string]string{
+			"sword L-1":      "d0 sword chest",
+			"ricky's gloves": "blaino gift",
+			"flippers":       "maku tree gift",
+			"summer":         "rod gift",
+
+			"eastern suburbs default winter": "start",
+			"eastern suburbs default autumn": "",
+		}, "central woods of winter", true)
+}
+
 func TestSquareJewelCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 
@@ -157,9 +200,9 @@ func TestSquareJewelCheck(t *testing.T) {
 	checkSoftlockWithSlots(t, canSquareJewelSoftlock, r.HardGraph,
 		map[string]string{
 			"sword L-1":        "d0 sword chest",
-			"satchel":          "maku key fall",
+			"satchel":          "maku tree gift",
 			"ember tree seeds": "ember tree",
-			"shovel":           "boomerang gift",
+			"shovel":           "dance hall prize",
 			"feather L-1":      "rod gift",
 			"flippers":         "star ore spot",
 

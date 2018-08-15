@@ -68,15 +68,9 @@ func (mr *MutableRange) Check(b []byte) error {
 // A MutableSlot is an item slot (chest, gift, etc). It references room data
 // and treasure data.
 type MutableSlot struct {
-	Treasure            *Treasure
-	IDAddrs, SubIDAddrs []Addr
-	CollectMode         byte
-
-	// TODO this is an incorrect model that happens to work for all currently
-	//      slotted items except for the rod. for now the rod can have special
-	//      logic, but this field really needs to be replaced with something
-	//      more accurate (see treasureCollectionBehaviourTable in ages-disasm)
-	SubIDOffset byte
+	Treasure                        *Treasure
+	IDAddrs, SubIDAddrs, ParamAddrs []Addr
+	CollectMode                     byte
 }
 
 // Mutate replaces the given IDs and subIDs in the given ROM data, and changes
@@ -86,32 +80,39 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 		b[addr.FullOffset()] = ms.Treasure.id
 	}
 	for _, addr := range ms.SubIDAddrs {
-		// TODO see the comment on the SubIDOffset field of MutableSlot. for
-		//      now, the rod needs special logic so it doesn't set an obtained
-		//      season flag.
-		if ms.SubIDOffset != 0 && ms.Treasure.id == 0x07 {
-			b[addr.FullOffset()] = 0x07
-		} else {
-			b[addr.FullOffset()] = ms.Treasure.subID + ms.SubIDOffset
-		}
+		b[addr.FullOffset()] = ms.Treasure.subID
+	}
+	for _, addr := range ms.ParamAddrs {
+		b[addr.FullOffset()] = ms.Treasure.param
 	}
 	ms.Treasure.mode = ms.CollectMode
 	return ms.Treasure.Mutate(b)
 }
 
+// helper function for MutableSlot.Check
+func check(b []byte, addr Addr, value byte) error {
+	if b[addr.FullOffset()] != value {
+		return fmt.Errorf("expected %x at %x; found %x",
+			value, addr.FullOffset(), b[addr.FullOffset()])
+	}
+	return nil
+}
+
 // Check verifies that the slot's data matches the given ROM data.
 func (ms *MutableSlot) Check(b []byte) error {
 	for _, addr := range ms.IDAddrs {
-		if b[addr.FullOffset()] != ms.Treasure.id {
-			return fmt.Errorf("expected %x at %x; found %x",
-				ms.Treasure.id, addr.FullOffset(), b[addr.FullOffset()])
+		if err := check(b, addr, ms.Treasure.id); err != nil {
+			return err
 		}
 	}
 	for _, addr := range ms.SubIDAddrs {
-		if b[addr.FullOffset()] != ms.Treasure.subID+ms.SubIDOffset {
-			return fmt.Errorf("expected %x at %x; found %x",
-				ms.Treasure.subID+ms.SubIDOffset, addr.FullOffset(),
-				b[addr.FullOffset()])
+		if err := check(b, addr, ms.Treasure.subID); err != nil {
+			return err
+		}
+	}
+	for _, addr := range ms.ParamAddrs {
+		if err := check(b, addr, ms.Treasure.param); err != nil {
+			return err
 		}
 	}
 	if ms.CollectMode != ms.Treasure.mode {
@@ -124,115 +125,95 @@ func (ms *MutableSlot) Check(b []byte) error {
 
 var ItemSlots = map[string]*MutableSlot{
 	"d0 sword chest": &MutableSlot{
-		Treasure:    Treasures["sword L-1"],
-		IDAddrs:     []Addr{{0x0a, 0x7b86}},
-		SubIDAddrs:  []Addr{{0x0a, 0x7b88}},
-		SubIDOffset: 1,
-		CollectMode: CollectChest,
+		Treasure:   Treasures["sword L-1"],
+		IDAddrs:    []Addr{{0x0a, 0x7b86}},
+		ParamAddrs: []Addr{{0x0a, 0x7b88}},
 	},
-	"maku key fall": &MutableSlot{
-		Treasure:    Treasures["gnarled key"],
-		IDAddrs:     []Addr{{0x15, 0x657d}, {0x09, 0x7dff}, {0x09, 0x7de6}},
-		SubIDAddrs:  []Addr{{0x15, 0x6580}, {0x09, 0x7e02}},
-		CollectMode: CollectFall,
+	"maku tree gift": &MutableSlot{
+		Treasure:   Treasures["gnarled key"],
+		IDAddrs:    []Addr{{0x15, 0x657d}, {0x09, 0x7dff}, {0x09, 0x7de6}},
+		SubIDAddrs: []Addr{{0x15, 0x6580}, {0x09, 0x7e02}},
 	},
-	"boomerang gift": &MutableSlot{
-		Treasure:    Treasures["boomerang L-1"],
-		IDAddrs:     []Addr{{0x0b, 0x6648}},
-		SubIDAddrs:  []Addr{{0x0b, 0x6649}},
-		CollectMode: CollectFind2,
+	"dance hall prize": &MutableSlot{
+		Treasure:   Treasures["boomerang L-1"],
+		IDAddrs:    []Addr{{0x0b, 0x6648}},
+		SubIDAddrs: []Addr{{0x0b, 0x6649}},
 	},
 	"rod gift": &MutableSlot{
-		Treasure:    Treasures["rod"],
-		IDAddrs:     []Addr{{0x15, 0x7511}},
-		SubIDAddrs:  []Addr{{0x15, 0x750f}},
-		SubIDOffset: 1,
-		CollectMode: CollectChest, // it's what the data says
+		Treasure:   Treasures["rod"],
+		IDAddrs:    []Addr{{0x15, 0x7511}},
+		ParamAddrs: []Addr{{0x15, 0x750f}},
 	},
 	"shovel gift": &MutableSlot{
-		Treasure:    Treasures["shovel"],
-		IDAddrs:     []Addr{{0x0b, 0x6a6e}},
-		SubIDAddrs:  []Addr{{0x0b, 0x6a6f}},
-		CollectMode: CollectFind2,
+		Treasure:   Treasures["shovel"],
+		IDAddrs:    []Addr{{0x0b, 0x6a6e}},
+		SubIDAddrs: []Addr{{0x0b, 0x6a6f}},
 	},
-	"d1 satchel": &MutableSlot{
+	"d1 satchel spot": &MutableSlot{
 		// addresses are backwards from a normal slot
-		Treasure:    Treasures["satchel"],
-		IDAddrs:     []Addr{{0x09, 0x669b}},
-		SubIDAddrs:  []Addr{{0x09, 0x669a}},
-		CollectMode: CollectFind2,
+		Treasure:   Treasures["satchel"],
+		IDAddrs:    []Addr{{0x09, 0x669b}},
+		SubIDAddrs: []Addr{{0x09, 0x669a}},
 	},
 	"d2 bracelet chest": &MutableSlot{
-		Treasure:    Treasures["bracelet"],
-		IDAddrs:     []Addr{{0x15, 0x5424}},
-		SubIDAddrs:  []Addr{{0x15, 0x5425}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["bracelet"],
+		IDAddrs:    []Addr{{0x15, 0x5424}},
+		SubIDAddrs: []Addr{{0x15, 0x5425}},
 	},
 	"blaino gift": &MutableSlot{
-		Treasure:    Treasures["ricky's gloves"],
-		IDAddrs:     []Addr{{0x0b, 0x64ce}},
-		SubIDAddrs:  []Addr{{0x0b, 0x64cf}},
-		CollectMode: CollectFind1,
+		Treasure:   Treasures["ricky's gloves"],
+		IDAddrs:    []Addr{{0x0b, 0x64ce}},
+		SubIDAddrs: []Addr{{0x0b, 0x64cf}},
 	},
-	"floodgate key gift": &MutableSlot{
-		Treasure:    Treasures["floodgate key"],
-		IDAddrs:     []Addr{{0x09, 0x626b}},
-		SubIDAddrs:  []Addr{{0x09, 0x626a}},
-		CollectMode: CollectFind1,
+	"floodgate key spot": &MutableSlot{
+		Treasure:   Treasures["floodgate key"],
+		IDAddrs:    []Addr{{0x09, 0x626b}},
+		SubIDAddrs: []Addr{{0x09, 0x626a}},
 	},
 	"square jewel chest": &MutableSlot{
-		Treasure:    Treasures["square jewel"],
-		IDAddrs:     []Addr{{0x0b, 0x7397}},
-		SubIDAddrs:  []Addr{{0x0b, 0x739b}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["square jewel"],
+		IDAddrs:    []Addr{{0x0b, 0x7397}},
+		SubIDAddrs: []Addr{{0x0b, 0x739b}},
 	},
 	"x-shaped jewel chest": &MutableSlot{
-		Treasure:    Treasures["x-shaped jewel"],
-		IDAddrs:     []Addr{{0x15, 0x53cd}},
-		SubIDAddrs:  []Addr{{0x15, 0x53ce}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["x-shaped jewel"],
+		IDAddrs:    []Addr{{0x15, 0x53cd}},
+		SubIDAddrs: []Addr{{0x15, 0x53ce}},
 	},
 	"star ore spot": &MutableSlot{
-		Treasure:    Treasures["star ore"],
-		IDAddrs:     []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
-		SubIDAddrs:  []Addr{}, // special case, not set at all
-		CollectMode: CollectDig,
+		Treasure:   Treasures["star ore"],
+		IDAddrs:    []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
+		SubIDAddrs: []Addr{}, // special case, not set at all
 	},
 	"d3 feather chest": &MutableSlot{
-		Treasure:    Treasures["feather L-1"],
-		IDAddrs:     []Addr{{0x15, 0x5458}},
-		SubIDAddrs:  []Addr{{0x15, 0x5459}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["feather L-1"],
+		IDAddrs:    []Addr{{0x15, 0x5458}},
+		SubIDAddrs: []Addr{{0x15, 0x5459}},
 	},
 	"master's plaque chest": &MutableSlot{
-		Treasure:    Treasures["master's plaque"],
-		IDAddrs:     []Addr{{0x15, 0x554d}},
-		SubIDAddrs:  []Addr{{0x15, 0x554e}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["master's plaque"],
+		IDAddrs:    []Addr{{0x15, 0x554d}},
+		SubIDAddrs: []Addr{{0x15, 0x554e}},
 	},
-	"flippers gift": &MutableSlot{
-		Treasure:    Treasures["flippers"],
-		IDAddrs:     []Addr{{0x0b, 0x7310}, {0x0b, 0x72f3}},
-		SubIDAddrs:  []Addr{{0x0b, 0x7311}},
-		CollectMode: CollectFind2,
+	"diver gift": &MutableSlot{
+		Treasure:   Treasures["flippers"],
+		IDAddrs:    []Addr{{0x0b, 0x7310}, {0x0b, 0x72f3}},
+		SubIDAddrs: []Addr{{0x0b, 0x7311}},
 	},
 	"spring banana tree": &MutableSlot{
-		Treasure:    Treasures["spring banana"],
-		IDAddrs:     []Addr{{0x09, 0x66b0}},
-		SubIDAddrs:  []Addr{{0x09, 0x66af}},
-		CollectMode: CollectFind2,
+		Treasure:   Treasures["spring banana"],
+		IDAddrs:    []Addr{{0x09, 0x66b0}},
+		SubIDAddrs: []Addr{{0x09, 0x66af}},
 	},
 	"dragon key spot": &MutableSlot{
-		Treasure:    Treasures["dragon key"],
-		IDAddrs:     []Addr{{0x09, 0x628d}},
-		SubIDAddrs:  []Addr{{0x09, 0x628c}},
-		CollectMode: CollectFind1,
+		Treasure:   Treasures["dragon key"],
+		IDAddrs:    []Addr{{0x09, 0x628d}},
+		SubIDAddrs: []Addr{{0x09, 0x628c}},
 	},
 	"pyramid jewel spot": &MutableSlot{
-		Treasure:    Treasures["pyramid jewel"],
-		IDAddrs:     []Addr{{0x0b, 0x7350}},
-		SubIDAddrs:  []Addr{{0x0b, 0x7351}},
-		CollectMode: CollectUnderwater,
+		Treasure:   Treasures["pyramid jewel"],
+		IDAddrs:    []Addr{{0x0b, 0x7350}},
+		SubIDAddrs: []Addr{{0x0b, 0x7351}},
 	},
 	// don't use this slot; no one knows about it and it's not required for
 	// anything in a normal playthrough
@@ -241,57 +222,69 @@ var ItemSlots = map[string]*MutableSlot{
 			Treasure:    Treasures["ring box L-2"],
 			IDAddrs:     []Addr{{0x0b, 0x5c1a}},
 			SubIDAddrs:  []Addr{{0x0b, 0x5c1b}},
-			CollectMode: CollectGoronGift,
 		},
 	*/
 	"d4 slingshot chest": &MutableSlot{
-		Treasure:    Treasures["slingshot L-1"],
-		IDAddrs:     []Addr{{0x15, 0x5470}},
-		SubIDAddrs:  []Addr{{0x15, 0x5471}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["slingshot L-1"],
+		IDAddrs:    []Addr{{0x15, 0x5470}},
+		SubIDAddrs: []Addr{{0x15, 0x5471}},
 	},
 	"d5 magnet gloves chest": &MutableSlot{
-		Treasure:    Treasures["magnet gloves"],
-		IDAddrs:     []Addr{{0x15, 0x5480}},
-		SubIDAddrs:  []Addr{{0x15, 0x5481}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["magnet gloves"],
+		IDAddrs:    []Addr{{0x15, 0x5480}},
+		SubIDAddrs: []Addr{{0x15, 0x5481}},
 	},
 	"round jewel gift": &MutableSlot{
-		Treasure:    Treasures["round jewel"],
-		IDAddrs:     []Addr{{0x0b, 0x7334}},
-		SubIDAddrs:  []Addr{{0x0b, 0x7335}},
-		CollectMode: CollectFind2,
+		Treasure:   Treasures["round jewel"],
+		IDAddrs:    []Addr{{0x0b, 0x7334}},
+		SubIDAddrs: []Addr{{0x0b, 0x7335}},
 	},
 	"noble sword spot": &MutableSlot{
 		// two cases depending on which sword you enter with
-		Treasure:    Treasures["sword L-2"],
-		IDAddrs:     []Addr{{0x0b, 0x6417}, {0x0b, 0x641e}},
-		SubIDAddrs:  []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
-		CollectMode: CollectFind1,
+		Treasure:   Treasures["sword L-2"],
+		IDAddrs:    []Addr{{0x0b, 0x6417}, {0x0b, 0x641e}},
+		SubIDAddrs: []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
 	},
 	"d6 boomerang chest": &MutableSlot{
-		Treasure:    Treasures["boomerang L-2"],
-		IDAddrs:     []Addr{{0x15, 0x54c0}},
-		SubIDAddrs:  []Addr{{0x15, 0x54c1}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["boomerang L-2"],
+		IDAddrs:    []Addr{{0x15, 0x54c0}},
+		SubIDAddrs: []Addr{{0x15, 0x54c1}},
 	},
-	"rusty bell spot": &MutableSlot{
-		Treasure:    Treasures["rusty bell"],
-		IDAddrs:     []Addr{{0x09, 0x6476}, {0x0b, 0x60b0}},
-		SubIDAddrs:  []Addr{{0x09, 0x6475}},
-		CollectMode: CollectFind2,
+	"desert pit": &MutableSlot{
+		Treasure:   Treasures["rusty bell"],
+		IDAddrs:    []Addr{{0x09, 0x6476}, {0x0b, 0x60b0}},
+		SubIDAddrs: []Addr{{0x09, 0x6475}},
 	},
 	"d7 cape chest": &MutableSlot{
-		Treasure:    Treasures["feather L-2"],
-		IDAddrs:     []Addr{{0x15, 0x54e1}},
-		SubIDAddrs:  []Addr{{0x15, 0x54e2}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["feather L-2"],
+		IDAddrs:    []Addr{{0x15, 0x54e1}},
+		SubIDAddrs: []Addr{{0x15, 0x54e2}},
 	},
 	"d8 HSS chest": &MutableSlot{
-		Treasure:    Treasures["slingshot L-2"],
-		IDAddrs:     []Addr{{0x15, 0x551d}},
-		SubIDAddrs:  []Addr{{0x15, 0x551e}},
-		CollectMode: CollectChest,
+		Treasure:   Treasures["slingshot L-2"],
+		IDAddrs:    []Addr{{0x15, 0x551d}},
+		SubIDAddrs: []Addr{{0x15, 0x551e}},
+	},
+
+	"winter tower": &MutableSlot{
+		Treasure:   Treasures["winter"],
+		IDAddrs:    []Addr{{0x0b, 0x4fc5}},
+		SubIDAddrs: []Addr{{0x0b, 0x4fc6}},
+	},
+	"summer tower": &MutableSlot{
+		Treasure:   Treasures["summer"],
+		IDAddrs:    []Addr{{0x0b, 0x4fb9}},
+		SubIDAddrs: []Addr{{0x0b, 0x4fba}},
+	},
+	"spring tower": &MutableSlot{
+		Treasure:   Treasures["spring"],
+		IDAddrs:    []Addr{{0x0b, 0x4fb5}},
+		SubIDAddrs: []Addr{{0x0b, 0x4fb6}},
+	},
+	"autumn tower": &MutableSlot{
+		Treasure:   Treasures["autumn"],
+		IDAddrs:    []Addr{{0x0b, 0x4fc1}},
+		SubIDAddrs: []Addr{{0x0b, 0x4fc2}},
 	},
 
 	// these are "fake" item slots in that they don't slot real treasures
@@ -321,6 +314,23 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 }
 
+func init() {
+	// set item slot collect modes based on default treasures
+	for _, slot := range ItemSlots {
+		slot.CollectMode = slot.Treasure.mode
+	}
+}
+
+// SetFreewarp sets whether tree warp in the generated ROM will have a
+// cooldown (true = no cooldown).
+func SetFreewarp(freewarp bool) {
+	if freewarp {
+		constMutables["tree warp"].(*MutableRange).New[12] = 0x18
+	} else {
+		constMutables["tree warp"].(*MutableRange).New[12] = 0x28
+	}
+}
+
 // consider these mutables constants; they aren't changed in the randomization
 // process.
 var constMutables = map[string]Mutable{
@@ -335,13 +345,20 @@ var constMutables = map[string]Mutable{
 		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb7\x25\xcd\xb7\x25\xcd\x0b\x25\xd0",
 		"\x3e\x0a\xcd\xb9\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
 
-	// warp to ember tree if holding start when closing the map screen. this
-	// requires adding some code at the end of the bank.
-	"outdoor map jump redirect": MutableWord(Addr{0x02, 0x60ec}, 0xdd4f, 0x1d76),
-	"dungeon map jump redirect": MutableWord(Addr{0x02, 0x608f}, 0xdd4f, 0x1d76),
+	// warp to ember tree if holding start when closing the map screen, using
+	// the playtime counter as a cooldown. this requires adding some code at
+	// the end of the bank.
+	"outdoor map jump redirect": MutableString(Addr{0x02, 0x60eb},
+		"\xc2\xdd\x4f", "\xc4\x1d\x76"),
+	"dungeon map jump redirect": MutableString(Addr{0x02, 0x608e},
+		"\xc2\xdd\x4f", "\xc4\x1d\x76"),
 	"tree warp": MutableString(Addr{0x02, 0x761d},
-		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
-		"\xfa\x81\xc4\xe6\x08\x28\x09\x21\xb7\xcb\x36\x05\xaf\xcd\xdd\x5e\xc3\xdd\x4f\xc9"),
+		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
+			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
+			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
+		"\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e\x28\x06\x3e\x5a"+
+			"\xcd\x74\x0c\xc9\x36\xff\x2b\x36\xfc\x2b\x36\xb4\x2b\x36\x40"+
+			"\x21\xb7\xcb\x36\x05\xaf\xcd\xdd\x5e\xc3\xdd\x4f"),
 
 	// have maku gate open from start
 	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
@@ -411,7 +428,7 @@ var constMutables = map[string]Mutable{
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
-	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x10),
+	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x3f),
 
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x4c67}, 0xe951, 0xa94f),
@@ -421,8 +438,8 @@ var constMutables = map[string]Mutable{
 	// one for the item itself and another that gives you the item and also
 	// makes you do a spin slash animation. change the second ID bytes to a
 	// fake item so that one slot doesn't give two items / the same item twice.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x10),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x10),
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x3f),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x3f),
 
 	// remove the snow piles in front of the shovel house so that shovel isn't
 	// required not to softlock there (it's still required not to softlock in
@@ -473,11 +490,9 @@ var constMutables = map[string]Mutable{
 	"replace cliff winter 2": MutableByte(Addr{0x24, 0x5d1f}, 0x54, 0xd0),
 	"replace cliff winter 3": MutableByte(Addr{0x24, 0x5d29}, 0x93, 0x04),
 
-	// normally if the player talks to the pirate captain after getting the
-	// rusty bell or pirate's bell, they will be unable to get the desert item.
-	"skull always present": &MutableRange{Addr{0x08, 0x7388},
-		[]byte{0xca, 0xc5, 0x3a}, []byte{0x00, 0x00, 0x00}},
-	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x00),
+	// normally none of the desert pits will work if the player already has the
+	// rusty bell
+	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
 
 	// replace the rock/flower outside of d6 with a normal bush so that the
 	// player doesn't get softlocked if they exit d6 without gale satchel or
@@ -487,11 +502,19 @@ var constMutables = map[string]Mutable{
 	"replace d6 flower autumn": MutableByte(Addr{0x23, 0x42fd}, 0x92, 0xc4),
 	"replace d6 flower winter": MutableByte(Addr{0x23, 0x7f5a}, 0x92, 0xc4),
 
+	// replace the stairs outside the portal in eyeglass lake in summer with a
+	// railing, because if the player jumps off those stairs in summer they
+	// fall into the noble sword room.
+	"replace lake stairs": MutableString(Addr{0x22, 0x72a5},
+		"\x36\xd0\x35", "\x40\x40\x40"),
+
 	// skip pirate cutscene. adds flag-setting code at the end of the bank.
+	// includes setting flag $1b, which makes the pirate skull appear in the
+	// desert, in case the player hasn't talked to the ghost.
 	"pirate flag call": MutableWord(Addr{0x15, 0x5e52}, 0xb930, 0x707d),
 	"pirate flag func": MutableString(Addr{0x15, 0x7d70},
-		"\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15",
-		"\xcd\xb9\x30\x3e\x17\xcd\xb9\x30\x21\xe2\xc7\xcb\xf6\xc9"),
+		"\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15",
+		"\xcd\xb9\x30\x3e\x17\xcd\xb9\x30\x3e\x1b\xcd\xb9\x30\x21\xe2\xc7\xcb\xf6\xc9"),
 	"pirate warp": MutableString(Addr{0x15, 0x5e5f},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 }
