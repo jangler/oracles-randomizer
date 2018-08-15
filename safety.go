@@ -11,6 +11,7 @@ var softlockChecks = [](func(graph.Graph) error){
 	canFeatherSoftlock,
 	canEmberSeedSoftlock,
 	canD7ExitSoftlock,
+	canD2ExitSoftlock,
 	canSquareJewelSoftlock,
 }
 
@@ -127,6 +128,23 @@ func canD7ExitSoftlock(g graph.Graph) error {
 
 	if canReachWithoutPrereq(g, g["enter d7"], g["shovel"]) {
 		return errors.New("d7 exit softlock")
+	}
+	return nil
+}
+
+// same deal with d2, except that feather also works. technically it's not just
+// d2; the player can even enter the d2 entrance screen without bracelet and
+// they'll still get the default season when they walk back out.
+func canD2ExitSoftlock(g graph.Graph) error {
+	// no snow piles == no softlock
+	if g["eastern suburbs default winter"].Mark == graph.MarkFalse {
+		return nil
+	}
+
+	if canReachWithoutPrereq(g, g["central woods of winter"], g["shovel"]) &&
+		(canReachWithoutPrereq(g, g["central woods of winter"], g["jump"]) ||
+			canReachWithoutPrereq(g, g["central woods of winter"], g["bracelet"])) {
+		return errors.New("d2 exit softlock")
 	}
 	return nil
 }
