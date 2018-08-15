@@ -22,6 +22,9 @@ if action is "searchobjects", two additional hex integer parameters must
 be provided for the interaction mode and ID of the objects to search
 for. an additional optional hex integer parameters may be provided for
 the sub-ID of the objects.
+
+if action is "treasure", two additional hex integer parameters must be
+specified for the item ID and sub-ID.
 """.strip())
 parser.add_argument("romfile", type=str, help="file path of rom to read")
 parser.add_argument("action", type=str, help="type of operation to perform")
@@ -53,6 +56,7 @@ def full_addr(bank_num, offset):
 MUSIC_PTR_TABLE = 0x04, 0x483c
 OBJECT_PTR_TABLE = 0x11, 0x5b38
 CHEST_PTR_TABLE = 0x15, 0x53af
+TREASURE_PTR_TABLE = 0x15, 0x556c
 
 MUSIC = { # and sound effects
     0x03: "overworld",
@@ -245,9 +249,9 @@ def lookup_entry(table, entry_id, param):
         entry = table[entry_id]
 
         if param in entry[1]:
-            return entry[0], entry[1][param]
+            return [entry_id, param, entry[0], entry[1][param]]
 
-        return entry[0], param
+        return [entry_id, param, entry[0]]
 
     return entry_id, param
 
@@ -527,6 +531,13 @@ def search_objects(rom, mode, obj_id=None, obj_subid=None):
     return objects
 
 
+def get_treasure(rom, treasure_id, treasure_subid):
+    bank, addr = TREASURE_PTR_TABLE
+    addr = read_ptr(rom, bank, addr + treasure_id * 4 + 1) + treasure_subid * 4
+    offset = full_addr(bank, addr)
+    return [addr] + list(rom[offset:offset+4])
+
+
 def name_objects(objects):
     for obj in objects:
         obj["mode"] = INTERACTION_MODES[obj["mode"]]
@@ -581,7 +592,7 @@ elif args.action == "searchchests":
     # print music by name if known
     for chest in chests:
         if chest["music"] in MUSIC:
-            chest["music"] = MUSIC[chest["music"]]
+            chest["music"] = [chest["music"], MUSIC[chest["music"]]]
 
     yaml.dump(chests, sys.stdout)
 elif args.action == "searchobjects":
@@ -596,6 +607,16 @@ elif args.action == "searchobjects":
     name_objects(objects)
 
     yaml.dump(objects, sys.stdout)
+elif args.action == "treasure":
+    if len(args.args) != 2:
+        fatal("treasure expects 2 args, got", len(args.args))
+
+    treasure_id = int(args.args[0], 16)
+    treasure_subid = int(args.args[1], 16)
+
+    treasure = get_treasure(rom, treasure_id, treasure_subid)
+
+    yaml.dump(treasure, sys.stdout)
 elif args.action == "keesanity":
     if len(args.args) != 1:
         fatal("keesanity expects 1 arg, got", len(args.args))
