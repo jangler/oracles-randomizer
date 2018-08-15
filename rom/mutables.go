@@ -490,10 +490,8 @@ var constMutables = map[string]Mutable{
 	"replace cliff winter 2": MutableByte(Addr{0x24, 0x5d1f}, 0x54, 0xd0),
 	"replace cliff winter 3": MutableByte(Addr{0x24, 0x5d29}, 0x93, 0x04),
 
-	// normally if the player talks to the pirate captain after getting the
-	// rusty bell or pirate's bell, they will be unable to get the desert item.
-	"skull always present": &MutableRange{Addr{0x08, 0x7388},
-		[]byte{0xca, 0xc5, 0x3a}, []byte{0x00, 0x00, 0x00}},
+	// normally none of the desert pits will work if the player already has the
+	// rusty bell
 	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
 
 	// replace the rock/flower outside of d6 with a normal bush so that the
@@ -511,10 +509,12 @@ var constMutables = map[string]Mutable{
 		"\x36\xd0\x35", "\x40\x40\x40"),
 
 	// skip pirate cutscene. adds flag-setting code at the end of the bank.
+	// includes setting flag $1b, which makes the pirate skull appear in the
+	// desert, in case the player hasn't talked to the ghost.
 	"pirate flag call": MutableWord(Addr{0x15, 0x5e52}, 0xb930, 0x707d),
 	"pirate flag func": MutableString(Addr{0x15, 0x7d70},
-		"\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15",
-		"\xcd\xb9\x30\x3e\x17\xcd\xb9\x30\x21\xe2\xc7\xcb\xf6\xc9"),
+		"\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15",
+		"\xcd\xb9\x30\x3e\x17\xcd\xb9\x30\x3e\x1b\xcd\xb9\x30\x21\xe2\xc7\xcb\xf6\xc9"),
 	"pirate warp": MutableString(Addr{0x15, 0x5e5f},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 }
