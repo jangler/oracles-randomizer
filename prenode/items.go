@@ -2,12 +2,12 @@ package prenode
 
 // these are items that can be shuffled around in the route as root nodes
 var baseItemPrenodes = map[string]*Prenode{
-	// shield, bombs, and flute can be bought
+	// shield, bombs, and flute can be bought. vanilla rod is absent; one rod
+	// for each season is used instead.
 	"sword L-1":       Root(),
 	"gnarled key":     Root(),
 	"satchel":         Root(),
 	"boomerang L-1":   Root(),
-	"rod":             Root(),
 	"shovel":          Root(),
 	"bracelet":        Root(),
 	"ricky's gloves":  Root(),
@@ -39,6 +39,11 @@ var baseItemPrenodes = map[string]*Prenode{
 	"gale tree seeds 1":  Root(),
 	"gale tree seeds 2":  Root(),
 
+	"winter": Root(),
+	"summer": Root(),
+	"spring": Root(),
+	"autumn": Root(),
+
 	// could be uncommented and function as a filler item
 	// "bombchus": Root(),
 }
@@ -54,6 +59,8 @@ var ignoredBaseItemPrenodes = map[string]*Prenode{
 }
 
 var itemPrenodes = map[string]*Prenode{
+	"rod": Or("winter", "summer", "spring", "autumn"),
+
 	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds": And("seed item", Or(
 		And("ember tree seeds", "harvest tree"),
@@ -102,11 +109,6 @@ var itemPrenodes = map[string]*Prenode{
 
 	"ribbon":      And("star ore", "beach"),
 	"bomb flower": And("furnace", "jump", "bracelet"),
-
-	"winter": AndStep("rod", "winter tower"),
-	"summer": AndStep("rod", "summer tower"),
-	"spring": AndStep("rod", "spring tower"),
-	"autumn": AndStep("rod", "autumn tower"),
 
 	"strange flute": Or("big rupees", "temple"),
 	"moosh flute":   And("big rupees", "south swamp", "kill moblin"),

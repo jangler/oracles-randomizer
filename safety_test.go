@@ -8,9 +8,10 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
-// item placement from a 1.2.2 rom used for a race
+// item placement from a 1.2.2 rom used for a race, updated for rod/seasons
+// being slotted
 var testData1 = map[string]string{
-	"rod":                "d0 sword chest",
+	"winter":             "d0 sword chest",
 	"bracelet":           "maku key fall",
 	"gnarled key":        "blaino gift",
 	"satchel":            "d1 satchel",
@@ -42,9 +43,14 @@ var testData1 = map[string]string{
 	"spring banana":      "d7 cape chest",
 	"boomerang L-1":      "noble sword spot",
 	"scent tree seeds":   "tarm gale tree",
+
+	"spring": "spring tower",
+	"summer": "summer tower",
+	"autumn": "autumn tower",
 }
 
-// item placement from a 1.3.0 rom used for a race
+// item placement from a 1.3.0 rom used for a race, updated for rod/seasons
+// being slotted
 var testData2 = map[string]string{
 	"fool's ore":         "d0 sword chest",
 	"bracelet":           "maku key fall",
@@ -52,7 +58,7 @@ var testData2 = map[string]string{
 	"mystery tree seeds": "ember tree",
 	"pyramid jewel":      "x-shaped jewel chest",
 	"ember tree seeds":   "scent tree",
-	"rod":                "boomerang gift",
+	"winter":             "boomerang gift",
 	"feather L-1":        "d2 bracelet chest",
 	"magnet gloves":      "rod gift",
 	"gale tree seeds 1":  "sunken gale tree",
@@ -91,22 +97,31 @@ var testData2 = map[string]string{
 	"tarm ruins default spring":     "",
 	"spool swamp default summer":    "start",
 	"spool swamp default autumn":    "",
+
+	"spring": "spring tower",
+	"summer": "summer tower",
+	"autumn": "autumn tower",
 }
 
-// partial item placement from a dev ~1.4 build
+// partial item placement from a dev ~1.4 build, updated for rod/seasons being
+// slotted
 var testData3 = map[string]string{
 	"fool's ore":        "d0 sword chest",
 	"satchel":           "maku key fall",
 	"ember tree seeds":  "ember tree",
 	"feather L-1":       "boomerang gift",
 	"gale tree seeds 1": "sunken gale tree",
-	"rod":               "rod gift",
+	"winter":            "rod gift",
 	"sword L-1":         "shovel gift",
 	"master's plaque":   "master's plaque chest",
 	"flippers":          "flippers gift",
 
 	"spool swamp default winter": "start",
 	"spool swamp default autumn": "",
+
+	"spring": "spring tower",
+	"summer": "summer tower",
+	"autumn": "autumn tower",
 }
 
 func TestFeatherLockCheck(t *testing.T) {
@@ -120,7 +135,7 @@ func TestFeatherLockCheck(t *testing.T) {
 			"flippers":           "maku key fall",
 			"shovel":             "blaino gift",
 			"feather L-2":        "star ore spot",
-			"rod":                "rod gift",
+			"winter":             "rod gift",
 			"satchel":            "shovel gift",
 			"pegasus tree seeds": "ember tree",
 		}, "hide and seek", false)
@@ -131,7 +146,7 @@ func TestFeatherLockCheck(t *testing.T) {
 			"bracelet":           "d0 sword chest",
 			"flippers":           "maku key fall",
 			"feather L-2":        "blaino gift",
-			"rod":                "rod gift",
+			"winter":             "rod gift",
 			"pegasus tree seeds": "ember tree",
 			"shovel":             "boomerang gift",
 		}, "hide and seek", true)

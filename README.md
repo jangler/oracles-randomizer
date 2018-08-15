@@ -48,12 +48,15 @@ complete a casual playthrough are shuffled, with some exceptions:
 - Purchasable items (bombs, shield, and strange flute) are not shuffled.
 - The ribbon and pirate's bell are not shuffled (but the rusty bell is).
 
+Seasons count as key items, and obtaining a season will automatically give you
+the rod of seasons as well.
+
 **Items are only placed in locations where you would normally obtain another
 key item.** Speedrunners should note that the Subrosian dancing prize could be
 important. An option to randomize all chests is planned for a future release.
 
-Seasons and seed trees are also shuffled, and the satchel and slingshot will
-start with the type of seeds on the tree in Horon Village.
+Seed trees and area default seasons are also shuffled, and the satchel and
+slingshot will start with the type of seeds on the tree in Horon Village.
 
 
 ## Other notable changes

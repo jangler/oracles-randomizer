@@ -294,6 +294,31 @@ var ItemSlots = map[string]*MutableSlot{
 		CollectMode: CollectChest,
 	},
 
+	"winter tower": &MutableSlot{
+		Treasure:    Treasures["winter"],
+		IDAddrs:     []Addr{{0x0b, 0x4fc5}},
+		SubIDAddrs:  []Addr{{0x0b, 0x4fc6}},
+		CollectMode: CollectFind1,
+	},
+	"summer tower": &MutableSlot{
+		Treasure:    Treasures["summer"],
+		IDAddrs:     []Addr{{0x0b, 0x4fb9}},
+		SubIDAddrs:  []Addr{{0x0b, 0x4fba}},
+		CollectMode: CollectFind1,
+	},
+	"spring tower": &MutableSlot{
+		Treasure:    Treasures["spring"],
+		IDAddrs:     []Addr{{0x0b, 0x4fb5}},
+		SubIDAddrs:  []Addr{{0x0b, 0x4fb6}},
+		CollectMode: CollectFind1,
+	},
+	"autumn tower": &MutableSlot{
+		Treasure:    Treasures["autumn"],
+		IDAddrs:     []Addr{{0x0b, 0x4fc1}},
+		SubIDAddrs:  []Addr{{0x0b, 0x4fc2}},
+		CollectMode: CollectFind1,
+	},
+
 	// these are "fake" item slots in that they don't slot real treasures
 	"ember tree": &MutableSlot{
 		Treasure: Treasures["ember tree seeds"],

@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	maxIterations = 200 // restart if routing runs for too long
+	maxIterations = 500 // restart if routing runs for too long
 	maxTries      = 50  // give up if routing fails too many times
 )
 
@@ -477,10 +477,19 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	}
 
 	// give only a 1 in 2 change per sword of slotting in the hero's cave chest
-	// to compensate for the fact that there are two of them
-	if slotNode.Name == "d0 sword chest" &&
-		strings.HasPrefix(itemNode.Name, "sword") && src.Intn(2) == 0 {
-		skip = true
+	// to compensate for the fact that there are two of them. each season gets
+	// a 1 in 4 chance for the same reason.
+	if slotNode.Name == "d0 sword chest" {
+		switch itemNode.Name {
+		case "sword L-1", "sword L-2":
+			if src.Intn(2) != 0 {
+				skip = true
+			}
+		case "winter", "spring", "summer", "autumn":
+			if src.Intn(4) != 0 {
+				skip = true
+			}
+		}
 	}
 
 	// the star ore code is unique in that it doesn't set the sub ID at all,
