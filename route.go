@@ -460,6 +460,14 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		}
 	}
 
+	// don't put gale seeds in the ember tree, since then gale seeds will come
+	// with the satchel and the player can freeze the game by trying to warp
+	// without having explored any trees.
+	if slotNode.Name == "ember tree" &&
+		strings.HasPrefix(itemNode.Name, "gale tree seeds") {
+		skip = true
+	}
+
 	// don't slot L-1 items if the L-2 one has already been slotted
 	if strings.HasSuffix(itemNode.Name, "L-1") {
 		upgradeName := strings.Replace(itemNode.Name, "L-1", "L-2", 1)
