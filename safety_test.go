@@ -186,9 +186,7 @@ func TestD2ExitCheck(t *testing.T) {
 			"sword L-1":      "d0 sword chest",
 			"ricky's gloves": "blaino gift",
 			"flippers":       "maku key fall",
-			"rod":            "rod gift",
-			"magnet gloves":  "boomerang gift",
-			"feather L-1":    "round jewel gift",
+			"summer":         "rod gift",
 
 			"eastern suburbs default winter": "start",
 			"eastern suburbs default autumn": "",
