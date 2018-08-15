@@ -452,7 +452,7 @@ var constMutables = map[string]Mutable{
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
-	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x00),
+	"wooden sword second item": MutableByte(Addr{0x0a, 0x7baf}, 0x05, 0x3f),
 
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x4c67}, 0xe951, 0xa94f),
@@ -462,8 +462,8 @@ var constMutables = map[string]Mutable{
 	// one for the item itself and another that gives you the item and also
 	// makes you do a spin slash animation. change the second ID bytes to a
 	// fake item so that one slot doesn't give two items / the same item twice.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x00),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x00),
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0x05, 0x3f),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0x05, 0x3f),
 
 	// remove the snow piles in front of the shovel house so that shovel isn't
 	// required not to softlock there (it's still required not to softlock in
