@@ -504,6 +504,12 @@ var constMutables = map[string]Mutable{
 	"replace d6 flower autumn": MutableByte(Addr{0x23, 0x42fd}, 0x92, 0xc4),
 	"replace d6 flower winter": MutableByte(Addr{0x23, 0x7f5a}, 0x92, 0xc4),
 
+	// replace the stairs outside the portal in eyeglass lake in summer with a
+	// railing, because if the player jumps off those stairs in summer they
+	// fall into the noble sword room.
+	"replace lake stairs": MutableString(Addr{0x22, 0x72a5},
+		"\x36\xd0\x35", "\x40\x40\x40"),
+
 	// skip pirate cutscene. adds flag-setting code at the end of the bank.
 	"pirate flag call": MutableWord(Addr{0x15, 0x5e52}, 0xb930, 0x707d),
 	"pirate flag func": MutableString(Addr{0x15, 0x7d70},
