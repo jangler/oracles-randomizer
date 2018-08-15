@@ -34,6 +34,13 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("suburbs", Or("eastern suburbs default winter", "winter", "cross water gap"))),
 	"shovel gift": AndSlot("fairy fountain", Or("eastern suburbs default winter", "winter"),
 		Or("woods of winter default winter", "winter")),
+	"central woods of winter": Or(
+		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
+			Or("shovel", "jump")),
+		And("fairy fountain", Or(
+			"eastern suburbs default spring", "spring",
+			"eastern suburbs default summer", "summer",
+			"eastern suburbs default autumn", "autumn"))),
 	"mystery tree": OrSlot(
 		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
 			Or("shovel", And("jump", "bracelet"))),

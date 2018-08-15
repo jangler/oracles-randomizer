@@ -150,6 +150,36 @@ func TestD7ExitLockChest(t *testing.T) {
 		"enter d7", true)
 }
 
+func TestD2ExitCheck(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+	g := r.HardGraph
+
+	// check for false positive
+	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
+		map[string]string{
+			"bracelet":       "d0 sword chest",
+			"ricky's gloves": "blaino gift",
+			"feather L-1":    "maku key fall",
+
+			"eastern suburbs default winter": "start",
+			"eastern suburbs default autumn": "",
+		}, "central woods of winter", false)
+
+	// check for false negative
+	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
+		map[string]string{
+			"sword L-1":      "d0 sword chest",
+			"ricky's gloves": "blaino gift",
+			"flippers":       "maku key fall",
+			"rod":            "rod gift",
+			"magnet gloves":  "boomerang gift",
+			"feather L-1":    "round jewel gift",
+
+			"eastern suburbs default winter": "start",
+			"eastern suburbs default autumn": "",
+		}, "central woods of winter", true)
+}
+
 func TestSquareJewelCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 
