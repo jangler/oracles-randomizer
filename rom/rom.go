@@ -101,7 +101,7 @@ func Verify(b []byte) []error {
 	for k, m := range getAllMutables() {
 		switch k {
 		// special cases that will error normally
-		case "maku key fall", "rod gift", "fool's ore", "noble sword spot",
+		case "maku key fall", "fool's ore", "noble sword spot",
 			"ember tree seeds", "mystery tree seeds", "scent tree seeds",
 			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
 			break

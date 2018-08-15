@@ -68,15 +68,9 @@ func (mr *MutableRange) Check(b []byte) error {
 // A MutableSlot is an item slot (chest, gift, etc). It references room data
 // and treasure data.
 type MutableSlot struct {
-	Treasure            *Treasure
-	IDAddrs, SubIDAddrs []Addr
-	CollectMode         byte
-
-	// TODO this is an incorrect model that happens to work for all currently
-	//      slotted items except for the rod. for now the rod can have special
-	//      logic, but this field really needs to be replaced with something
-	//      more accurate (see treasureCollectionBehaviourTable in ages-disasm)
-	SubIDOffset byte
+	Treasure                        *Treasure
+	IDAddrs, SubIDAddrs, ParamAddrs []Addr
+	CollectMode                     byte
 }
 
 // Mutate replaces the given IDs and subIDs in the given ROM data, and changes
@@ -86,32 +80,39 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 		b[addr.FullOffset()] = ms.Treasure.id
 	}
 	for _, addr := range ms.SubIDAddrs {
-		// TODO see the comment on the SubIDOffset field of MutableSlot. for
-		//      now, the rod needs special logic so it doesn't set an obtained
-		//      season flag.
-		if ms.SubIDOffset != 0 && ms.Treasure.id == 0x07 {
-			b[addr.FullOffset()] = 0x07
-		} else {
-			b[addr.FullOffset()] = ms.Treasure.subID + ms.SubIDOffset
-		}
+		b[addr.FullOffset()] = ms.Treasure.subID
+	}
+	for _, addr := range ms.ParamAddrs {
+		b[addr.FullOffset()] = ms.Treasure.param
 	}
 	ms.Treasure.mode = ms.CollectMode
 	return ms.Treasure.Mutate(b)
 }
 
+// helper function for MutableSlot.Check
+func check(b []byte, addr Addr, value byte) error {
+	if b[addr.FullOffset()] != value {
+		return fmt.Errorf("expected %x at %x; found %x",
+			value, addr.FullOffset(), b[addr.FullOffset()])
+	}
+	return nil
+}
+
 // Check verifies that the slot's data matches the given ROM data.
 func (ms *MutableSlot) Check(b []byte) error {
 	for _, addr := range ms.IDAddrs {
-		if b[addr.FullOffset()] != ms.Treasure.id {
-			return fmt.Errorf("expected %x at %x; found %x",
-				ms.Treasure.id, addr.FullOffset(), b[addr.FullOffset()])
+		if err := check(b, addr, ms.Treasure.id); err != nil {
+			return err
 		}
 	}
 	for _, addr := range ms.SubIDAddrs {
-		if b[addr.FullOffset()] != ms.Treasure.subID+ms.SubIDOffset {
-			return fmt.Errorf("expected %x at %x; found %x",
-				ms.Treasure.subID+ms.SubIDOffset, addr.FullOffset(),
-				b[addr.FullOffset()])
+		if err := check(b, addr, ms.Treasure.subID); err != nil {
+			return err
+		}
+	}
+	for _, addr := range ms.ParamAddrs {
+		if err := check(b, addr, ms.Treasure.param); err != nil {
+			return err
 		}
 	}
 	if ms.CollectMode != ms.Treasure.mode {
@@ -126,8 +127,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d0 sword chest": &MutableSlot{
 		Treasure:    Treasures["sword L-1"],
 		IDAddrs:     []Addr{{0x0a, 0x7b86}},
-		SubIDAddrs:  []Addr{{0x0a, 0x7b88}},
-		SubIDOffset: 1,
+		ParamAddrs:  []Addr{{0x0a, 0x7b88}},
 		CollectMode: CollectChest,
 	},
 	"maku key fall": &MutableSlot{
@@ -145,8 +145,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"rod gift": &MutableSlot{
 		Treasure:    Treasures["rod"],
 		IDAddrs:     []Addr{{0x15, 0x7511}},
-		SubIDAddrs:  []Addr{{0x15, 0x750f}},
-		SubIDOffset: 1,
+		ParamAddrs:  []Addr{{0x15, 0x750f}},
 		CollectMode: CollectChest, // it's what the data says
 	},
 	"shovel gift": &MutableSlot{

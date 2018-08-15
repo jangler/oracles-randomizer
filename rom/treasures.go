@@ -23,7 +23,10 @@ type Treasure struct {
 	addr      uint16 // bank 15, value of hl at $15:466b, minus one
 
 	// in order, starting at addr
-	mode, value, text, sprite byte
+	mode   byte // collection mode
+	param  byte // parameter value to use for giveTreasure
+	text   byte
+	sprite byte
 }
 
 // SubID returns item sub ID of the treasure.
@@ -43,7 +46,7 @@ func (t Treasure) RealAddr() int {
 // Bytes returns a slice of consecutive bytes of treasure data, as they would
 // appear in the ROM.
 func (t Treasure) Bytes() []byte {
-	return []byte{t.mode, t.value, t.text, t.sprite}
+	return []byte{t.mode, t.param, t.text, t.sprite}
 }
 
 // Mutate replaces the associated treasure in the given ROM data with this one.
