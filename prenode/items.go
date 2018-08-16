@@ -85,8 +85,8 @@ var itemPrenodes = map[string]*Prenode{
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"seed item": Or("satchel", "slingshot", Hard("buy satchel")),
-	"bombs": Or("medium rupees",
-		HardAnd("harvest bush", Or("d2 bracelet chest", "d2 spinner"))),
+	"bombs": Or("medium rupees", HardOr("bombs, 10",
+		And("harvest bush", Or("d2 bracelet chest", "d2 spinner")))),
 	"jump": Or("feather L-1", "feather L-2"),
 
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),

@@ -145,7 +145,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"desert chest":        MutableChest("blast ring", 0x53dd),
 	"western coast chest": MutableChest("rang ring L-1", 0x53d9),
-	"coast house chest":   MutableChest("bombs", 0x53ef),
+	"coast house chest":   MutableChest("bombs, 10", 0x53ef),
 	"water cave chest":    MutableChest("octo ring", 0x54c4),
 	"mushroom cave chest": MutableChest("quicksand ring", 0x54c8),
 	"mystery cave chest":  MutableChest("moblin ring", 0x5541),
