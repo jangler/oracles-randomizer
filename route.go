@@ -13,8 +13,10 @@ import (
 )
 
 const (
-	maxIterations = 500 // restart if routing runs for too long
-	maxTries      = 50  // give up if routing fails too many times
+	// a routing attempt fails if it fails to fill a slot this many times
+	maxStrikes = 3
+
+	maxTries = 50 // give up completely if routing fails too many times
 )
 
 // A Route is a set of information needed for finding an item placement route.
@@ -123,7 +125,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 
 	// try to find the route, retrying if needed
 	var seasons map[string]byte
-	iteration, tries := 0, 0
+	strikes, tries := 0, 0
 	for tries = 0; tries < maxTries; tries++ {
 		// abort if route was already found on another thread
 		select {
@@ -135,19 +137,19 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		seasons = rollSeasons(src, r)
 		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
 
-		if tryExploreTargets(src, r, nil, start, &iteration, itemList,
+		if tryExploreTargets(src, r, nil, start, &strikes, itemList,
 			usedItems, slotList, usedSlots, verbose, logChan) {
 			if verbose {
 				announceSuccessDetails(r, usedItems, usedSlots, logChan)
 			}
 			break
-		} else if iteration > maxIterations {
+		} else if strikes >= maxStrikes {
 			if verbose {
-				logChan <- "routing took too long; retrying"
+				logChan <- "routing struck out; retrying"
 			}
 			itemList, slotList = initRouteLists(src, r)
 			usedItems, usedSlots = list.New(), list.New()
-			iteration = 0
+			strikes = 0
 		} else {
 			logChan <- "could not find route"
 		}
@@ -158,6 +160,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		return nil
 	}
 
+	logChan <- fmt.Sprintf("%d slots, %d strike(s)", usedSlots.Len(), strikes)
 	return &RouteLists{seed, seasons, usedItems, itemList, usedSlots}
 }
 
@@ -191,6 +194,31 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 	return seasonMap
 }
 
+// sorts a list of item slots in place, with non-chest slots in the back (which
+// is checked first) so that key items can try them first. because linked lists
+// are really bad for this type of operation, we empty the list into a list and
+// then refill it after sorting.
+func sortSlots(l *list.List) {
+	// empty list into slice
+	a := make([]*graph.Node, 0, l.Len())
+	for l.Len() > 0 {
+		value := l.Remove(l.Front()).(*graph.Node)
+		a = append(a, value)
+	}
+
+	// sort
+	sort.Slice(a, func(i, j int) bool {
+		iMode := rom.ItemSlots[a[i].Name].CollectMode
+		jMode := rom.ItemSlots[a[j].Name].CollectMode
+		return iMode == rom.CollectChest && jMode != rom.CollectChest
+	})
+
+	// refill list
+	for _, node := range a {
+		l.PushBack(node)
+	}
+}
+
 // try to reach all the given targets using the current graph status. if
 // targets are unreachable, try placing an unused item in a reachable unused
 // slot, and call recursively. if no combination of slots and items works,
@@ -198,24 +226,10 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 //
 // the lists are lists of nodes.
 func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
-	add []*graph.Node, iteration *int, itemList, usedItems, slotList,
+	add []*graph.Node, strikes *int, itemList, usedItems, slotList,
 	usedSlots *list.List, verbose bool, logChan chan string) bool {
-	*iteration++
-	if verbose {
-		logChan <- fmt.Sprintf("iteration %d", *iteration)
-	}
-	if *iteration > maxIterations {
-		if verbose {
-			logChan <- "false; maximum iterations reached"
-		}
-		return false
-	}
-
 	// explore given the old state and changes
 	reached := r.Graph.Explore(start, add)
-	if verbose {
-		logChan <- fmt.Sprintf("%d steps reached", countSteps(reached))
-	}
 
 	// check whether to return right now
 	fillUnused := false
@@ -229,16 +243,28 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 		return false
 	}
 
+	// check non-chest slots first so that junk always goes in chests (usually
+	// the only place where it fits)
+	sortSlots(slotList)
+
 	// try to reach each unused slot
 	for i := 0; i < slotList.Len(); i++ {
 		// iterate by rotating the list
 		slotElem := slotList.Back()
 		slotList.MoveToFront(slotElem)
 
-		// see if slot node has been reached OR we don't care anymore
+		// if we haven't reached the node yet, don't bother checking it, unless
+		// we're just filling unused slots
 		slotNode := slotElem.Value.(*graph.Node)
 		if !reached[slotNode] && !fillUnused {
+			if verbose {
+				logChan <- fmt.Sprintf("can't reach slot %s", slotNode.Name)
+			}
 			continue
+		}
+
+		if verbose {
+			logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
 		}
 
 		// move slot from unused to used
@@ -253,20 +279,16 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 			usedItems.PushBack(itemNode)
 			r.AddParent(itemNode.Name, slotNode.Name)
 
-			if verbose {
-				printItemSequence(usedItems, logChan)
-			}
-
 			// recurse unless the item should be skipped
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(src, r.Graph, reached,
 				itemNode, slotNode, jewelChecked, fillUnused)
 			if !skip {
 				if verbose {
-					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
+					logChan <- fmt.Sprintf("trying item %s", itemNode.Name)
 				}
 				if tryExploreTargets(src, r, reached, []*graph.Node{itemNode},
-					iteration, itemList, usedItems, slotList, usedSlots,
+					strikes, itemList, usedItems, slotList, usedSlots,
 					verbose, logChan) {
 					return true
 				}
@@ -277,22 +299,32 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 			usedItems.Remove(usedItems.Back())
 			itemList.PushFront(itemNode)
 			r.ClearParents(itemNode.Name)
+
+			if *strikes >= maxStrikes {
+				if verbose {
+					logChan <- "false; maximum strikes reached"
+				}
+				return false
+			}
 		}
 
 		// if we're just filling unused and no item worked, try a piece of
 		// heart instead
 		if fillUnused {
 			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest {
-				usedItems.PushBack(graph.NewNode(
-					"piece of heart (chest)", graph.RootType, false))
+				itemNode := graph.NewNode("piece of heart", graph.RootType, false)
+				usedItems.PushBack(itemNode)
 
 				if verbose {
-					printItemSequence(usedItems, logChan)
-					logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
+					logChan <- "trying piece of heart"
 				}
-				if tryExploreTargets(src, r, reached, nil, iteration, itemList,
-					usedItems, slotList, usedSlots, verbose, logChan) {
-					return true
+				skip, _ := shouldSkipItem(src, r.Graph, reached, itemNode, slotNode,
+					jewelChecked, fillUnused)
+				if !skip {
+					if tryExploreTargets(src, r, reached, nil, strikes, itemList,
+						usedItems, slotList, usedSlots, verbose, logChan) {
+						return true
+					}
 				}
 
 				usedItems.Remove(usedItems.Back())
@@ -305,6 +337,7 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 	}
 
 	// nothing worked
+	*strikes++
 	if verbose {
 		logChan <- "false; no slot/item combination worked"
 	}
