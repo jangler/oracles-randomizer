@@ -67,11 +67,15 @@ MUSIC = { # and sound effects
     0x12: "hero's cave",
     0x13: "gnarled root dungeon",
     0x14: "snake's remains",
+    0x15: "poison moth's lair",
     0x16: "dancing dragon dungeon",
+    0x17: "unicovn's cave",
+    0x18: "ancient ruins",
     0x19: "explorer's crypt",
     0x1a: "sword and shield maze",
     0x28: "subrosia",
     0x35: "samasa desert",
+    0x36: "cave",
     0x4c: "got item",
     0x4d: "puzzle solved (short)",
     0x4e: "damage enemy",
@@ -211,11 +215,25 @@ DV_INTERACTIONS = {
 PARTS = {}
 
 TREASURES = {
+    0x00: ("none", {}),
     0x03: ("bombs", {
         0x00: "10 count",
     }),
     0x05: ("sword", {
         0x00: "L-1",
+    }),
+    0x06: ("boomerang", {
+        0x01: "L-2",
+    }),
+    0x08: ("magnet gloves", {}),
+    0x13: ("slingshot", {
+        0x00: "L-1",
+        0x01: "L-2",
+    }),
+    0x16: ("power bracelet", {}),
+    0x17: ("feather", {
+        0x00: "L-1",
+        0x01: "L-2",
     }),
     0x28: ("rupees", {
         0x03: "20 count",
@@ -223,24 +241,19 @@ TREASURES = {
     }),
     0x2d: ("ring", {
         0x04: "discovery ring",
+        0x07: "rang ring L-1",
+        0x08: "blast ring",
     }),
     0x2b: ("piece of heart", {}),
-    0x30: ("small key", {
-        0x03: "in chest",
-    }),
-    0x31: ("boss key", {
-        0x03: "in chest",
-    }),
-    0x32: ("compass", {
-        0x02: "in chest",
-    }),
-    0x33: ("dungeon map", {
-        0x02: "in chest",
-    }),
+    0x30: ("small key", {}),
+    0x31: ("boss key", {}),
+    0x32: ("compass", {}),
+    0x33: ("dungeon map", {}),
     0x34: ("gasha seed", {}),
     0x4f: ("x-shaped jewel", {}),
     0x50: ("red ore", {}),
     0x51: ("blue ore", {}),
+    0x54: ("master's plaque", {}),
 }
 
 
@@ -483,8 +496,7 @@ def get_chests(buf, group):
 
         chests.append({
             "address": [bank, addr+2],
-            "group": group,
-            "room": room,
+            "location": [group, room],
             "music": read_music(rom, group, room, name=False),
             "treasure": list(lookup_entry(TREASURES,
                     treasure_id, treasure_subid))
