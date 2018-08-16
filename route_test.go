@@ -32,6 +32,33 @@ func TestNormalVsHard(t *testing.T) {
 	}
 }
 
+// check that graph logic is working as expected
+func TestGraph(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+	g := r.Graph
+
+	checkReach(t, g,
+		map[string]string{
+			"feather L-2": "d0 sword chest",
+		}, "maku tree gift", false)
+
+	checkReach(t, g,
+		map[string]string{
+			"feather L-2": "d0 sword chest",
+		}, "lake chest", true)
+
+	checkReach(t, g,
+		map[string]string{
+			"winter": "d0 sword chest",
+		}, "maku tree gift", true)
+
+	checkReach(t, g,
+		map[string]string{
+			"feather L-2": "d0 sword chest",
+			"winter":      "lake chest",
+		}, "maku tree gift", true)
+}
+
 func BenchmarkGraphExplore(b *testing.B) {
 	// init graph
 	r := NewRoute([]string{"horon village"})
@@ -41,5 +68,44 @@ func BenchmarkGraphExplore(b *testing.B) {
 	for name := range prenode.BaseItems() {
 		r.Graph.Explore(
 			make(map[*graph.Node]bool), []*graph.Node{r.Graph[name]})
+	}
+}
+
+// helper function for testing whether a node is reachable given a certain
+// slotting
+//
+// TODO refactor this and checkSoftlockWithSlots, since they share most of
+//      their code
+func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
+	target string, expect bool) {
+	t.Helper()
+
+	// add parents at the start of the function, and remove them at the end. if
+	// a parent is blank, remove it at the start and add it at the end (only
+	// useful for default seasons).
+	for child, parent := range parents {
+		if parent == "" {
+			g[child].ClearParents()
+		} else {
+			g[child].AddParents(g[parent])
+		}
+	}
+	defer func() {
+		for child, parent := range parents {
+			if parent == "" {
+				g[child].AddParents(g["start"])
+			} else {
+				g[child].ClearParents()
+			}
+		}
+	}()
+	g.ExploreFromStart()
+
+	if (g[target].GetMark(g[target], nil) == graph.MarkTrue) != expect {
+		if expect {
+			t.Errorf("expected to reach %s, but could not", target)
+		} else {
+			t.Errorf("expected not to reach %s, but could", target)
+		}
 	}
 }
