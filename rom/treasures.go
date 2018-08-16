@@ -143,6 +143,7 @@ var Treasures = map[string]*Treasure{
 
 	"gasha seed":     &Treasure{0x34, 0x01, 0x5784, 0x38, 0x01, 0x4b, 0x0d},
 	"rupees, 20":     &Treasure{0x28, 0x03, 0x57a4, 0x38, 0x05, 0x04, 0x2b},
+	"rupees, 30":     &Treasure{0x28, 0x04, 0x57a8, 0x38, 0x07, 0x05, 0x2b},
 	"piece of heart": &Treasure{0x2b, 0x01, 0x57d4, 0x38, 0x01, 0x17, 0x3a},
 	"rang ring L-1":  &Treasure{0x2d, 0x07, 0x5818, 0x38, 0x0c, 0x54, 0x0e},
 	"blast ring":     &Treasure{0x2d, 0x08, 0x581c, 0x38, 0x0d, 0x54, 0x0e},
@@ -169,4 +170,72 @@ func treasureNameFromIDs(id, subID byte) string {
 		}
 	}
 	return ""
+}
+
+// FindTreasureName does a reverse lookup of the treasure in the map to return
+// its name. It returns an empty string if not found.
+func FindTreasureName(t *Treasure) string {
+	for k, v := range Treasures {
+		if v == t {
+			return k
+		}
+	}
+	return ""
+}
+
+// CanSlotOutsideChest is a map indicating whether an item can be given by an
+// NPC, found on the ground, etc as opposed to being found in a chest. This
+// essentially breaks down to whether an item is unique, as in there's only one
+// of them and therefore its collect mode can be safely altered.
+//
+// All the entries in this map are going to be true since items not in the map
+// with evaluate to false anyway.
+var CanSlotOutsideChest = map[string]bool{
+	// equip items
+	"sword L-1":     true,
+	"sword L-2":     true,
+	"boomerang L-1": true,
+	"boomerang L-2": true,
+	"winter":        true,
+	"summer":        true,
+	"spring":        true,
+	"autumn":        true,
+	"magnet gloves": true,
+	"bombchus":      true,
+	"slingshot L-1": true,
+	"slingshot L-2": true,
+	"shovel":        true,
+	"bracelet":      true,
+	"feather L-1":   true,
+	"feather L-2":   true,
+	"satchel":       true,
+	"fool's ore":    true,
+
+	// collection items
+	"ring box L-2":    true,
+	"flippers":        true,
+	"gnarled key":     true,
+	"floodgate key":   true,
+	"dragon key":      true,
+	"star ore":        true,
+	"spring banana":   true,
+	"ricky's gloves":  true,
+	"rusty bell":      true,
+	"round jewel":     true,
+	"pyramid jewel":   true,
+	"square jewel":    true,
+	"x-shaped jewel":  true,
+	"master's plaque": true,
+
+	// seeds
+	"ember tree seeds":   true,
+	"mystery tree seeds": true,
+	"scent tree seeds":   true,
+	"pegasus tree seeds": true,
+	"gale tree seeds 1":  true,
+	"gale tree seeds 2":  true,
+
+	// rings
+	"rang ring L-1": true,
+	"blast ring":    true,
 }

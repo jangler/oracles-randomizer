@@ -19,6 +19,15 @@ const (
 	maxTries = 50 // give up completely if routing fails too many times
 )
 
+// adds prenodes to the map based on default contents of item slots.
+func addDefaultItemNodes(nodes map[string]*prenode.Prenode) {
+	for key, slot := range rom.ItemSlots {
+		if key != "rod gift" { // real rod is an Or, not a Root
+			nodes[rom.FindTreasureName(slot.Treasure)] = prenode.Root()
+		}
+	}
+}
+
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
 	Graph, HardGraph graph.Graph
@@ -31,6 +40,7 @@ func NewRoute(start []string) *Route {
 	g, hg := graph.New(), graph.New()
 
 	totalPrenodes := prenode.GetAll()
+	addDefaultItemNodes(totalPrenodes)
 
 	// make start nodes given
 	for _, key := range start {
@@ -349,9 +359,15 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 // return shuffled lists of item and slot nodes
 func initRouteLists(src *rand.Rand, r *Route) (itemList, slotList *list.List) {
 	// get slices of names
-	itemNames := make([]string, 0, len(prenode.BaseItems()))
+	itemNames := make([]string, 0,
+		len(rom.ItemSlots)+len(prenode.ExtraItems()))
 	slotNames := make([]string, 0, len(r.Slots))
-	for key := range prenode.BaseItems() {
+	for key, slot := range rom.ItemSlots {
+		if key != "rod gift" { // don't slot vanilla, seasonless rod
+			itemNames = append(itemNames, rom.FindTreasureName(slot.Treasure))
+		}
+	}
+	for key := range prenode.ExtraItems() {
 		itemNames = append(itemNames, key)
 	}
 	for key := range r.Slots {
@@ -482,6 +498,8 @@ func printItemSequence(usedItems *list.List, logChan chan string) {
 // return skip = true iff conditions mean this item shouldn't be checked, and
 // checked = true iff a jewel (round, square, pyramid, x-shaped) has been
 // checked by now.
+//
+// TODO look into why every "skip = true" isn't a "return true, checked"
 func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	reached map[*graph.Node]bool, itemNode, slotNode *graph.Node, jewelChecked,
 	fillUnused bool) (skip, checked bool) {
@@ -493,6 +511,12 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		} else {
 			skip = true
 		}
+	}
+
+	// only put unique items in non-chest slots
+	if rom.ItemSlots[slotNode.Name].CollectMode != rom.CollectChest &&
+		!rom.CanSlotOutsideChest[itemNode.Name] {
+		skip = true
 	}
 
 	// don't put gale seeds in the ember tree, since then gale seeds will come

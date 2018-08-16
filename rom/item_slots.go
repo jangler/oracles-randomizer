@@ -169,6 +169,7 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x0a, 0x7b86}},
 		ParamAddrs: []Addr{{0x0a, 0x7b88}},
 	},
+	"d0 rupee chest":         MutableChest("rupees, 30", 0x53f8),
 	"d1 satchel spot":        MutableFind("satchel", 0x669a),
 	"d2 bracelet chest":      MutableChest("bracelet", 0x5424),
 	"d3 feather chest":       MutableChest("feather L-1", 0x5458),

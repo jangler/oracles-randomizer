@@ -216,12 +216,15 @@ func TestSquareJewelCheck(t *testing.T) {
 }
 
 // helper function used for the other benchmarks
+//
+// TODO update this for all the changes made since it was initially written in
+//      like, maybe before 1.0 even
 func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 	// make a list of base item nodes to use for testing
 	r := NewRoute([]string{"horon village"})
 	g := r.HardGraph
-	baseItems := make([]*graph.Node, 0, len(prenode.BaseItems()))
-	for name := range prenode.BaseItems() {
+	baseItems := make([]*graph.Node, 0, len(prenode.ExtraItems()))
+	for name := range prenode.ExtraItems() {
 		baseItems = append(baseItems, g[name])
 	}
 

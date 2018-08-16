@@ -57,6 +57,17 @@ func TestGraph(t *testing.T) {
 			"feather L-2": "d0 sword chest",
 			"winter":      "lake chest",
 		}, "maku tree gift", true)
+
+	checkReach(t, g,
+		map[string]string{
+			"boomerang L-2": "d0 sword chest",
+		}, "maku tree gift", false)
+
+	checkReach(t, g,
+		map[string]string{
+			"boomerang L-2": "d0 sword chest",
+			"rupees, 20":    "d0 rupee chest",
+		}, "maku tree gift", true)
 }
 
 func BenchmarkGraphExplore(b *testing.B) {
@@ -65,7 +76,7 @@ func BenchmarkGraphExplore(b *testing.B) {
 	b.ResetTimer()
 
 	// explore all items from the d0 sword chest
-	for name := range prenode.BaseItems() {
+	for name := range prenode.ExtraItems() {
 		r.Graph.Explore(
 			make(map[*graph.Node]bool), []*graph.Node{r.Graph[name]})
 	}

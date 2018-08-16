@@ -75,7 +75,7 @@ var allPrenodes map[string]*Prenode
 func init() {
 	allPrenodes = make(map[string]*Prenode)
 	appendPrenodes(allPrenodes,
-		itemPrenodes, baseItemPrenodes, ignoredBaseItemPrenodes, killPrenodes,
+		itemPrenodes, baseItemPrenodes, killPrenodes,
 		holodrumPrenodes, subrosiaPrenodes, portalPrenodes, seasonPrenodes,
 		d0Prenodes, d1Prenodes, d2Prenodes, d3Prenodes, d4Prenodes,
 		d5Prenodes, d6Prenodes, d7Prenodes, d8Prenodes, d9Prenodes)
@@ -106,8 +106,9 @@ func flattenNestedPrenodes(prenodes map[string]*Prenode) {
 	}
 }
 
-// BaseItems returns a map of item prenodes that may be assigned to slots.
-func BaseItems() map[string]*Prenode {
+// ExtraItems returns a map of item prenodes that may be assigned to slots, in
+// addition to the ones that are generated from default slot contents.
+func ExtraItems() map[string]*Prenode {
 	return copyMap(baseItemPrenodes)
 }
 

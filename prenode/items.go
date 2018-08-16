@@ -1,61 +1,21 @@
 package prenode
 
-// these are items that can be shuffled around in the route as root nodes
+// these are *extra* items that can be shuffled around in the route as root
+// nodes, in addition to the ones automatically added from checking default
+// item slot contents.
 var baseItemPrenodes = map[string]*Prenode{
-	// shield, bombs, and flute can be bought. vanilla rod is absent; one rod
-	// for each season is used instead.
-	"sword L-1":       Root(),
-	"gnarled key":     Root(),
-	"satchel":         Root(),
-	"boomerang L-1":   Root(),
-	"shovel":          Root(),
-	"bracelet":        Root(),
-	"ricky's gloves":  Root(),
-	"floodgate key":   Root(),
-	"star ore":        Root(),
-	"feather L-1":     Root(),
-	"flippers":        Root(),
-	"fool's ore":      Root(),
-	"slingshot L-1":   Root(),
-	"magnet gloves":   Root(),
-	"sword L-2":       Root(),
-	"boomerang L-2":   Root(),
-	"feather L-2":     Root(),
-	"master's plaque": Root(),
-	"spring banana":   Root(),
-	"dragon key":      Root(),
-	"slingshot L-2":   Root(),
-	"square jewel":    Root(),
-	"pyramid jewel":   Root(),
-	"x-shaped jewel":  Root(),
-	"round jewel":     Root(),
-	"rusty bell":      Root(),
-
-	// these can only be placed in seed tree slots
-	"ember tree seeds":   Root(),
-	"mystery tree seeds": Root(),
-	"scent tree seeds":   Root(),
-	"pegasus tree seeds": Root(),
-	"gale tree seeds 1":  Root(),
-	"gale tree seeds 2":  Root(),
-
-	"winter": Root(),
-	"summer": Root(),
-	"spring": Root(),
-	"autumn": Root(),
+	"fool's ore": Root(),
 
 	// could be uncommented and function as a filler item
 	// "bombchus": Root(),
-}
 
-// don't slot these for now; they don't satisfy anything or cause problems
-var ignoredBaseItemPrenodes = map[string]*Prenode{
-	// "ring box L-2": Root(),
-
-	"find fist ring":     Root(),
-	"find expert's ring": Root(),
-	"find energy ring":   Root(),
-	"find toss ring":     Root(),
+	// could fill the four unused ring slots
+	/*
+		"find fist ring":     Root(),
+		"find expert's ring": Root(),
+		"find energy ring":   Root(),
+		"find toss ring":     Root(),
+	*/
 }
 
 var itemPrenodes = map[string]*Prenode{
@@ -140,9 +100,9 @@ var itemPrenodes = map[string]*Prenode{
 		"ember seeds", "scent seeds", "ricky", "moosh", Hard("dimitri flute"),
 		"fool's ore", "punch"),
 	// medium rupees is ~11-99, and only items that can reach rupee chests are
-	// included.
-	"medium rupees": OrStep(Hard("small rupees"), "sword", "boomerang L-2",
-		"bracelet", "ember seeds"),
+	// included. TODO update this for other chests as they're added
+	"medium rupees": AndStep("small rupees", Or(
+		Hard("small rupees"), "big rupees", "rupees, 20", "rupees, 30")),
 	// big rupees is ~100+, and only ember seeds are included since they can
 	// burn down trees leading to generous old men.
 	"big rupees": OrStep(Hard("medium rupees"), "ember seeds"),
