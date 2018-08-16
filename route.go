@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"fmt"
 	"math/rand"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -206,10 +207,15 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 	return seasonMap
 }
 
-// sorts a list of item slots in place, with non-chest slots in the back (which
-// is checked first) so that key items can try them first. because linked lists
-// are really bad for this type of operation, we empty the list into a list and
-// then refill it after sorting.
+// sorts a list of item slots in place, in the order we want key items to try
+// to slot in (reverse, since the list iterates backwards):
+//
+// 1. dungeon chests (XXX currently ignoring the d0 rupee chest)
+// 2. key item slots
+// 3. regular chests
+//
+// because linked lists are really bad for this type of operation, we empty the
+// list into a list and then refill it after sorting.
 func sortSlots(l *list.List) {
 	// empty list into slice
 	a := make([]*graph.Node, 0, l.Len())
@@ -218,8 +224,22 @@ func sortSlots(l *list.List) {
 		a = append(a, value)
 	}
 
-	// sort
+	// sort; the function returns true iff element i < element j (meaning
+	// element j should be checked first in routing)
 	sort.Slice(a, func(i, j int) bool {
+		// dungeon chests go first
+		jIsInDungeon, _ := regexp.MatchString(`^d\d `, a[j].Name)
+		if jIsInDungeon &&
+			a[j].Name != "d0 rupee chest" && a[j].Name != "d2 outdoor chest" {
+			return true
+		}
+
+		// rod is a special case
+		if a[i].Name == "rod gift" {
+			return false
+		}
+
+		// regular chests go last
 		iMode := rom.ItemSlots[a[i].Name].CollectMode
 		jMode := rom.ItemSlots[a[j].Name].CollectMode
 		return iMode == rom.CollectChest && jMode != rom.CollectChest
@@ -323,7 +343,8 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 		// if we're just filling unused and no item worked, try a piece of
 		// heart instead
 		if fillUnused {
-			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest {
+			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest &&
+				slotNode.Name != "rod gift" && slotNode.Name != "d0 sword chest" {
 				itemNode := graph.NewNode("piece of heart", graph.RootType, false)
 				usedItems.PushBack(itemNode)
 
@@ -514,7 +535,8 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	}
 
 	// only put unique items in non-chest slots
-	if rom.ItemSlots[slotNode.Name].CollectMode != rom.CollectChest &&
+	if (rom.ItemSlots[slotNode.Name].CollectMode != rom.CollectChest ||
+		slotNode.Name == "d0 sword chest" || slotNode.Name == "rod gift") &&
 		!rom.CanSlotOutsideChest[itemNode.Name] {
 		skip = true
 	}

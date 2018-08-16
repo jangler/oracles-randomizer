@@ -73,8 +73,8 @@ var itemPrenodes = map[string]*Prenode{
 	"strange flute": Or("big rupees", "temple"),
 	"moosh flute":   And("big rupees", "south swamp", "kill moblin"),
 	"dimitri flute": HardAnd("temple", "south swamp", "medium rupees"),
-	"animal flute":  OrStep("ricky", "moosh flute", "dimitri flute"),
-	"flute":         OrStep("strange flute", "animal flute"),
+	"animal flute":  Or("ricky", "moosh flute", "dimitri flute"),
+	"flute":         Or("strange flute", "animal flute"),
 
 	"shield L-1": Or("medium rupees"),
 	"shield L-2": Root(), // TODO as if it matters
@@ -96,16 +96,16 @@ var itemPrenodes = map[string]*Prenode{
 
 	// small rupees is ~1-10, and any item that can possibly yield rupees is
 	// included.
-	"small rupees": OrStep("sword", "boomerang", "shovel", "bracelet",
+	"small rupees": Or("sword", "boomerang", "shovel", "bracelet",
 		"ember seeds", "scent seeds", "ricky", "moosh", Hard("dimitri flute"),
 		"fool's ore", "punch"),
 	// medium rupees is ~11-99, and only items that can reach rupee chests are
 	// included. TODO update this for other chests as they're added
-	"medium rupees": AndStep("small rupees", Or(
+	"medium rupees": And("small rupees", Or(
 		Hard("small rupees"), "big rupees", "rupees, 20", "rupees, 30")),
 	// big rupees is ~100+, and only ember seeds are included since they can
 	// burn down trees leading to generous old men.
-	"big rupees": OrStep(Hard("medium rupees"), "ember seeds"),
+	"big rupees": Or(Hard("medium rupees"), "ember seeds"),
 
-	"ore chunks": OrStep("shovel", "temple"),
+	"ore chunks": Or("shovel", "temple"),
 }
