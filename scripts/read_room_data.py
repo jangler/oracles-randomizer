@@ -76,6 +76,7 @@ MUSIC = { # and sound effects
     0x28: "subrosia",
     0x35: "samasa desert",
     0x36: "cave",
+    0x3e: "goron mountain",
     0x4c: "got item",
     0x4d: "puzzle solved (short)",
     0x4e: "damage enemy",

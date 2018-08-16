@@ -146,6 +146,16 @@ var ItemSlots = map[string]*MutableSlot{
 	"desert chest":        MutableChest("blast ring", 0x53dd),
 	"western coast chest": MutableChest("rang ring L-1", 0x53d9),
 	"coast house chest":   MutableChest("bombs", 0x53ef),
+	"water cave chest":    MutableChest("octo ring", 0x54c4),
+	"mushroom cave chest": MutableChest("quicksand ring", 0x54c8),
+	"mystery cave chest":  MutableChest("moblin ring", 0x5541),
+	"moblin road chest":   MutableChest("rupees, 30", 0x5545),
+	"sunken cave chest":   MutableChest("gasha seed", 0x5549),
+	"diver chest":         MutableChest("rupees, 50", 0x5551),
+	"dry lake chest":      MutableChest("piece of heart", 0x5555),
+	"goron chest":         MutableChest("armor ring L-2", 0x555d),
+	"platform chest":      MutableChest("rupees, 50", 0x5565),
+	"mario cave chest":    MutableChest("subrosian ring", 0x5561),
 
 	// subrosia
 	"winter tower":     MutableGift("winter", 0x4fc5),

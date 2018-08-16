@@ -63,6 +63,11 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("d2 blade key chest", "bracelet")),
 	"enter d2":         OrStep("enter d2 A", "enter d2 B"),
 	"d2 outdoor chest": AndSlot("enter d2 B"),
+	"mystery cave chest": AndSlot("remove mushroom", Or("feather L-2", "magnet gloves"),
+		Or("woods of winter default autumn", And("autumn",
+			Or("woods of winter default summer", And("enter d2 B", "bracelet"))))),
+	"moblin road chest": AndSlot("fairy fountain", "bombs", "remove bush",
+		Or("eastern suburbs default winter", "winter")),
 
 	// holodrum plain
 	"ghastly stump": Or(
@@ -82,6 +87,9 @@ var holodrumPrenodes = map[string]*Prenode{
 	"blaino gift":      AndSlot("scent tree", "rupees"),
 	"ricky":            And("scent tree", "ricky's gloves"),
 	"round jewel gift": AndSlot("scent tree", Or("flippers", Hard("dimitri flute"))),
+	"water cave chest": AndSlot("scent tree", "flippers"),
+	"mushroom cave chest": AndSlot("scent tree", "remove mushroom", "flippers",
+		Or("holodrum plain default autumn", And("ghastly stump", "autumn"))),
 
 	// spool swamp
 	"pegasus tree": AndSlot("ghastly stump",
@@ -117,17 +125,22 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("south swamp", Or("flippers", Hard("dimitri flute"))),
 		And("north horon stump", "remove bush"))),
 	"wet eyeglass lake": Or("not north horon default summer", "spring", "autumn", "winter"),
-	"enter d5": AndStep(Or("north horon default autumn", "autumn"), "remove mushroom", Or(
+	"d5 stump": AndStep(Or("north horon default autumn", "autumn"), Or(
 		And("lake portal", "not north horon default summer", "flippers"),
 		And("north horon stump", Or("north horon default winter", And("winter", "autumn")),
-			Or("jump", "ricky", Hard("moosh flute"))))),
+			Or("jump", Hard("ricky", "moosh flute"))))),
+	"enter d5": AndStep("d5 stump", "remove mushroom",
+		Or("north horon default autumn", "autumn")),
 	"lake chest": AndSlot("horon village", Or("feather L-2", And("jump",
 		Or("north horon default autumn",
 			And("autumn", "north horon stump"))))),
+	"dry lake chest": AndSlot("d5 stump", "bracelet",
+		Or("summer", And("enter d5", "north horon default summer"))),
 
 	// natzu
 	"great moblin chest": AndSlot(Or("flippers", "jump"), "animal flute",
 		Or("flippers", "pegasus jump L-2"), "bracelet"),
+	"platform chest": AndSlot("scent tree", "flippers"),
 
 	// sunken city
 	"sunken city": Or("fairy fountain",
@@ -137,6 +150,9 @@ var holodrumPrenodes = map[string]*Prenode{
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
 	"diver gift":            AndSlot("dimitri", "master's plaque"),
+	"sunken cave chest": AndSlot("flippers", "remove bush",
+		Or("sunken city default summer", "summer")),
+	"diver chest": AndSlot("dimitri"),
 
 	// mount cucco
 	"mount cucco": Or("mountain portal",
@@ -152,12 +168,14 @@ var holodrumPrenodes = map[string]*Prenode{
 	"dragon keyhole":     And("mario cave", "winter", "jump", "bracelet"),
 	"enter d4":           AndStep("dragon key", "dragon keyhole", "summer", "cross water gap"),
 	"pyramid jewel spot": AndSlot("mario cave", "flippers"),
+	"mario cave chest":   AndSlot("mario cave"),
 
 	// goron mountain
 	"goron mountain": Or(
 		And("mount cucco", "shovel", "bracelet"),
 		And("temple remains", "long jump", Or("flippers", "pegasus jump L-2")),
 		And("scent tree", "flippers")),
+	"goron chest": AndSlot("goron mountain", "feather L-2", "bombs"),
 
 	// tarm ruins
 	"tarm ruins": And("pegasus tree",
