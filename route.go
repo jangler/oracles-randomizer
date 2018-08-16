@@ -160,7 +160,9 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		return nil
 	}
 
-	logChan <- fmt.Sprintf("%d slots, %d strike(s)", usedSlots.Len(), strikes)
+	if verbose {
+		logChan <- fmt.Sprintf("%d slots, %d strike(s)", usedSlots.Len(), strikes)
+	}
 	return &RouteLists{seed, seasons, usedItems, itemList, usedSlots}
 }
 
