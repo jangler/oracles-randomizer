@@ -103,12 +103,10 @@ func Verify(b []byte) []error {
 		// special cases that will error normally
 		case "maku tree gift", "fool's ore", "noble sword spot",
 			"ember tree seeds", "mystery tree seeds", "scent tree seeds",
-			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
+			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2",
+			"expert's ring", "energy ring", "toss ring", "fist ring":
 			break
 		default:
-			if strings.HasSuffix(k, " ring") {
-				break
-			}
 			if err := m.Check(b); err != nil {
 				errors = append(errors, fmt.Errorf("%s: %v", k, err))
 			}

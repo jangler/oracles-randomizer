@@ -9,13 +9,10 @@ var baseItemPrenodes = map[string]*Prenode{
 	// could be uncommented and function as a filler item
 	// "bombchus": Root(),
 
-	// could fill the four unused ring slots
-	/*
-		"find fist ring":     Root(),
-		"find expert's ring": Root(),
-		"find energy ring":   Root(),
-		"find toss ring":     Root(),
-	*/
+	"fist ring":     Root(),
+	"expert's ring": Root(),
+	"energy ring":   Root(),
+	"toss ring":     Root(),
 }
 
 var itemPrenodes = map[string]*Prenode{
@@ -56,10 +53,10 @@ var itemPrenodes = map[string]*Prenode{
 		HardAnd("beach", "shield", "ore chunks", "seed item")), // subrosian market
 	"gale seeds": And("harvest gale seeds", "seed item"),
 
-	"punch":           And("find punch ring", "medium rupees"),
-	"energy ring":     And("find energy ring", "medium rupees"),
-	"toss ring":       And("find toss ring", "medium rupees"),
-	"sword beams L-1": And("sword L-1", "energy ring"),
+	"punch":           And("punch ring", "medium rupees"),
+	"use energy ring": And("energy ring", "medium rupees"),
+	"use toss ring":   And("toss ring", "medium rupees"),
+	"sword beams L-1": And("sword L-1", "use energy ring"),
 
 	"pegasus jump L-1": And("pegasus satchel", "feather L-1"),
 	"pegasus jump L-2": And("pegasus satchel", "feather L-2"),
@@ -92,7 +89,7 @@ var itemPrenodes = map[string]*Prenode{
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),
 
-	"find punch ring": Or("find fist ring", "find expert's ring"),
+	"punch ring": Or("fist ring", "expert's ring"),
 
 	// small rupees is ~1-10, and any item that can possibly yield rupees is
 	// included.
