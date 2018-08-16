@@ -533,7 +533,10 @@ def search_objects(rom, mode, obj_id=None, obj_subid=None):
 
 def get_treasure(rom, treasure_id, treasure_subid):
     bank, addr = TREASURE_PTR_TABLE
-    addr = read_ptr(rom, bank, addr + treasure_id * 4 + 1) + treasure_subid * 4
+    addr += treasure_id * 4
+    if rom[full_addr(bank, addr)] & 0x80:
+        addr = read_ptr(rom, bank, addr + 1)
+    addr += treasure_subid * 4
     offset = full_addr(bank, addr)
     return [addr] + list(rom[offset:offset+4])
 
