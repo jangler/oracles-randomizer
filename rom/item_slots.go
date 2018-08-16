@@ -145,6 +145,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"desert chest":        MutableChest("blast ring", 0x53dd),
 	"western coast chest": MutableChest("rang ring L-1", 0x53d9),
+	"coast house chest":   MutableChest("bombs", 0x53ef),
 
 	// subrosia
 	"winter tower":     MutableGift("winter", 0x4fc5),
@@ -162,10 +163,13 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
 		SubIDAddrs: []Addr{}, // special case, not set at all
 	},
-	"blue ore chest": MutableChest("blue ore", 0x53e2),
-	"red ore chest":  MutableChest("red ore", 0x53e6),
+	"blue ore chest":       MutableChest("blue ore", 0x53e2),
+	"red ore chest":        MutableChest("red ore", 0x53e6),
+	"non-rosa gasha chest": MutableChest("gasha seed", 0x54d8),
+	"rosa gasha chest":     MutableChest("gasha seed", 0x5559),
 
 	// dungeons
+	"d0 key chest": MutableChest("small key", 0x53f4),
 	"d0 sword chest": &MutableSlot{
 		Treasure:   Treasures["sword L-1"],
 		IDAddrs:    []Addr{{0x0a, 0x7b86}},

@@ -32,6 +32,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		Or("western coast default spring", "spring"),
 		Or("western coast default autumn", "autumn"))),
 	"western coast chest": AndSlot("pirate ship"),
+	"coast house chest":   AndSlot("pirate ship"),
 
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump

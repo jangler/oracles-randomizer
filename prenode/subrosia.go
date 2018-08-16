@@ -55,7 +55,9 @@ var subrosiaPrenodes = map[string]*Prenode{
 	"autumn tower":       AndSlot("temple", "jump", "bomb flower"),
 	"blue ore chest": AndSlot("hide and seek",
 		Or("feather L-2", "magnet gloves")),
-	"red ore chest": AndSlot("furnace", Or("feather L-2", "magnet gloves")),
+	"red ore chest":        AndSlot("furnace", Or("feather L-2", "magnet gloves")),
+	"non-rosa gasha chest": AndSlot("bridge"),
+	"rosa gasha chest":     AndSlot("bridge", "beach", "ribbon", "jump"),
 
 	"eruption room": Or("remains portal"),
 	"enter d8":      OrStep("d8 portal"),
