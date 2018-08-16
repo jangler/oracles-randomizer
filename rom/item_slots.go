@@ -181,7 +181,6 @@ var ItemSlots = map[string]*MutableSlot{
 	"rosa gasha chest":     MutableChest("gasha seed", 0x5559),
 
 	// hero's cave
-	"d0 key chest": MutableChest("small key", 0x53f4),
 	"d0 sword chest": &MutableSlot{
 		Treasure:   Treasures["sword L-1"],
 		IDAddrs:    []Addr{{0x0a, 0x7b86}},
