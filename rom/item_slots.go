@@ -162,6 +162,8 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
 		SubIDAddrs: []Addr{}, // special case, not set at all
 	},
+	"blue ore chest": MutableChest("blue ore", 0x53e2),
+	"red ore chest":  MutableChest("red ore", 0x53e6),
 
 	// dungeons
 	"d0 sword chest": &MutableSlot{

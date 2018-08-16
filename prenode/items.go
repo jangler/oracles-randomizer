@@ -77,7 +77,7 @@ var itemPrenodes = map[string]*Prenode{
 	"flute":         Or("strange flute", "animal flute"),
 
 	"shield L-1": Or("medium rupees"),
-	"shield L-2": Root(), // TODO as if it matters
+	"shield L-2": And("shield L-1", "red ore", "blue ore"),
 
 	"sword":     Or("sword L-1", "sword L-2"),
 	"shield":    Or("shield L-1", "shield L-2"),
