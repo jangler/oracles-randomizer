@@ -25,13 +25,13 @@ var d1Prenodes = map[string]*Prenode{
 	"d1 key fall":       And("enter d1", "kill stalfos (throw)"),
 	"d1 map chest":      And("d1 key A", "kill stalfos"),
 	"d1 compass chest":  And("d1 map chest"),
-	"d1 gasha chest":    And("d1 map chest", "kill goriya"),
-	"d1 bomb chest":     And("d1 map chest", "hit lever"),
+	"d1 gasha chest":    AndSlot("d1 map chest", "kill goriya"),
+	"d1 bomb chest":     AndSlot("d1 map chest", "hit lever"),
 	"d1 key chest":      And("d1 map chest", "hit lever"),
 	"enter goriya bros": And("d1 bomb chest", "bombs", "d1 key B"),
 	"d1 satchel spot":   AndSlot("enter goriya bros", "kill goriya bros"),
 	"d1 boss key chest": And("d1 map chest", "ember seeds", "kill goriya (pit)"),
-	"d1 ring chest":     And("enter d1", "ember seeds"),
+	"d1 ring chest":     AndSlot("enter d1", "ember seeds"),
 	"enter aquamentus":  And("enter d1", "ember seeds", "d1 boss key"),
 	"d1 essence":        AndStep("enter aquamentus", "kill aquamentus"),
 
@@ -55,11 +55,12 @@ var d1Prenodes = map[string]*Prenode{
 // they're only required to open one door, which you can circumvent via the
 // various entrances.
 var d2Prenodes = map[string]*Prenode{
-	"d2 5-rupee chest": And("d2 torch room"),
+	"d2 5-rupee chest": AndSlot("d2 torch room"),
 	"d2 key fall":      And("d2 torch room", "kill rope"),
 	"d2 arrow room": Or(
 		And("d2 torch room", "ember seeds"),
 		And("enter d2 B", "bracelet")),
+	"d2 rupee room":   And("d2 arrow room", "bombs"),
 	"d2 hardhat room": And("d2 arrow room", "d2 key A"),
 	"d2 map chest":    And("d2 hardhat room", "remove pot"),
 	"d2 compass chest": Or(
@@ -74,7 +75,7 @@ var d2Prenodes = map[string]*Prenode{
 	"d2 bomb wall": And("d2 blade key chest"), // alias for external reference
 
 	// from here on it's entirely linear
-	"d2 10-rupee chest": And("d2 bomb wall", "bombs", "bracelet"),
+	"d2 10-rupee chest": AndSlot("d2 bomb wall", "bombs", "bracelet"),
 	"enter facade":      And("d2 10-rupee chest", "remove pot", "d2 key B"),
 	"d2 spinner":        And("enter facade", "kill facade", Or("d2 key C", "bombs")),
 	"d2 boss key chest": And("enter facade", "kill facade", "d2 key C", "bombs"),
@@ -100,9 +101,9 @@ var d3Prenodes = map[string]*Prenode{
 	"d3 basement B out": Or(
 		And("d3 basement B in", "jump"),
 		And("d3 trampoline stairs", "bracelet")),
-	"d3 rupee chest":    And("d3 feather stairs"),
+	"d3 rupee chest":    AndSlot("d3 feather stairs"),
 	"enter omuai":       And("d3 mimic stairs", "jump", "d3 key B"),
-	"d3 gasha chest":    And("d3 mimic stairs", "jump"),
+	"d3 gasha chest":    AndSlot("d3 mimic stairs", "jump"),
 	"d3 omuai stairs":   And("enter omuai", "kill omuai"),
 	"d3 boss key chest": And("d3 omuai stairs", "jump"),
 	"d3 basement A in":  And("jump", Or("d3 feather stairs", "d3 basement A out")),
@@ -113,7 +114,7 @@ var d3Prenodes = map[string]*Prenode{
 	"d3 map chest": And("d3 basement B out", "jump"),
 
 	// second floor
-	"d3 bomb chest":           And("d3 mimic stairs"),
+	"d3 bomb chest":           AndSlot("d3 mimic stairs"),
 	"d3 compass chest":        And("d3 bomb chest", "bombs"),
 	"d3 feather room":         And("d3 rupee chest", "d3 key A"),
 	"d3 feather chest":        AndSlot("d3 feather room", "kill mimic"),
@@ -130,7 +131,7 @@ var d3Prenodes = map[string]*Prenode{
 // this whole dungeon is basically a tree so all the links are one-way
 var d4Prenodes = map[string]*Prenode{
 	// left branch from entrance
-	"d4 bomb chest":     And("enter d4", "cross large pool"),
+	"d4 bomb chest":     AndSlot("enter d4", "cross large pool"),
 	"d4 pot key fall":   And("d4 bomb chest", "bombs", "bracelet"),
 	"d4 statue stairs":  And("d4 bomb chest", "hit lever"),
 	"d4 map chest":      And("d4 statue stairs"),
@@ -185,7 +186,7 @@ var d5Prenodes = map[string]*Prenode{
 	"d5 left key chest":      And("enter d5", "cross magnet gap"),
 	"d5 stairs C out":        And("d5 underground A", "bombs", "jump"),
 	"d5 stairs C in":         And("enter d5", "magnet gloves"),
-	"d5 large rupee chest": Or("d5 stairs C out",
+	"d5 large rupee chest": OrSlot("d5 stairs C out",
 		And("enter d5", "magnet gloves")),
 	"d5 compass chest":     And("enter d5", "kill moldorm", "kill iron mask"),
 	"d5 armos key chest":   And("d5 stairs C out", "kill moldorm", "kill iron mask", "kill armos"),
@@ -208,10 +209,13 @@ var d5Prenodes = map[string]*Prenode{
 	"d5 boss key": And("d5 boss key spot"),
 }
 
-// i didn't note some of the non-essential chests in this dungeon
+// all the rupee chests in this dungeon are trivial, so i'm ignoring which is
+// which and just labeling them by letter.
 var d6Prenodes = map[string]*Prenode{
 	// 1F
 	"d6 spinner":         And("enter d6"),
+	"d6 rupee chest A":   AndSlot("d6 spinner"),
+	"d6 rupee room":      And("d6 spinner", "bombs"),
 	"d6 magkey ball":     And("d6 spinner", "magnet gloves", "jump"),
 	"d6 magkey jump":     And("pegasus jump L-2"),
 	"d6 magnet key fall": Or("d6 magkey ball", "d6 magkey jump"),
@@ -219,6 +223,7 @@ var d6Prenodes = map[string]*Prenode{
 	"d6 crumble stairs":  And("d6 spinner", "d6 key A", "long jump"),
 	"d6 key skip":        And("d6 armos room", "jump", "break crystal"),
 	"d6 map chest":       Or("d6 key skip", "d6 spinner"),
+	"d6 rupee chest C":   AndSlot("map chest"),
 	"avoid traps":        Or("pegasus satchel", "jump"),
 	"d6 switch stairs":   And("d6 map chest", "break crystal", "avoid traps", "boomerang L-2"),
 	"d6 U-room":          And("d6 cracked room", "boomerang L-2"),
@@ -226,7 +231,8 @@ var d6Prenodes = map[string]*Prenode{
 
 	// 2F
 	"d6 skipped key chest": And("d6 spinner", "magnet gloves", "break crystal", "jump"), // being nice
-	"d6 bomb chest":        And("d6 crumble stairs"),
+	"d6 bomb chest":        AndSlot("d6 crumble stairs"),
+	"d6 rupee chest B":     AndSlot("d6 armos room"),
 	"d6 armos room":        And("d6 crumble stairs", "bombs"),
 	"d6 boomerang chest":   AndSlot("d6 armos room", "jump"),
 	"d6 cracked room":      And("d6 switch stairs"),
@@ -256,7 +262,7 @@ var d6Prenodes = map[string]*Prenode{
 var d7Prenodes = map[string]*Prenode{
 	// 1F
 	"d7 wizzrobe key chest": And("enter d7", "kill wizzrobe"),
-	"d7 ring chest":         And("enter d7", "d7 key A"),
+	"d7 ring chest":         AndSlot("enter d7", "d7 key A"),
 	"enter poe A":           And("d7 ring chest", "ember slingshot"),
 	"d7 compass chest":      And("enter d7", "bombs"),
 	"d7 map chest": And("d7 pot room", "jump",
@@ -286,6 +292,7 @@ var d7Prenodes = map[string]*Prenode{
 		Or("d7 key D", HardAnd("d7 key C", "poe skip"))),
 	"enter poe sisters": And("d7 moldorm room", "kill moldorm", "feather L-2"),
 	"d7 stairs room":    And("enter poe sisters", "kill poe sister"),
+	"d7 rupee chest":    AndSlot("d7 stairs room"),
 	"d7 enter skipped": And("d7 stairs room", Or(
 		And("magnet gloves", "jump"), HardAnd("pegasus jump L-2"))),
 	"d7 skipped key poof": And("d7 enter skipped", "kill wizzrobe (pit)", "kill stalfos (pit)"),
@@ -308,6 +315,7 @@ var d7Prenodes = map[string]*Prenode{
 var d8Prenodes = map[string]*Prenode{
 	// 1F
 	"d8 eye key fall":     And("enter d8", "slingshot", "remove pot"),
+	"d8 ring chest":       AndSlot("enter d8", "jump"),
 	"d8 hardhat room":     And("enter d8", "kill magunesu"),
 	"d8 hardhat key fall": And("d8 hardhat room", "kill hardhat (magnet)"),
 	"HSS skip":            HardAnd("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),
@@ -352,6 +360,7 @@ var d8Prenodes = map[string]*Prenode{
 	"d8 frypolar stairs": Or("d8 ice puzzle room",
 		And("enter frypolar", "kill frypolar", "ember seeds", "slingshot L-2")),
 	"d8 lava key chest": And("d8 SE crystal"),
+	"d8 bomb chest":     AndSlot("d8 SW crystal"),
 	"enter medusa head": And("d8 SW crystal", "d8 SE crystal", "d8 NW crystal", "d8 boss key",
 		Or("d8 key G", HardAnd("d8 key D", "HSS skip"))),
 	"d8 essence": AndStep("enter medusa head", "kill medusa head"),

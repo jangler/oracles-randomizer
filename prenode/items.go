@@ -91,18 +91,19 @@ var itemPrenodes = map[string]*Prenode{
 
 	"punch ring": Or("fist ring", "expert's ring"),
 
-	// small rupees is ~1-10, and any item that can possibly yield rupees is
+	// small rupees is ~10, and any item that can possibly yield rupees is
 	// included.
 	"small rupees": Or("sword", "boomerang", "shovel", "bracelet",
 		"ember seeds", "scent seeds", "ricky", "moosh", Hard("dimitri flute"),
-		"fool's ore", "punch"),
+		"fool's ore", "punch", "rupees, 10"),
 	// medium rupees is ~11-99, and only items that can reach rupee chests are
-	// included. TODO update this for other chests as they're added
-	"medium rupees": And("small rupees", Or(
-		Hard("small rupees"), "big rupees", "rupees, 20", "rupees, 30")),
-	// big rupees is ~100+, and only ember seeds are included since they can
-	// burn down trees leading to generous old men.
-	"big rupees": Or(Hard("medium rupees"), "ember seeds"),
+	// included.
+	"medium rupees": And("small rupees", Or(Hard("small rupees"), "big rupees",
+		"rupees, 20", "rupees, 30", "rupees, 50")),
+	// big rupees is ~100+, ember seeds are included since they can burn down
+	// trees leading to generous old men.
+	"big rupees": Or(Hard("medium rupees"), "ember seeds", "rupees, 100",
+		"d2 rupee room", "d6 rupee room"),
 
 	"ore chunks": Or("shovel", "temple"),
 }

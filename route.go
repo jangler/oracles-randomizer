@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
@@ -33,6 +34,11 @@ func addDefaultItemNodes(nodes map[string]*prenode.Prenode) {
 type Route struct {
 	Graph, HardGraph graph.Graph
 	Slots            map[string]*graph.Node
+	DungeonItemCount []int
+
+	// TODO
+	KeyItemsTotal     int
+	KeyItemsRemaining int
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes
@@ -61,7 +67,12 @@ func NewRoute(start []string) *Route {
 		}
 	}
 
-	return &Route{Graph: g, HardGraph: hg, Slots: openSlots}
+	return &Route{
+		Graph:            g,
+		HardGraph:        hg,
+		Slots:            openSlots,
+		DungeonItemCount: make([]int, 10),
+	}
 }
 
 func (r *Route) AddParent(child, parent string) {
@@ -207,16 +218,27 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 	return seasonMap
 }
 
+// dungeonIndex returns the index of a slot's dungeon if it's in a dungeon, or
+// -1 if it's not.
+func dungeonIndex(node *graph.Node) int {
+	isInDungeon, _ := regexp.MatchString(`^d\d `, node.Name)
+	if isInDungeon {
+		index, _ := strconv.Atoi(string(node.Name[1]))
+		return index
+	}
+	return -1
+}
+
 // sorts a list of item slots in place, in the order we want key items to try
 // to slot in (reverse, since the list iterates backwards):
 //
-// 1. dungeon chests (XXX currently ignoring the d0 rupee chest)
+// 1. dungeon chests, if no items have been slotted in that dungeon
 // 2. key item slots
 // 3. regular chests
 //
 // because linked lists are really bad for this type of operation, we empty the
 // list into a list and then refill it after sorting.
-func sortSlots(l *list.List) {
+func sortSlots(r *Route, l *list.List) {
 	// empty list into slice
 	a := make([]*graph.Node, 0, l.Len())
 	for l.Len() > 0 {
@@ -228,9 +250,8 @@ func sortSlots(l *list.List) {
 	// element j should be checked first in routing)
 	sort.Slice(a, func(i, j int) bool {
 		// dungeon chests go first
-		jIsInDungeon, _ := regexp.MatchString(`^d\d `, a[j].Name)
-		if jIsInDungeon &&
-			a[j].Name != "d0 rupee chest" && a[j].Name != "d2 outdoor chest" {
+		di := dungeonIndex(a[j])
+		if di >= 0 && r.DungeonItemCount[di] == 0 {
 			return true
 		}
 
@@ -277,7 +298,7 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 
 	// check non-chest slots first so that junk always goes in chests (usually
 	// the only place where it fits)
-	sortSlots(slotList)
+	sortSlots(r, slotList)
 
 	// try to reach each unused slot
 	for i := 0; i < slotList.Len(); i++ {
@@ -302,6 +323,12 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 		// move slot from unused to used
 		usedSlots.PushBack(slotNode)
 		slotList.Remove(slotElem)
+
+		// count that we're placing an item in a dungeon
+		di := dungeonIndex(slotNode)
+		if di >= 0 {
+			r.DungeonItemCount[di]++
+		}
 
 		// try placing each unused item into the slot
 		jewelChecked := false
@@ -362,6 +389,11 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 
 				usedItems.Remove(usedItems.Back())
 			}
+		}
+
+		// didn't place item in dungeon after all
+		if di >= 0 {
+			r.DungeonItemCount[di]--
 		}
 
 		// slot didn't work; pop it onto the front of the unused list

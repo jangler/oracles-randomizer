@@ -180,22 +180,56 @@ var ItemSlots = map[string]*MutableSlot{
 	"non-rosa gasha chest": MutableChest("gasha seed", 0x54d8),
 	"rosa gasha chest":     MutableChest("gasha seed", 0x5559),
 
-	// dungeons
+	// hero's cave
 	"d0 key chest": MutableChest("small key", 0x53f4),
 	"d0 sword chest": &MutableSlot{
 		Treasure:   Treasures["sword L-1"],
 		IDAddrs:    []Addr{{0x0a, 0x7b86}},
 		ParamAddrs: []Addr{{0x0a, 0x7b88}},
 	},
-	"d0 rupee chest":         MutableChest("rupees, 30", 0x53f8),
-	"d1 satchel spot":        MutableFind("satchel", 0x669a),
-	"d2 bracelet chest":      MutableChest("bracelet", 0x5424),
-	"d3 feather chest":       MutableChest("feather L-1", 0x5458),
-	"d4 slingshot chest":     MutableChest("slingshot L-1", 0x5470),
+	"d0 rupee chest": MutableChest("rupees, 30", 0x53f8),
+
+	// d1
+	"d1 satchel spot": MutableFind("satchel", 0x669a),
+	"d1 gasha chest":  MutableChest("gasha seed", 0x5400),
+	"d1 bomb chest":   MutableChest("bombs, 10", 0x5408),
+	"d1 ring chest":   MutableChest("discovery ring", 0x5414),
+
+	// d2
+	"d2 bracelet chest": MutableChest("bracelet", 0x5424),
+	"d2 10-rupee chest": MutableChest("rupees, 10", 0x541c),
+	"d2 5-rupee chest":  MutableChest("rupees, 5", 0x5438),
+
+	// d3
+	"d3 feather chest": MutableChest("feather L-1", 0x5458),
+	"d3 rupee chest":   MutableChest("rupees, 30", 0x543c),
+	"d3 gasha chest":   MutableChest("gasha seed", 0x5444),
+	"d3 bomb chest":    MutableChest("bombs, 10", 0x545c),
+
+	// d4
+	"d4 slingshot chest": MutableChest("slingshot L-1", 0x5470),
+	"d4 bomb chest":      MutableChest("bombs, 10", 0x5474),
+
+	// d5
 	"d5 magnet gloves chest": MutableChest("magnet gloves", 0x5480),
-	"d6 boomerang chest":     MutableChest("boomerang L-2", 0x54c0),
-	"d7 cape chest":          MutableChest("feather L-2", 0x54e1),
-	"d8 HSS chest":           MutableChest("slingshot L-2", 0x551d),
+	"d5 large rupee chest":   MutableChest("rupees, 100", 0x5484),
+
+	// d6
+	"d6 boomerang chest": MutableChest("boomerang L-2", 0x54c0),
+	"d6 rupee chest A":   MutableChest("rupees, 10", 0x54a0),
+	"d6 rupee chest B":   MutableChest("rupees, 5", 0x54a8),
+	"d6 bomb chest":      MutableChest("bombs, 10", 0x54ac),
+	"d6 rupee chest C":   MutableChest("rupees, 5", 0x54b8),
+
+	// d7
+	"d7 cape chest":  MutableChest("feather L-2", 0x54e1),
+	"d7 rupee chest": MutableChest("rupees, 1", 0x54dd),
+	"d7 ring chest":  MutableChest("power ring L-1", 0x54f9),
+
+	//d8
+	"d8 HSS chest":  MutableChest("slingshot L-2", 0x551d),
+	"d8 bomb chest": MutableChest("bombs, 10", 0x54fd),
+	"d8 ring chest": MutableChest("steadfast ring", 0x5509),
 
 	// don't use this slot; no one knows about it and it's not required for
 	// anything in a normal playthrough
