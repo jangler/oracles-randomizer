@@ -164,11 +164,11 @@ var holodrumPrenodes = map[string]*Prenode{
 	"moosh": And("mount cucco", "spring banana"),
 	"dragon key spot": AndSlot("mount cucco",
 		Or("moosh", "pegasus jump L-2", Hard("feather L-2"))),
-	"mario cave":         And("mount cucco", Or("sunken city default spring", "spring")),
-	"dragon keyhole":     And("mario cave", "winter", "jump", "bracelet"),
+	"talon cave":         And("mount cucco", Or("sunken city default spring", "spring")),
+	"dragon keyhole":     And("talon cave", "winter", "jump", "bracelet"),
 	"enter d4":           AndStep("dragon key", "dragon keyhole", "summer", "cross water gap"),
-	"pyramid jewel spot": AndSlot("mario cave", "flippers"),
-	"mario cave chest":   AndSlot("mario cave"),
+	"pyramid jewel spot": AndSlot("talon cave", "flippers"),
+	"talon cave chest":   AndSlot("talon cave"),
 
 	// goron mountain
 	"goron mountain": Or(
