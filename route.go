@@ -35,10 +35,8 @@ type Route struct {
 	Graph, HardGraph graph.Graph
 	Slots            map[string]*graph.Node
 	DungeonItemCount []int
-
-	// TODO
-	KeyItemsTotal     int
-	KeyItemsRemaining int
+	KeyItemsTotal    int
+	KeyItemsPlaced   int
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes
@@ -59,9 +57,14 @@ func NewRoute(start []string) *Route {
 	addNodes(hg, totalPrenodes, true)
 	addNodeParents(hg, totalPrenodes)
 
+	keyItemCount := 0
 	openSlots := make(map[string]*graph.Node, 0)
 	for name, pn := range totalPrenodes {
 		switch pn.Type {
+		case prenode.RootType:
+			if rom.CanSlotOutsideChest[name] {
+				keyItemCount++
+			}
 		case prenode.AndSlotType, prenode.OrSlotType:
 			openSlots[name] = g[name]
 		}
@@ -72,6 +75,8 @@ func NewRoute(start []string) *Route {
 		HardGraph:        hg,
 		Slots:            openSlots,
 		DungeonItemCount: make([]int, 10),
+		KeyItemsTotal:    keyItemCount,
+		KeyItemsPlaced:   0,
 	}
 }
 
@@ -338,6 +343,10 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 			usedItems.PushBack(itemNode)
 			r.AddParent(itemNode.Name, slotNode.Name)
 
+			if rom.CanSlotOutsideChest[itemNode.Name] {
+				r.KeyItemsPlaced++
+			}
+
 			// recurse unless the item should be skipped
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(src, r.Graph, reached,
@@ -351,6 +360,10 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 					verbose, logChan) {
 					return true
 				}
+			}
+
+			if rom.CanSlotOutsideChest[itemNode.Name] {
+				r.KeyItemsPlaced--
 			}
 
 			// item didn't work; unslot it and pop it onto the front of the
@@ -495,6 +508,23 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 		if verbose {
 			logChan <- "have not reached goal"
 		}
+	}
+
+	// if the new state hasn't reached enough essences at this stage in the
+	// process, it's invalid. this is to help prevent seeds from becoming
+	// mostly overworld treks with d3, d4, and d6 always at the end.
+	essencesReached := 0
+	for node := range reached {
+		if strings.HasSuffix(node.Name, "essence") {
+			essencesReached++
+		}
+	}
+	if r.KeyItemsPlaced > 0 &&
+		essencesReached < 8*r.KeyItemsPlaced/r.KeyItemsTotal {
+		if verbose {
+			logChan <- "false; have not reached enough essences"
+		}
+		return RouteInvalid
 	}
 
 	// if the new state doesn't reach any more steps, abandon this branch,
