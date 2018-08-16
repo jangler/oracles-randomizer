@@ -1,13 +1,6 @@
 package prenode
 
 // new set of holodrum prenodes, accounting for randomized seasons
-//
-// these use new nested prenode constructors, which are nice, but hard to read
-// if you nest them in a way that requires multiple levels of indentation. so
-// try not to do that too much.
-
-// TODO use searchchests function of script to find *all* chests
-// TODO the group 0 chests are done, but the indoor ones aren't
 
 var holodrumPrenodes = map[string]*Prenode{
 	"start": And(), // parent for nodes reachable by default
@@ -68,6 +61,8 @@ var holodrumPrenodes = map[string]*Prenode{
 			Or("woods of winter default summer", And("enter d2 B", "bracelet"))))),
 	"moblin road chest": AndSlot("fairy fountain", "bombs", "remove bush",
 		Or("eastern suburbs default winter", "winter")),
+	"moblin cliff chest": AndSlot("suburbs", "bracelet",
+		Or("eastern suburbs default spring", "spring")),
 
 	// holodrum plain
 	"ghastly stump": Or(
@@ -186,6 +181,8 @@ var holodrumPrenodes = map[string]*Prenode{
 	"tarm gale tree":   AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
 	"enter d6": AndStep("tarm gale tree", Or("tarm ruins default winter", "winter"),
 		"shovel", "remove bush"),
+	"tarm gasha chest": AndSlot("tarm gale tree", "remove mushroom", "ember seeds",
+		Or("tarm ruins default autumn", "autumn")),
 
 	// samasa desert
 	"desert":       And("suburbs", "pirate house"),

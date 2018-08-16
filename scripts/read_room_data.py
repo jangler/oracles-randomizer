@@ -69,7 +69,7 @@ MUSIC = { # and sound effects
     0x14: "snake's remains",
     0x15: "poison moth's lair",
     0x16: "dancing dragon dungeon",
-    0x17: "unicovn's cave",
+    0x17: "unicorn's cave",
     0x18: "ancient ruins",
     0x19: "explorer's crypt",
     0x1a: "sword and shield maze",

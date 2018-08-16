@@ -156,6 +156,8 @@ var ItemSlots = map[string]*MutableSlot{
 	"goron chest":         MutableChest("armor ring L-2", 0x555d),
 	"platform chest":      MutableChest("rupees, 50", 0x5565),
 	"talon cave chest":    MutableChest("subrosian ring", 0x5561),
+	"tarm gasha chest":    MutableChest("gasha seed", 0x53eb),
+	"moblin cliff chest":  MutableChest("gasha seed", 0x54cc),
 
 	// subrosia
 	"winter tower":     MutableGift("winter", 0x4fc5),
