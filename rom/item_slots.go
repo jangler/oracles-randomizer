@@ -112,7 +112,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"village SW chest":   MutableChest("rupees, 20", 0x53c1),
 	"village SE chest":   MutableChest("rupees, 20", 0x53c5),
 	"shovel gift":        MutableGift("shovel", 0x6a6e),
-	"d2 outdoor chest":   MutableChest("gasha seed", 0x53c9),
+	"outdoor d2 chest":   MutableChest("gasha seed", 0x53c9),
 	"blaino gift":        MutableGift("ricky's gloves", 0x64ce),
 	"floodgate key spot": MutableFind("floodgate key", 0x626a),
 	"square jewel chest": &MutableSlot{

@@ -55,7 +55,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("mystery tree", "woods of winter default summer", "bracelet"),
 		And("d2 blade key chest", "bracelet")),
 	"enter d2":         OrStep("enter d2 A", "enter d2 B"),
-	"d2 outdoor chest": AndSlot("enter d2 B"),
+	"outdoor d2 chest": AndSlot("enter d2 B"),
 	"mystery cave chest": AndSlot("remove mushroom", Or("feather L-2", "magnet gloves"),
 		Or("woods of winter default autumn", And("autumn",
 			Or("woods of winter default summer", And("enter d2 B", "bracelet"))))),
