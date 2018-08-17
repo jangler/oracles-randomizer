@@ -155,9 +155,9 @@ var constMutables = map[string]Mutable{
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7d8d}, 0xea, 0x76),
 	"maku seed check 2": MutableByte(Addr{0x09, 0x7d8f}, 0x30, 0x18),
 
-	// remove talon from his cave, since he blocks the chest inside until nine
-	// steps into the trading sequence.
-	"remove talon": MutableByte(Addr{0x11, 0x6d25}, 0xf2, 0xff),
+	// move sleeping talon and his mushroom so they don't block the chest
+	"move talon":    MutableWord(Addr{0x11, 0x6d28}, 0x6858, 0x88a8),
+	"move mushroom": MutableWord(Addr{0x0b, 0x607f}, 0x6848, 0x78a8),
 
 	// feather game: don't give fools ore, and don't return fools ore
 	"get fools ore 1": MutableByte(Addr{0x14, 0x4111}, 0xe0, 0xf0),
