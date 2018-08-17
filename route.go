@@ -520,7 +520,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 		}
 	}
 	if r.KeyItemsPlaced > 0 &&
-		essencesReached < 8*r.KeyItemsPlaced/r.KeyItemsTotal {
+		essencesReached < 4*r.KeyItemsPlaced/r.KeyItemsTotal {
 		if verbose {
 			logChan <- "false; have not reached enough essences"
 		}

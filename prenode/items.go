@@ -8,11 +8,6 @@ var baseItemPrenodes = map[string]*Prenode{
 
 	// could be uncommented and function as a filler item
 	// "bombchus": Root(),
-
-	"fist ring":     Root(),
-	"expert's ring": Root(),
-	"energy ring":   Root(),
-	"toss ring":     Root(),
 }
 
 var itemPrenodes = map[string]*Prenode{

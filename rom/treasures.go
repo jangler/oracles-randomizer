@@ -101,20 +101,6 @@ var Treasures = map[string]*Treasure{
 	"spring": &Treasure{0x07, 0x02, 0x5744, 0x09, 0x00, 0x0d, 0x1e},
 	"autumn": &Treasure{0x07, 0x04, 0x574c, 0x09, 0x02, 0x0c, 0x1e},
 
-	// rings actually have various entries based on param. this is the first
-	// "ring" in the treasure code, but it has a param of 0xff (nothing).
-	"ring": &Treasure{0x2d, 0x00, 0x57fc, 0x09, 0xff, 0x54, 0x0e},
-
-	// ignore these ones for the purpose of rom validation, since they're going
-	// to be custom from the start.
-	"expert's ring": &Treasure{0x2d, 0x00, 0x57fc, 0x38, 0x0b, 0x54, 0x0e},
-	"toss ring":     &Treasure{0x2d, 0x01, 0x5800, 0x38, 0x12, 0x54, 0x0e},
-	"energy ring":   &Treasure{0x2d, 0x02, 0x5804, 0x38, 0x31, 0x54, 0x0e},
-	"fist ring":     &Treasure{0x2d, 0x03, 0x5808, 0x38, 0x3d, 0x54, 0x0e},
-
-	// the keys have several params that indicate which mode to use (fall,
-	// appear, exist, chest?). the compass and map have the same, but without
-	// a fall mode.
 	"small key": &Treasure{0x30, 0x03, 0x584c, 0x38, 0x01, 0x1a, 0x42},
 	"boss key":  &Treasure{0x31, 0x03, 0x585c, 0x38, 0x00, 0x1b, 0x43},
 	"compass":   &Treasure{0x32, 0x02, 0x5868, 0x68, 0x00, 0x19, 0x41},
@@ -245,10 +231,6 @@ var CanSlotOutsideChest = map[string]bool{
 	"gale tree seeds 2":  true,
 
 	// rings
-	"expert's ring":  true,
-	"toss ring":      true,
-	"energy ring":    true,
-	"fist ring":      true,
 	"discovery ring": true,
 	"moblin ring":    true,
 	"steadfast ring": true,
