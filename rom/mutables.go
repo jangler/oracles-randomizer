@@ -376,6 +376,9 @@ var constMutables = map[string]Mutable{
 	// same areas as the horon shop's flute.
 	"dance hall flute check": MutableByte(Addr{0x09, 0x5e21}, 0x20, 0x80),
 
+	// don't require rod to get items from season spirits
+	"season spirit rod check": MutableByte(Addr{0x0b, 0x4eb2}, 0x07, 0x02),
+
 	// the member's card isn't in the normal logic currently, but remove the
 	// essence check anyway
 	"member's card essence check": MutableWord(Addr{0x09, 0x7739},
