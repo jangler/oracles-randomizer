@@ -34,9 +34,15 @@ func addDefaultItemNodes(nodes map[string]*prenode.Prenode) {
 type Route struct {
 	Graph, HardGraph graph.Graph
 	Slots            map[string]*graph.Node
-	DungeonItemCount []int
+	Dungeons         []Dungeon
 	KeyItemsTotal    int
 	KeyItemsPlaced   int
+}
+
+type Dungeon struct {
+	ItemsPlaced int
+	HasMap      bool
+	HasCompass  bool
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes
@@ -71,12 +77,12 @@ func NewRoute(start []string) *Route {
 	}
 
 	return &Route{
-		Graph:            g,
-		HardGraph:        hg,
-		Slots:            openSlots,
-		DungeonItemCount: make([]int, 10),
-		KeyItemsTotal:    keyItemCount,
-		KeyItemsPlaced:   0,
+		Graph:          g,
+		HardGraph:      hg,
+		Slots:          openSlots,
+		Dungeons:       make([]Dungeon, 9),
+		KeyItemsTotal:  keyItemCount,
+		KeyItemsPlaced: 0,
 	}
 }
 
@@ -164,6 +170,8 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		seasons = rollSeasons(src, r)
 		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
 
+		placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
+
 		if tryExploreTargets(src, r, nil, start, &strikes, itemList,
 			usedItems, slotList, usedSlots, verbose, logChan) {
 			if verbose {
@@ -234,6 +242,44 @@ func dungeonIndex(node *graph.Node) int {
 	return -1
 }
 
+// place maps and compasses in chests in dungeons (before attempting to slot
+// the other ones)
+func placeDungeonItems(src *rand.Rand,
+	itemList, usedItems, slotList, usedSlots *list.List) {
+	for i := 1; i < 9; i++ {
+		for _, itemName := range []string{"dungeon map", "compass"} {
+			slotElem, itemElem, slotNode, itemNode :=
+				getDungeonItem(i, itemName, slotList, itemList)
+
+			usedSlots.PushBack(slotNode)
+			slotList.Remove(slotElem)
+			usedItems.PushBack(itemNode)
+			itemList.Remove(itemElem)
+		}
+	}
+}
+
+func getDungeonItem(index int, itemName string, slotList,
+	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
+	for es := slotList.Front(); es != nil; es = es.Next() {
+		slot := es.Value.(*graph.Node)
+		if dungeonIndex(slot) != index {
+			continue
+		}
+
+		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
+			item := ei.Value.(*graph.Node)
+			if item.Name != itemName {
+				continue
+			}
+
+			return es, ei, slot, item
+		}
+	}
+
+	panic("could not place dungeon-specific items")
+}
+
 // sorts a list of item slots in place, in the order we want key items to try
 // to slot in (reverse, since the list iterates backwards):
 //
@@ -256,7 +302,7 @@ func sortSlots(r *Route, l *list.List) {
 	sort.Slice(a, func(i, j int) bool {
 		// dungeon chests go first
 		di := dungeonIndex(a[j])
-		if di >= 0 && r.DungeonItemCount[di] == 0 {
+		if di >= 0 && r.Dungeons[di].ItemsPlaced == 0 {
 			return true
 		}
 
@@ -329,12 +375,6 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 		usedSlots.PushBack(slotNode)
 		slotList.Remove(slotElem)
 
-		// count that we're placing an item in a dungeon
-		di := dungeonIndex(slotNode)
-		if di >= 0 {
-			r.DungeonItemCount[di]++
-		}
-
 		// try placing each unused item into the slot
 		jewelChecked := false
 		for j := 0; j < itemList.Len(); j++ {
@@ -351,6 +391,13 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(src, r.Graph, reached,
 				itemNode, slotNode, jewelChecked, fillUnused)
+
+			// count that we're placing an item in a dungeon
+			di := dungeonIndex(slotNode)
+			if di >= 0 {
+				r.Dungeons[di].ItemsPlaced++
+			}
+
 			if !skip {
 				if verbose {
 					logChan <- fmt.Sprintf("trying item %s", itemNode.Name)
@@ -360,6 +407,11 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 					verbose, logChan) {
 					return true
 				}
+			}
+
+			// didn't place item in dungeon after all
+			if di >= 0 {
+				r.Dungeons[di].ItemsPlaced--
 			}
 
 			if rom.CanSlotOutsideChest[itemNode.Name] {
@@ -378,35 +430,6 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 				}
 				return false
 			}
-		}
-
-		// if we're just filling unused and no item worked, try a piece of
-		// heart instead
-		if fillUnused {
-			if rom.ItemSlots[slotNode.Name].CollectMode == rom.CollectChest &&
-				slotNode.Name != "rod gift" && slotNode.Name != "d0 sword chest" {
-				itemNode := graph.NewNode("piece of heart", graph.RootType, false)
-				usedItems.PushBack(itemNode)
-
-				if verbose {
-					logChan <- "trying piece of heart"
-				}
-				skip, _ := shouldSkipItem(src, r.Graph, reached, itemNode, slotNode,
-					jewelChecked, fillUnused)
-				if !skip {
-					if tryExploreTargets(src, r, reached, nil, strikes, itemList,
-						usedItems, slotList, usedSlots, verbose, logChan) {
-						return true
-					}
-				}
-
-				usedItems.Remove(usedItems.Back())
-			}
-		}
-
-		// didn't place item in dungeon after all
-		if di >= 0 {
-			r.DungeonItemCount[di]--
 		}
 
 		// slot didn't work; pop it onto the front of the unused list
@@ -609,14 +632,6 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	if slotNode.Name == "ember tree" &&
 		strings.HasPrefix(itemNode.Name, "gale tree seeds") {
 		skip = true
-	}
-
-	// don't slot L-1 items if the L-2 one has already been slotted
-	if strings.HasSuffix(itemNode.Name, "L-1") {
-		upgradeName := strings.Replace(itemNode.Name, "L-1", "L-2", 1)
-		if reached[g[upgradeName]] {
-			skip = true
-		}
 	}
 
 	// give only a 1 in 2 change per sword of slotting in the hero's cave chest
