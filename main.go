@@ -29,6 +29,8 @@ func main() {
 	// init flags
 	flagFreewarp := flag.Bool(
 		"freewarp", false, "allow unlimited tree warp (no cooldown)")
+	flagKeyonly := flag.Bool(
+		"keyonly", false, "only randomize key item locations")
 	flagSeed := flag.String("seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flagUpdate := flag.Bool(
@@ -60,8 +62,8 @@ func main() {
 
 		summary, summaryDone := getSummaryChannel()
 
-		if errs := randomize(
-			romData, flag.Arg(1), *flagVerbose, seed, summary); errs != nil {
+		if errs := randomize(romData, flag.Arg(1), *flagKeyonly, *flagVerbose,
+			seed, summary); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
@@ -124,8 +126,8 @@ func readFileBytes(filename string) ([]byte, error) {
 }
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
-func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
-	summary chan string) []error {
+func randomize(romData []byte, outFilename string, keyonly, verbose bool,
+	seed uint32, summary chan string) []error {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
@@ -160,7 +162,7 @@ func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
 	for i := 0; i < numThreads; i++ {
-		go searchAsync(rand.New(sources[i]), seeds[i], verbose,
+		go searchAsync(rand.New(sources[i]), seeds[i], keyonly, verbose,
 			logChan, routeChan, doneChan)
 	}
 
@@ -250,9 +252,9 @@ func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, seed uint32, verbose bool,
+func searchAsync(src *rand.Rand, seed uint32, keyonly, verbose bool,
 	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
 	// find a viable random route
 	r := NewRoute([]string{"horon village"})
-	retChan <- findRoute(src, seed, r, verbose, logChan, doneChan)
+	retChan <- findRoute(src, seed, r, keyonly, verbose, logChan, doneChan)
 }

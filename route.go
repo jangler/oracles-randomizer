@@ -144,10 +144,10 @@ type RouteLists struct {
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
+func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 	logChan chan string, doneChan chan int) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
-	itemList, slotList := initRouteLists(src, r)
+	itemList, slotList := initRouteLists(src, r, keyonly)
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
@@ -170,7 +170,9 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		seasons = rollSeasons(src, r)
 		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
 
-		placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
+		if !keyonly {
+			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
+		}
 
 		if tryExploreTargets(src, r, nil, start, &strikes, itemList,
 			usedItems, slotList, usedSlots, verbose, logChan) {
@@ -182,7 +184,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 			if verbose {
 				logChan <- "routing struck out; retrying"
 			}
-			itemList, slotList = initRouteLists(src, r)
+			itemList, slotList = initRouteLists(src, r, keyonly)
 			usedItems, usedSlots = list.New(), list.New()
 			strikes = 0
 		} else {
@@ -446,21 +448,29 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 }
 
 // return shuffled lists of item and slot nodes
-func initRouteLists(src *rand.Rand, r *Route) (itemList, slotList *list.List) {
+func initRouteLists(src *rand.Rand, r *Route,
+	keyonly bool) (itemList, slotList *list.List) {
 	// get slices of names
 	itemNames := make([]string, 0,
 		len(rom.ItemSlots)+len(prenode.ExtraItems()))
 	slotNames := make([]string, 0, len(r.Slots))
 	for key, slot := range rom.ItemSlots {
 		if key != "rod gift" { // don't slot vanilla, seasonless rod
-			itemNames = append(itemNames, rom.FindTreasureName(slot.Treasure))
+			treasureName := rom.FindTreasureName(slot.Treasure)
+			if !keyonly || keyItems[treasureName] {
+				itemNames = append(itemNames, treasureName)
+			}
 		}
 	}
 	for key := range prenode.ExtraItems() {
-		itemNames = append(itemNames, key)
+		if !keyonly || keyItems[key] {
+			itemNames = append(itemNames, key)
+		}
 	}
 	for key := range r.Slots {
-		slotNames = append(slotNames, key)
+		if !keyonly || keySlots[key] {
+			slotNames = append(slotNames, key)
+		}
 	}
 
 	// sort the slices so that order isn't dependent on map implementation,
