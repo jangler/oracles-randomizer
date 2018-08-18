@@ -4,6 +4,12 @@ import (
 	"fmt"
 )
 
+const (
+	enChestOffset = -0x443
+	enGiftOffset  = -2
+	enFindOffset  = 0x17
+)
+
 // A MutableSlot is an item slot (chest, gift, etc). It references room data
 // and treasure data.
 type MutableSlot struct {
@@ -15,14 +21,15 @@ type MutableSlot struct {
 // Mutate replaces the given IDs and subIDs in the given ROM data, and changes
 // the associated treasure's collection mode as appropriate.
 func (ms *MutableSlot) Mutate(b []byte) error {
+	en := isEn(b)
 	for _, addr := range ms.IDAddrs {
-		b[addr.FullOffset()] = ms.Treasure.id
+		b[addr.FullOffset(en)] = ms.Treasure.id
 	}
 	for _, addr := range ms.SubIDAddrs {
-		b[addr.FullOffset()] = ms.Treasure.subID
+		b[addr.FullOffset(en)] = ms.Treasure.subID
 	}
 	for _, addr := range ms.ParamAddrs {
-		b[addr.FullOffset()] = ms.Treasure.param
+		b[addr.FullOffset(en)] = ms.Treasure.param
 	}
 	ms.Treasure.mode = ms.CollectMode
 	return ms.Treasure.Mutate(b)
@@ -30,9 +37,11 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 
 // helper function for MutableSlot.Check
 func check(b []byte, addr Addr, value byte) error {
-	if b[addr.FullOffset()] != value {
+	en := isEn(b)
+
+	if b[addr.FullOffset(en)] != value {
 		return fmt.Errorf("expected %x at %x; found %x",
-			value, addr.FullOffset(), b[addr.FullOffset()])
+			value, addr.FullOffset(en), b[addr.FullOffset(en)])
 	}
 	return nil
 }
@@ -62,14 +71,29 @@ func (ms *MutableSlot) Check(b []byte) error {
 	return nil
 }
 
+// relativeAddrs constructs a slice of Addr from a relative english offset and
+// a series of jp addresses.
+func relativeAddrs(bank byte, enOffset int, jpAddrs ...uint16) []Addr {
+	addrs := make([]Addr, len(jpAddrs))
+	for i, jpAddr := range jpAddrs {
+		addrs[i] = Addr{bank, jpAddr, uint16(int(jpAddr) + enOffset)}
+	}
+	return addrs
+}
+
+// sameAddr returns an address that's the same in both JP and US versions.
+func sameAddr(bank byte, offset uint16) Addr {
+	return Addr{bank, offset, offset}
+}
+
 // BasicSlot constucts a MutableSlot from a treasure name, bank number, and an
 // address for each its ID and sub-ID. Most slots fit this pattern.
 func BasicSlot(treasure string, bank byte,
-	idOffset, subIDOffset uint16) *MutableSlot {
+	idOffset, subIDOffset uint16, enOffset int) *MutableSlot {
 	return &MutableSlot{
 		Treasure:   Treasures[treasure],
-		IDAddrs:    []Addr{{bank, idOffset}},
-		SubIDAddrs: []Addr{{bank, subIDOffset}},
+		IDAddrs:    relativeAddrs(bank, enOffset, idOffset),
+		SubIDAddrs: relativeAddrs(bank, enOffset, subIDOffset),
 	}
 }
 
@@ -77,21 +101,21 @@ func BasicSlot(treasure string, bank byte,
 // bank $15, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to almost all chests, and exclusively (?) to chests.
 func MutableChest(treasure string, addr uint16) *MutableSlot {
-	return BasicSlot(treasure, 0x15, addr, addr+1)
+	return BasicSlot(treasure, 0x15, addr, addr+1, enChestOffset)
 }
 
 // MutableGift constructs a MutableSlot from a treasure name and an address in
 // bank $0b, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to most items given by NPCs.
 func MutableGift(treasure string, addr uint16) *MutableSlot {
-	return BasicSlot(treasure, 0x0b, addr, addr+1)
+	return BasicSlot(treasure, 0x0b, addr, addr+1, enGiftOffset)
 }
 
 // MutableFind constructs a MutableSlot from a treasure name and an address in
 // bank $09, where the sub-ID and ID (in that order) are two consecutive bytes
 // at that address. This applies to most items that are found lying around.
 func MutableFind(treasure string, addr uint16) *MutableSlot {
-	return BasicSlot(treasure, 0x09, addr+1, addr)
+	return BasicSlot(treasure, 0x09, addr+1, addr, enFindOffset)
 }
 
 func init() {
@@ -105,9 +129,10 @@ var ItemSlots = map[string]*MutableSlot{
 	// holodrum
 	"lake chest": MutableChest("gasha seed", 0x53d5),
 	"maku tree gift": &MutableSlot{
-		Treasure:   Treasures["gnarled key"],
-		IDAddrs:    []Addr{{0x15, 0x657d}, {0x09, 0x7dff}, {0x09, 0x7de6}},
-		SubIDAddrs: []Addr{{0x15, 0x6580}, {0x09, 0x7e02}},
+		Treasure: Treasures["gnarled key"],
+		IDAddrs: []Addr{{0x15, 0x657d, 0x613a},
+			{0x09, 0x7dff, 0x7e16}, {0x09, 0x7de6, 0x7dfd}},
+		SubIDAddrs: []Addr{{0x15, 0x6580, 0x613d}, {0x09, 0x7e02, 0x7e19}},
 	},
 	"village SW chest":   MutableChest("rupees, 20", 0x53c1),
 	"village SE chest":   MutableChest("rupees, 20", 0x53c5),
@@ -117,15 +142,15 @@ var ItemSlots = map[string]*MutableSlot{
 	"floodgate key spot": MutableFind("floodgate key", 0x626a),
 	"square jewel chest": &MutableSlot{
 		Treasure:   Treasures["square jewel"],
-		IDAddrs:    []Addr{{0x0b, 0x7397}},
-		SubIDAddrs: []Addr{{0x0b, 0x739b}},
+		IDAddrs:    relativeAddrs(0x0b, -2, 0x7397),
+		SubIDAddrs: relativeAddrs(0x0b, -2, 0x739b),
 	},
 	"great moblin chest":    MutableChest("piece of heart", 0x53d1),
 	"master's plaque chest": MutableChest("master's plaque", 0x554d),
 	"diver gift": &MutableSlot{
 		Treasure:   Treasures["flippers"],
-		IDAddrs:    []Addr{{0x0b, 0x7310}, {0x0b, 0x72f3}},
-		SubIDAddrs: []Addr{{0x0b, 0x7311}},
+		IDAddrs:    relativeAddrs(0x0b, -2, 0x7310, 0x72f3),
+		SubIDAddrs: relativeAddrs(0x0b, -2, 0x7311),
 	},
 	"spring banana tree":   MutableFind("spring banana", 0x66af),
 	"dragon key spot":      MutableFind("dragon key", 0x628c),
@@ -135,13 +160,13 @@ var ItemSlots = map[string]*MutableSlot{
 	"noble sword spot": &MutableSlot{
 		// two cases depending on which sword you enter with
 		Treasure:   Treasures["sword L-2"],
-		IDAddrs:    []Addr{{0x0b, 0x6417}, {0x0b, 0x641e}},
-		SubIDAddrs: []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
+		IDAddrs:    relativeAddrs(0x0b, 1, 0x6417, 0x641e),
+		SubIDAddrs: relativeAddrs(0x0b, 1, 0x6418, 0x641f),
 	},
 	"desert pit": &MutableSlot{
 		Treasure:   Treasures["rusty bell"],
-		IDAddrs:    []Addr{{0x09, 0x6476}, {0x0b, 0x60b0}},
-		SubIDAddrs: []Addr{{0x09, 0x6475}},
+		IDAddrs:    []Addr{{0x09, 0x6476, 0x648d}, {0x0b, 0x60b0, 0x60b1}},
+		SubIDAddrs: []Addr{{0x09, 0x6475, 0x648c}},
 	},
 	"desert chest":        MutableChest("blast ring", 0x53dd),
 	"western coast chest": MutableChest("rang ring L-1", 0x53d9),
@@ -160,19 +185,19 @@ var ItemSlots = map[string]*MutableSlot{
 	"moblin cliff chest":  MutableChest("gasha seed", 0x54cc),
 
 	// subrosia
-	"winter tower":     MutableGift("winter", 0x4fc5),
-	"summer tower":     MutableGift("summer", 0x4fb9),
-	"spring tower":     MutableGift("spring", 0x4fb5),
-	"autumn tower":     MutableGift("autumn", 0x4fc1),
+	"winter tower":     BasicSlot("winter", 0x0b, 0x4fc5, 0x4fc6, 0),
+	"summer tower":     BasicSlot("summer", 0x0b, 0x4fb9, 0x4fba, 0),
+	"spring tower":     BasicSlot("spring", 0x0b, 0x4fb5, 0x4fb6, 0),
+	"autumn tower":     BasicSlot("autumn", 0x0b, 0x4fc1, 0x4fc2, 0),
 	"dance hall prize": MutableGift("boomerang L-1", 0x6648),
 	"rod gift": &MutableSlot{
 		Treasure:   Treasures["rod"],
-		IDAddrs:    []Addr{{0x15, 0x7511}},
-		ParamAddrs: []Addr{{0x15, 0x750f}},
+		IDAddrs:    []Addr{{0x15, 0x7511, 0x70ce}},
+		ParamAddrs: []Addr{{0x15, 0x750f, 0x70cc}},
 	},
 	"star ore spot": &MutableSlot{
 		Treasure:   Treasures["star ore"],
-		IDAddrs:    []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
+		IDAddrs:    relativeAddrs(0x08, 0, 0x62f4, 0x62fe),
 		SubIDAddrs: []Addr{}, // special case, not set at all
 	},
 	"blue ore chest":       MutableChest("blue ore", 0x53e2),
@@ -183,8 +208,8 @@ var ItemSlots = map[string]*MutableSlot{
 	// hero's cave
 	"d0 sword chest": &MutableSlot{
 		Treasure:   Treasures["sword L-1"],
-		IDAddrs:    []Addr{{0x0a, 0x7b86}},
-		ParamAddrs: []Addr{{0x0a, 0x7b88}},
+		IDAddrs:    relativeAddrs(0x0a, 0x0a, 0x7b86),
+		ParamAddrs: relativeAddrs(0x0a, 0x0a, 0x7b88),
 	},
 	"d0 rupee chest": MutableChest("rupees, 30", 0x53f8),
 
@@ -253,26 +278,26 @@ var ItemSlots = map[string]*MutableSlot{
 	// these are "fake" item slots in that they don't slot real treasures
 	"ember tree": &MutableSlot{
 		Treasure: Treasures["ember tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x64cb}},
+		IDAddrs:  relativeAddrs(0x11, 3, 0x64cb),
 	},
 	"mystery tree": &MutableSlot{
 		Treasure: Treasures["mystery tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x67dd}},
+		IDAddrs:  relativeAddrs(0x11, 3, 0x67dd),
 	},
 	"scent tree": &MutableSlot{
 		Treasure: Treasures["scent tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x685c}},
+		IDAddrs:  relativeAddrs(0x11, 3, 0x685c),
 	},
 	"pegasus tree": &MutableSlot{
 		Treasure: Treasures["pegasus tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x6870}},
+		IDAddrs:  relativeAddrs(0x11, 3, 0x6870),
 	},
 	"sunken gale tree": &MutableSlot{
 		Treasure: Treasures["gale tree seeds 1"],
-		IDAddrs:  []Addr{{0x11, 0x69b0}},
+		IDAddrs:  relativeAddrs(0x11, 3, 0x69b0),
 	},
 	"tarm gale tree": &MutableSlot{
 		Treasure: Treasures["gale tree seeds 2"],
-		IDAddrs:  []Addr{{0x11, 0x6a46}},
+		IDAddrs:  relativeAddrs(0x11, 3, 0x6a46),
 	},
 }
