@@ -132,6 +132,11 @@ var constMutables = map[string]Mutable{
 	// don't require rod to get items from season spirits
 	"season spirit rod check": MutableByte(sameAddr(0x0b, 0x4eb2), 0x07, 0x02),
 
+	// i don't know what global flag 0e is. it's only checked in en/us for star
+	// ore digging, and disabling the check seems to be necessary (?)
+	"star ore flag check (en)": MutableString(Addr{0x08, 0, 0x62aa},
+		"\xc2\xd9\x3a", "\x00\x00\x00"),
+
 	// the member's card isn't in the normal logic currently, but remove the
 	// essence check anyway
 	"member's card essence check": MutableWord(Addr{0x09, 0x7739, 0x7750},
