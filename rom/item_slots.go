@@ -177,12 +177,22 @@ var ItemSlots = map[string]*MutableSlot{
 	"moblin road chest":   MutableChest("rupees, 30", 0x5545),
 	"sunken cave chest":   MutableChest("gasha seed", 0x5549),
 	"diver chest":         MutableChest("rupees, 50", 0x5551),
-	"dry lake chest":      MutableChest("piece of heart", 0x5555),
+	"dry lake west chest": MutableChest("piece of heart", 0x5555),
 	"goron chest":         MutableChest("armor ring L-2", 0x555d),
 	"platform chest":      MutableChest("rupees, 50", 0x5565),
 	"talon cave chest":    MutableChest("subrosian ring", 0x5561),
 	"tarm gasha chest":    MutableChest("gasha seed", 0x53eb),
 	"moblin cliff chest":  MutableChest("gasha seed", 0x54cc),
+	"dry lake east chest": &MutableSlot{
+		Treasure:   Treasures["rupees, 100"],
+		IDAddrs:    relativeAddrs(0x0b, -2, 0x73a3),
+		SubIDAddrs: relativeAddrs(0x0b, -2, 0x73a7),
+	},
+	"linked dive chest": &MutableSlot{
+		Treasure:   Treasures["gasha seed"],
+		IDAddrs:    []Addr{sameAddr(0x0a, 0x5003)},
+		SubIDAddrs: []Addr{sameAddr(0x0a, 0x5008)},
+	},
 
 	// subrosia
 	"winter tower":     BasicSlot("winter", 0x0b, 0x4fc5, 0x4fc6, 0),

@@ -63,6 +63,9 @@ var holodrumPrenodes = map[string]*Prenode{
 		Or("eastern suburbs default winter", "winter")),
 	"moblin cliff chest": AndSlot("suburbs", "bracelet",
 		Or("eastern suburbs default spring", "spring")),
+	"linked dive chest": AndSlot("fairy fountain",
+		Or("eastern suburbs default winter", "winter"),
+		Or("flippers", "feather L-2")),
 
 	// holodrum plain
 	"ghastly stump": Or(
@@ -129,8 +132,12 @@ var holodrumPrenodes = map[string]*Prenode{
 	"lake chest": AndSlot("horon village", Or("feather L-2", And("jump",
 		Or("north horon default autumn",
 			And("autumn", "north horon stump"))))),
-	"dry lake chest": AndSlot("d5 stump", "bracelet",
+	"dry lake west chest": AndSlot("d5 stump", "bracelet",
 		Or("summer", And("enter d5", "north horon default summer"))),
+	"dry lake east chest": AndSlot(And("bombs", "flippers"), Or(
+		And("north horon stump", "jump", Or("north horon default summer", "summer")),
+		And("d5 stump", "summer"),
+		And("enter d5", "north horon default summer", "bracelet", "jump"))),
 
 	// natzu
 	"great moblin chest": AndSlot(Or("flippers", "jump"), "animal flute",
