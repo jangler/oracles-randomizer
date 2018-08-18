@@ -17,6 +17,8 @@ const (
 	CollectDig        = 0x5a
 )
 
+const enTreasureOffset = -0x443
+
 // A Treasure is data associated with a particular item ID and sub ID.
 type Treasure struct {
 	id, subID byte
@@ -38,9 +40,9 @@ func (t Treasure) CollectMode() byte {
 	return t.mode
 }
 
-// RealAddr returns the total offset of the treasure data in the ROM.
+// RealAddr returns the total offset of the treasure data in a JP ROM.
 func (t Treasure) RealAddr() int {
-	return (&Addr{0x15, t.addr}).FullOffset()
+	return (&Addr{0x15, t.addr, 0}).FullOffset(false)
 }
 
 // Bytes returns a slice of consecutive bytes of treasure data, as they would
@@ -57,6 +59,9 @@ func (t Treasure) Mutate(b []byte) error {
 	}
 
 	addr, data := t.RealAddr(), t.Bytes()
+	if isEn(b) {
+		addr += enTreasureOffset
+	}
 	for i := 0; i < 4; i++ {
 		b[addr+i] = data[i]
 	}
@@ -66,6 +71,9 @@ func (t Treasure) Mutate(b []byte) error {
 // Check verifies that the treasure's data matches the given ROM data.
 func (t Treasure) Check(b []byte) error {
 	addr, data := t.RealAddr(), t.Bytes()
+	if isEn(b) {
+		addr += enTreasureOffset
+	}
 	if bytes.Compare(b[addr:addr+4], data) != 0 {
 		return fmt.Errorf("expected %x at %x; found %x",
 			data, addr, b[addr:addr+4])
