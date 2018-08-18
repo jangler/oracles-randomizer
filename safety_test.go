@@ -215,6 +215,30 @@ func TestSquareJewelCheck(t *testing.T) {
 		"square jewel chest", true)
 }
 
+func TestSpringSwampCheck(t *testing.T) {
+	r := NewRoute([]string{"horon village"})
+
+	// check for false positive
+	checkSoftlockWithSlots(t, canSpringSwampSoftlock, r.HardGraph,
+		map[string]string{
+			"feather L-2":      "d0 sword chest",
+			"sword L-1":        "lake chest",
+			"satchel":          "maku tree gift",
+			"ember tree seeds": "ember tree",
+			"bracelet":         "dance hall prize",
+
+			"spool swamp default spring": "start",
+			"spool swamp default autumn": "",
+		}, "south swamp", false)
+
+	// check for false negative
+	checkSoftlockWithSlots(t, canSpringSwampSoftlock, r.HardGraph,
+		map[string]string{
+			"sword L-1": "d0 sword chest",
+			"flippers":  "maku tree gift",
+		}, "south swamp", true)
+}
+
 // helper function used for the other benchmarks
 //
 // TODO update this for all the changes made since it was initially written in

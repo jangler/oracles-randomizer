@@ -13,6 +13,7 @@ var softlockChecks = [](func(graph.Graph) error){
 	canD7ExitSoftlock,
 	canD2ExitSoftlock,
 	canSquareJewelSoftlock,
+	canSpringSwampSoftlock,
 }
 
 // check for known softlock conditions
@@ -155,6 +156,21 @@ func canD2ExitSoftlock(g graph.Graph) error {
 func canSquareJewelSoftlock(g graph.Graph) error {
 	if canReachWithoutPrereq(g, g["square jewel chest"], g["shovel"]) {
 		return errors.New("square jewel cave softlock")
+	}
+	return nil
+}
+
+// it's impossible to swim out of the currents in south spool swamp in the
+// spring, so the area in spring needs to be blocked by either the floodgate
+// key or the swamp portal.
+func canSpringSwampSoftlock(g graph.Graph) error {
+	if g["spool swamp default spring"].Mark == graph.MarkFalse {
+		return nil
+	}
+
+	if canReachWithoutPrereq(g, g["south swamp"], g["floodgate key"]) &&
+		canReachWithoutPrereq(g, g["south swamp"], g["swamp portal"]) {
+		return errors.New("spring swamp softlock")
 	}
 	return nil
 }
