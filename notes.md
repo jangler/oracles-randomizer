@@ -57,6 +57,16 @@ others that might be good to know:
 - $3b22 = updateInteraction
 - $074e = copy byte from hl to de, incrementing both
 
+## functions
+
+- 0:2a15 = setLinkIDOverride
+- 4:460c = getTransformedLinkID
+- 6:4865 = checkUseItems
+- 6:4911 = checkItem
+- 6:4925 = initializeParentItem
+- 6:4931 = chooseParentItemSlot
+- 6:4994 = parentItemUpdate (the good stuff; what happens when an item is used)
+
 ## notable ram addresses
 
 these all get checked in a normal frame, just for display purposes:
@@ -78,6 +88,7 @@ other things:
 - $c6bb = obtained essence flags
 - $cc48 = high byte of link object address (in object table starting at $d000)
 - $ccea = disable interactions (?)
+- $c6c5 = wActiveRing
 
 ## notable rom addresses
 
@@ -95,6 +106,9 @@ other things:
   same order as the shop item data table.
 - $3f:4bb5 = interactionAnimationTable
 - $14:4d85 = interactionOamDataTable
+- $6:49a7 = item-specific code jump table
+- $6:5508 = itemUsageParameterTable
+	- offset by 2 * item ID
 
 ## horon village shop (also syrup?)
 
