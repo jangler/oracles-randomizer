@@ -46,7 +46,7 @@ You can download executables for Windows, macOS, and Linux from the
 
 Essential items and chests are randomied, with exceptions listed below. The rod
 of seasons is split into four items, each of which will give you one season and
-the rod itself, if you don't already have it.
+the rod itself (if you don't already have it).
 
 Seed trees and default seasons for each area are also shuffled, and the satchel
 and slingshot will start with the type of seeds on the tree in Horon Village.
@@ -65,7 +65,7 @@ The following items are **not** randomized:
 
 If the `-keyonly` flag is specified, only key items (the items required to
 complete a normal game) and their locations are shuffled. Speedrunners should
-note that the Subrosian dancing prize could still be important.
+note that the first Subrosian dancing prize could still be important.
 
 
 ## Other notable changes
