@@ -236,6 +236,9 @@ func TestSpringSwampCheck(t *testing.T) {
 		map[string]string{
 			"sword L-1": "d0 sword chest",
 			"flippers":  "maku tree gift",
+
+			"spool swamp default spring": "start",
+			"spool swamp default autumn": "",
 		}, "south swamp", true)
 }
 

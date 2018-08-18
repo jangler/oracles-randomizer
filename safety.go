@@ -32,7 +32,7 @@ func canSoftlock(g graph.Graph) error {
 func canFlowerSoftlock(g graph.Graph) error {
 	// first check if cucco has been reached
 	cucco := g["spring banana cucco"]
-	if cucco.Mark != graph.MarkTrue {
+	if cucco.GetMark(cucco, nil) != graph.MarkTrue {
 		return nil
 	}
 
@@ -64,12 +64,12 @@ func canFlowerSoftlock(g graph.Graph) error {
 func canFeatherSoftlock(g graph.Graph) error {
 	// first check whether hide and seek has been reached
 	hideAndSeek := g["hide and seek"]
-	if hideAndSeek.Mark != graph.MarkTrue {
+	if hideAndSeek.GetMark(hideAndSeek, nil) != graph.MarkTrue {
 		return nil
 	}
 	// also test that you can jump, since you can't H&S without jumping (and it
 	// would be beneficial even if you could)
-	if g["jump"].Mark != graph.MarkTrue {
+	if g["jump"].GetMark(g["jump"], nil) != graph.MarkTrue {
 		return nil
 	}
 
@@ -93,7 +93,7 @@ func canFeatherSoftlock(g graph.Graph) error {
 // bushes first. flowers are covered by canFlowerSoftlock.
 func canEmberSeedSoftlock(g graph.Graph) error {
 	emberSeeds := g["ember seeds"]
-	if emberSeeds.Mark != graph.MarkTrue {
+	if emberSeeds.GetMark(emberSeeds, nil) != graph.MarkTrue {
 		return nil
 	}
 
@@ -123,7 +123,8 @@ func canEmberSeedSoftlock(g graph.Graph) error {
 // if the default season is winter when they exit.
 func canD7ExitSoftlock(g graph.Graph) error {
 	// no snow piles == no softlock
-	if g["western coast default winter"].Mark == graph.MarkFalse {
+	winter := g["western coast default winter"]
+	if winter.GetMark(winter, nil) == graph.MarkFalse {
 		return nil
 	}
 
@@ -138,7 +139,8 @@ func canD7ExitSoftlock(g graph.Graph) error {
 // they'll still get the default season when they walk back out.
 func canD2ExitSoftlock(g graph.Graph) error {
 	// no snow piles == no softlock
-	if g["eastern suburbs default winter"].Mark == graph.MarkFalse {
+	winter := g["eastern suburbs default winter"]
+	if winter.GetMark(winter, nil) == graph.MarkFalse {
 		return nil
 	}
 
@@ -150,7 +152,7 @@ func canD2ExitSoftlock(g graph.Graph) error {
 	return nil
 }
 
-// if the player enters the square jewel cave using an animal comanion instead
+// if the player enters the square jewel cave using an animal companion instead
 // of a shovel, they can be softlocked if the animal is gone when they exit.
 // i'm not sure why that happens.
 func canSquareJewelSoftlock(g graph.Graph) error {
@@ -164,7 +166,8 @@ func canSquareJewelSoftlock(g graph.Graph) error {
 // spring, so the area in spring needs to be blocked by either the floodgate
 // key or the swamp portal.
 func canSpringSwampSoftlock(g graph.Graph) error {
-	if g["spool swamp default spring"].Mark == graph.MarkFalse {
+	spring := g["spool swamp default spring"]
+	if spring.GetMark(spring, nil) == graph.MarkFalse {
 		return nil
 	}
 
@@ -179,7 +182,7 @@ func canSpringSwampSoftlock(g graph.Graph) error {
 // one, given the current state of the graph.
 func canReachWithoutPrereq(g graph.Graph, goal, prereq *graph.Node) bool {
 	// check whether the goal node has been reached
-	if goal.Mark != graph.MarkTrue {
+	if goal.GetMark(goal, nil) != graph.MarkTrue {
 		return false
 	}
 
