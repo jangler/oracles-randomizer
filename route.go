@@ -373,6 +373,10 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 	// get slot priotity (see function comment for details)
 	sortSlots(r, slotList)
 
+	// no point in trying to put items in multiple slots of the same type,
+	// since they'll be equivalent if they're reachable
+	triedCollectModes := map[byte]bool{}
+
 	// try to reach each unused slot
 	for i := 0; i < slotList.Len(); i++ {
 		// iterate by rotating the list
@@ -388,6 +392,12 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 			}
 			continue
 		}
+
+		// continue if we're already tried a slot of this type
+		if triedCollectModes[rom.ItemSlots[slotNode.Name].CollectMode] {
+			continue
+		}
+		triedCollectModes[rom.ItemSlots[slotNode.Name].CollectMode] = true
 
 		if verbose {
 			logChan <- fmt.Sprintf("trying slot %s", slotNode.Name)
