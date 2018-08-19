@@ -231,14 +231,26 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 	summary <- ""
 	summary <- "used items, in order:"
 	summary <- ""
-	for _, usedLine := range usedLines {
-		summary <- usedLine
+	if keyonly {
+		for _, usedLine := range usedLines {
+			summary <- usedLine
+		}
+	} else {
+		// print maps and compasses last, even though they're slotted first
+		for _, usedLine := range usedLines[16:] {
+			summary <- usedLine
+		}
+		for _, usedLine := range usedLines[:16] {
+			summary <- usedLine
+		}
 	}
-	summary <- ""
-	summary <- "unused items:"
-	summary <- ""
-	for e := rl.UnusedItems.Front(); e != nil; e = e.Next() {
-		summary <- e.Value.(*graph.Node).Name
+	if rl.UnusedItems.Len() > 0 {
+		summary <- ""
+		summary <- "unused items:"
+		summary <- ""
+		for e := rl.UnusedItems.Front(); e != nil; e = e.Next() {
+			summary <- e.Value.(*graph.Node).Name
+		}
 	}
 
 	summary <- ""
