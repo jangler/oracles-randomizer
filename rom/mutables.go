@@ -69,11 +69,19 @@ func (mr *MutableRange) Check(b []byte) error {
 // cooldown (true = no cooldown).
 func SetFreewarp(freewarp bool) {
 	if freewarp {
-		constMutables["tree warp"].(*MutableRange).New[12] = 0x18
+		constMutables["tree warp (jp)"].(*MutableRange).New[12] = 0x18
+		constMutables["tree warp (en)"].(*MutableRange).New[12] = 0x18
 	} else {
-		constMutables["tree warp"].(*MutableRange).New[12] = 0x28
+		constMutables["tree warp (jp)"].(*MutableRange).New[12] = 0x18
+		constMutables["tree warp (en)"].(*MutableRange).New[12] = 0x28
 	}
 }
+
+// most of the tree warp code between jp and en is the same; only the last two
+// instructions (six bytes) differ
+const treeWarpCommon = "\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e" +
+	"\x28\x06\x3e\x5a\xcd\x74\x0c\xc9\x36\xff\x2b\x36\xfc\x2b\x36\xb4\x2b" +
+	"\x36\x40\x21\xb7\xcb\x36\x05\xaf"
 
 // consider these mutables constants; they aren't changed in the randomization
 // process.
@@ -105,13 +113,16 @@ var constMutables = map[string]Mutable{
 		"\xc2\x7b\x4f", "\xc4\xbb\x75"),
 	"dungeon map jump redirect (en)": MutableString(Addr{0x02, 0x608e, 0x602c},
 		"\xc2\x7b\x4f", "\xc4\xbb\x75"),
-	"tree warp": MutableString(Addr{0x02, 0x761d, 0x75bb},
+	"tree warp (jp)": MutableString(Addr{0x02, 0x761d, 0},
 		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
 			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
 			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
-		"\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e\x28\x06\x3e\x5a"+
-			"\xcd\x74\x0c\xc9\x36\xff\x2b\x36\xfc\x2b\x36\xb4\x2b\x36\x40"+
-			"\x21\xb7\xcb\x36\x05\xaf\xcd\x7b\x5e\xc3\x7b\x4f"),
+		treeWarpCommon+"\xcd\xdd\x5e\xc3\xdd\x4f"),
+	"tree warp (en)": MutableString(Addr{0x02, 0, 0x75bb},
+		"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
+			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
+			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
+		treeWarpCommon+"\xcd\x7b\x5e\xc3\x7b\x4f"),
 
 	// have maku gate open from start
 	"maku gate check": MutableByte(sameAddr(0x04, 0x61a3), 0x7e, 0x66),
