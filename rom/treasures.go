@@ -227,6 +227,8 @@ var TreasureIsUnique = map[string]bool{
 	"square jewel":    true,
 	"x-shaped jewel":  true,
 	"master's plaque": true,
+	"red ore":         true,
+	"blue ore":        true,
 
 	// seeds
 	"ember tree seeds":   true,
