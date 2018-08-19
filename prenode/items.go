@@ -88,7 +88,7 @@ var itemPrenodes = map[string]*Prenode{
 
 	// small rupees is ~10, and any item that can possibly yield rupees is
 	// included.
-	"small rupees": Or("sword", "boomerang", "shovel", "bracelet",
+	"small rupees": Or("sword", "boomerang", "shovel", Hard("bracelet"),
 		"ember seeds", "scent seeds", "ricky", "moosh", Hard("dimitri flute"),
 		"fool's ore", "punch"),
 	// medium rupees is ~11-99, and only items that can reach rupee chests are
