@@ -68,7 +68,7 @@ func NewRoute(start []string) *Route {
 	for name, pn := range totalPrenodes {
 		switch pn.Type {
 		case prenode.RootType:
-			if rom.CanSlotOutsideChest[name] {
+			if keyItems[name] {
 				keyItemCount++
 			}
 		case prenode.AndSlotType, prenode.OrSlotType:
@@ -282,25 +282,36 @@ func getDungeonItem(index int, itemName string, slotList,
 	panic("could not place dungeon-specific items")
 }
 
-// sorts a list of item slots in place, in the order we want key items to try
-// to slot in (reverse, since the list iterates backwards):
-//
-// 1. dungeon chests, if no items have been slotted in that dungeon
-// 2. key item slots
-// 3. regular chests
-//
-// because linked lists are really bad for this type of operation, we empty the
-// list into a list and then refill it after sorting.
-func sortSlots(r *Route, l *list.List) {
+// because linked lists are really bad for this type of operation, sort them by
+// emptying the list into a slice and then refilling it after sorting. this is
+// only for lists of graph nodes!
+func emptyList(l *list.List) []*graph.Node {
 	// empty list into slice
 	a := make([]*graph.Node, 0, l.Len())
 	for l.Len() > 0 {
 		value := l.Remove(l.Front()).(*graph.Node)
 		a = append(a, value)
 	}
+	return a
+}
 
-	// sort; the function returns true iff element i < element j (meaning
-	// element j should be checked first in routing)
+// see emptyList comment
+func refillList(l *list.List, a []*graph.Node) {
+	for _, node := range a {
+		l.PushBack(node)
+	}
+}
+
+// check dungeon slots first if the respective dungeon has no items in it, so
+// that key items are more likely to end up in dungeons. if the slot has a
+// "special" collect mode, then check that next so that a unique item (i.e. one
+// that can actually fit in it) is likely to end up there.
+//
+// the back of the list is checked first, so non-dungeon slots should be
+// counted as "less".
+func sortSlots(r *Route, l *list.List) {
+	a := emptyList(l)
+
 	sort.Slice(a, func(i, j int) bool {
 		// dungeon chests go first
 		di := dungeonIndex(a[j])
@@ -308,21 +319,31 @@ func sortSlots(r *Route, l *list.List) {
 			return true
 		}
 
-		// rod is a special case
-		if a[i].Name == "rod gift" {
+		// special item slots go second
+		switch rom.ItemSlots[a[i].Name].CollectMode {
+		case rom.CollectChest, rom.CollectFind1, rom.CollectFind2:
+			return true
+		default:
 			return false
 		}
-
-		// regular chests go last
-		iMode := rom.ItemSlots[a[i].Name].CollectMode
-		jMode := rom.ItemSlots[a[j].Name].CollectMode
-		return iMode == rom.CollectChest && jMode != rom.CollectChest
 	})
 
-	// refill list
-	for _, node := range a {
-		l.PushBack(node)
-	}
+	refillList(l, a)
+}
+
+// check key items and rupees first, since other types of items aren't useful
+// for progression.
+//
+// the back of the list is checked first, so non-key items should be counted as
+// "less".
+func sortItems(l *list.List) {
+	a := emptyList(l)
+
+	sort.Slice(a, func(i, j int) bool {
+		return keyItems[a[j].Name] || strings.HasPrefix(a[j].Name, "rupees")
+	})
+
+	refillList(l, a)
 }
 
 // try to reach all the given targets using the current graph status. if
@@ -349,8 +370,7 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 		return false
 	}
 
-	// check non-chest slots first so that junk always goes in chests (usually
-	// the only place where it fits)
+	// get slot priotity (see function comment for details)
 	sortSlots(r, slotList)
 
 	// try to reach each unused slot
@@ -377,6 +397,8 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 		usedSlots.PushBack(slotNode)
 		slotList.Remove(slotElem)
 
+		sortItems(itemList)
+
 		// try placing each unused item into the slot
 		jewelChecked := false
 		for j := 0; j < itemList.Len(); j++ {
@@ -385,14 +407,14 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 			usedItems.PushBack(itemNode)
 			r.AddParent(itemNode.Name, slotNode.Name)
 
-			if rom.CanSlotOutsideChest[itemNode.Name] {
-				r.KeyItemsPlaced++
-			}
-
 			// recurse unless the item should be skipped
 			var skip bool
 			skip, jewelChecked = shouldSkipItem(src, r.Graph, reached,
 				itemNode, slotNode, jewelChecked, fillUnused)
+
+			if keyItems[itemNode.Name] {
+				r.KeyItemsPlaced++
+			}
 
 			// count that we're placing an item in a dungeon
 			di := dungeonIndex(slotNode)
@@ -416,7 +438,7 @@ func tryExploreTargets(src *rand.Rand, r *Route, start map[*graph.Node]bool,
 				r.Dungeons[di].ItemsPlaced--
 			}
 
-			if rom.CanSlotOutsideChest[itemNode.Name] {
+			if keyItems[itemNode.Name] {
 				r.KeyItemsPlaced--
 			}
 
@@ -629,10 +651,28 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		}
 	}
 
-	// only put unique items in non-chest slots
-	if (rom.ItemSlots[slotNode.Name].CollectMode != rom.CollectChest ||
+	// don't try non-progression items when trying to progress.
+	if !fillUnused && (!keyItems[itemNode.Name] ||
+		strings.HasPrefix(itemNode.Name, "rupees")) {
+		skip = true
+	}
+
+	// gasha seeds and pieces of heart can be placed in either chests or
+	// found/gift slots. beyond that, only unique items can be placed in
+	// non-chest slots.
+	if itemNode.Name == "gasha seed" || itemNode.Name == "piece of heart" {
+		switch rom.ItemSlots[slotNode.Name].CollectMode {
+		case rom.CollectFind1, rom.CollectFind2, rom.CollectChest:
+			if slotNode.Name == "d0 sword chest" ||
+				slotNode.Name == "rod gift" {
+				skip = true
+			}
+		default:
+			skip = true
+		}
+	} else if (rom.ItemSlots[slotNode.Name].CollectMode != rom.CollectChest ||
 		slotNode.Name == "d0 sword chest" || slotNode.Name == "rod gift") &&
-		!rom.CanSlotOutsideChest[itemNode.Name] {
+		!rom.TreasureIsUnique[itemNode.Name] {
 		skip = true
 	}
 

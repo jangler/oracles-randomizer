@@ -25,13 +25,30 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 	for _, addr := range ms.IDAddrs {
 		b[addr.FullOffset(en)] = ms.Treasure.id
 	}
-	for _, addr := range ms.SubIDAddrs {
-		b[addr.FullOffset(en)] = ms.Treasure.subID
-	}
 	for _, addr := range ms.ParamAddrs {
 		b[addr.FullOffset(en)] = ms.Treasure.param
 	}
-	ms.Treasure.mode = ms.CollectMode
+
+	// use a sub-ID based on slot (chest vs non-chest) for gasha seeds and
+	// pieces of heart. for other treasures, use the set sub-ID and set the
+	// treasure's collect mode accordingly.
+	subID := ms.Treasure.subID
+	switch ms.Treasure {
+	case Treasures["gasha seed"], Treasures["piece of heart"]:
+		if ms.CollectMode == CollectChest {
+			subID = 1
+		} else {
+			subID = 0
+		}
+	default:
+		ms.Treasure.mode = ms.CollectMode
+		subID = ms.Treasure.subID
+	}
+
+	for _, addr := range ms.SubIDAddrs {
+		b[addr.FullOffset(en)] = subID
+	}
+
 	return ms.Treasure.Mutate(b)
 }
 

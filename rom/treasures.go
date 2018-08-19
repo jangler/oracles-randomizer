@@ -186,14 +186,12 @@ func FindTreasureName(t *Treasure) string {
 	return ""
 }
 
-// CanSlotOutsideChest is a map indicating whether an item can be given by an
-// NPC, found on the ground, etc as opposed to being found in a chest. This
-// essentially breaks down to whether an item is unique, as in there's only one
-// of them and therefore its collect mode can be safely altered.
+// TreasureIsUnique is a map indicating whether an item's collect mode can be
+// set freely (because there's only one of them).
 //
 // All the entries in this map are going to be true since items not in the map
 // with evaluate to false anyway.
-var CanSlotOutsideChest = map[string]bool{
+var TreasureIsUnique = map[string]bool{
 	// equip items
 	"sword L-1":     true,
 	"sword L-2":     true,
