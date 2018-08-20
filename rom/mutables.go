@@ -190,6 +190,11 @@ var constMutables = map[string]Mutable{
 		"\xe0\x2e\x5d", "\xf0\xf0\xf0"),
 	"get fools ore (en)": MutableString(Addr{0x14, 0, 0x4881},
 		"\xe0\xeb\x58", "\xf0\xf0\xf0"),
+	// but always dig up feather if the player doesn't have it
+	"dig up stolen feather (jp)": MutableString(Addr{0x15, 0x6212, 0},
+		"\xcd\x55\x19\xcb\x6e\x20", "\x3e\x17\xcd\x17\x17\x38"),
+	"dig up stolen feather (en)": MutableString(Addr{0x15, 0, 0x5dcf},
+		"\xcd\x56\x19\xcb\x6e\x20", "\x3e\x17\xcd\x17\x17\x38"),
 	// There are tables indicating extra items to "get" and "lose" upon getting
 	// an item. We remove the "lose fools ore" entry and insert a "get seeds
 	// from slingshot" entry.
