@@ -315,7 +315,7 @@ var d7Prenodes = map[string]*Prenode{
 var d8Prenodes = map[string]*Prenode{
 	// 1F
 	"d8 eye key fall":     And("enter d8", "slingshot", "remove pot"),
-	"d8 ring chest":       AndSlot("enter d8", "jump"),
+	"d8 ring chest":       AndSlot("enter d8", "slingshot L-2", "jump"),
 	"d8 hardhat room":     And("enter d8", "kill magunesu"),
 	"d8 hardhat key fall": And("d8 hardhat room", "kill hardhat (magnet)"),
 	"HSS skip":            HardAnd("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),
