@@ -60,6 +60,8 @@ The following items are **not** randomized:
 - Subrosian dancing prizes after the first
 - Trading sequence items
 - Non-essential items given by NPCs
+- Subrosian hide and seek items
+- Gasha nut contents
 - Fixed drops
 - Maple drops
 
