@@ -156,7 +156,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
 	"diver gift":            AndSlot("dimitri", "master's plaque"),
-	"sunken cave chest": AndSlot("flippers", "remove bush",
+	"sunken cave chest": AndSlot("sunken city", "flippers", "remove bush",
 		Or("sunken city default summer", "summer")),
 	"diver chest": AndSlot("dimitri"),
 
