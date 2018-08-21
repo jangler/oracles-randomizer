@@ -111,11 +111,11 @@ var d3Prenodes = map[string]*Prenode{
 		And("d3 basement A in", "jump")),
 	"d3 trampoline stairs": Or("d3 basement A out",
 		And("d3 compass chest", "bracelet")),
-	"d3 map chest": AndSlot("d3 basement B out", "jump"),
+	"d3 compass chest": AndSlot("d3 basement B out", "jump"),
 
 	// second floor
 	"d3 bomb chest":           AndSlot("d3 mimic stairs"),
-	"d3 compass chest":        AndSlot("d3 bomb chest", "bombs"),
+	"d3 map chest":            AndSlot("d3 bomb chest", "bombs"),
 	"d3 feather room":         And("d3 rupee chest", "d3 key A"),
 	"d3 feather chest":        AndSlot("d3 feather room", "kill mimic"),
 	"d3 trampoline key chest": And("d3 trampoline stairs", "jump"),
