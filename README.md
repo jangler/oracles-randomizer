@@ -1,6 +1,6 @@
 # Oracle of Seasons randomizer
 
-This program reads a Zelda: Oracle of Seasons ROM (JP version only) shuffles
+This program reads a Zelda: Oracle of Seasons ROM (US or JP version) shuffles
 the locations of items and mystical seeds, randomizes the default season for
 each area, and writes the modified ROM to a new file. It also bypasses essence
 checks for overworld events that are necessary for progress, so the dungeons
