@@ -197,7 +197,7 @@ var d5Prenodes = map[string]*Prenode{
 	"d5 post-syger":        And("enter syger", "kill syger"),
 	"d5 push ball":         And("d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"),
 	"d5 boss key spot":     And("d5 push ball", "d5 key D", "long jump", "sidescroll magnets"), // being nice
-	"enter digdogger":      And("d5 post-syger", "d5 key E", "jump", "magnet gloves", "d5 boss key"),
+	"enter digdogger":      And("d5 post-syger", "d5 key E", "magnet gloves", "d5 boss key"),
 	"d5 essence":           AndStep("enter digdogger", "kill digdogger"),
 
 	// fixed items
