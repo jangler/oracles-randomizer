@@ -265,8 +265,7 @@ func getDungeonItem(index int, itemName string, slotList,
 	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
-		if dungeonIndex(slot) != index ||
-			rom.ItemSlots[slot.Name].CollectMode != rom.CollectChest {
+		if dungeonIndex(slot) != index || !rom.IsChest(rom.ItemSlots[slot.Name]) {
 			continue
 		}
 
@@ -322,7 +321,8 @@ func sortSlots(r *Route, l *list.List) {
 
 		// special item slots go second
 		switch rom.ItemSlots[a[i].Name].CollectMode {
-		case rom.CollectChest, rom.CollectFind1, rom.CollectFind2:
+		case rom.CollectChest1, rom.CollectChest2,
+			rom.CollectFind1, rom.CollectFind2:
 			return true
 		default:
 			return false
@@ -673,7 +673,8 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	// non-chest slots.
 	if itemNode.Name == "gasha seed" || itemNode.Name == "piece of heart" {
 		switch rom.ItemSlots[slotNode.Name].CollectMode {
-		case rom.CollectFind1, rom.CollectFind2, rom.CollectChest:
+		case rom.CollectFind1, rom.CollectFind2,
+			rom.CollectChest1, rom.CollectChest2:
 			if slotNode.Name == "d0 sword chest" ||
 				slotNode.Name == "rod gift" {
 				skip = true
@@ -681,7 +682,7 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		default:
 			skip = true
 		}
-	} else if (rom.ItemSlots[slotNode.Name].CollectMode != rom.CollectChest ||
+	} else if (!rom.IsChest(rom.ItemSlots[slotNode.Name]) ||
 		slotNode.Name == "d0 sword chest" || slotNode.Name == "rod gift") &&
 		!rom.TreasureIsUnique[itemNode.Name] {
 		skip = true

@@ -13,7 +13,8 @@ const (
 	CollectFind1      = 0x09
 	CollectFind2      = 0x0a
 	CollectFall       = 0x29
-	CollectChest      = 0x38
+	CollectChest1     = 0x38 // most items
+	CollectChest2     = 0x68 // map and compass
 	CollectDig        = 0x5a
 )
 
@@ -22,7 +23,7 @@ const enTreasureOffset = -0x443
 // A Treasure is data associated with a particular item ID and sub ID.
 type Treasure struct {
 	id, subID byte
-	addr      uint16 // bank 15, value of hl at $15:466b, minus one
+	addr      uint16 // bank 15, value of hl at $15:466b
 
 	// in order, starting at addr
 	mode   byte // collection mode

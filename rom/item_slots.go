@@ -18,6 +18,11 @@ type MutableSlot struct {
 	CollectMode                     byte
 }
 
+// IsChest returns true iff the slot has a chest collection mode.
+func IsChest(ms *MutableSlot) bool {
+	return ms.CollectMode == CollectChest1 || ms.CollectMode == CollectChest2
+}
+
 // Mutate replaces the given IDs and subIDs in the given ROM data, and changes
 // the associated treasure's collection mode as appropriate.
 func (ms *MutableSlot) Mutate(b []byte) error {
@@ -35,7 +40,7 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 	subID := ms.Treasure.subID
 	switch ms.Treasure {
 	case Treasures["gasha seed"], Treasures["piece of heart"]:
-		if ms.CollectMode == CollectChest {
+		if IsChest(ms) {
 			subID = 1
 		} else {
 			subID = 0
