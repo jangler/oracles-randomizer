@@ -56,7 +56,8 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("d2 blade key chest", "bracelet")),
 	"enter d2":         OrStep("enter d2 A", "enter d2 B"),
 	"outdoor d2 chest": AndSlot("enter d2 B"),
-	"mystery cave chest": AndSlot("remove mushroom", Or("feather L-2", "magnet gloves"),
+	"mystery cave chest": AndSlot("mystery tree", "remove mushroom",
+		Or("feather L-2", "magnet gloves"),
 		Or("woods of winter default autumn", And("autumn",
 			Or("woods of winter default summer", And("enter d2 B", "bracelet"))))),
 	"moblin road chest": AndSlot("fairy fountain", "bombs", "remove bush",
@@ -155,7 +156,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
 	"diver gift":            AndSlot("dimitri", "master's plaque"),
-	"sunken cave chest": AndSlot("flippers", "remove bush",
+	"sunken cave chest": AndSlot("sunken city", "flippers", "remove bush",
 		Or("sunken city default summer", "summer")),
 	"diver chest": AndSlot("dimitri"),
 

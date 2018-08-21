@@ -111,11 +111,11 @@ var d3Prenodes = map[string]*Prenode{
 		And("d3 basement A in", "jump")),
 	"d3 trampoline stairs": Or("d3 basement A out",
 		And("d3 compass chest", "bracelet")),
-	"d3 map chest": AndSlot("d3 basement B out", "jump"),
+	"d3 compass chest": AndSlot("d3 basement B out", "jump"),
 
 	// second floor
 	"d3 bomb chest":           AndSlot("d3 mimic stairs"),
-	"d3 compass chest":        AndSlot("d3 bomb chest", "bombs"),
+	"d3 map chest":            AndSlot("d3 bomb chest", "bombs"),
 	"d3 feather room":         And("d3 rupee chest", "d3 key A"),
 	"d3 feather chest":        AndSlot("d3 feather room", "kill mimic"),
 	"d3 trampoline key chest": And("d3 trampoline stairs", "jump"),
@@ -197,7 +197,7 @@ var d5Prenodes = map[string]*Prenode{
 	"d5 post-syger":        And("enter syger", "kill syger"),
 	"d5 push ball":         And("d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"),
 	"d5 boss key spot":     And("d5 push ball", "d5 key D", "long jump", "sidescroll magnets"), // being nice
-	"enter digdogger":      And("d5 post-syger", "d5 key E", "jump", "magnet gloves", "d5 boss key"),
+	"enter digdogger":      And("d5 post-syger", "d5 key E", "magnet gloves", "d5 boss key"),
 	"d5 essence":           AndStep("enter digdogger", "kill digdogger"),
 
 	// fixed items
@@ -315,7 +315,7 @@ var d7Prenodes = map[string]*Prenode{
 var d8Prenodes = map[string]*Prenode{
 	// 1F
 	"d8 eye key fall":     And("enter d8", "slingshot", "remove pot"),
-	"d8 ring chest":       AndSlot("enter d8", "jump"),
+	"d8 ring chest":       AndSlot("enter d8", "slingshot L-2", "jump"),
 	"d8 hardhat room":     And("enter d8", "kill magunesu"),
 	"d8 hardhat key fall": And("d8 hardhat room", "kill hardhat (magnet)"),
 	"HSS skip":            HardAnd("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),

@@ -265,7 +265,8 @@ func getDungeonItem(index int, itemName string, slotList,
 	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
-		if dungeonIndex(slot) != index {
+		if dungeonIndex(slot) != index ||
+			rom.ItemSlots[slot.Name].CollectMode != rom.CollectChest {
 			continue
 		}
 

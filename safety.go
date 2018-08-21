@@ -14,6 +14,8 @@ var softlockChecks = [](func(graph.Graph) error){
 	canD2ExitSoftlock,
 	canSquareJewelSoftlock,
 	canSpringSwampSoftlock,
+	canD5ExitFlipperSoftlock,
+	canD5ExitBraceletSoftlock,
 }
 
 // check for known softlock conditions
@@ -174,6 +176,32 @@ func canSpringSwampSoftlock(g graph.Graph) error {
 	if canReachWithoutPrereq(g, g["south swamp"], g["floodgate key"]) &&
 		canReachWithoutPrereq(g, g["south swamp"], g["swamp portal"]) {
 		return errors.New("spring swamp softlock")
+	}
+	return nil
+}
+
+// exiting d5 without flippers if it's not default winter means you're stuck.
+func canD5ExitFlipperSoftlock(g graph.Graph) error {
+	winter := g["north horon default winter"]
+	if winter.GetMark(winter, nil) == graph.MarkTrue {
+		return nil
+	}
+
+	if canReachWithoutPrereq(g, g["enter d5"], g["flippers"]) {
+		return errors.New("d5 exit flipper softlock")
+	}
+	return nil
+}
+
+// exiting d5 without bracelet if it's not default autumn means you're stuck.
+func canD5ExitBraceletSoftlock(g graph.Graph) error {
+	autumn := g["north horon default autumn"]
+	if autumn.GetMark(autumn, nil) == graph.MarkTrue {
+		return nil
+	}
+
+	if canReachWithoutPrereq(g, g["enter d5"], g["bracelet"]) {
+		return errors.New("d5 exit bracelet softlock")
 	}
 	return nil
 }

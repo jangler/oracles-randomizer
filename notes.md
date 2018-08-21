@@ -35,8 +35,7 @@ others that might be good to know:
 - $0e3b = drawObject
 	- ID $60 animation = $13:409a
 	- ID $59 animation = $14:4130
-- $16eb = giveTreasure, which i believe offsets the treasure param such that it
-  needs to be passed as one higher than usual. e.g. if you want $00, pass $01.
+- $16eb = giveTreasure, which uses param as the second byte, not sub-ID
 - $271a = createTreasure
 - graphics:
 	- $15e9 = interactionInitGraphics, which calls the following:
@@ -59,6 +58,7 @@ others that might be good to know:
 
 ## functions
 
+- 0:041a = getRandomNumber
 - 0:2a15 = setLinkIDOverride
 - 4:460c = getTransformedLinkID
 - 6:4865 = checkUseItems
