@@ -12,6 +12,7 @@ const (
 	CollectUnderwater = 0x08
 	CollectFind1      = 0x09
 	CollectFind2      = 0x0a
+	CollectAppear     = 0x1a // heart containers
 	CollectFall       = 0x29
 	CollectChest1     = 0x38 // most items
 	CollectChest2     = 0x68 // map and compass

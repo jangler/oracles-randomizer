@@ -23,6 +23,17 @@ func IsChest(ms *MutableSlot) bool {
 	return ms.CollectMode == CollectChest1 || ms.CollectMode == CollectChest2
 }
 
+// IsFound returns true iff the slot has a "normal" non-chest collection mode
+// (they seem to be compatible).
+func IsFound(ms *MutableSlot) bool {
+	switch ms.CollectMode {
+	case CollectGoronGift, CollectUnderwater, CollectFind1, CollectFind2,
+		CollectAppear:
+		return true
+	}
+	return false
+}
+
 // Mutate replaces the given IDs and subIDs in the given ROM data, and changes
 // the associated treasure's collection mode as appropriate.
 func (ms *MutableSlot) Mutate(b []byte) error {

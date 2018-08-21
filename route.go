@@ -320,13 +320,8 @@ func sortSlots(r *Route, l *list.List) {
 		}
 
 		// special item slots go second
-		switch rom.ItemSlots[a[i].Name].CollectMode {
-		case rom.CollectChest1, rom.CollectChest2,
-			rom.CollectFind1, rom.CollectFind2:
-			return true
-		default:
-			return false
-		}
+		slot := rom.ItemSlots[a[i].Name]
+		return rom.IsChest(slot) || rom.IsFound(slot)
 	})
 
 	refillList(l, a)
@@ -672,14 +667,9 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	// found/gift slots. beyond that, only unique items can be placed in
 	// non-chest slots.
 	if itemNode.Name == "gasha seed" || itemNode.Name == "piece of heart" {
-		switch rom.ItemSlots[slotNode.Name].CollectMode {
-		case rom.CollectFind1, rom.CollectFind2,
-			rom.CollectChest1, rom.CollectChest2:
-			if slotNode.Name == "d0 sword chest" ||
-				slotNode.Name == "rod gift" {
-				skip = true
-			}
-		default:
+		slot := rom.ItemSlots[slotNode.Name]
+		if slotNode.Name == "d0 sword chest" || slotNode.Name == "rod gift" ||
+			!(rom.IsChest(slot) || rom.IsFound(slot)) {
 			skip = true
 		}
 	} else if (!rom.IsChest(rom.ItemSlots[slotNode.Name]) ||
