@@ -666,8 +666,10 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	}
 
 	// don't try non-progression items when trying to progress.
-	if !fillUnused && (!keyItems[itemNode.Name] ||
-		strings.HasPrefix(itemNode.Name, "rupees")) {
+	if !fillUnused && !(keyItems[itemNode.Name] ||
+		(strings.HasPrefix(itemNode.Name, "rupees") &&
+			!reached[g["medium rupees"]]) ||
+		itemNode.Name == "member's card") {
 		skip = true
 	}
 
