@@ -354,6 +354,7 @@ var varMutables = map[string]Mutable{
 		Old:  []byte{0x4e, 0x1a, 0x40},
 		New:  []byte{0x4e, 0x1a, 0x40},
 	},
+
 	"horon shop 3 graphics": &MutableRange{ // strange flute
 		Addr: Addr{0x3f, 0x68be, 0x6940},
 		Old:  []byte{0x5f, 0x16, 0x03},
