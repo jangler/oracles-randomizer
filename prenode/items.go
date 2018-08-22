@@ -25,13 +25,6 @@ var itemPrenodes = map[string]*Prenode{
 	"harvest pegasus seeds": And("pegasus tree seeds", "seed item", "harvest tree"),
 	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest tree"),
 
-	"member's shop 1": AndSlot("member's card", "big rupees"),
-	"member's shop 2": AndSlot("member's card", "big rupees"),
-	"member's shop 3": AndSlot("member's card", "big rupees"),
-
-	"subrosian market 2": AndSlot("beach", Or("shovel", "temple"), "ember seeds"),
-	"subrosian market 5": AndSlot("beach", Or("shovel", "temple")),
-
 	"satchel": Or("satchel 1", "satchel 2"),
 
 	"ember satchel":   And("harvest ember seeds", "satchel"),
