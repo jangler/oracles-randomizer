@@ -11,6 +11,9 @@ var holodrumPrenodes = map[string]*Prenode{
 	"ember tree":       AndSlot("horon village"),
 	"village SE chest": AndSlot("horon village", "bombs"),
 	"village SW chest": AndSlot("horon village", "remove bush", "remove mushroom"),
+	"member's shop 1":  AndSlot("member's card", "big rupees"),
+	"member's shop 2":  AndSlot("member's card", "big rupees"),
+	"member's shop 3":  AndSlot("member's card", "big rupees"),
 
 	// western coast
 	"x-shaped jewel chest": AndSlot("horon village", Or("ember slingshot", "mystery slingshot"),

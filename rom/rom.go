@@ -14,6 +14,56 @@ const (
 	regionAddr = 0x014a // 0 = JP, 1 = US
 )
 
+func init() {
+	// rings all have the same sprite
+	for name, treasure := range Treasures {
+		if treasure.id == 0x2d {
+			narrowItemGfx[name] = narrowItemGfx["ring"]
+		}
+	}
+
+	// accumulate all item sprites into map
+	for name, sprite := range narrowItemGfx {
+		itemGfx[name] = sprite
+	}
+	for name, sprite := range wideItemGfx {
+		itemGfx[name] = sprite
+	}
+
+	// get set of unique items (to determine which can be slotted freely)
+	treasureCounts := make(map[string]int)
+	for _, slot := range ItemSlots {
+		name := FindTreasureName(slot.Treasure)
+		if treasureCounts[name] == 0 {
+			treasureCounts[name] = 1
+		} else {
+			treasureCounts[name]++
+		}
+	}
+	for name, count := range treasureCounts {
+		if count == 1 {
+			TreasureIsUnique[name] = true
+		}
+	}
+
+	// get set of items with unique IDs (more restrictive than the above)
+	idCounts := make(map[byte]int)
+	for _, t := range Treasures {
+		if idCounts[t.id] == 0 {
+			idCounts[t.id] = 1
+		} else {
+			idCounts[t.id]++
+		}
+	}
+	for name, t := range Treasures {
+		// TODO do other items need special expection?
+		if idCounts[t.id] == 1 &&
+			name != "gasha seed" && name != "piece of heart" {
+			uniqueIDTreasures[name] = true
+		}
+	}
+}
+
 func isEn(b []byte) bool {
 	return b[regionAddr] != 0
 }
@@ -45,6 +95,11 @@ func Mutate(b []byte) ([]byte, error) {
 	setSceneGfx("noble sword spot", "noble sword graphics")
 	setSceneGfx("noble sword spot", "master sword graphics")
 	setSceneGfx("d0 sword chest", "wooden sword graphics")
+	setSceneGfx("member's shop 1", "member's shop 1 graphics")
+	setSceneGfx("member's shop 2", "member's shop 2 graphics")
+	setSceneGfx("member's shop 3", "member's shop 3 graphics")
+	setSceneGfx("subrosian market 2", "subrosian market 2 graphics")
+	setSceneGfx("subrosian market 5", "subrosian market 5 graphics")
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, Seasons["north horon season"].New[0]}
 
@@ -135,7 +190,9 @@ func Verify(b []byte) []error {
 		case "maku tree gift", "fool's ore", "noble sword spot", "flippers",
 			"ember tree seeds", "mystery tree seeds", "scent tree seeds",
 			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2",
-			"expert's ring", "energy ring", "toss ring", "fist ring":
+			"expert's ring", "energy ring", "toss ring", "fist ring",
+			"member's card", "treasure map", "member's shop 3",
+			"subrosian market 5":
 			break
 		default:
 			if err := m.Check(b); err != nil {
@@ -155,7 +212,7 @@ func setSceneGfx(slotName, gfxName string) {
 	slot := ItemSlots[slotName]
 	treasure := slot.Treasure
 	itemName := treasureNameFromIDs(treasure.id, treasure.subID)
-	if gfx := sceneItemGfx[itemName]; gfx == 0 {
+	if gfx := itemGfx[itemName]; gfx == 0 {
 		log.Fatalf("fatal: no %s for %s (%02x%02x)",
 			gfxName, itemName, treasure.id, treasure.subID)
 	} else {

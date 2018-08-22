@@ -44,8 +44,8 @@ You can download executables for Windows, macOS, and Linux from the
 
 ## Randomization notes
 
-Essential items and chests are randomied, with exceptions listed below. The rod
-of seasons is split into four items, each of which will give you one season and
+Items and chests are randomied, with exceptions listed below. The rod of
+seasons is split into four items, each of which will give you one season and
 the rod itself (if you don't already have it).
 
 Seed trees and default seasons for each area are also shuffled, and the satchel
@@ -53,7 +53,7 @@ and slingshot will start with the type of seeds on the tree in Horon Village.
 
 The following items are **not** randomized:
 
-- Shop items
+- Renewable shop items (bombs, shield, hearts, etc.)
 - Small keys and boss keys
 - Pirate's bell, hard ore, and iron shield
 - Found items (gasha seeds and pieces of heart outside of chests)
