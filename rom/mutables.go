@@ -374,7 +374,7 @@ var varMutables = map[string]Mutable{
 		New:  []byte{0x5d, 0x10, 0x26},
 	},
 	"subrosian market 5 graphics": &MutableRange{ // member's card
-		Addr: Addr{0x3f, 0x6a3b, 0x6aba},
+		Addr: Addr{0x3f, 0x6a3b, 0x6abd},
 		Old:  []byte{0x5d, 0x0c, 0x13},
 		New:  []byte{0x5d, 0x0c, 0x13},
 	},
