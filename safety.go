@@ -6,6 +6,15 @@ import (
 	"github.com/jangler/oos-randomizer/graph"
 )
 
+// there's another softlock i can think of, but it's far-fetched enough that
+// i'm not going to write a test for it. if spool swamp defaults to winter and
+// you get bracelet, flippers, floodgate key, and spring/summer/autumn but NOT
+// shovel or feather/cape, you can enter the spool swamp subrosia portal and be
+// stuck there when you come out and the area defaults back to winter. you'd
+// also need a way to get to the floodgate keyhole without ricky, which means
+// either holodrum plain defaults to winter and you get summer, or it defaults
+// to winter as well.
+
 var softlockChecks = [](func(graph.Graph) error){
 	canFlowerSoftlock,
 	canFeatherSoftlock,
