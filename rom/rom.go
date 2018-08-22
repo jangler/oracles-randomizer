@@ -29,6 +29,22 @@ func init() {
 	for name, sprite := range wideItemGfx {
 		itemGfx[name] = sprite
 	}
+
+	// get set of unique items (to determine which can be slotted freely)
+	treasureCounts := make(map[string]int)
+	for _, slot := range ItemSlots {
+		name := FindTreasureName(slot.Treasure)
+		if treasureCounts[name] == 0 {
+			treasureCounts[name] = 1
+		} else {
+			treasureCounts[name]++
+		}
+	}
+	for name, count := range treasureCounts {
+		if count == 1 {
+			TreasureIsUnique[name] = true
+		}
+	}
 }
 
 func isEn(b []byte) bool {
