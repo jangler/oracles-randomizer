@@ -710,8 +710,8 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		}
 	}
 
-	// star ore is a special case because it doesn't set sub ID or param at
-	// all, so only slot zero-ID (TODO zero-param?) treasures here.
+	// star ore is a special case because it doesn't set sub ID at all, so only
+	// slot zero-ID treasures here.
 	//
 	// the other slots won't give you the item if you already have one with
 	// that ID, so only use items with unique IDs there.
