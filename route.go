@@ -710,19 +710,22 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		}
 	}
 
-	// these items either don't set sub ID when giving an item, or decide
-	// whether to give the item based on ID, meaning that you couldn't get an
-	// upgrade if you already had the L-1 version. so only let items with ID
-	// zero in these slots.
+	// star ore is a special case because it doesn't set sub ID or param at
+	// all, so only slot zero-ID (TODO zero-param?) treasures here.
 	//
-	// TODO the shop items seem to be the same way, but routing never finishes
-	//      if they're part of this logic
+	// the other slots won't give you the item if you already have one with
+	// that ID, so only use items with unique IDs there.
 	switch slotNode.Name {
-	case "star ore spot", "diver gift":
+	case "star ore spot":
 		if rom.Treasures[itemNode.Name].SubID() != 0 {
 			skip = true
 		}
+	case "diver gift", "subrosian market 5":
+		if !rom.TreasureHasUniqueID(itemNode.Name) {
+			skip = true
+		}
 	}
+
 	// some items can't be drawn correctly in certain item slots.
 	switch slotNode.Name {
 	case "d0 sword chest", "rod gift", "noble sword spot":
@@ -738,6 +741,7 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 			skip = true
 		}
 	}
+
 	// and only seeds can be slotted in seed trees, of course
 	switch itemNode.Name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",

@@ -229,17 +229,17 @@ var ItemSlots = map[string]*MutableSlot{
 	"member's shop 1": &MutableSlot{
 		Treasure:   Treasures["satchel 2"],
 		IDAddrs:    []Addr{sameAddr(0x08, 0x4cce)},
-		SubIDAddrs: []Addr{sameAddr(0x08, 0x4ccf)},
+		ParamAddrs: []Addr{sameAddr(0x08, 0x4ccf)},
 	},
 	"member's shop 2": &MutableSlot{
 		Treasure:   Treasures["gasha seed"],
 		IDAddrs:    []Addr{sameAddr(0x08, 0x4cd2)},
-		SubIDAddrs: []Addr{sameAddr(0x08, 0x4cd3)},
+		ParamAddrs: []Addr{sameAddr(0x08, 0x4cd3)},
 	},
 	"member's shop 3": &MutableSlot{
 		Treasure:   Treasures["treasure map"],
 		IDAddrs:    []Addr{sameAddr(0x08, 0x4cd8)},
-		SubIDAddrs: []Addr{sameAddr(0x08, 0x4cd9)},
+		ParamAddrs: []Addr{sameAddr(0x08, 0x4cd9)},
 	},
 
 	// subrosia
@@ -265,12 +265,12 @@ var ItemSlots = map[string]*MutableSlot{
 	"subrosian market 2": &MutableSlot{
 		Treasure:   Treasures["piece of heart"],
 		IDAddrs:    []Addr{{0x09, 0x77cb, 0x77e2}},
-		SubIDAddrs: []Addr{{0x09, 0x77cc, 0x77e3}},
+		ParamAddrs: []Addr{{0x09, 0x77cc, 0x77e3}},
 	},
 	"subrosian market 5": &MutableSlot{
 		Treasure:   Treasures["member's card"],
 		IDAddrs:    []Addr{{0x09, 0x77dd, 0x77f4}, {0x09, 0x773e, 0x7755}},
-		SubIDAddrs: []Addr{{0x09, 0x77de, 0x77f5}},
+		ParamAddrs: []Addr{{0x09, 0x77de, 0x77f5}},
 	},
 
 	// hero's cave

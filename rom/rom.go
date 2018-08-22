@@ -45,6 +45,23 @@ func init() {
 			TreasureIsUnique[name] = true
 		}
 	}
+
+	// get set of items with unique IDs (more restrictive than the above)
+	idCounts := make(map[byte]int)
+	for _, t := range Treasures {
+		if idCounts[t.id] == 0 {
+			idCounts[t.id] = 1
+		} else {
+			idCounts[t.id]++
+		}
+	}
+	for name, t := range Treasures {
+		// TODO do other items need special expection?
+		if idCounts[t.id] == 1 &&
+			name != "gasha seed" && name != "piece of heart" {
+			uniqueIDTreasures[name] = true
+		}
+	}
 }
 
 func isEn(b []byte) bool {
@@ -174,7 +191,8 @@ func Verify(b []byte) []error {
 			"ember tree seeds", "mystery tree seeds", "scent tree seeds",
 			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2",
 			"expert's ring", "energy ring", "toss ring", "fist ring",
-			"member's card", "treasure map":
+			"member's card", "treasure map", "member's shop 3",
+			"subrosian market 5":
 			break
 		default:
 			if err := m.Check(b); err != nil {

@@ -196,3 +196,9 @@ func FindTreasureName(t *Treasure) string {
 
 // initialized automatically in init() based on contents of item slots
 var TreasureIsUnique = map[string]bool{}
+
+var uniqueIDTreasures = map[string]bool{}
+
+func TreasureHasUniqueID(name string) bool {
+	return uniqueIDTreasures[name]
+}
