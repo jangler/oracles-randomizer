@@ -1,6 +1,6 @@
 package rom
 
-// treasure sprites
+// treasure sprites corresponding to byte four of a treasure entry.
 // i could use iota or make a []string instead, but i want explicit numbers.
 // the gaps are all green sprites of the left half of impa.
 // the rest of the values after the end are just more phonographs.
@@ -110,33 +110,45 @@ const (
 	spritePhonograph   = 0x7b
 )
 
-// the graphics for the rod of seasons differ somewhat from the sprite IDs in
-// the treasure table. only single-wide items display correctly, and i'm not
-// really interested in investigating further. so these are the inventory /
-// collection items i know how to display correctly in the rod cutscene.
-//
-// these are now also used to replace the noble sword.
-//
 // first two bytes determine sprite; final one determines graphics flags.
-var sceneItemGfx = map[string]int{
-	"heart refill": 0x5c0257,
 
+var narrowItemGfx = map[string]int{
 	"ring":             0x5d0811,
 	"gasha seed":       0x5d0a11,
-	"member's card":    0x5d0c13,
-	"master's plaque":  0x5d0c33,
-	"piece of heart 1": 0x5d1022,
-	"piece of heart 2": 0x5d1026, // subrosian market, upside down
 	"ring box":         0x5d1401, // L-1 is 01, L-2 is 11, L-3 is 21
-
 	"gnarled root key": 0x5e0e51,
 	"floodgate key":    0x5e1041,
 	"dragon key":       0x5e1211,
-
-	"satchel 1":     0x5f0051,
-	"satchel 2":     0x5f0050,
-	"slingshot L-1": 0x5f0241,
-	"slingshot L-2": 0x5f0451,
+	"satchel 1":        0x5f0051,
+	"satchel 2":        0x5f0050,
+	"slingshot L-1":    0x5f0241,
+	"slingshot L-2":    0x5f0451,
+	"magnet gloves":    0x5f1021,
+	"sword L-1":        0x600001,
+	"sword L-2":        0x600251,
+	"sword L-3":        0x600441,
+	"shield L-1":       0x600601,
+	"shield L-2":       0x600851,
+	"shield L-3":       0x600a41,
+	"feather L-1":      0x600c41,
+	"feather L-2":      0x600e51,
+	"rod":              0x601021,
+	"winter":           0x601021,
+	"spring":           0x601021,
+	"summer":           0x601021,
+	"autumn":           0x601021,
+	"bracelet":         0x601251,
+	"fool's ore":       0x601401,
+	"shovel":           0x601641,
+	"boomerang L-1":    0x601851,
+	"boomerang L-2":    0x601a41,
+	"bombs":            0x601c41,
+	"round jewel":      0x650400,
+	"pyramid jewel":    0x650620,
+	"square jewel":     0x650810,
+	"x-shaped jewel":   0x650a30,
+	"blue ore":         0x660410,
+	"red ore":          0x660420,
 
 	// don't slot these in scenes
 	/*
@@ -146,48 +158,40 @@ var sceneItemGfx = map[string]int{
 		"gale seeds":    0x5f0c11,
 		"mystery seeds": 0x5f0e01,
 	*/
-
-	"magnet gloves": 0x5f1021,
-	"strange flute": 0x5f1603,
-
-	"sword L-1":     0x600001,
-	"sword L-2":     0x600251,
-	"sword L-3":     0x600441,
-	"shield L-1":    0x600601,
-	"shield L-2":    0x600851,
-	"shield L-3":    0x600a41,
-	"feather L-1":   0x600c41,
-	"feather L-2":   0x600e51,
-	"rod":           0x601021,
-	"winter":        0x601021,
-	"spring":        0x601021,
-	"summer":        0x601021,
-	"autumn":        0x601021,
-	"bracelet":      0x601251,
-	"fool's ore":    0x601401,
-	"shovel":        0x601641,
-	"boomerang L-1": 0x601851,
-	"boomerang L-2": 0x601a41,
-	"bombs":         0x601c41,
-
-	"ricky's gloves": 0x641c53,
-
-	"round jewel":    0x650400,
-	"pyramid jewel":  0x650620,
-	"square jewel":   0x650810,
-	"x-shaped jewel": 0x650a30,
-	"ribbon":         0x650c23,
-	"spring banana":  0x651033,
-	"treasure map":   0x651433,
-	"rusty bell":     0x651823,
-
-	"star ore": 0x660033,
-	"blue ore": 0x660410,
-	"red ore":  0x660420,
 }
 
-// CanSlotInScene returns true iff the item with the given name can display
-// correctly in the rod of seasons and noble sword scenes.
+var wideItemGfx = map[string]int{
+	"heart refill":     0x5c0257,
+	"member's card":    0x5d0c13,
+	"master's plaque":  0x5d0c33,
+	"piece of heart 1": 0x5d1022,
+	"piece of heart 2": 0x5d1026, // subrosian market, upside down
+	"strange flute":    0x5f1603,
+	"ricky's gloves":   0x641c53,
+	"ribbon":           0x650c23,
+	"spring banana":    0x651033,
+	"treasure map":     0x651433,
+	"rusty bell":       0x651823,
+	"star ore":         0x660033,
+}
+
+// union of narrow and wide item graphics, initialized in init()
+var itemGfx = map[string]int{}
+
+// CanSlotInScene returns true iff the named item can display correctly in the
+// rod of seasons and noble sword scenes.
 func CanSlotInScene(itemName string) bool {
-	return sceneItemGfx[itemName] != 0
+	return narrowItemGfx[itemName] != 0
+}
+
+// CanSlotInShop returns true iff the named item can display correctly in the
+// Horon Village shop.
+func CanSlotInShop(itemName string) bool {
+	return itemGfx[itemName] != 0
+}
+
+// CanSlotInMarket returns true iff the named item can display correctly in the
+// Subrosian market.
+func CanSlotInMarket(itemName string) bool {
+	return wideItemGfx[itemName] != 0
 }

@@ -723,12 +723,18 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 			skip = true
 		}
 	}
-	// some items can't be drawn correctly in "scene" item slots.
+	// some items can't be drawn correctly in certain item slots.
 	switch slotNode.Name {
-	case "d0 sword chest", "rod gift", "noble sword spot", "member's shop 1",
-		"member's shop 2", "member's shop 3", "subrosian market 2",
-		"subrosian market 5":
+	case "d0 sword chest", "rod gift", "noble sword spot":
 		if !rom.CanSlotInScene(itemNode.Name) {
+			skip = true
+		}
+	case "member's shop 1", "member's shop 2", "member's shop 3":
+		if !rom.CanSlotInShop(itemNode.Name) {
+			skip = true
+		}
+	case "subrosian market 2", "subrosian market 5":
+		if !rom.CanSlotInMarket(itemNode.Name) {
 			skip = true
 		}
 	}

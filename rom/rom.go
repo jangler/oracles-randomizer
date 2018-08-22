@@ -18,8 +18,16 @@ func init() {
 	// rings all have the same sprite
 	for name, treasure := range Treasures {
 		if treasure.id == 0x2d {
-			sceneItemGfx[name] = sceneItemGfx["ring"]
+			narrowItemGfx[name] = narrowItemGfx["ring"]
 		}
+	}
+
+	// accumulate all item sprites into map
+	for name, sprite := range narrowItemGfx {
+		itemGfx[name] = sprite
+	}
+	for name, sprite := range wideItemGfx {
+		itemGfx[name] = sprite
 	}
 }
 
@@ -169,7 +177,7 @@ func setSceneGfx(slotName, gfxName string) {
 	slot := ItemSlots[slotName]
 	treasure := slot.Treasure
 	itemName := treasureNameFromIDs(treasure.id, treasure.subID)
-	if gfx := sceneItemGfx[itemName]; gfx == 0 {
+	if gfx := itemGfx[itemName]; gfx == 0 {
 		log.Fatalf("fatal: no %s for %s (%02x%02x)",
 			gfxName, itemName, treasure.id, treasure.subID)
 	} else {
