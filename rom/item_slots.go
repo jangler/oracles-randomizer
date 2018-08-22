@@ -269,7 +269,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"subrosian market 5": &MutableSlot{
 		Treasure:   Treasures["member's card"],
-		IDAddrs:    []Addr{{0x09, 0x77dd, 0x77f4}},
+		IDAddrs:    []Addr{{0x09, 0x77dd, 0x77f4}, {0x09, 0x773e, 0x7755}},
 		SubIDAddrs: []Addr{{0x09, 0x77de, 0x77f5}},
 	},
 
