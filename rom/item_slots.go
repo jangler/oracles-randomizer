@@ -226,6 +226,21 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{sameAddr(0x0a, 0x5003)},
 		SubIDAddrs: []Addr{sameAddr(0x0a, 0x5008)},
 	},
+	"member's shop 1": &MutableSlot{
+		Treasure:   Treasures["satchel 2"],
+		IDAddrs:    []Addr{sameAddr(0x08, 0x4cce)},
+		SubIDAddrs: []Addr{sameAddr(0x08, 0x4ccf)},
+	},
+	"member's shop 2": &MutableSlot{
+		Treasure:   Treasures["gasha seed"],
+		IDAddrs:    []Addr{sameAddr(0x08, 0x4cd2)},
+		SubIDAddrs: []Addr{sameAddr(0x08, 0x4cd3)},
+	},
+	"member's shop 3": &MutableSlot{
+		Treasure:   Treasures["treasure map"],
+		IDAddrs:    []Addr{sameAddr(0x08, 0x4cd8)},
+		SubIDAddrs: []Addr{sameAddr(0x08, 0x4cd9)},
+	},
 
 	// subrosia
 	"winter tower":     BasicSlot("winter", 0x0b, 0x4fc5, 0x4fc6, 0),
@@ -247,6 +262,16 @@ var ItemSlots = map[string]*MutableSlot{
 	"red ore chest":        MutableChest("red ore", 0x53e6),
 	"non-rosa gasha chest": MutableChest("gasha seed", 0x54d8),
 	"rosa gasha chest":     MutableChest("gasha seed", 0x5559),
+	"subrosian market 2": &MutableSlot{
+		Treasure:   Treasures["piece of heart"],
+		IDAddrs:    []Addr{{0x09, 0x77cb, 0x77e2}},
+		SubIDAddrs: []Addr{{0x09, 0x77cc, 0x77e3}},
+	},
+	"subrosian market 5": &MutableSlot{
+		Treasure:   Treasures["member's card"],
+		IDAddrs:    []Addr{{0x09, 0x77dd, 0x77f4}},
+		SubIDAddrs: []Addr{{0x09, 0x77de, 0x77f5}},
+	},
 
 	// hero's cave
 	"d0 sword chest": &MutableSlot{
@@ -257,7 +282,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d0 rupee chest": MutableChest("rupees, 30", 0x53f8),
 
 	// d1
-	"d1 satchel spot":  MutableFind("satchel", 0x669a),
+	"d1 satchel spot":  MutableFind("satchel 1", 0x669a),
 	"d1 gasha chest":   MutableChest("gasha seed", 0x5400),
 	"d1 bomb chest":    MutableChest("bombs, 10", 0x5408),
 	"d1 ring chest":    MutableChest("discovery ring", 0x5414),

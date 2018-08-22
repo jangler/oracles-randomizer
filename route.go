@@ -336,7 +336,9 @@ func sortItems(l *list.List) {
 	a := emptyList(l)
 
 	sort.Slice(a, func(i, j int) bool {
-		return keyItems[a[j].Name] || strings.HasPrefix(a[j].Name, "rupees")
+		return keyItems[a[j].Name] ||
+			strings.HasPrefix(a[j].Name, "rupees") ||
+			a[j].Name == "member's card"
 	})
 
 	refillList(l, a)
@@ -605,7 +607,7 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 		// still, don't slot seed stuff until the player can at least harvest
 		if reached[r.Graph["harvest tree"]] {
 			switch add[0].Name {
-			case "satchel", "slingshot L-1", "slingshot L-2":
+			case "satchel 1", "slingshot L-1", "slingshot L-2":
 				if !(reached[r.Graph["slingshot L-2"]] &&
 					add[0].Name == "slingshot L-1") {
 					needCount = false
@@ -615,6 +617,12 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 					needCount = false
 				}
 			}
+		}
+
+		// slot member's card before there's anything in the shop, but only if
+		// the player can burn trees for rupees
+		if reached[r.Graph["ember seeds"]] && add[0].Name == "member's card" {
+			needCount = false
 		}
 
 		if needCount && countSteps(reached) <= countSteps(start) {
@@ -702,13 +710,13 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		}
 	}
 
-	// the star ore code is unique in that it doesn't set the sub ID at all,
-	// leaving it zeroed. so if we're looking at the star ore slot, then skip
-	// any items that have a nonzero sub ID.
+	// these items either don't set sub ID when giving an item, or decide
+	// whether to give the item based on ID, meaning that you couldn't get an
+	// upgrade if you already had the L-1 version. so only let items with ID
+	// zero in these slots.
 	//
-	// the master diver is similar in that he decides whether to give his item
-	// based on whether you have on with that ID, meaning that he won't upgrade
-	// L-1 items.
+	// TODO the shop items seem to be the same way, but routing never finishes
+	//      if they're part of this logic
 	switch slotNode.Name {
 	case "star ore spot", "diver gift":
 		if rom.Treasures[itemNode.Name].SubID() != 0 {
@@ -717,7 +725,9 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	}
 	// some items can't be drawn correctly in "scene" item slots.
 	switch slotNode.Name {
-	case "d0 sword chest", "rod gift", "noble sword spot":
+	case "d0 sword chest", "rod gift", "noble sword spot", "member's shop 1",
+		"member's shop 2", "member's shop 3", "subrosian market 2",
+		"subrosian market 5":
 		if !rom.CanSlotInScene(itemNode.Name) {
 			skip = true
 		}

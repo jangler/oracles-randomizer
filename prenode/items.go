@@ -25,14 +25,20 @@ var itemPrenodes = map[string]*Prenode{
 	"harvest pegasus seeds": And("pegasus tree seeds", "seed item", "harvest tree"),
 	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest tree"),
 
-	// has to be a different node from the slottable one
-	"buy satchel": HardAnd("beach", "ore chunks", "big rupees"),
+	"member's shop 1": AndSlot("member's card", "big rupees"),
+	"member's shop 2": AndSlot("member's card", "big rupees"),
+	"member's shop 3": AndSlot("member's card", "big rupees"),
 
-	"ember satchel":   And("harvest ember seeds", "satchel", Hard("buy satchel")),
-	"mystery satchel": And("harvest mystery seeds", "satchel", Hard("buy satchel")),
-	"scent satchel":   And("harvest scent seeds", "satchel", Hard("buy satchel")),
-	"pegasus satchel": And("harvest pegasus seeds", "satchel", Hard("buy satchel")),
-	"gale satchel":    And("harvest gale seeds", "satchel", Hard("buy satchel")),
+	"subrosian market 2": AndSlot("beach", Or("shovel", "temple"), "ember seeds"),
+	"subrosian market 5": AndSlot("beach", Or("shovel", "temple")),
+
+	"satchel": Or("satchel 1", "satchel 2"),
+
+	"ember satchel":   And("harvest ember seeds", "satchel"),
+	"mystery satchel": And("harvest mystery seeds", "satchel"),
+	"scent satchel":   And("harvest scent seeds", "satchel"),
+	"pegasus satchel": And("harvest pegasus seeds", "satchel"),
+	"gale satchel":    And("harvest gale seeds", "satchel"),
 
 	"ember slingshot":   And("harvest ember seeds", "slingshot"),
 	"mystery slingshot": And("harvest mystery seeds", "slingshot"),
@@ -76,7 +82,7 @@ var itemPrenodes = map[string]*Prenode{
 	"beams":     Or("sword L-2", "sword beams L-1"),
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
-	"seed item": Or("satchel", "slingshot", Hard("buy satchel")),
+	"seed item": Or("satchel", "slingshot"),
 	"bombs": Or("medium rupees", HardOr("bombs, 10",
 		And("harvest bush", Or("d2 bracelet chest", "d2 spinner")))),
 	"jump": Or("feather L-1", "feather L-2"),

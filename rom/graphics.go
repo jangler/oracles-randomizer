@@ -119,15 +119,18 @@ const (
 //
 // first two bytes determine sprite; final one determines graphics flags.
 var sceneItemGfx = map[string]int{
-	"ring":       0x5d0811,
-	"gasha seed": 0x5d0a11,
-	"ring box":   0x5d1401, // L-1 is 01, L-2 is 11, L-3 is 21
+	"ring":           0x5d0811,
+	"gasha seed":     0x5d0a11,
+	"member's card":  0x5d0c13,
+	"piece of heart": 0x5d1026, // upside down (subrosian market)
+	"ring box":       0x5d1401, // L-1 is 01, L-2 is 11, L-3 is 21
 
 	"gnarled root key": 0x5e0e51,
 	"floodgate key":    0x5e1041,
 	"dragon key":       0x5e1211,
 
-	"satchel":       0x5f0051,
+	"satchel 1":     0x5f0051,
+	"satchel 2":     0x5f0050,
 	"slingshot L-1": 0x5f0241,
 	"slingshot L-2": 0x5f0451,
 
@@ -140,7 +143,16 @@ var sceneItemGfx = map[string]int{
 		"mystery seeds": 0x5f0e01,
 	*/
 
+	// TODO:
+	// - ricky's gloves
+	// - master's plaque
+	// - spring banana
+	// - rusty bell
+	// - star-shaped ore
+	// - heart refill
+
 	"magnet gloves": 0x5f1021,
+	"strange flute": 0x5f1603,
 
 	"sword L-1":     0x600001,
 	"sword L-2":     0x600251,
@@ -161,6 +173,8 @@ var sceneItemGfx = map[string]int{
 	"boomerang L-1": 0x601851,
 	"boomerang L-2": 0x601a41,
 	"bombs":         0x601c41,
+
+	"treasure map": 0x651433,
 }
 
 // CanSlotInScene returns true iff the item with the given name can display

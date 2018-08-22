@@ -14,6 +14,15 @@ const (
 	regionAddr = 0x014a // 0 = JP, 1 = US
 )
 
+func init() {
+	// rings all have the same sprite
+	for name, treasure := range Treasures {
+		if treasure.id == 0x2d {
+			sceneItemGfx[name] = sceneItemGfx["ring"]
+		}
+	}
+}
+
 func isEn(b []byte) bool {
 	return b[regionAddr] != 0
 }
@@ -45,6 +54,11 @@ func Mutate(b []byte) ([]byte, error) {
 	setSceneGfx("noble sword spot", "noble sword graphics")
 	setSceneGfx("noble sword spot", "master sword graphics")
 	setSceneGfx("d0 sword chest", "wooden sword graphics")
+	setSceneGfx("member's shop 1", "member's shop 1 graphics")
+	setSceneGfx("member's shop 2", "member's shop 2 graphics")
+	setSceneGfx("member's shop 3", "member's shop 3 graphics")
+	setSceneGfx("subrosian market 2", "subrosian market 2 graphics")
+	setSceneGfx("subrosian market 5", "subrosian market 5 graphics")
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, Seasons["north horon season"].New[0]}
 

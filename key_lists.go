@@ -58,7 +58,7 @@ var keyItems = map[string]bool{
 	"bracelet":           true,
 	"feather L-1":        true,
 	"feather L-2":        true,
-	"satchel":            true,
+	"satchel 1":          true,
 	"fool's ore":         true,
 	"flippers":           true,
 	"gnarled key":        true,

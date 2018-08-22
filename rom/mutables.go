@@ -150,8 +150,7 @@ var constMutables = map[string]Mutable{
 	"star ore flag check (en)": MutableString(Addr{0x08, 0, 0x62aa},
 		"\xc2\xd9\x3a", "\x00\x00\x00"),
 
-	// the member's card isn't in the normal logic currently, but remove the
-	// essence check anyway
+	// sell member's card in subrosian market before completing d3
 	"member's card essence check": MutableWord(Addr{0x09, 0x7739, 0x7750},
 		0xcb57, 0xf601),
 
@@ -348,6 +347,36 @@ var varMutables = map[string]Mutable{
 		Addr: Addr{0x3f, 0x6978, 0x69fa},
 		Old:  []byte{0x4e, 0x1a, 0x40},
 		New:  []byte{0x4e, 0x1a, 0x40},
+	},
+	"horon shop 3 graphics": &MutableRange{ // strange flute
+		Addr: Addr{0x3f, 0x68be, 0x6940},
+		Old:  []byte{0x5f, 0x16, 0x03},
+		New:  []byte{0x5f, 0x16, 0x03},
+	},
+	"member's shop 1 graphics": &MutableRange{ // satchel
+		Addr: Addr{0x3f, 0x6897, 0x6919},
+		Old:  []byte{0x5f, 0x00, 0x50},
+		New:  []byte{0x5f, 0x00, 0x50},
+	},
+	"member's shop 2 graphics": &MutableRange{ // gasha seed
+		Addr: Addr{0x3f, 0x689d, 0x691f},
+		Old:  []byte{0x5d, 0x0a, 0x10},
+		New:  []byte{0x5d, 0x0a, 0x10},
+	},
+	"member's shop 3 graphics": &MutableRange{ // treasure map
+		Addr: Addr{0x3f, 0x68a6, 0x6928},
+		Old:  []byte{0x65, 0x14, 0x33},
+		New:  []byte{0x65, 0x14, 0x33},
+	},
+	"subrosian market 2 graphics": &MutableRange{ // heart piece
+		Addr: Addr{0x3f, 0x6a20, 0x6aa2},
+		Old:  []byte{0x5d, 0x10, 0x26},
+		New:  []byte{0x5d, 0x10, 0x26},
+	},
+	"subrosian market 5 graphics": &MutableRange{ // member's card
+		Addr: Addr{0x3f, 0x6a3b, 0x6aba},
+		Old:  []byte{0x5d, 0x0c, 0x13},
+		New:  []byte{0x5d, 0x0c, 0x13},
 	},
 
 	// the satchel and slingshot should contain the type of seeds that grow on
