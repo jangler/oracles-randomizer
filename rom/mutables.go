@@ -154,6 +154,12 @@ var constMutables = map[string]Mutable{
 	"member's card essence check": MutableWord(Addr{0x09, 0x7739, 0x7750},
 		0xcb57, 0xf601),
 
+	// give member's card and treasure map graphics in treasure sprite table
+	"member's card gfx": MutableString(Addr{0x3f, 0x6732, 0x67b4},
+		"\x00\x00\x00", "\x5d\x0c\x13"),
+	"treasure map gfx": MutableString(Addr{0x3f, 0x6735, 0x67b7},
+		"\x00\x00\x00", "\x65\x14\x33"),
+
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68, 0x4e72}, 0xcb, 0xf6),
 	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e36, 0x4e40}, 0xcb, 0xf6),

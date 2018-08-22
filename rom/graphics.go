@@ -21,31 +21,30 @@ const (
 	spriteGashaSeed   = 0x0d
 	spriteRing        = 0x0e
 
-	spriteSwordL1         = 0x10
-	spriteSwordL2         = 0x11
-	spriteSwordL3         = 0x12
-	spriteShieldL1        = 0x13
-	spriteShieldL2        = 0x14
-	spriteShieldL3        = 0x15
-	spriteFeatherL1       = 0x16
-	spriteFeatherL2       = 0x17
-	spriteMagnetGlove     = 0x18
-	spriteBracelet        = 0x19
-	spriteFoolsOre        = 0x1a
-	spriteShovel          = 0x1b
-	spriteBoomerangL1     = 0x1c
-	spriteBoomerangL2     = 0x1d
-	spriteRod             = 0x1e
-	spriteSwitchHook      = 0x1f
-	spriteSatchel         = 0x20
-	spriteSlingshotL1     = 0x21
-	spriteSlingshotL2     = 0x22
-	spriteStrangeFlute    = 0x23
-	spriteBombchu         = 0x24
-	spriteBiggoronSword   = 0x25
-	spriteMastersPlaque   = 0x26
-	spriteRupeeSmallGreen = 0x28
-
+	spriteSwordL1           = 0x10
+	spriteSwordL2           = 0x11
+	spriteSwordL3           = 0x12
+	spriteShieldL1          = 0x13
+	spriteShieldL2          = 0x14
+	spriteShieldL3          = 0x15
+	spriteFeatherL1         = 0x16
+	spriteFeatherL2         = 0x17
+	spriteMagnetGlove       = 0x18
+	spriteBracelet          = 0x19
+	spriteFoolsOre          = 0x1a
+	spriteShovel            = 0x1b
+	spriteBoomerangL1       = 0x1c
+	spriteBoomerangL2       = 0x1d
+	spriteRod               = 0x1e
+	spriteSwitchHook        = 0x1f
+	spriteSatchel           = 0x20
+	spriteSlingshotL1       = 0x21
+	spriteSlingshotL2       = 0x22
+	spriteStrangeFlute      = 0x23
+	spriteBombchu           = 0x24
+	spriteBiggoronSword     = 0x25
+	spriteMastersPlaque     = 0x26
+	spriteRupeeSmallGreen   = 0x28
 	spriteRupeeSmallCyan    = 0x29
 	spriteRupeeSmallYellow  = 0x2a
 	spriteRupeeMediumBlue   = 0x2b
@@ -74,6 +73,10 @@ const (
 	spriteFloodgateKey = 0x45
 	spriteDragonKey    = 0x46
 	spriteMakuSeed     = 0x47
+
+	// added these sprites:
+	spriteMembersCard = 0x48
+	spriteTreasureMap = 0x49
 
 	spriteSpringBanana = 0x54
 	spriteRickysGloves = 0x55
