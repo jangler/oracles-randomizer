@@ -60,6 +60,8 @@ var subrosiaPrenodes = map[string]*Prenode{
 	"rosa gasha chest":     AndSlot("bridge", "beach", "ribbon", "jump"),
 	"subrosian market 2":   AndSlot("beach", Or("shovel", "temple"), "ember seeds"),
 	"subrosian market 5":   AndSlot("beach", Or("shovel", "temple")),
+	"hard ore slot": AndSlot("furnace", "red ore", "blue ore",
+		"temple", "bomb flower"),
 
 	"eruption room": Or("remains portal"),
 	"enter d8":      OrStep("d8 portal"),

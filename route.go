@@ -338,7 +338,8 @@ func sortItems(l *list.List) {
 	sort.Slice(a, func(i, j int) bool {
 		return keyItems[a[j].Name] ||
 			strings.HasPrefix(a[j].Name, "rupees") ||
-			a[j].Name == "member's card"
+			a[j].Name == "member's card" || a[j].Name == "red ore" ||
+			a[j].Name == "blue ore"
 	})
 
 	refillList(l, a)
@@ -620,8 +621,15 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 		}
 
 		// slot member's card before there's anything in the shop, but only if
-		// the player can burn trees for rupees
-		if reached[r.Graph["ember seeds"]] && add[0].Name == "member's card" {
+		// the player has a source of money
+		if reached[r.Graph["big rupees"]] && add[0].Name == "member's card" {
+			needCount = false
+		}
+
+		// slot red and blue ore before there's anything in the hard ore slot,
+		// but only if the player can reach the furnace
+		if reached[r.Graph["furnace"]] &&
+			(add[0].Name == "red ore" || add[0].Name == "blue ore") {
 			needCount = false
 		}
 
@@ -669,7 +677,9 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 	if !fillUnused && !(keyItems[itemNode.Name] ||
 		(strings.HasPrefix(itemNode.Name, "rupees") &&
 			!reached[g["medium rupees"]]) ||
-		itemNode.Name == "member's card") {
+		itemNode.Name == "member's card" ||
+		(reached[g["furnace"]] &&
+			(itemNode.Name == "red ore" || itemNode.Name == "blue ore"))) {
 		skip = true
 	}
 
@@ -712,13 +722,13 @@ func shouldSkipItem(src *rand.Rand, g graph.Graph,
 		}
 	}
 
-	// star ore is a special case because it doesn't set sub ID at all, so only
-	// slot zero-ID treasures here.
+	// star ore and hard ore are special cases because they doesn't set sub ID
+	// at all, so only slot zero-ID treasures there.
 	//
 	// the other slots won't give you the item if you already have one with
 	// that ID, so only use items with unique IDs there.
 	switch slotNode.Name {
-	case "star ore spot":
+	case "star ore spot", "hard ore slot":
 		if rom.Treasures[itemNode.Name].SubID() != 0 {
 			skip = true
 		}

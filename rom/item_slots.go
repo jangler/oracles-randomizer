@@ -272,6 +272,11 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x09, 0x77dd, 0x77f4}, {0x09, 0x773e, 0x7755}},
 		ParamAddrs: []Addr{{0x09, 0x77de, 0x77f5}},
 	},
+	"hard ore slot": &MutableSlot{
+		Treasure:   Treasures["hard ore"],
+		IDAddrs:    []Addr{{0x15, 0x5fc8, 0x5b85}},
+		SubIDAddrs: []Addr{},
+	},
 
 	// hero's cave
 	"d0 sword chest": &MutableSlot{
