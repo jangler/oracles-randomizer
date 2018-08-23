@@ -192,7 +192,8 @@ DV_INTERACTIONS = {
     0x6b: ("placed item", {
         0x0a: "piece of heart",
         # 0x17 is the bridge in the horon subrosia portal cave?
-        0x1f: "gasha seed",
+        0x91: "gasha seed",
+        0x1f: "gasha seed", # both gasha seeds? maybe set different room flags
         0x20: "seed satchel",
     }),
     0x78: ("toggle tile", {}),
