@@ -180,6 +180,27 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
 		}
 
+		slottedItems := list.New()
+		done := r.Graph["done"]
+		for done.GetMark(done, nil) != graph.MarkTrue {
+			if slottedSet := trySlotItemSet(r, src); slottedSet != nil {
+				logChan <- "slotted a set"
+				for e := slottedSet.Front(); e != nil; e = e.Next() {
+					slottedItems.PushBack(e.Value)
+				}
+			} else {
+				panic("failure")
+			}
+		}
+		logChan <- "success"
+		for e := slottedItems.Front(); e != nil; e = e.Next() {
+			node := e.Value.(*graph.Node)
+			if node.Type == graph.RootType && len(node.Parents) > 0 {
+				logChan <- fmt.Sprintf("%+v: %s", node.Parents, node.Name)
+			}
+		}
+		panic("success")
+
 		if tryExploreTargets(src, r, nil, start, &strikes, itemList,
 			usedItems, slotList, usedSlots, verbose, logChan) {
 			if verbose {
