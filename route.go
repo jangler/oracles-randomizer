@@ -104,15 +104,21 @@ func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode, hard bool) {
 			prenode.HardAndType:
 			isStep := pn.Type == prenode.AndSlotType ||
 				pn.Type == prenode.AndStepType
+			isSlot := pn.Type == prenode.AndSlotType
 			if hard || pn.Type != prenode.HardAndType {
-				g.AddNodes(graph.NewNode(key, graph.AndType, isStep))
+				g.AddNodes(graph.NewNode(key, graph.AndType, isStep, isSlot))
 			}
 		case prenode.OrType, prenode.OrSlotType, prenode.OrStepType,
 			prenode.RootType, prenode.HardOrType:
 			isStep := pn.Type == prenode.OrSlotType ||
 				pn.Type == prenode.OrStepType
+			isSlot := pn.Type == prenode.OrSlotType
+			nodeType := graph.OrType
+			if pn.Type == prenode.RootType {
+				nodeType = graph.RootType
+			}
 			if hard || pn.Type != prenode.HardOrType {
-				g.AddNodes(graph.NewNode(key, graph.OrType, isStep))
+				g.AddNodes(graph.NewNode(key, nodeType, isStep, isSlot))
 			}
 		default:
 			panic("unknown prenode type for " + key)

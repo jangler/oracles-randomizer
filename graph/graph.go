@@ -183,7 +183,7 @@ func copyGraph(old Graph) Graph {
 
 	// add nodes
 	for name, node := range old {
-		new[name] = NewNode(node.Name, node.Type, node.IsStep)
+		new[name] = NewNode(node.Name, node.Type, node.IsStep, node.IsSlot)
 	}
 
 	// add relationships

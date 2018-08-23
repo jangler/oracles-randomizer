@@ -43,18 +43,20 @@ type Node struct {
 	Type     NodeType
 	GetMark  func(*Node, *list.List) Mark
 	IsStep   bool
+	IsSlot   bool
 	Mark     Mark
 	Parents  []*Node
 	Children []*Node
 }
 
 // NewNode returns a new unconnected graph node, not yet part of any graph.
-func NewNode(name string, nodeType NodeType, isStep bool) *Node {
+func NewNode(name string, nodeType NodeType, isStep bool, isSlot bool) *Node {
 	// create node
 	n := Node{
 		Name:     name,
 		Type:     nodeType,
 		IsStep:   isStep,
+		IsSlot:   isSlot,
 		Mark:     MarkNone,
 		Parents:  make([]*Node, 0),
 		Children: make([]*Node, 0),
