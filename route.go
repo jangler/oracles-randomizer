@@ -180,11 +180,12 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
 		}
 
+		// try new "look-ahead" algorithm
 		slottedItems := list.New()
 		done := r.Graph["done"]
 		for done.GetMark(done, nil) != graph.MarkTrue {
-			if slottedSet := trySlotItemSet(r, src); slottedSet != nil {
-				logChan <- "slotted a set"
+			slottedSet := trySlotItemSet(r, src, slotList)
+			if slottedSet != nil {
 				for e := slottedSet.Front(); e != nil; e = e.Next() {
 					slottedItems.PushBack(e.Value)
 				}
@@ -192,7 +193,6 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 				panic("failure")
 			}
 		}
-		logChan <- "success"
 		for e := slottedItems.Front(); e != nil; e = e.Next() {
 			node := e.Value.(*graph.Node)
 			if node.Type == graph.RootType && len(node.Parents) > 0 {
@@ -572,7 +572,6 @@ func checkRouteState(r *Route, start, reached map[*graph.Node]bool,
 	add []*graph.Node, slots *list.List, verbose bool,
 	logChan chan string) RouteState {
 	// check for softlocks
-	r.HardGraph.ExploreFromStart()
 	if err := canSoftlock(r.HardGraph); err != nil {
 		if verbose {
 			logChan <- fmt.Sprintf("false; %v", err)

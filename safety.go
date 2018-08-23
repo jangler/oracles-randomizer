@@ -29,6 +29,7 @@ var softlockChecks = [](func(graph.Graph) error){
 
 // check for known softlock conditions
 func canSoftlock(g graph.Graph) error {
+	g.ExploreFromStart()
 	for _, check := range softlockChecks {
 		if err := check(g); err != nil {
 			return err
