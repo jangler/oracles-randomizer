@@ -223,7 +223,7 @@ var d6Prenodes = map[string]*Prenode{
 	"d6 crumble stairs":  And("d6 spinner", "d6 key A", "long jump"),
 	"d6 key skip":        And("d6 armos room", "jump", "break crystal"),
 	"d6 map chest":       OrSlot("d6 key skip", "d6 spinner"),
-	"d6 rupee chest C":   AndSlot("map chest"),
+	"d6 rupee chest C":   AndSlot("d6 map chest"),
 	"avoid traps":        Or("pegasus satchel", "jump"),
 	"d6 switch stairs":   And("d6 map chest", "break crystal", "avoid traps", "boomerang L-2"),
 	"d6 U-room":          And("d6 cracked room", "boomerang L-2"),

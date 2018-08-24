@@ -167,8 +167,8 @@ var wideItemGfx = map[string]int{
 	"heart refill":     0x5c0257,
 	"member's card":    0x5d0c13,
 	"master's plaque":  0x5d0c33,
-	"piece of heart 1": 0x5d1022,
-	"piece of heart 2": 0x5d1026, // subrosian market, upside down
+	"piece of heart":   0x5d1022,
+	"rare peach stone": 0x5d1026, // piece of heart in subrosian market
 	"strange flute":    0x5f1603,
 	"ricky's gloves":   0x641c53,
 	"ribbon":           0x650c23,

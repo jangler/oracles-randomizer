@@ -64,7 +64,5 @@ var subrosiaPrenodes = map[string]*Prenode{
 		"temple", "bomb flower"),
 
 	"eruption room": Or("remains portal"),
-	"enter d8":      OrStep("d8 portal"),
-
-	// a few places are unaccounted for, but they're irrelevant for now
+	"enter d8":      Or("d8 portal"),
 }
