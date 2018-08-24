@@ -91,8 +91,26 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 		return nil, nil
 	}
 
-	// omit items not necessary for progression
-	cutExtraItems(r, usedItems, usedSlots, initialCount, countFunc, fillUnused)
+	// omit items not necessary for progression, then slot again from the start
+	cutExtraItems(r, usedItems, initialCount, countFunc, fillUnused)
+	usedSlots.Init()
+	for ei := usedItems.Front(); ei != nil; ei = ei.Next() {
+		item := ei.Value.(*graph.Node)
+		item.Parents = item.Parents[:len(item.Parents)-1]
+
+		for es := freeSlots.Front(); es != nil; es = es.Next() {
+			slot := es.Value.(*graph.Node)
+			if nodeInList(slot, usedSlots) {
+				continue
+			}
+
+			if itemFitsInSlot(item, slot, nil) {
+				usedSlots.PushBack(slot)
+				item.Parents = append(item.Parents, slot)
+				break
+			}
+		}
+	}
 
 	// remove the used nodes from the persistent pools
 	if newCount > initialCount || (fillUnused && usedItems.Len() > 0) {
@@ -215,15 +233,17 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// give only a 1 in 2 change per sword of slotting in the hero's cave chest
 	// to compensate for the fact that there are two of them. each season gets
 	// a 1 in 4 chance for the same reason.
-	if slotNode.Name == "d0 sword chest" {
-		switch itemNode.Name {
-		case "sword L-1", "sword L-2":
-			if src.Intn(2) != 0 {
-				return false
-			}
-		case "winter", "spring", "summer", "autumn":
-			if src.Intn(4) != 0 {
-				return false
+	if src != nil {
+		if slotNode.Name == "d0 sword chest" {
+			switch itemNode.Name {
+			case "sword L-1", "sword L-2":
+				if src.Intn(2) != 0 {
+					return false
+				}
+			case "winter", "spring", "summer", "autumn":
+				if src.Intn(4) != 0 {
+					return false
+				}
 			}
 		}
 	}
@@ -285,14 +305,13 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 
 // try removing each item from each slot to see if progression can still be
 // reached without it
-func cutExtraItems(r *Route, usedItems, usedSlots *list.List, initialCount int,
+func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 	countFunc func(map[*graph.Node]bool) int, fillUnused bool) {
 	retry := true
 	for retry && !fillUnused {
 		retry = false
 
 		for e := usedItems.Front(); e != nil; e = e.Next() {
-			// remove the item's last parent (the one added this iteration)
 			item := e.Value.(*graph.Node)
 			parent := item.Parents[len(item.Parents)-1]
 			item.Parents = item.Parents[:len(item.Parents)-1]
@@ -302,11 +321,10 @@ func cutExtraItems(r *Route, usedItems, usedSlots *list.List, initialCount int,
 				// remove the item and cycle again if it can be omitted
 				retry = true
 				usedItems.Remove(e)
-				removeNodeFromList(parent, usedSlots)
 				break
-			} else {
-				item.Parents = append(item.Parents, parent)
 			}
+
+			item.Parents = append(item.Parents, parent)
 		}
 	}
 }
