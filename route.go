@@ -30,6 +30,7 @@ func addDefaultItemNodes(nodes map[string]*prenode.Prenode) {
 type Route struct {
 	Graph, HardGraph graph.Graph
 	Slots            map[string]*graph.Node
+	OldSlots         map[*graph.Node]bool
 	DungeonItems     []int
 	KeyItemsTotal    int
 	KeyItemsPlaced   int
@@ -70,6 +71,7 @@ func NewRoute(start []string) *Route {
 		Graph:          g,
 		HardGraph:      hg,
 		Slots:          openSlots,
+		OldSlots:       make(map[*graph.Node]bool),
 		DungeonItems:   make([]int, 9),
 		KeyItemsTotal:  keyItemCount,
 		KeyItemsPlaced: 0,
@@ -169,10 +171,28 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
 		}
 
+		// clear "old" slots, since we're starting fresh
+		for k := range r.OldSlots {
+			delete(r.OldSlots, k)
+		}
+
 		// slot progression items
 		done := r.Graph["done"]
 		for done.GetMark(done, nil) != graph.MarkTrue {
-			items, slots := trySlotItemSet(r, src, itemList, slotList, false)
+			// try reaching new non-slot steps first
+			items, slots := trySlotItemSet(r, src, itemList, slotList,
+				countOnlySteps, false)
+			if items != nil {
+				for items.Len() > 0 {
+					usedItems.PushBack(items.Remove(items.Front()))
+					usedSlots.PushBack(slots.Remove(slots.Front()))
+				}
+				continue
+			}
+
+			// if that fails, just try reaching any steps
+			items, slots = trySlotItemSet(r, src, itemList, slotList,
+				countSteps, false)
 			if items != nil {
 				for items.Len() > 0 {
 					usedItems.PushBack(items.Remove(items.Front()))
@@ -186,7 +206,8 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		// if goal was reached, fill unused slots
 		if done.GetMark(done, nil) == graph.MarkTrue {
 			for slotList.Len() > 0 {
-				items, slots := trySlotItemSet(r, src, itemList, slotList, true)
+				items, slots := trySlotItemSet(r, src, itemList, slotList,
+					countSteps, true)
 				if items != nil {
 					for items.Len() > 0 {
 						usedItems.PushBack(items.Remove(items.Front()))
@@ -386,6 +407,17 @@ func countSteps(nodes map[*graph.Node]bool) int {
 	count := 0
 	for node := range nodes {
 		if node.IsStep {
+			count++
+		}
+	}
+	return count
+}
+
+// return the number of "step" nodes in the given set which are not also slots
+func countOnlySteps(nodes map[*graph.Node]bool) int {
+	count := 0
+	for node := range nodes {
+		if node.IsStep && !node.IsSlot {
 			count++
 		}
 	}

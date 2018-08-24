@@ -4,7 +4,9 @@ import (
 	"container/list"
 	"fmt"
 	"math/rand"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
@@ -25,11 +27,13 @@ func nodeInList(n *graph.Node, l *list.List) bool {
 // items in available slots. it returns a list of slotted items if it succeeds,
 // or nil if it fails.
 func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
+	countFunc func(map[*graph.Node]bool) int,
 	fillUnused bool) (usedItems, usedSlots *list.List) {
+
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
 	freeSlots := getAvailableSlots(r, src, slotPool)
-	initialCount := countSteps(r.Graph.ExploreFromStart())
+	initialCount := countFunc(r.Graph.ExploreFromStart())
 	newCount := initialCount
 
 	if freeSlots.Len() == 0 || itemPool.Len() == 0 {
@@ -69,7 +73,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 				}
 			}
 
-			newCount = countSteps(r.Graph.ExploreFromStart())
+			newCount = countFunc(r.Graph.ExploreFromStart())
 		}
 
 		if newCount == initialCount && !fillUnused {
@@ -88,7 +92,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	}
 
 	// omit items not necessary for progression
-	cutExtraItems(r, usedItems, usedSlots, initialCount, fillUnused)
+	cutExtraItems(r, usedItems, usedSlots, initialCount, countFunc, fillUnused)
 
 	// remove the used nodes from the persistent pools
 	if newCount > initialCount || (fillUnused && usedItems.Len() > 0) {
@@ -123,6 +127,8 @@ func removeNodeFromSlice(n *graph.Node, a *[]*graph.Node) {
 	panic(fmt.Sprintf("node %v not in slice", n))
 }
 
+var dungeonRegexp = regexp.MustCompile(`^d(\d) `)
+
 // filter a list of item slots by those that can be reached, shuffle them, and
 // sort them by priority, returning a new list.
 func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
@@ -138,46 +144,30 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
 		a[i], a[j] = a[j], a[i]
 	})
 
+	// prioritize slots from higher dungeon numbers, and prioritize anything
+	// over slots that were already reached in a previous iteration
 	sort.Slice(a, func(i, j int) bool {
-		// dungeon chests go first
-		di := dungeonIndex(a[i])
-		if di >= 0 && r.DungeonItems[di] == 0 {
+		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] {
 			return true
 		}
 
-		// special item slots go second
-		slot := rom.ItemSlots[a[j].Name]
-		return rom.IsChest(slot) || rom.IsFound(slot)
+		iMatch := dungeonRegexp.FindStringSubmatch(a[i].Name)
+		jMatch := dungeonRegexp.FindStringSubmatch(a[j].Name)
+
+		if iMatch != nil && jMatch != nil {
+			di, _ := strconv.Atoi(iMatch[1])
+			dj, _ := strconv.Atoi(jMatch[1])
+			return di > dj
+		}
+
+		return false
 	})
 
-	return listFromSlice(a)
-}
-
-// get unused item nodes, sorted by placement priority.
-func getAvailableItems(r *Route, src *rand.Rand) *list.List {
-	items := make([]*graph.Node, 0)
-	for _, name := range getSortedKeys(r.Graph, src) {
-		node := r.Graph[name]
-		if node.Type == graph.RootType && len(node.Parents) == 0 &&
-			!strings.Contains(node.Name, "default") &&
-			node.Name != "compass" && node.Name != "dungeon map" {
-			items = append(items, node)
-		}
+	for _, slot := range a {
+		r.OldSlots[slot] = true
 	}
 
-	src.Shuffle(len(items), func(i, j int) {
-		items[i], items[j] = items[j], items[i]
-	})
-
-	sort.Slice(items, func(i, j int) bool {
-		// potential progression items go first
-		return keyItems[items[i].Name] ||
-			strings.HasPrefix(items[i].Name, "rupees") ||
-			items[i].Name == "member's card" || items[i].Name == "red ore" ||
-			items[i].Name == "blue ore"
-	})
-
-	return listFromSlice(items)
+	return listFromSlice(a)
 }
 
 // maps should be looped through based on a sorted set of keys (which can be
@@ -296,7 +286,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 // try removing each item from each slot to see if progression can still be
 // reached without it
 func cutExtraItems(r *Route, usedItems, usedSlots *list.List, initialCount int,
-	fillUnused bool) {
+	countFunc func(map[*graph.Node]bool) int, fillUnused bool) {
 	retry := true
 	for retry && !fillUnused {
 		retry = false
@@ -307,7 +297,7 @@ func cutExtraItems(r *Route, usedItems, usedSlots *list.List, initialCount int,
 			parent := item.Parents[len(item.Parents)-1]
 			item.Parents = item.Parents[:len(item.Parents)-1]
 
-			testCount := countSteps(r.Graph.ExploreFromStart())
+			testCount := countFunc(r.Graph.ExploreFromStart())
 			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
 				// remove the item and cycle again if it can be omitted
 				retry = true
