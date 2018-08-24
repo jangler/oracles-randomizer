@@ -162,20 +162,20 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
 		a[i], a[j] = a[j], a[i]
 	})
 
-	// prioritize slots from higher dungeon numbers, and prioritize anything
-	// over slots that were already reached in a previous iteration
+	// prioritize, in order:
+	// 1. anything over slots that were already reached in a previous iteration
+	// 2. anything over dungeons that already have an item in them
 	sort.Slice(a, func(i, j int) bool {
 		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] {
 			return true
 		}
 
 		iMatch := dungeonRegexp.FindStringSubmatch(a[i].Name)
-		jMatch := dungeonRegexp.FindStringSubmatch(a[j].Name)
-
-		if iMatch != nil && jMatch != nil {
+		if iMatch != nil {
 			di, _ := strconv.Atoi(iMatch[1])
-			dj, _ := strconv.Atoi(jMatch[1])
-			return di > dj
+			if r.DungeonItems[di] > 0 {
+				return false
+			}
 		}
 
 		return false

@@ -171,9 +171,12 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
 		}
 
-		// clear "old" slots, since we're starting fresh
+		// clear "old" slots and item counts, since we're starting fresh
 		for k := range r.OldSlots {
 			delete(r.OldSlots, k)
+		}
+		for i := range r.DungeonItems {
+			r.DungeonItems[i] = 0
 		}
 
 		// slot progression items
@@ -182,21 +185,24 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			// try reaching new non-slot steps first
 			items, slots := trySlotItemSet(r, src, itemList, slotList,
 				countOnlySteps, false)
-			if items != nil {
-				for items.Len() > 0 {
-					usedItems.PushBack(items.Remove(items.Front()))
-					usedSlots.PushBack(slots.Remove(slots.Front()))
-				}
-				continue
+
+			if items == nil {
+				// if that fails, just try reaching any steps
+				items, slots = trySlotItemSet(r, src, itemList, slotList,
+					countSteps, false)
 			}
 
-			// if that fails, just try reaching any steps
-			items, slots = trySlotItemSet(r, src, itemList, slotList,
-				countSteps, false)
 			if items != nil {
 				for items.Len() > 0 {
 					usedItems.PushBack(items.Remove(items.Front()))
-					usedSlots.PushBack(slots.Remove(slots.Front()))
+					slot := slots.Remove(slots.Front()).(*graph.Node)
+					usedSlots.PushBack(slot)
+
+					match := dungeonRegexp.FindStringSubmatch(slot.Name)
+					if match != nil {
+						di, _ := strconv.Atoi(match[1])
+						r.DungeonItems[di]++
+					}
 				}
 			} else {
 				break
