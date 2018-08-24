@@ -8,7 +8,6 @@ import (
 
 var softlockChecks = [](func(graph.Graph) error){
 	canFlowerSoftlock,
-	canFeatherSoftlock,
 	canEmberSeedSoftlock,
 	canD7ExitSoftlock,
 	canD2ExitSoftlock,
@@ -57,36 +56,6 @@ func canFlowerSoftlock(g graph.Graph) error {
 	if cucco.GetMark(cucco, nil) == graph.MarkTrue {
 		return errors.New("cucco softlock")
 	}
-	return nil
-}
-
-// make sure you can't reach the hide & seek area in subrosia without getting a
-// shovel first. if your feather is stolen and you can't dig it back up, you
-// can't exit that area.
-func canFeatherSoftlock(g graph.Graph) error {
-	// first check whether hide and seek has been reached
-	hideAndSeek := g["hide and seek"]
-	if hideAndSeek.GetMark(hideAndSeek, nil) != graph.MarkTrue {
-		return nil
-	}
-	// also test that you can jump, since you can't H&S without jumping (and it
-	// would be beneficial even if you could)
-	if g["jump"].GetMark(g["jump"], nil) != graph.MarkTrue {
-		return nil
-	}
-
-	shovel := g["shovel"]
-	parents := shovel.Parents
-
-	// check whether hide and seek is reachable if shovel is unreachable
-	shovel.ClearParents()
-	defer g.ExploreFromStart()
-	defer shovel.AddParents(parents...)
-	g.ClearMarks()
-	if hideAndSeek.GetMark(hideAndSeek, nil) == graph.MarkTrue {
-		return errors.New("feather softlock")
-	}
-
 	return nil
 }
 
