@@ -18,12 +18,12 @@ var holodrumPrenodes = map[string]*Prenode{
 	// western coast
 	"x-shaped jewel chest": AndSlot("horon village", Or("ember slingshot", "mystery slingshot"),
 		"mystery seeds", "kill moldorm"),
-	"enter d0":    AndStep("horon village"),
+	"enter d0":    And("horon village"),
 	"pirate ship": And("pirate's bell", "pirate house"),
 	"graveyard": And("pirate ship", Or("long jump",
 		"western coast default summer",
 		And("bombs", "jump", "summer"))),
-	"enter d7": AndStep("graveyard", Or("shovel",
+	"enter d7": And("graveyard", Or("shovel",
 		Or("western coast default summer", "summer"),
 		Or("western coast default spring", "spring"),
 		Or("western coast default autumn", "autumn"))),
@@ -57,7 +57,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"enter d2 B": Or(
 		And("mystery tree", "woods of winter default summer", "bracelet"),
 		And("d2 blade key chest", "bracelet")),
-	"enter d2":         OrStep("enter d2 A", "enter d2 B"),
+	"enter d2":         Or("enter d2 A", "enter d2 B"),
 	"outdoor d2 chest": AndSlot("enter d2 B"),
 	"mystery cave chest": AndSlot("mystery tree", "remove mushroom",
 		Or("feather L-2", "magnet gloves"),
@@ -114,7 +114,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("swamp portal", "bracelet")),
 	"square jewel chest": AndSlot("south swamp", Or("spool swamp default winter",
 		And("spool stump", "winter")), Or("shovel", "animal flute"), "bombs"),
-	"enter d3": AndStep("spool stump", Or("spool swamp default summer", "summer")),
+	"enter d3": And("spool stump", Or("spool swamp default summer", "summer")),
 
 	// north horon / eyeglass lake
 	"not north horon default summer": Or(
@@ -126,7 +126,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		HardAnd("south swamp", "dimitri flute"),
 		And("lake portal", "not north horon default summer", "flippers", "jump"),
 		And("lake portal", "pegasus jump L-2", "north horon default winter")),
-	"enter d1": AndStep("gnarled key", Or(
+	"enter d1": And("gnarled key", Or(
 		And("south swamp", Or("flippers", Hard("dimitri flute"))),
 		And("north horon stump", "remove bush"))),
 	"wet eyeglass lake": Or("not north horon default summer", "spring", "autumn", "winter"),
@@ -134,7 +134,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("lake portal", "not north horon default summer", "flippers"),
 		And("north horon stump", Or("north horon default winter", And("winter", "autumn")),
 			Or("jump", Hard("ricky", "moosh flute"))))),
-	"enter d5": AndStep("d5 stump", "remove mushroom",
+	"enter d5": And("d5 stump", "remove mushroom",
 		Or("north horon default autumn", "autumn")),
 	"lake chest": AndSlot("horon village", Or("feather L-2", And("jump",
 		Or("north horon default autumn",
@@ -175,7 +175,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		Or("moosh", "pegasus jump L-2", Hard("feather L-2"))),
 	"talon cave":         And("mount cucco", Or("sunken city default spring", "spring")),
 	"dragon keyhole":     And("talon cave", "winter", "jump", "bracelet"),
-	"enter d4":           AndStep("dragon key", "dragon keyhole", "summer", "cross water gap"),
+	"enter d4":           And("dragon key", "dragon keyhole", "summer", "cross water gap"),
 	"pyramid jewel spot": AndSlot("talon cave", "flippers"),
 	"talon cave chest":   AndSlot("talon cave"),
 
@@ -193,7 +193,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		Or("lost woods default winter", "winter"), "autumn", "remove mushroom"),
 	"noble sword spot": AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
 	"tarm gale tree":   AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
-	"enter d6": AndStep("tarm gale tree", Or("tarm ruins default winter", "winter"),
+	"enter d6": And("tarm gale tree", Or("tarm ruins default winter", "winter"),
 		"shovel", "remove bush"),
 	"tarm gasha chest": AndSlot("tarm gale tree", "remove mushroom", "ember seeds",
 		Or("tarm ruins default autumn", "autumn")),
@@ -211,7 +211,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	// northern peak
 	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence",
 		"d5 essence", "d6 essence", "d7 essence", "d8 essence"),
-	"enter d9": AndStep("scent tree", "maku seed"),
+	"enter d9": And("scent tree", "maku seed"),
 }
 
 var seasonPrenodes = map[string]*Prenode{
