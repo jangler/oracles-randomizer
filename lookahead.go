@@ -68,50 +68,47 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			newCount = countSteps(r.Graph.ExploreFromStart())
 		}
 
-		if newCount == initialCount {
+		if newCount == initialCount && !fillUnused {
 			for usedItems.Len() > 0 {
 				item := usedItems.Remove(usedItems.Front()).(*graph.Node)
 				slot := usedSlots.Remove(usedSlots.Front()).(*graph.Node)
 				removeNodeFromSlice(slot, &item.Parents)
 			}
-			usedSlots.Init()
 		}
 		itemPool.PushBack(itemPool.Remove(itemPool.Front()))
 	}
 
 	// couldn't find any progression; fail
-	if newCount == initialCount {
+	if newCount == initialCount && !fillUnused {
 		return nil
 	}
 
 	// try removing each item from each slot to see if the path can still be
 	// reached without it
 	retry := true
-	for retry {
+	for retry && !fillUnused {
 		retry = false
 
 		n := usedItems.Len()
 		for i := 0; i < n; i++ {
 			item := usedItems.Remove(usedItems.Front()).(*graph.Node)
-			parents := item.Parents
-			item.ClearParents()
+			parent := item.Parents[len(item.Parents)-1]
+			item.Parents = item.Parents[:len(item.Parents)-1]
 
 			testCount := countSteps(r.Graph.ExploreFromStart())
 
 			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
 				retry = true
-				for _, parent := range parents {
-					removeNodeFromList(parent, usedSlots)
-				}
+				removeNodeFromList(parent, usedSlots)
 				break
 			} else {
-				item.AddParents(parents...)
+				item.Parents = append(item.Parents, parent)
 				usedItems.PushBack(item)
 			}
 		}
 	}
 
-	if newCount > initialCount {
+	if newCount > initialCount || (fillUnused && usedItems.Len() > 0) {
 		for e := usedItems.Front(); e != nil; e = e.Next() {
 			removeNodeFromList(e.Value.(*graph.Node), itemPool)
 		}
@@ -123,24 +120,24 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	return nil
 }
 
-func removeNodeFromList(n *graph.Node, l *list.List) error {
+func removeNodeFromList(n *graph.Node, l *list.List) {
 	for e := l.Front(); e != nil; e = e.Next() {
 		if e.Value.(*graph.Node) == n {
 			l.Remove(e)
-			return fmt.Errorf("node %v not in list", n)
+			return
 		}
 	}
-	return nil
+	panic(fmt.Sprintf("node %v not in list", n))
 }
 
-func removeNodeFromSlice(n *graph.Node, a *[]*graph.Node) error {
+func removeNodeFromSlice(n *graph.Node, a *[]*graph.Node) {
 	for i, v := range *a {
 		if v == n {
 			*a = append((*a)[:i], (*a)[i+1:]...)
-			return fmt.Errorf("node %v not in slice", n)
+			return
 		}
 	}
-	return nil
+	panic(fmt.Sprintf("node %v not in slice", n))
 }
 
 // filter a list of item slots by those that can be reached, shuffle them, and
@@ -207,10 +204,6 @@ func getAvailableItems(r *Route, src *rand.Rand) *list.List {
 // maps should be looped through based on a sorted set of keys (which can be
 // reordered before iteration, as long as it's ordered first); otherwise the
 // same random seed can yield different results.
-//
-// TODO probably need to do this based on… pointer address? instead of name,
-//      since there are now duplicate names in the graph. or do it based on
-//      ItemSlots?
 func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
 	keys := make([]string, 0, len(g))
 	for k := range g {
@@ -273,7 +266,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// that ID, so only use items with unique IDs there.
 	switch slotNode.Name {
 	case "star ore spot", "hard ore slot":
-		if item.SubID() != 0 {
+		if item.SubID() != 0 && !(itemNode.Name == "piece of heart" ||
+			itemNode.Name == "gasha seed") {
 			return false
 		}
 	case "diver gift", "subrosian market 5":
