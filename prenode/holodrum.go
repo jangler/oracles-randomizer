@@ -147,8 +147,8 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("enter d5", "north horon default summer", "bracelet", "jump"))),
 
 	// natzu
-	"great moblin chest": AndSlot(Or("flippers", "jump"), "animal flute",
-		Or("flippers", "pegasus jump L-2"), "bracelet"),
+	"great moblin chest": AndSlot(Or("flippers", "jump"), "bracelet",
+		Or("animal flute", Hard("start")), Or("flippers", "pegasus jump L-2")),
 	"platform chest": AndSlot("scent tree", "flippers"),
 
 	// sunken city
