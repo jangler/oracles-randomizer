@@ -124,38 +124,6 @@ var testData3 = map[string]string{
 	"autumn": "autumn tower",
 }
 
-func TestFeatherLockCheck(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
-	g := r.HardGraph
-
-	// make sure reaching H&S with mandatory shovel does not error
-	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
-		map[string]string{
-			"bracelet":           "d0 sword chest",
-			"flippers":           "maku tree gift",
-			"shovel":             "blaino gift",
-			"feather L-2":        "star ore spot",
-			"winter":             "rod gift",
-			"satchel":            "shovel gift",
-			"pegasus tree seeds": "ember tree",
-		}, "hide and seek", false)
-
-	// make sure reaching H&S with optional shovel errors
-	checkSoftlockWithSlots(t, canFeatherSoftlock, g,
-		map[string]string{
-			"bracelet":           "d0 sword chest",
-			"flippers":           "maku tree gift",
-			"feather L-2":        "blaino gift",
-			"winter":             "rod gift",
-			"pegasus tree seeds": "ember tree",
-			"shovel":             "dance hall prize",
-		}, "hide and seek", true)
-
-	// a softlock case from a real rom produced by 1.2.2
-	checkSoftlockWithSlots(t, canFeatherSoftlock, g, testData1,
-		"hide and seek", true)
-}
-
 func TestD7ExitLockChest(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 	g := r.HardGraph
@@ -333,10 +301,6 @@ func BenchmarkCanSoftlock(b *testing.B) {
 
 func BenchmarkCanFlowerSoftlock(b *testing.B) {
 	benchGraphCheck(b, canFlowerSoftlock)
-}
-
-func BenchmarkCanFeatherSoftlock(b *testing.B) {
-	benchGraphCheck(b, canFeatherSoftlock)
 }
 
 func BenchmarkCanEmberSeedSoftlock(b *testing.B) {
