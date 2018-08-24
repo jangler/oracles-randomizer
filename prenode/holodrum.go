@@ -130,7 +130,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("south swamp", Or("flippers", Hard("dimitri flute"))),
 		And("north horon stump", "remove bush"))),
 	"wet eyeglass lake": Or("not north horon default summer", "spring", "autumn", "winter"),
-	"d5 stump": AndStep(Or("north horon default autumn", "autumn"), Or(
+	"d5 stump": And(Or("north horon default autumn", "autumn"), Or(
 		And("lake portal", "not north horon default summer", "flippers"),
 		And("north horon stump", Or("north horon default winter", And("winter", "autumn")),
 			Or("jump", Hard("ricky", "moosh flute"))))),
