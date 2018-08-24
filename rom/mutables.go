@@ -72,7 +72,7 @@ func SetFreewarp(freewarp bool) {
 		constMutables["tree warp (jp)"].(*MutableRange).New[12] = 0x18
 		constMutables["tree warp (en)"].(*MutableRange).New[12] = 0x18
 	} else {
-		constMutables["tree warp (jp)"].(*MutableRange).New[12] = 0x18
+		constMutables["tree warp (jp)"].(*MutableRange).New[12] = 0x28
 		constMutables["tree warp (en)"].(*MutableRange).New[12] = 0x28
 	}
 }
