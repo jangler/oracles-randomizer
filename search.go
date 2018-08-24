@@ -26,6 +26,8 @@ func nodeInList(n *graph.Node, l *list.List) bool {
 // or nil if it fails.
 func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	fillUnused bool) (usedItems, usedSlots *list.List) {
+	// get a list of slots that are actually reachable; see what can be reached
+	// before slotting anything more
 	freeSlots := getAvailableSlots(r, src, slotPool)
 	initialCount := countSteps(r.Graph.ExploreFromStart())
 	newCount := initialCount
@@ -85,30 +87,10 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 		return nil, nil
 	}
 
-	// try removing each item from each slot to see if the path can still be
-	// reached without it
-	retry := true
-	for retry && !fillUnused {
-		retry = false
+	// omit items not necessary for progression
+	cutExtraItems(r, usedItems, usedSlots, initialCount, fillUnused)
 
-		for e := usedItems.Front(); e != nil; e = e.Next() {
-			item := e.Value.(*graph.Node)
-			parent := item.Parents[len(item.Parents)-1]
-			item.Parents = item.Parents[:len(item.Parents)-1]
-
-			testCount := countSteps(r.Graph.ExploreFromStart())
-
-			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
-				retry = true
-				usedItems.Remove(e)
-				removeNodeFromList(parent, usedSlots)
-				break
-			} else {
-				item.Parents = append(item.Parents, parent)
-			}
-		}
-	}
-
+	// remove the used nodes from the persistent pools
 	if newCount > initialCount || (fillUnused && usedItems.Len() > 0) {
 		for e := usedItems.Front(); e != nil; e = e.Next() {
 			removeNodeFromList(e.Value.(*graph.Node), itemPool)
@@ -309,4 +291,32 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	}
 
 	return true
+}
+
+// try removing each item from each slot to see if progression can still be
+// reached without it
+func cutExtraItems(r *Route, usedItems, usedSlots *list.List, initialCount int,
+	fillUnused bool) {
+	retry := true
+	for retry && !fillUnused {
+		retry = false
+
+		for e := usedItems.Front(); e != nil; e = e.Next() {
+			// remove the item's last parent (the one added this iteration)
+			item := e.Value.(*graph.Node)
+			parent := item.Parents[len(item.Parents)-1]
+			item.Parents = item.Parents[:len(item.Parents)-1]
+
+			testCount := countSteps(r.Graph.ExploreFromStart())
+			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
+				// remove the item and cycle again if it can be omitted
+				retry = true
+				usedItems.Remove(e)
+				removeNodeFromList(parent, usedSlots)
+				break
+			} else {
+				item.Parents = append(item.Parents, parent)
+			}
+		}
+	}
 }
