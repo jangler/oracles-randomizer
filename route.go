@@ -160,11 +160,9 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 	usedItems := list.New()
 	usedSlots := list.New()
 
-	start := []*graph.Node{r.Graph["horon village"]}
-
 	// try to find the route, retrying if needed
 	var seasons map[string]byte
-	strikes, tries := 0, 0
+	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
 		// abort if route was already found on another thread
 		select {
@@ -173,81 +171,62 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		default:
 		}
 
-		seasons = rollSeasons(src, r)
 		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
 
+		// slot initial nodes before algorithm slots progression items
+		seasons = rollSeasons(src, r)
 		if !keyonly {
 			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
 		}
 
-		// try new "look-ahead" algorithm
-		slottedItems := list.New()
+		// slot progression items
 		done := r.Graph["done"]
 		for done.GetMark(done, nil) != graph.MarkTrue {
-			logChan <- "not done"
-			slottedSet := trySlotItemSet(r, src, itemList, slotList, false)
-			if slottedSet != nil {
-				for e := slottedSet.Front(); e != nil; e = e.Next() {
-					slottedItems.PushBack(e.Value)
+			items, slots := trySlotItemSet(r, src, itemList, slotList, false)
+			if items != nil {
+				for items.Len() > 0 {
+					usedItems.PushBack(items.Remove(items.Front()))
+					usedSlots.PushBack(slots.Remove(slots.Front()))
 				}
 			} else {
-				panic("failure")
-			}
-		}
-		for e := slottedItems.Front(); e != nil; e = e.Next() {
-			node := e.Value.(*graph.Node)
-			if node.Type == graph.RootType && len(node.Parents) > 0 {
-				logChan <- fmt.Sprintf("%+v: %s", node.Parents, node.Name)
-			}
-		}
-		logChan <- "goal reached; filling unused slots"
-		for slotList.Len() > 0 {
-			logChan <- fmt.Sprintf("%d slots to fill", slotList.Len())
-			logChan <- fmt.Sprintf("%d items to use", itemList.Len())
-			slottedSet := trySlotItemSet(r, src, itemList, slotList, true)
-			if slottedSet != nil {
-				for e := slottedSet.Front(); e != nil; e = e.Next() {
-					slottedItems.PushBack(e.Value)
-				}
-			} else {
-				logChan <- "== unfilled slots =="
-				for e := slotList.Front(); e != nil; e = e.Next() {
-					logChan <- e.Value.(*graph.Node).Name
-				}
-				logChan <- "== unused items =="
-				for e := itemList.Front(); e != nil; e = e.Next() {
-					logChan <- e.Value.(*graph.Node).Name
-				}
-				panic("failure")
+				break
 			}
 		}
 
-		if tryExploreTargets(src, r, nil, start, &strikes, itemList,
-			usedItems, slotList, usedSlots, verbose, logChan) {
-			if verbose {
-				announceSuccessDetails(r, usedItems, usedSlots, logChan)
+		// if goal was reached, fill unused slots
+		if done.GetMark(done, nil) == graph.MarkTrue {
+			for slotList.Len() > 0 {
+				items, slots := trySlotItemSet(r, src, itemList, slotList, true)
+				if items != nil {
+					for items.Len() > 0 {
+						usedItems.PushBack(items.Remove(items.Front()))
+						usedSlots.PushBack(slots.Remove(slots.Front()))
+					}
+				} else {
+					break
+				}
 			}
-			break
-		} else if strikes >= maxStrikes {
-			if verbose {
-				logChan <- "routing struck out; retrying"
-			}
-			itemList, slotList = initRouteLists(src, r, keyonly)
-			usedItems, usedSlots = list.New(), list.New()
-			strikes = 0
-		} else {
-			logChan <- "could not find route"
 		}
+
+		if slotList.Len() == 0 {
+			break
+		}
+
+		itemList, slotList = initRouteLists(src, r, keyonly)
+		for e := itemList.Front(); e != nil; e = e.Next() {
+			e.Value.(*graph.Node).ClearParents()
+		}
+		r.Graph.ClearMarks()
+		r.HardGraph.ClearMarks()
+		usedItems, usedSlots = list.New(), list.New()
 	}
+
 	if tries >= maxTries {
 		logChan <- fmt.Sprintf("abort; could not find route after %d tries",
 			maxTries)
 		return nil
 	}
 
-	if verbose {
-		logChan <- fmt.Sprintf("%d slots, %d strike(s)", usedSlots.Len(), strikes)
-	}
 	return &RouteLists{seed, seasons, usedItems, itemList, usedSlots}
 }
 

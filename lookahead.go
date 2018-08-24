@@ -25,18 +25,18 @@ func nodeInList(n *graph.Node, l *list.List) bool {
 // items in available slots. it returns a list of slotted items if it succeeds,
 // or nil if it fails.
 func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
-	fillUnused bool) *list.List {
+	fillUnused bool) (usedItems, usedSlots *list.List) {
 	freeSlots := getAvailableSlots(r, src, slotPool)
 	initialCount := countSteps(r.Graph.ExploreFromStart())
 	newCount := initialCount
 
 	if freeSlots.Len() == 0 || itemPool.Len() == 0 {
-		return nil
+		return nil, nil
 	}
 
 	// try placing each item in each slot, until no more slots are available.
-	usedItems := list.New()
-	usedSlots := list.New()
+	usedItems = list.New()
+	usedSlots = list.New()
 	for i := 0; i < itemPool.Len() && newCount == initialCount; i++ {
 		for e := freeSlots.Front(); e != nil &&
 			newCount == initialCount; e = e.Next() {
@@ -48,16 +48,18 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			for e := itemPool.Front(); e != nil; e = e.Next() {
 				item := e.Value.(*graph.Node)
 				if nodeInList(item, usedItems) {
+					// XXX this is not really accurate since a gasha seed could
+					//     be slotted twice in one iteration
 					continue
 				}
 				if !itemFitsInSlot(item, slot, src) {
 					continue
 				}
 
-				item.AddParents(slot)
+				item.Parents = append(item.Parents, slot)
 
 				if canSoftlock(r.HardGraph) != nil {
-					item.ClearParents()
+					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
 					usedItems.PushBack(item)
 					usedSlots.PushBack(slot)
@@ -80,7 +82,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// couldn't find any progression; fail
 	if newCount == initialCount && !fillUnused {
-		return nil
+		return nil, nil
 	}
 
 	// try removing each item from each slot to see if the path can still be
@@ -89,9 +91,8 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	for retry && !fillUnused {
 		retry = false
 
-		n := usedItems.Len()
-		for i := 0; i < n; i++ {
-			item := usedItems.Remove(usedItems.Front()).(*graph.Node)
+		for e := usedItems.Front(); e != nil; e = e.Next() {
+			item := e.Value.(*graph.Node)
 			parent := item.Parents[len(item.Parents)-1]
 			item.Parents = item.Parents[:len(item.Parents)-1]
 
@@ -99,11 +100,11 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
 				retry = true
+				usedItems.Remove(e)
 				removeNodeFromList(parent, usedSlots)
 				break
 			} else {
 				item.Parents = append(item.Parents, parent)
-				usedItems.PushBack(item)
 			}
 		}
 	}
@@ -115,9 +116,9 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 		for e := usedSlots.Front(); e != nil; e = e.Next() {
 			removeNodeFromList(e.Value.(*graph.Node), slotPool)
 		}
-		return usedItems
+		return usedItems, usedSlots
 	}
-	return nil
+	return nil, nil
 }
 
 func removeNodeFromList(n *graph.Node, l *list.List) {

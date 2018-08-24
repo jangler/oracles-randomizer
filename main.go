@@ -138,7 +138,7 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 	// thread.
 	numThreads := 1
 	if seed == 0 {
-		_ = runtime.NumCPU()
+		numThreads = runtime.NumCPU()
 	}
 	log.Printf("using %d thread(s)", numThreads)
 	sources := make([]rand.Source, numThreads)
