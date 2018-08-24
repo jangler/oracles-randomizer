@@ -36,6 +36,8 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	initialCount := countFunc(r.Graph.ExploreFromStart())
 	newCount := initialCount
 
+	sortItemPool(itemPool, src)
+
 	if freeSlots.Len() == 0 || itemPool.Len() == 0 {
 		return nil, nil
 	}
@@ -147,6 +149,17 @@ func removeNodeFromSlice(n *graph.Node, a *[]*graph.Node) {
 
 var dungeonRegexp = regexp.MustCompile(`^d(\d) `)
 
+// sort item pool (except right now it just shuffles it)
+func sortItemPool(pool *list.List, src *rand.Rand) {
+	a := emptyList(pool)
+
+	src.Shuffle(len(a), func(i, j int) {
+		a[i], a[j] = a[j], a[i]
+	})
+
+	fillList(pool, a)
+}
+
 // filter a list of item slots by those that can be reached, shuffle them, and
 // sort them by priority, returning a new list.
 func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
@@ -185,7 +198,9 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
 		r.OldSlots[slot] = true
 	}
 
-	return listFromSlice(a)
+	l := list.New()
+	fillList(l, a)
+	return l
 }
 
 // maps should be looped through based on a sorted set of keys (which can be

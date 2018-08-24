@@ -326,12 +326,20 @@ func getDungeonItem(index int, itemName string, slotList,
 	panic("could not place dungeon-specific items")
 }
 
-func listFromSlice(a []*graph.Node) *list.List {
-	l := list.New()
+func emptyList(l *list.List) []*graph.Node {
+	a := make([]*graph.Node, l.Len())
+	i := 0
+	for l.Len() > 0 {
+		a[i] = l.Remove(l.Front()).(*graph.Node)
+		i++
+	}
+	return a
+}
+
+func fillList(l *list.List, a []*graph.Node) {
 	for _, node := range a {
 		l.PushBack(node)
 	}
-	return l
 }
 
 // return shuffled lists of item and slot nodes
