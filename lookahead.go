@@ -159,7 +159,7 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
 	sort.Slice(a, func(i, j int) bool {
 		// dungeon chests go first
 		di := dungeonIndex(a[i])
-		if di >= 0 && r.Dungeons[di].ItemsPlaced == 0 {
+		if di >= 0 && r.DungeonItems[di] == 0 {
 			return true
 		}
 
@@ -168,9 +168,7 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
 		return rom.IsChest(slot) || rom.IsFound(slot)
 	})
 
-	l := list.New()
-	refillList(l, a)
-	return l
+	return listFromSlice(a)
 }
 
 // get unused item nodes, sorted by placement priority.
@@ -197,9 +195,7 @@ func getAvailableItems(r *Route, src *rand.Rand) *list.List {
 			items[i].Name == "blue ore"
 	})
 
-	l := list.New()
-	refillList(l, items)
-	return l
+	return listFromSlice(items)
 }
 
 // maps should be looped through based on a sorted set of keys (which can be
