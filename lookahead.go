@@ -2,7 +2,7 @@ package main
 
 import (
 	"container/list"
-	"log"
+	"fmt"
 	"math/rand"
 	"sort"
 	"strings"
@@ -11,62 +11,76 @@ import (
 	"github.com/jangler/oos-randomizer/rom"
 )
 
+// returns true iff the node is in the list.
+func nodeInList(n *graph.Node, l *list.List) bool {
+	for e := l.Front(); e != nil; e = e.Next() {
+		if e.Value.(*graph.Node) == n {
+			return true
+		}
+	}
+	return false
+}
+
 // attempts to reach new steps from the given graph state by slotting available
 // items in available slots. it returns a list of slotted items if it succeeds,
 // or nil if it fails.
-func trySlotItemSet(r *Route, src *rand.Rand, pool *list.List) *list.List {
-	freeSlots := getAvailableSlots(r, src, pool)
-	freeItems := getAvailableItems(r, src)
-	slottedItems := list.New()
+func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
+	fillUnused bool) *list.List {
+	freeSlots := getAvailableSlots(r, src, slotPool)
 	initialCount := countSteps(r.Graph.ExploreFromStart())
 	newCount := initialCount
 
-	if freeSlots.Len() == 0 || freeItems.Len() == 0 {
+	if freeSlots.Len() == 0 || itemPool.Len() == 0 {
 		return nil
 	}
 
-	// try placing each item in each slot, until no more slots are available
-	n := freeItems.Len()
-	for i := 0; i < n; i++ {
-		usedSlots := list.New()
+	// try placing each item in each slot, until no more slots are available.
+	usedItems := list.New()
+	usedSlots := list.New()
+	for i := 0; i < itemPool.Len() && newCount == initialCount; i++ {
+		for e := freeSlots.Front(); e != nil &&
+			newCount == initialCount; e = e.Next() {
+			slot := e.Value.(*graph.Node)
+			if nodeInList(slot, usedSlots) {
+				continue
+			}
 
-		for freeSlots.Len() > 0 && newCount <= initialCount {
-			slot := freeSlots.Remove(freeSlots.Front()).(*graph.Node)
-			usedSlots.PushBack(slot)
-
-			for j := 0; j < n && newCount <= initialCount; j++ {
-				item := freeItems.Remove(freeItems.Front()).(*graph.Node)
-				item.AddParents(slot)
-				slottedItems.PushBack(item)
-
-				if !itemFitsInSlot(slot, item, src) ||
-					canSoftlock(r.HardGraph) != nil {
-					item.ClearParents()
-					slottedItems.Remove(slottedItems.Back())
-					freeItems.PushBack(item)
+			for e := itemPool.Front(); e != nil; e = e.Next() {
+				item := e.Value.(*graph.Node)
+				if nodeInList(item, usedItems) {
+					continue
+				}
+				if !itemFitsInSlot(item, slot, src) {
 					continue
 				}
 
-				newCount = countSteps(r.Graph.ExploreFromStart())
-				break
+				item.AddParents(slot)
+
+				if canSoftlock(r.HardGraph) != nil {
+					item.ClearParents()
+				} else {
+					usedItems.PushBack(item)
+					usedSlots.PushBack(slot)
+					break
+				}
 			}
+
+			newCount = countSteps(r.Graph.ExploreFromStart())
 		}
 
-		if newCount > initialCount {
-			break
-		} else {
-			for usedSlots.Len() > 0 {
-				freeSlots.PushBack(usedSlots.Remove(usedSlots.Front()))
+		if newCount == initialCount {
+			for usedItems.Len() > 0 {
+				item := usedItems.Remove(usedItems.Front()).(*graph.Node)
+				slot := usedSlots.Remove(usedSlots.Front()).(*graph.Node)
+				removeNodeFromSlice(slot, &item.Parents)
 			}
-			for slottedItems.Len() > 0 {
-				item := slottedItems.Remove(slottedItems.Front()).(*graph.Node)
-				item.ClearParents()
-				freeItems.PushBack(item)
-			}
+			usedSlots.Init()
 		}
+		itemPool.PushBack(itemPool.Remove(itemPool.Front()))
 	}
 
-	if newCount <= initialCount {
+	// couldn't find any progression; fail
+	if newCount == initialCount {
 		return nil
 	}
 
@@ -76,8 +90,9 @@ func trySlotItemSet(r *Route, src *rand.Rand, pool *list.List) *list.List {
 	for retry {
 		retry = false
 
-		for i := 0; i < slottedItems.Len(); i++ {
-			item := slottedItems.Remove(slottedItems.Front()).(*graph.Node)
+		n := usedItems.Len()
+		for i := 0; i < n; i++ {
+			item := usedItems.Remove(usedItems.Front()).(*graph.Node)
 			parents := item.Parents
 			item.ClearParents()
 
@@ -85,37 +100,47 @@ func trySlotItemSet(r *Route, src *rand.Rand, pool *list.List) *list.List {
 
 			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
 				retry = true
+				for _, parent := range parents {
+					removeNodeFromList(parent, usedSlots)
+				}
 				break
 			} else {
 				item.AddParents(parents...)
-				slottedItems.PushBack(item)
+				usedItems.PushBack(item)
 			}
 		}
 	}
 
-	log.Printf("slotted %d item(s):", slottedItems.Len())
-	for e := slottedItems.Front(); e != nil; e = e.Next() {
-		node := e.Value.(*graph.Node)
-		log.Printf("- %s", node.Name)
-		for _, parent := range node.Parents {
-			removeNodeFromList(pool, parent)
-		}
-	}
-
 	if newCount > initialCount {
-		return slottedItems
+		for e := usedItems.Front(); e != nil; e = e.Next() {
+			removeNodeFromList(e.Value.(*graph.Node), itemPool)
+		}
+		for e := usedSlots.Front(); e != nil; e = e.Next() {
+			removeNodeFromList(e.Value.(*graph.Node), slotPool)
+		}
+		return usedItems
 	}
 	return nil
 }
 
-func removeNodeFromList(pool *list.List, node *graph.Node) {
-	for e := pool.Front(); e != nil; e = e.Next() {
-		if e.Value.(*graph.Node) == node {
-			pool.Remove(e)
-			return
+func removeNodeFromList(n *graph.Node, l *list.List) error {
+	for e := l.Front(); e != nil; e = e.Next() {
+		if e.Value.(*graph.Node) == n {
+			l.Remove(e)
+			return fmt.Errorf("node %v not in list", n)
 		}
 	}
-	panic("node not in list")
+	return nil
+}
+
+func removeNodeFromSlice(n *graph.Node, a *[]*graph.Node) error {
+	for i, v := range *a {
+		if v == n {
+			*a = append((*a)[:i], (*a)[i+1:]...)
+			return fmt.Errorf("node %v not in slice", n)
+		}
+	}
+	return nil
 }
 
 // filter a list of item slots by those that can be reached, shuffle them, and
@@ -199,7 +224,7 @@ func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
 // checks whether the item fits in the slot due to things like seeds only going
 // in trees, certain item slots not accomodating sub IDs. this doesn't check
 // for softlocks or the availability of the slot and item.
-func itemFitsInSlot(slotNode, itemNode *graph.Node, src *rand.Rand) bool {
+func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	slot := rom.ItemSlots[slotNode.Name]
 	item := rom.Treasures[itemNode.Name]
 

@@ -184,7 +184,8 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		slottedItems := list.New()
 		done := r.Graph["done"]
 		for done.GetMark(done, nil) != graph.MarkTrue {
-			slottedSet := trySlotItemSet(r, src, slotList)
+			logChan <- "not done"
+			slottedSet := trySlotItemSet(r, src, itemList, slotList, false)
 			if slottedSet != nil {
 				for e := slottedSet.Front(); e != nil; e = e.Next() {
 					slottedItems.PushBack(e.Value)
@@ -193,13 +194,33 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 				panic("failure")
 			}
 		}
+		panic("done")
 		for e := slottedItems.Front(); e != nil; e = e.Next() {
 			node := e.Value.(*graph.Node)
 			if node.Type == graph.RootType && len(node.Parents) > 0 {
 				logChan <- fmt.Sprintf("%+v: %s", node.Parents, node.Name)
 			}
 		}
-		panic("success")
+		logChan <- "goal reached; filling unused slots"
+		for slotList.Len() > 0 {
+			logChan <- fmt.Sprintf("%d slots to fill", slotList.Len())
+			slottedSet := trySlotItemSet(r, src, itemList, slotList, true)
+			if slottedSet != nil {
+				for e := slottedSet.Front(); e != nil; e = e.Next() {
+					slottedItems.PushBack(e.Value)
+				}
+			} else {
+				logChan <- "unfilled slots:"
+				for e := slotList.Front(); e != nil; e = e.Next() {
+					logChan <- e.Value.(*graph.Node).Name
+				}
+				logChan <- "unused items:"
+				for e := getAvailableItems(r, src).Front(); e != nil; e = e.Next() {
+					logChan <- e.Value.(*graph.Node).Name
+				}
+				panic("failure")
+			}
+		}
 
 		if tryExploreTargets(src, r, nil, start, &strikes, itemList,
 			usedItems, slotList, usedSlots, verbose, logChan) {
