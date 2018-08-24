@@ -31,7 +31,7 @@ const (
 	spriteFeatherL2         = 0x17
 	spriteMagnetGlove       = 0x18
 	spriteBracelet          = 0x19
-	spriteFoolsOre          = 0x1a
+	spriteOreChunk2         = 0x1a
 	spriteShovel            = 0x1b
 	spriteBoomerangL1       = 0x1c
 	spriteBoomerangL2       = 0x1d
@@ -77,6 +77,7 @@ const (
 	// added these sprites:
 	spriteMembersCard = 0x48
 	spriteTreasureMap = 0x49
+	spriteFoolsOre    = 0x4a
 
 	spriteSpringBanana = 0x54
 	spriteRickysGloves = 0x55
@@ -141,7 +142,7 @@ var narrowItemGfx = map[string]int{
 	"summer":           0x601021,
 	"autumn":           0x601021,
 	"bracelet":         0x601251,
-	"fool's ore":       0x601401,
+	"fool's ore":       0x601400,
 	"shovel":           0x601641,
 	"boomerang L-1":    0x601851,
 	"boomerang L-2":    0x601a41,
