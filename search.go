@@ -33,7 +33,8 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
 	freeSlots := getAvailableSlots(r, src, slotPool)
-	initialCount := countFunc(r.Graph.ExploreFromStart())
+	reached := r.Graph.ExploreFromStart()
+	initialCount := countFunc(reached)
 	newCount := initialCount
 
 	sortItemPool(itemPool, src)
@@ -75,7 +76,9 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 				}
 			}
 
-			newCount = countFunc(r.Graph.ExploreFromStart())
+			a := emptyList(usedItems)
+			newCount = countFunc(r.Graph.Explore(reached, a...))
+			fillList(usedItems, a)
 		}
 
 		if newCount == initialCount && !fillUnused {
@@ -107,9 +110,14 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			}
 
 			if itemFitsInSlot(item, slot, nil) {
-				usedSlots.PushBack(slot)
 				item.Parents = append(item.Parents, slot)
-				break
+
+				if canSoftlock(r.HardGraph) != nil {
+					item.Parents = item.Parents[:len(item.Parents)-1]
+				} else {
+					usedSlots.PushBack(slot)
+					break
+				}
 			}
 		}
 	}
@@ -149,7 +157,7 @@ func removeNodeFromSlice(n *graph.Node, a *[]*graph.Node) {
 
 var dungeonRegexp = regexp.MustCompile(`^d(\d) `)
 
-// sort item pool (except right now it just shuffles it)
+// sort item pool by placement priority (except just shuffle them right now)
 func sortItemPool(pool *list.List, src *rand.Rand) {
 	a := emptyList(pool)
 
