@@ -148,11 +148,9 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 			randSeed := uint32(rand.Int63())
 			sources[i] = rand.NewSource(int64(randSeed))
 			seeds[i] = randSeed
-			log.Printf("seed is %08x", randSeed)
 		} else {
 			sources[i] = rand.NewSource(int64(seed))
 			seeds[i] = seed
-			log.Printf("seed is %08x", seed)
 		}
 	}
 

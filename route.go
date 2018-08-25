@@ -146,7 +146,7 @@ type RouteLists struct {
 func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 	logChan chan string, doneChan chan int) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
-	itemList, slotList := initRouteLists(src, r, keyonly)
+	var itemList, slotList *list.List
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
@@ -164,7 +164,8 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		default:
 		}
 
-		logChan <- fmt.Sprintf("searching for route (%d)", tries+1)
+		itemList, slotList = initRouteLists(src, r, keyonly)
+		logChan <- fmt.Sprintf("trying seed %08x", seed)
 
 		// slot initial nodes before algorithm slots progression items
 		seasons = rollSeasons(src, r)
@@ -231,6 +232,10 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		r.Graph.ClearMarks()
 		r.HardGraph.ClearMarks()
 		usedItems, usedSlots = list.New(), list.New()
+
+		// get a new seed for the next iteration
+		seed = uint32(src.Int31())
+		src = rand.New(rand.NewSource(int64(seed)))
 	}
 
 	if tries >= maxTries {
