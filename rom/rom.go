@@ -6,6 +6,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"log"
+	"sort"
 	"strings"
 )
 
@@ -88,6 +89,16 @@ func (a *Addr) FullOffset(en bool) int {
 	return bankOffset + int(a.JpOffset)
 }
 
+// get mutables in order, so that sums are consistent with the same seed
+func orderedKeys(m map[string]Mutable) []string {
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
 // Mutate changes the contents of loaded ROM bytes in place. It returns a
 // checksum of the result or an error.
 func Mutate(b []byte) ([]byte, error) {
@@ -108,7 +119,9 @@ func Mutate(b []byte) ([]byte, error) {
 	en := isEn(b)
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
-	for k, m := range getAllMutables() {
+	mutables := getAllMutables()
+	for _, k := range orderedKeys(mutables) {
+		m := mutables[k]
 		if (strings.HasSuffix(k, "(en)") && !en) ||
 			(strings.HasSuffix(k, "(jp)") && en) {
 			continue
@@ -133,7 +146,8 @@ func Update(b []byte) ([]byte, error) {
 
 	// change fixed mutables
 	en := isEn(b)
-	for k, m := range constMutables {
+	for _, k := range orderedKeys(constMutables) {
+		m := constMutables[k]
 		if (strings.HasSuffix(k, "(en)") && !en) ||
 			(strings.HasSuffix(k, "(jp)") && en) {
 			continue
