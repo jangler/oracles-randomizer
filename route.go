@@ -183,15 +183,9 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		// slot progression items
 		done := r.Graph["done"]
 		for done.GetMark(done, nil) != graph.MarkTrue {
-			// try reaching new non-slot steps first
+			// try to find a new combination of items that opens progression
 			items, slots := trySlotItemSet(r, src, itemList, slotList,
-				countOnlySteps, false)
-
-			if items == nil {
-				// if that fails, just try reaching any steps
-				items, slots = trySlotItemSet(r, src, itemList, slotList,
-					countSteps, false)
-			}
+				countSteps, false)
 
 			if items != nil {
 				for items.Len() > 0 {
