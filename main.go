@@ -267,6 +267,6 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 func searchAsync(src *rand.Rand, seed uint32, keyonly, verbose bool,
 	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
 	// find a viable random route
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 	retChan <- findRoute(src, seed, r, keyonly, verbose, logChan, doneChan)
 }

@@ -125,7 +125,7 @@ var testData3 = map[string]string{
 }
 
 func TestD7ExitLockChest(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 	g := r.HardGraph
 
 	// a softlock case from a real rom produced by 1.2.2
@@ -134,7 +134,7 @@ func TestD7ExitLockChest(t *testing.T) {
 }
 
 func TestD2ExitCheck(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 	g := r.HardGraph
 
 	// check for false positive
@@ -162,7 +162,7 @@ func TestD2ExitCheck(t *testing.T) {
 }
 
 func TestSquareJewelCheck(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 
 	// check for false positive
 	checkSoftlockWithSlots(t, canSquareJewelSoftlock, r.HardGraph,
@@ -184,7 +184,7 @@ func TestSquareJewelCheck(t *testing.T) {
 }
 
 func TestSpringSwampCheck(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 
 	// check for false positive
 	checkSoftlockWithSlots(t, canSpringSwampSoftlock, r.HardGraph,
@@ -211,7 +211,7 @@ func TestSpringSwampCheck(t *testing.T) {
 }
 
 func TestD5ExitSoftlocks(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 
 	// check for flipper false positive
 	checkSoftlockWithSlots(t, canD5ExitFlipperSoftlock, r.HardGraph,
@@ -260,7 +260,7 @@ func TestD5ExitSoftlocks(t *testing.T) {
 //      like, maybe before 1.0 even
 func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 	// make a list of base item nodes to use for testing
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 	g := r.HardGraph
 	baseItems := make([]*graph.Node, 0, len(prenode.ExtraItems()))
 	for name := range prenode.ExtraItems() {
@@ -270,9 +270,9 @@ func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 	for i := 0; i < b.N; i++ {
 		// create a fresh graph and shuffle the item list
 		b.StopTimer()
-		r = NewRoute([]string{"horon village"})
+		r = NewRoute()
 		g = r.HardGraph
-		reached := map[*graph.Node]bool{g["horon village"]: true}
+		reached := map[*graph.Node]bool{g["start"]: true}
 
 		rand.Shuffle(len(baseItems), func(i, j int) {
 			baseItems[i], baseItems[j] = baseItems[j], baseItems[i]
@@ -283,7 +283,7 @@ func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 		// various stages in the exploration
 		for _, itemNode := range baseItems {
 			itemNode.AddParents(g["d0 sword chest"])
-			reached = g.Explore(reached, []*graph.Node{itemNode})
+			reached = g.Explore(reached, itemNode)
 
 			// run 10 times to get a better proportion of check runtime vs
 			// explore runtime. just ignoring the explore runtime results in

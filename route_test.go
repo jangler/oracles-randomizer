@@ -9,7 +9,7 @@ import (
 
 // make sure the route's "normal" and "hard" graphs are behaving appropriately
 func TestNormalVsHard(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 
 	// references var in safety_test.go
 	for child, parent := range testData2 {
@@ -34,7 +34,7 @@ func TestNormalVsHard(t *testing.T) {
 
 // check that graph logic is working as expected
 func TestGraph(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 	g := r.Graph
 
 	checkReach(t, g,
@@ -80,13 +80,12 @@ func TestGraph(t *testing.T) {
 
 func BenchmarkGraphExplore(b *testing.B) {
 	// init graph
-	r := NewRoute([]string{"horon village"})
+	r := NewRoute()
 	b.ResetTimer()
 
 	// explore all items from the d0 sword chest
 	for name := range prenode.ExtraItems() {
-		r.Graph.Explore(
-			make(map[*graph.Node]bool), []*graph.Node{r.Graph[name]})
+		r.Graph.Explore(make(map[*graph.Node]bool), r.Graph[name])
 	}
 }
 

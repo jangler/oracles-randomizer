@@ -37,8 +37,9 @@ type Route struct {
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes
-// with the names in start functioning as givens (always satisfied).
-func NewRoute(start []string) *Route {
+// with the names in start functioning as givens (always satisfied). If no
+// names are given, only the normal start node functions as a given.
+func NewRoute(start ...string) *Route {
 	g, hg := graph.New(), graph.New()
 
 	totalPrenodes := prenode.GetAll()

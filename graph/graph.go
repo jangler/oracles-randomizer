@@ -53,7 +53,7 @@ func (g Graph) ClearMarks() {
 // start, adding the nodes in add. This is a destructive operation; at the end,
 // the graph will have all nodes in the return set set to MarkTrue and the rest
 // set to MarkNone.
-func (g Graph) Explore(start map[*Node]bool, add []*Node) map[*Node]bool {
+func (g Graph) Explore(start map[*Node]bool, add ...*Node) map[*Node]bool {
 	// copy set, and mark nodes accordingly
 	g.ClearMarks()
 	reached := make(map[*Node]bool, len(start))
@@ -108,7 +108,7 @@ func (g Graph) Explore(start map[*Node]bool, add []*Node) map[*Node]bool {
 // ExploreFromStart calls explore without specific start and add nodes, instead
 // exploring the entirety of the existing graph.
 func (g Graph) ExploreFromStart() map[*Node]bool {
-	return g.Explore(nil, []*Node{g["horon village"]})
+	return g.Explore(nil, g["start"])
 }
 
 // Reduce returns a version of the graph that is 1. only relevant to the given
