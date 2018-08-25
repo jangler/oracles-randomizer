@@ -22,7 +22,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"pirate ship": And("pirate's bell", "pirate house"),
 	"graveyard": And("pirate ship", Or("long jump",
 		"western coast default summer",
-		And("bombs", "jump", "summer"))),
+		And("bombs", Or("jump", Hard("start")), "summer"))),
 	"enter d7": And("graveyard", Or("shovel",
 		Or("western coast default summer", "summer"),
 		Or("western coast default spring", "spring"),
