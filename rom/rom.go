@@ -206,7 +206,7 @@ func Verify(b []byte) []error {
 			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2",
 			"expert's ring", "energy ring", "toss ring", "fist ring",
 			"member's card", "treasure map", "member's shop 3",
-			"subrosian market 5":
+			"subrosian market 5", "member's shop 1":
 			break
 		default:
 			if err := m.Check(b); err != nil {
