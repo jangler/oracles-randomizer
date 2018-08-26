@@ -331,6 +331,12 @@ var constMutables = map[string]Mutable{
 	// the mystery tree so that a called animal can come from the right side of
 	// the screen.
 	"remove animal snow pile": MutableByte(Addr{0x24, 0x6608, 0x6c7e}, 0xd9, 0x04),
+
+	// moosh won't spawn in the mountains if you have the wrong number of
+	// essences. bit 6 seems related to this, and needs to be zero too?
+	"skip moosh essence check 1": MutableByte(sameAddr(0x0f, 0x7429), 0x03, 0x00),
+	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e2c, 0x4e36}, 0xca, 0xc3),
+	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ea3, 0x4ead}, 0x40, 0x00),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
