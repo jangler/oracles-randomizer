@@ -60,6 +60,11 @@ others that might be good to know:
 
 - 0:041a = getRandomNumber
 - 0:2a15 = setLinkIDOverride
+- these aren't functions, but they have something to do with tiles for a given
+  room when they execute:
+	- 0:3944
+	- 0:39d6
+	- 0:39e0
 - 4:460c = getTransformedLinkID
 - 6:4865 = checkUseItems
 - 6:4911 = checkItem
@@ -176,3 +181,7 @@ other things:
 	- uses group * 2 as index into pointer table, adds room * 2 to the value,
 	  loads the address at that value into de… not present in seasons lol, it's
 	  inlined in getObjectData
+
+### tiles
+
+- d9 = snow pile
