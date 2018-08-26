@@ -311,6 +311,11 @@ var constMutables = map[string]Mutable{
 		"\xcd\xcd\x30\x3e\x17\xcd\xcd\x30\x3e\x1b\xcd\xcd\x30\x21\xe2\xc7\xcb\xf6\xc9"),
 	"pirate warp": MutableString(Addr{0x15, 0x5e5f, 0x5a1c},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
+
+	// remove a snow pile outside the transition between eastern suburbs and
+	// the mystery tree so that a called animal can come from the right side of
+	// the screen.
+	"remove animal snow pile": MutableByte(Addr{0x24, 0x6608, 0x6c7e}, 0xd9, 0x04),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
