@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
@@ -323,10 +324,11 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	return true
 }
 
-// try removing each item from each slot to see if progression can still be
-// reached without it
+// try removing and downgrading slotted items until the minimal set neceessary
+// for progression is reached.
 func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 	countFunc func(map[*graph.Node]bool) int, fillUnused bool) {
+	// try removing items
 	retry := true
 	for retry && !fillUnused {
 		retry = false
@@ -344,6 +346,39 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 				break
 			}
 
+			item.Parents = append(item.Parents, parent)
+		}
+	}
+
+	// try downgrading L-2 items
+	retry = true
+	for retry && !fillUnused {
+		retry = false
+
+		for e := usedItems.Front(); e != nil; e = e.Next() {
+			item := e.Value.(*graph.Node)
+			if !strings.HasSuffix(item.Name, "L-2") {
+				continue
+			}
+			downgrade := r.Graph[strings.Replace(item.Name, "L-2", "L-1", 1)]
+			if len(downgrade.Parents) > 0 {
+				continue
+			}
+
+			parent := item.Parents[len(item.Parents)-1]
+			item.Parents = item.Parents[:len(item.Parents)-1]
+			downgrade.Parents = append(downgrade.Parents, parent)
+
+			testCount := countFunc(r.Graph.ExploreFromStart())
+			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
+				// downgrade item and cycle again
+				retry = true
+				usedItems.InsertAfter(downgrade, e)
+				usedItems.Remove(e)
+				break
+			}
+
+			downgrade.Parents = downgrade.Parents[:len(downgrade.Parents)-1]
 			item.Parents = append(item.Parents, parent)
 		}
 	}
