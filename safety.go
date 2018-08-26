@@ -11,7 +11,6 @@ var softlockChecks = [](func(graph.Graph) error){
 	canEmberSeedSoftlock,
 	canD7ExitSoftlock,
 	canD2ExitSoftlock,
-	canSquareJewelSoftlock,
 	canSpringSwampSoftlock,
 	canD5ExitFlipperSoftlock,
 	canD5ExitBraceletSoftlock,
@@ -119,16 +118,6 @@ func canD2ExitSoftlock(g graph.Graph) error {
 		(canReachWithoutPrereq(g, g["central woods of winter"], g["jump"]) ||
 			canReachWithoutPrereq(g, g["central woods of winter"], g["bracelet"])) {
 		return errors.New("d2 exit softlock")
-	}
-	return nil
-}
-
-// if the player enters the square jewel cave using an animal companion instead
-// of a shovel, they can be softlocked if the animal is gone when they exit.
-// i'm not sure why that happens.
-func canSquareJewelSoftlock(g graph.Graph) error {
-	if canReachWithoutPrereq(g, g["square jewel chest"], g["shovel"]) {
-		return errors.New("square jewel cave softlock")
 	}
 	return nil
 }

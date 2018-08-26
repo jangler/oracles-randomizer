@@ -161,28 +161,6 @@ func TestD2ExitCheck(t *testing.T) {
 		}, "central woods of winter", true)
 }
 
-func TestSquareJewelCheck(t *testing.T) {
-	r := NewRoute([]string{"horon village"})
-
-	// check for false positive
-	checkSoftlockWithSlots(t, canSquareJewelSoftlock, r.HardGraph,
-		map[string]string{
-			"sword L-1":        "d0 sword chest",
-			"satchel":          "maku tree gift",
-			"ember tree seeds": "ember tree",
-			"shovel":           "dance hall prize",
-			"feather L-1":      "rod gift",
-			"flippers":         "star ore spot",
-
-			"spool swamp default winter": "start",
-			"spool swamp default autumn": "",
-		}, "square jewel chest", false)
-
-	// check for false negative
-	checkSoftlockWithSlots(t, canSquareJewelSoftlock, r.HardGraph, testData3,
-		"square jewel chest", true)
-}
-
 func TestSpringSwampCheck(t *testing.T) {
 	r := NewRoute([]string{"horon village"})
 
