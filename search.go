@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
-	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
@@ -242,14 +241,6 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	} else if (!rom.IsChest(slot) ||
 		slotNode.Name == "d0 sword chest" || slotNode.Name == "rod gift") &&
 		!rom.TreasureIsUnique[itemNode.Name] {
-		return false
-	}
-
-	// don't put gale seeds in the ember tree, since then gale seeds will come
-	// with the satchel and the player can freeze the game by trying to warp
-	// without having explored any trees.
-	if slotNode.Name == "ember tree" &&
-		strings.HasPrefix(itemNode.Name, "gale tree seeds") {
 		return false
 	}
 

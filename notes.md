@@ -65,12 +65,17 @@ others that might be good to know:
 	- 0:3944
 	- 0:39d6
 	- 0:39e0
+- 2:4f90 = openMenu
+- 2:4fdd = closeMenu
 - 4:460c = getTransformedLinkID
+- 5:5468 = checkLinkForceState
+- 5:5471 = linkSetState
 - 6:4865 = checkUseItems
 - 6:4911 = checkItem
 - 6:4925 = initializeParentItem
 - 6:4931 = chooseParentItemSlot
 - 6:4994 = parentItemUpdate (the good stuff; what happens when an item is used)
+- 7:4f36 = galeSeedTryToWarpLink
 
 ## notable ram addresses
 

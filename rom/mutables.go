@@ -345,6 +345,18 @@ var constMutables = map[string]Mutable{
 	"skip moosh essence check 1": MutableByte(sameAddr(0x0f, 0x7429), 0x03, 0x00),
 	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e2c, 0x4e36}, 0xca, 0xc3),
 	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ea3, 0x4ead}, 0x40, 0x00),
+
+	// don't warp link using gale seeds if no trees have been reached (the menu
+	// gets stuck in an infinite loop)
+	"call gale seed check": MutableString(sameAddr(0x07, 0x4f45),
+		"\xfa\x50\xcc\x3d", "\xcd\xf0\x78\x00"),
+	"gale seed check": MutableString(sameAddr(0x07, 0x78f0),
+		"\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07"+
+			"\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07\x07"+
+			"\x07\x07\x07\x07\x07\x07",
+		"\xfa\x50\xcc\x3d\xc0\xaf\x21\xf8\xc7\xb6\x21\x9e\xc7\xb6\x21\x72\xc7"+
+			"\xb6\x21\x67\xc7\xb6\x21\x5f\xc7\xb6\x21\x10\xc7\xb6\xcb\x67"+
+			"\x20\x02\x3c\xc9\xaf\xc9"),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
