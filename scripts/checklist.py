@@ -51,7 +51,7 @@ with open('scripts/checklist.html', 'w') as outfile:
                 if match:
                     slots.append(match.group(1))
 
-        elements = ['<input type="checkbox"> %s</input>' % name
+        elements = ['<input type="checkbox"> %s' % name
                 for name in slots]
 
         sections.append(section_template %
