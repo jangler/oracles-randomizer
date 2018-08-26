@@ -44,6 +44,7 @@ package prenode
 //   - punch
 
 var killPrenodes = map[string]*Prenode{
+	"gale seed weapon":        And("gale seeds", Or("slingshot", HardAnd("satchel", "jump"))),
 	"slingshot kill normal":   And("slingshot", "seed kill normal"),
 	"jump kill normal":        And("jump", "kill normal"),
 	"jump pit normal":         And("jump", "pit kill normal"),
@@ -52,7 +53,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill dodongo":            And("bombs", "bracelet"),
 
 	// required enemies in normal route-ish order, but with prereqs first
-	"seed kill normal":                Or("ember seeds", "scent seeds", "gale seeds", "mystery seeds"),
+	"seed kill normal":                Or("ember seeds", "scent seeds", "gale seed weapon", "mystery seeds"),
 	"pop maku bubble":                 Or("sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"),
 	"remove bush":                     Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet"),
 	"remove bush sustainable":         Or("sword", "boomerang L-2", "bracelet"),
@@ -69,7 +70,7 @@ var killPrenodes = map[string]*Prenode{
 	"toss bombs":                      And("bombs", "use toss ring"),
 	"hit very far switch":             Or("beams", "boomerang", "toss bombs", "slingshot"),
 	"kill rope":                       Or("kill normal"),
-	"kill hardhat (pit, throw)":       Or("gale seeds", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "bracelet"),
+	"kill hardhat (pit, throw)":       Or("gale seed weapon", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "bracelet"),
 	"kill moblin":                     Or("kill normal"),
 	"kill moblin (gap, throw)":        Or("sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"),
 	"kill zol":                        Or("sword", "beams", "ember seeds", "slingshot gale seeds", "slingshot mystery seeds", "bombs", "fool's ore", "punch"),
@@ -78,7 +79,7 @@ var killPrenodes = map[string]*Prenode{
 	"flip spiked beetle":              Or("shield", "shovel"),
 	"damage spiked beetle (throw)":    Or("sword", "bombs", "beams", "seed kill normal", "bracelet", "fool's ore"),
 	"flip kill spiked beetle (throw)": And("flip spiked beetle", "damage spiked beetle (throw)"),
-	"gale kill spiked beetle":         And("gale seeds"),
+	"gale kill spiked beetle":         And("gale seed weapon"),
 	"kill spiked beetle (throw)":      Or("flip kill spiked beetle (throw)", "gale kill spiked beetle"),
 	"kill mimic":                      Or("kill normal"),
 	"damage omuai":                    Or("sword", "bombs", "scent seeds", "fool's ore", "punch"),
@@ -108,7 +109,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill syger":                      Or("sword", "bombs", "scent seeds", "fool's ore", "punch"),
 	"kill digdogger":                  Or("magnet gloves"),
 	"break crystal":                   Or("sword", "bombs", "punch", "bracelet"),
-	"kill hardhat (magnet)":           Or("magnet gloves", "gale seeds"),
+	"kill hardhat (magnet)":           Or("magnet gloves", "gale seed weapon"),
 	"kill vire":                       Or("sword", "bombs", "fool's ore", "punch"),
 	"finish manhandla":                Or("sword", "bombs", "slingshot", "fool's ore"),
 	"kill manhandla":                  And("boomerang L-2", "finish manhandla"),
@@ -124,7 +125,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill gleeok":           Or("sword", "beams", "bombs", "fool's ore", "punch"),
 	"hit switch":            Or("sword", "beams", "boomerang", "rod", "satchel", "bombs", "fool's ore", "punch", "shovel"),
 	"kill frypolar":         And("mystery seeds", Or("bracelet", "ember seeds")),
-	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seeds", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
+	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seed weapon", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
 	"kill medusa head":      Or("sword", "fool's ore"),
 	"kill floormaster":      Or("kill normal"),
 	"kill onox":             And("sword", "jump"), // probably, idc
