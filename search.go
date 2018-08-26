@@ -32,8 +32,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
 	freeSlots := getAvailableSlots(r, src, slotPool)
-	reached := r.Graph.ExploreFromStart()
-	initialCount := countFunc(reached)
+	initialCount := countFunc(r.Graph.ExploreFromStart())
 	newCount := initialCount
 
 	sortItemPool(itemPool, src)
@@ -76,7 +75,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			}
 
 			a := emptyList(usedItems)
-			newCount = countFunc(r.Graph.Explore(reached, a...))
+			newCount = countFunc(r.Graph.ExploreFromStart())
 			fillList(usedItems, a)
 		}
 
@@ -190,11 +189,18 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
 			return true
 		}
 
-		iMatch := dungeonRegexp.FindStringSubmatch(a[i].Name)
-		if iMatch != nil {
-			di, _ := strconv.Atoi(iMatch[1])
+		match := dungeonRegexp.FindStringSubmatch(a[i].Name)
+		if match != nil {
+			di, _ := strconv.Atoi(match[1])
 			if r.DungeonItems[di] > 0 {
 				return false
+			}
+		}
+		match = dungeonRegexp.FindStringSubmatch(a[j].Name)
+		if match != nil {
+			di, _ := strconv.Atoi(match[1])
+			if r.DungeonItems[di] > 0 {
+				return true
 			}
 		}
 
