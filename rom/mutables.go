@@ -312,6 +312,21 @@ var constMutables = map[string]Mutable{
 	"pirate warp": MutableString(Addr{0x15, 0x5e5f, 0x5a1c},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 
+	// if entering certain warps blocked by snow piles in winter, set the
+	// animal companion to appear right outside instead of where you left them.
+	// this requires adding some code at the end of the bank.
+	"animal save point call": MutableString(sameAddr(0x04, 0x461e),
+		"\xfa\x64\xcc", "\xcd\x02\x7e"),
+	"set animal save point": MutableString(sameAddr(0x04, 0x7e02),
+		"\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04"+
+			"\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04"+
+			"\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04"+
+			"\x04\x04\x04",
+		"\xc5\x47\xfa\x64\xcc\x4f\x78\xfe\x04\x20\x05\x79\xfe\xfa\x28\x14\x78"+
+			"\xfe\x05\x20\x05\x79\xfe\xcc\x28\x0a\x78\xfe\x01\x20\x11\x79"+
+			"\xfe\x57\x20\x0c\xfa\x4c\xcc\x21\x42\xcc\x22\x36\x28\x23\x36\x68"+
+			"\x79\xc1\xc9"),
+
 	// remove a snow pile outside the transition between eastern suburbs and
 	// the mystery tree so that a called animal can come from the right side of
 	// the screen.
