@@ -292,6 +292,11 @@ var constMutables = map[string]Mutable{
 	"replace d6 flower winter (jp)": MutableByte(Addr{0x23, 0x7f5a, 0}, 0x92, 0xc4),
 	"replace d6 flower winter (en)": MutableByte(Addr{0x24, 0, 0x45d0}, 0x92, 0xc4),
 
+	// remove a flower on the way to the spring banana tree, since the player
+	// could remove it with moosh and then be stuck behind it. it doesn't lock
+	// any items anyway, since only sword can cut the item from the tree.
+	"remove mt. cucco flower": MutableByte(Addr{0x21, 0x5287, 0x58fd}, 0xd8, 0x04),
+
 	// replace the stairs outside the portal in eyeglass lake in summer with a
 	// railing, because if the player jumps off those stairs in summer they
 	// fall into the noble sword room.
