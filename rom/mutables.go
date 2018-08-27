@@ -134,17 +134,20 @@ var constMutables = map[string]Mutable{
 	"maku gate check": MutableByte(sameAddr(0x04, 0x61a3), 0x7e, 0x66),
 
 	// have horon village shop stock *and* sell items from the start, including
-	// the flute. also don't disable the flute appearing until actually getting
-	// ricky's flute; normally it disappears as soon as you enter the screen
-	// northeast of d1 (or ricky's spot, whichever comes first).
+	// the flute. also don't stop the flute from appearing because of animal
+	// flags, since it probably won't be a flute at all.
 	"horon shop stock check":   MutableByte(sameAddr(0x08, 0x4adb), 0x05, 0x02),
 	"horon shop sell check":    MutableByte(sameAddr(0x08, 0x48d0), 0x05, 0x02),
 	"horon shop flute check 1": MutableByte(sameAddr(0x08, 0x4b02), 0xcb, 0xf6),
-	"horon shop flute check 2": MutableByte(sameAddr(0x08, 0x4afc), 0x6f, 0x7f),
+	"horon shop flute check 2": MutableWord(sameAddr(0x08, 0x4afb),
+		0xcb6f, 0xafaf),
 
-	// subrosian dancing's flute prize is normally disabled by visiting the
-	// same areas as the horon shop's flute.
-	"dance hall flute check": MutableByte(Addr{0x09, 0x5e21, 0x5e38}, 0x20, 0x80),
+	// this all has to do with animals and flutes:
+	// this edits ricky's script so that he never gives his flute.
+	"ricky skip flute script (en)":  MutableByte(Addr{0x0b, 0, 0x6b7a}, 0x0b, 0x7f),
+	"don't give ricky's flute (en)": MutableByte(Addr{0x09, 0, 0x6e6c}, 0xc0, 0xc9),
+	// this prevents subrosian dancing from giving dimitri's flute.
+	"don't give dimitri's flute (en)": MutableByte(Addr{0x09, 0x5e20, 0x5e37}, 0xe6, 0xf6),
 
 	// don't require rod to get items from season spirits
 	"season spirit rod check": MutableByte(sameAddr(0x0b, 0x4eb2), 0x07, 0x02),
