@@ -65,6 +65,10 @@ others that might be good to know:
 	- 0:3944
 	- 0:39d6
 	- 0:39e0
+- 2:4f90 = openMenu
+- 2:4fdd = closeMenu
+- (us) 3:4cf5 = intro capcomScreen
+	- 3:4d68 = state1 (fading in)
 - 4:460c = getTransformedLinkID
 - 6:4865 = checkUseItems
 - 6:4911 = checkItem

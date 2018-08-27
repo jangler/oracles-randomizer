@@ -86,6 +86,12 @@ const treeWarpCommon = "\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e" +
 // consider these mutables constants; they aren't changed in the randomization
 // process.
 var constMutables = map[string]Mutable{
+	// allow skipping the capcom screen after half a second by pressing start
+	"skip capcom call (en)": MutableWord(Addr{0x03, 0, 0x4d6c}, 0x3702, 0xd77d),
+	"skip capcom func (en)": MutableString(Addr{0x03, 0, 0x7dd7},
+		"\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03\x03",
+		"\xe5\xfa\xb3\xcb\xfe\xb2\x30\x03\xcd\x62\x08\xe1\xcd\x37\x02\xc9"),
+
 	// start game with link below bushes, not above
 	"initial link placement": MutableByte(sameAddr(0x07, 0x4197), 0x38, 0x58),
 	// make link actionable as soon as he drops into the world.
