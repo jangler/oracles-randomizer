@@ -193,7 +193,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"mystery cave chest":  MutableChest("moblin ring", 0x5541),
 	"moblin road chest":   MutableChest("rupees, 30", 0x5545),
 	"sunken cave chest":   MutableChest("gasha seed", 0x5549),
-	"diver chest":         MutableChest("rupees, 50", 0x5551),
+	// "diver chest":         MutableChest("rupees, 50", 0x5551),
 	"dry lake west chest": MutableChest("piece of heart", 0x5555),
 	"goron chest":         MutableChest("armor ring L-2", 0x555d),
 	"platform chest":      MutableChest("rupees, 50", 0x5565),
