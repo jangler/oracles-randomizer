@@ -300,6 +300,11 @@ var constMutables = map[string]Mutable{
 	"replace d6 flower winter (jp)": MutableByte(Addr{0x23, 0x7f5a, 0}, 0x92, 0xc4),
 	"replace d6 flower winter (en)": MutableByte(Addr{0x24, 0, 0x45d0}, 0x92, 0xc4),
 
+	// remove a flower on the way to the spring banana tree, since the player
+	// could remove it with moosh and then be stuck behind it. it doesn't lock
+	// any items anyway, since only sword can cut the item from the tree.
+	"remove mt. cucco flower": MutableByte(Addr{0x21, 0x5287, 0x58fd}, 0xd8, 0x04),
+
 	// replace the stairs outside the portal in eyeglass lake in summer with a
 	// railing, because if the player jumps off those stairs in summer they
 	// fall into the noble sword room.
@@ -334,11 +339,6 @@ var constMutables = map[string]Mutable{
 			"\xfe\x05\x20\x05\x79\xfe\xcc\x28\x0a\x78\xfe\x01\x20\x11\x79"+
 			"\xfe\x57\x20\x0c\xfa\x4c\xcc\x21\x42\xcc\x22\x36\x28\x23\x36\x68"+
 			"\x79\xc1\xc9"),
-
-	// remove a snow pile outside the transition between eastern suburbs and
-	// the mystery tree so that a called animal can come from the right side of
-	// the screen.
-	"remove animal snow pile": MutableByte(Addr{0x24, 0x6608, 0x6c7e}, 0xd9, 0x04),
 
 	// moosh won't spawn in the mountains if you have the wrong number of
 	// essences. bit 6 seems related to this, and needs to be zero too?

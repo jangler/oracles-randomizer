@@ -277,10 +277,6 @@ func BenchmarkCanSoftlock(b *testing.B) {
 	benchGraphCheck(b, canSoftlock)
 }
 
-func BenchmarkCanFlowerSoftlock(b *testing.B) {
-	benchGraphCheck(b, canFlowerSoftlock)
-}
-
 func BenchmarkCanEmberSeedSoftlock(b *testing.B) {
 	benchGraphCheck(b, canEmberSeedSoftlock)
 }

@@ -16,7 +16,6 @@ import (
 // to winter as well.
 
 var softlockChecks = [](func(graph.Graph) error){
-	canFlowerSoftlock,
 	canEmberSeedSoftlock,
 	canD7ExitSoftlock,
 	canD2ExitSoftlock,
@@ -32,38 +31,6 @@ func canSoftlock(g graph.Graph) error {
 		if err := check(g); err != nil {
 			return err
 		}
-	}
-	return nil
-}
-
-// make sure you can't reach the spring banana cucco before having an item that
-// removes flowers. you can still softlock if you forget to change season to
-// spring, of course
-func canFlowerSoftlock(g graph.Graph) error {
-	// first check if cucco has been reached
-	cucco := g["spring banana cucco"]
-	if cucco.GetMark(cucco, nil) != graph.MarkTrue {
-		return nil
-	}
-
-	// temporarily make ammoless flower-removal items unavailable
-	disabledNodes := append(g["remove flower sustainable"].Parents)
-	disabledParents := make([][]*graph.Node, len(disabledNodes))
-	for i, node := range disabledNodes {
-		disabledParents[i] = node.Parents
-		node.ClearParents()
-	}
-	defer g.ExploreFromStart()
-	defer func() {
-		for i, node := range disabledNodes {
-			node.AddParents(disabledParents[i]...)
-		}
-	}()
-
-	// see if you can still reach the exit
-	g.ClearMarks()
-	if cucco.GetMark(cucco, nil) == graph.MarkTrue {
-		return errors.New("cucco softlock")
 	}
 	return nil
 }
