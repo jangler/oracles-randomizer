@@ -191,4 +191,7 @@ other things:
 
 ### tiles
 
+- 04 = grass under destructible object
+- d0 = stairs
+- d8 = flower
 - d9 = snow pile
