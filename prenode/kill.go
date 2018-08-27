@@ -45,6 +45,7 @@ package prenode
 
 var killPrenodes = map[string]*Prenode{
 	"gale seed weapon":        And("gale seeds", Or("slingshot", HardAnd("satchel", "jump"))),
+	"gale boomerang":          And("gale satchel", "boomerang"), // stun, then drop from satchel
 	"slingshot kill normal":   And("slingshot", "seed kill normal"),
 	"jump kill normal":        And("jump", "kill normal"),
 	"jump pit normal":         And("jump", "pit kill normal"),
@@ -53,7 +54,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill dodongo":            And("bombs", "bracelet"),
 
 	// required enemies in normal route-ish order, but with prereqs first
-	"seed kill normal":                Or("ember seeds", "scent seeds", "gale seed weapon", "mystery seeds"),
+	"seed kill normal":                Or("ember seeds", "scent seeds", "gale seed weapon", "gale boomerang", "mystery seeds"),
 	"pop maku bubble":                 Or("sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"),
 	"remove bush":                     Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet", Hard("animal flute")),
 	"remove bush sustainable":         Or("sword", "boomerang L-2", "bracelet", Hard("animal flute")),
@@ -73,7 +74,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill hardhat (pit, throw)":       Or("gale seed weapon", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "bracelet"),
 	"kill moblin":                     Or("kill normal"),
 	"kill moblin (gap, throw)":        Or("sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"),
-	"kill zol":                        Or("sword", "beams", "ember seeds", "slingshot gale seeds", "slingshot mystery seeds", "bombs", "fool's ore", "punch"),
+	"kill zol":                        Or("kill normal"),
 	"remove pot":                      Or("sword L-2", "bracelet"),
 	"kill facade":                     Or("bombs"),
 	"flip spiked beetle":              Or("shield", "shovel"),
@@ -102,7 +103,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill gohma":                      Or("scent slingshot", "ember slingshot"),
 	"remove mushroom":                 Or("boomerang L-2", "bracelet", Hard("dimitri flute")),
 	"kill moldorm":                    Or("sword", "bombs", "punch", "scent seeds"),
-	"kill iron mask":                  Or("sword", "bombs", "beams", "ember seeds", "scent seeds", "fool's ore", "punch"),
+	"kill iron mask":                  Or("kill normal"),
 	"kill armos":                      Or("sword", "bombs", "beams", "boomerang L-2", "scent seeds", "fool's ore"),
 	"kill darknut":                    Or("sword", "bombs", "beams", "scent seeds", "fool's ore", "punch"),
 	"kill darknut (pit)":              Or("sword", "bombs", "beams", "scent seeds", "fool's ore", "punch", "shield", "rod", Hard("shovel")),
@@ -123,7 +124,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill wizzrobe (pit)":   Or("pit kill normal"),
 	"kill stalfos (pit)":    Or("kill stalfos", "pit kill normal"),
 	"kill gleeok":           Or("sword", "beams", "bombs", "fool's ore", "punch"),
-	"hit switch":            Or("sword", "beams", "boomerang", "rod", "satchel", "bombs", "fool's ore", "punch", "shovel"),
+	"hit switch":            Or("sword", "beams", "boomerang", "rod", "satchel", "slingshot", "bombs", "fool's ore", "punch", "shovel"),
 	"kill frypolar":         And("mystery seeds", Or("bracelet", "ember seeds")),
 	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seed weapon", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
 	"kill medusa head":      Or("sword", "fool's ore"),
