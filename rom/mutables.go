@@ -332,11 +332,6 @@ var constMutables = map[string]Mutable{
 			"\xfe\x57\x20\x0c\xfa\x4c\xcc\x21\x42\xcc\x22\x36\x28\x23\x36\x68"+
 			"\x79\xc1\xc9"),
 
-	// remove a snow pile outside the transition between eastern suburbs and
-	// the mystery tree so that a called animal can come from the right side of
-	// the screen.
-	"remove animal snow pile": MutableByte(Addr{0x24, 0x6608, 0x6c7e}, 0xd9, 0x04),
-
 	// moosh won't spawn in the mountains if you have the wrong number of
 	// essences. bit 6 seems related to this, and needs to be zero too?
 	"skip moosh essence check 1": MutableByte(sameAddr(0x0f, 0x7429), 0x03, 0x00),
