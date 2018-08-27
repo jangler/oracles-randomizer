@@ -163,14 +163,20 @@ var constMutables = map[string]Mutable{
 	"member's card essence check": MutableWord(Addr{0x09, 0x7739, 0x7750},
 		0xcb57, 0xf601),
 
-	// give member's card, treasure map, and fool's ore graphics in treasure
-	// sprite table
+	// give member's card, treasure map, fool's ore, and identified flutes
+	// graphics in treasure sprite table
 	"member's card gfx": MutableString(Addr{0x3f, 0x6732, 0x67b4},
 		"\x00\x00\x00", "\x5d\x0c\x13"),
 	"treasure map gfx": MutableString(Addr{0x3f, 0x6735, 0x67b7},
 		"\x00\x00\x00", "\x65\x14\x33"),
 	"fool's ore gfx": MutableString(Addr{0x3f, 0x6738, 0x67ba},
 		"\x00\x00\x00", "\x60\x14\x00"),
+	"ricky's flute gfx": MutableString(Addr{0x3f, 0x673b, 0x67bd},
+		"\x00\x00\x00", "\x5f\x16\x13"),
+	"dimitri's flute gfx": MutableString(Addr{0x3f, 0x673e, 0x67c0},
+		"\x00\x00\x00", "\x5f\x16\x23"),
+	"moosh's flute gfx": MutableString(Addr{0x3f, 0x6741, 0x67c3},
+		"\x00\x00\x00", "\x5f\x16\x33"),
 
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68, 0x4e72}, 0xcb, 0xf6),
@@ -407,7 +413,7 @@ var varMutables = map[string]Mutable{
 		New:  []byte{0x4e, 0x1a, 0x40},
 	},
 
-	"horon shop 3 graphics": &MutableRange{ // strange flute
+	"village shop 3 graphics": &MutableRange{ // strange flute
 		Addr: Addr{0x3f, 0x68be, 0x6940},
 		Old:  []byte{0x5f, 0x16, 0x03},
 		New:  []byte{0x5f, 0x16, 0x03},

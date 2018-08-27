@@ -106,6 +106,7 @@ func Mutate(b []byte) ([]byte, error) {
 	setSceneGfx("noble sword spot", "noble sword graphics")
 	setSceneGfx("noble sword spot", "master sword graphics")
 	setSceneGfx("d0 sword chest", "wooden sword graphics")
+	setSceneGfx("village shop 3", "village shop 3 graphics")
 	setSceneGfx("member's shop 1", "member's shop 1 graphics")
 	setSceneGfx("member's shop 2", "member's shop 2 graphics")
 	setSceneGfx("member's shop 3", "member's shop 3 graphics")
@@ -206,7 +207,8 @@ func Verify(b []byte) []error {
 			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2",
 			"expert's ring", "energy ring", "toss ring", "fist ring",
 			"member's card", "treasure map", "member's shop 3",
-			"subrosian market 5", "member's shop 1":
+			"subrosian market 5", "member's shop 1", "ricky's flute",
+			"moosh's flute", "dimitri's flute", "strange flute":
 			break
 		default:
 			if err := m.Check(b); err != nil {

@@ -292,7 +292,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		if !rom.CanSlotInScene(itemNode.Name) {
 			return false
 		}
-	case "member's shop 1", "member's shop 2", "member's shop 3":
+	case "village shop 3", "member's shop 1", "member's shop 2",
+		"member's shop 3":
 		if !rom.CanSlotInShop(itemNode.Name) {
 			return false
 		}
