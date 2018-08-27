@@ -101,6 +101,7 @@ other things:
 - $cc48 = high byte of link object address (in object table starting at $d000)
 - $ccea = disable interactions (?)
 - $c6c5 = wActiveRing
+- $cbb6 = index of room under cursor in map menu
 
 ## notable rom addresses
 

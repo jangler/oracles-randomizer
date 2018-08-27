@@ -129,6 +129,13 @@ var constMutables = map[string]Mutable{
 			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02"+
 			"\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02\x02",
 		treeWarpCommon+"\xcd\x7b\x5e\xc3\x7b\x4f"),
+	// warp to room under cursor if wearing developer ring. this goes right
+	// after the normal tree warp code.
+	"dev ring tree warp call (en)": MutableWord(Addr{0x02, 0, 0x5e9b},
+		0x890c, 0xe675),
+	"dev ring tree warp func (en)": MutableString(Addr{0x02, 0, 0x75e6}, "",
+		"\xfa\xc5\xc6\xfe\x40\x20\x12\xfa\x49\xcc\xfe\x02\x30\x0b\xf6\x80"+
+			"\xea\x63\xcc\xfa\xb6\xcb\xea\x64\xcc\x3e\x03\xcd\x89\x0c\xc9"),
 
 	// have maku gate open from start
 	"maku gate check": MutableByte(sameAddr(0x04, 0x61a3), 0x7e, 0x66),
