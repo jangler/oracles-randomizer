@@ -141,6 +141,8 @@ var constMutables = map[string]Mutable{
 	"horon shop flute check 1": MutableByte(sameAddr(0x08, 0x4b02), 0xcb, 0xf6),
 	"horon shop flute check 2": MutableWord(sameAddr(0x08, 0x4afb),
 		0xcb6f, 0xafaf),
+	// and don't set a ricky flag when buying the "flute"
+	"shop no set ricky flag": MutableByte(Addr{0x0b, 0, 0x4826}, 0x20, 0x00),
 
 	// this all has to do with animals and flutes:
 	// this edits ricky's script so that he never gives his flute.
