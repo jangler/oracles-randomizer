@@ -22,6 +22,7 @@ var softlockChecks = [](func(graph.Graph) error){
 	canSpringSwampSoftlock,
 	canD5ExitFlipperSoftlock,
 	canD5ExitBraceletSoftlock,
+	canRickySoftlock,
 }
 
 // check for known softlock conditions
@@ -139,6 +140,22 @@ func canD5ExitBraceletSoftlock(g graph.Graph) error {
 
 	if canReachWithoutPrereq(g, g["enter d5"], g["bracelet"]) {
 		return errors.New("d5 exit bracelet softlock")
+	}
+	return nil
+}
+
+// using ricky to go from holodum plain to spool swamp is a one-way deal unless
+// you have the flute (or other means to get back to the scent tree area).
+func canRickySoftlock(g graph.Graph) error {
+	winter := g["holodrum plain default winter"]
+	if winter.GetMark(winter, nil) == graph.MarkTrue {
+		return nil
+	}
+
+	if canReachWithoutPrereq(g, g["ricky's gloves"], g["flute"]) &&
+		canReachWithoutPrereq(g, g["ricky's gloves"], g["jump"]) &&
+		canReachWithoutPrereq(g, g["ricky's gloves"], g["flippers"]) {
+		return errors.New("ricky softlock")
 	}
 	return nil
 }
