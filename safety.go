@@ -92,6 +92,7 @@ func canD2ExitSoftlock(g graph.Graph) error {
 	}
 
 	if canReachWithoutPrereq(g, g["central woods of winter"], g["shovel"]) &&
+		canReachWithoutPrereq(g, g["central woods of winter"], g["flute"]) &&
 		(canReachWithoutPrereq(g, g["central woods of winter"], g["jump"]) ||
 			canReachWithoutPrereq(g, g["central woods of winter"], g["bracelet"])) {
 		return errors.New("d2 exit softlock")
@@ -101,7 +102,7 @@ func canD2ExitSoftlock(g graph.Graph) error {
 
 // it's impossible to swim out of the currents in south spool swamp in the
 // spring, so the area in spring needs to be blocked by either the floodgate
-// key or the swamp portal.
+// key, the swamp portal, or dimitri's flute.
 func canSpringSwampSoftlock(g graph.Graph) error {
 	spring := g["spool swamp default spring"]
 	if spring.GetMark(spring, nil) == graph.MarkFalse {
@@ -109,7 +110,8 @@ func canSpringSwampSoftlock(g graph.Graph) error {
 	}
 
 	if canReachWithoutPrereq(g, g["south swamp"], g["floodgate key"]) &&
-		canReachWithoutPrereq(g, g["south swamp"], g["swamp portal"]) {
+		canReachWithoutPrereq(g, g["south swamp"], g["swamp portal"]) &&
+		canReachWithoutPrereq(g, g["south swamp"], g["dimitri's flute"]) {
 		return errors.New("spring swamp softlock")
 	}
 	return nil

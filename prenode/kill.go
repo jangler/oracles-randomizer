@@ -14,8 +14,8 @@ package prenode
 // if an enemy is in the same room as a throwable object and is vulnerable to
 // thrown objects, than just adding "bracelet" as an OR is sufficient.
 //
-// animal companions are not included in this logic, since all the times you
-// are *required* to kill enemies are in areas where you can't use a companion.
+// animal companions are not included in this logic, since they're only
+// available in certain areas.
 
 // when testing how to kill enemies, remember to try:
 // - sword
@@ -55,8 +55,8 @@ var killPrenodes = map[string]*Prenode{
 	// required enemies in normal route-ish order, but with prereqs first
 	"seed kill normal":                Or("ember seeds", "scent seeds", "gale seed weapon", "mystery seeds"),
 	"pop maku bubble":                 Or("sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"),
-	"remove bush":                     Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet", Hard("animal flute")),
-	"remove bush sustainable":         Or("sword", "boomerang L-2", "bracelet", Hard("animal flute")),
+	"remove bush":                     Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet"),
+	"remove bush sustainable":         Or("sword", "boomerang L-2", "bracelet"),
 	"kill normal":                     Or("sword", "bombs", "beams", "seed kill normal", "fool's ore", "punch"),
 	"pit kill normal":                 Or("sword", "beams", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "punch"),
 	"kill stalfos":                    Or("kill normal", "rod"),
@@ -86,8 +86,8 @@ var killPrenodes = map[string]*Prenode{
 	"kill omuai":                      And("damage omuai", "bracelet"),
 	"damage mothula":                  Or("sword", "bombs", "scent seeds", "fool's ore", "punch"),
 	"kill mothula":                    And("damage mothula", "jump"), // you will basically die without feather
-	"remove flower":                   Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", Hard("animal flute")),
-	"remove flower sustainable":       Or("sword", "boomerang L-2", Hard("animal flute")),
+	"remove flower":                   Or("sword", "boomerang L-2", "ember seeds", "gale slingshot"),
+	"remove flower sustainable":       Or("sword", "boomerang L-2"),
 	"kill shrouded stalfos (throw)":   Or("kill stalfos", "bracelet"),
 	"kill like-like (pit, throw)":     Or("kill normal", "bracelet", "rod", Hard("shovel")),
 	"kill water tektite (throw)":      Or("kill normal", "bracelet"),
@@ -100,7 +100,7 @@ var killPrenodes = map[string]*Prenode{
 	"hit far lever":                   Or("jump hit lever", "long jump hit lever", "boomerang", "slingshot"),
 	"kill wizzrobe (pit, throw)":      Or("pit kill normal", "bracelet"),
 	"kill gohma":                      Or("scent slingshot", "ember slingshot"),
-	"remove mushroom":                 Or("boomerang L-2", "bracelet", Hard("dimitri flute")),
+	"remove mushroom":                 Or("boomerang L-2", "bracelet"),
 	"kill moldorm":                    Or("sword", "bombs", "punch", "scent seeds"),
 	"kill iron mask":                  Or("sword", "bombs", "beams", "ember seeds", "scent seeds", "fool's ore", "punch"),
 	"kill armos":                      Or("sword", "bombs", "beams", "boomerang L-2", "scent seeds", "fool's ore"),

@@ -1,6 +1,12 @@
 package prenode
 
 // new set of holodrum prenodes, accounting for randomized seasons
+//
+// "ricky", "dimitri", and "moosh" refer to accessing those animal companions
+// in their designated regions (e.g. dimitri in sunken city). "x's flute" means
+// being able to call the animal in general.
+
+// TODO all the natzu region logic
 
 var holodrumPrenodes = map[string]*Prenode{
 	"start": And(), // parent for nodes reachable by default
@@ -10,11 +16,12 @@ var holodrumPrenodes = map[string]*Prenode{
 	"maku tree gift":   AndSlot("horon village", "pop maku bubble"),
 	"ember tree":       AndSlot("horon village"),
 	"village SE chest": AndSlot("horon village", "bombs"),
-	"village SW chest": AndSlot("horon village", "remove bush", "remove mushroom"),
-	"village shop 3":   AndSlot("big rupees"),
-	"member's shop 1":  AndSlot("member's card", "big rupees"),
-	"member's shop 2":  AndSlot("member's card", "big rupees"),
-	"member's shop 3":  AndSlot("member's card", "big rupees"),
+	"village SW chest": AndSlot("horon village",
+		Or("remove bush", "flute"), Or("remove mushroom", "dimitri's flute")),
+	"village shop 3":  AndSlot("big rupees"),
+	"member's shop 1": AndSlot("member's card", "big rupees"),
+	"member's shop 2": AndSlot("member's card", "big rupees"),
+	"member's shop 3": AndSlot("member's card", "big rupees"),
 
 	// western coast
 	"x-shaped jewel chest": AndSlot("horon village", Or("ember slingshot", "mystery slingshot"),
@@ -34,38 +41,43 @@ var holodrumPrenodes = map[string]*Prenode{
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump
 		And("horon village", "ember seeds"),
-		And("rosa portal", "remove bush"),
-		And("fairy fountain", Or("eastern suburbs default winter", "winter", "cross water gap"))),
+		And("rosa portal", Or("remove bush", "flute")),
+		And("fairy fountain", Or("eastern suburbs default winter", "winter",
+			Or("cross water gap", "dimitri's flute")))),
 	"fairy fountain": Or("sunken city",
-		And("suburbs", Or("eastern suburbs default winter", "winter", "cross water gap"))),
+		And("suburbs", Or("eastern suburbs default winter", "winter",
+			"cross water gap", "ricky's flute", "dimitri's flute"))),
 	"shovel gift": AndSlot("fairy fountain", Or("eastern suburbs default winter", "winter"),
 		Or("woods of winter default winter", "winter")),
 	"central woods of winter": Or(
 		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
-			Or("shovel", "jump")),
+			Or("shovel", "jump", "flute")),
 		And("fairy fountain", Or(
 			"eastern suburbs default spring", "spring",
 			"eastern suburbs default summer", "summer",
 			"eastern suburbs default autumn", "autumn"))),
 	"mystery tree": OrSlot(
 		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
-			Or("shovel", And("jump", "bracelet"))),
+			Or("shovel", And("jump", "bracelet"), "flute")),
 		And("fairy fountain", Or(
 			"eastern suburbs default spring", "spring",
 			"eastern suburbs default summer", "summer",
 			"eastern suburbs default autumn", "autumn"))),
-	"enter d2 A": And("mystery tree", "remove bush"),
+	"enter d2 A": And("mystery tree", Or("remove bush", "flute")),
 	"enter d2 B": Or(
 		And("mystery tree", "bracelet",
-			Or("woods of winter default summer", Hard("ricky"))),
+			Or("woods of winter default summer", "ricky's flute")),
 		And("d2 blade key chest", "bracelet")),
 	"enter d2":         Or("enter d2 A", "enter d2 B"),
 	"outdoor d2 chest": AndSlot("enter d2 B"),
-	"mystery cave chest": AndSlot("mystery tree", "remove mushroom",
+	"mystery cave chest": AndSlot("mystery tree",
+		Or("remove mushroom", "dimitri's flute"),
 		Or("feather L-2", "magnet gloves"),
 		Or("woods of winter default autumn", And("autumn",
-			Or("woods of winter default summer", And("enter d2 B", "bracelet"))))),
-	"moblin road chest": AndSlot("fairy fountain", "bombs", "remove bush",
+			Or("ricky's flute", "woods of winter default summer",
+				And("enter d2 B", "bracelet"))))),
+	"moblin road chest": AndSlot("fairy fountain",
+		Or("bombs", "ricky's flute"), "remove bush",
 		Or("eastern suburbs default winter", "winter"),
 		Or("woods of winter default spring", "spring",
 			"woods of winter default summer", "summer",
@@ -79,85 +91,88 @@ var holodrumPrenodes = map[string]*Prenode{
 	// holodrum plain
 	"ghastly stump": Or(
 		"pegasus tree",
-		And("scent tree", Or("jump", "ricky",
+		And("scent tree", Or("jump", "ricky", "flute",
 			And("flippers", "remove bush"), "holodrum plain default winter")),
-		And("south swamp", Or("flippers", Hard("dimitri flute")), "remove bush")),
+		And("south swamp", Or("flippers", "dimitri's flute"), "remove bush")),
 	"scent tree": OrSlot(
-		And("ghastly stump", Or("jump", "ricky", Hard("moosh flute"), "winter",
+		And("ghastly stump", Or("jump", "ricky", "flute", "winter",
 			"holodrum plain default winter")),
-		And("south swamp", Or("flippers", Hard("dimitri flute"))),
-		And("sunken city", "animal flute"),
-		And("north horon stump",
-			Or("bracelet", And("remove bush", Or("flippers", Hard("dimitri flute"))))),
+		And("south swamp", Or("flippers", "dimitri's flute")),
+		And("sunken city", "flute"),
+		And("north horon stump", Or("bracelet",
+			And(Or("remove bush", "flute"),
+				Or("flippers", "dimitri's flute")))),
 		And("temple remains", "long jump"),
 		And("goron mountain", "flippers")),
 	"blaino gift":      AndSlot("scent tree", "rupees"),
 	"ricky":            And("scent tree", "ricky's gloves"),
-	"round jewel gift": AndSlot("scent tree", Or("flippers", Hard("dimitri flute"))),
+	"round jewel gift": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
 	"water cave chest": AndSlot("scent tree", "flippers"),
-	"mushroom cave chest": AndSlot("scent tree", "remove mushroom", "flippers",
+	"mushroom cave chest": AndSlot("scent tree", "flippers",
+		Or("remove mushroom", "dimitri's flute"),
 		Or("holodrum plain default autumn", And("ghastly stump", "autumn"))),
 
 	// spool swamp
-	"pegasus tree": AndSlot("ghastly stump",
-		Or("holodrum plain default summer", "summer", "feather L-2", "ricky", Hard("moosh flute"))),
+	"pegasus tree": AndSlot("ghastly stump", Or("holodrum plain default summer",
+		"summer", "feather L-2", "ricky", "ricky's flute", "moosh's flute")),
 	"floodgate key spot": AndSlot("pegasus tree", Or("bracelet", "hit lever")),
 	"spool stump": And("pegasus tree", Or("bracelet", "hit lever"),
 		Or("pegasus satchel", "flippers", "feather L-2"), "bracelet", "floodgate key"),
-	"dry swamp": Or(
-		Or("spool swamp default summer", "spool swamp default autumn", "spool swamp default winter"),
+	"dry swamp": Or(Or("spool swamp default summer",
+		"spool swamp default autumn", "spool swamp default winter"),
 		And("spool stump", Or("summer", "autumn", "winter"))),
 	"south swamp": Or(
-		And("spool stump", Or("flippers", Hard("dimitri flute"))),
-		And("spool stump", "dry swamp", Or("long jump", "animal flute")),
-		And("ghastly stump", "remove bush", Or("flippers", Hard("dimitri flute"))),
-		And("scent tree", Or("flippers", Hard("dimitri flute"))),
-		HardAnd("scent tree", "dimitri flute"),
+		And("spool stump", Or("flippers", "dimitri's flute")),
+		And("spool stump", "dry swamp", Or("long jump", "flute")),
+		And("ghastly stump", "remove bush", Or("flippers", "dimitri's flute")),
+		And("scent tree", Or("flippers", "dimitri's flute")),
 		And("swamp portal", "bracelet")),
-	"square jewel chest": AndSlot("south swamp", Or("spool swamp default winter",
-		And("spool stump", "winter")), Or("shovel", "animal flute"), "bombs"),
+	"square jewel chest": AndSlot("south swamp",
+		Or("spool swamp default winter", And("spool stump", "winter")),
+		Or("shovel", "flute"), Or("bombs", "ricky's flute")),
 	"enter d3": And("spool stump", Or("spool swamp default summer", "summer")),
 
 	// north horon / eyeglass lake
-	"not north horon default summer": Or(
-		"north horon default spring", "north horon default autumn", "north horon default winter"),
+	"not north horon default summer": Or("north horon default spring",
+		"north horon default autumn", "north horon default winter"),
 	"north horon stump": Or(
-		And("horon village", "remove bush"),
+		And("horon village", Or("remove bush", "flute")),
 		And("scent tree", "bracelet"),
-		And("south swamp", "flippers", "remove bush"),
-		HardAnd("south swamp", "dimitri flute"),
+		And("south swamp", Or("flippers", "dimitri's flute"), Or("remove bush", "flute")),
 		And("lake portal", "not north horon default summer", "flippers", "jump"),
 		And("lake portal", "pegasus jump L-2", "north horon default winter")),
 	"enter d1": And("gnarled key", Or(
-		And("south swamp", Or("flippers", Hard("dimitri flute"))),
-		And("north horon stump", "remove bush"))),
+		And("south swamp", Or("flippers", "dimitri's flute")),
+		And("north horon stump", Or("remove bush", "flute")))),
 	"wet eyeglass lake": Or("not north horon default summer", "spring", "autumn", "winter"),
-	"d5 stump": And(Or("north horon default autumn", "autumn"), Or(
-		And("lake portal", "not north horon default summer", "flippers"),
-		And("north horon stump", Or("north horon default winter", And("winter", "autumn")),
-			Or("jump", Hard("ricky", "moosh flute"))))),
-	"enter d5": And("d5 stump", "remove mushroom",
-		Or("north horon default autumn", "autumn")),
+	"d5 stump": Or(And("lake portal", "not north horon default summer", "flippers"),
+		And("north horon stump", Or("jump", "ricky's flute", "moosh's flute"),
+			Or("north horon default winter", "winter", "flippers", "dimitri's flute"))),
+	"enter d5": And("d5 stump", Or("remove mushroom", "dimitri's flute"),
+		Or(And("north horon default autumn", Or("jump", "ricky's flute", "moosh's flute"),
+			Or("flippers", "dimitri's flute")), "autumn")),
 	"lake chest": AndSlot("horon village", Or("feather L-2", And("jump",
 		Or("north horon default autumn",
 			And("autumn", "north horon stump"))))),
-	"dry lake west chest": AndSlot("d5 stump", "bracelet",
+	"dry lake east chest": AndSlot("d5 stump", "bracelet",
 		Or("summer", And("enter d5", "north horon default summer"))),
-	"dry lake east chest": AndSlot(And("bombs", "flippers"), Or(
-		And("north horon stump", "jump", Or("north horon default summer", "summer")),
-		And("d5 stump", "summer"),
+	"dry lake west chest": AndSlot(And(Or("bombs", "ricky's flute"), "flippers"), Or(
+		And("north horon stump", Or("jump", "ricky's flute", "moosh's flute"),
+			Or("north horon default summer", "summer")),
+		And("d5 stump", "summer", "flippers"),
 		And("enter d5", "north horon default summer", "bracelet", "jump"))),
 
-	// natzu
+	// natzu TODO
 	"great moblin chest": AndSlot(Or("flippers", "jump"), "bracelet",
-		Or("animal flute", Hard("start")), Or("flippers", "pegasus jump L-2")),
+		"flute", Or("flippers", "pegasus jump L-2")),
 	"platform chest": AndSlot("scent tree", "flippers"),
 
 	// sunken city
 	"sunken city": Or("fairy fountain",
-		And("scent tree", Or("jump", "flippers"), "animal flute"),
+		And("scent tree", "flute"),
 		And("mount cucco", "flippers")),
-	"sunken gale tree":      AndSlot("sunken city", "cross water gap"),
+	"sunken gale tree": AndSlot("sunken city",
+		Or("cross water gap", "sunken city default winter")),
 	"dimitri":               And("sunken gale tree", "bombs"),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
 	"diver gift":            AndSlot("dimitri", "master's plaque"),

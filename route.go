@@ -138,8 +138,15 @@ func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
 type RouteLists struct {
 	Seed                              uint32
 	Seasons                           map[string]byte
+	Companion                         int // 1 to 3
 	UsedItems, UnusedItems, UsedSlots *list.List
 }
+
+const (
+	ricky   = 1
+	dimitri = 2
+	moosh   = 3
+)
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
@@ -155,6 +162,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 
 	// try to find the route, retrying if needed
 	var seasons map[string]byte
+	var companion int
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
 		// abort if route was already found on another thread
@@ -164,7 +172,10 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		default:
 		}
 
-		itemList, slotList = initRouteLists(src, r, keyonly)
+		// roll animal companion and region
+		companion = src.Intn(3) + 1
+
+		itemList, slotList = initRouteLists(src, r, companion, keyonly)
 		logChan <- fmt.Sprintf("trying seed %08x", seed)
 
 		// slot initial nodes before algorithm slots progression items
@@ -244,7 +255,8 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			}
 		}
 
-		itemList, slotList = initRouteLists(src, r, keyonly)
+		companion = src.Intn(3) + 1
+		itemList, slotList = initRouteLists(src, r, companion, keyonly)
 		for e := itemList.Front(); e != nil; e = e.Next() {
 			e.Value.(*graph.Node).ClearParents()
 		}
@@ -263,7 +275,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		return nil
 	}
 
-	return &RouteLists{seed, seasons, usedItems, itemList, usedSlots}
+	return &RouteLists{seed, seasons, companion, usedItems, itemList, usedSlots}
 }
 
 var (
@@ -362,7 +374,7 @@ func fillList(l *list.List, a []*graph.Node) {
 }
 
 // return shuffled lists of item and slot nodes
-func initRouteLists(src *rand.Rand, r *Route,
+func initRouteLists(src *rand.Rand, r *Route, companion int,
 	keyonly bool) (itemList, slotList *list.List) {
 	// get slices of names
 	itemNames := make([]string, 0,
@@ -372,6 +384,18 @@ func initRouteLists(src *rand.Rand, r *Route,
 		if key != "rod gift" { // don't slot vanilla, seasonless rod
 			treasureName := rom.FindTreasureName(slot.Treasure)
 			if !keyonly || keyItems[treasureName] {
+				// substitute identified flute for strange flute
+				if treasureName == "strange flute" {
+					switch companion {
+					case ricky:
+						treasureName = "ricky's flute"
+					case dimitri:
+						treasureName = "dimitri's flute"
+					case moosh:
+						treasureName = "moosh's flute"
+					}
+				}
+
 				itemNames = append(itemNames, treasureName)
 			}
 		}

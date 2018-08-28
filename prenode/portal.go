@@ -2,7 +2,7 @@ package prenode
 
 var portalPrenodes = map[string]*Prenode{
 	"rosa portal": Or("temple",
-		And("suburbs", "remove bush")),
+		And("suburbs", Or("remove bush", "flute"))),
 
 	"swamp portal": Or("beach",
 		And("south swamp", "bracelet")),
@@ -10,9 +10,9 @@ var portalPrenodes = map[string]*Prenode{
 	// jump added since it's effectively useless otherwise
 	"mountain portal": And("jump", Or("mount cucco", "hide and seek")),
 
-	// TODO maybe can use dimitri from d5 stump area?
 	"lake portal": Or("furnace", And("north horon stump", Or(
-		And("wet eyeglass lake", Or("jump", "animal flute"), "flippers"),
+		And("wet eyeglass lake", Or("jump", "flute"),
+			Or("flippers", "dimitri's flute")),
 		And(Or("north horon default winter", "winter"), "pegasus jump L-2")))),
 
 	"village portal": Or(
