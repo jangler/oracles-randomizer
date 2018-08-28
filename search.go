@@ -225,6 +225,26 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 
 	l := list.New()
 	fillList(l, a)
+
+	// place the ember tree, if present, before any other tree
+	var treeMark *list.Element
+	for e := l.Front(); e != nil; e = e.Next() {
+		node := e.Value.(*graph.Node)
+		if treeMark == nil {
+			switch node.Name {
+			case "mystery tree", "scent tree", "pegasus tree",
+				"sunken gale tree", "tarm gale tree":
+				treeMark = e
+			}
+		} else if node.Name == "ember tree" {
+			next := e.Next()
+			l.MoveBefore(e, treeMark)
+			if next != nil {
+				e = next.Prev()
+			}
+		}
+	}
+
 	return l
 }
 
