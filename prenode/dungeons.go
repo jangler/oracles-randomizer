@@ -30,14 +30,14 @@ var d1Prenodes = map[string]*Prenode{
 	"d1 key chest":      And("d1 map chest", "hit lever"),
 	"enter goriya bros": And("d1 bomb chest", "bombs", "d1 key B"),
 	"d1 satchel spot":   AndSlot("enter goriya bros", "kill goriya bros"),
-	"d1 boss key chest": And("d1 map chest", "ember seeds", "kill goriya (pit)"),
-	"d1 ring chest":     AndSlot("enter d1", "ember seeds"),
-	"enter aquamentus":  And("enter d1", "ember seeds", "d1 boss key"),
-	"d1 essence":        AndStep("enter aquamentus", "kill aquamentus"),
+	"d1 boss key chest": AndSlot("d1 map chest", "ember seeds",
+		"kill goriya (pit)"),
+	"d1 ring chest":    AndSlot("enter d1", "ember seeds"),
+	"enter aquamentus": And("enter d1", "ember seeds", "d1 boss key"),
+	"d1 essence":       AndStep("enter aquamentus", "kill aquamentus"),
 
-	"d1 key A":    And("d1 key fall"),
-	"d1 key B":    And("d1 key chest"),
-	"d1 boss key": And("d1 boss key chest"),
+	"d1 key A": And("d1 key fall"),
+	"d1 key B": And("d1 key chest"),
 }
 
 // this is tricky because of the multiple entrances. the nexus is what
@@ -78,14 +78,14 @@ var d2Prenodes = map[string]*Prenode{
 	"d2 10-rupee chest": AndSlot("d2 bomb wall", "bombs", "bracelet"),
 	"enter facade":      And("d2 10-rupee chest", "remove pot", "d2 key B"),
 	"d2 spinner":        And("enter facade", "kill facade", Or("d2 key C", "bombs")),
-	"d2 boss key chest": And("enter facade", "kill facade", "d2 key C", "bombs"),
-	"enter dodongo":     And("d2 boss key chest", "d2 boss key"),
-	"d2 essence":        AndStep("enter dodongo", "kill dodongo"),
+	"d2 boss key chest": AndSlot("enter facade", "kill facade", "d2 key C",
+		"bombs"),
+	"enter dodongo": And("d2 boss key chest", "d2 boss key"),
+	"d2 essence":    AndStep("enter dodongo", "kill dodongo"),
 
-	"d2 key A":    And("d2 key fall"),
-	"d2 key B":    And("d2 bomb key chest"),
-	"d2 key C":    And("d2 blade key chest"),
-	"d2 boss key": And("d2 boss key chest"),
+	"d2 key A": And("d2 key fall"),
+	"d2 key B": And("d2 bomb key chest"),
+	"d2 key C": And("d2 blade key chest"),
 
 	"d2 torch room": Or("enter d2 A", "d2 compass chest"),
 }
@@ -105,7 +105,7 @@ var d3Prenodes = map[string]*Prenode{
 	"enter omuai":       And("d3 mimic stairs", "jump", "d3 key B"),
 	"d3 gasha chest":    AndSlot("d3 mimic stairs", "jump"),
 	"d3 omuai stairs":   And("enter omuai", "kill omuai"),
-	"d3 boss key chest": And("d3 omuai stairs", "jump"),
+	"d3 boss key chest": AndSlot("d3 omuai stairs", "jump"),
 	"d3 basement A in":  And("jump", Or("d3 feather stairs", "d3 basement A out")),
 	"d3 basement A out": Or("d3 trampoline stairs",
 		And("d3 basement A in", "jump")),
@@ -123,9 +123,8 @@ var d3Prenodes = map[string]*Prenode{
 	"d3 essence":              AndStep("enter mothula", "kill mothula"),
 
 	// fixed items
-	"d3 key A":    And("d3 roller key chest"),
-	"d3 key B":    And("d3 trampoline key chest"),
-	"d3 boss key": And("d3 boss key chest"),
+	"d3 key A": And("d3 roller key chest"),
+	"d3 key B": And("d3 trampoline key chest"),
 }
 
 // this whole dungeon is basically a tree so all the links are one-way
@@ -149,7 +148,8 @@ var d4Prenodes = map[string]*Prenode{
 	"d4 final minecart":  And("enter agunima", "kill agunima"),
 	"d4 torch key chest": And("enter agunima", "ember slingshot", "jump"),
 	"d4 slingshot chest": AndSlot("d4 final minecart", "d4 key C"),
-	"d4 boss key chest":  And("d4 final minecart", "hit very far lever", "jump", "d4 key D", "flippers"),
+	"d4 boss key spot": And("d4 final minecart", "hit very far lever",
+		"jump", "d4 key D", "flippers"),
 	"d4 basement stairs": And("d4 final minecart", "hit far lever", "kill wizzrobe (pit, throw)", "d4 key E"),
 
 	// B1F
@@ -163,7 +163,7 @@ var d4Prenodes = map[string]*Prenode{
 	"d4 key C":    And("d4 water key fall"),
 	"d4 key D":    And("d4 pre-mid key"),
 	"d4 key E":    And("d4 torch key chest"),
-	"d4 boss key": And("d4 boss key chest"),
+	"d4 boss key": And("d4 boss key spot"),
 }
 
 var d5Prenodes = map[string]*Prenode{
@@ -236,7 +236,7 @@ var d6Prenodes = map[string]*Prenode{
 	"d6 armos room":        And("d6 crumble stairs", "bombs"),
 	"d6 boomerang chest":   AndSlot("d6 armos room", "jump"),
 	"d6 cracked room":      And("d6 switch stairs"),
-	"d6 boss key chest":    And("d6 torch stairs", "long jump"),
+	"d6 boss key chest":    AndSlot("d6 torch stairs", "long jump"),
 	"d6 gauntlet stairs":   And("d6 boss key chest"),
 
 	// 3F
@@ -253,10 +253,9 @@ var d6Prenodes = map[string]*Prenode{
 	"d6 essence":       AndStep("enter manhandla", "kill manhandla"),
 
 	// fixed items
-	"d6 key A":    And("d6 magnet key fall"),
-	"d6 key B":    And("d6 vire key chest"),
-	"d6 key C":    And("d6 skipped key chest"),
-	"d6 boss key": And("d6 boss key chest"),
+	"d6 key A": And("d6 magnet key fall"),
+	"d6 key B": And("d6 vire key chest"),
+	"d6 key C": And("d6 skipped key chest"),
 }
 
 var d7Prenodes = map[string]*Prenode{
@@ -296,18 +295,18 @@ var d7Prenodes = map[string]*Prenode{
 	"d7 enter skipped": And("d7 stairs room", Or(
 		And("magnet gloves", "jump"), HardAnd("pegasus jump L-2"))),
 	"d7 skipped key poof": And("d7 enter skipped", "kill wizzrobe (pit)", "kill stalfos (pit)"),
-	"d7 boss key chest": And("d7 stairs room", "jump", "hit switch", "kill stalfos",
-		Or("d7 key E", HardAnd("poe skip", "d7 key D", "d7 enter skipped"))),
+	"d7 boss key chest": AndSlot("d7 stairs room", "jump", "hit switch",
+		"kill stalfos", Or("d7 key E",
+			HardAnd("poe skip", "d7 key D", "d7 enter skipped"))),
 	"enter gleeok": And("d7 stairs room", "d7 boss key"),
 	"d7 essence":   AndStep("enter gleeok", "kill gleeok"),
 
 	// fixed items
-	"d7 key A":    And("d7 wizzrobe key chest"),
-	"d7 key B":    And("d7 zol key fall"),
-	"d7 key C":    And("d7 armos key fall"),
-	"d7 key D":    And("d7 magunesu key chest"),
-	"d7 key E":    And("d7 skipped key poof"),
-	"d7 boss key": And("d7 boss key chest"),
+	"d7 key A": And("d7 wizzrobe key chest"),
+	"d7 key B": And("d7 zol key fall"),
+	"d7 key C": And("d7 armos key fall"),
+	"d7 key D": And("d7 magunesu key chest"),
+	"d7 key E": And("d7 skipped key poof"),
 }
 
 // keys get pretty wonky; hopefully they're correct between HSS skip and
@@ -332,7 +331,8 @@ var d8Prenodes = map[string]*Prenode{
 		And("long jump", Or("bombs", "slingshot L-1")),
 		HardAnd("long jump", Or("sword", "fool's ore")))),
 	// technically there are pots to throw in this room but i don't care
-	"d8 boss key chest": And("d8 cross bridge B", "kill keese", "kill pols voice (pit)"),
+	"d8 boss key chest": AndSlot("d8 cross bridge B", "kill keese",
+		"kill pols voice (pit)"),
 	"d8 crystal room": And("d8 ice puzzle room",
 		Or("d8 key D", HardAnd("d8 key A", "HSS skip"))),
 	"d8 armos key fall": And("d8 crystal room", "bombs"),
@@ -368,14 +368,13 @@ var d8Prenodes = map[string]*Prenode{
 	"d8 essence": AndStep("enter medusa head", "kill medusa head"),
 
 	// fixed items
-	"d8 key A":    And("d8 eye key fall"),
-	"d8 key B":    And("d8 hardhat key fall"),
-	"d8 key C":    And("d8 spinner key chest"),
-	"d8 key D":    And("d8 bomb key chest"),
-	"d8 key E":    And("d8 armos key fall"),
-	"d8 key F":    And("d8 lava key chest"),
-	"d8 key G":    And("d8 pot key chest"),
-	"d8 boss key": And("d8 boss key chest"),
+	"d8 key A": And("d8 eye key fall"),
+	"d8 key B": And("d8 hardhat key fall"),
+	"d8 key C": And("d8 spinner key chest"),
+	"d8 key D": And("d8 bomb key chest"),
+	"d8 key E": And("d8 armos key fall"),
+	"d8 key F": And("d8 lava key chest"),
+	"d8 key G": And("d8 pot key chest"),
 }
 
 // onox's castle

@@ -167,7 +167,7 @@ var constMutables = map[string]Mutable{
 	"keep ricky in pen (en)": MutableString(Addr{0x09, 0, 0x4e77},
 		"\x10\xc6\xfe\x0b", "\xaf\xc6\xfe\x01"),
 	// and this does the same for saying goodbye once reaching spool swamp.
-	"ricky say goodbye (en)": MutableString(Addr{0x09, 0, 0x6ccc},
+	"ricky say goodbye (en)": MutableString(Addr{0x09, 0, 0x6ccd},
 		"\x10\xc6\xfe\x0b", "\xaf\xc6\xfe\x01"),
 
 	// "activate" a flute by setting its icon and song when obtained.

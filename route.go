@@ -179,7 +179,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		// slot initial nodes before algorithm slots progression items
 		seasons = rollSeasons(src, r)
 		if !keyonly {
-			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
+			placeDungeonItems(src, r, itemList, usedItems, slotList, usedSlots)
 		}
 
 		// clear "old" slots and item counts, since we're starting fresh
@@ -336,10 +336,40 @@ func dungeonIndex(node *graph.Node) int {
 	return -1
 }
 
-// place maps and compasses in chests in dungeons (before attempting to slot
-// the other ones)
-func placeDungeonItems(src *rand.Rand,
+// place maps, compasses, and boss keys in chests in dungeons (before
+// attempting to slot the other ones)
+func placeDungeonItems(src *rand.Rand, r *Route,
 	itemList, usedItems, slotList, usedSlots *list.List) {
+	// place boss keys first
+	for i := 1; i < 9; i++ {
+		if i == 4 || i == 5 {
+			continue
+		}
+
+		slotted := false
+		for ei := itemList.Front(); ei != nil && !slotted; ei = ei.Next() {
+			item := ei.Value.(*graph.Node)
+			if item.Name == fmt.Sprintf("d%d boss key", i) {
+				for es := slotList.Front(); es != nil; es = es.Next() {
+					slot := es.Value.(*graph.Node)
+					if dungeonIndex(slot) == i &&
+						rom.IsChest(rom.ItemSlots[slot.Name]) {
+						r.AddParent(item.Name, slot.Name)
+
+						usedSlots.PushBack(slot)
+						slotList.Remove(es)
+						usedItems.PushBack(item)
+						itemList.Remove(ei)
+
+						slotted = true
+						break
+					}
+				}
+			}
+		}
+	}
+
+	// then place maps and compasses
 	for i := 1; i < 9; i++ {
 		for _, itemName := range []string{"dungeon map", "compass"} {
 			slotElem, itemElem, slotNode, itemNode :=

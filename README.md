@@ -59,7 +59,7 @@ The Natzu region matches whichever animal companion the randomized flute calls.
 The following items are **not** randomized:
 
 - Renewable shop items (bombs, shield, hearts, etc.)
-- Small keys and boss keys
+- Small keys
 - Pirate's bell and iron shield
 - Found items (gasha seeds and pieces of heart outside of chests)
 - Subrosian dancing prizes after the first

@@ -250,11 +250,12 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 			summary <- usedLine
 		}
 	} else {
-		// print maps and compasses last, even though they're slotted first
-		for _, usedLine := range usedLines[16:] {
+		// print boss keys, maps, and compasses last, even though they're
+		// slotted first
+		for _, usedLine := range usedLines[22:] {
 			summary <- usedLine
 		}
-		for _, usedLine := range usedLines[:16] {
+		for _, usedLine := range usedLines[:22] {
 			summary <- usedLine
 		}
 	}

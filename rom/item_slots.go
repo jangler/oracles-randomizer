@@ -61,6 +61,12 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 		subID = ms.Treasure.subID
 	}
 
+	// for boss keys, override the map/compass chest collection mode with the
+	// normal chest collection mode.
+	if ms.Treasure.id == Treasures["boss key"].id {
+		ms.Treasure.mode = CollectChest1
+	}
+
 	for _, addr := range ms.SubIDAddrs {
 		b[addr.FullOffset(en)] = subID
 	}
@@ -293,12 +299,13 @@ var ItemSlots = map[string]*MutableSlot{
 	"d0 rupee chest": MutableChest("rupees, 30", 0x53f8),
 
 	// d1
-	"d1 satchel spot":  MutableFind("satchel 1", 0x669a),
-	"d1 gasha chest":   MutableChest("gasha seed", 0x5400),
-	"d1 bomb chest":    MutableChest("bombs, 10", 0x5408),
-	"d1 ring chest":    MutableChest("discovery ring", 0x5414),
-	"d1 compass chest": MutableChest("compass", 0x5404),
-	"d1 map chest":     MutableChest("dungeon map", 0x5418),
+	"d1 satchel spot":   MutableFind("satchel 1", 0x669a),
+	"d1 gasha chest":    MutableChest("gasha seed", 0x5400),
+	"d1 bomb chest":     MutableChest("bombs, 10", 0x5408),
+	"d1 ring chest":     MutableChest("discovery ring", 0x5414),
+	"d1 compass chest":  MutableChest("compass", 0x5404),
+	"d1 map chest":      MutableChest("dungeon map", 0x5418),
+	"d1 boss key chest": MutableChest("d1 boss key", 0x5410),
 
 	// d2
 	"d2 bracelet chest": MutableChest("bracelet", 0x5424),
@@ -306,14 +313,16 @@ var ItemSlots = map[string]*MutableSlot{
 	"d2 5-rupee chest":  MutableChest("rupees, 5", 0x5438),
 	"d2 map chest":      MutableChest("dungeon map", 0x5428),
 	"d2 compass chest":  MutableChest("compass", 0x5434),
+	"d2 boss key chest": MutableChest("d2 boss key", 0x5420),
 
 	// d3
-	"d3 feather chest": MutableChest("feather L-1", 0x5458),
-	"d3 rupee chest":   MutableChest("rupees, 30", 0x543c),
-	"d3 gasha chest":   MutableChest("gasha seed", 0x5444),
-	"d3 bomb chest":    MutableChest("bombs, 10", 0x545c),
-	"d3 compass chest": MutableChest("compass", 0x544c),
-	"d3 map chest":     MutableChest("dungeon map", 0x5454),
+	"d3 feather chest":  MutableChest("feather L-1", 0x5458),
+	"d3 rupee chest":    MutableChest("rupees, 30", 0x543c),
+	"d3 gasha chest":    MutableChest("gasha seed", 0x5444),
+	"d3 bomb chest":     MutableChest("bombs, 10", 0x545c),
+	"d3 compass chest":  MutableChest("compass", 0x544c),
+	"d3 map chest":      MutableChest("dungeon map", 0x5454),
+	"d3 boss key chest": MutableChest("d3 boss key", 0x5440),
 
 	// d4
 	"d4 slingshot chest": MutableChest("slingshot L-1", 0x5470),
@@ -335,20 +344,23 @@ var ItemSlots = map[string]*MutableSlot{
 	"d6 rupee chest C":   MutableChest("rupees, 5", 0x54b8),
 	"d6 compass chest":   MutableChest("compass", 0x549c),
 	"d6 map chest":       MutableChest("dungeon map", 0x54a4),
+	"d6 boss key chest":  MutableChest("d6 boss key", 0x54bc),
 
 	// d7
-	"d7 cape chest":    MutableChest("feather L-2", 0x54e1),
-	"d7 rupee chest":   MutableChest("rupees, 1", 0x54dd),
-	"d7 ring chest":    MutableChest("power ring L-1", 0x54f9),
-	"d7 compass chest": MutableChest("compass", 0x54ed),
-	"d7 map chest":     MutableChest("dungeon map", 0x54f5),
+	"d7 cape chest":     MutableChest("feather L-2", 0x54e1),
+	"d7 rupee chest":    MutableChest("rupees, 1", 0x54dd),
+	"d7 ring chest":     MutableChest("power ring L-1", 0x54f9),
+	"d7 compass chest":  MutableChest("compass", 0x54ed),
+	"d7 map chest":      MutableChest("dungeon map", 0x54f5),
+	"d7 boss key chest": MutableChest("d7 boss key", 0x54e9),
 
 	//d8
-	"d8 HSS chest":     MutableChest("slingshot L-2", 0x551d),
-	"d8 bomb chest":    MutableChest("bombs, 10", 0x54fd),
-	"d8 ring chest":    MutableChest("steadfast ring", 0x5509),
-	"d8 compass chest": MutableChest("compass", 0x5515),
-	"d8 map chest":     MutableChest("dungeon map", 0x5521),
+	"d8 HSS chest":      MutableChest("slingshot L-2", 0x551d),
+	"d8 bomb chest":     MutableChest("bombs, 10", 0x54fd),
+	"d8 ring chest":     MutableChest("steadfast ring", 0x5509),
+	"d8 compass chest":  MutableChest("compass", 0x5515),
+	"d8 map chest":      MutableChest("dungeon map", 0x5521),
+	"d8 boss key chest": MutableChest("d8 boss key", 0x550d),
 
 	// don't use this slot; no one knows about it and it's not required for
 	// anything in a normal playthrough
