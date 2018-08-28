@@ -87,6 +87,7 @@ these are en/us:
 - 0:2542 = interactionSetScript, hl is address in bank b
 - 0:30c7 = checkGlobalFlag, a is bit starting at c6ca
 - 0:30cd = setGlobalFlag, a is bit starting at c6ca
+- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 - 2:5e9a = break here and modify cc63-cc64 to set warp tree warp destination
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
@@ -210,7 +211,8 @@ other things:
 
 ### tiles
 
-- 04 = grass under destructible object
+- 04 = grass under object
+- b1 = lever
 - d0 = stairs
 - d8 = flower
 - d9 = snow pile

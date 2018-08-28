@@ -297,8 +297,12 @@ var constMutables = map[string]Mutable{
 	// move the trigger for the bridge from holodrum plain to natzu to the
 	// top-left corner of the screen, where it can't be hit, and replace the
 	// lever tile as well. this prevents the bridge from blocking the waterway.
-	"remove bridge trigger": MutableWord(Addr{0x11, 0x6734, 0x6737}, 0x6868, 0x0000),
-	"remove bridge lever":   MutableByte(Addr{0x21, 0x5bf1, 0x6267}, 0xb1, 0x04),
+	"remove bridge trigger": MutableWord(Addr{0x11, 0x6734, 0x6737},
+		0x6868, 0x0000),
+	"remove prairie bridge lever": MutableByte(Addr{0x21, 0x5bf1, 0x6267},
+		0xb1, 0x04),
+	"remove wasteland bridge lever (en)": MutableByte(Addr{0x23, 0, 0x5cb7},
+		0xb1, 0x04),
 
 	// grow seeds in all seasons
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b3, 0x68b5}, 0xb8, 0xbf),
