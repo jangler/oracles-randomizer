@@ -156,7 +156,7 @@ func removeNodeFromSlice(n *graph.Node, a *[]*graph.Node) {
 
 var dungeonRegexp = regexp.MustCompile(`^d(\d) `)
 
-// sort item pool by placement priority (except just shuffle them right now)
+// shuffle the item pool and arrange the items by priority.
 func sortItemPool(pool *list.List, src *rand.Rand) {
 	a := emptyList(pool)
 
@@ -165,6 +165,24 @@ func sortItemPool(pool *list.List, src *rand.Rand) {
 	})
 
 	fillList(pool, a)
+
+	// place all jewels together
+	var jewelMark *list.Element
+	for e := pool.Front(); e != nil; e = e.Next() {
+		switch e.Value.(*graph.Node).Name {
+		case "square jewel", "pyramid jewel", "round jewel",
+			"x-shaped jewel":
+			if jewelMark == nil {
+				jewelMark = e
+			} else {
+				next := e.Next()
+				pool.MoveAfter(e, jewelMark)
+				if next != nil {
+					e = next.Prev()
+				}
+			}
+		}
+	}
 }
 
 // filter a list of item slots by those that can be reached, shuffle them, and
