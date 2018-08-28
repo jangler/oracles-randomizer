@@ -32,7 +32,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
-	freeSlots := getAvailableSlots(r, src, slotPool)
+	freeSlots := getAvailableSlots(r, src, slotPool, fillUnused)
 	initialCount := countFunc(r.Graph.ExploreFromStart())
 	newCount := initialCount
 
@@ -169,7 +169,8 @@ func sortItemPool(pool *list.List, src *rand.Rand) {
 
 // filter a list of item slots by those that can be reached, shuffle them, and
 // sort them by priority, returning a new list.
-func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
+func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
+	fillUnused bool) *list.List {
 	a := make([]*graph.Node, 0)
 	for e := pool.Front(); e != nil; e = e.Next() {
 		node := e.Value.(*graph.Node)
@@ -183,9 +184,19 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List) *list.List {
 	})
 
 	// prioritize, in order:
-	// 1. anything over slots that were already reached in a previous iteration
-	// 2. anything over dungeons that already have an item in them
+	// 1. if filling extra items, slots with specific restrictions
+	// 2. anything over slots that were already reached in a previous iteration
+	// 3. anything over dungeons that already have an item in them
 	sort.Slice(a, func(i, j int) bool {
+		if fillUnused {
+			switch a[i].Name {
+			case "diver gift", "subrosian market 2", "subrosian market 5",
+				"village shop 3", "d0 sword chest", "rod gift",
+				"star ore spot", "hard ore slot":
+				return true
+			}
+		}
+
 		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] {
 			return true
 		}
