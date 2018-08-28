@@ -243,7 +243,7 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 	summary <- fmt.Sprintf("seed: %08x", rl.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
 	summary <- ""
-	summary <- "used items, (kind of) in order:"
+	summary <- "used items, in (one possible) order:"
 	summary <- ""
 	if keyonly {
 		for _, usedLine := range usedLines {
