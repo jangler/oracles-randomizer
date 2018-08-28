@@ -107,13 +107,16 @@ var constMutables = map[string]Mutable{
 	"link immediately actionable (en)": MutableString(sameAddr(0x05, 0x4d98),
 		"\x3e\x08\xcd\x16", "\xcd\x16\x2a\xc9"),
 	// set global flags and room flags that would be set during the intro,
-	// overwriting the initial din interaction.
+	// overwriting the initial din interaction. also set a flag in the byte of
+	// the seed's animal companion.
 	"set intro flags (jp)": MutableString(sameAddr(0x0a, 0x66ed),
 		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb7\x25\xcd\xb7\x25\xcd\x0b\x25\xd0",
 		"\x3e\x0a\xcd\xb9\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
 	"set intro flags (en)": MutableString(sameAddr(0x0a, 0x66ed),
-		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb8\x25\xcd\xb8\x25\xcd\x0c\x25\xd0",
-		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
+		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb8\x25\xcd\xb8\x25\xcd"+
+			"\x0c\x25\xd0\x3e\x30\xcd\xcd\x30\x21\x0b\x67\xc3",
+		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6"+
+			"\x36\x40\x3e\x38\x21\x10\xc6\x86\x6f\x36\x80\xc9"),
 
 	// warp to ember tree if holding start when closing the map screen, using
 	// the playtime counter as a cooldown. this requires adding some code at
@@ -158,11 +161,10 @@ var constMutables = map[string]Mutable{
 	// this prevents subrosian dancing from giving dimitri's flute.
 	"don't give dimitri's flute (en)": MutableByte(Addr{0x09, 0x5e20, 0x5e37}, 0xe6, 0xf6),
 
-	// set bit 7 of an animal's flags when its flute is obtained, allowing it
-	// to be ridden when called. (seems like moosh doesn't need this?)
-	"flute set flag call (en)": MutableWord(Addr{0x3f, 0, 0x452c}, 0x4e45, 0x4d71),
-	"flute set flag func (en)": MutableString(Addr{0x3f, 0, 0x714d}, "\x3f",
-		"\xf5\xd5\x78\xfe\x0e\x20\x08\x3e\x38\x81\x5f\x1a\xf6\x80\x12\xd1\xf1"+
+	// "activate" a flute by setting its icon and song when obtained.
+	"flute set icon call (en)": MutableWord(Addr{0x3f, 0, 0x452c}, 0x4e45, 0x4d71),
+	"flute set icon func (en)": MutableString(Addr{0x3f, 0, 0x714d}, "\x3f",
+		"\xf5\xd5\x78\xfe\x0e\x20\x06\x1e\xaf\x79\xd6\x0a\x12\xd1\xf1"+
 			"\xcd\x4e\x45\xc9"),
 
 	// don't require rod to get items from season spirits
