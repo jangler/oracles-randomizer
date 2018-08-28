@@ -184,6 +184,11 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		// slot progression items
 		done := r.Graph["done"]
 		for done.GetMark(done, nil) != graph.MarkTrue {
+			if verbose {
+				logChan <- fmt.Sprintf("searching; have %d more slots",
+					slotList.Len())
+			}
+
 			// try to find a new combination of items that opens progression
 			items, slots := trySlotItemSet(r, src, itemList, slotList,
 				countSteps, false)
@@ -208,6 +213,11 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		// if goal was reached, fill unused slots
 		if done.GetMark(done, nil) == graph.MarkTrue {
 			for slotList.Len() > 0 {
+				if verbose {
+					logChan <- fmt.Sprintf("done; filling %d more slots",
+						slotList.Len())
+				}
+
 				items, slots := trySlotItemSet(r, src, itemList, slotList,
 					countSteps, true)
 				if items != nil {
@@ -223,6 +233,15 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 
 		if slotList.Len() == 0 {
 			break
+		} else if verbose {
+			logChan <- "unfilled slots:"
+			for e := slotList.Front(); e != nil; e = e.Next() {
+				logChan <- e.Value.(*graph.Node).Name
+			}
+			logChan <- "unused items:"
+			for e := itemList.Front(); e != nil; e = e.Next() {
+				logChan <- e.Value.(*graph.Node).Name
+			}
 		}
 
 		itemList, slotList = initRouteLists(src, r, keyonly)

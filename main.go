@@ -137,7 +137,7 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 	// seeds that they used. if a specific seed was specified, only use one
 	// thread.
 	numThreads := 1
-	if seed == 0 {
+	if !verbose && seed == 0 {
 		numThreads = runtime.NumCPU()
 	}
 	log.Printf("using %d thread(s)", numThreads)
