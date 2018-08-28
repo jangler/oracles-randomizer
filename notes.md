@@ -90,6 +90,8 @@ these are en/us:
 - 2:5e9a = break here and modify cc63-cc64 to set warp tree warp destination
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
+- 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
+  is address to write to, b happens to be the treasure index)
 
 ## undocumented script commands (compared to ages-disasm master)
 

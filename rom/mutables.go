@@ -77,6 +77,13 @@ func SetFreewarp(freewarp bool) {
 	}
 }
 
+// SetAnimal sets the flute type and Natzu region type based on a companion
+// number 1 to 3.
+func SetAnimal(companion int) {
+	varMutables["animal region"].(*MutableRange).New =
+		[]byte{byte(companion + 0x0a)}
+}
+
 // most of the tree warp code between jp and en is the same; only the last two
 // instructions (six bytes) differ
 const treeWarpCommon = "\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e" +
@@ -150,6 +157,13 @@ var constMutables = map[string]Mutable{
 	"don't give ricky's flute (en)": MutableByte(Addr{0x09, 0, 0x6e6c}, 0xc0, 0xc9),
 	// this prevents subrosian dancing from giving dimitri's flute.
 	"don't give dimitri's flute (en)": MutableByte(Addr{0x09, 0x5e20, 0x5e37}, 0xe6, 0xf6),
+
+	// set bit 7 of an animal's flags when its flute is obtained, allowing it
+	// to be ridden when called. (seems like moosh doesn't need this?)
+	"flute set flag call (en)": MutableWord(Addr{0x3f, 0, 0x452c}, 0x4e45, 0x4d71),
+	"flute set flag func (en)": MutableString(Addr{0x3f, 0, 0x714d}, "\x3f",
+		"\xf5\xd5\x78\xfe\x0e\x20\x08\x3e\x38\x81\x5f\x1a\xf6\x80\x12\xd1\xf1"+
+			"\xcd\x4e\x45\xc9"),
 
 	// don't require rod to get items from season spirits
 	"season spirit rod check": MutableByte(sameAddr(0x0b, 0x4eb2), 0x07, 0x02),
@@ -464,6 +478,9 @@ var varMutables = map[string]Mutable{
 	// allow seed collection if you have a slingshot, by checking for the given
 	// initial seed type
 	"carry seeds in slingshot": MutableByte(sameAddr(0x10, 0x4b19), 0x19, 0x20),
+
+	// determines what natzu looks like and what animal the flute calls
+	"animal region": MutableByte(Addr{0x07, 0, 0x41a6}, 0x0b, 0x0b),
 }
 
 var Seasons = map[string]*MutableRange{
