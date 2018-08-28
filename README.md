@@ -28,6 +28,8 @@ before the filename arguments, as displayed in the usage (`./oos-randomizer
             allow unimited tree warp (no cooldown)
       -keyonly
             only randomize key item locations
+      -profile string
+            write CPU profile to given filename
       -seed string
             specific random seed to use (32-bit hex number)
       -update
@@ -46,16 +48,19 @@ You can download executables for Windows, macOS, and Linux from the
 
 Items and chests are randomied, with exceptions listed below. The rod of
 seasons is split into four items, each of which will give you one season and
-the rod itself (if you don't already have it).
+the rod itself (if you don't already have it). There is one flute in the game
+for a random animal companion, and it's identified and usable as soon as you
+get it. Subrosian dancing and Ricky do not give flutes as they normally would.
 
 Seed trees and default seasons for each area are also shuffled, and the satchel
 and slingshot will start with the type of seeds on the tree in Horon Village.
+The Natzu region matches whichever animal companion the randomized flute calls.
 
 The following items are **not** randomized:
 
 - Renewable shop items (bombs, shield, hearts, etc.)
 - Small keys and boss keys
-- Pirate's bell, hard ore, and iron shield
+- Pirate's bell and iron shield
 - Found items (gasha seeds and pieces of heart outside of chests)
 - Subrosian dancing prizes after the first
 - Trading sequence items
