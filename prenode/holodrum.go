@@ -6,8 +6,6 @@ package prenode
 // in their designated regions (e.g. dimitri in sunken city). "x's flute" means
 // being able to call the animal in general.
 
-// TODO all the natzu region logic
-
 var holodrumPrenodes = map[string]*Prenode{
 	"start": And(), // parent for nodes reachable by default
 
@@ -162,15 +160,26 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("d5 stump", "summer", "flippers"),
 		And("enter d5", "north horon default summer", "bracelet", "jump"))),
 
-	// natzu TODO
-	"great moblin chest": AndSlot(Or("flippers", "jump"), "bracelet",
-		"flute", Or("flippers", "pegasus jump L-2")),
-	"platform chest": AndSlot("scent tree", "flippers"),
+	// natzu
+	"natzu prairie":   Root("start"),
+	"natzu river":     Root(),
+	"natzu wasteland": Root(),
+	"natzu":           Or("natzu prairie", "natzu river", "natzu wasteland"),
+	"great moblin chest": AndSlot(Or("flippers", "pegasus jump L-2"), "bracelet", Or(
+		And("natzu prairie", "sunken city"),
+		And("natzu river", "scent tree", "dimitri's flute"),
+		And("natzu wasteland", And("sunken city",
+			Or("flute", And("remove bush", "long jump")))))),
+	"platform chest": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
 
 	// sunken city
-	"sunken city": Or("fairy fountain",
-		And("scent tree", "flute"),
-		And("mount cucco", "flippers")),
+	"sunken city": Or("fairy fountain", And("mount cucco", "flippers"),
+		And("scent tree", Or(
+			And("natzu prairie", "flute"),
+			And("natuz river", Or(
+				And("flippers", Or("flute", "jump")),
+				And("flute", Or("flippers", "pegasus jump L-2")))),
+			And("natzu wasteland", Or("flute", And("long jump", "remove bush")))))),
 	"sunken gale tree": AndSlot("sunken city",
 		Or("cross water gap", "sunken city default winter")),
 	"dimitri":               And("sunken gale tree", "bombs"),

@@ -172,13 +172,11 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		default:
 		}
 
-		// roll animal companion and region
-		companion = src.Intn(3) + 1
-
 		itemList, slotList = initRouteLists(src, r, companion, keyonly)
 		logChan <- fmt.Sprintf("trying seed %08x", seed)
 
 		// slot initial nodes before algorithm slots progression items
+		companion = rollAnimalCompanion(src, r)
 		seasons = rollSeasons(src, r)
 		if !keyonly {
 			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
@@ -255,7 +253,6 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			}
 		}
 
-		companion = src.Intn(3) + 1
 		itemList, slotList = initRouteLists(src, r, companion, keyonly)
 		for e := itemList.Front(); e != nil; e = e.Next() {
 			e.Value.(*graph.Node).ClearParents()
@@ -306,6 +303,26 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 	}
 
 	return seasonMap
+}
+
+// randomly determines animal companion and returns its ID (1 to 3)
+func rollAnimalCompanion(src *rand.Rand, r *Route) int {
+	companion := src.Intn(3) + 1
+
+	r.ClearParents("natzu prairie")
+	r.ClearParents("natzu river")
+	r.ClearParents("natzu wasteland")
+
+	switch companion {
+	case ricky:
+		r.AddParent("natzu prairie", "start")
+	case dimitri:
+		r.AddParent("natzu river", "start")
+	case moosh:
+		r.AddParent("natzu wasteland", "start")
+	}
+
+	return companion
 }
 
 // dungeonIndex returns the index of a slot's dungeon if it's in a dungeon, or

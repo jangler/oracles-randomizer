@@ -11,7 +11,7 @@ var portalPrenodes = map[string]*Prenode{
 	"mountain portal": And("jump", Or("mount cucco", "hide and seek")),
 
 	"lake portal": Or("furnace", And("north horon stump", Or(
-		And("wet eyeglass lake", Or("jump", "flute"),
+		And("wet eyeglass lake", Or("jump", "ricky's flute", "moosh's flute"),
 			Or("flippers", "dimitri's flute")),
 		And(Or("north horon default winter", "winter"), "pegasus jump L-2")))),
 
