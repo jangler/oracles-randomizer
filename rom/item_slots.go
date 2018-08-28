@@ -226,6 +226,12 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{sameAddr(0x0a, 0x5003)},
 		SubIDAddrs: []Addr{sameAddr(0x0a, 0x5008)},
 	},
+	"village shop 3": &MutableSlot{
+		Treasure: Treasures["strange flute"],
+		IDAddrs: []Addr{sameAddr(0x08, 0x4ce8), sameAddr(0x08, 0x4af2),
+			sameAddr(0x08, 0x4a8a)},
+		ParamAddrs: []Addr{sameAddr(0x08, 0x4ce9)},
+	},
 	"member's shop 1": &MutableSlot{
 		Treasure:   Treasures["satchel 2"],
 		IDAddrs:    []Addr{sameAddr(0x08, 0x4cce)},

@@ -35,7 +35,6 @@ others that might be good to know:
 - $0e3b = drawObject
 	- ID $60 animation = $13:409a
 	- ID $59 animation = $14:4130
-- $16eb = giveTreasure, which uses param as the second byte, not sub-ID
 - $271a = createTreasure
 - graphics:
 	- $15e9 = interactionInitGraphics, which calls the following:
@@ -56,7 +55,9 @@ others that might be good to know:
 - $3b22 = updateInteraction
 - $074e = copy byte from hl to de, incrementing both
 
-## functions
+## functions / code
+
+these are jp:
 
 - 0:041a = getRandomNumber
 - 0:2a15 = setLinkIDOverride
@@ -67,8 +68,6 @@ others that might be good to know:
 	- 0:39e0
 - 2:4f90 = openMenu
 - 2:4fdd = closeMenu
-- (us) 3:4cf5 = intro capcomScreen
-	- 3:4d68 = state1 (fading in)
 - 4:460c = getTransformedLinkID
 - 5:5468 = checkLinkForceState
 - 5:5471 = linkSetState
@@ -78,6 +77,25 @@ others that might be good to know:
 - 6:4931 = chooseParentItemSlot
 - 6:4994 = parentItemUpdate (the good stuff; what happens when an item is used)
 - 7:4f36 = galeSeedTryToWarpLink
+- 3f:4445, 3f:444c, 3f:445a = at whichever executes last, hl is the address of
+  sprite data for a loaded object
+
+these are en/us:
+
+- 0:16eb = giveTreasure (a is ID, c is param)
+- 0:184b = showText, bc is index
+- 0:2542 = interactionSetScript, hl is address in bank b
+- 0:30c7 = checkGlobalFlag, a is bit starting at c6ca
+- 0:30cd = setGlobalFlag, a is bit starting at c6ca
+- 2:5e9a = break here and modify cc63-cc64 to set warp tree warp destination
+- 3:4cf5 = intro capcomScreen
+	- 3:4d68 = state1 (fading in)
+- 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
+  is address to write to, b happens to be the treasure index)
+
+## undocumented script commands (compared to ages-disasm master)
+
+- f6 = set object counter? like a delay
 
 ## notable ram addresses
 

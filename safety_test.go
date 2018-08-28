@@ -140,9 +140,9 @@ func TestD2ExitCheck(t *testing.T) {
 	// check for false positive
 	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
 		map[string]string{
-			"bracelet":       "d0 sword chest",
-			"ricky's gloves": "blaino gift",
-			"feather L-1":    "maku tree gift",
+			"bracelet":      "d0 sword chest",
+			"ricky's flute": "blaino gift",
+			"feather L-1":   "maku tree gift",
 
 			"eastern suburbs default winter": "start",
 			"eastern suburbs default autumn": "",
@@ -151,10 +151,11 @@ func TestD2ExitCheck(t *testing.T) {
 	// check for false negative
 	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
 		map[string]string{
-			"sword L-1":      "d0 sword chest",
-			"ricky's gloves": "blaino gift",
-			"flippers":       "maku tree gift",
-			"summer":         "rod gift",
+			"sword L-1":        "d0 sword chest",
+			"satchel":          "d0 rupee chest",
+			"ember tree seeds": "ember tree",
+			"flippers":         "maku tree gift",
+			"summer":           "rod gift",
 
 			"eastern suburbs default winter": "start",
 			"eastern suburbs default autumn": "",

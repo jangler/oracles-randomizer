@@ -137,7 +137,7 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 	// seeds that they used. if a specific seed was specified, only use one
 	// thread.
 	numThreads := 1
-	if seed == 0 {
+	if !verbose && seed == 0 {
 		numThreads = runtime.NumCPU()
 	}
 	log.Printf("using %d thread(s)", numThreads)
@@ -212,10 +212,11 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 			append(usedLines, fmt.Sprintf("%s <- %s", slotName, treasureName))
 	}
 
-	// set rom seasons
+	// set rom seasons and animal data
 	for area, id := range rl.Seasons {
 		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
 	}
+	rom.SetAnimal(rl.Companion)
 
 	// do it! (but don't write anything)
 	checksum, err := rom.Mutate(romData)

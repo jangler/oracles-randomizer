@@ -13,6 +13,10 @@ var baseItemPrenodes = map[string]*Prenode{
 var itemPrenodes = map[string]*Prenode{
 	"rod": Or("winter", "summer", "spring", "autumn"),
 
+	"ricky's flute":   Root(),
+	"dimitri's flute": Root(),
+	"moosh's flute":   Root(),
+
 	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds": And("seed item", Or(
 		And("ember tree seeds", "harvest tree"),
@@ -61,11 +65,7 @@ var itemPrenodes = map[string]*Prenode{
 	"ribbon":      And("star ore", "beach"),
 	"bomb flower": And("furnace", "jump", "bracelet"),
 
-	"strange flute": Or("big rupees", "temple"),
-	"moosh flute":   And("big rupees", "south swamp", "kill moblin"),
-	"dimitri flute": HardAnd("temple", "south swamp", "medium rupees"),
-	"animal flute":  Or("ricky", "moosh flute", "dimitri flute"),
-	"flute":         Or("strange flute", "animal flute"),
+	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
 	"shield L-1": Or("medium rupees"),
 	"shield L-2": And("shield L-1", "red ore", "blue ore"),

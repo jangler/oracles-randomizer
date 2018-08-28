@@ -77,6 +77,13 @@ func SetFreewarp(freewarp bool) {
 	}
 }
 
+// SetAnimal sets the flute type and Natzu region type based on a companion
+// number 1 to 3.
+func SetAnimal(companion int) {
+	varMutables["animal region"].(*MutableRange).New =
+		[]byte{byte(companion + 0x0a)}
+}
+
 // most of the tree warp code between jp and en is the same; only the last two
 // instructions (six bytes) differ
 const treeWarpCommon = "\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e" +
@@ -99,13 +106,16 @@ var constMutables = map[string]Mutable{
 	"link immediately actionable (en)": MutableString(sameAddr(0x05, 0x4d98),
 		"\x3e\x08\xcd\x16", "\xcd\x16\x2a\xc9"),
 	// set global flags and room flags that would be set during the intro,
-	// overwriting the initial din interaction.
+	// overwriting the initial din interaction. also set a flag in the byte of
+	// the seed's animal companion.
 	"set intro flags (jp)": MutableString(sameAddr(0x0a, 0x66ed),
 		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb7\x25\xcd\xb7\x25\xcd\x0b\x25\xd0",
 		"\x3e\x0a\xcd\xb9\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
 	"set intro flags (en)": MutableString(sameAddr(0x0a, 0x66ed),
-		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb8\x25\xcd\xb8\x25\xcd\x0c\x25\xd0",
-		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6\x36\x40\xc9"),
+		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb8\x25\xcd\xb8\x25\xcd"+
+			"\x0c\x25\xd0\x3e\x30\xcd\xcd\x30\x21\x0b\x67\xc3",
+		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6"+
+			"\x36\x40\x3e\x38\x21\x10\xc6\x86\x6f\x36\x80\xc9"),
 
 	// warp to ember tree if holding start when closing the map screen, using
 	// the playtime counter as a cooldown. this requires adding some code at
@@ -134,17 +144,28 @@ var constMutables = map[string]Mutable{
 	"maku gate check": MutableByte(sameAddr(0x04, 0x61a3), 0x7e, 0x66),
 
 	// have horon village shop stock *and* sell items from the start, including
-	// the flute. also don't disable the flute appearing until actually getting
-	// ricky's flute; normally it disappears as soon as you enter the screen
-	// northeast of d1 (or ricky's spot, whichever comes first).
+	// the flute. also don't stop the flute from appearing because of animal
+	// flags, since it probably won't be a flute at all.
 	"horon shop stock check":   MutableByte(sameAddr(0x08, 0x4adb), 0x05, 0x02),
 	"horon shop sell check":    MutableByte(sameAddr(0x08, 0x48d0), 0x05, 0x02),
 	"horon shop flute check 1": MutableByte(sameAddr(0x08, 0x4b02), 0xcb, 0xf6),
-	"horon shop flute check 2": MutableByte(sameAddr(0x08, 0x4afc), 0x6f, 0x7f),
+	"horon shop flute check 2": MutableWord(sameAddr(0x08, 0x4afb),
+		0xcb6f, 0xafaf),
+	// and don't set a ricky flag when buying the "flute"
+	"shop no set ricky flag": MutableByte(Addr{0x0b, 0, 0x4826}, 0x20, 0x00),
 
-	// subrosian dancing's flute prize is normally disabled by visiting the
-	// same areas as the horon shop's flute.
-	"dance hall flute check": MutableByte(Addr{0x09, 0x5e21, 0x5e38}, 0x20, 0x80),
+	// this all has to do with animals and flutes:
+	// this edits ricky's script so that he never gives his flute.
+	"ricky skip flute script (en)":  MutableByte(Addr{0x0b, 0, 0x6b7a}, 0x0b, 0x7f),
+	"don't give ricky's flute (en)": MutableByte(Addr{0x09, 0, 0x6e6c}, 0xc0, 0xc9),
+	// this prevents subrosian dancing from giving dimitri's flute.
+	"don't give dimitri's flute (en)": MutableByte(Addr{0x09, 0x5e20, 0x5e37}, 0xe6, 0xf6),
+
+	// "activate" a flute by setting its icon and song when obtained.
+	"flute set icon call (en)": MutableWord(Addr{0x3f, 0, 0x452c}, 0x4e45, 0x4d71),
+	"flute set icon func (en)": MutableString(Addr{0x3f, 0, 0x714d}, "\x3f",
+		"\xf5\xd5\x78\xfe\x0e\x20\x06\x1e\xaf\x79\xd6\x0a\x12\xd1\xf1"+
+			"\xcd\x4e\x45\xc9"),
 
 	// don't require rod to get items from season spirits
 	"season spirit rod check": MutableByte(sameAddr(0x0b, 0x4eb2), 0x07, 0x02),
@@ -160,14 +181,20 @@ var constMutables = map[string]Mutable{
 	"member's card essence check": MutableWord(Addr{0x09, 0x7739, 0x7750},
 		0xcb57, 0xf601),
 
-	// give member's card, treasure map, and fool's ore graphics in treasure
-	// sprite table
+	// give member's card, treasure map, fool's ore, and identified flutes
+	// graphics in treasure sprite table
 	"member's card gfx": MutableString(Addr{0x3f, 0x6732, 0x67b4},
 		"\x00\x00\x00", "\x5d\x0c\x13"),
 	"treasure map gfx": MutableString(Addr{0x3f, 0x6735, 0x67b7},
 		"\x00\x00\x00", "\x65\x14\x33"),
 	"fool's ore gfx": MutableString(Addr{0x3f, 0x6738, 0x67ba},
 		"\x00\x00\x00", "\x60\x14\x00"),
+	"ricky's flute gfx": MutableString(Addr{0x3f, 0x673b, 0x67bd},
+		"\x00\x00\x00", "\x5f\x16\x13"),
+	"dimitri's flute gfx": MutableString(Addr{0x3f, 0x673e, 0x67c0},
+		"\x00\x00\x00", "\x5f\x16\x23"),
+	"moosh's flute gfx": MutableString(Addr{0x3f, 0x6741, 0x67c3},
+		"\x00\x00\x00", "\x5f\x16\x33"),
 
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68, 0x4e72}, 0xcb, 0xf6),
@@ -395,7 +422,7 @@ var varMutables = map[string]Mutable{
 		New:  []byte{0x4e, 0x1a, 0x40},
 	},
 
-	"horon shop 3 graphics": &MutableRange{ // strange flute
+	"village shop 3 graphics": &MutableRange{ // strange flute
 		Addr: Addr{0x3f, 0x68be, 0x6940},
 		Old:  []byte{0x5f, 0x16, 0x03},
 		New:  []byte{0x5f, 0x16, 0x03},
@@ -444,6 +471,9 @@ var varMutables = map[string]Mutable{
 	// allow seed collection if you have a slingshot, by checking for the given
 	// initial seed type
 	"carry seeds in slingshot": MutableByte(sameAddr(0x10, 0x4b19), 0x19, 0x20),
+
+	// determines what natzu looks like and what animal the flute calls
+	"animal region": MutableByte(Addr{0x07, 0, 0x41a6}, 0x0b, 0x0b),
 }
 
 var Seasons = map[string]*MutableRange{

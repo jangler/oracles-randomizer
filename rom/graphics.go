@@ -75,9 +75,12 @@ const (
 	spriteMakuSeed     = 0x47
 
 	// added these sprites:
-	spriteMembersCard = 0x48
-	spriteTreasureMap = 0x49
-	spriteFoolsOre    = 0x4a
+	spriteMembersCard   = 0x48
+	spriteTreasureMap   = 0x49
+	spriteFoolsOre      = 0x4a
+	spriteRickysFlute   = 0x4b
+	spriteDimitrisFlute = 0x4c
+	spriteMooshsFlute   = 0x4d
 
 	spriteSpringBanana = 0x54
 	spriteRickysGloves = 0x55
@@ -171,6 +174,9 @@ var wideItemGfx = map[string]int{
 	"piece of heart":   0x5d1022,
 	"rare peach stone": 0x5d1026, // piece of heart in subrosian market
 	"strange flute":    0x5f1603,
+	"ricky's flute":    0x5f1613,
+	"dimitri's flute":  0x5f1623,
+	"moosh's flute":    0x5f1633,
 	"ricky's gloves":   0x641c53,
 	"ribbon":           0x650c23,
 	"spring banana":    0x651033,

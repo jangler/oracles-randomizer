@@ -280,7 +280,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 			itemNode.Name == "gasha seed") {
 			return false
 		}
-	case "diver gift", "subrosian market 5":
+	case "diver gift", "subrosian market 5", "village shop 3":
 		if !rom.TreasureHasUniqueID(itemNode.Name) {
 			return false
 		}
@@ -292,7 +292,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		if !rom.CanSlotInScene(itemNode.Name) {
 			return false
 		}
-	case "member's shop 1", "member's shop 2", "member's shop 3":
+	case "village shop 3", "member's shop 1", "member's shop 2",
+		"member's shop 3":
 		if !rom.CanSlotInShop(itemNode.Name) {
 			return false
 		}
