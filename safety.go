@@ -118,14 +118,16 @@ func canSpringSwampSoftlock(g graph.Graph) error {
 	return nil
 }
 
-// exiting d5 without flippers if it's not default winter means you're stuck.
+// exiting d5 without flippers or dimitri's flute if it's not default winter
+// means you're stuck.
 func canD5ExitFlipperSoftlock(g graph.Graph) error {
 	winter := g["north horon default winter"]
 	if winter.GetMark(winter, nil) == graph.MarkTrue {
 		return nil
 	}
 
-	if canReachWithoutPrereq(g, g["enter d5"], g["flippers"]) {
+	if canReachWithoutPrereq(g, g["enter d5"], g["flippers"]) &&
+		canReachWithoutPrereq(g, g["enter d5"], g["dimitri's flute"]) {
 		return errors.New("d5 exit flipper softlock")
 	}
 	return nil
