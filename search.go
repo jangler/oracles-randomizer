@@ -66,7 +66,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 				item.Parents = append(item.Parents, slot)
 
-				if canSoftlock(r.HardGraph) != nil {
+				if canSoftlock(r.Graph) != nil {
 					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
 					usedItems.PushBack(item)
@@ -111,7 +111,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			if itemFitsInSlot(item, slot, nil) {
 				item.Parents = append(item.Parents, slot)
 
-				if canSoftlock(r.HardGraph) != nil {
+				if canSoftlock(r.Graph) != nil {
 					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
 					usedSlots.PushBack(slot)
@@ -389,7 +389,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			item.Parents = item.Parents[:len(item.Parents)-1]
 
 			testCount := countFunc(r.Graph.ExploreFromStart())
-			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
+			if testCount > initialCount && canSoftlock(r.Graph) == nil {
 				// remove the item and cycle again if it can be omitted
 				retry = true
 				usedItems.Remove(e)
@@ -420,7 +420,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			downgrade.Parents = append(downgrade.Parents, parent)
 
 			testCount := countFunc(r.Graph.ExploreFromStart())
-			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
+			if testCount > initialCount && canSoftlock(r.Graph) == nil {
 				// downgrade item and cycle again
 				retry = true
 				usedItems.InsertAfter(downgrade, e)
