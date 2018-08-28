@@ -8,6 +8,7 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
+	"runtime/pprof"
 	"strconv"
 	"strings"
 	"time"
@@ -31,6 +32,8 @@ func main() {
 		"freewarp", false, "allow unlimited tree warp (no cooldown)")
 	flagKeyonly := flag.Bool(
 		"keyonly", false, "only randomize key item locations")
+	flagProfile := flag.String(
+		"profile", "", "write CPU profile to given filename")
 	flagSeed := flag.String("seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flagUpdate := flag.Bool(
@@ -40,6 +43,18 @@ func main() {
 	flag.Parse()
 
 	checkNumArgs("randomizer", 2)
+
+	if *flagProfile != "" {
+		profFile, err := os.Create(*flagProfile)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := pprof.StartCPUProfile(profFile); err != nil {
+			log.Fatal(err)
+		}
+		defer profFile.Close()
+		defer pprof.StopCPUProfile()
+	}
 
 	// load rom
 	romData, err := readFileBytes(flag.Arg(0))
