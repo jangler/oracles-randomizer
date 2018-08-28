@@ -300,14 +300,17 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
-	// give only a 1 in 2 change per sword of slotting in the hero's cave chest
-	// to compensate for the fact that there are two of them. each season gets
-	// a 1 in 4 chance for the same reason.
+	// give proportionally reduced chances of roughly equivalent items
+	// appearing in the d0 sword chest.
 	if src != nil {
 		if slotNode.Name == "d0 sword chest" {
 			switch itemNode.Name {
 			case "sword L-1", "sword L-2":
 				if src.Intn(2) != 0 {
+					return false
+				}
+			case "ricky's flute", "dimitri's flute", "moosh's flute":
+				if src.Intn(3) != 0 {
 					return false
 				}
 			case "winter", "spring", "summer", "autumn":
@@ -337,12 +340,12 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 
 	// some items can't be drawn correctly in certain item slots.
 	switch slotNode.Name {
-	case "d0 sword chest", "rod gift", "noble sword spot":
+	case "rod gift", "noble sword spot":
 		if !rom.CanSlotInScene(itemNode.Name) {
 			return false
 		}
 	case "village shop 3", "member's shop 1", "member's shop 2",
-		"member's shop 3":
+		"member's shop 3", "d0 sword chest":
 		if !rom.CanSlotInShop(itemNode.Name) {
 			return false
 		}

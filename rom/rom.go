@@ -46,6 +46,10 @@ func init() {
 			TreasureIsUnique[name] = true
 		}
 	}
+	for _, name := range []string{"ricky's flute", "dimitri's flute",
+		"moosh's flute"} {
+		TreasureIsUnique[name] = true
+	}
 
 	// get set of items with unique IDs (more restrictive than the above)
 	idCounts := make(map[byte]int)
@@ -57,9 +61,8 @@ func init() {
 		}
 	}
 	for name, t := range Treasures {
-		// TODO do other items need special expection?
-		if idCounts[t.id] == 1 &&
-			name != "gasha seed" && name != "piece of heart" {
+		if (idCounts[t.id] == 1 && name != "gasha seed" &&
+			name != "piece of heart") || strings.HasSuffix(name, "flute") {
 			uniqueIDTreasures[name] = true
 		}
 	}
