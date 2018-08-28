@@ -160,6 +160,15 @@ var constMutables = map[string]Mutable{
 	"don't give ricky's flute (en)": MutableByte(Addr{0x09, 0, 0x6e6c}, 0xc0, 0xc9),
 	// this prevents subrosian dancing from giving dimitri's flute.
 	"don't give dimitri's flute (en)": MutableByte(Addr{0x09, 0x5e20, 0x5e37}, 0xe6, 0xf6),
+	// this prevents holodrum plain from changing the animal region.
+	"don't change animal region (en)": MutableWord(Addr{0x09, 0, 0x6f79},
+		0x3804, 0x1808),
+	// this keeps ricky in his pen based on flute, not animal region.
+	"keep ricky in pen (en)": MutableString(Addr{0x09, 0, 0x4e77},
+		"\x10\xc6\xfe\x0b", "\xaf\xc6\xfe\x01"),
+	// and this does the same for saying goodbye once reaching spool swamp.
+	"ricky say goodbye (en)": MutableString(Addr{0x09, 0, 0x6ccc},
+		"\x10\xc6\xfe\x0b", "\xaf\xc6\xfe\x01"),
 
 	// "activate" a flute by setting its icon and song when obtained.
 	"flute set icon call (en)": MutableWord(Addr{0x3f, 0, 0x452c}, 0x4e45, 0x4d71),
