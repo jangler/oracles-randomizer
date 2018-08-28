@@ -172,11 +172,11 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		default:
 		}
 
+		companion = rollAnimalCompanion(src, r)
 		itemList, slotList = initRouteLists(src, r, companion, keyonly)
 		logChan <- fmt.Sprintf("trying seed %08x", seed)
 
 		// slot initial nodes before algorithm slots progression items
-		companion = rollAnimalCompanion(src, r)
 		seasons = rollSeasons(src, r)
 		if !keyonly {
 			placeDungeonItems(src, itemList, usedItems, slotList, usedSlots)
