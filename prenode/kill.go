@@ -56,7 +56,7 @@ var killPrenodes = map[string]*Prenode{
 	// required enemies in normal route-ish order, but with prereqs first
 	"seed kill normal":                Or("ember seeds", "scent seeds", "gale seed weapon", "gale boomerang", "mystery seeds"),
 	"pop maku bubble":                 Or("sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"),
-	"remove bush":                     Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet"),
+	"remove bush":                     Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", "bracelet", Hard("bombs")),
 	"remove bush sustainable":         Or("sword", "boomerang L-2", "bracelet"),
 	"kill normal":                     Or("sword", "bombs", "beams", "seed kill normal", "fool's ore", "punch"),
 	"pit kill normal":                 Or("sword", "beams", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "punch"),
@@ -87,7 +87,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill omuai":                      And("damage omuai", "bracelet"),
 	"damage mothula":                  Or("sword", "bombs", "scent seeds", "fool's ore", "punch"),
 	"kill mothula":                    And("damage mothula", "jump"), // you will basically die without feather
-	"remove flower":                   Or("sword", "boomerang L-2", "ember seeds", "gale slingshot"),
+	"remove flower":                   Or("sword", "boomerang L-2", "ember seeds", "gale slingshot", Hard("bombs")),
 	"remove flower sustainable":       Or("sword", "boomerang L-2"),
 	"kill shrouded stalfos (throw)":   Or("kill stalfos", "bracelet"),
 	"kill like-like (pit, throw)":     Or("kill normal", "bracelet", "rod", Hard("shovel")),

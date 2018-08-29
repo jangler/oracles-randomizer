@@ -66,7 +66,8 @@ var d2Prenodes = map[string]*Prenode{
 	"d2 compass chest": OrSlot(
 		And("d2 torch room", "ember seeds", "kill rope"),
 		And("d2 arrow room", "kill goriya", "kill rope")),
-	"d2 bracelet chest": AndSlot("d2 hardhat room", "kill hardhat (pit, throw)", "kill moblin (gap, throw)"),
+	"d2 bracelet room":  And("d2 hardhat room", "kill hardhat (pit, throw)"),
+	"d2 bracelet chest": AndSlot("d2 bracelet room", "kill moblin (gap, throw)"),
 	"d2 bomb key chest": And("enter d2 B", "remove bush", "bombs"),
 	"d2 blade key chest": Or(
 		And("enter d2 B", "bracelet"),

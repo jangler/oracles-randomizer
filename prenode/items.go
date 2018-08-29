@@ -20,11 +20,10 @@ var itemPrenodes = map[string]*Prenode{
 	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds": And("seed item", Or(
 		And("ember tree seeds", "harvest tree"),
-		HardAnd("harvest bush", Or(
-			"enter agunima", "d5 armos key chest", "enter d7")))),
+		And("harvest bush", Or("enter agunima", "enter d7")))),
 	"harvest mystery seeds": And("seed item", Or(
 		And("mystery tree seeds", "harvest tree"),
-		HardAnd("enter frypolar", "harvest bush"))),
+		And("enter frypolar", "harvest bush"))),
 	"harvest scent seeds":   And("scent tree seeds", "seed item", "harvest tree"),
 	"harvest pegasus seeds": And("pegasus tree seeds", "seed item", "harvest tree"),
 	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest tree"),
@@ -67,7 +66,7 @@ var itemPrenodes = map[string]*Prenode{
 
 	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
-	"shield L-1": Or("start"),
+	"shield L-1": Root(), // TODO
 	"shield L-2": And("shield L-1", "red ore", "blue ore"),
 
 	"sword":     Or("sword L-1", "sword L-2"),
@@ -76,9 +75,15 @@ var itemPrenodes = map[string]*Prenode{
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"seed item": Or("satchel", "slingshot"),
-	"buy bombs": Or("start"),
-	"bombs":     Or("buy bombs", "bombs, 10"),
-	"jump":      Or("feather L-1", "feather L-2"),
+	"buy bombs": Root(), // TODO
+	"kill for bombs": Or("sword", "ember seeds", "scent seeds",
+		Hard("mystery seeds"), "fool's ore", "punch"),
+	"bombs": Or("buy bombs",
+		And("harvest bush", Or("d2 bracelet room", "d2 spinner room")),
+		And("bombs, 10", Or("remove pot", "shovel", And("kill for bombs",
+			Or("suburbs", "fairy fountain", And("mount cucco",
+				Or("spring", "sunken city default spring"))))))),
+	"jump": Or("feather L-1", "feather L-2"),
 
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),
