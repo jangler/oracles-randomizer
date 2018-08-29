@@ -221,16 +221,13 @@ var constMutables = map[string]Mutable{
 	"eruption check 2":          MutableByte(sameAddr(0x08, 0x7cd3), 0x07, 0x00),
 
 	// stop rosa from spawning and activate her portal by default. the first is
-	// an essence check and the second is an edit to tile replacement data. the
-	// *third* sets the room to explored before loading its tile replacement
-	// data, which ordinarily happens during normal screen transitions but not
-	// portal ones. the third one isn't needed in the en/us version and causes
-	// problems like getting stuck in doors.
+	// an essence check, and the second is a function that sets the portal's
+	// room flags to do the tile replacement.
 	"rosa spawn check": MutableByte(Addr{0x09, 0x678c, 0x67a3}, 0x40, 0x04),
-	"activate rosa portal": &MutableRange{sameAddr(0x04, 0x6016),
-		[]byte{0x40, 0x33, 0xc5}, []byte{0x10, 0x33, 0xe6}},
-	"set explored before load (jp)": &MutableRange{sameAddr(0x04, 0x5fdf),
-		[]byte{0x55, 0x19, 0x4f}, []byte{0x23, 0x2d, 0x4e}},
+	"call set portal room flag": MutableString(Addr{0x04, 0, 0x45f5},
+		"\xfa\x64\xcc", "\xcd\x35\x7e"),
+	"set portal room flag func": MutableString(Addr{0x04, 0, 0x7e35}, "\x04",
+		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\xe1\xfa\x64\xcc\xc9"),
 
 	// count number of essences, not highest number essence
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7d8d, 0x7da4}, 0xea, 0x76),
