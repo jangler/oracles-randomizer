@@ -110,6 +110,6 @@ un-softlock.
 **Q: Are you going to make a randomizer for Oracle of Ages too?**
 
 A: Maybe, but not until the Seasons randomizer is reasonably feature-complete
-(as i see it). Ages also has some big sequence breaks and the Crescent Island
-trading sequence, which would both be tricky to account for in the logic unless
-they're just removed.
+(as i see it). Ages also has some big sequence breaks and Crescent Island,
+which would both be tricky to account for in the logic unless they're just
+removed.
