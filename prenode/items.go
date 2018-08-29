@@ -51,9 +51,9 @@ var itemPrenodes = map[string]*Prenode{
 		HardAnd("beach", "shield", "ore chunks", "seed item")), // subrosian market
 	"gale seeds": And("harvest gale seeds", "seed item"),
 
-	"punch":           And("punch ring", "medium rupees"),
-	"use energy ring": And("energy ring", "medium rupees"),
-	"use toss ring":   And("toss ring", "medium rupees"),
+	"punch":           And("punch ring"),
+	"use energy ring": And("energy ring"),
+	"use toss ring":   And("toss ring"),
 	"sword beams L-1": And("sword L-1", "use energy ring"),
 
 	"pegasus jump L-1": And("pegasus satchel", "feather L-1"),
@@ -67,7 +67,7 @@ var itemPrenodes = map[string]*Prenode{
 
 	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
-	"shield L-1": Or("medium rupees"),
+	"shield L-1": Or("start"),
 	"shield L-2": And("shield L-1", "red ore", "blue ore"),
 
 	"sword":     Or("sword L-1", "sword L-2"),
@@ -76,29 +76,14 @@ var itemPrenodes = map[string]*Prenode{
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"seed item": Or("satchel", "slingshot"),
-	"bombs": Or("medium rupees", HardOr("bombs, 10",
-		And("harvest bush", Or("d2 bracelet chest", "d2 spinner")))),
-	"jump": Or("feather L-1", "feather L-2"),
+	"buy bombs": Or("start"),
+	"bombs":     Or("buy bombs", "bombs, 10"),
+	"jump":      Or("feather L-1", "feather L-2"),
 
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),
 
 	"punch ring": Or("fist ring", "expert's ring"),
-
-	// small rupees is ~10, and any item that can possibly yield rupees is
-	// included.
-	"small rupees": Or("sword", "boomerang", "shovel", Hard("bracelet"),
-		"ember seeds", "scent seeds", "ricky", "moosh", Hard("dimitri flute"),
-		"fool's ore", "punch"),
-	// medium rupees is ~11-149, and only items that can reach rupee chests are
-	// included.
-	"medium rupees": And("small rupees", Or(Hard("small rupees"), "rupees, 20",
-		"rupees, 30", "rupees, 50", "rupees, 100", "ember seeds",
-		"d2 rupee room", "d6 rupee room")),
-	// big rupees is ~150+, and only ember seeds and rupee rooms are included.
-	// since they can burn down trees leading to generous old men.
-	"big rupees": And("medium rupees", Or(Hard("medium rupees"), "ember seeds",
-		"d2 rupee room", "d6 rupee room")),
 
 	"ore chunks": Or("shovel", "temple"),
 }

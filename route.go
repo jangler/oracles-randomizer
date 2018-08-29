@@ -34,6 +34,7 @@ type Route struct {
 	DungeonItems     []int
 	KeyItemsTotal    int
 	KeyItemsPlaced   int
+	Income, Costs    int
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes

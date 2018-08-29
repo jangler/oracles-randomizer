@@ -16,10 +16,10 @@ var holodrumPrenodes = map[string]*Prenode{
 	"village SE chest": AndSlot("horon village", "bombs"),
 	"village SW chest": AndSlot("horon village",
 		Or("remove bush", "flute"), Or("remove mushroom", "dimitri's flute")),
-	"village shop 3":  AndSlot("big rupees"),
-	"member's shop 1": AndSlot("member's card", "big rupees"),
-	"member's shop 2": AndSlot("member's card", "big rupees"),
-	"member's shop 3": AndSlot("member's card", "big rupees"),
+	"village shop 3":  AndSlot("start"),
+	"member's shop 1": AndSlot("member's card"),
+	"member's shop 2": AndSlot("member's card"),
+	"member's shop 3": AndSlot("member's card"),
 
 	// western coast
 	"x-shaped jewel chest": AndSlot("horon village", Or("ember slingshot", "mystery slingshot"),
@@ -102,7 +102,7 @@ var holodrumPrenodes = map[string]*Prenode{
 				Or("flippers", "dimitri's flute")))),
 		And("temple remains", "long jump"),
 		And("goron mountain", "flippers")),
-	"blaino gift": AndSlot("scent tree", "rupees"),
+	"blaino gift": AndSlot("scent tree"),
 	"ricky": And("scent tree", "ricky's gloves",
 		Or("natzu river", "natzu wasteland")),
 	"round jewel gift": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
@@ -241,6 +241,18 @@ var holodrumPrenodes = map[string]*Prenode{
 	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence",
 		"d5 essence", "d6 essence", "d7 essence", "d8 essence"),
 	"enter d9": And("scent tree", "maku seed"),
+
+	// old men
+	"goron mountain old man": And("goron mountain", "ember seeds"),
+	"western coast old man":  And("pirate ship", "ember seeds"),
+	"holodrum plain east old man": And("scent tree", "ember seeds",
+		Or("ricky's flute", "holodrum plain default summer",
+			And("ghastly stump", "summer"))),
+	"horon village old man":       And("horon village", "ember seeds"),
+	"north horon old man":         And("north horon stump", "ember seeds"),
+	"tarm ruins old man":          And("enter d6", "ember seeds"),
+	"woods of winter old man":     And("shovel gift", "ember seeds"),
+	"holodrum plain west old man": And("ghastly stump", "ember seeds"),
 }
 
 var seasonPrenodes = map[string]*Prenode{
