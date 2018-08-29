@@ -82,6 +82,7 @@ these are jp:
 
 these are en/us:
 
+- 0:0c74 = playSound, a is index
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:184b = showText, bc is index
 - 0:2542 = interactionSetScript, hl is address in bank b
