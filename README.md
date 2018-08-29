@@ -106,3 +106,10 @@ A: If you're softlocked by location, use tree warp. Otherwise, open an issue
 about it or tell me in Discord, and provide the log file. Depending on the
 problem, you may be able to `-update` your ROM using the next patch version to
 un-softlock.
+
+**Q: Are you going to make a randomizer for Oracle of Ages too?**
+
+A: Maybe, but not until the Seasons randomizer is reasonably feature-complete
+(as i see it). Ages also has some big sequence breaks and the Crescent Island
+trading sequence, which would both be tricky to account for in the logic unless
+they're just removed.
