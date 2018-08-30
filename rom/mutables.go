@@ -69,11 +69,11 @@ func (mr *MutableRange) Check(b []byte) error {
 // cooldown (true = no cooldown).
 func SetFreewarp(freewarp bool) {
 	if freewarp {
-		constMutables["tree warp (jp)"].(*MutableRange).New[12] = 0x18
-		constMutables["tree warp (en)"].(*MutableRange).New[12] = 0x18
+		constMutables["tree warp (jp)"].(*MutableRange).New[19] = 0x18
+		constMutables["tree warp (en)"].(*MutableRange).New[19] = 0x18
 	} else {
-		constMutables["tree warp (jp)"].(*MutableRange).New[12] = 0x28
-		constMutables["tree warp (en)"].(*MutableRange).New[12] = 0x28
+		constMutables["tree warp (jp)"].(*MutableRange).New[19] = 0x28
+		constMutables["tree warp (en)"].(*MutableRange).New[19] = 0x28
 	}
 }
 
@@ -86,9 +86,9 @@ func SetAnimal(companion int) {
 
 // most of the tree warp code between jp and en is the same; only the last two
 // instructions (six bytes) differ
-const treeWarpCommon = "\xfa\x81\xc4\xe6\x08\x28\x21\x21\x25\xc6\xcb\x7e" +
-	"\x28\x06\x3e\x5a\xcd\x74\x0c\xc9\x36\xff\x2b\x36\xfc\x2b\x36\xb4\x2b" +
-	"\x36\x40\x21\xb7\xcb\x36\x05\xaf"
+const treeWarpCommon = "\xfa\x81\xc4\xe6\x08\x28\x28\xfa\x49\xcc\xfe\x02" +
+	"\x30\x07\x21\x25\xc6\xcb\x7e\x28\x06\x3e\x5a\xcd\x74\x0c\xc9\x36\xff" +
+	"\x2b\x36\xfc\x2b\x36\xb4\x2b\x36\x40\x21\xb7\xcb\x36\x05\xaf"
 
 // consider these mutables constants; they aren't changed in the randomization
 // process.
@@ -133,10 +133,10 @@ var constMutables = map[string]Mutable{
 	"tree warp (en)": MutableString(Addr{0x02, 0, 0x75bb}, "\x02",
 		treeWarpCommon+"\xcd\x7b\x5e\xc3\x7b\x4f"),
 	// warp to room under cursor if wearing developer ring. this goes right
-	// after the normal tree warp code.
+	// after the normal tree warp code (but doesn't fall through from it).
 	"dev ring tree warp call (en)": MutableWord(Addr{0x02, 0, 0x5e9b},
-		0x890c, 0xe675),
-	"dev ring tree warp func (en)": MutableString(Addr{0x02, 0, 0x75e6}, "\x02",
+		0x890c, 0xed75),
+	"dev ring tree warp func (en)": MutableString(Addr{0x02, 0, 0x75ed}, "\x02",
 		"\xfa\xc5\xc6\xfe\x40\x20\x12\xfa\x49\xcc\xfe\x02\x30\x0b\xf6\x80"+
 			"\xea\x63\xcc\xfa\xb6\xcb\xea\x64\xcc\x3e\x03\xcd\x89\x0c\xc9"),
 
@@ -221,16 +221,13 @@ var constMutables = map[string]Mutable{
 	"eruption check 2":          MutableByte(sameAddr(0x08, 0x7cd3), 0x07, 0x00),
 
 	// stop rosa from spawning and activate her portal by default. the first is
-	// an essence check and the second is an edit to tile replacement data. the
-	// *third* sets the room to explored before loading its tile replacement
-	// data, which ordinarily happens during normal screen transitions but not
-	// portal ones. the third one isn't needed in the en/us version and causes
-	// problems like getting stuck in doors.
+	// an essence check, and the second is a function that sets the portal's
+	// room flags to do the tile replacement.
 	"rosa spawn check": MutableByte(Addr{0x09, 0x678c, 0x67a3}, 0x40, 0x04),
-	"activate rosa portal": &MutableRange{sameAddr(0x04, 0x6016),
-		[]byte{0x40, 0x33, 0xc5}, []byte{0x10, 0x33, 0xe6}},
-	"set explored before load (jp)": &MutableRange{sameAddr(0x04, 0x5fdf),
-		[]byte{0x55, 0x19, 0x4f}, []byte{0x23, 0x2d, 0x4e}},
+	"call set portal room flag": MutableString(Addr{0x04, 0, 0x45f5},
+		"\xfa\x64\xcc", "\xcd\x35\x7e"),
+	"set portal room flag func": MutableString(Addr{0x04, 0, 0x7e35}, "\x04",
+		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\xe1\xfa\x64\xcc\xc9"),
 
 	// count number of essences, not highest number essence
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7d8d, 0x7da4}, 0xea, 0x76),

@@ -87,9 +87,9 @@ logic, or to prevent softlocks. The most notable are:
   spring flower.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
 - The diving spot at the south end of Sunken City is removed.
-- **Holding start while closing the map screen warps to the seed tree in Horon
-  Village.** Tree warping has a one-hour cooldown unless the `-freewarp` flag
-  is specified.
+- **Holding start while closing the map screen outdoors warps to the seed tree
+  in Horon Village.** Tree warping has a one-hour cooldown unless the
+  `-freewarp` flag is specified.
 
 ## FAQ
 

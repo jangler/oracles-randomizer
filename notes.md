@@ -82,8 +82,10 @@ these are jp:
 
 these are en/us:
 
+- 0:0c74 = playSound, a is index
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:184b = showText, bc is index
+- 0:1956 = getThisRoomFlags
 - 0:2542 = interactionSetScript, hl is address in bank b
 - 0:30c7 = checkGlobalFlag, a is bit starting at c6ca
 - 0:30cd = setGlobalFlag, a is bit starting at c6ca
@@ -213,6 +215,8 @@ other things:
 
 - 04 = grass under object
 - b1 = lever
+- c4 = bush
 - d0 = stairs
 - d8 = flower
 - d9 = snow pile
+- e6 = subrosia portal
