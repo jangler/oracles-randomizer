@@ -80,9 +80,10 @@ var itemPrenodes = map[string]*Prenode{
 		Hard("mystery seeds"), "fool's ore", "punch"),
 	"bombs": Or(Hard("enter d2 B"),
 		And("harvest bush", Or("d2 bracelet room", "d2 spinner room")),
-		And("bombs, 10", Or("remove pot", "shovel", And("kill for bombs",
-			Or("suburbs", "fairy fountain", And("mount cucco",
-				Or("spring", "sunken city default spring"))))))),
+		And("bombs, 10", Or("remove pot", "shovel", "remove flover",
+			And("kill for bombs", Or("suburbs", "fairy fountain",
+				And("mount cucco", Or("spring",
+					"sunken city default spring"))))))),
 	"jump": Or("feather L-1", "feather L-2"),
 
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
