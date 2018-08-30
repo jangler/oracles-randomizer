@@ -240,6 +240,15 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{sameAddr(0x0a, 0x5003)},
 		SubIDAddrs: []Addr{sameAddr(0x0a, 0x5008)},
 	},
+
+	// dummy slots for bombs and shield
+	"village shop 1": &MutableSlot{
+		Treasure: Treasures["bombs, 10"],
+	},
+	"village shop 2": &MutableSlot{
+		Treasure: Treasures["shop shield L-1"],
+	},
+
 	"village shop 3": &MutableSlot{
 		Treasure: Treasures["strange flute"],
 		IDAddrs: []Addr{sameAddr(0x08, 0x4ce8), sameAddr(0x08, 0x4af2),

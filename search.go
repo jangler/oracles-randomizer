@@ -316,6 +316,17 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
+	// dummy shop slots 1 and 2 can only hold their vanilla items.
+	if slotNode.Name == "village shop 1" && itemNode.Name != "bombs, 10" {
+		return false
+	}
+	if slotNode.Name == "village shop 2" && itemNode.Name != "shop shield L-1" {
+		return false
+	}
+	if itemNode.Name == "shop shield L-1" && slotNode.Name != "village shop 2" {
+		return false
+	}
+
 	// give proportionally reduced chances of roughly equivalent items
 	// appearing in the d0 sword chest.
 	if src != nil {

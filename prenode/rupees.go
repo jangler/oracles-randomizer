@@ -1,6 +1,8 @@
 package prenode
 
 var Rupees = map[string]int{
+	"village shop 1":  -20,
+	"village shop 2":  -30,
 	"village shop 3":  -150,
 	"member's shop 1": -300,
 	"member's shop 2": -300,

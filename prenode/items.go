@@ -66,8 +66,7 @@ var itemPrenodes = map[string]*Prenode{
 
 	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
-	"buy shield L-1": Root(), // TODO
-	"shield L-1": Or("buy shield L-1", Hard("spool stump"),
+	"shield L-1": Or("shop shield L-1", Hard("spool stump"),
 		And("beach", "ore chunks")),
 	"shield L-2": And("shield L-1", "red ore", "blue ore"),
 
@@ -77,10 +76,9 @@ var itemPrenodes = map[string]*Prenode{
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"seed item": Or("satchel", "slingshot"),
-	"buy bombs": Root(), // TODO
 	"kill for bombs": Or("sword", "ember seeds", "scent seeds",
 		Hard("mystery seeds"), "fool's ore", "punch"),
-	"bombs": Or("buy bombs", Hard("enter d2 B"),
+	"bombs": Or(Hard("enter d2 B"),
 		And("harvest bush", Or("d2 bracelet room", "d2 spinner room")),
 		And("bombs, 10", Or("remove pot", "shovel", And("kill for bombs",
 			Or("suburbs", "fairy fountain", And("mount cucco",
