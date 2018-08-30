@@ -51,17 +51,17 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			newCount == initialCount; e = e.Next() {
 			slot := e.Value.(*graph.Node)
 			if nodeInList(slot, usedSlots) {
-				if fillUnused {
-					break
-				}
 				continue
 			}
 
 			for e := itemPool.Front(); e != nil; e = e.Next() {
 				item := e.Value.(*graph.Node)
 				if nodeInList(item, usedItems) {
-					// XXX this is not really accurate since a gasha seed could
-					//     be slotted twice in one iteration
+					// break if filling unused because only one gasha seed can
+					// be slotted per iteration
+					if fillUnused {
+						break
+					}
 					continue
 				}
 				if !itemFitsInSlot(item, slot, src) {
@@ -102,7 +102,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// couldn't find any progression; fail
 	if newCount == initialCount && !fillUnused {
-		return nil, nil
+		return list.New(), list.New()
 	}
 
 	// omit items not necessary for progression, then slot again from the start
@@ -494,6 +494,9 @@ func tryMeetCosts(r *Route, usedItems, itemPool, usedSlots,
 		item := ei.Value.(*graph.Node)
 		value := prenode.Rupees[item.Name]
 		if value < 10 {
+			continue
+		}
+		if nodeInList(item, usedItems) {
 			continue
 		}
 
