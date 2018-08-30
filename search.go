@@ -78,6 +78,12 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			a := emptyList(usedItems)
 			newCount = countFunc(r.Graph.ExploreFromStart())
 			fillList(usedItems, a)
+
+			// hack to make sure gasha seeds and such don't pile up at the end
+			if fillUnused && len(a) > 0 &&
+				rom.TreasureIsUnique[a[len(a)-1].Name] {
+				break
+			}
 		}
 
 		if newCount == initialCount && !fillUnused {
