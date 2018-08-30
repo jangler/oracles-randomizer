@@ -188,17 +188,6 @@ var Treasures = map[string]*Treasure{
 
 var seedIndexByTreeID = []byte{0, 4, 1, 2, 3, 3}
 
-// reverse lookup the treasure name; returns empty string if not found. this
-// ignores fake seed treasures.
-func treasureNameFromIDs(id, subID byte) string {
-	for k, v := range Treasures {
-		if v.addr != 0 && v.id == id && v.subID == subID {
-			return k
-		}
-	}
-	return ""
-}
-
 // FindTreasureName does a reverse lookup of the treasure in the map to return
 // its name. It returns an empty string if not found.
 func FindTreasureName(t *Treasure) string {

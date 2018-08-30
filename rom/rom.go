@@ -230,7 +230,7 @@ func Verify(b []byte) []error {
 func setSceneGfx(slotName, gfxName string) {
 	slot := ItemSlots[slotName]
 	treasure := slot.Treasure
-	itemName := treasureNameFromIDs(treasure.id, treasure.subID)
+	itemName := FindTreasureName(treasure)
 	if gfx := itemGfx[itemName]; gfx == 0 {
 		log.Fatalf("fatal: no %s for %s (%02x%02x)",
 			gfxName, itemName, treasure.id, treasure.subID)

@@ -174,9 +174,9 @@ var wideItemGfx = map[string]int{
 	"piece of heart":   0x5d1022,
 	"rare peach stone": 0x5d1026, // piece of heart in subrosian market
 	"strange flute":    0x5f1603,
-	"ricky's flute":    0x5f1613,
+	"ricky's flute":    0x5f1633,
 	"dimitri's flute":  0x5f1623,
-	"moosh's flute":    0x5f1633,
+	"moosh's flute":    0x5f1613,
 	"ricky's gloves":   0x641c53,
 	"ribbon":           0x650c23,
 	"spring banana":    0x651033,
