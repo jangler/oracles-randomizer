@@ -68,7 +68,7 @@ var killPrenodes = map[string]*Prenode{
 	"kill goriya (pit)":               Or("kill goriya", "pit kill normal"),
 	"kill aquamentus":                 Or("sword", "beams", "scent seeds", "bombs", "fool's ore", "punch"),
 	"hit far switch":                  Or("beams", "boomerang", "bombs", "slingshot"),
-	"toss bombs":                      And("bombs", "use toss ring"),
+	"toss bombs":                      And("bombs", "toss ring"),
 	"hit very far switch":             Or("beams", "boomerang", "toss bombs", "slingshot"),
 	"kill rope":                       Or("kill normal"),
 	"kill hardhat (pit, throw)":       Or("gale seed weapon", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "bracelet"),

@@ -12,9 +12,13 @@ var Rupees = map[string]int{
 	"blaino gift":     -10,
 
 	// appraising rings
-	"punch":           -20,
-	"use energy ring": -20,
-	"use toss ring":   -20,
+	"expert's ring":  -20,
+	"toss ring":      -20,
+	"heart ring L-2": -20,
+	"light ring L-1": -20,
+	"light ring L-2": -20,
+	"energy ring":    -20,
+	"fist ring":      -20,
 
 	"goron mountain old man":      300,
 	"western coast old man":       300,

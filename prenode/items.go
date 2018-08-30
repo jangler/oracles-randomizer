@@ -50,10 +50,7 @@ var itemPrenodes = map[string]*Prenode{
 		HardAnd("beach", "shield", "ore chunks", "seed item")), // subrosian market
 	"gale seeds": And("harvest gale seeds", "seed item"),
 
-	"punch":           And("punch ring"),
-	"use energy ring": And("energy ring"),
-	"use toss ring":   And("toss ring"),
-	"sword beams L-1": And("sword L-1", "use energy ring"),
+	"punch": Or("fist ring", "expert's ring"),
 
 	"pegasus jump L-1": And("pegasus satchel", "feather L-1"),
 	"pegasus jump L-2": And("pegasus satchel", "feather L-2"),
@@ -70,9 +67,10 @@ var itemPrenodes = map[string]*Prenode{
 		And("beach", "ore chunks")),
 	"shield L-2": And("shield L-1", "red ore", "blue ore"),
 
-	"sword":     Or("sword L-1", "sword L-2"),
-	"shield":    Or("shield L-1", "shield L-2"),
-	"beams":     Or("sword L-2", "sword beams L-1"),
+	"sword":  Or("sword L-1", "sword L-2"),
+	"shield": Or("shield L-1", "shield L-2"),
+	"beams": Or("energy ring", And("sword L-2", Or(Hard("start"),
+		"light ring L-1", "light ring L-2", "heart ring L-2"))),
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"seed item": Or("satchel", "slingshot"),
@@ -88,8 +86,6 @@ var itemPrenodes = map[string]*Prenode{
 
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),
-
-	"punch ring": Or("fist ring", "expert's ring"),
 
 	"ore chunks": Or("shovel", "temple"),
 }
