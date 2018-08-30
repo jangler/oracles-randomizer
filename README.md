@@ -56,6 +56,8 @@ Seed trees and default seasons for each area are also shuffled, and the satchel
 and slingshot will start with the type of seeds on the tree in Horon Village.
 The Natzu region matches whichever animal companion the randomized flute calls.
 
+The randomizer will never require you to farm rupees if you spend them wisely.
+
 The following items are **not** randomized:
 
 - Renewable shop items (bombs, shield, hearts, etc.)
