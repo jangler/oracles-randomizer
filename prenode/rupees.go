@@ -24,6 +24,15 @@ var Rupees = map[string]int{
 	"woods of winter old man":     -50,
 	"holodrum plain west old man": -100,
 
-	"d2 rupee room": 162,
-	"d6 rupee room": 175,
+	// rng seems involved ??
+	"d2 rupee room": 200,
+	"d6 rupee room": 150,
+
+	"rupees, 1":   1,
+	"rupees, 5":   5,
+	"rupees, 10":  10,
+	"rupees, 20":  20,
+	"rupees, 30":  30,
+	"rupees, 50":  50,
+	"rupees, 100": 100,
 }

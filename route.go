@@ -34,7 +34,7 @@ type Route struct {
 	DungeonItems     []int
 	KeyItemsTotal    int
 	KeyItemsPlaced   int
-	Income, Costs    int
+	Costs            int
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes
@@ -190,6 +190,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		for i := range r.DungeonItems {
 			r.DungeonItems[i] = 0
 		}
+		r.Costs = 0
 
 		// slot progression items
 		done := r.Graph["done"]

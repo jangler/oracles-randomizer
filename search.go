@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
+	"github.com/jangler/oos-randomizer/prenode"
 	"github.com/jangler/oos-randomizer/rom"
 )
 
@@ -50,6 +51,9 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			newCount == initialCount; e = e.Next() {
 			slot := e.Value.(*graph.Node)
 			if nodeInList(slot, usedSlots) {
+				if fillUnused {
+					break
+				}
 				continue
 			}
 
@@ -125,6 +129,11 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 				}
 			}
 		}
+	}
+
+	// abort if it's impossible to pay for the slotted items
+	if !tryMeetCosts(r, usedItems, itemPool, usedSlots, freeSlots, src) {
+		return nil, nil
 	}
 
 	// remove the used nodes from the persistent pools
@@ -221,7 +230,8 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 			}
 		}
 
-		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] {
+		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] &&
+			prenode.Rupees[a[j].Name] == 0 {
 			return true
 		}
 
@@ -441,4 +451,52 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			item.Parents = append(item.Parents, parent)
 		}
 	}
+}
+
+func tryMeetCosts(r *Route, usedItems, itemPool, usedSlots,
+	slotPool *list.List, src *rand.Rand) bool {
+	// count the new costs of the used items
+	costs := 0
+	for e := usedSlots.Front(); e != nil; e = e.Next() {
+		node := e.Value.(*graph.Node)
+		costs -= prenode.Rupees[node.Name]
+	}
+	if costs <= 0 {
+		return true
+	}
+	r.Costs += costs
+	balance := -r.Costs
+
+	// count the net rupees available to the player
+	for node := range r.Graph.ExploreFromStart() {
+		// don't subtract shops, since the player can see what they're buying
+		if !strings.Contains(node.Name, "shop") {
+			value := prenode.Rupees[node.Name]
+			if !nodeInList(node, usedSlots) {
+				balance += value
+			}
+		}
+	}
+
+	// if possible, add rupees until the player can afford the items
+	for ei := itemPool.Front(); balance < 0 && ei != nil; ei = ei.Next() {
+		item := ei.Value.(*graph.Node)
+		value := prenode.Rupees[item.Name]
+		if value < 10 {
+			continue
+		}
+
+		for es := slotPool.Front(); es != nil; es = es.Next() {
+			slot := es.Value.(*graph.Node)
+			if !nodeInList(slot, usedSlots) && itemFitsInSlot(item, slot, src) {
+				item.AddParents(slot)
+				usedItems.PushFront(item)
+				usedSlots.PushFront(slot)
+				balance += value
+				break
+			}
+		}
+	}
+
+	return balance >= 0
 }
