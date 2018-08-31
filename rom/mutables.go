@@ -14,23 +14,27 @@ type Mutable interface {
 
 // A MutableRange is a length of mutable bytes starting at a given address.
 type MutableRange struct {
-	Addr     Addr
+	Addrs    []Addr
 	Old, New []byte
 }
 
 // MutableByte returns a special case of MutableRange with a range of a single
 // byte.
 func MutableByte(addr Addr, old, new byte) *MutableRange {
-	return &MutableRange{Addr: addr, Old: []byte{old}, New: []byte{new}}
+	return &MutableRange{
+		Addrs: []Addr{addr},
+		Old:   []byte{old},
+		New:   []byte{new},
+	}
 }
 
 // MutableWord returns a special case of MutableRange with a range of a two
 // bytes.
 func MutableWord(addr Addr, old, new uint16) *MutableRange {
 	return &MutableRange{
-		Addr: addr,
-		Old:  []byte{byte(old >> 8), byte(old)},
-		New:  []byte{byte(new >> 8), byte(new)},
+		Addrs: []Addr{addr},
+		Old:   []byte{byte(old >> 8), byte(old)},
+		New:   []byte{byte(new >> 8), byte(new)},
 	}
 }
 
@@ -38,28 +42,42 @@ func MutableWord(addr Addr, old, new uint16) *MutableRange {
 // strings.
 func MutableString(addr Addr, old, new string) *MutableRange {
 	return &MutableRange{
-		Addr: addr,
-		Old:  bytes.NewBufferString(old).Bytes(),
-		New:  bytes.NewBufferString(new).Bytes(),
+		Addrs: []Addr{addr},
+		Old:   bytes.NewBufferString(old).Bytes(),
+		New:   bytes.NewBufferString(new).Bytes(),
+	}
+}
+
+// MutableStrings returns a MutableRange constructed from the bytes in two
+// strings, at multiple addresses.
+func MutableStrings(addrs []Addr, old, new string) *MutableRange {
+	return &MutableRange{
+		Addrs: addrs,
+		Old:   bytes.NewBufferString(old).Bytes(),
+		New:   bytes.NewBufferString(new).Bytes(),
 	}
 }
 
 // Mutate replaces bytes in its range.
 func (mr *MutableRange) Mutate(b []byte) error {
-	addr := mr.Addr.FullOffset(isEn(b))
-	for i, value := range mr.New {
-		b[addr+i] = value
+	for _, addr := range mr.Addrs {
+		offset := addr.FullOffset(isEn(b))
+		for i, value := range mr.New {
+			b[offset+i] = value
+		}
 	}
 	return nil
 }
 
 // Check verifies that the range matches the given ROM data.
 func (mr *MutableRange) Check(b []byte) error {
-	addr := mr.Addr.FullOffset(isEn(b))
-	for i, value := range mr.Old {
-		if b[addr+i] != value {
-			return fmt.Errorf("expected %x at %x; found %x",
-				mr.Old[i], addr+i, b[addr+i])
+	for _, addr := range mr.Addrs {
+		offset := addr.FullOffset(isEn(b))
+		for i, value := range mr.Old {
+			if b[offset+i] != value {
+				return fmt.Errorf("expected %x at %x; found %x",
+					mr.Old[i], offset+i, b[offset+i])
+			}
 		}
 	}
 	return nil
@@ -252,15 +270,16 @@ var constMutables = map[string]Mutable{
 	// There are tables indicating extra items to "get" and "lose" upon getting
 	// an item. We remove the "lose fools ore" entry and insert a "get seeds
 	// from slingshot" entry.
-	"lose fools, get seeds from slingshot 1": MutableByte(sameAddr(0x3f, 0x4543), 0x00, 0x13),
-	"lose fools, get seeds from slingshot 2": &MutableRange{sameAddr(0x3f, 0x4545),
-		[]byte{0x45, 0x00, 0x52, 0x50, 0x51, 0x17, 0x1e, 0x00},
-		[]byte{0x20, 0x00, 0x46, 0x45, 0x00, 0x52, 0x50, 0x51}},
-	"lose fools, get seeds from slingshot 3": MutableByte(sameAddr(0x3f, 0x44cf), 0x44, 0x47),
+	"lose fools, get seeds from slingshot 1": MutableByte(sameAddr(0x3f, 0x4543),
+		0x00, 0x13),
+	"lose fools, get seeds from slingshot 2": MutableString(sameAddr(0x3f, 0x4545),
+		"\x45\x00\x52\x50\x51\x17\x1e\x00", "\x20\x00\x46\x45\x00\x52\x50\x51"),
+	"lose fools, get seeds from slingshot 3": MutableByte(sameAddr(0x3f, 0x44cf),
+		0x44, 0x47),
 	// since slingshot doesn't increment seed capacity, set the level-zero
 	// capacity of seeds to 20, and move the pointer up by one byte.
-	"satchel capacity": &MutableRange{sameAddr(0x3f, 0x4617),
-		[]byte{0x20, 0x50, 0x99}, []byte{0x20, 0x20, 0x50}},
+	"satchel capacity": MutableString(sameAddr(0x3f, 0x4617),
+		"\x20\x50\x99", "\x20\x20\x50"),
 	"satchel capacity pointer": MutableByte(sameAddr(0x3f, 0x460e), 0x16, 0x17),
 
 	// stop the hero's cave event from giving you a second wooden sword that
@@ -287,16 +306,15 @@ var constMutables = map[string]Mutable{
 
 	// restrict the area triggering sokra to talk to link in horon village to
 	// the left side of the burnable trees (prevents softlock)
-	"resize sokra trigger": &MutableRange{sameAddr(0x08, 0x5ba5),
-		[]byte{0xfa, 0x0b, 0xd0, 0xfe, 0x3c, 0xd8, 0xfe, 0x60, 0xd0},
-		[]byte{0xfe, 0x88, 0xd0, 0xfa, 0x0b, 0xd0, 0xfe, 0x3c, 0xd8}},
+	"resize sokra trigger": MutableString(sameAddr(0x08, 0x5ba5),
+		"\xfa\x0b\xd0\xfe\x3c\xd8\xfe\x60\xd0",
+		"\xfe\x88\xd0\xfa\x0b\xd0\xfe\x3c\xd8"),
 
 	// remove one-way diving spot on the south end of sunken city to prevent
 	// softlock on moblin road without winter. this requires moving
 	// interactions around.
-	"remove diving spot": &MutableRange{Addr{0x11, 0x69ca, 0x69cd},
-		[]byte{0x1f, 0x0d, 0x68, 0x68, 0x3e, 0x31, 0x18, 0x68},
-		[]byte{0x3e, 0x31, 0x18, 0x68, 0xff, 0xff, 0xff, 0xff}},
+	"remove diving spot": MutableString(Addr{0x11, 0x69ca, 0x69cd},
+		"\x1f\x0d\x68\x68\x3e\x31\x18\x68", "\x3e\x31\x18\x68\xff\xff\xff\xff"),
 
 	// if you go up the stairs into the room in d8 with the magnet ball and
 	// can't move it, you don't have room to go back down the stairs. this
@@ -340,11 +358,10 @@ var constMutables = map[string]Mutable{
 	// replace the rock/flower outside of d6 with a normal bush so that the
 	// player doesn't get softlocked if they exit d6 without gale satchel or
 	// default spring.
-	"replace d6 flower spring":      MutableByte(Addr{0x21, 0x47fd, 0x4e73}, 0xd8, 0xc4),
-	"replace d6 flower summer":      MutableByte(Addr{0x22, 0x450d, 0x4b83}, 0x92, 0xc4),
-	"replace d6 flower autumn":      MutableByte(Addr{0x23, 0x42fd, 0x4973}, 0x92, 0xc4),
-	"replace d6 flower winter (jp)": MutableByte(Addr{0x23, 0x7f5a, 0}, 0x92, 0xc4),
-	"replace d6 flower winter (en)": MutableByte(Addr{0x24, 0, 0x45d0}, 0x92, 0xc4),
+	"replace d6 flower spring": MutableByte(Addr{0x21, 0, 0x4e73}, 0xd8, 0xc4),
+	"replace d6 flower non-spring": MutableStrings(
+		[]Addr{{0x22, 0, 0x4b83}, {0x23, 0, 0x4973}, {0x24, 0, 0x45d0}},
+		"\x92", "\xc4"),
 
 	// remove a flower on the way to the spring banana tree, since the player
 	// could remove it with moosh and then be stuck behind it. it doesn't lock

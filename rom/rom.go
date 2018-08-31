@@ -154,7 +154,7 @@ func Update(b []byte) ([]byte, error) {
 	}
 
 	varMutables["initial season"].(*MutableRange).New =
-		[]byte{0x2d, b[Seasons["north horon season"].Addr.FullOffset(en)]}
+		[]byte{0x2d, b[Seasons["north horon season"].Addrs[0].FullOffset(en)]}
 
 	// change seed mechanics based on the ROM's existing tree information
 	for _, name := range []string{"ember tree", "scent tree", "mystery tree",
