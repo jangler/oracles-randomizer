@@ -87,10 +87,8 @@ func (mr *MutableRange) Check(b []byte) error {
 // cooldown (true = no cooldown).
 func SetFreewarp(freewarp bool) {
 	if freewarp {
-		constMutables["tree warp (jp)"].(*MutableRange).New[19] = 0x18
 		constMutables["tree warp (en)"].(*MutableRange).New[19] = 0x18
 	} else {
-		constMutables["tree warp (jp)"].(*MutableRange).New[19] = 0x28
 		constMutables["tree warp (en)"].(*MutableRange).New[19] = 0x28
 	}
 }
@@ -101,12 +99,6 @@ func SetAnimal(companion int) {
 	varMutables["animal region"].(*MutableRange).New =
 		[]byte{byte(companion + 0x0a)}
 }
-
-// most of the tree warp code between jp and en is the same; only the last two
-// instructions (six bytes) differ
-const treeWarpCommon = "\xfa\x81\xc4\xe6\x08\x28\x28\xfa\x49\xcc\xfe\x02" +
-	"\x30\x07\x21\x25\xc6\xcb\x7e\x28\x06\x3e\x5a\xcd\x74\x0c\xc9\x36\xff" +
-	"\x2b\x36\xfc\x2b\x36\xb4\x2b\x36\x40\x21\xb7\xcb\x36\x05\xaf"
 
 // consider these mutables constants; they aren't changed in the randomization
 // process.
@@ -136,25 +128,27 @@ var constMutables = map[string]Mutable{
 			"\x36\x40\x3e\x38\x21\x10\xc6\x86\x6f\x36\x80\xc9"),
 
 	// warp to ember tree if holding start when closing the map screen, using
-	// the playtime counter as a cooldown. this requires adding some code at
-	// the end of the bank.
-	"outdoor map jump redirect (jp)": MutableString(Addr{0x02, 0x60eb, 0x6089},
-		"\xc2\xdd\x4f", "\xc4\x1d\x76"),
-	"dungeon map jump redirect (jp)": MutableString(Addr{0x02, 0x608e, 0x602c},
-		"\xc2\xdd\x4f", "\xc4\x1d\x76"),
+	// the playtime counter as a cooldown. this also sets the player's respawn
+	// point.
 	"outdoor map jump redirect (en)": MutableString(Addr{0x02, 0x60eb, 0x6089},
 		"\xc2\x7b\x4f", "\xc4\xbb\x75"),
 	"dungeon map jump redirect (en)": MutableString(Addr{0x02, 0x608e, 0x602c},
 		"\xc2\x7b\x4f", "\xc4\xbb\x75"),
-	"tree warp (jp)": MutableString(Addr{0x02, 0x761d, 0}, "\x02",
-		treeWarpCommon+"\xcd\xdd\x5e\xc3\xdd\x4f"),
 	"tree warp (en)": MutableString(Addr{0x02, 0, 0x75bb}, "\x02",
-		treeWarpCommon+"\xcd\x7b\x5e\xc3\x7b\x4f"),
+		"\xfa\x81\xc4\xe6\x08\x28\x33"+ // close as normal if start not held
+			"\xfa\x49\xcc\xfe\x02\x30\x07"+ // check if indoors
+			"\x21\x25\xc6\xcb\x7e\x28\x06"+ // check if cooldown is up
+			"\x3e\x5a\xcd\x74\x0c\xc9"+ // play error sound and ret
+			"\x21\x22\xc6\x11\xf8\x75\x06\x04\xcd\x5b\x04"+ // copy playtime
+			"\x21\x2b\xc6\x11\xfc\x75\x06\x06\xcd\x5b\x04"+ // copy save point
+			"\x21\xb7\xcb\x36\x05\xaf\xcd\x7b\x5e\xc3\x7b\x4f"+ // close + warp
+			"\x40\xb4\xfc\xff\x00\xf8\x02\x02\x34\x38"), // data for copies
+
 	// warp to room under cursor if wearing developer ring. this goes right
 	// after the normal tree warp code (but doesn't fall through from it).
 	"dev ring tree warp call (en)": MutableWord(Addr{0x02, 0, 0x5e9b},
-		0x890c, 0xed75),
-	"dev ring tree warp func (en)": MutableString(Addr{0x02, 0, 0x75ed}, "\x02",
+		0x890c, 0x0276),
+	"dev ring tree warp func (en)": MutableString(Addr{0x02, 0, 0x7602}, "\x02",
 		"\xfa\xc5\xc6\xfe\x40\x20\x12\xfa\x49\xcc\xfe\x02\x30\x0b\xf6\x80"+
 			"\xea\x63\xcc\xfa\xb6\xcb\xea\x64\xcc\x3e\x03\xcd\x89\x0c\xc9"),
 
