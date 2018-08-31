@@ -104,6 +104,8 @@ these are en/us:
 - 87 = jump table
 - 88 = set coordinates, byte = y, byte = x
 - 98 = show text, word = index
+- b0 = jump if room flag, byte = flag, word = addr
+- b5 = jump if global flag, byte = flag, word = addr
 - c0 = call another script
 - b6 = set global flag, byte = flag
 - bd = disable input
