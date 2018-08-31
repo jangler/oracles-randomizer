@@ -107,6 +107,8 @@ func orderedKeys(m map[string]Mutable) []string {
 func Mutate(b []byte) ([]byte, error) {
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, Seasons["north horon season"].New[0]}
+	varMutables["season after pirate cutscene"].(*MutableRange).New =
+		[]byte{Seasons["western coast season"].New[0]}
 
 	setSeedData()
 
@@ -155,6 +157,8 @@ func Update(b []byte) ([]byte, error) {
 
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, b[Seasons["north horon season"].Addrs[0].FullOffset(en)]}
+	varMutables["season after pirate cutscene"].(*MutableRange).New =
+		[]byte{b[Seasons["western coast season"].Addrs[0].FullOffset(en)]}
 
 	// change seed mechanics based on the ROM's existing tree information
 	for _, name := range []string{"ember tree", "scent tree", "mystery tree",
