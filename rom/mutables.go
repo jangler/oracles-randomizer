@@ -308,12 +308,12 @@ var constMutables = map[string]Mutable{
 	// desert, in case the player hasn't talked to the ghost.
 	"pirate flag call (jp)": MutableWord(Addr{0x15, 0x5e52, 0x5a0f}, 0xb930, 0x707d),
 	"pirate flag call (en)": MutableWord(Addr{0x15, 0x5e52, 0x5a0f}, 0xcd30, 0x2d79),
-	"pirate flag func (jp)": MutableString(Addr{0x15, 0x7d70, 0x792d},
-		"\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15",
-		"\xcd\xb9\x30\x3e\x17\xcd\xb9\x30\x3e\x1b\xcd\xb9\x30\x21\xe2\xc7\xcb\xf6\xc9"),
-	"pirate flag func (en)": MutableString(Addr{0x15, 0x7d70, 0x792d},
-		"\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15\x15",
-		"\xcd\xcd\x30\x3e\x17\xcd\xcd\x30\x3e\x1b\xcd\xcd\x30\x21\xe2\xc7\xcb\xf6\xc9"),
+	"pirate flag func (jp)": MutableString(Addr{0x15, 0x7d70, 0x792d}, "\x15",
+		"\xcd\xb9\x30\x3e\x17\xcd\xb9\x30\x3e\x1b\xcd\xb9\x30\x21\xe2\xc7\xcb\xf6"+
+			"\xfa\x89\x7d\xea\x4e\xcc\xc9"),
+	"pirate flag func (en)": MutableString(Addr{0x15, 0x7d70, 0x792d}, "\x15",
+		"\xcd\xcd\x30\x3e\x17\xcd\xcd\x30\x3e\x1b\xcd\xcd\x30\x21\xe2\xc7\xcb\xf6"+
+			"\xfa\x46\x79\xea\x4e\xcc\xc9"),
 	"pirate warp": MutableString(Addr{0x15, 0x5e5f, 0x5a1c},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 
@@ -396,6 +396,9 @@ var varMutables = map[string]Mutable{
 	// allow seed collection if you have a slingshot, by checking for the given
 	// initial seed type
 	"carry seeds in slingshot": MutableByte(sameAddr(0x10, 0x4b19), 0x19, 0x20),
+
+	// should be set to match the western coast season
+	"season after pirate cutscene": MutableByte(Addr{0x15, 0x7d89, 0x7946}, 0x15, 0x15),
 }
 
 var Seasons = map[string]*MutableRange{
