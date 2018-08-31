@@ -120,56 +120,62 @@ const (
 
 // first two bytes determine sprite; final one determines graphics flags.
 
-var narrowItemGfx = map[string]int{
-	"ring":             0x5d0811,
+var itemGfx = map[string]int{
+	"rupees, 1":        0x5c0400,
+	"rupees, 5":        0x5c0410,
+	"rupees, 10":       0x5c0420,
+	"rupees, 20":       0x5c0640,
+	"rupees, 30":       0x5c0650,
+	"rupees, 50":       0x5c0843,
+	"rupees, 100":      0x5c0853,
+	"flippers":         0x5d0453,
+	"ring":             0x5d0810,
 	"gasha seed":       0x5d0a10,
-	"ring box":         0x5d1401, // L-1 is 01, L-2 is 11, L-3 is 21
-	"gnarled root key": 0x5e0e51,
-	"floodgate key":    0x5e1041,
-	"dragon key":       0x5e1211,
-	"satchel 1":        0x5f0051,
+	"ring box L-1":     0x5d1400,
+	"ring box L-2":     0x5d1410,
+	"ring box L-3":     0x5d1420,
+	"heart container":  0x5d1252,
+	"dungeon map":      0x5e0033,
+	"compass":          0x5e0413,
+	"small key":        0x5e0c50,
+	"gnarled key":      0x5e0e50,
+	"boss key":         0x5e0853,
+	"floodgate key":    0x5e1040,
+	"dragon key":       0x5e1210,
+	"satchel 1":        0x5f0050,
 	"satchel 2":        0x5f0050,
-	"slingshot L-1":    0x5f0241,
-	"slingshot L-2":    0x5f0451,
-	"magnet gloves":    0x5f1021,
+	"slingshot L-1":    0x5f0240,
+	"slingshot L-2":    0x5f0450,
+	"magnet gloves":    0x5f1020,
 	"sword L-1":        0x600000,
-	"sword L-2":        0x600251,
-	"sword L-3":        0x600441,
-	"shield L-1":       0x600601,
-	"shield L-2":       0x600851,
-	"shield L-3":       0x600a41,
-	"feather L-1":      0x600c41,
-	"feather L-2":      0x600e51,
-	"rod":              0x601021,
-	"winter":           0x601021,
-	"spring":           0x601021,
-	"summer":           0x601021,
-	"autumn":           0x601021,
-	"bracelet":         0x601251,
+	"sword L-2":        0x600250,
+	"sword L-3":        0x600440,
+	"shop shield L-1":  0x600600,
+	"shield L-2":       0x600850,
+	"shield L-3":       0x600a40,
+	"feather L-1":      0x600c40,
+	"feather L-2":      0x600e50,
+	"rod":              0x601020,
+	"winter":           0x601020,
+	"spring":           0x601020,
+	"summer":           0x601020,
+	"autumn":           0x601020,
+	"bracelet":         0x601250,
 	"fool's ore":       0x601400,
-	"shovel":           0x601641,
-	"boomerang L-1":    0x601851,
-	"boomerang L-2":    0x601a41,
-	"bombs":            0x601c41,
+	"shovel":           0x601640,
+	"boomerang L-1":    0x601850,
+	"boomerang L-2":    0x601a40,
+	"bombs, 10":        0x601c40,
+	"bombchus":         0x610050,
 	"round jewel":      0x650400,
 	"pyramid jewel":    0x650620,
 	"square jewel":     0x650810,
 	"x-shaped jewel":   0x650a30,
 	"blue ore":         0x660410,
 	"red ore":          0x660420,
-
-	// don't slot these in scenes
-	/*
-		"ember seeds":   0x5f0621,
-		"scent seeds":   0x5f0831,
-		"pegasus seeds": 0x5f0a11,
-		"gale seeds":    0x5f0c11,
-		"mystery seeds": 0x5f0e01,
-	*/
-}
-
-var wideItemGfx = map[string]int{
-	"heart refill":     0x5c0257,
+	"hard ore":         0x660603,
+	"heart refill":     0x5c0259,
+	"peaches":          0x5c0257, // heart refill in subrosian market
 	"member's card":    0x5d0c13,
 	"master's plaque":  0x5d0c33,
 	"piece of heart":   0x5d1022,
@@ -184,25 +190,18 @@ var wideItemGfx = map[string]int{
 	"treasure map":     0x651433,
 	"rusty bell":       0x651823,
 	"star ore":         0x660033,
+
+	// but shouldn't be slotted anywhere that needs graphics data
+	"ember tree seeds":   0x5f0620,
+	"scent tree seeds":   0x5f0830,
+	"pegasus tree seeds": 0x5f0a10,
+	"gale tree seeds 1":  0x5f0c10,
+	"gale tree seeds 2":  0x5f0c10,
+	"mystery tree seeds": 0x5f0e00,
 }
 
-// union of narrow and wide item graphics, initialized in init()
-var itemGfx = map[string]int{}
-
-// CanSlotInScene returns true iff the named item can display correctly in the
-// rod of seasons and noble sword scenes.
-func CanSlotInScene(itemName string) bool {
-	return narrowItemGfx[itemName] != 0
-}
-
-// CanSlotInShop returns true iff the named item can display correctly in the
-// Horon Village shop.
-func CanSlotInShop(itemName string) bool {
-	return itemGfx[itemName] != 0
-}
-
-// CanSlotInMarket returns true iff the named item can display correctly in the
-// Subrosian market.
-func CanSlotInMarket(itemName string) bool {
-	return wideItemGfx[itemName] != 0
+// rod of seasons has a different graphics whatever than the rest of the slots
+// and it's tricky to change, so i'm restricting items instead.
+func CanSlotAsRod(name string) bool {
+	return (itemGfx[name] & 0xf) == 0
 }

@@ -365,21 +365,9 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		}
 	}
 
-	// some items can't be drawn correctly in certain item slots.
-	switch slotNode.Name {
-	case "rod gift", "noble sword spot":
-		if !rom.CanSlotInScene(itemNode.Name) {
-			return false
-		}
-	case "village shop 3", "member's shop 1", "member's shop 2",
-		"member's shop 3", "d0 sword chest":
-		if !rom.CanSlotInShop(itemNode.Name) {
-			return false
-		}
-	case "subrosian market 2", "subrosian market 5":
-		if !rom.CanSlotInMarket(itemNode.Name) {
-			return false
-		}
+	// rod of seasons has special graphics something
+	if slotNode.Name == "rod gift" && !rom.CanSlotAsRod(itemNode.Name) {
+		return false
 	}
 
 	// and only seeds can be slotted in seed trees, of course

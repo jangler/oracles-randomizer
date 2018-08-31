@@ -78,8 +78,6 @@ these are jp:
 - 6:4931 = chooseParentItemSlot
 - 6:4994 = parentItemUpdate (the good stuff; what happens when an item is used)
 - 7:4f36 = galeSeedTryToWarpLink
-- 3f:4445, 3f:444c, 3f:445a = at whichever executes last, hl is the address of
-  sprite data for a loaded object
 
 these are en/us:
 
@@ -99,6 +97,7 @@ these are en/us:
 - 7:49ca = itemSetAnimation
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
   is address to write to, b happens to be the treasure index)
+- 3f:4445, 3f:444c, 3f:c45a = points for loading sprite data for an object
 
 ## script commands (most are documented in more detail in ages-disasm)
 

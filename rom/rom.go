@@ -16,19 +16,14 @@ const (
 )
 
 func init() {
-	// rings all have the same sprite
+	// rings and boss keys all have the same sprite
 	for name, treasure := range Treasures {
 		if treasure.id == 0x2d {
-			narrowItemGfx[name] = narrowItemGfx["ring"]
+			itemGfx[name] = itemGfx["ring"]
 		}
-	}
-
-	// accumulate all item sprites into map
-	for name, sprite := range narrowItemGfx {
-		itemGfx[name] = sprite
-	}
-	for name, sprite := range wideItemGfx {
-		itemGfx[name] = sprite
+		if treasure.id == 0x31 {
+			itemGfx[name] = itemGfx["boss key"]
+		}
 	}
 
 	// get set of unique items (to determine which can be slotted freely)
@@ -128,6 +123,9 @@ func Mutate(b []byte) ([]byte, error) {
 			return nil, err
 		}
 	}
+
+	// then fix rod graphics
+	b[ItemSlots["rod gift"].GfxAddrs[0].FullOffset(en)+2] += 1
 
 	outSum := sha1.Sum(b)
 	log.Printf("new bytes: sha-1 %x", outSum)
