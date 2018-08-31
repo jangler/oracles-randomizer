@@ -318,6 +318,13 @@ var ItemSlots = map[string]*MutableSlot{
 	"red ore chest":        MutableChest("red ore", 0x53e6),
 	"non-rosa gasha chest": MutableChest("gasha seed", 0x54d8),
 	"rosa gasha chest":     MutableChest("gasha seed", 0x5559),
+	"subrosian market 1": &MutableSlot{
+		Treasure:   Treasures["ribbon"],
+		IDAddrs:    []Addr{{0x09, 0, 0x77da}},
+		ParamAddrs: []Addr{{0x09, 0, 0x77db}},
+		TextAddrs:  []Addr{{0x09, 0, 0x78b1}},
+		GfxAddrs:   []Addr{{0x3f, 0, 0x6a96}},
+	},
 	"subrosian market 2": &MutableSlot{
 		Treasure:   Treasures["rare peach stone"],
 		IDAddrs:    []Addr{{0x09, 0x77cb, 0x77e2}},

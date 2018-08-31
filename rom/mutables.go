@@ -221,6 +221,8 @@ var constMutables = map[string]Mutable{
 		"\x00\x00\x00", "\x5f\x16\x33"),
 	"rare peach stone gfx": MutableString(Addr{0x3f, 0x6744, 0x67c6},
 		"\x00\x00\x00", "\x5d\x10\x26"),
+	"ribbon gfx": MutableString(Addr{0x3f, 0, 0x67c9},
+		"\x00\x00\x00", "\x65\x0c\x23"),
 
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e68, 0x4e72}, 0xcb, 0xf6),
