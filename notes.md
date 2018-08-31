@@ -66,6 +66,7 @@ these are jp:
 	- 0:3944
 	- 0:39d6
 	- 0:39e0
+- 0:3ac6 = getFreeInteractionSlot
 - 2:4f90 = openMenu
 - 2:4fdd = closeMenu
 - 4:460c = getTransformedLinkID
@@ -98,9 +99,27 @@ these are en/us:
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
   is address to write to, b happens to be the treasure index)
 
-## undocumented script commands (compared to ages-disasm master)
+## script commands (most are documented in more detail in ages-disasm)
 
-- f6 = set object counter? like a delay
+- 00 = end script
+- 84 = spawn interaction
+- 87 = jump table
+- 88 = set coordinates, byte = y, byte = x
+- 98 = show text, word = index
+- b0 = jump if room flag, byte = flag, word = addr
+- b5 = jump if global flag, byte = flag, word = addr
+- c0 = call another script
+- b6 = set global flag, byte = flag
+- bd = disable input
+- be = enable input
+- d7 = set counter, byte = value
+- de = spawn item on link, word = id, subid (?)
+- e0 = call function in bank 15, word = addr
+- e1 = call function in bank 15, word = addr, byte = value of a and e
+- e3 = play sound, byte = index
+- f6 = set object counter? like d7 but for a specific object?
+- f7 = ? no params
+- f8 = ? no params
 
 ## notable ram addresses
 

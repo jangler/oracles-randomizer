@@ -416,6 +416,13 @@ var constMutables = map[string]Mutable{
 		"\xfa\x50\xcc\x3d\xc0\xaf\x21\xf8\xc7\xb6\x21\x9e\xc7\xb6\x21\x72\xc7"+
 			"\xb6\x21\x67\xc7\xb6\x21\x5f\xc7\xb6\x21\x10\xc7\xb6\xcb\x67"+
 			"\x20\x02\x3c\xc9\xaf\xc9"),
+
+	// end maku seed script as soon as link gets the seed
+	"abbreviate maku seed cutscene": MutableString(Addr{0x0b, 0, 0x71ec},
+		"\xe1\x23\x61\x01", "\xb6\x19\xbe\x00"),
+	// end northen peak barrier cutscene as soon as the barrier is broken
+	"abbreviate barrier cutscene": MutableString(Addr{0x0b, 0, 0x79f1},
+		"\x88\x18\x50\xf8", "\xb6\x1d\xbe\x00"),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
