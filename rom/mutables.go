@@ -344,7 +344,8 @@ var constMutables = map[string]Mutable{
 		{0x23, 0, 0x669d}, {0x24, 0, 0x637d}},
 		"\x52\x12\x12\x5d\x11", "\x22\x23\x24\x04\x92"),
 	"block cliff 4": MutableStrings([]Addr{{0x21, 0, 0x6c47}, {0x22, 0, 0x688e},
-		{0x23, 0, 0x66a7}, {0x24, 0, 0x6387}}, "\x62", "\x40"),
+		{0x23, 0, 0x66a7}, {0x24, 0, 0x6387}},
+		"\x62\x40\x40\x58\xce", "\x40\x40\x40\x58\xcf"),
 	"block cliff 5": MutableStrings([]Addr{{0x21, 0, 0x6c51}, {0x22, 0, 0x6898},
 		{0x23, 0, 0x66b1}, {0x24, 0, 0x6391}}, "\x50", "\x54"),
 
