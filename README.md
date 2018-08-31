@@ -82,16 +82,17 @@ note that the first Subrosian dancing prize could still be important.
 Other small changes have been made for convenience, to simplify randomization
 logic, or to prevent softlocks. The most notable are:
 
-- The intro sequence and pirate cutscene are almost entirely removed.
+- The intro sequence and pirate cutscene are removed.
 - Mystical seeds grow in all seasons.
 - Seeds can be collected if the player has either a slingshot or the satchel.
-- The cliff between Eastern Suburbs and Sunken City has stairs instead of a
-  spring flower.
+- The cliff between Eastern Suburbs and Sunken City is blocked except in
+  spring.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
 - The diving spot at the south end of Sunken City is removed.
 - **Holding start while closing the map screen outdoors warps to the seed tree
-  in Horon Village.** Tree warping has a one-hour cooldown unless the
-  `-freewarp` flag is specified.
+  in Horon Village.** This also sets your save/respawn point to that screen.
+  Tree warping has a one-hour cooldown unless the `-freewarp` flag is
+  specified.
 
 ## FAQ
 
