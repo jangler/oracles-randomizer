@@ -62,7 +62,7 @@ The following items are **not** randomized:
 
 - Renewable shop items (bombs, shield, hearts, etc.)
 - Small keys
-- Pirate's bell and iron shield
+- Pirate's bell and ribbon
 - Found items (gasha seeds and pieces of heart outside of chests)
 - Subrosian dancing prizes after the first
 - Trading sequence items
@@ -88,6 +88,7 @@ logic, or to prevent softlocks. The most notable are:
 - The cliff between Eastern Suburbs and Sunken City is blocked except in
   spring.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
+- Fool's ore is randomized (the Subrosians trade you nothing for your feather).
 - The diving spot at the south end of Sunken City is removed.
 - **Holding start while closing the map screen outdoors warps to the seed tree
   in Horon Village.** This also sets your save/respawn point to that screen.
