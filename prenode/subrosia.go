@@ -62,6 +62,7 @@ var subrosiaPrenodes = map[string]*Prenode{
 	"subrosian market 5":   AndSlot("beach", Or("shovel", "temple")),
 	"hard ore slot": AndSlot("furnace", "red ore", "blue ore",
 		"temple", "bomb flower"),
+	"iron shield gift": AndSlot("temple", "hard ore"),
 
 	"eruption room": Or("remains portal"),
 	"enter d8":      Or("d8 portal"),

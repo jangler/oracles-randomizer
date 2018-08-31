@@ -417,6 +417,14 @@ var constMutables = map[string]Mutable{
 	// end northen peak barrier cutscene as soon as the barrier is broken
 	"abbreviate barrier cutscene": MutableString(Addr{0x0b, 0, 0x79f1},
 		"\x88\x18\x50\xf8", "\xb6\x1d\xbe\x00"),
+
+	// skip shield check for forging hard ore
+	"skip iron shield check": MutableByte(Addr{0x0b, 0, 0x75c7}, 0x01, 0x02),
+	// and skip the check for what level shield you currently have
+	"skip iron shield level check": MutableString(Addr{0x15, 0, 0x62ac},
+		"\x38\x01", "\x18\x05"),
+	// for some reason the param of iron shield is incremented before giving it
+	"keep iron shield param": MutableByte(Addr{0x09, 0, 0x42de}, 0x0c, 0x00),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
