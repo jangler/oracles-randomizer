@@ -8,47 +8,6 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
-// item placement from a 1.2.2 rom used for a race, updated for rod/seasons
-// being slotted
-var testData1 = map[string]string{
-	"winter":             "d0 sword chest",
-	"bracelet":           "maku tree gift",
-	"gnarled key":        "blaino gift",
-	"satchel":            "d1 satchel spot",
-	"gale tree seeds 1":  "scent tree",
-	"ember tree seeds":   "ember tree",
-	"feather L-1":        "rod gift",
-	"magnet gloves":      "shovel gift",
-	"slingshot L-2":      "dance hall prize",
-	"mystery tree seeds": "sunken gale tree",
-	"star ore":           "x-shaped jewel chest",
-	"pegasus tree seeds": "pegasus tree",
-	"master's plaque":    "floodgate key spot",
-	"fool's ore":         "diver gift",
-	"shovel":             "d8 HSS chest",
-	"x-shaped jewel":     "star ore spot",
-	"sword L-1":          "d2 bracelet chest",
-	"feather L-2":        "master's plaque chest",
-	"round jewel":        "dragon key spot",
-	"dragon key":         "spring banana tree",
-	"floodgate key":      "desert pit",
-	"square jewel":       "d5 magnet gloves chest",
-	"flippers":           "d3 feather chest",
-	"pyramid jewel":      "d4 slingshot chest",
-	"slingshot L-1":      "pyramid jewel spot",
-	"boomerang L-2":      "square jewel chest",
-	"rusty bell":         "round jewel gift",
-	"gale tree seeds 2":  "mystery tree",
-	"sword L-2":          "d6 boomerang chest",
-	"spring banana":      "d7 cape chest",
-	"boomerang L-1":      "noble sword spot",
-	"scent tree seeds":   "tarm gale tree",
-
-	"spring": "spring tower",
-	"summer": "summer tower",
-	"autumn": "autumn tower",
-}
-
 // item placement from a 1.3.0 rom used for a race, updated for rod/seasons
 // being slotted
 var testData2 = map[string]string{
@@ -128,9 +87,16 @@ func TestD7ExitLockChest(t *testing.T) {
 	r := NewRoute()
 	g := r.HardGraph
 
-	// a softlock case from a real rom produced by 1.2.2
-	checkSoftlockWithSlots(t, canD7ExitSoftlock, g, testData1,
-		"enter d7", true)
+	checkSoftlockWithSlots(t, canD7ExitSoftlock, g,
+		map[string]string{
+			"feather L-2":   "d0 sword chest",
+			"boomerang L-2": "lake chest",
+			"bracelet":      "village SW chest",
+			"rusty bell":    "subrosian market 5",
+			"summer":        "d0 rupee chest",
+			"flippers":      "d7 ring chest",
+			"shovel":        "round jewel gift",
+		}, "enter d7", true)
 }
 
 func TestD2ExitCheck(t *testing.T) {
@@ -140,9 +106,9 @@ func TestD2ExitCheck(t *testing.T) {
 	// check for false positive
 	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
 		map[string]string{
-			"bracelet":      "d0 sword chest",
-			"ricky's flute": "blaino gift",
-			"feather L-1":   "maku tree gift",
+			"ricky's flute": "d0 sword chest",
+			"bracelet":      "d0 rupee chest",
+			"spring":        "village SW chest",
 
 			"eastern suburbs default winter": "start",
 			"eastern suburbs default autumn": "",

@@ -45,7 +45,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			Or("cross water gap", "dimitri's flute")))),
 	"fairy fountain": Or(
-		And("sunken city", "remove flower",
+		And("sunken city", Or("remove flower", "flute"),
 			Or("eastern suburbs default spring", "spring")),
 		And("suburbs", Or("eastern suburbs default winter", "winter",
 			"cross water gap", "ricky's flute", "dimitri's flute"))),
@@ -178,7 +178,7 @@ var holodrumPrenodes = map[string]*Prenode{
 
 	// sunken city
 	"sunken city": Or(And("mount cucco", "flippers"),
-		And("fairy fountain", "remove flower",
+		And("fairy fountain", Or("remove flower", "ricky's flute"),
 			Or("eastern suburbs default spring", "spring")),
 		And("scent tree", Or(
 			And("natzu prairie", "flute"),

@@ -65,16 +65,10 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"boomerang L-2": "d0 sword chest",
-			"rupees, 20":    "d0 rupee chest",
-		}, "maku tree gift", true)
-
-	checkReach(t, g,
-		map[string]string{
 			"sword L-1":        "d0 sword chest",
 			"ember tree seeds": "ember tree",
 			"satchel 1":        "maku tree gift",
-			"member's card":    "village SE chest",
+			"member's card":    "d0 rupee chest",
 		}, "member's shop 1", true)
 }
 
