@@ -93,6 +93,8 @@ these are en/us:
 - 2:5e9a = break here and modify cc63-cc64 to set warp tree warp destination
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
+- 7:497b = itemLoadAttributesAndGraphics
+- 7:49ca = itemSetAnimation
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
   is address to write to, b happens to be the treasure index)
 
@@ -214,9 +216,24 @@ other things:
 ### tiles
 
 - 04 = grass under object
+- 1f-21 = top of stump
+- 22-24 = bottom of stump
+- 2c = spring flower
+- 40 = horizontal railing
+- 54 = rock wall
+- 92 = rock flower
 - b1 = lever
 - c4 = bush
+- ce = ledge
 - d0 = stairs
 - d8 = flower
 - d9 = snow pile
 - e6 = subrosia portal
+
+## objects
+
+- 14 = moving pot
+- 20 = ember seed
+	- 00 = from satchel
+	- 01 = from slingshot
+- 27 = sword beam
