@@ -44,7 +44,9 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("rosa portal", Or("remove bush", "flute")),
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			Or("cross water gap", "dimitri's flute")))),
-	"fairy fountain": Or("sunken city",
+	"fairy fountain": Or(
+		And("sunken city", "remove flower",
+			Or("eastern suburbs default spring", "spring")),
 		And("suburbs", Or("eastern suburbs default winter", "winter",
 			"cross water gap", "ricky's flute", "dimitri's flute"))),
 	"shovel gift": AndSlot("fairy fountain", Or("eastern suburbs default winter", "winter"),
@@ -175,7 +177,9 @@ var holodrumPrenodes = map[string]*Prenode{
 	"platform chest": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
 
 	// sunken city
-	"sunken city": Or("fairy fountain", And("mount cucco", "flippers"),
+	"sunken city": Or(And("mount cucco", "flippers"),
+		And("fairy fountain", "remove flower",
+			Or("eastern suburbs default spring", "spring")),
 		And("scent tree", Or(
 			And("natzu prairie", "flute"),
 			And("natuz river", Or(
