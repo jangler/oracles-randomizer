@@ -121,7 +121,7 @@ const (
 
 var narrowItemGfx = map[string]int{
 	"ring":             0x5d0811,
-	"gasha seed":       0x5d0a11,
+	"gasha seed":       0x5d0a10,
 	"ring box":         0x5d1401, // L-1 is 01, L-2 is 11, L-3 is 21
 	"gnarled root key": 0x5e0e51,
 	"floodgate key":    0x5e1041,
@@ -131,7 +131,7 @@ var narrowItemGfx = map[string]int{
 	"slingshot L-1":    0x5f0241,
 	"slingshot L-2":    0x5f0451,
 	"magnet gloves":    0x5f1021,
-	"sword L-1":        0x600001,
+	"sword L-1":        0x600000,
 	"sword L-2":        0x600251,
 	"sword L-3":        0x600441,
 	"shield L-1":       0x600601,

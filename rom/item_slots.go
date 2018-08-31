@@ -13,9 +13,11 @@ const (
 // A MutableSlot is an item slot (chest, gift, etc). It references room data
 // and treasure data.
 type MutableSlot struct {
-	Treasure                                   *Treasure
-	IDAddrs, SubIDAddrs, ParamAddrs, TextAddrs []Addr
-	CollectMode                                byte
+	Treasure              *Treasure
+	IDAddrs, SubIDAddrs   []Addr
+	ParamAddrs, TextAddrs []Addr
+	GfxAddrs              []Addr
+	CollectMode           byte
 }
 
 // IsChest returns true iff the slot has a chest collection mode.
@@ -46,6 +48,12 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 	}
 	for _, addr := range ms.TextAddrs {
 		b[addr.FullOffset(en)] = ms.Treasure.text
+	}
+	for _, addr := range ms.GfxAddrs {
+		gfx := itemGfx[FindTreasureName(ms.Treasure)]
+		for i := 0; i < 3; i++ {
+			b[addr.FullOffset(en)+i] = byte(gfx >> (8 * uint(2-i)))
+		}
 	}
 
 	// use a sub-ID based on slot (chest vs non-chest) for gasha seeds and
@@ -108,6 +116,15 @@ func (ms *MutableSlot) Check(b []byte) error {
 	for _, addr := range ms.TextAddrs {
 		if err := check(b, addr, ms.Treasure.text); err != nil {
 			return err
+		}
+	}
+	for _, addr := range ms.GfxAddrs {
+		gfx := itemGfx[FindTreasureName(ms.Treasure)]
+		for i := uint16(0); i < 3; i++ {
+			addr := Addr{addr.Bank, addr.JpOffset + i, addr.EnOffset + i}
+			if err := check(b, addr, byte(gfx>>(8*(2-i)))); err != nil {
+				return err
+			}
 		}
 	}
 	if ms.CollectMode != ms.Treasure.mode {
@@ -205,10 +222,10 @@ var ItemSlots = map[string]*MutableSlot{
 	"x-shaped jewel chest": MutableChest("x-shaped jewel", 0x53cd),
 	"round jewel gift":     MutableGift("round jewel", 0x7334),
 	"noble sword spot": &MutableSlot{
-		// two cases depending on which sword you enter with
 		Treasure:   Treasures["sword L-2"],
 		IDAddrs:    relativeAddrs(0x0b, 1, 0x6417, 0x641e),
 		SubIDAddrs: relativeAddrs(0x0b, 1, 0x6418, 0x641f),
+		GfxAddrs:   []Addr{{0x3f, 0x6975, 0x69f7}, {0x3f, 0x6978, 0x69fa}},
 	},
 	"desert pit": &MutableSlot{
 		Treasure:   Treasures["rusty bell"],
@@ -255,24 +272,28 @@ var ItemSlots = map[string]*MutableSlot{
 			sameAddr(0x08, 0x4a8a)},
 		ParamAddrs: []Addr{sameAddr(0x08, 0x4ce9)},
 		TextAddrs:  []Addr{sameAddr(0x08, 0x4d53)},
+		GfxAddrs:   []Addr{{0x3f, 0x68be, 0x6940}},
 	},
 	"member's shop 1": &MutableSlot{
 		Treasure:   Treasures["satchel 2"],
 		IDAddrs:    []Addr{sameAddr(0x08, 0x4cce)},
 		ParamAddrs: []Addr{sameAddr(0x08, 0x4ccf)},
 		TextAddrs:  []Addr{sameAddr(0x08, 0x4d46)},
+		GfxAddrs:   []Addr{{0x3f, 0x6897, 0x6919}},
 	},
 	"member's shop 2": &MutableSlot{
 		Treasure:   Treasures["gasha seed"],
 		IDAddrs:    []Addr{sameAddr(0x08, 0x4cd2)},
 		ParamAddrs: []Addr{sameAddr(0x08, 0x4cd3)},
 		TextAddrs:  []Addr{sameAddr(0x08, 0x4d48)},
+		GfxAddrs:   []Addr{{0x3f, 0x689d, 0x691f}},
 	},
 	"member's shop 3": &MutableSlot{
 		Treasure:   Treasures["treasure map"],
 		IDAddrs:    []Addr{sameAddr(0x08, 0x4cd8)},
 		ParamAddrs: []Addr{sameAddr(0x08, 0x4cd9)},
 		TextAddrs:  []Addr{sameAddr(0x08, 0x4d4b)},
+		GfxAddrs:   []Addr{{0x3f, 0x68a6, 0x6928}},
 	},
 
 	// subrosia
@@ -286,6 +307,7 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x15, 0x7511, 0x70ce}},
 		ParamAddrs: []Addr{{0x15, 0x750f, 0x70cc}},
 		TextAddrs:  []Addr{{0x15, 0, 0x70bd}},
+		GfxAddrs:   []Addr{{0x3f, 0x6ba3, 0x6c25}},
 	},
 	"star ore spot": &MutableSlot{
 		Treasure:   Treasures["star ore"],
@@ -297,16 +319,18 @@ var ItemSlots = map[string]*MutableSlot{
 	"non-rosa gasha chest": MutableChest("gasha seed", 0x54d8),
 	"rosa gasha chest":     MutableChest("gasha seed", 0x5559),
 	"subrosian market 2": &MutableSlot{
-		Treasure:   Treasures["piece of heart"],
+		Treasure:   Treasures["rare peach stone"],
 		IDAddrs:    []Addr{{0x09, 0x77cb, 0x77e2}},
 		ParamAddrs: []Addr{{0x09, 0x77cc, 0x77e3}},
 		TextAddrs:  []Addr{{0x09, 0, 0x78b5}},
+		GfxAddrs:   []Addr{{0x3f, 0x6a20, 0x6aa2}},
 	},
 	"subrosian market 5": &MutableSlot{
 		Treasure:   Treasures["member's card"],
 		IDAddrs:    []Addr{{0x09, 0x77dd, 0x77f4}, {0x09, 0x773e, 0x7755}},
 		ParamAddrs: []Addr{{0x09, 0x77de, 0x77f5}},
 		TextAddrs:  []Addr{{0x09, 0, 0x78be}},
+		GfxAddrs:   []Addr{{0x3f, 0x6a3b, 0x6abd}},
 	},
 	"hard ore slot": &MutableSlot{
 		Treasure:   Treasures["hard ore"],
@@ -320,6 +344,7 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    relativeAddrs(0x0a, 0x0a, 0x7b86),
 		ParamAddrs: relativeAddrs(0x0a, 0x0a, 0x7b88),
 		TextAddrs:  relativeAddrs(0x0a, 0x0a, 0x7b92),
+		GfxAddrs:   []Addr{{0x3f, 0x65f4, 0x6676}},
 	},
 	"d0 rupee chest": MutableChest("rupees, 30", 0x53f8),
 

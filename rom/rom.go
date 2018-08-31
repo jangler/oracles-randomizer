@@ -105,16 +105,6 @@ func orderedKeys(m map[string]Mutable) []string {
 // Mutate changes the contents of loaded ROM bytes in place. It returns a
 // checksum of the result or an error.
 func Mutate(b []byte) ([]byte, error) {
-	setSceneGfx("rod gift", "rod graphics")
-	setSceneGfx("noble sword spot", "noble sword graphics")
-	setSceneGfx("noble sword spot", "master sword graphics")
-	setSceneGfx("d0 sword chest", "wooden sword graphics")
-	setSceneGfx("village shop 3", "village shop 3 graphics")
-	setSceneGfx("member's shop 1", "member's shop 1 graphics")
-	setSceneGfx("member's shop 2", "member's shop 2 graphics")
-	setSceneGfx("member's shop 3", "member's shop 3 graphics")
-	setSceneGfx("subrosian market 2", "subrosian market 2 graphics")
-	setSceneGfx("subrosian market 5", "subrosian market 5 graphics")
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, Seasons["north horon season"].New[0]}
 
@@ -224,20 +214,6 @@ func Verify(b []byte) []error {
 		return errors
 	}
 	return nil
-}
-
-// sets a mutable's cutscene graphics from the treasure assigned to its slot
-func setSceneGfx(slotName, gfxName string) {
-	slot := ItemSlots[slotName]
-	treasure := slot.Treasure
-	itemName := FindTreasureName(treasure)
-	if gfx := itemGfx[itemName]; gfx == 0 {
-		log.Fatalf("fatal: no %s for %s (%02x%02x)",
-			gfxName, itemName, treasure.id, treasure.subID)
-	} else {
-		mut := varMutables[gfxName].(*MutableRange)
-		mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
-	}
 }
 
 // set the initial satchel and slingshot seeds (and selections) based on what
