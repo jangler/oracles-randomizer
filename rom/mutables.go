@@ -334,22 +334,23 @@ var constMutables = map[string]Mutable{
 	// grow seeds in all seasons
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b3, 0x68b5}, 0xb8, 0xbf),
 
-	// the one-way sunken city -> eastern suburbs cliff makes routing
-	// complicated. this replaces the flower and wall with stairs, so that the
-	// wall can be climbed in all seasons.
-	"remove cliff flower":    MutableByte(Addr{0x11, 0x6566, 0x6569}, 0x9c, 0xff),
-	"replace cliff spring 1": MutableByte(Addr{0x21, 0x65d5, 0x6c4b}, 0xce, 0xd0),
-	"replace cliff spring 2": MutableByte(Addr{0x21, 0x65df, 0x6c55}, 0x54, 0xd0),
-	"replace cliff spring 3": MutableByte(Addr{0x21, 0x65e9, 0x6c5f}, 0x2c, 0x04),
-	"replace cliff summer 1": MutableByte(Addr{0x22, 0x621c, 0x6892}, 0xce, 0xd0),
-	"replace cliff summer 2": MutableByte(Addr{0x22, 0x6226, 0x689c}, 0x54, 0xd0),
-	"replace cliff summer 3": MutableByte(Addr{0x22, 0x6230, 0x68a6}, 0x93, 0x04),
-	"replace cliff autumn 1": MutableByte(Addr{0x23, 0x6035, 0x66ab}, 0xce, 0xd0),
-	"replace cliff autumn 2": MutableByte(Addr{0x23, 0x603f, 0x66b5}, 0x54, 0xd0),
-	"replace cliff autumn 3": MutableByte(Addr{0x23, 0x6049, 0x66bf}, 0x93, 0x04),
-	"replace cliff winter 1": MutableByte(Addr{0x24, 0x5d15, 0x638b}, 0xce, 0xd0),
-	"replace cliff winter 2": MutableByte(Addr{0x24, 0x5d1f, 0x6395}, 0x54, 0xd0),
-	"replace cliff winter 3": MutableByte(Addr{0x24, 0x5d29, 0x639f}, 0x93, 0x04),
+	// block the sunken city / eastern suburbs cliff with a spring flower, and
+	// place a stump at the top so that you can still travel down the cliff if
+	// you have spring.
+	"block cliff 1": MutableStrings([]Addr{{0x21, 0, 0x6c2b}, {0x22, 0, 0x6872},
+		{0x23, 0, 0x668b}, {0x24, 0, 0x636b}}, "\x5d\x5e", "\x6d\x6e"),
+	"block cliff 2": MutableStrings([]Addr{{0x21, 0, 0x6c33}, {0x22, 0, 0x687a},
+		{0x23, 0, 0x6693}, {0x24, 0, 0x6373}},
+		"\x47\x12\x6d\x11\x5f", "\x1f\x20\x21\x04\x04"),
+	"block cliff spring 3": MutableString(Addr{0x21, 0, 0x6c3d},
+		"\x52\x12\x12\x5d\x11", "\x22\x23\x24\x04\xd8"),
+	"block cliff non-spring 3": MutableStrings([]Addr{{0x22, 0, 0x6884},
+		{0x23, 0, 0x669d}, {0x24, 0, 0x637d}},
+		"\x52\x12\x12\x5d\x11", "\x22\x23\x24\x04\x92"),
+	"block cliff 4": MutableStrings([]Addr{{0x21, 0, 0x6c47}, {0x22, 0, 0x688e},
+		{0x23, 0, 0x66a7}, {0x24, 0, 0x6387}}, "\x62", "\x40"),
+	"block cliff 5": MutableStrings([]Addr{{0x21, 0, 0x6c51}, {0x22, 0, 0x6898},
+		{0x23, 0, 0x66b1}, {0x24, 0, 0x6391}}, "\x50", "\x54"),
 
 	// normally none of the desert pits will work if the player already has the
 	// rusty bell
