@@ -81,6 +81,7 @@ const (
 	spriteRickysFlute   = 0x4b
 	spriteDimitrisFlute = 0x4c
 	spriteMooshsFlute   = 0x4d
+	spritePeachStone    = 0x4e
 
 	spriteSpringBanana = 0x54
 	spriteRickysGloves = 0x55
