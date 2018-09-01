@@ -193,7 +193,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"diver gift":            AndSlot("dimitri", "master's plaque"),
 	"sunken cave chest": AndSlot("sunken city", "flippers", "remove bush",
 		Or("sunken city default summer", "summer")),
-	// "diver chest": AndSlot("dimitri"),
+	"diver chest": AndSlot("dimitri"),
 
 	// mount cucco
 	"mount cucco": Or("mountain portal",

@@ -1,6 +1,6 @@
 # Oracle of Seasons randomizer
 
-This program reads a Zelda: Oracle of Seasons ROM (US or JP version) shuffles
+This program reads a Zelda: Oracle of Seasons ROM (US version only) shuffles
 the locations of items and mystical seeds, randomizes the default season for
 each area, and writes the modified ROM to a new file. It also bypasses essence
 checks for overworld events that are necessary for progress, so the dungeons
@@ -60,7 +60,7 @@ The following items are **not** randomized:
 
 - Renewable shop items (bombs, shield, hearts, etc.)
 - Small keys
-- Pirate's bell and ribbon
+- Pirate's bell
 - Found items (gasha seeds and pieces of heart outside of chests)
 - Subrosian dancing prizes after the first
 - Trading sequence items
@@ -82,7 +82,8 @@ logic, or to prevent softlocks. The most notable are:
 - The cliff between Eastern Suburbs and Sunken City is blocked except in
   spring.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
-- Fool's ore is randomized (the Subrosians trade you nothing for your feather).
+- Fool's ore is randomized (the Strange Brothers trade you nothing for your
+  feather).
 - The diving spot at the south end of Sunken City is removed.
 - **Holding start while closing the map screen outdoors warps to the seed tree
   in Horon Village.** This also sets your save/respawn point to that screen.

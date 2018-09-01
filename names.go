@@ -89,6 +89,7 @@ var niceNames = map[string]string{
 	"sunken gale tree":      "sunken city seed tree",
 	"master's plaque chest": "master diver's challenge",
 	"diver gift":            "master diver's reward",
+	"diver chest":           "chest in master diver's cave",
 	"talon cave chest":      "mt. cucco, talon's cave",
 	"dragon key spot":       "goron mountain, across pits",
 	"pyramid jewel spot":    "diving spot outside D4",

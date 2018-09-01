@@ -10,10 +10,7 @@ import (
 	"strings"
 )
 
-const (
-	bankSize   = 0x4000
-	regionAddr = 0x014a // 0 = JP, 1 = US
-)
+const bankSize = 0x4000
 
 func init() {
 	// rings and boss keys all have the same sprite
@@ -63,28 +60,20 @@ func init() {
 	}
 }
 
-func isEn(b []byte) bool {
-	return b[regionAddr] != 0
-}
-
 // Addr is a fully-specified memory address.
 type Addr struct {
-	Bank     uint8
-	JpOffset uint16
-	EnOffset uint16
+	Bank   uint8
+	Offset uint16
 }
 
 // FullOffset returns the actual offset of the address in the ROM, based on
 // bank number and relative address.
-func (a *Addr) FullOffset(en bool) int {
+func (a *Addr) FullOffset() int {
 	var bankOffset int
 	if a.Bank >= 2 {
 		bankOffset = bankSize * (int(a.Bank) - 1)
 	}
-	if en {
-		return bankOffset + int(a.EnOffset)
-	}
-	return bankOffset + int(a.JpOffset)
+	return bankOffset + int(a.Offset)
 }
 
 // get mutables in order, so that sums are consistent with the same seed
@@ -107,25 +96,18 @@ func Mutate(b []byte) ([]byte, error) {
 
 	setSeedData()
 
-	en := isEn(b)
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
 	mutables := getAllMutables()
 	for _, k := range orderedKeys(mutables) {
-		m := mutables[k]
-		if (strings.HasSuffix(k, "(en)") && !en) ||
-			(strings.HasSuffix(k, "(jp)") && en) {
-			continue
-		}
-
-		err = m.Mutate(b)
+		err = mutables[k].Mutate(b)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	// then fix rod graphics
-	b[ItemSlots["rod gift"].GfxAddrs[0].FullOffset(en)+2] += 1
+	b[ItemSlots["rod gift"].GfxAddrs[0].FullOffset()+2] += 1
 
 	outSum := sha1.Sum(b)
 	log.Printf("new bytes: sha-1 %x", outSum)
@@ -139,30 +121,23 @@ func Update(b []byte) ([]byte, error) {
 	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 
 	// change fixed mutables
-	en := isEn(b)
 	for _, k := range orderedKeys(constMutables) {
-		m := constMutables[k]
-		if (strings.HasSuffix(k, "(en)") && !en) ||
-			(strings.HasSuffix(k, "(jp)") && en) {
-			continue
-		}
-
-		err = m.Mutate(b)
+		err = constMutables[k].Mutate(b)
 		if err != nil {
 			return nil, err
 		}
 	}
 
 	varMutables["initial season"].(*MutableRange).New =
-		[]byte{0x2d, b[Seasons["north horon season"].Addrs[0].FullOffset(en)]}
+		[]byte{0x2d, b[Seasons["north horon season"].Addrs[0].FullOffset()]}
 	varMutables["season after pirate cutscene"].(*MutableRange).New =
-		[]byte{b[Seasons["western coast season"].Addrs[0].FullOffset(en)]}
+		[]byte{b[Seasons["western coast season"].Addrs[0].FullOffset()]}
 
 	// change seed mechanics based on the ROM's existing tree information
 	for _, name := range []string{"ember tree", "scent tree", "mystery tree",
 		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
 		ItemSlots[name].Treasure.id =
-			b[ItemSlots[name].IDAddrs[0].FullOffset(en)]
+			b[ItemSlots[name].IDAddrs[0].FullOffset()]
 	}
 	setSeedData()
 	for _, name := range []string{"satchel initial seeds",
@@ -187,13 +162,7 @@ func Update(b []byte) ([]byte, error) {
 func Verify(b []byte) []error {
 	errors := make([]error, 0)
 
-	en := isEn(b)
 	for k, m := range getAllMutables() {
-		if (strings.HasSuffix(k, "(en)") && !en) ||
-			(strings.HasSuffix(k, "(jp)") && en) {
-			continue
-		}
-
 		switch k {
 		// special cases that will error normally.
 		// (flippers' collect mode is different between regions)
