@@ -171,22 +171,6 @@ these are en/us:
 - $6:5508 = itemUsageParameterTable
 	- offset by 2 * item ID
 
-## horon village shop (also syrup?)
-
-- $08:4cce is a table of shop item data. these are two-byte ID, sub ID pairs.
-  changing the item in a slot doesn't change the sprite, price, text, or logic
-  associated with it, just the item you get after you buy it.
-- $11:6646 is the start of the object data for the shop. the objects are
-  four-byte blocks: interaction ID, sub ID (acting as offset into the shop data
-  table), and (y,x) coords. changing the sub ID still doesn't change the item
-  logic (?)
-- $08:4c93 is the start of the item price table.
-- $08:4c6b is the start of the item price display coords table. this is weird
-  and doesn't precisely correspond to (x,y) coords?
-- after changing *all* these values, i still can't get item replacement to
-  work. after you say yes to buying the item, it just goes back to its place
-  without any other text.
-
 ## room loading
 
 ### wram
@@ -197,13 +181,9 @@ these are en/us:
 - cc63-cc65 = loading room info
 - ccc5 = seasons-specific? wRotatingCubePos in ages-disasm
 
-### rom
+### rom (leftover JP stuff)
 
 - 09a8 = flagLocationGroupTable, for rooms
-- 01:4662 = ? something to do with room loading ?
-- 01:5db5 = ? something to do with room loading ?
-- 04:483c = groupMusicPointerTable (offset = wActiveGroup * 2, then
-  (hl) + wActiveRoom into actual music table)
 - 04:6d4e = pointer table for room transitions?
 	- plus group * 2?
 	- then that value plus cc64 * 3? but it's zero when entering hero's cave
@@ -223,20 +203,6 @@ these are en/us:
 - 15:53af = chest treasure pointer table, offset by 2 * group, then increment
   hl in steps of 4 bytes until (hl+1) == the room number, but abort if (hl) ==
   ff. the next two bytes are the treasure ID and sub ID.
-
-### code
-
-- 1955 = getThisRoomFlags; a <- flags, hl <- addr of flags
-	- 1962 = getRoomFlags; takes a = group, b = room; a <- flags, hl <- addr of
-	  flags (h = (table + group), l = room)
-- 3003 = initializeRoom
-- 01:5ece = ld a,(wActiveGroup); or a; ret nz
-- 17fa = add a to wGashaMaturity, +5 when entering room
-- 3276 = loadScreenMusic
-- getObjectDataAddress:
-	- uses group * 2 as index into pointer table, adds room * 2 to the value,
-	  loads the address at that value into de… not present in seasons lol, it's
-	  inlined in getObjectData
 
 ### tiles
 
