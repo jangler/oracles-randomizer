@@ -41,6 +41,7 @@ var niceNames = map[string]string{
 	"rare peach stone": "piece of heart",
 
 	// north horon / holodrum plain / eyeglass lake slots
+	"scent tree":          "north horon seed tree",
 	"blaino gift":         "blaino's gym",
 	"round jewel gift":    "holodrum plain, old man",
 	"lake chest":          "eyeglass lake, across bridge",
