@@ -66,12 +66,10 @@ these are jp:
 	- 0:3944
 	- 0:39d6
 	- 0:39e0
-- 0:3ac6 = getFreeInteractionSlot
 - 2:4f90 = openMenu
 - 2:4fdd = closeMenu
 - 4:460c = getTransformedLinkID
 - 5:5468 = checkLinkForceState
-- 5:5471 = linkSetState
 - 6:4865 = checkUseItems
 - 6:4911 = checkItem
 - 6:4925 = initializeParentItem
@@ -81,11 +79,9 @@ these are jp:
 
 these are en/us:
 
-- 0:1432 = get tile at position bc (yyxx), returns a (id) and hl (addr)
-- 0:30c7 = check global flag a
-- 0:30cd = set global flag a
 - 0:045b = copyMemory, b is # bytes, de is src, hl is dest
 - 0:0c74 = playSound, a is index
+- 0:1432 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:184b = showText, bc is index
 - 0:1956 = getThisRoomFlags
@@ -93,9 +89,12 @@ these are en/us:
 - 0:30c7 = checkGlobalFlag, a is bit starting at c6ca
 - 0:30cd = setGlobalFlag, a is bit starting at c6ca
 - 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
+- 0:3ac6 = getFreeInteractionSlot
 - 2:5e9a = break here and modify cc63-cc64 to set warp tree warp destination
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
+- 5:4552 = companionTryToMount
+- 5:5471 = linkSetState, a is state, d is object low byte
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
@@ -115,11 +114,15 @@ these are en/us:
 - b0 = jump if room flag, byte = flag, word = addr
 - b5 = jump if global flag, byte = flag, word = addr
 - b6 = set global flag, byte = flag
+- b8 = disable objects
 - bd = disable input
 - be = enable input
 - c0 = call another script
+- c3 = jump to script addr based on text option
+- c4 = jump to script addr
 - cd-cf = stop if bit 5/6/7 of room flags is set
 - d3 = wait until flag is set, byte = flag, word = addr
+- d4 = wait until object byte equals value
 - d7 = set counter, byte = value
 - de = spawn item on link, word = id, subid (?)
 - e0 = call function in bank 15, word = addr
@@ -149,7 +152,7 @@ these are en/us:
 - ccab = allow screen transitions only if zero in treasure H&S
 - ccea = disable interactions (?)
 
-- d358-d359 = script address
+- dx58-dx59 = script address
 
 ## notable rom addresses (leftover JP stuff)
 
