@@ -26,8 +26,6 @@ before the filename arguments, as displayed in the usage (`./oos-randomizer
     Usage of ./oos-randomizer:
       -freewarp
             allow unimited tree warp (no cooldown)
-      -keyonly
-            only randomize key item locations
       -profile string
             write CPU profile to given filename
       -seed string
@@ -71,10 +69,6 @@ The following items are **not** randomized:
 - Gasha nut contents
 - Fixed drops
 - Maple drops
-
-If the `-keyonly` flag is specified, only key items (the items required to
-complete a normal game) and their locations are shuffled. Speedrunners should
-note that the first Subrosian dancing prize could still be important.
 
 
 ## Other notable changes

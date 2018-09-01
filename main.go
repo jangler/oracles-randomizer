@@ -30,8 +30,6 @@ func main() {
 	// init flags
 	flagFreewarp := flag.Bool(
 		"freewarp", false, "allow unlimited tree warp (no cooldown)")
-	flagKeyonly := flag.Bool(
-		"keyonly", false, "only randomize key item locations")
 	flagProfile := flag.String(
 		"profile", "", "write CPU profile to given filename")
 	flagSeed := flag.String("seed", "",
@@ -77,8 +75,8 @@ func main() {
 
 		summary, summaryDone := getSummaryChannel()
 
-		if errs := randomize(romData, flag.Arg(1), *flagKeyonly, *flagVerbose,
-			seed, summary); errs != nil {
+		if errs := randomize(romData, flag.Arg(1), *flagVerbose, seed,
+			summary); errs != nil {
 			for _, err := range errs {
 				log.Print(err)
 			}
@@ -141,8 +139,8 @@ func readFileBytes(filename string) ([]byte, error) {
 }
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
-func randomize(romData []byte, outFilename string, keyonly, verbose bool,
-	seed uint32, summary chan string) []error {
+func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
+	summary chan string) []error {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return errs
@@ -175,8 +173,8 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
 	for i := 0; i < numThreads; i++ {
-		go searchAsync(rand.New(sources[i]), seeds[i], keyonly, verbose,
-			logChan, routeChan, doneChan)
+		go searchAsync(rand.New(sources[i]), seeds[i], verbose, logChan,
+			routeChan, doneChan)
 	}
 
 	// log messages from all threads
@@ -245,19 +243,13 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 	summary <- ""
 	summary <- "used items, in (one possible) order:"
 	summary <- ""
-	if keyonly {
-		for _, usedLine := range usedLines {
-			summary <- usedLine
-		}
-	} else {
-		// print boss keys, maps, and compasses last, even though they're
-		// slotted first
-		for _, usedLine := range usedLines[22:] {
-			summary <- usedLine
-		}
-		for _, usedLine := range usedLines[:22] {
-			summary <- usedLine
-		}
+	// print boss keys, maps, and compasses last, even though they're
+	// slotted first
+	for _, usedLine := range usedLines[22:] {
+		summary <- usedLine
+	}
+	for _, usedLine := range usedLines[:22] {
+		summary <- usedLine
 	}
 	if rl.UnusedItems.Len() > 0 {
 		summary <- ""
@@ -279,9 +271,9 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, seed uint32, keyonly, verbose bool,
+func searchAsync(src *rand.Rand, seed uint32, verbose bool,
 	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
 	// find a viable random route
 	r := NewRoute()
-	retChan <- findRoute(src, seed, r, keyonly, verbose, logChan, doneChan)
+	retChan <- findRoute(src, seed, r, verbose, logChan, doneChan)
 }

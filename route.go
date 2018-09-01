@@ -32,8 +32,6 @@ type Route struct {
 	Slots            map[string]*graph.Node
 	OldSlots         map[*graph.Node]bool
 	DungeonItems     []int
-	KeyItemsTotal    int
-	KeyItemsPlaced   int
 	Costs            int
 }
 
@@ -56,27 +54,20 @@ func NewRoute(start ...string) *Route {
 	addNodes(hg, totalPrenodes, true)
 	addNodeParents(hg, totalPrenodes)
 
-	keyItemCount := 0
 	openSlots := make(map[string]*graph.Node, 0)
 	for name, pn := range totalPrenodes {
 		switch pn.Type {
-		case prenode.RootType:
-			if keyItems[name] {
-				keyItemCount++
-			}
 		case prenode.AndSlotType, prenode.OrSlotType:
 			openSlots[name] = g[name]
 		}
 	}
 
 	return &Route{
-		Graph:          g,
-		HardGraph:      hg,
-		Slots:          openSlots,
-		OldSlots:       make(map[*graph.Node]bool),
-		DungeonItems:   make([]int, 9),
-		KeyItemsTotal:  keyItemCount,
-		KeyItemsPlaced: 0,
+		Graph:        g,
+		HardGraph:    hg,
+		Slots:        openSlots,
+		OldSlots:     make(map[*graph.Node]bool),
+		DungeonItems: make([]int, 9),
 	}
 }
 
@@ -151,7 +142,7 @@ const (
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
+func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 	logChan chan string, doneChan chan int) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
@@ -174,14 +165,12 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 		}
 
 		companion = rollAnimalCompanion(src, r)
-		itemList, slotList = initRouteLists(src, r, companion, keyonly)
+		itemList, slotList = initRouteLists(src, r, companion)
 		logChan <- fmt.Sprintf("trying seed %08x", seed)
 
 		// slot initial nodes before algorithm slots progression items
 		seasons = rollSeasons(src, r)
-		if !keyonly {
-			placeDungeonItems(src, r, itemList, usedItems, slotList, usedSlots)
-		}
+		placeDungeonItems(src, r, itemList, usedItems, slotList, usedSlots)
 
 		// clear "old" slots and item counts, since we're starting fresh
 		for k := range r.OldSlots {
@@ -255,7 +244,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, keyonly, verbose bool,
 			}
 		}
 
-		itemList, slotList = initRouteLists(src, r, companion, keyonly)
+		itemList, slotList = initRouteLists(src, r, companion)
 		for e := itemList.Front(); e != nil; e = e.Next() {
 			e.Value.(*graph.Node).ClearParents()
 		}
@@ -423,8 +412,8 @@ func fillList(l *list.List, a []*graph.Node) {
 }
 
 // return shuffled lists of item and slot nodes
-func initRouteLists(src *rand.Rand, r *Route, companion int,
-	keyonly bool) (itemList, slotList *list.List) {
+func initRouteLists(src *rand.Rand, r *Route,
+	companion int) (itemList, slotList *list.List) {
 	// get slices of names
 	itemNames := make([]string, 0,
 		len(rom.ItemSlots)+len(prenode.ExtraItems()))
@@ -432,32 +421,26 @@ func initRouteLists(src *rand.Rand, r *Route, companion int,
 	for key, slot := range rom.ItemSlots {
 		if key != "rod gift" { // don't slot vanilla, seasonless rod
 			treasureName := rom.FindTreasureName(slot.Treasure)
-			if !keyonly || keyItems[treasureName] {
-				// substitute identified flute for strange flute
-				if treasureName == "strange flute" {
-					switch companion {
-					case ricky:
-						treasureName = "ricky's flute"
-					case dimitri:
-						treasureName = "dimitri's flute"
-					case moosh:
-						treasureName = "moosh's flute"
-					}
+			// substitute identified flute for strange flute
+			if treasureName == "strange flute" {
+				switch companion {
+				case ricky:
+					treasureName = "ricky's flute"
+				case dimitri:
+					treasureName = "dimitri's flute"
+				case moosh:
+					treasureName = "moosh's flute"
 				}
-
-				itemNames = append(itemNames, treasureName)
 			}
+
+			itemNames = append(itemNames, treasureName)
 		}
 	}
 	for key := range prenode.ExtraItems() {
-		if !keyonly || keyItems[key] {
-			itemNames = append(itemNames, key)
-		}
+		itemNames = append(itemNames, key)
 	}
 	for key := range r.Slots {
-		if !keyonly || keySlots[key] {
-			slotNames = append(slotNames, key)
-		}
+		slotNames = append(slotNames, key)
 	}
 
 	// sort the slices so that order isn't dependent on map implementation,
