@@ -81,6 +81,9 @@ these are jp:
 
 these are en/us:
 
+- 0:1432 = get tile at position bc (yyxx), returns a (id) and hl (addr)
+- 0:30c7 = check global flag a
+- 0:30cd = set global flag a
 - 0:045b = copyMemory, b is # bytes, de is src, hl is dest
 - 0:0c74 = playSound, a is index
 - 0:16eb = giveTreasure (a is ID, c is param)
@@ -105,47 +108,50 @@ these are en/us:
 - 84 = spawn interaction
 - 87 = jump table
 - 88 = set coordinates, byte = y, byte = x
+- 8f = set animation, byte = index
 - 98 = show text, word = index
+- 9c = set interaction text id, word = index
+- a0 = wait for bit of cfc0 is set
 - b0 = jump if room flag, byte = flag, word = addr
 - b5 = jump if global flag, byte = flag, word = addr
-- c0 = call another script
 - b6 = set global flag, byte = flag
 - bd = disable input
 - be = enable input
+- c0 = call another script
+- cd-cf = stop if bit 5/6/7 of room flags is set
+- d3 = wait until flag is set, byte = flag, word = addr
 - d7 = set counter, byte = value
 - de = spawn item on link, word = id, subid (?)
 - e0 = call function in bank 15, word = addr
 - e1 = call function in bank 15, word = addr, byte = value of a and e
 - e3 = play sound, byte = index
+- ec-ef = move npc up/down/left/right, byte = frames
 - f6 = set object counter? like d7 but for a specific object?
 - f7 = ? no params
 - f8 = ? no params
 
 ## notable ram addresses
 
-these all get checked in a normal frame, just for display purposes:
+- c63f-c640 = bought shop items
+- c643-c646 = companion state (ricky, dimitri, moosh, then misc.)
+- c680-c6?? = inventory (starting with equipped items)
+- c692-c6a1 = item flags
+- c6a2/c6a3 = health / max health
+- c6a5-c6a6 = rupees
+- c6b5-c6b9 = seed count (ember, scent, pegasus, gale, mystery)
+- c6bb = obtained essence flags
+- c6c5 = active ring
+- c6ca-c6d9 = some global flags
 
-- $c680-$c6?? = inventory (starting with equipped items)
-- $c6a2/$c6a3 = health / max health
-- $c6a5-$c6a6 = rupees
-- $c6b5-$c6b9 = seed count (ember, scent, pegasus, gale, mystery)
-- $c6c5 = active ring
-- $c6ca-$c6d9 = some global flags
-- $cc4c = active room
+- cbb6 = index of room under cursor in map menu
+- cc48 = high byte of link object address (in object table starting at d000)
+- cc4c = active room
+- ccab = allow screen transitions only if zero in treasure H&S
+- ccea = disable interactions (?)
 
-other things:
+- d358-d359 = script address
 
-- $c63f-$c640 = bought shop items
-- $c643-$c646 = companion state (ricky, dimitri, moosh, then misc.)
-	- shop checks for bit 5 of ricky
-- $c692-$c6a1 = item flags
-- $c6bb = obtained essence flags
-- $cc48 = high byte of link object address (in object table starting at $d000)
-- $ccea = disable interactions (?)
-- $c6c5 = wActiveRing
-- $cbb6 = index of room under cursor in map menu
-
-## notable rom addresses
+## notable rom addresses (leftover JP stuff)
 
 - $15:57FD + $4X = index of ring given by param X; params below 4 don't
   (normally?) work. this is a generalization of the information described for

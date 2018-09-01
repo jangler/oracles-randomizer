@@ -254,6 +254,11 @@ var constMutables = map[string]Mutable{
 		"\xcd\x56\x19\xcb\x6e\x20", "\x3e\x17\xcd\x17\x17\x38"),
 	// and make the feather appear without needing to be dug up
 	"stolen feather appears": MutableByte(Addr{0x15, 0x5335}, 0x5a, 0x1a),
+	// AND allow transition away from the screen once the feather is retrieved
+	// (not once the hole is dug)
+	"leave H&S screen": MutableString(Addr{0x09, 0x65a0},
+		"\xcd\x32\x14\x1e\x49\x1a\xbe", "\xcd\x56\x19\xcb\x6e\x00\x00"),
+
 	// There are tables indicating extra items to "get" and "lose" upon getting
 	// an item. We remove the "lose fools ore" entry and insert a "get seeds
 	// from slingshot" entry.
@@ -263,6 +268,7 @@ var constMutables = map[string]Mutable{
 		"\x45\x00\x52\x50\x51\x17\x1e\x00", "\x20\x00\x46\x45\x00\x52\x50\x51"),
 	"lose fools, get seeds from slingshot 3": MutableByte(Addr{0x3f, 0x44cf},
 		0x44, 0x47),
+
 	// since slingshot doesn't increment seed capacity, set the level-zero
 	// capacity of seeds to 20, and move the pointer up by one byte.
 	"satchel capacity": MutableString(Addr{0x3f, 0x4617},
