@@ -223,8 +223,8 @@ func randomize(romData []byte, outFilename string, keyonly, verbose bool,
 			rl.UsedItems.Remove(rl.UsedItems.Front()).(*graph.Node).Name
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 
-		usedLines =
-			append(usedLines, fmt.Sprintf("%s <- %s", slotName, treasureName))
+		usedLines = append(usedLines, fmt.Sprintf("%-28s <- %s",
+			getNiceName(slotName), getNiceName(treasureName)))
 	}
 
 	// set rom seasons and animal data
