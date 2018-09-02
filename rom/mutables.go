@@ -147,16 +147,16 @@ var constMutables = map[string]Mutable{
 		"\xfa\xc5\xc6\xfe\x40\x20\x12\xfa\x49\xcc\xfe\x02\x30\x0b\xf6\x80"+
 			"\xea\x63\xcc\xfa\xb6\xcb\xea\x64\xcc\x3e\x03\xcd\x89\x0c\xc9"),
 
-	// if wearing dev ring, warp to animal companion if it's already in the
-	// same room when playing the flute.
+	// if wearing dev ring, animal companion to you if it's already in the same
+	// room when playing the flute.
 	"dev ring flute call": MutableWord(Addr{0x09, 0x4e2c}, 0xd93a, 0x4e7f),
 	"dev ring flute func": MutableString(Addr{0x09, 0x7f4e}, "\x09",
 		"\xd5\xfa\xc5\xc6\xfe\x40\x20\x07"+ // check dev ring
 			"\xfa\x04\xd1\xfe\x01\x28\x04"+ // check animal companion
 			"\xd1\xc3\xd9\x3a"+ // done
 			"\xcd\xc6\x3a\x20\x0c\x36\x05"+ // create poof
-			"\x11\x0a\xd0\x2e\x4a\x06\x04\xcd\x5b\x04"+ // move poof
-			"\x11\x0a\xd1\x21\x0a\xd0\x06\x04\xcd\x5b\x04"+ // move link
+			"\x11\x0a\xd1\x2e\x4a\x06\x04\xcd\x5b\x04"+ // move poof
+			"\x11\x0a\xd0\x21\x0a\xd1\x06\x04\xcd\x5b\x04"+ // move animal
 			"\x18\xde"), // jump to done
 
 	// have maku gate open from start
