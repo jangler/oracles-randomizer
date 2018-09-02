@@ -102,7 +102,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// couldn't find any progression; fail
 	if newCount == initialCount && !fillUnused {
-		return list.New(), list.New()
+		return nil, nil
 	}
 
 	// omit items not necessary for progression, then slot again from the start
