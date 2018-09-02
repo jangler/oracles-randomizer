@@ -158,20 +158,8 @@ func TestSpringSwampCheck(t *testing.T) {
 func TestD5ExitSoftlocks(t *testing.T) {
 	r := NewRoute()
 
-	// check for flipper false positive
-	checkSoftlockWithSlots(t, canD5ExitFlipperSoftlock, r.HardGraph,
-		map[string]string{
-			"sword L-1":     "d0 sword chest",
-			"flippers":      "d0 rupee chest",
-			"feather L-1":   "round jewel gift",
-			"boomerang L-2": "lake chest",
-
-			"north horon default autumn": "start",
-			"north horon default winter": "",
-		}, "enter d5", false)
-
 	// check for bracelet false positive
-	checkSoftlockWithSlots(t, canD5ExitFlipperSoftlock, r.HardGraph,
+	checkSoftlockWithSlots(t, canD5ExitBraceletSoftlock, r.HardGraph,
 		map[string]string{
 			"autumn":        "d0 sword chest",
 			"bracelet":      "maku tree gift",
@@ -179,24 +167,17 @@ func TestD5ExitSoftlocks(t *testing.T) {
 			"boomerang L-2": "lake chest",
 		}, "enter d5", false)
 
-	// this is a double softlock, so it works with both checks
-	falseNegativeData := map[string]string{
-		"winter":        "d0 sword chest",
-		"feather L-2":   "maku tree gift",
-		"boomerang L-2": "lake chest",
-		"autumn":        "village SW chest",
-
-		"north horon default summer": "start",
-		"north horon default winter": "",
-	}
-
-	// check for flipper false negative
-	checkSoftlockWithSlots(t, canD5ExitFlipperSoftlock, r.HardGraph,
-		falseNegativeData, "enter d5", true)
-
 	// check for bracelet false negative
 	checkSoftlockWithSlots(t, canD5ExitBraceletSoftlock, r.HardGraph,
-		falseNegativeData, "enter d5", true)
+		map[string]string{
+			"winter":        "d0 sword chest",
+			"feather L-2":   "maku tree gift",
+			"boomerang L-2": "lake chest",
+			"autumn":        "village SW chest",
+
+			"north horon default summer": "start",
+			"north horon default winter": "",
+		}, "enter d5", true)
 }
 
 // helper function used for the other benchmarks
