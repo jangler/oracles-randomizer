@@ -150,6 +150,7 @@ these are en/us:
 - cc48 = high byte of link object address (in object table starting at d000)
 - cc4c = active room
 - ccab = allow screen transitions only if zero in treasure H&S
+- ccb6 = active tile? rod of seasons only works when this == 8
 - ccea = disable interactions (?)
 
 - dx58-dx59 = script address

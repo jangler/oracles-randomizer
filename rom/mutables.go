@@ -159,6 +159,12 @@ var constMutables = map[string]Mutable{
 			"\x11\x0a\xd0\x21\x0a\xd1\x06\x04\xcd\x5b\x04"+ // move animal
 			"\x18\xde"), // jump to done
 
+	// if wearing dev ring, change season regardless of where link is standing.
+	"dev ring season call": MutableString(Addr{0x07, 0x5b75},
+		"\xfa\xb6\xcc\xfe\x08", "\xcd\x16\x79\x00\x00"),
+	"dev ring season func": MutableString(Addr{0x07, 0x7916}, "\x07",
+		"\xfa\xc5\xc6\xfe\x40\xc8\xfa\xb6\xcc\xfe\x08\xc9"),
+
 	// have maku gate open from start
 	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
 
