@@ -88,7 +88,8 @@ logic, or to prevent softlocks. The most notable are:
 - **Holding start while closing the map screen outdoors warps to the seed tree
   in Horon Village.** This also sets your save/respawn point to that screen.
   Tree warping has a one-hour cooldown unless the `-freewarp` flag is
-  specified.
+  specified. Tree warp is not supported as a "feature" and has no warranty, so
+  consider possible consequences before using it.
 
 ## FAQ
 
