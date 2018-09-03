@@ -42,7 +42,6 @@ var testData2 = map[string]string{
 	"gale tree seeds 2":  "tarm gale tree",
 	"sword L-1":          "noble sword spot",
 	"scent tree seeds":   "pegasus tree",
-	"ricky's gloves":     "d6 boomerang chest",
 
 	"temple remains default summer": "start",
 	"temple remains default winter": "",

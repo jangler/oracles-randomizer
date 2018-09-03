@@ -184,7 +184,7 @@ func Verify(b []byte) []error {
 			"member's card", "treasure map", "member's shop 3",
 			"subrosian market 5", "member's shop 1", "ricky's flute",
 			"moosh's flute", "dimitri's flute", "strange flute", "rod gift",
-			"rare peach stone", "ribbon":
+			"rare peach stone", "ribbon", "blaino gift":
 			break
 		default:
 			if err := m.Check(b); err != nil {
