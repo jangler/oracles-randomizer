@@ -164,9 +164,6 @@ func findVanillaROM() ([]byte, error) {
 
 	for _, info := range files {
 		// check file metadata
-		if !strings.HasSuffix(info.Name(), ".gbc") {
-			continue
-		}
 		if info.Size() != 1048576 {
 			continue
 		}
