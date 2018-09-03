@@ -14,26 +14,18 @@ tracker](https://github.com/jangler/oos-randomizer/issues) for known problems.
 
 ## Usage
 
-The randomizer uses a command-line interface, and I currently have no plans to
-implement a graphical one. It's a simple program (from the user's perspective),
-and command lines are not very hard.
+There are three ways to use the randomizer:
 
-The normal usage is `./oos-randomizer oos_original.gbc oos_randomized.gbc` (or
-whatever filenames you want), but there are additional flags you can pass
-before the filename arguments, as displayed in the usage (`./oos-randomizer
--h`) message:
-
-    Usage of ./oos-randomizer:
-      -freewarp
-            allow unimited tree warp (no cooldown)
-      -profile string
-            write CPU profile to given filename
-      -seed string
-            specific random seed to use (32-bit hex number)
-      -update
-            update already randomized ROM to this version
-      -verbose
-            print more detailed output to terminal
+1. Place the randomizer in the same directory as your vanila OoS ROM (or vice
+   versa), and run it. The randomizer will automatically choose the vanilla ROM
+   and write the randomized ROM and log to a new file.
+2. In Windows, drag your ROM onto the executable. If the ROM is vanilla, it
+   will be randomized; otherwise it will be updated to the latest version,
+   applying bugfixes and other changes when applicable. In either case the
+   original file is not overwritten.
+3. Use the command line. Type `oos-randomizer -h` to view the usage summary.
+   The `-freewarp` and `-seed` options are probably the only useful end-user
+   ones.
 
 
 ## Download
@@ -92,13 +84,6 @@ logic, or to prevent softlocks. The most notable are:
   consider possible consequences before using it.
 
 ## FAQ
-
-**Q: When I run the randomizer, a command prompt window opens and closes
-without doing anything. What do I do?**
-
-A: If you're still lost after reading the "usage" section of the readme, either
-Google how to use the command prompt or ask a friend. Replace command prompt
-with Unix shell if you're on macOS.
 
 **Q: Do I have to do HSS skip or Poe skip?**
 

@@ -5,7 +5,6 @@ package rom
 import (
 	"crypto/sha1"
 	"fmt"
-	"log"
 	"sort"
 	"strings"
 )
@@ -76,6 +75,22 @@ func (a *Addr) FullOffset() int {
 	return bankOffset + int(a.Offset)
 }
 
+func IsSeasons(b []byte) bool {
+	return string(b[0x134:0x13d]) == "ZELDA DIN"
+}
+
+func IsUS(b []byte) bool {
+	return b[0x014a] != 0
+}
+
+func IsVanilla(b []byte) bool {
+	knownSum := "\xba\x12\x68\x29\x0f\xb2\xb1\xb7\x05\x05\xd2\xd7\xb5\x82\x5f" +
+		"\xc8\xa4\x81\x6a\x4b"
+	sum := sha1.Sum(b)
+
+	return string(sum[:]) == knownSum
+}
+
 // get mutables in order, so that sums are consistent with the same seed
 func orderedKeys(m map[string]Mutable) []string {
 	keys := make([]string, 0, len(m))
@@ -96,7 +111,6 @@ func Mutate(b []byte) ([]byte, error) {
 
 	setSeedData()
 
-	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 	var err error
 	mutables := getAllMutables()
 	for _, k := range orderedKeys(mutables) {
@@ -110,7 +124,6 @@ func Mutate(b []byte) ([]byte, error) {
 	b[ItemSlots["rod gift"].GfxAddrs[0].FullOffset()+2] += 1
 
 	outSum := sha1.Sum(b)
-	log.Printf("new bytes: sha-1 %x", outSum)
 	return outSum[:], nil
 }
 
@@ -118,7 +131,6 @@ func Mutate(b []byte) ([]byte, error) {
 // any fields.
 func Update(b []byte) ([]byte, error) {
 	var err error
-	log.Printf("old bytes: sha-1 %x", sha1.Sum(b))
 
 	// change fixed mutables
 	for _, k := range orderedKeys(constMutables) {
@@ -153,7 +165,6 @@ func Update(b []byte) ([]byte, error) {
 	}
 
 	outSum := sha1.Sum(b)
-	log.Printf("new bytes: sha-1 %x", outSum)
 	return outSum[:], nil
 }
 

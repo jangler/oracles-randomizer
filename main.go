@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"os"
 	"runtime"
@@ -17,17 +16,26 @@ import (
 	"github.com/jangler/oos-randomizer/rom"
 )
 
-// fatals if the command got the wrong number of arguments
-func checkNumArgs(op string, expected int) {
-	if flag.NArg() != expected {
-		log.Printf("%s takes %d argument(s); got %d",
-			op, expected, flag.NArg())
-		os.Exit(2)
+func usage() {
+	fmt.Fprintf(flag.CommandLine.Output(),
+		"Usage: %s [<original file> [<new file>]]\n", os.Args[0])
+	flag.PrintDefaults()
+}
+
+// fatal prints the given error to stderr, waits for user input if `wait` is
+// true, then exits with status 1.
+func fatal(err error, wait bool) {
+	fmt.Fprintf(os.Stderr, "fatal: %v.\n", err)
+	if wait {
+		fmt.Fprint(os.Stderr, "press any key to continue.")
+		os.Stdin.Read(make([]byte, 1))
 	}
+	os.Exit(1)
 }
 
 func main() {
 	// init flags
+	flag.Usage = usage
 	flagFreewarp := flag.Bool(
 		"freewarp", false, "allow unlimited tree warp (no cooldown)")
 	flagProfile := flag.String(
@@ -40,75 +48,201 @@ func main() {
 		"verbose", false, "print more detailed output to terminal")
 	flag.Parse()
 
-	checkNumArgs("randomizer", 2)
-
+	// turn profiling on if specified
 	if *flagProfile != "" {
 		profFile, err := os.Create(*flagProfile)
 		if err != nil {
-			log.Fatal(err)
+			fatal(err, false)
 		}
 		if err := pprof.StartCPUProfile(profFile); err != nil {
-			log.Fatal(err)
+			fatal(err, false)
 		}
 		defer profFile.Close()
 		defer pprof.StopCPUProfile()
 	}
 
-	// load rom
-	romData, err := readFileBytes(flag.Arg(0))
-	if err != nil {
-		log.Fatal(err)
-	}
 	rom.SetFreewarp(*flagFreewarp)
 
-	// randomize according to params, unless we're just updating
-	if *flagUpdate {
-		_, err := rom.Update(romData)
+	switch flag.NArg() {
+	case 0: // no specified files, assume not using command line
+		// search for valid rom in working directory
+		romData, err := findVanillaROM()
 		if err != nil {
-			log.Fatal(err)
+			fatal(err, true)
+		}
+
+		// decide whether to randomize or update the file
+		if err := handleFile(romData, *flagSeed, *flagVerbose); err != nil {
+			fatal(err, true)
+		}
+
+		fmt.Fprint(os.Stderr, "press any key to continue.")
+		os.Stdin.Read(make([]byte, 1))
+	case 1: // specified input file only, assume not using command line
+		b, err := readGivenROM(flag.Arg(0))
+		if err != nil {
+			fatal(err, true)
+		}
+
+		// decide whether to randomize or update the file
+		if err := handleFile(b, *flagSeed, *flagVerbose); err != nil {
+			fatal(err, true)
+		}
+
+		fmt.Fprint(os.Stderr, "press any key to continue.")
+		os.Stdin.Read(make([]byte, 1))
+	case 2: // specified input and output file, so using command line
+		b, err := readGivenROM(flag.Arg(0))
+		if err != nil {
+			fatal(err, false)
+		}
+
+		// operate on file
+		var sum []byte
+		var seed uint32
+		if *flagUpdate {
+			fmt.Printf("updating %s\n", flag.Arg(0))
+			sum, err = rom.Update(b)
+		} else {
+			fmt.Printf("randomizing %s\n", flag.Arg(0))
+			seed, sum, err = randomize(b, *flagSeed, *flagVerbose)
+		}
+		if err != nil {
+			fatal(err, false)
+		}
+
+		// write file
+		if err := writeROM(b, flag.Arg(1), seed, sum,
+			*flagUpdate); err != nil {
+			fatal(err, false)
+		}
+	default:
+		flag.Usage()
+	}
+}
+
+// attempt to write rom data to a file and print summary info.
+func writeROM(b []byte, filename string, seed uint32, sum []byte,
+	update bool) error {
+	// write file
+	f, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	if _, err := f.Write(b); err != nil {
+		return err
+	}
+
+	// print summary
+	if !update {
+		fmt.Printf("seed: %08x\n", seed)
+	}
+	fmt.Printf("sha-1 sum: %x\n", string(sum))
+	fmt.Printf("wrote new rom to %s\n", filename)
+
+	return nil
+}
+
+// search for a vanilla US seasons rom in the current directory, and return it
+// as a byte slice if possible.
+func findVanillaROM() ([]byte, error) {
+	// read slice of file info from working dir
+	dirName, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	dir, err := os.Open(dirName)
+	if err != nil {
+		return nil, err
+	}
+	defer dir.Close()
+	files, err := dir.Readdir(-1)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, info := range files {
+		// check file metadata
+		if !strings.HasSuffix(info.Name(), ".gbc") {
+			continue
+		}
+		if info.Size() != 1048576 {
+			continue
+		}
+
+		// read file
+		f, err := os.Open(info.Name())
+		if err != nil {
+			return nil, err
+		}
+		defer f.Close()
+		b, err := ioutil.ReadAll(f)
+		if err != nil {
+			return nil, err
+		}
+
+		// check file data
+		if rom.IsSeasons(b) && rom.IsUS(b) && rom.IsVanilla(b) {
+			fmt.Printf("found vanilla ROM: %s\n", info.Name())
+			return b, nil
+		}
+	}
+
+	return nil, fmt.Errorf("no vanilla ROM found in working directory")
+}
+
+// read the specified file into a slice of bytes, returning an error if the
+// read fails or if the file is an invalid rom.
+func readGivenROM(filename string) ([]byte, error) {
+	// read file
+	f, err := os.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+
+	// check file data
+	if !rom.IsSeasons(b) {
+		return nil, fmt.Errorf("%s is not an OoS ROM", filename)
+	}
+	if !rom.IsUS(b) {
+		return nil, fmt.Errorf("%s is a JP ROM; only US is supported",
+			filename)
+	}
+
+	return b, nil
+}
+
+// decide whether to randomize or update the file
+func handleFile(romData []byte, seedFlag string, verbose bool) error {
+	var seed uint32
+	var sum []byte
+	var err error
+
+	// operate on rom data
+	update := !rom.IsVanilla(romData)
+	if update {
+		fmt.Printf("updating %s\n", flag.Arg(0))
+		sum, err = rom.Update(romData)
+		if err != nil {
+			return err
 		}
 	} else {
-		seed := setRandomSeed(*flagSeed)
-		if *flagSeed == "" {
-			seed = 0 // none specified, not an actual zero seed
+		fmt.Printf("randomizing %s\n", flag.Arg(0))
+		seed, sum, err = randomize(romData, seedFlag, verbose)
+		if err != nil {
+			return err
 		}
-
-		summary, summaryDone := getSummaryChannel()
-
-		if errs := randomize(romData, flag.Arg(1), *flagVerbose, seed,
-			summary); errs != nil {
-			for _, err := range errs {
-				log.Print(err)
-			}
-			os.Exit(1)
-		}
-
-		close(summary)
-		<-summaryDone
 	}
 
 	// write to file
-	f, err := os.Create(flag.Arg(1))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer f.Close()
-	if _, err := f.Write(romData); err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("wrote new ROM to %s", flag.Arg(1))
-}
-
-// parses a delimited (e.g. with comma) command-line argument, stripping spaces
-// around each entry.
-func parseDelimitedArg(arg, delimiter string) []string {
-	a := make([]string, 0)
-
-	for _, s := range strings.Split(arg, delimiter) {
-		a = append(a, strings.TrimSpace(s))
-	}
-
-	return a
+	outName := fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
+	return writeROM(romData, outName, seed, sum, update)
 }
 
 // sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or
@@ -119,7 +253,7 @@ func setRandomSeed(hexString string) uint32 {
 		v, err := strconv.ParseUint(
 			strings.Replace(hexString, "0x", "", 1), 16, 32)
 		if err != nil {
-			log.Fatalf(`fatal: invalid seed "%s"`, hexString)
+			fatal(fmt.Errorf(`fatal: invalid seed "%s"`, hexString), false)
 		}
 		seed = uint32(v)
 	}
@@ -139,11 +273,16 @@ func readFileBytes(filename string) ([]byte, error) {
 }
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
-func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
-	summary chan string) []error {
+func randomize(romData []byte, seedFlag string,
+	verbose bool) (uint32, []byte, error) {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
-		return errs
+		return 0, nil, errs[0]
+	}
+
+	seed := setRandomSeed(seedFlag)
+	if seedFlag == "" {
+		seed = 0 // none specified, not an actual zero seed
 	}
 
 	// give each routine its own random source, so that they can return the
@@ -153,7 +292,7 @@ func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 	if !verbose && seed == 0 {
 		numThreads = runtime.NumCPU()
 	}
-	log.Printf("using %d thread(s)", numThreads)
+	fmt.Printf("using %d thread(s)\n", numThreads)
 	sources := make([]rand.Source, numThreads)
 	seeds := make([]uint32, numThreads)
 	for i := 0; i < numThreads; i++ {
@@ -182,7 +321,7 @@ func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 		for {
 			select {
 			case msg := <-logChan:
-				log.Print(msg)
+				fmt.Println(msg)
 			case <-stopLogChan:
 				return
 			}
@@ -208,9 +347,8 @@ func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 
 	// didn't find any route
 	if rl == nil {
-		log.Fatal("fatal: no route found")
+		return 0, nil, fmt.Errorf("no route found")
 	}
-	log.Printf("route found; seed %08x", rl.Seed)
 
 	// place selected treasures in slots
 	usedLines := make([]string, 0, rl.UsedSlots.Len())
@@ -234,8 +372,10 @@ func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 	// do it! (but don't write anything)
 	checksum, err := rom.Mutate(romData)
 	if err != nil {
-		return []error{err}
+		return 0, nil, err
 	}
+
+	summary, summaryDone := getSummaryChannel()
 
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", rl.Seed)
@@ -267,7 +407,10 @@ func randomize(romData []byte, outFilename string, verbose bool, seed uint32,
 		summary <- fmt.Sprintf("%s - %s", name, seasonsByID[int(area.New[0])])
 	}
 
-	return nil
+	close(summary)
+	<-summaryDone
+
+	return rl.Seed, checksum, nil
 }
 
 // searches for a route and logs and returns a route on the given channels.
