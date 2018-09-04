@@ -133,7 +133,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// abort if it's impossible to pay for the slotted items
 	if !tryMeetCosts(r, usedItems, itemPool, usedSlots, freeSlots, src) {
-		return nil, nil
+		return list.New(), list.New()
 	}
 
 	// remove the used nodes from the persistent pools
