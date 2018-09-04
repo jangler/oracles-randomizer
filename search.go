@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/prenode"
@@ -31,6 +32,8 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	countFunc func(map[*graph.Node]bool) int,
 	fillUnused bool) (usedItems, usedSlots *list.List) {
 
+	startTime := time.Now()
+
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
 	freeSlots := getAvailableSlots(r, src, slotPool, fillUnused)
@@ -47,6 +50,11 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	usedItems = list.New()
 	usedSlots = list.New()
 	for i := 0; i < itemPool.Len() && newCount == initialCount; i++ {
+		// check to make sure this step isn't taking too long
+		if time.Now().Sub(startTime) > time.Second*5 {
+			return nil, nil
+		}
+
 		for e := freeSlots.Front(); e != nil &&
 			newCount == initialCount; e = e.Next() {
 			slot := e.Value.(*graph.Node)

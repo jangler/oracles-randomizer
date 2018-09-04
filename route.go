@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/prenode"
@@ -181,12 +182,19 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		}
 		r.Costs = 0
 
+		startTime := time.Now()
+
 		// slot progression items
 		done := r.Graph["done"]
 		for done.GetMark(done, nil) != graph.MarkTrue {
 			if verbose {
 				logChan <- fmt.Sprintf("searching; have %d more slots",
 					slotList.Len())
+			}
+
+			// check to make sure this step isn't taking too long
+			if time.Now().Sub(startTime) > time.Second*10 {
+				break
 			}
 
 			// try to find a new combination of items that opens progression
@@ -216,6 +224,11 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 				if verbose {
 					logChan <- fmt.Sprintf("done; filling %d more slots",
 						slotList.Len())
+				}
+
+				// check to make sure this step isn't taking too long
+				if time.Now().Sub(startTime) > time.Second*10 {
+					break
 				}
 
 				items, slots := trySlotItemSet(r, src, itemList, slotList,
