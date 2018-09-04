@@ -65,7 +65,7 @@ func canEmberSeedSoftlock(g graph.Graph) error {
 	return nil
 }
 
-// the player needs shovel before they can enter D7, or else then can be stuck
+// the player needs shovel before they can enter D7, or else they can be stuck
 // if the default season is winter when they exit.
 func canD7ExitSoftlock(g graph.Graph) error {
 	// no snow piles == no softlock

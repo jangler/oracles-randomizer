@@ -50,10 +50,8 @@ func NewRoute(start ...string) *Route {
 		totalPrenodes[key] = prenode.And()
 	}
 
-	addNodes(g, totalPrenodes, false)
-	addNodeParents(g, totalPrenodes)
-	addNodes(hg, totalPrenodes, true)
-	addNodeParents(hg, totalPrenodes)
+	addNodes(totalPrenodes, g, hg)
+	addNodeParents(totalPrenodes, g, hg)
 
 	openSlots := make(map[string]*graph.Node, 0)
 	for name, pn := range totalPrenodes {
@@ -83,7 +81,7 @@ func (r *Route) ClearParents(node string) {
 }
 
 // if hard is false, "hard" nodes are omitted
-func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode, hard bool) {
+func addNodes(prenodes map[string]*prenode.Prenode, g, hg graph.Graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
 		case prenode.AndType, prenode.AndSlotType, prenode.AndStepType,
@@ -91,8 +89,11 @@ func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode, hard bool) {
 			isStep := pn.Type == prenode.AndSlotType ||
 				pn.Type == prenode.AndStepType
 			isSlot := pn.Type == prenode.AndSlotType
-			if hard || pn.Type != prenode.HardAndType {
-				g.AddNodes(graph.NewNode(key, graph.AndType, isStep, isSlot))
+
+			node := graph.NewNode(key, graph.AndType, isStep, isSlot)
+			hg.AddNodes(node)
+			if pn.Type != prenode.HardAndType {
+				g.AddNodes(node)
 			}
 		case prenode.OrType, prenode.OrSlotType, prenode.OrStepType,
 			prenode.RootType, prenode.HardOrType:
@@ -103,8 +104,11 @@ func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode, hard bool) {
 			if pn.Type == prenode.RootType {
 				nodeType = graph.RootType
 			}
-			if hard || pn.Type != prenode.HardOrType {
-				g.AddNodes(graph.NewNode(key, nodeType, isStep, isSlot))
+
+			node := graph.NewNode(key, nodeType, isStep, isSlot)
+			hg.AddNodes(node)
+			if pn.Type != prenode.HardOrType {
+				g.AddNodes(node)
 			}
 		default:
 			panic("unknown prenode type for " + key)
@@ -114,16 +118,18 @@ func addNodes(g graph.Graph, prenodes map[string]*prenode.Prenode, hard bool) {
 
 // nodes not in the graph are omitted (for example, "hard" nodes in a non-hard
 // graph)
-func addNodeParents(g graph.Graph, prenodes map[string]*prenode.Prenode) {
+func addNodeParents(prenodes map[string]*prenode.Prenode, gs ...graph.Graph) {
 	for k, pn := range prenodes {
-		if g[k] == nil {
-			continue
-		}
-		for _, parent := range pn.Parents {
-			if g[parent.(string)] == nil {
+		for _, g := range gs {
+			if g[k] == nil {
 				continue
 			}
-			g.AddParents(map[string][]string{k: []string{parent.(string)}})
+			for _, parent := range pn.Parents {
+				if g[parent.(string)] == nil {
+					continue
+				}
+				g.AddParents(map[string][]string{k: []string{parent.(string)}})
+			}
 		}
 	}
 }
