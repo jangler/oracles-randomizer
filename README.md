@@ -100,3 +100,10 @@ A: Maybe, but not until the Seasons randomizer is reasonably feature-complete
 (as i see it). Ages also has some big sequence breaks and Crescent Island,
 which would both be tricky to account for in the logic unless they're just
 removed.
+
+**Q: Is there a place to discuss the randomizer?**
+
+A: Yes, the Oracles Discord server (link
+[here](https://www.speedrun.com/oos/thread/3qwe1). The server is mainly focused
+on speedrunning, but the #randomizer channel is for anything pertaining to the
+randomizer.
