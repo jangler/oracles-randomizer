@@ -86,12 +86,10 @@ these are en/us:
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:184b = showText, bc is index
 - 0:1956 = getThisRoomFlags
-- 0:2542 = interactionSetScript, hl is address in bank b
-- 0:30c7 = checkGlobalFlag, a is bit starting at c6ca
-- 0:30cd = setGlobalFlag, a is bit starting at c6ca
+- 0:24fe = interactionSetScript, hl is address in bank b
+- 0:30c7, 0:30cd = checkGlobalFlag / setGlobalFlag, a is bit starting at c6ca
 - 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 - 0:3ac6 = getFreeInteractionSlot
-- 2:5e9a = break here and modify cc63-cc64 to set warp tree warp destination
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
 - 5:4552 = companionTryToMount
@@ -105,6 +103,7 @@ these are en/us:
 ## script commands (most are documented in more detail in ages-disasm)
 
 - 00 = end script
+- 80 = set state of interaction.state
 - 84 = spawn interaction
 - 87 = jump table
 - 88 = set coordinates, byte = y, byte = x
@@ -112,6 +111,7 @@ these are en/us:
 - 98 = show text, word = index
 - 9c = set interaction text id, word = index
 - a0 = wait for bit of cfc0 is set
+- a7 = ? takes two bytes of params ?
 - b0 = jump if room flag, byte = flag, word = addr
 - b5 = jump if global flag, byte = flag, word = addr
 - b6 = set global flag, byte = flag
@@ -148,6 +148,7 @@ these are en/us:
 - c6ca-c6d9 = some global flags
 
 - cbb6 = index of room under cursor in map menu
+- cc4e = current season
 - cc48 = high byte of link object address (in object table starting at d000)
 - cc4c = active room
 - ccab = allow screen transitions only if zero in treasure H&S
