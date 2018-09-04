@@ -7,10 +7,6 @@ checks for overworld events that are necessary for progress, so the dungeons
 can be done in any order that the randomized items facilitate. However, you do
 have to collect all 8 essences to get the Maku Seed and finish the game.
 
-The randomizer is relatively new and under active development, so consider it
-"beta" for now. See the [issue
-tracker](https://github.com/jangler/oos-randomizer/issues) for known problems.
-
 
 ## Usage
 
@@ -88,7 +84,8 @@ logic, or to prevent softlocks. The most notable are:
 **Q: Do I have to do HSS skip or Poe skip?**
 
 A: No, but you can if you want to, and the randomizer accounts for those and other
-sequence breaks.
+sequence breaks. Though depending on the seed, you might be expected to do any
+number of tricky things the vanilla game wouldn't expect of you.
 
 **Q: I'm softlocked. Now what do I do?**
 
