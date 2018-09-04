@@ -104,6 +104,6 @@ removed.
 **Q: Is there a place to discuss the randomizer?**
 
 A: Yes, the Oracles Discord server (link
-[here](https://www.speedrun.com/oos/thread/3qwe1). The server is mainly focused
+[here](https://www.speedrun.com/oos/thread/3qwe1)). The server is mainly focused
 on speedrunning, but the #randomizer channel is for anything pertaining to the
 randomizer.
