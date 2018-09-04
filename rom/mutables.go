@@ -252,8 +252,8 @@ var constMutables = map[string]Mutable{
 	// room flags to do the tile replacement.
 	"rosa spawn check": MutableByte(Addr{0x09, 0x67a3}, 0x40, 0x04),
 	"call set portal room flag": MutableString(Addr{0x04, 0x45f5},
-		"\xfa\x64\xcc", "\xcd\x35\x7e"),
-	"set portal room flag func": MutableString(Addr{0x04, 0x7e35}, "\x04",
+		"\xfa\x64\xcc", "\xcd\x4b\x7e"),
+	"set portal room flag func": MutableString(Addr{0x04, 0x7e4b}, "\x04",
 		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\xe1\xfa\x64\xcc\xc9"),
 
 	// count number of essences, not highest number essence
@@ -395,16 +395,27 @@ var constMutables = map[string]Mutable{
 	"pirate warp": MutableString(Addr{0x15, 0x5a1c},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 
-	// if entering certain warps blocked by snow piles in winter, set the
+	// if entering certain warps blocked by snow piles or mushrooms, set the
 	// animal companion to appear right outside instead of where you left them.
 	// this requires adding some code at the end of the bank.
 	"animal save point call": MutableString(Addr{0x04, 0x461e},
 		"\xfa\x64\xcc", "\xcd\x02\x7e"),
-	"set animal save point": MutableString(Addr{0x04, 0x7e02}, "\x04",
-		"\xc5\x47\xfa\x64\xcc\x4f\x78\xfe\x04\x20\x05\x79\xfe\xfa\x28\x14\x78"+
-			"\xfe\x05\x20\x05\x79\xfe\xcc\x28\x0a\x78\xfe\x01\x20\x11\x79"+
-			"\xfe\x57\x20\x0c\xfa\x4c\xcc\x21\x42\xcc\x22\x36\x28\x23\x36\x68"+
-			"\x79\xc1\xc9"),
+	"set animal save point func": MutableString(Addr{0x04, 0x7e02}, "\x04",
+		// b = group, c = room, hl = table
+		"\xc5\xd5\x47\xfa\x64\xcc\x4f\x21\x2c\x7e"+
+			"\x2a\xb8\x20\x0e\x2a\xb9\x20\x0a"+ // check group and room
+			"\x11\x42\xcc\x06\x03\xcd\x62\x04\x18\x0a"+ // set save pt, done
+			"\x2a\xb7\x20\xfc\x7e\x3c\x28\x02\x18\xe4"+ // go to next table entry
+			"\x79\xd1\xc1\xc9"), // done
+	// table entries are {entered group, entered room, saved room, saved y,
+	// saved x}.
+	"animal save point table": MutableString(Addr{0x04, 0x7e2c}, "\x04",
+		"\x04\xfa\xc2\x18\x68\x00"+ // square jewel cave
+			"\x01\x57\xb0\x48\x48\x00"+ // spool swamp subrosia portal
+			"\x05\xcc\x29\x28\x68\x00"+ // goron mountain cave
+			"\x05\xb3\x8e\x58\x88\x00"+ // cave outside d2
+			"\x04\xe1\x86\x48\x68\x00"+ // quicksand ring cave
+			"\xff"), // end of table
 
 	// moosh won't spawn in the mountains if you have the wrong number of
 	// essences. bit 6 seems related to this, and needs to be zero too?
