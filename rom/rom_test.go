@@ -14,6 +14,7 @@ func TestMutableOverlap(t *testing.T) {
 	hitBytes := make(map[int]*string)
 
 	for k, v := range getAllMutables() {
+		k := k
 		switch v := v.(type) {
 		case *MutableRange:
 			for _, addr := range v.Addrs {
