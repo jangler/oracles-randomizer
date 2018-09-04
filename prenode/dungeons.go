@@ -16,7 +16,7 @@ package prenode
 var d0Prenodes = map[string]*Prenode{
 	"d0 key chest":   And("enter d0"),
 	"d0 sword chest": AndSlot("enter d0", "d0 small key"),
-	"d0 rupee chest": AndSlot(Or("remove bush", "flute")),
+	"d0 rupee chest": OrSlot("remove bush", "flute"),
 
 	"d0 small key": And("d0 key chest"),
 }

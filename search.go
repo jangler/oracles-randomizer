@@ -51,7 +51,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	usedSlots = list.New()
 	for i := 0; i < itemPool.Len() && newCount == initialCount; i++ {
 		// check to make sure this step isn't taking too long
-		if time.Now().Sub(startTime) > time.Second*5 {
+		if time.Now().Sub(startTime) > time.Second*10 {
 			return nil, nil
 		}
 
@@ -141,7 +141,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// abort if it's impossible to pay for the slotted items
 	if !tryMeetCosts(r, usedItems, itemPool, usedSlots, freeSlots, src) {
-		return list.New(), list.New()
+		return nil, nil
 	}
 
 	// remove the used nodes from the persistent pools
@@ -226,8 +226,8 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 
 	// prioritize, in order:
 	// 1. if filling extra items, slots with specific restrictions
-	// 2. anything over slots that were already reached in a previous iteration
-	// 3. anything over dungeons that already have an item in them
+	// 2. dungeons with no items over anything else
+	// 3. anything over slots that were already reached in a previous iteration
 	sort.Slice(a, func(i, j int) bool {
 		if fillUnused {
 			switch a[i].Name {
@@ -238,24 +238,15 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 			}
 		}
 
-		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] &&
-			prenode.Rupees[a[j].Name] == 0 {
-			return true
-		}
-
 		match := dungeonRegexp.FindStringSubmatch(a[i].Name)
 		if match != nil {
 			di, _ := strconv.Atoi(match[1])
-			if r.DungeonItems[di] > 0 {
-				return false
-			}
+			return r.DungeonItems[di] == 0
 		}
-		match = dungeonRegexp.FindStringSubmatch(a[j].Name)
-		if match != nil {
-			di, _ := strconv.Atoi(match[1])
-			if r.DungeonItems[di] > 0 {
-				return true
-			}
+
+		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] &&
+			prenode.Rupees[a[j].Name] == 0 {
+			return true
 		}
 
 		return false
