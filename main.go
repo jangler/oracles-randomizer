@@ -72,7 +72,8 @@ func main() {
 		}
 
 		// decide whether to randomize or update the file
-		if err := handleFile(romData, *flagSeed, *flagVerbose); err != nil {
+		if err := handleFile(romData, flag.Arg(0), *flagSeed,
+			*flagVerbose); err != nil {
 			fatal(err, true)
 		}
 
@@ -85,7 +86,8 @@ func main() {
 		}
 
 		// decide whether to randomize or update the file
-		if err := handleFile(b, *flagSeed, *flagVerbose); err != nil {
+		if err := handleFile(b, flag.Arg(0), *flagSeed,
+			*flagVerbose); err != nil {
 			fatal(err, true)
 		}
 
@@ -216,10 +218,11 @@ func readGivenROM(filename string) ([]byte, error) {
 }
 
 // decide whether to randomize or update the file
-func handleFile(romData []byte, seedFlag string, verbose bool) error {
+func handleFile(romData []byte, filename, seedFlag string, verbose bool) error {
 	var seed uint32
 	var sum []byte
 	var err error
+	var outName string
 
 	// operate on rom data
 	update := !rom.IsVanilla(romData)
@@ -229,16 +232,18 @@ func handleFile(romData []byte, seedFlag string, verbose bool) error {
 		if err != nil {
 			return err
 		}
+		outName = fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
 	} else {
 		fmt.Printf("randomizing %s\n", flag.Arg(0))
 		seed, sum, err = randomize(romData, seedFlag, verbose)
 		if err != nil {
 			return err
 		}
+		outName = fmt.Sprintf("%s_%s_update.gbc",
+			strings.Replace(filename, ".gbc", "", 1), version)
 	}
 
 	// write to file
-	outName := fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
 	return writeROM(romData, outName, seed, sum, update)
 }
 
