@@ -70,6 +70,12 @@ func TestGraph(t *testing.T) {
 			"satchel 1":        "maku tree gift",
 			"member's card":    "d0 rupee chest",
 		}, "member's shop 1", true)
+
+	checkReach(t, g,
+		map[string]string{
+			"sword L-1": "d0 sword chest",
+			"bracelet":  "maku tree gift",
+		}, "floodgate key spot", false)
 }
 
 func BenchmarkGraphExplore(b *testing.B) {

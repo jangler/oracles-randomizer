@@ -107,7 +107,7 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("temple remains", "long jump"),
 		And("goron mountain", "flippers")),
 	"blaino gift":      AndSlot("scent tree"),
-	"ricky":            Or("ricky's flute", And("scent tree", "ricky's gloves")),
+	"ricky":            Or("ricky's flute"),
 	"round jewel gift": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
 	"water cave chest": AndSlot("scent tree", "flippers"),
 	"mushroom cave chest": AndSlot("scent tree", "flippers",
