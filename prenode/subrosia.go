@@ -24,7 +24,7 @@ var subrosiaPrenodes = map[string]*Prenode{
 		And("hide and seek", "bracelet", "long jump"),
 		And("hide and seek", "jump", "bracelet", "magnet gloves"),
 		And("furnace", "bracelet", "jump"),
-		And("furnace", "feather L-2"),
+		And("furnace", Or("feather L-2", Hard("long jump"))),
 		And("furnace", "jump", "magnet gloves"),
 		And("temple", "jump")),
 
@@ -36,7 +36,7 @@ var subrosiaPrenodes = map[string]*Prenode{
 	"pirate house": Or("village portal", And("hide and seek", "jump")),
 
 	"furnace": Or("lake portal",
-		And("beach", "feather L-2"),
+		And("beach", Or("feather L-2", Hard("long jump"))),
 		And("beach", "magnet gloves")),
 
 	"bridge": Or(
