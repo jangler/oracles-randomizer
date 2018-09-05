@@ -114,13 +114,12 @@ var constMutables = map[string]Mutable{
 	"link immediately actionable": MutableString(Addr{0x05, 0x4d98},
 		"\x3e\x08\xcd\x16", "\xcd\x16\x2a\xc9"),
 	// set global flags and room flags that would be set during the intro,
-	// overwriting the initial din interaction. also set a flag in the byte of
-	// the seed's animal companion.
+	// overwriting the initial din interaction.
 	"set intro flags": MutableString(Addr{0x0a, 0x66ed},
 		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb8\x25\xcd\xb8\x25\xcd"+
-			"\x0c\x25\xd0\x3e\x30\xcd\xcd\x30\x21\x0b\x67\xc3",
+			"\x0c\x25\xd0",
 		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6"+
-			"\x36\x40\x3e\x38\x21\x10\xc6\x86\x6f\x36\x80\xc9"),
+			"\x36\x40\xc9"),
 
 	// warp to ember tree if holding start when closing the map screen, using
 	// the playtime counter as a cooldown. this also sets the player's respawn
@@ -198,11 +197,12 @@ var constMutables = map[string]Mutable{
 	"spawn dimitri in sunken city": MutableString(Addr{0x09, 0x4e4c},
 		"\x10\xc6\xfe\x0c", "\xaf\xc6\xfe\x02"),
 
-	// "activate" a flute by setting its icon and song when obtained.
+	// "activate" a flute by setting its icon and song when obtained. also
+	// activates the corresponding animal companion.
 	"flute set icon call": MutableWord(Addr{0x3f, 0x452c}, 0x4e45, 0x4d71),
 	"flute set icon func": MutableString(Addr{0x3f, 0x714d}, "\x3f",
-		"\xf5\xd5\x78\xfe\x0e\x20\x06\x1e\xaf\x79\xd6\x0a\x12\xd1\xf1"+
-			"\xcd\x4e\x45\xc9"),
+		"\xf5\xd5\xe5\x78\xfe\x0e\x20\x0d\x1e\xaf\x79\xd6\x0a\x12\xc6\x42"+
+			"\x26\xc6\x6f\xcb\xfe\xe1\xd1\xf1\xcd\x4e\x45\xc9"),
 
 	// don't require rod to get items from season spirits
 	"season spirit rod check": MutableByte(Addr{0x0b, 0x4eb2}, 0x07, 0x02),
