@@ -85,6 +85,7 @@ var holodrumPrenodes = map[string]*Prenode{
 			"woods of winter default summer", "summer",
 			"woods of winter default autumn", "autumn")),
 	"moblin cliff chest": AndSlot("suburbs", "bracelet",
+		Or("long jump", "magnet gloves"),
 		Or("eastern suburbs default spring", "spring")),
 	"linked dive chest": AndSlot("fairy fountain",
 		Or("eastern suburbs default winter", "winter"),
