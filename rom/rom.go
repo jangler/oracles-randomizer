@@ -22,6 +22,9 @@ func init() {
 		}
 	}
 
+	// override blaino's default collection mode
+	ItemSlots["blaino gift"].CollectMode = CollectFind2
+
 	// get set of unique items (to determine which can be slotted freely)
 	treasureCounts := make(map[string]int)
 	for _, slot := range ItemSlots {
