@@ -108,7 +108,7 @@ var niceNames = map[string]string{
 	// subrosia slotss
 	"dance hall prize":     "subrosian dance hall",
 	"rod gift":             "temple of seasons",
-	"spring tower":         "tower of winter",
+	"spring tower":         "tower of spring",
 	"summer tower":         "tower of summer",
 	"autumn tower":         "tower of autumn",
 	"winter tower":         "tower of winter",
