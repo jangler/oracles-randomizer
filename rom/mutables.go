@@ -225,11 +225,11 @@ var constMutables = map[string]Mutable{
 	"fool's ore gfx": MutableString(Addr{0x3f, 0x67ba},
 		"\x00\x00\x00", "\x60\x14\x00"),
 	"ricky's flute gfx": MutableString(Addr{0x3f, 0x67bd},
-		"\x00\x00\x00", "\x5f\x16\x13"),
+		"\x00\x00\x00", "\x5f\x16\x33"),
 	"dimitri's flute gfx": MutableString(Addr{0x3f, 0x67c0},
 		"\x00\x00\x00", "\x5f\x16\x23"),
 	"moosh's flute gfx": MutableString(Addr{0x3f, 0x67c3},
-		"\x00\x00\x00", "\x5f\x16\x33"),
+		"\x00\x00\x00", "\x5f\x16\x13"),
 	"rare peach stone gfx": MutableString(Addr{0x3f, 0x67c6},
 		"\x00\x00\x00", "\x5d\x10\x26"),
 	"ribbon gfx": MutableString(Addr{0x3f, 0x67c9},
@@ -515,12 +515,12 @@ var Seasons = map[string]*MutableRange{
 // get a collated map of all mutables
 func getAllMutables() map[string]Mutable {
 	slotMutables := make(map[string]Mutable)
-	for k, v := range ItemSlots {
-		slotMutables[k] = v
-	}
 	treasureMutables := make(map[string]Mutable)
-	for k, v := range Treasures {
-		treasureMutables[k] = v
+	for k, v := range ItemSlots {
+		if v.Treasure.addr != 0 {
+			treasureMutables[FindTreasureName(v.Treasure)] = v.Treasure
+		}
+		slotMutables[k] = v
 	}
 	seasonMutables := make(map[string]Mutable)
 	for k, v := range Seasons {
