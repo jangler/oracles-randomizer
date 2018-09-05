@@ -11,6 +11,7 @@ files = 'prenode/holodrum.go', 'prenode/subrosia.go', 'prenode/dungeons.go'
 
 version_regexp = re.compile('const version = "(.+?)"')
 slot_regexp = re.compile('"(.+?)": +(And|Or)Slot')
+name_regexp = re.compile('"(.+?)": +"(.+?)",')
 
 doc_template = """<!DOCTYPE html>
 <html>
@@ -39,6 +40,13 @@ with open('summary.go') as f:
             version = match.group(1)
             break
 
+names = {}
+with open('names.go') as f:
+    for line in f.readlines():
+        match = name_regexp.search(line)
+        if match:
+            names[match.group(1)] = match.group(2)
+
 with open('scripts/checklist.html', 'w') as outfile:
     sections = []
 
@@ -49,7 +57,10 @@ with open('scripts/checklist.html', 'w') as outfile:
             for line in infile.readlines():
                 match = slot_regexp.search(line)
                 if match:
-                    slots.append(match.group(1))
+                    name = match.group(1)
+                    if name in names:
+                        name = names[name]
+                    slots.append(name)
 
         elements = ['<input type="checkbox"> %s' % name
                 for name in slots]
