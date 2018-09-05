@@ -427,6 +427,9 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			if !strings.HasSuffix(item.Name, "L-2") {
 				continue
 			}
+			if item.Name == "shield L-2" {
+				continue // no L-1 shield in pool
+			}
 			downgrade := r.Graph[strings.Replace(item.Name, "L-2", "L-1", 1)]
 			if len(downgrade.Parents) > 0 {
 				continue
