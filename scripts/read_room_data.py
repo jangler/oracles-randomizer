@@ -54,9 +54,9 @@ def full_addr(bank_num, offset):
 
 
 MUSIC_PTR_TABLE = 0x04, 0x483c
-OBJECT_PTR_TABLE = 0x11, 0x5b38
-CHEST_PTR_TABLE = 0x15, 0x53af
-TREASURE_PTR_TABLE = 0x15, 0x556c
+OBJECT_PTR_TABLE = 0x11, 0x5b3b
+CHEST_PTR_TABLE = 0x15, 0x4f6c
+TREASURE_PTR_TABLE = 0x15, 0x5129
 
 MUSIC = { # and sound effects
     0x03: "overworld",
