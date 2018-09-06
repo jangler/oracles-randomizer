@@ -187,7 +187,7 @@ var holodrumPrenodes = map[string]*Prenode{
 			Or("eastern suburbs default spring", "spring")),
 		And("scent tree", Or(
 			And("natzu prairie", "flute"),
-			And("natuz river", Or("flute", "flippers"), "jump"),
+			And("natzu river", Or("flute", "flippers"), "jump"),
 			And("natzu wasteland", Or("flute",
 				And("remove bush", Or("feather L-2", Hard("long jump")))))))),
 	"sunken gale tree": AndSlot("sunken city",
