@@ -232,15 +232,15 @@ func handleFile(romData []byte, filename, seedFlag string, verbose bool) error {
 		if err != nil {
 			return err
 		}
-		outName = fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
+		outName = fmt.Sprintf("%s_%s_update.gbc",
+			strings.Replace(filename, ".gbc", "", 1), version)
 	} else {
 		fmt.Printf("randomizing %s\n", flag.Arg(0))
 		seed, sum, err = randomize(romData, seedFlag, verbose)
 		if err != nil {
 			return err
 		}
-		outName = fmt.Sprintf("%s_%s_update.gbc",
-			strings.Replace(filename, ".gbc", "", 1), version)
+		outName = fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
 	}
 
 	// write to file
