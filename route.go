@@ -31,7 +31,7 @@ func addDefaultItemNodes(nodes map[string]*prenode.Prenode) {
 type Route struct {
 	Graph, HardGraph graph.Graph
 	Slots            map[string]*graph.Node
-	OldSlots         map[*graph.Node]bool
+	TurnsReached     map[*graph.Node]int
 	DungeonItems     []int
 	Costs            int
 }
@@ -65,7 +65,7 @@ func NewRoute(start ...string) *Route {
 		Graph:        g,
 		HardGraph:    hg,
 		Slots:        openSlots,
-		OldSlots:     make(map[*graph.Node]bool),
+		TurnsReached: make(map[*graph.Node]int),
 		DungeonItems: make([]int, 9),
 	}
 }
@@ -180,8 +180,8 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		placeDungeonItems(src, r, itemList, usedItems, slotList, usedSlots)
 
 		// clear "old" slots and item counts, since we're starting fresh
-		for k := range r.OldSlots {
-			delete(r.OldSlots, k)
+		for k := range r.TurnsReached {
+			delete(r.TurnsReached, k)
 		}
 		for i := range r.DungeonItems {
 			r.DungeonItems[i] = 0

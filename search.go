@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 	"time"
 
@@ -65,11 +64,6 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			for e := itemPool.Front(); e != nil; e = e.Next() {
 				item := e.Value.(*graph.Node)
 				if nodeInList(item, usedItems) {
-					// break if filling unused because only one gasha seed can
-					// be slotted per iteration
-					if fillUnused {
-						break
-					}
 					continue
 				}
 				if !itemFitsInSlot(item, slot, src) {
@@ -90,12 +84,6 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			a := emptyList(usedItems)
 			newCount = countFunc(r.Graph.ExploreFromStart())
 			fillList(usedItems, a)
-
-			// hack to make sure gasha seeds and such don't pile up at the end
-			if fillUnused && len(a) > 0 &&
-				rom.TreasureIsUnique[a[len(a)-1].Name] {
-				break
-			}
 		}
 
 		if newCount == initialCount && !fillUnused {
@@ -140,7 +128,8 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	}
 
 	// abort if it's impossible to pay for the slotted items
-	if !tryMeetCosts(r, usedItems, itemPool, usedSlots, freeSlots, src) {
+	if !fillUnused &&
+		!tryMeetCosts(r, usedItems, itemPool, usedSlots, freeSlots, src) {
 		return nil, nil
 	}
 
@@ -224,36 +213,42 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 		a[i], a[j] = a[j], a[i]
 	})
 
-	// prioritize, in order:
-	// 1. if filling extra items, slots with specific restrictions
-	// 2. dungeons with no items over anything else
-	// 3. anything over slots that were already reached in a previous iteration
+	// prioritize newest slots
 	sort.Slice(a, func(i, j int) bool {
-		if fillUnused {
-			switch a[i].Name {
-			case "diver gift", "subrosian market 2", "subrosian market 5",
-				"village shop 3", "d0 sword chest", "rod gift",
-				"star ore spot", "hard ore slot":
-				return true
+		return r.TurnsReached[a[i]] < r.TurnsReached[a[j]]
+	})
+
+	// if filling unused, return only one slot at a time
+	if fillUnused {
+		l := list.New()
+
+		// first prioritize especially restrictive slots
+		for _, node := range a {
+			switch node.Name {
+			case "d0 sword chest", "rod gift", "star ore spot", "hard ore slot",
+				"diver gift", "subrosian market 5", "village shop 1",
+				"village shop 2", "village shop 3":
+				l.PushBack(node)
+				return l
 			}
 		}
 
-		match := dungeonRegexp.FindStringSubmatch(a[i].Name)
-		if match != nil {
-			di, _ := strconv.Atoi(match[1])
-			return r.DungeonItems[di] == 0
+		// then prioritize non-chests
+		for _, node := range a {
+			if !rom.IsChest(rom.ItemSlots[node.Name]) {
+				l.PushBack(node)
+				return l
+			}
 		}
 
-		if !r.OldSlots[a[i]] && r.OldSlots[a[j]] &&
-			prenode.Rupees[a[j].Name] == 0 {
-			return true
-		}
-
-		return false
-	})
+		l.PushBack(a[0])
+		return l
+	}
 
 	for _, slot := range a {
-		r.OldSlots[slot] = true
+		if prenode.Rupees[slot.Name] == 0 {
+			r.TurnsReached[slot]++
+		}
 	}
 
 	l := list.New()
@@ -472,9 +467,8 @@ func tryMeetCosts(r *Route, usedItems, itemPool, usedSlots,
 	for node := range r.Graph.ExploreFromStart() {
 		// don't subtract shops, since the player can see what they're buying
 		if !strings.Contains(node.Name, "shop") {
-			value := prenode.Rupees[node.Name]
 			if !nodeInList(node, usedSlots) {
-				balance += value
+				balance += prenode.Rupees[node.Name]
 			}
 		}
 	}
