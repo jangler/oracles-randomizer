@@ -362,6 +362,28 @@ var constMutables = map[string]Mutable{
 	"block cliff 5": MutableStrings([]Addr{{0x21, 0x6c51}, {0x22, 0x6898},
 		{0x23, 0x66b1}, {0x24, 0x6391}}, "\x50", "\x54"),
 
+	// extend the railing on moblin keep to prevent a one-way jump down to
+	// sunken city (player needs feather to get back to natzu river). one
+	// address per natzu region, then one for the ruined version.
+	"moblin keep rail 1": MutableStrings([]Addr{{0x21, 0x63e6}, {0x22, 0x603e},
+		{0x23, 0x5e44}, {0x24, 0x5ba6}}, "\xb3", "\x48"),
+	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ee}, {0x22, 0x6046},
+		{0x23, 0x5e4c}, {0x24, 0x5baf}}, "\x26", "\x53"),
+	"moblin keep rail 3": MutableStrings([]Addr{{0x21, 0x63f8}, {0x22, 0x6050},
+		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x53"),
+	"moblin keep rail 4": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
+		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
+	// and remove the cannon near the stairs so that players without flippers
+	// can exit (if they arrived by jumping and ran out of pegasus seeds).
+	"remove keep cannon object": MutableByte(Addr{0x11, 0x6563}, 0xf8, 0xff),
+	"replace moblin keep cannon tiles": MutableStrings([]Addr{{0x21, 0x6bee},
+		{0x22, 0x6835}, {0x23, 0x664e}},
+		"\xa4\x06\x18\xb9\xa5\xb2\x0d\x1c\xf2\x1a\x25\xb5\xb6",
+		"\xb9\x06\x18\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
+	"replace ruined keep cannon tiles": MutableString(Addr{0x24, 0x632c},
+		"\xa6\x04\x08\x83\xa7\xb9\xb2\x0d\x1c\xf2\x1a\x25\xa9\xb6",
+		"\xb9\x04\x08\x83\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
+
 	// normally none of the desert pits will work if the player already has the
 	// rusty bell
 	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),

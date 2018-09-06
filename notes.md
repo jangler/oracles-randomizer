@@ -70,7 +70,8 @@ these are en/us:
 - 0:1956 = getThisRoomFlags
 - 0:24fe = interactionSetScript, hl is address in bank b
 - 0:30c7, 0:30cd = checkGlobalFlag / setGlobalFlag, a is bit starting at c6ca
-- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
+- 0:393e = loadSmallRoomLayout
+	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 - 0:3ac6 = getFreeInteractionSlot
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)

@@ -101,7 +101,11 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("ghastly stump", Or("jump", "ricky", "flute", "winter",
 			"holodrum plain default winter")),
 		And("south swamp", Or("flippers", "dimitri's flute")),
-		And("sunken city", "flute"),
+		And("sunken city", Or(
+			And("natzu prairie", "flute"),
+			And("natzu river", "jump", Or("flippers", "flute")),
+			And("natzu wasteland", Or("flute", And("remove bush",
+				Or("feather L-2", Hard("long jump"))))))),
 		And("north horon stump", Or("bracelet",
 			And(Or("remove bush", "flute"),
 				Or("flippers", "dimitri's flute")))),
@@ -183,10 +187,9 @@ var holodrumPrenodes = map[string]*Prenode{
 			Or("eastern suburbs default spring", "spring")),
 		And("scent tree", Or(
 			And("natzu prairie", "flute"),
-			And("natuz river", Or(
-				And("flippers", Or("flute", "jump")),
-				And("flute", Or("flippers", "pegasus jump L-2")))),
-			And("natzu wasteland", Or("flute", And("long jump", "remove bush")))))),
+			And("natuz river", Or("flute", "flippers"), "jump"),
+			And("natzu wasteland", Or("flute",
+				And("remove bush", Or("feather L-2", Hard("long jump")))))))),
 	"sunken gale tree": AndSlot("sunken city",
 		Or("cross water gap", "sunken city default winter")),
 	"dimitri":               Or("dimitri's flute", And("sunken gale tree", "bombs")),
