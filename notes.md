@@ -5,11 +5,6 @@
 the names of these, when present, correspond to the ones in drenn's
 ages-disasm. the most useful are:
 
-- $10bf = when this executes, (hl) and (hl+1) here are the current chest item
-  ID and sub ID.
-- $0205 = checks for bit a in the flags starting at hl. $1717 does this
-  specifically at $c692 (treasure flags), and $30b3 does this specifically at
-  $c6ca (global flags).
 - $0b:4409 = when this executes, (hl) and (hl+1) are the given item ID and sub ID.
   this is for keys falling from ceilings, npcs giving items, most other items
   you don't receive from chests.
@@ -21,11 +16,6 @@ ages-disasm. the most useful are:
 - $15:466b = hl-1 here is the index of the treasure item's info (collection
   mode, param, text, and sprite, in that order). in other words, (hl) is the
   treasure item's param.
-- $3ab2 = getFreeInteractionSlot, called when a new "interaction" is needed.
-  this is used when a room's interactions are loaded (almost anything that's
-  not a static tile), but it's also used when creating new objects, like the
-  floodgate key. if there's a `ld (hl),60` afterward, that means it's an item
-  interaction, and the item ID and subID are usually in registers b and c.
 - $3f:440a = when this executes, hl-1 is the start of the object's three-byte
   graphics data starting at $3f:63a3 (see the rom addresses section below for
   details).
@@ -53,19 +43,12 @@ others that might be good to know:
 	  of itself, like… direction?
 - $239a = interactionIncState
 - $3b22 = updateInteraction
-- $074e = copy byte from hl to de, incrementing both
 
 ## functions / code
 
 these are jp:
 
-- 0:041a = getRandomNumber
 - 0:2a15 = setLinkIDOverride
-- these aren't functions, but they have something to do with tiles for a given
-  room when they execute:
-	- 0:3944
-	- 0:39d6
-	- 0:39e0
 - 2:4f90 = openMenu
 - 2:4fdd = closeMenu
 - 4:460c = getTransformedLinkID
@@ -75,7 +58,6 @@ these are jp:
 - 6:4925 = initializeParentItem
 - 6:4931 = chooseParentItemSlot
 - 6:4994 = parentItemUpdate (the good stuff; what happens when an item is used)
-- 7:4f36 = galeSeedTryToWarpLink
 
 these are en/us:
 
@@ -147,10 +129,16 @@ these are en/us:
 - c6c5 = active ring
 - c6ca-c6d9 = some global flags
 
+- c7xx = overworld room flags
+- c8xx = subrosia room flags (& some group 2?)
+- c9xx, caxx = etc
+
 - cbb6 = index of room under cursor in map menu
 - cc4e = current season
 - cc48 = high byte of link object address (in object table starting at d000)
+- cc49 = active group
 - cc4c = active room
+- cc63-cc66 = data about room transition (group, room, ???, position)
 - ccab = allow screen transitions only if zero in treasure H&S
 - ccb6 = active tile? rod of seasons only works when this == 8
 - ccea = disable interactions (?)
@@ -159,9 +147,6 @@ these are en/us:
 
 ## notable rom addresses (leftover JP stuff)
 
-- $15:57FD + $4X = index of ring given by param X; params below 4 don't
-  (normally?) work. this is a generalization of the information described for
-  $15:466b.
 - $3f:63a3 is a table of three byte graphics data sets. the middle is a flag
   and the other two combine to form the address of the actual data ($97 $80
   $68) becomes de=$6897… except this needs another multiple-of-three offset
@@ -177,19 +162,8 @@ these are en/us:
 - $6:5508 = itemUsageParameterTable
 	- offset by 2 * item ID
 
-## room loading
-
-### wram
-
-- c65c = wGashaMaturity
-- cc49 = wActiveGroup (overworld, subrosia, dungeons, etc)
-- cc4c = wActiveRoom
-- cc63-cc65 = loading room info
-- ccc5 = seasons-specific? wRotatingCubePos in ages-disasm
-
 ### rom (leftover JP stuff)
 
-- 09a8 = flagLocationGroupTable, for rooms
 - 04:6d4e = pointer table for room transitions?
 	- plus group * 2?
 	- then that value plus cc64 * 3? but it's zero when entering hero's cave
@@ -209,28 +183,3 @@ these are en/us:
 - 15:53af = chest treasure pointer table, offset by 2 * group, then increment
   hl in steps of 4 bytes until (hl+1) == the room number, but abort if (hl) ==
   ff. the next two bytes are the treasure ID and sub ID.
-
-### tiles
-
-- 04 = grass under object
-- 1f-21 = top of stump
-- 22-24 = bottom of stump
-- 2c = spring flower
-- 40 = horizontal railing
-- 54 = rock wall
-- 92 = rock flower
-- b1 = lever
-- c4 = bush
-- ce = ledge
-- d0 = stairs
-- d8 = flower
-- d9 = snow pile
-- e6 = subrosia portal
-
-## objects
-
-- 14 = moving pot
-- 20 = ember seed
-	- 00 = from satchel
-	- 01 = from slingshot
-- 27 = sword beam
