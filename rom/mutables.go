@@ -193,8 +193,9 @@ var constMutables = map[string]Mutable{
 	// and this does the same for saying goodbye once reaching spool swamp.
 	"ricky say goodbye": MutableString(Addr{0x09, 0x6ccd},
 		"\x10\xc6\xfe\x0b", "\xaf\xc6\xfe\x01"),
-	// spawn dimitri in sunken city based on flute, not animal region.
-	"spawn dimitri in sunken city": MutableString(Addr{0x09, 0x4e4c},
+	// spawn dimitri and kids in sunken city based on flute, not animal region.
+	"spawn dimitri in sunken city": MutableStrings(
+		[]Addr{{0x09, 0x4e4c}, {0x09, 0x6f08}, {0x09, 0x737e}},
 		"\x10\xc6\xfe\x0c", "\xaf\xc6\xfe\x02"),
 
 	// "activate" a flute by setting its icon and song when obtained. also
