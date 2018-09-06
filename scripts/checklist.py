@@ -58,8 +58,14 @@ with open('scripts/checklist.html', 'w') as outfile:
                 match = slot_regexp.search(line)
                 if match:
                     name = match.group(1)
+
                     if name in names:
                         name = names[name]
+                    if name[0] == 'd' and name[2] == ' ':
+                            name = "D" + name[1:]
+                    name = name.replace("map chest", "dungeon map chest")
+                    name = name.replace("gasha chest", "gasha seed chest")
+
                     slots.append(name)
 
         elements = ['<input type="checkbox"> %s' % name
