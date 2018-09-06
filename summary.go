@@ -11,12 +11,11 @@ const version = "2.0.0rc1"
 
 // returns a channel that will write strings to a text file with CRLF line
 // endings. the function will send on the int channel when finished printing.
-func getSummaryChannel() (chan string, chan int) {
+func getSummaryChannel(filename string) (chan string, chan int) {
 	c, done := make(chan string), make(chan int)
 
 	go func() {
-		logFile, err := os.Create("oos-randomizer_log_" +
-			time.Now().Format("2006-01-02_150405") + ".txt")
+		logFile, err := os.Create(filename)
 		if err != nil {
 			log.Fatal(err)
 		}
