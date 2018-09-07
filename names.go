@@ -43,7 +43,7 @@ var niceNames = map[string]string{
 	// north horon / holodrum plain / eyeglass lake slots
 	"scent tree":          "north horon seed tree",
 	"blaino gift":         "blaino's gym",
-	"round jewel gift":    "holodrum plain, old man",
+	"round jewel gift":    "old man in treehouse",
 	"lake chest":          "eyeglass lake, across bridge",
 	"water cave chest":    "cave south of mrs. ruul",
 	"mushroom cave chest": "cave north of D1",
@@ -144,8 +144,8 @@ func getNiceName(name string) string {
 	if name[0] == 'd' && name[2] == ' ' {
 		name = "D" + name[1:]
 	}
-	strings.Replace(name, "map chest", "dungeon map chest", 1)
-	strings.Replace(name, "gasha chest", "gasha seed chest", 1)
+	name = strings.Replace(name, "map chest", "dungeon map chest", 1)
+	name = strings.Replace(name, "gasha chest", "gasha seed chest", 1)
 
 	return name
 }
