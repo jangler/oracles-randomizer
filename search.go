@@ -241,7 +241,9 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 			}
 		}
 
-		l.PushBack(a[0])
+		if len(a) > 0 {
+			l.PushBack(a[0])
+		}
 		return l
 	}
 
