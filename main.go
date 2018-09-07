@@ -27,7 +27,7 @@ func usage() {
 func fatal(err error, wait bool) {
 	fmt.Fprintf(os.Stderr, "fatal: %v.\n", err)
 	if wait {
-		fmt.Fprint(os.Stderr, "press any key to continue.")
+		fmt.Fprint(os.Stderr, "press enter to continue.")
 		os.Stdin.Read(make([]byte, 1))
 	}
 	os.Exit(1)
@@ -77,7 +77,7 @@ func main() {
 			fatal(err, true)
 		}
 
-		fmt.Fprint(os.Stderr, "press any key to continue.")
+		fmt.Fprint(os.Stderr, "press enter to continue.")
 		os.Stdin.Read(make([]byte, 1))
 	case 1: // specified input file only, assume not using command line
 		b, err := readGivenROM(flag.Arg(0))
@@ -91,7 +91,7 @@ func main() {
 			fatal(err, true)
 		}
 
-		fmt.Fprint(os.Stderr, "press any key to continue.")
+		fmt.Fprint(os.Stderr, "press enter to continue.")
 		os.Stdin.Read(make([]byte, 1))
 	case 2: // specified input and output file, so using command line
 		b, err := readGivenROM(flag.Arg(0))
