@@ -165,7 +165,7 @@ var holodrumPrenodes = map[string]*Prenode{
 			And("autumn", "north horon stump"))))),
 	"dry lake east chest": AndSlot("d5 stump", "bracelet",
 		Or("summer", And("enter d5", "north horon default summer"))),
-	"dry lake west chest": AndSlot(And(Or("bombs", "ricky's flute"), "flippers"), Or(
+	"dry lake west chest": AndSlot(And(Or("bombs", "ricky's flute")), "flippers", Or(
 		And("north horon stump", Or("jump", "ricky's flute", "moosh's flute"),
 			Or("north horon default summer", "summer")),
 		And("d5 stump", "summer", "flippers"),
