@@ -232,7 +232,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"noble sword spot": AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
 	"tarm gale tree":   AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
 	"enter d6": And("tarm gale tree", Or("tarm ruins default winter", "winter"),
-		"shovel", "remove bush"),
+		Or("shovel", "ember seeds"), "remove bush"),
 	"tarm gasha chest": AndSlot("tarm gale tree", "remove mushroom", "ember seeds",
 		Or("tarm ruins default autumn", "autumn")),
 
