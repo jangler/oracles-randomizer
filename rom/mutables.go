@@ -253,8 +253,8 @@ var constMutables = map[string]Mutable{
 	// room flags to do the tile replacement.
 	"rosa spawn check": MutableByte(Addr{0x09, 0x67a3}, 0x40, 0x04),
 	"call set portal room flag": MutableString(Addr{0x04, 0x45f5},
-		"\xfa\x64\xcc", "\xcd\x4b\x7e"),
-	"set portal room flag func": MutableString(Addr{0x04, 0x7e4b}, "\x04",
+		"\xfa\x64\xcc", "\xcd\x51\x7e"),
+	"set portal room flag func": MutableString(Addr{0x04, 0x7e51}, "\x04",
 		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\xe1\xfa\x64\xcc\xc9"),
 
 	// count number of essences, not highest number essence
@@ -438,6 +438,7 @@ var constMutables = map[string]Mutable{
 			"\x05\xcc\x29\x28\x68\x00"+ // goron mountain cave
 			"\x05\xb3\x8e\x58\x88\x00"+ // cave outside d2
 			"\x04\xe1\x86\x48\x68\x00"+ // quicksand ring cave
+			"\x05\xc9\x28\x38\x58\x00"+ // goron mountain main
 			"\xff"), // end of table
 
 	// moosh won't spawn in the mountains if you have the wrong number of
