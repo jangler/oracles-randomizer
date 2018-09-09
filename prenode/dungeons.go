@@ -30,11 +30,12 @@ var d1Prenodes = map[string]*Prenode{
 	"d1 key chest":      And("d1 map chest", "hit lever"),
 	"enter goriya bros": And("d1 bomb chest", "bombs", "d1 key B"),
 	"d1 satchel spot":   AndSlot("enter goriya bros", "kill goriya bros"),
-	"d1 boss key chest": AndSlot("d1 map chest", "ember seeds",
-		"kill goriya (pit)"),
-	"d1 ring chest":    AndSlot("enter d1", "ember seeds"),
-	"enter aquamentus": And("enter d1", "ember seeds", "d1 boss key"),
-	"d1 essence":       AndStep("enter aquamentus", "kill aquamentus"),
+	"d1 boss key chest": AndSlot("d1 map chest",
+		Or("ember seeds", "mystery seeds"), "kill goriya (pit)"),
+	"d1 ring chest": AndSlot("enter d1", Or("ember seeds", "mystery seeds")),
+	"enter aquamentus": And("enter d1", Or("ember seeds", "mystery seeds"),
+		"d1 boss key"),
+	"d1 essence": AndStep("enter aquamentus", "kill aquamentus"),
 
 	"d1 key A": And("d1 key fall"),
 	"d1 key B": And("d1 key chest"),
@@ -51,20 +52,20 @@ var d1Prenodes = map[string]*Prenode{
 // entrance. this doesn't really matter because you need to remove bushes in
 // order to use any entrance, though.
 //
-// you can actually complete this entire dungeon without ember seeds, since
-// they're only required to open one door, which you can circumvent via the
-// various entrances.
+// you can actually complete this entire dungeon without ember seeds (or
+// mystery seeds), since they're only required to open one door, which you can
+// circumvent via the various entrances.
 var d2Prenodes = map[string]*Prenode{
 	"d2 5-rupee chest": AndSlot("d2 torch room"),
 	"d2 key fall":      And("d2 torch room", "kill rope"),
 	"d2 arrow room": Or(
-		And("d2 torch room", "ember seeds"),
+		And("d2 torch room", Or("ember seeds", "mystery seeds")),
 		And("enter d2 B", "bracelet")),
 	"d2 rupee room":   And("d2 arrow room", "bombs"),
 	"d2 hardhat room": And("d2 arrow room", "d2 key A"),
 	"d2 map chest":    AndSlot("d2 hardhat room", "remove pot"),
 	"d2 compass chest": OrSlot(
-		And("d2 torch room", "ember seeds", "kill rope"),
+		And("d2 torch room", Or("ember seeds", "mystery seeds"), "kill rope"),
 		And("d2 arrow room", "kill goriya", "kill rope")),
 	"d2 bracelet room":  And("d2 hardhat room", "kill hardhat (pit, throw)"),
 	"d2 bracelet chest": AndSlot("d2 bracelet room", "kill moblin (gap, throw)"),
@@ -154,7 +155,7 @@ var d4Prenodes = map[string]*Prenode{
 	"d4 basement stairs": And("d4 final minecart", "hit far lever", "kill wizzrobe (pit, throw)", "d4 key E"),
 
 	// B1F
-	"d4 cross bridge": Or("ember slingshot", "long jump"),
+	"d4 cross bridge": Or("ember slingshot", "mystery slingshot", "long jump"),
 	"enter gohma":     And("d4 basement stairs", "d4 cross bridge", "d4 boss key"),
 	"d4 essence":      AndStep("enter gohma", "kill gohma"),
 
@@ -263,8 +264,9 @@ var d7Prenodes = map[string]*Prenode{
 	// 1F
 	"d7 wizzrobe key chest": And("enter d7", "kill wizzrobe"),
 	"d7 ring chest":         AndSlot("enter d7", "d7 key A"),
-	"enter poe A":           And("d7 ring chest", "ember slingshot"),
-	"d7 compass chest":      AndSlot("enter d7", "bombs"),
+	"enter poe A": And("d7 ring chest",
+		Or("ember slingshot", "mystery slingshot")),
+	"d7 compass chest": AndSlot("enter d7", "bombs"),
 	"d7 map chest": AndSlot("d7 pot room", "jump",
 		Or("d7 key B", HardAnd("d7 key A", "poe skip"))),
 	"poe skip": HardAnd("enter d7", "bombs", "bracelet", "feather", "pegasus satchel"),
