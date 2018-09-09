@@ -434,8 +434,8 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 		}
 	}
 
-	// try downgrading L-2 items, as long as that doesn't affect the number of
-	// new slots reached
+	// try downgrading items, as long as that doesn't affect the number of new
+	// slots reached
 	targetCount := countFunc(r.Graph.ExploreFromStart())
 	retry = true
 	for retry && !fillUnused {
@@ -443,14 +443,32 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 
 		for e := usedItems.Front(); e != nil; e = e.Next() {
 			item := e.Value.(*graph.Node)
-			if !strings.HasSuffix(item.Name, "L-2") {
-				continue
+			var downgrade *graph.Node
+
+			// don't use a slingshot where a satchel will do
+			if strings.HasPrefix(item.Name, "slingshot") {
+				downgrade = r.Graph["satchel 1"]
+				if len(downgrade.Parents) > 0 {
+					downgrade = r.Graph["satchel 2"]
+				}
+				if len(downgrade.Parents) > 0 {
+					downgrade = nil
+				}
 			}
-			if item.Name == "shield L-2" || item.Name == "armor ring L-2" {
-				continue // no L-1 equivalents in pool
+
+			// and don't use a L-2 item where a L-1 item will do
+			if downgrade == nil {
+				if !strings.HasSuffix(item.Name, "L-2") {
+					continue
+				}
+				if item.Name == "shield L-2" || item.Name == "armor ring L-2" {
+					continue // no L-1 equivalents in pool
+				}
+				downgrade =
+					r.Graph[strings.Replace(item.Name, "L-2", "L-1", 1)]
 			}
-			downgrade := r.Graph[strings.Replace(item.Name, "L-2", "L-1", 1)]
-			if len(downgrade.Parents) > 0 {
+
+			if downgrade == nil || len(downgrade.Parents) > 0 {
 				continue
 			}
 
@@ -459,7 +477,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			downgrade.Parents = append(downgrade.Parents, parent)
 
 			testCount := countFunc(r.Graph.ExploreFromStart())
-			if testCount == targetCount && canSoftlock(r.HardGraph) == nil {
+			if testCount >= targetCount && canSoftlock(r.HardGraph) == nil {
 				// downgrade item and cycle again
 				retry = true
 				usedItems.InsertAfter(downgrade, e)
