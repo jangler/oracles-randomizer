@@ -352,9 +352,9 @@ var d8Prenodes = map[string]*Prenode{
 	"d8 cross pot path": Or(Hard("remove pot"), And("remove pot", "kill rope"), "jump"),
 	"d8 double rollers": Or(
 		And("d8 hardhat room", "d8 key A", "d8 cross pot path"),
-		And("d8 blade room", Or("feather L-2", Hard("long jump")))),
+		And("d8 blade room", "long jump")),
 	"d8 blade room": Or("d8 spinner",
-		And("d8 double rollers", Or("feather L-2", Hard("long jump")))),
+		And("d8 double rollers", "long jump")),
 	"d8 spinner": Or(
 		And("d8 blade room", "d8 key B"),
 		And("enter frypolar", "kill frypolar", "magnet gloves"),
