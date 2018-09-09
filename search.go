@@ -415,7 +415,9 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 		}
 	}
 
-	// try downgrading L-2 items
+	// try downgrading L-2 items, as long as that doesn't affect the number of
+	// new slots reached
+	targetCount := countFunc(r.Graph.ExploreFromStart())
 	retry = true
 	for retry && !fillUnused {
 		retry = false
@@ -438,7 +440,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			downgrade.Parents = append(downgrade.Parents, parent)
 
 			testCount := countFunc(r.Graph.ExploreFromStart())
-			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
+			if testCount == targetCount && canSoftlock(r.HardGraph) == nil {
 				// downgrade item and cycle again
 				retry = true
 				usedItems.InsertAfter(downgrade, e)
