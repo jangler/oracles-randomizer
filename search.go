@@ -197,6 +197,24 @@ func sortItemPool(pool *list.List, src *rand.Rand) {
 	}
 }
 
+// some items shouldn't be prioritized based on number of turns reached,
+// because other requirements have to be met in order for them to be used.
+func isTurnNeutralItem(node *graph.Node) bool {
+	// like shop items
+	if prenode.Rupees[node.Name] != 0 {
+		return true
+	}
+
+	// and seed trees
+	switch node.Name {
+	case "ember tree", "mystery tree", "scent tree", "pegasus tree",
+		"sunken gale tree", "tarm gale tree":
+		return true
+	}
+
+	return false
+}
+
 // filter a list of item slots by those that can be reached, shuffle them, and
 // sort them by priority, returning a new list.
 func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
@@ -248,7 +266,8 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 	}
 
 	for _, slot := range a {
-		if prenode.Rupees[slot.Name] == 0 {
+		// cap turn-neutral items at a staleness value of 1
+		if r.TurnsReached[slot] < 1 || !isTurnNeutralItem(slot) {
 			r.TurnsReached[slot]++
 		}
 	}
