@@ -511,21 +511,12 @@ func announceSuccessDetails(r *Route, usedItems, usedSlots *list.List,
 }
 
 // return the number of "step" nodes in the given set
-func countSteps(nodes map[*graph.Node]bool) int {
+func countSteps(r *Route) int {
+	r.Graph.ClearMarks()
+	r.HardGraph.ClearMarks()
 	count := 0
-	for node := range nodes {
-		if node.IsStep {
-			count++
-		}
-	}
-	return count
-}
-
-// return the number of "step" nodes in the given set which are not also slots
-func countOnlySteps(nodes map[*graph.Node]bool) int {
-	count := 0
-	for node := range nodes {
-		if node.IsStep && !node.IsSlot {
+	for _, node := range r.Graph {
+		if node.IsStep && node.GetMark(node, nil) == graph.MarkTrue {
 			count++
 		}
 	}

@@ -28,7 +28,7 @@ func nodeInList(n *graph.Node, l *list.List) bool {
 // items in available slots. it returns a list of slotted items if it succeeds,
 // or nil if it fails.
 func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
-	countFunc func(map[*graph.Node]bool) int,
+	countFunc func(*Route) int,
 	fillUnused bool) (usedItems, usedSlots *list.List) {
 
 	startTime := time.Now()
@@ -36,7 +36,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
 	freeSlots := getAvailableSlots(r, src, slotPool, fillUnused)
-	initialCount := countFunc(r.Graph.ExploreFromStart())
+	initialCount := countFunc(r)
 	newCount := initialCount
 
 	sortItemPool(itemPool, src)
@@ -75,15 +75,12 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 				if canSoftlock(r.HardGraph) != nil {
 					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
+					newCount = countFunc(r)
 					usedItems.PushBack(item)
 					usedSlots.PushBack(slot)
 					break
 				}
 			}
-
-			a := emptyList(usedItems)
-			newCount = countFunc(r.Graph.ExploreFromStart())
-			fillList(usedItems, a)
 		}
 
 		if newCount == initialCount && !fillUnused {
@@ -412,7 +409,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 // try removing and downgrading slotted items until the minimal set neceessary
 // for progression is reached.
 func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
-	countFunc func(map[*graph.Node]bool) int, fillUnused bool) {
+	countFunc func(*Route) int, fillUnused bool) {
 	// try removing items
 	retry := true
 	for retry && !fillUnused {
@@ -420,10 +417,11 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 
 		for e := usedItems.Front(); e != nil; e = e.Next() {
 			item := e.Value.(*graph.Node)
+
 			parent := item.Parents[len(item.Parents)-1]
 			item.Parents = item.Parents[:len(item.Parents)-1]
 
-			testCount := countFunc(r.Graph.ExploreFromStart())
+			testCount := countFunc(r)
 			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
 				// remove the item and cycle again if it can be omitted
 				retry = true
@@ -437,7 +435,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 
 	// try downgrading items, as long as that doesn't affect the number of new
 	// slots reached
-	targetCount := countFunc(r.Graph.ExploreFromStart())
+	targetCount := countFunc(r)
 	retry = true
 	for retry && !fillUnused {
 		retry = false
@@ -477,7 +475,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			item.Parents = item.Parents[:len(item.Parents)-1]
 			downgrade.Parents = append(downgrade.Parents, parent)
 
-			testCount := countFunc(r.Graph.ExploreFromStart())
+			testCount := countFunc(r)
 			if testCount >= targetCount && canSoftlock(r.HardGraph) == nil {
 				// downgrade item and cycle again
 				retry = true
