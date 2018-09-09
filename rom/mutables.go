@@ -363,6 +363,14 @@ var constMutables = map[string]Mutable{
 	"block cliff 5": MutableStrings([]Addr{{0x21, 0x6c51}, {0x22, 0x6898},
 		{0x23, 0x66b1}, {0x24, 0x6391}}, "\x50", "\x54"),
 
+	// block the waterfalls and jump down from mt cucco to sunken city except
+	// in summer, since it's one-way otherwise.
+	"block waterfalls": MutableStrings([]Addr{{0x21, 0x5bd1}, {0x21, 0x5c17},
+		{0x23, 0x5645}, {0x23, 0x568b}, {0x24, 0x54fa}, {0x24, 0x5540}},
+		"\x36\xff\x35", "\x40\x40\x40"),
+	"block empty vines": MutableStrings([]Addr{{0x21, 0x5c12}, {0x23, 0x5686},
+		{0x24, 0x553b}}, "\x58\xcd\x57", "\x40\x40\x40"),
+
 	// extend the railing on moblin keep to prevent a one-way jump down to
 	// sunken city (player needs feather to get back to natzu river). one
 	// address per natzu region, then one for the ruined version.
