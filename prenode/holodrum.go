@@ -184,7 +184,9 @@ var holodrumPrenodes = map[string]*Prenode{
 	"platform chest": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
 
 	// sunken city
-	"sunken city": Or(And("mount cucco", "flippers"),
+	"sunken city": Or(
+		And("mount cucco", "flippers",
+			Or("summer", "sunken city default summer")),
 		And("fairy fountain", Or("remove flower", "ricky's flute"),
 			Or("eastern suburbs default spring", "spring")),
 		And("scent tree", Or(
