@@ -514,9 +514,10 @@ func announceSuccessDetails(r *Route, usedItems, usedSlots *list.List,
 func countSteps(r *Route) int {
 	r.Graph.ClearMarks()
 	r.HardGraph.ClearMarks()
+	reached := r.Graph.ExploreFromStart()
 	count := 0
-	for _, node := range r.Graph {
-		if node.IsStep && node.GetMark(node, nil) == graph.MarkTrue {
+	for node := range reached {
+		if node.IsStep {
 			count++
 		}
 	}
