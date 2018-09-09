@@ -7,8 +7,6 @@ var Rupees = map[string]int{
 	"member's shop 1": -300,
 	"member's shop 2": -300,
 	"member's shop 3": -200,
-	"buy shield L-1":  -30,
-	"buy bombs":       -20,
 	"blaino gift":     -10,
 
 	// appraising rings

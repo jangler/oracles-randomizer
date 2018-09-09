@@ -124,12 +124,6 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 		}
 	}
 
-	// abort if it's impossible to pay for the slotted items
-	if !fillUnused &&
-		!tryMeetCosts(r, usedItems, itemPool, usedSlots, freeSlots, src) {
-		return nil, nil
-	}
-
 	// remove the used nodes from the persistent pools
 	if newCount > initialCount || (fillUnused && usedItems.Len() > 0) {
 		for e := usedItems.Front(); e != nil; e = e.Next() {
@@ -217,9 +211,11 @@ func isTurnNeutralItem(node *graph.Node) bool {
 func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 	fillUnused bool) *list.List {
 	a := make([]*graph.Node, 0)
+	r.Graph.ClearMarks()
+	r.HardGraph.ClearMarks()
 	for e := pool.Front(); e != nil; e = e.Next() {
 		node := e.Value.(*graph.Node)
-		if node.GetMark(node, nil) == graph.MarkTrue {
+		if node.GetMark(node, nil) == graph.MarkTrue && canAffordSlot(r, node) {
 			a = append(a, node)
 		}
 	}
@@ -490,50 +486,19 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 	}
 }
 
-func tryMeetCosts(r *Route, usedItems, itemPool, usedSlots,
-	slotPool *list.List, src *rand.Rand) bool {
-	// count the new costs of the used items
-	costs := 0
-	for e := usedSlots.Front(); e != nil; e = e.Next() {
-		node := e.Value.(*graph.Node)
-		costs -= prenode.Rupees[node.Name]
-	}
-	if costs <= 0 {
+func canAffordSlot(r *Route, slot *graph.Node) bool {
+	// if it doesn't cost anything, of course it's affordable
+	balance := prenode.Rupees[slot.Name]
+	if balance >= 0 {
 		return true
 	}
-	r.Costs += costs
-	balance := -r.Costs
 
-	// count the net rupees available to the player
-	for node := range r.Graph.ExploreFromStart() {
-		// don't subtract shops, since the player can see what they're buying
-		if !strings.Contains(node.Name, "shop") {
-			if !nodeInList(node, usedSlots) {
-				balance += prenode.Rupees[node.Name]
-			}
-		}
-	}
-
-	// if possible, add rupees until the player can afford the items
-	for ei := itemPool.Front(); balance < 0 && ei != nil; ei = ei.Next() {
-		item := ei.Value.(*graph.Node)
-		value := prenode.Rupees[item.Name]
-		if value < 10 {
-			continue
-		}
-		if nodeInList(item, usedItems) {
-			continue
-		}
-
-		for es := slotPool.Front(); es != nil; es = es.Next() {
-			slot := es.Value.(*graph.Node)
-			if !nodeInList(slot, usedSlots) && itemFitsInSlot(item, slot, src) {
-				item.AddParents(slot)
-				usedItems.PushFront(item)
-				usedSlots.PushFront(slot)
-				balance += value
-				break
-			}
+	// otherwise, count the net rupees available to the player
+	balance += r.Costs
+	for _, node := range r.Graph {
+		value := prenode.Rupees[node.Name]
+		if value > 0 && node.GetMark(node, nil) == graph.MarkTrue {
+			balance += value
 		}
 	}
 

@@ -212,6 +212,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 					usedItems.PushBack(items.Remove(items.Front()))
 					slot := slots.Remove(slots.Front()).(*graph.Node)
 					usedSlots.PushBack(slot)
+					r.Costs += prenode.Rupees[slot.Name]
 
 					match := dungeonRegexp.FindStringSubmatch(slot.Name)
 					if match != nil {
@@ -517,7 +518,8 @@ func countSteps(r *Route) int {
 	reached := r.Graph.ExploreFromStart()
 	count := 0
 	for node := range reached {
-		if node.IsStep {
+		if node.IsStep && canAffordSlot(r, node) &&
+			node.Name != "village shop 2" {
 			count++
 		}
 	}
