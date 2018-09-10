@@ -518,8 +518,9 @@ func countSteps(r *Route) int {
 	reached := r.Graph.ExploreFromStart()
 	count := 0
 	for node := range reached {
-		if node.IsStep && canAffordSlot(r, node) &&
-			node.Name != "village shop 1" && node.Name != "village shop 2" {
+		if node.IsStep && node.Name != "village shop 1" &&
+			node.Name != "village shop 2" &&
+			(r.TurnsReached[node] > 0 || canAffordSlot(r, node)) {
 			count++
 		}
 	}
