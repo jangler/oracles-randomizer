@@ -385,6 +385,13 @@ var constMutables = map[string]Mutable{
 	"replace lake stairs": MutableString(Addr{0x22, 0x791b},
 		"\x36\xd0\x35", "\x40\x40\x40"),
 
+	// replace some currents in spool swamp in spring so that the player isn't
+	// trapped by them.
+	"replace currents 1": MutableWord(Addr{0x21, 0x7ab1}, 0xd2d2, 0xd3d3),
+	"replace currents 2": MutableString(Addr{0x21, 0x7ab6},
+		"\xd3\xd2\xd2", "\xd4\xd4\xd4"),
+	"replace currents 3": MutableByte(Addr{0x21, 0x7abe}, 0xd3, 0xd1),
+
 	// skip pirate cutscene. adds flag-setting code at the end of the bank.
 	// includes setting flag $1b, which makes the pirate skull appear in the
 	// desert, in case the player hasn't talked to the ghost.

@@ -127,33 +127,6 @@ func TestD2ExitCheck(t *testing.T) {
 		}, "central woods of winter", true)
 }
 
-func TestSpringSwampCheck(t *testing.T) {
-	r := NewRoute()
-
-	// check for false positive
-	checkSoftlockWithSlots(t, canSpringSwampSoftlock, r.HardGraph,
-		map[string]string{
-			"feather L-2":      "d0 sword chest",
-			"sword L-1":        "lake chest",
-			"satchel":          "maku tree gift",
-			"ember tree seeds": "ember tree",
-			"bracelet":         "dance hall prize",
-
-			"spool swamp default spring": "start",
-			"spool swamp default autumn": "",
-		}, "south swamp", false)
-
-	// check for false negative
-	checkSoftlockWithSlots(t, canSpringSwampSoftlock, r.HardGraph,
-		map[string]string{
-			"sword L-1": "d0 sword chest",
-			"flippers":  "maku tree gift",
-
-			"spool swamp default spring": "start",
-			"spool swamp default autumn": "",
-		}, "south swamp", true)
-}
-
 func TestD5ExitSoftlocks(t *testing.T) {
 	r := NewRoute()
 
