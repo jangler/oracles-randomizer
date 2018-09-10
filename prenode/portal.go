@@ -5,7 +5,13 @@ var portalPrenodes = map[string]*Prenode{
 		And("suburbs", Or("remove bush", "flute"))),
 
 	"swamp portal": Or("beach",
-		And("south swamp", "bracelet")),
+		And("south swamp", "bracelet", Or("flute",
+			"spool swamp default summer", "spool swamp default autumn",
+			And("spool stump", "summer", "autumn"),
+			And(Or("spool swamp default winter", And("spool stump", "winter")),
+				"shovel"),
+			And(Or("spool swamp default spring", And("spool stump", "spring")),
+				"remove flower")))),
 
 	// jump added since it's effectively useless otherwise
 	"mountain portal": And("jump", Or("mount cucco", "hide and seek")),
