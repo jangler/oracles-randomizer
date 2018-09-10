@@ -519,7 +519,7 @@ func countSteps(r *Route) int {
 	count := 0
 	for node := range reached {
 		if node.IsStep && canAffordSlot(r, node) &&
-			node.Name != "village shop 2" {
+			node.Name != "village shop 1" && node.Name != "village shop 2" {
 			count++
 		}
 	}
