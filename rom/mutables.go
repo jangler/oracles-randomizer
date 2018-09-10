@@ -494,7 +494,7 @@ var constMutables = map[string]Mutable{
 	"diving spot interaction redirect": MutableString(Addr{0x11, 0x69cc},
 		"\xf2\x1f\x0d\x68", "\xf3\xc4\x7e\xff"),
 	"diving spot interactions": MutableString(Addr{0x11, 0x7ec4}, "\x11",
-		"\xf2\x1f\x0d\x68\x68\x3e\x31\x18\x68\x22\x0a\x68\x68\xfe"),
+		"\xf2\x1f\x0d\x68\x68\x3e\x31\x18\x68\x22\x0a\x64\x68\xfe"),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
