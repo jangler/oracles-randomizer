@@ -7,31 +7,6 @@ import (
 	"github.com/jangler/oos-randomizer/prenode"
 )
 
-// make sure the route's "normal" and "hard" graphs are behaving appropriately
-func TestNormalVsHard(t *testing.T) {
-	r := NewRoute()
-
-	// references var in safety_test.go
-	for child, parent := range testData2 {
-		if parent == "" {
-			r.ClearParents(child)
-		} else {
-			r.AddParent(child, parent)
-		}
-	}
-
-	// make sure at least root nodes are identical
-	for name := range testData2 {
-		node := r.Graph[name]
-		for i, parent := range node.Parents {
-			if r.HardGraph[name].Parents[i].Name != parent.Name {
-				t.Errorf("parent mismatch: %s (normal) vs %s (hard)",
-					parent.Name, r.HardGraph[name].Parents[i].Name)
-			}
-		}
-	}
-}
-
 // check that graph logic is working as expected
 func TestGraph(t *testing.T) {
 	r := NewRoute()
@@ -76,6 +51,18 @@ func TestGraph(t *testing.T) {
 			"sword L-1": "d0 sword chest",
 			"bracelet":  "maku tree gift",
 		}, "floodgate key spot", false)
+
+	checkReach(t, g,
+		map[string]string{
+			"bracelet":         "d0 sword chest",
+			"spring":           "village SW chest",
+			"flippers":         "maku tree gift",
+			"satchel 1":        "platform chest",
+			"ember tree seeds": "ember tree",
+
+			"woods of winter default summer": "",
+			"woods of winter default winter": "start",
+		}, "shovel gift", false)
 }
 
 func BenchmarkGraphExplore(b *testing.B) {
@@ -85,7 +72,7 @@ func BenchmarkGraphExplore(b *testing.B) {
 
 	// explore all items from the d0 sword chest
 	for name := range prenode.ExtraItems() {
-		r.Graph.Explore(make(map[*graph.Node]bool), r.Graph[name])
+		r.Graph.Explore(make(map[*graph.Node]bool), false, r.Graph[name])
 	}
 }
 
@@ -117,9 +104,9 @@ func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
 			}
 		}
 	}()
-	g.ExploreFromStart()
+	g.ExploreFromStart(false)
 
-	if (g[target].GetMark(g[target], nil) == graph.MarkTrue) != expect {
+	if (g[target].GetMark(g[target], false) == graph.MarkTrue) != expect {
 		if expect {
 			t.Errorf("expected to reach %s, but could not", target)
 		} else {

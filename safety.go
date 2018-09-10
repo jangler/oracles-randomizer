@@ -23,7 +23,7 @@ var softlockChecks = [](func(graph.Graph) error){
 
 // check for known softlock conditions
 func canSoftlock(g graph.Graph) error {
-	g.ExploreFromStart()
+	g.ExploreFromStart(true)
 	for _, check := range softlockChecks {
 		if err := check(g); err != nil {
 			return err
@@ -37,7 +37,7 @@ func canSoftlock(g graph.Graph) error {
 func canD7ExitSoftlock(g graph.Graph) error {
 	// no snow piles == no softlock
 	winter := g["western coast default winter"]
-	if winter.GetMark(winter, nil) == graph.MarkFalse {
+	if winter.GetMark(winter, true) == graph.MarkFalse {
 		return nil
 	}
 
@@ -53,7 +53,7 @@ func canD7ExitSoftlock(g graph.Graph) error {
 func canD2ExitSoftlock(g graph.Graph) error {
 	// no snow piles == no softlock
 	winter := g["eastern suburbs default winter"]
-	if winter.GetMark(winter, nil) == graph.MarkFalse {
+	if winter.GetMark(winter, true) == graph.MarkFalse {
 		return nil
 	}
 
@@ -69,7 +69,7 @@ func canD2ExitSoftlock(g graph.Graph) error {
 // exiting d5 without bracelet if it's not default autumn means you're stuck.
 func canD5ExitBraceletSoftlock(g graph.Graph) error {
 	autumn := g["north horon default autumn"]
-	if autumn.GetMark(autumn, nil) == graph.MarkTrue {
+	if autumn.GetMark(autumn, true) == graph.MarkTrue {
 		return nil
 	}
 
@@ -83,17 +83,17 @@ func canD5ExitBraceletSoftlock(g graph.Graph) error {
 // one, given the current state of the graph.
 func canReachWithoutPrereq(g graph.Graph, goal, prereq *graph.Node) bool {
 	// check whether the goal node has been reached
-	if goal.GetMark(goal, nil) != graph.MarkTrue {
+	if goal.GetMark(goal, true) != graph.MarkTrue {
 		return false
 	}
 
 	// check whether goal node is reachable if prereq is not
 	parents := prereq.Parents
 	prereq.ClearParents()
-	defer g.ExploreFromStart()
+	defer g.ExploreFromStart(true)
 	defer prereq.AddParents(parents...)
 	g.ClearMarks()
-	if goal.GetMark(goal, nil) == graph.MarkTrue {
+	if goal.GetMark(goal, true) == graph.MarkTrue {
 		return true
 	}
 	return false

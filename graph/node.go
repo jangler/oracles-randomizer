@@ -1,11 +1,5 @@
 package graph
 
-import (
-	"container/list"
-	"fmt"
-	"strings"
-)
-
 // this file defines operations on a dependency graph for the game, but does
 // not itself define the graph.
 
@@ -41,22 +35,25 @@ const (
 type Node struct {
 	Name     string
 	Type     NodeType
-	GetMark  func(*Node, *list.List) Mark
+	GetMark  func(*Node, bool) Mark
 	IsStep   bool
 	IsSlot   bool
+	IsHard   bool
 	Mark     Mark
 	Parents  []*Node
 	Children []*Node
 }
 
 // NewNode returns a new unconnected graph node, not yet part of any graph.
-func NewNode(name string, nodeType NodeType, isStep bool, isSlot bool) *Node {
+func NewNode(name string, nodeType NodeType,
+	isStep, isSlot, isHard bool) *Node {
 	// create node
 	n := Node{
 		Name:     name,
 		Type:     nodeType,
 		IsStep:   isStep,
 		IsSlot:   isSlot,
+		IsHard:   isHard,
 		Mark:     MarkNone,
 		Parents:  make([]*Node, 0),
 		Children: make([]*Node, 0),
@@ -77,54 +74,44 @@ func NewNode(name string, nodeType NodeType, isStep bool, isSlot bool) *Node {
 	return &n
 }
 
-func getAndMark(n *Node, path *list.List) Mark {
+func getAndMark(n *Node, hard bool) Mark {
 	if n.Mark == MarkNone {
-		var parentNames []string
-		if path != nil {
-			parentNames = make([]string, len(n.Parents))
-		}
-
 		n.Mark = MarkPending
-		for i, parent := range n.Parents {
-			switch parent.GetMark(parent, path) {
+		for _, parent := range n.Parents {
+			if !hard && parent.IsHard {
+				continue
+			}
+
+			switch parent.GetMark(parent, hard) {
 			case MarkPending, MarkFalse:
 				n.Mark = MarkNone
 				return MarkFalse
 			}
-			if parentNames != nil {
-				parentNames[i] = parent.Name
-			}
 		}
 		if n.Mark == MarkPending {
 			n.Mark = MarkTrue
-		}
-
-		if path != nil && n.Mark == MarkTrue {
-			if len(parentNames) > 0 {
-				path.PushBack(n.Name + " <- " + strings.Join(parentNames, ", "))
-			} else {
-				path.PushBack(n.Name)
-			}
 		}
 	}
 
 	return n.Mark
 }
 
-func getOrMark(n *Node, path *list.List) Mark {
+func getOrMark(n *Node, hard bool) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
 		allPending := true
-		var parentName string
 
 		// prioritize already satisfied nodes
 	OrPeekLoop:
 		for _, parent := range n.Parents {
+			if !hard && parent.IsHard {
+				continue
+			}
+
 			switch parent.Mark {
 			case MarkTrue:
 				n.Mark = MarkTrue
 				allPending = false
-				parentName = parent.Name
 				break OrPeekLoop
 			case MarkFalse:
 				allPending = false
@@ -135,11 +122,14 @@ func getOrMark(n *Node, path *list.List) Mark {
 		if n.Mark == MarkPending {
 		OrGetLoop:
 			for _, parent := range n.Parents {
-				switch parent.GetMark(parent, path) {
+				if !hard && parent.IsHard {
+					continue
+				}
+
+				switch parent.GetMark(parent, hard) {
 				case MarkTrue:
 					n.Mark = MarkTrue
 					allPending = false
-					parentName = parent.Name
 					break OrGetLoop
 				case MarkFalse:
 					allPending = false
@@ -150,10 +140,6 @@ func getOrMark(n *Node, path *list.List) Mark {
 		if (allPending && len(n.Parents) > 0) || n.Mark == MarkPending {
 			n.Mark = MarkNone
 			return MarkFalse
-		}
-
-		if path != nil && n.Mark == MarkTrue {
-			path.PushBack(fmt.Sprintf("%s <- %s", n.Name, parentName))
 		}
 	}
 

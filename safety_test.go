@@ -84,7 +84,7 @@ var testData3 = map[string]string{
 
 func TestD7ExitLockChest(t *testing.T) {
 	r := NewRoute()
-	g := r.HardGraph
+	g := r.Graph
 
 	checkSoftlockWithSlots(t, canD7ExitSoftlock, g,
 		map[string]string{
@@ -100,7 +100,7 @@ func TestD7ExitLockChest(t *testing.T) {
 
 func TestD2ExitCheck(t *testing.T) {
 	r := NewRoute()
-	g := r.HardGraph
+	g := r.Graph
 
 	// check for false positive
 	checkSoftlockWithSlots(t, canD2ExitSoftlock, g,
@@ -131,7 +131,7 @@ func TestD5ExitSoftlocks(t *testing.T) {
 	r := NewRoute()
 
 	// check for bracelet false positive
-	checkSoftlockWithSlots(t, canD5ExitBraceletSoftlock, r.HardGraph,
+	checkSoftlockWithSlots(t, canD5ExitBraceletSoftlock, r.Graph,
 		map[string]string{
 			"autumn":        "d0 sword chest",
 			"bracelet":      "maku tree gift",
@@ -140,7 +140,7 @@ func TestD5ExitSoftlocks(t *testing.T) {
 		}, "enter d5", false)
 
 	// check for bracelet false negative
-	checkSoftlockWithSlots(t, canD5ExitBraceletSoftlock, r.HardGraph,
+	checkSoftlockWithSlots(t, canD5ExitBraceletSoftlock, r.Graph,
 		map[string]string{
 			"winter":        "d0 sword chest",
 			"feather L-2":   "maku tree gift",
@@ -159,7 +159,7 @@ func TestD5ExitSoftlocks(t *testing.T) {
 func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 	// make a list of base item nodes to use for testing
 	r := NewRoute()
-	g := r.HardGraph
+	g := r.Graph
 	baseItems := make([]*graph.Node, 0, len(prenode.ExtraItems()))
 	for name := range prenode.ExtraItems() {
 		baseItems = append(baseItems, g[name])
@@ -169,7 +169,7 @@ func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 		// create a fresh graph and shuffle the item list
 		b.StopTimer()
 		r = NewRoute()
-		g = r.HardGraph
+		g = r.Graph
 		reached := map[*graph.Node]bool{g["start"]: true}
 
 		rand.Shuffle(len(baseItems), func(i, j int) {
@@ -181,7 +181,7 @@ func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 		// various stages in the exploration
 		for _, itemNode := range baseItems {
 			itemNode.AddParents(g["d0 sword chest"])
-			reached = g.Explore(reached, itemNode)
+			reached = g.Explore(reached, true, itemNode)
 
 			// run 10 times to get a better proportion of check runtime vs
 			// explore runtime. just ignoring the explore runtime results in
@@ -225,11 +225,11 @@ func checkSoftlockWithSlots(t *testing.T, check func(g graph.Graph) error,
 			}
 		}
 	}()
-	g.ExploreFromStart()
+	g.ExploreFromStart(true)
 
 	softlock := check(g)
 
-	if g[target].GetMark(g[target], nil) != graph.MarkTrue {
+	if g[target].GetMark(g[target], true) != graph.MarkTrue {
 		t.Errorf("test invalid: cannot reach %s", target)
 	} else if !expectError && softlock != nil {
 		t.Errorf("false positive %s softlock", target)

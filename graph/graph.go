@@ -53,7 +53,8 @@ func (g Graph) ClearMarks() {
 // start, adding the nodes in add. This is a destructive operation; at the end,
 // the graph will have all nodes in the return set set to MarkTrue and the rest
 // set to MarkNone.
-func (g Graph) Explore(start map[*Node]bool, add ...*Node) map[*Node]bool {
+func (g Graph) Explore(start map[*Node]bool, hard bool,
+	add ...*Node) map[*Node]bool {
 	// copy set, and mark nodes accordingly
 	g.ClearMarks()
 	reached := make(map[*Node]bool, len(start))
@@ -86,7 +87,7 @@ func (g Graph) Explore(start map[*Node]bool, add ...*Node) map[*Node]bool {
 		for node := range frontier {
 			// if we can reach the node, add it to the reached set and add its
 			// (previously unchecked) children to the frontier
-			if node.GetMark(node, nil) == MarkTrue {
+			if node.GetMark(node, hard) == MarkTrue {
 				reached[node] = true
 				node.Mark = MarkTrue
 				for _, child := range node.Children {
@@ -107,8 +108,8 @@ func (g Graph) Explore(start map[*Node]bool, add ...*Node) map[*Node]bool {
 
 // ExploreFromStart calls explore without specific start and add nodes, instead
 // exploring the entirety of the existing graph.
-func (g Graph) ExploreFromStart() map[*Node]bool {
-	return g.Explore(nil, g["start"])
+func (g Graph) ExploreFromStart(hard bool) map[*Node]bool {
+	return g.Explore(nil, hard, g["start"])
 }
 
 // Reduce returns a version of the graph that is 1. only relevant to the given
@@ -183,7 +184,8 @@ func copyGraph(old Graph) Graph {
 
 	// add nodes
 	for name, node := range old {
-		new[name] = NewNode(node.Name, node.Type, node.IsStep, node.IsSlot)
+		new[name] = NewNode(node.Name, node.Type, node.IsStep, node.IsSlot,
+			node.IsHard)
 	}
 
 	// add relationships

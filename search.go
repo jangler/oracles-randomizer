@@ -72,7 +72,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 				item.Parents = append(item.Parents, slot)
 
-				if canSoftlock(r.HardGraph) != nil {
+				if canSoftlock(r.Graph) != nil {
 					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
 					newCount = countFunc(r)
@@ -115,7 +115,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			if itemFitsInSlot(item, slot, nil) {
 				item.Parents = append(item.Parents, slot)
 
-				if canSoftlock(r.HardGraph) != nil {
+				if canSoftlock(r.Graph) != nil {
 					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
 					usedSlots.PushBack(slot)
@@ -226,10 +226,10 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 	fillUnused bool) *list.List {
 	a := make([]*graph.Node, 0)
 	r.Graph.ClearMarks()
-	r.HardGraph.ClearMarks()
 	for e := pool.Front(); e != nil; e = e.Next() {
 		node := e.Value.(*graph.Node)
-		if node.GetMark(node, nil) == graph.MarkTrue && canAffordSlot(r, node) {
+		if node.GetMark(node, false) == graph.MarkTrue &&
+			canAffordSlot(r, node) {
 			a = append(a, node)
 		}
 	}
@@ -432,7 +432,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			item.Parents = item.Parents[:len(item.Parents)-1]
 
 			testCount := countFunc(r)
-			if testCount > initialCount && canSoftlock(r.HardGraph) == nil {
+			if testCount > initialCount && canSoftlock(r.Graph) == nil {
 				// remove the item and cycle again if it can be omitted
 				retry = true
 				usedItems.Remove(e)
@@ -486,7 +486,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			downgrade.Parents = append(downgrade.Parents, parent)
 
 			testCount := countFunc(r)
-			if testCount >= targetCount && canSoftlock(r.HardGraph) == nil {
+			if testCount >= targetCount && canSoftlock(r.Graph) == nil {
 				// downgrade item and cycle again
 				retry = true
 				usedItems.InsertAfter(downgrade, e)
@@ -511,7 +511,7 @@ func canAffordSlot(r *Route, slot *graph.Node) bool {
 	balance += r.Costs
 	for _, node := range r.Graph {
 		value := prenode.Rupees[node.Name]
-		if value > 0 && node.GetMark(node, nil) == graph.MarkTrue {
+		if value > 0 && node.GetMark(node, false) == graph.MarkTrue {
 			balance += value
 		}
 	}

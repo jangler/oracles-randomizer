@@ -29,18 +29,18 @@ func addDefaultItemNodes(nodes map[string]*prenode.Prenode) {
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph, HardGraph graph.Graph
-	Slots            map[string]*graph.Node
-	TurnsReached     map[*graph.Node]int
-	DungeonItems     []int
-	Costs            int
+	Graph        graph.Graph
+	Slots        map[string]*graph.Node
+	TurnsReached map[*graph.Node]int
+	DungeonItems []int
+	Costs        int
 }
 
 // NewRoute returns an initialized route with all prenodes, and those prenodes
 // with the names in start functioning as givens (always satisfied). If no
 // names are given, only the normal start node functions as a given.
 func NewRoute(start ...string) *Route {
-	g, hg := graph.New(), graph.New()
+	g := graph.New()
 
 	totalPrenodes := prenode.GetAll()
 	addDefaultItemNodes(totalPrenodes)
@@ -50,8 +50,8 @@ func NewRoute(start ...string) *Route {
 		totalPrenodes[key] = prenode.And()
 	}
 
-	addNodes(totalPrenodes, g, hg)
-	addNodeParents(totalPrenodes, g, hg)
+	addNodes(totalPrenodes, g)
+	addNodeParents(totalPrenodes, g)
 
 	openSlots := make(map[string]*graph.Node, 0)
 	for name, pn := range totalPrenodes {
@@ -63,7 +63,6 @@ func NewRoute(start ...string) *Route {
 
 	return &Route{
 		Graph:        g,
-		HardGraph:    hg,
 		Slots:        openSlots,
 		TurnsReached: make(map[*graph.Node]int),
 		DungeonItems: make([]int, 9),
@@ -72,16 +71,14 @@ func NewRoute(start ...string) *Route {
 
 func (r *Route) AddParent(child, parent string) {
 	r.Graph[child].AddParents(r.Graph[parent])
-	r.HardGraph[child].AddParents(r.HardGraph[parent])
 }
 
 func (r *Route) ClearParents(node string) {
 	r.Graph[node].ClearParents()
-	r.HardGraph[node].ClearParents()
 }
 
 // if hard is false, "hard" nodes are omitted
-func addNodes(prenodes map[string]*prenode.Prenode, g, hg graph.Graph) {
+func addNodes(prenodes map[string]*prenode.Prenode, g graph.Graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
 		case prenode.AndType, prenode.AndSlotType, prenode.AndStepType,
@@ -89,12 +86,10 @@ func addNodes(prenodes map[string]*prenode.Prenode, g, hg graph.Graph) {
 			isStep := pn.Type == prenode.AndSlotType ||
 				pn.Type == prenode.AndStepType
 			isSlot := pn.Type == prenode.AndSlotType
+			isHard := pn.Type == prenode.HardAndType
 
-			node := graph.NewNode(key, graph.AndType, isStep, isSlot)
-			hg.AddNodes(node)
-			if pn.Type != prenode.HardAndType {
-				g.AddNodes(node)
-			}
+			node := graph.NewNode(key, graph.AndType, isStep, isSlot, isHard)
+			g.AddNodes(node)
 		case prenode.OrType, prenode.OrSlotType, prenode.OrStepType,
 			prenode.RootType, prenode.HardOrType:
 			isStep := pn.Type == prenode.OrSlotType ||
@@ -104,12 +99,10 @@ func addNodes(prenodes map[string]*prenode.Prenode, g, hg graph.Graph) {
 			if pn.Type == prenode.RootType {
 				nodeType = graph.RootType
 			}
+			isHard := pn.Type == prenode.HardOrType
 
-			node := graph.NewNode(key, nodeType, isStep, isSlot)
-			hg.AddNodes(node)
-			if pn.Type != prenode.HardOrType {
-				g.AddNodes(node)
-			}
+			node := graph.NewNode(key, nodeType, isStep, isSlot, isHard)
+			g.AddNodes(node)
 		default:
 			panic("unknown prenode type for " + key)
 		}
@@ -192,7 +185,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 
 		// slot progression items
 		done := r.Graph["done"]
-		for done.GetMark(done, nil) != graph.MarkTrue {
+		for done.GetMark(done, false) != graph.MarkTrue {
 			if verbose {
 				logChan <- fmt.Sprintf("searching; have %d more slots",
 					slotList.Len())
@@ -226,7 +219,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		}
 
 		// if goal was reached, fill unused slots
-		if done.GetMark(done, nil) == graph.MarkTrue {
+		if done.GetMark(done, false) == graph.MarkTrue {
 			for slotList.Len() > 0 {
 				if verbose {
 					logChan <- fmt.Sprintf("done; filling %d more slots",
@@ -269,7 +262,6 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 			e.Value.(*graph.Node).ClearParents()
 		}
 		r.Graph.ClearMarks()
-		r.HardGraph.ClearMarks()
 		usedItems, usedSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
@@ -514,8 +506,7 @@ func announceSuccessDetails(r *Route, usedItems, usedSlots *list.List,
 // return the number of "step" nodes in the given set
 func countSteps(r *Route) int {
 	r.Graph.ClearMarks()
-	r.HardGraph.ClearMarks()
-	reached := r.Graph.ExploreFromStart()
+	reached := r.Graph.ExploreFromStart(false)
 	count := 0
 	for node := range reached {
 		if node.IsStep && node.Name != "village shop 1" &&

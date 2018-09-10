@@ -84,6 +84,7 @@ these are en/us:
 	- 3:4d68 = state1 (fading in)
 - 5:4552 = companionTryToMount
 - 5:5471 = linkSetState, a is state, d is object low byte
+- 6:4713 = tryToBreakTile body
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
