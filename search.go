@@ -459,14 +459,10 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			var downgrade *graph.Node
 
 			// don't use a slingshot where a satchel will do
-			if strings.HasPrefix(item.Name, "slingshot") {
+			if strings.HasPrefix(item.Name, "slingshot") &&
+				len(r.Graph["satchel 1"].Parents) == 0 &&
+				len(r.Graph["satchel 2"].Parents) == 0 {
 				downgrade = r.Graph["satchel 1"]
-				if len(downgrade.Parents) > 0 {
-					downgrade = r.Graph["satchel 2"]
-				}
-				if len(downgrade.Parents) > 0 {
-					downgrade = nil
-				}
 			}
 
 			// and don't use a L-2 item where a L-1 item will do
