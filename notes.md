@@ -42,7 +42,6 @@ others that might be good to know:
 	- $24fd = maybe not present in ages? copies some object data to other parts
 	  of itself, like… direction?
 - $239a = interactionIncState
-- $3b22 = updateInteraction
 
 ## functions / code
 
@@ -67,12 +66,19 @@ these are en/us:
 - 0:1432 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:184b = showText, bc is index
+	- 0:1936 = read byte from text table
 - 0:1956 = getThisRoomFlags
+- 0:2215 = objectCopyPositionWithOffset
+- 0:2727 = objectCreateExclamationMark
+- 0:24d2 = interactionActuallyRunScript
 - 0:24fe = interactionSetScript, hl is address in bank b
+- 0:250c = runScript, d is object low byte
+- 0:2542 = interactionSaveScriptAddress
 - 0:30c7, 0:30cd = checkGlobalFlag / setGlobalFlag, a is bit starting at c6ca
 - 0:393e = loadSmallRoomLayout
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 - 0:3ac6 = getFreeInteractionSlot
+- 0:3b36 = updateInteraction, d is object low byte
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
 - 5:4552 = companionTryToMount
@@ -96,6 +102,7 @@ these are en/us:
 - a0 = wait for bit of cfc0 is set
 - a7 = ? takes two bytes of params ?
 - b0 = jump if room flag, byte = flag, word = addr
+- b3 = jump if c6xx set, byte = value to bitwise and with word addr
 - b5 = jump if global flag, byte = flag, word = addr
 - b6 = set global flag, byte = flag
 - b8 = disable objects
@@ -143,6 +150,9 @@ these are en/us:
 - ccab = allow screen transitions only if zero in treasure H&S
 - ccb6 = active tile? rod of seasons only works when this == 8
 - ccea = disable interactions (?)
+
+- cd00 = 0 while screen transitioning, 1 when transition done (useful for wait
+  command in scripts)
 
 - dx58-dx59 = script address
 

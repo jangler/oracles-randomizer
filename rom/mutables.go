@@ -320,12 +320,6 @@ var constMutables = map[string]Mutable{
 		"\xfa\x0b\xd0\xfe\x3c\xd8\xfe\x60\xd0",
 		"\xfe\x88\xd0\xfa\x0b\xd0\xfe\x3c\xd8"),
 
-	// remove one-way diving spot on the south end of sunken city to prevent
-	// softlock on moblin road without winter. this requires moving
-	// interactions around.
-	"remove diving spot": MutableString(Addr{0x11, 0x69cd},
-		"\x1f\x0d\x68\x68\x3e\x31\x18\x68", "\x3e\x31\x18\x68\xff\xff\xff\xff"),
-
 	// if you go up the stairs into the room in d8 with the magnet ball and
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
@@ -344,32 +338,11 @@ var constMutables = map[string]Mutable{
 	// grow seeds in all seasons
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
 
-	// block the sunken city / eastern suburbs cliff with a spring flower, and
-	// place a stump at the top so that you can still travel down the cliff if
-	// you have spring.
-	"block cliff 1": MutableStrings([]Addr{{0x21, 0x6c2b}, {0x22, 0x6872},
-		{0x23, 0x668b}, {0x24, 0x636b}}, "\x5d\x5e", "\x6d\x6e"),
-	"block cliff 2": MutableStrings([]Addr{{0x21, 0x6c33}, {0x22, 0x687a},
-		{0x23, 0x6693}, {0x24, 0x6373}},
-		"\x47\x12\x6d\x11\x5f", "\x1f\x20\x21\x04\x04"),
-	"block cliff spring 3": MutableString(Addr{0x21, 0x6c3d},
-		"\x52\x12\x12\x5d\x11", "\x22\x23\x24\x04\xd8"),
-	"block cliff non-spring 3": MutableStrings([]Addr{{0x22, 0x6884},
-		{0x23, 0x669d}, {0x24, 0x637d}},
-		"\x52\x12\x12\x5d\x11", "\x22\x23\x24\x04\x92"),
-	"block cliff 4": MutableStrings([]Addr{{0x21, 0x6c47}, {0x22, 0x688e},
-		{0x23, 0x66a7}, {0x24, 0x6387}},
-		"\x62\x40\x40\x58\xce", "\x40\x40\x40\x58\xcf"),
-	"block cliff 5": MutableStrings([]Addr{{0x21, 0x6c51}, {0x22, 0x6898},
-		{0x23, 0x66b1}, {0x24, 0x6391}}, "\x50", "\x54"),
-
-	// block the waterfalls and jump down from mt cucco to sunken city except
-	// in summer, since it's one-way otherwise.
+	// block the waterfalls from mt cucco to sunken city, so that there only
+	// needs to be one warning interaction at the vines.
 	"block waterfalls": MutableStrings([]Addr{{0x21, 0x5bd1}, {0x21, 0x5c17},
-		{0x23, 0x5645}, {0x23, 0x568b}, {0x24, 0x54fa}, {0x24, 0x5540}},
-		"\x36\xff\x35", "\x40\x40\x40"),
-	"block empty vines": MutableStrings([]Addr{{0x21, 0x5c12}, {0x23, 0x5686},
-		{0x24, 0x553b}}, "\x58\xcd\x57", "\x40\x40\x40"),
+		{0x22, 0x58a4}, {0x22, 0x58ea}, {0x23, 0x5645}, {0x23, 0x568b},
+		{0x24, 0x54fa}, {0x24, 0x5540}}, "\x36\xff\x35", "\x40\x40\x40"),
 
 	// extend the railing on moblin keep to prevent a one-way jump down to
 	// sunken city (player needs feather to get back to natzu river). one
@@ -478,6 +451,50 @@ var constMutables = map[string]Mutable{
 		"\x38\x01", "\x18\x05"),
 	// for some reason the param of iron shield is incremented before giving it
 	"keep iron shield param": MutableByte(Addr{0x09, 0x42de}, 0x0c, 0x00),
+
+	// overwrite unused maku gate interaction with warning interaction
+	"warning script pointer": MutableWord(Addr{0x08, 0x5663}, 0x874e, 0x6d7f),
+	"warning script": MutableString(Addr{0x0b, 0x7f6d}, "\x0b",
+		// wait for link to hit trigger, then call func, then show text
+		"\xd0\xe0\x47\x79\xa0\xbd\xd7\x3c\x98\x26\x00\xbe\x00"),
+	// this communicates with the script by setting bit zero of $cfc0 if the
+	// warning needs to be displayed (based on room, season, etc), and also
+	// displays the exclamation mark if so.
+	"warning func": MutableString(Addr{0x15, 0x7947}, "\x15",
+		"\xc5\xd5\xcd\x4f\x79\xd1\xc1\xc9"+ // wrap function in push/pops
+			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load room, season, rod
+			"\xfe\x7c\x28\x09\xfe\x6e\x28\x0f\xfe\x3d\x28\x17\xc9"+ // jump by room
+			"\x78\xfe\x00\xc8\x79\xe6\x01\xc0\x18\x16"+ // flower
+			"\x78\xfe\x03\xc8\x79\xe6\x09\xfe\x09\xc8\x18\x0a"+ // diving spot
+			"\x78\xfe\x01\xc8\x79\xe6\x02\xc0\x18\x00"+ // waterfall
+			"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
+			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
+			"\x3e\x50\xcd\x74\x0c"+ // play sound
+			"\x21\xc0\xcf\xcb\xc6\xc9"), // set $cfc0 bit and ret
+	// overwrite unused rosa hide and seek text with warning text
+	"warning text": MutableString(Addr{0x1f, 0x4533}, "\x0c\x21",
+		"\x0c\x00\x03\xe8\x04\x98\x02\x76"+ // You know...
+			"\x02\x3b\x67\x6f\x20\x05\x73\x01"+ // If you go down
+			"\x74\x68\x65\x72\x65\x2c\x04\x2d\x20\x77\x6f\x6e\x27\x74\x01"+ // there, you won't
+			"\x62\x65\x20\x02\xa4\x05\x0f\x01"+ // be able to get
+			"\x04\x9f\x20\x75\x70\x03\xa4"+ // back up.
+			"\x02\x95\x73\x61\x79\x20\x49\x01"+ // Don't say I
+			"\x64\x69\x64\x04\x6f\x77\x61\x72\x6e\x03\x1b\x00"), // didn't warn you!
+	// use the interaction on the mount cucco waterfall/vine screen
+	"waterfall cliff interaction redirect": MutableString(Addr{0x11, 0x6c10},
+		"\xf2\x1f\x08\x68", "\xf3\xb0\x7e\xff"),
+	"waterfall cliff interactions": MutableString(Addr{0x11, 0x7eb0}, "\x11",
+		"\xf2\x1f\x08\x68\x68\x22\x0a\x20\x18\xfe"),
+	// use it on the moblin keep / woods of winter cliff
+	"flower cliff interaction redirect": MutableString(Addr{0x11, 0x6568},
+		"\xf2\x9c\x00\x58", "\xf3\xba\x7e\xff"),
+	"flower cliff interactions": MutableString(Addr{0x11, 0x7eba}, "\x11",
+		"\xf2\x9c\x00\x58\x58\x22\x0a\x30\x58\xfe"),
+	// use it at the sunken city diving spot
+	"diving spot interaction redirect": MutableString(Addr{0x11, 0x69cc},
+		"\xf2\x1f\x0d\x68", "\xf3\xc4\x7e\xff"),
+	"diving spot interactions": MutableString(Addr{0x11, 0x7ec4}, "\x11",
+		"\xf2\x1f\x0d\x68\x68\x3e\x31\x18\x68\x22\x0a\x68\x68\xfe"),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
