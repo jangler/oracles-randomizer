@@ -101,6 +101,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	// omit items not necessary for progression, then slot again from the start
 	cutExtraItems(r, usedItems, initialCount, countFunc, fillUnused)
 	usedSlots.Init()
+	usedTurnZeroSlot := false
 	for ei := usedItems.Front(); ei != nil; ei = ei.Next() {
 		item := ei.Value.(*graph.Node)
 		item.Parents = item.Parents[:len(item.Parents)-1]
@@ -118,10 +119,23 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
 					usedSlots.PushBack(slot)
+					if r.TurnsReached[slot] == 1 {
+						usedTurnZeroSlot = true
+					}
 					break
 				}
 			}
 		}
+	}
+
+	// retry if none of the slotted items were placed in new slots (because
+	// they couldn't fit). shops and trees are exempt from this check.
+	if !fillUnused && !usedTurnZeroSlot {
+		for usedItems.Len() > 0 {
+			item := usedItems.Remove(usedItems.Front()).(*graph.Node)
+			item.Parents = item.Parents[:len(item.Parents)-1]
+		}
+		return list.New(), list.New()
 	}
 
 	// remove the used nodes from the persistent pools
