@@ -251,8 +251,8 @@ var constMutables = map[string]Mutable{
 	// set room flags so that rosa never appears in the overworld, and her
 	// portal is activated by default.
 	"call set portal room flag": MutableString(Addr{0x04, 0x45f5},
-		"\xfa\x64\xcc", "\xcd\x51\x7e"),
-	"set portal room flag func": MutableString(Addr{0x04, 0x7e51}, "\x04",
+		"\xfa\x64\xcc", "\xcd\x5d\x7e"),
+	"set portal room flag func": MutableString(Addr{0x04, 0x7e5d}, "\x04",
 		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\x2e\xcb\x7e\xf6\xc0\x77"+ // set flags
 			"\xe1\xfa\x64\xcc\xc9"), // do what the address normally does
 
@@ -373,11 +373,6 @@ var constMutables = map[string]Mutable{
 		[]Addr{{0x22, 0x4b83}, {0x23, 0x4973}, {0x24, 0x45d0}},
 		"\x92", "\xc4"),
 
-	// remove a flower on the way to the spring banana tree, since the player
-	// could remove it with moosh and then be stuck behind it. it doesn't lock
-	// any items anyway, since only sword can cut the item from the tree.
-	"remove mt. cucco flower": MutableByte(Addr{0x21, 0x58fd}, 0xd8, 0x04),
-
 	// replace the stairs outside the portal in eyeglass lake in summer with a
 	// railing, because if the player jumps off those stairs in summer they
 	// fall into the noble sword room.
@@ -422,6 +417,8 @@ var constMutables = map[string]Mutable{
 			"\x05\xb3\x8e\x58\x88\x00"+ // cave outside d2
 			"\x04\xe1\x86\x48\x68\x00"+ // quicksand ring cave
 			"\x05\xc9\x28\x38\x58\x00"+ // goron mountain main
+			"\x05\xba\x2f\x18\x68\x00"+ // spring banana cave
+			"\x05\xbb\x2f\x18\x68\x00"+ // joy ring cave
 			"\xff"), // end of table
 
 	// moosh won't spawn in the mountains if you have the wrong number of
