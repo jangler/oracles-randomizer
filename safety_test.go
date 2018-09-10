@@ -197,10 +197,6 @@ func BenchmarkCanSoftlock(b *testing.B) {
 	benchGraphCheck(b, canSoftlock)
 }
 
-func BenchmarkCanEmberSeedSoftlock(b *testing.B) {
-	benchGraphCheck(b, canEmberSeedSoftlock)
-}
-
 // the keys in the "parents" map MUST be root nodes. this function errors if
 // the target node cannot be reached (meaning the test setup is incorrect), or
 // if the target node can be reached with the children having the assigned

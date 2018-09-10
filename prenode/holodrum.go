@@ -45,11 +45,20 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			Or("cross water gap", "dimitri's flute")))),
 	"fairy fountain": Or(
-		And("sunken city", Or("remove flower", "flute"),
-			Or("eastern suburbs default spring", "spring")),
+		And("sunken city",
+			Or(Hard("start"), "eastern suburbs default spring", "spring")),
 		And("suburbs", Or("eastern suburbs default winter", "winter",
 			"cross water gap", "ricky's flute", "dimitri's flute"))),
-	"shovel gift": AndSlot("fairy fountain", Or("eastern suburbs default winter", "winter"),
+	"moblin road": Or(
+		And("fairy fountain", Or("eastern suburbs default winter", "winter")),
+		And("sunken city", "flippers", Or(
+			"sunken city default spring", "spring",
+			"sunken city default summer", "summer",
+			"sunken city default autumn", "autumn"),
+			Or(Hard("start"), And(
+				Or("eastern suburbs default winter", "winter"),
+				Or("eastern suburbs default spring", "spring"))))),
+	"shovel gift": AndSlot("moblin road",
 		Or("woods of winter default winter", "winter")),
 	"central woods of winter": Or(
 		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
@@ -78,18 +87,15 @@ var holodrumPrenodes = map[string]*Prenode{
 		Or("woods of winter default autumn", And("autumn",
 			Or("ricky's flute", "woods of winter default summer",
 				And("enter d2 B", "bracelet"))))),
-	"moblin road chest": AndSlot("fairy fountain",
+	"moblin road chest": AndSlot("moblin road",
 		Or("bombs", "ricky's flute"), "remove bush",
-		Or("eastern suburbs default winter", "winter"),
 		Or("woods of winter default spring", "spring",
 			"woods of winter default summer", "summer",
 			"woods of winter default autumn", "autumn")),
 	"moblin cliff chest": AndSlot("suburbs", "bracelet",
 		Or("long jump", "magnet gloves"),
 		Or("eastern suburbs default spring", "spring")),
-	"linked dive chest": AndSlot("fairy fountain",
-		Or("eastern suburbs default winter", "winter"),
-		Or("flippers", "feather L-2")),
+	"linked dive chest": AndSlot("moblin road", Or("flippers", "feather L-2")),
 
 	// holodrum plain
 	"ghastly stump": Or(
@@ -186,12 +192,12 @@ var holodrumPrenodes = map[string]*Prenode{
 	// sunken city
 	"sunken city": Or(
 		And("mount cucco", "flippers",
-			Or("summer", "sunken city default summer")),
-		And("fairy fountain", Or("remove flower", "ricky's flute"),
-			Or("eastern suburbs default spring", "spring")),
+			Or(Hard("start"), "summer", "sunken city default summer")),
+		And("fairy fountain", Or("eastern suburbs default spring", "spring")),
 		And("scent tree", Or(
 			And("natzu prairie", "flute"),
-			And("natzu river", Or("flute", "flippers"), "jump"),
+			And("natzu river", Or(And("jump", Or("flippers", "flute")),
+				And("flute", "flippers"))),
 			And("natzu wasteland", Or("flute",
 				And("remove bush", Or("feather L-2", Hard("long jump")))))))),
 	"sunken gale tree": AndSlot("sunken city",

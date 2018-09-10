@@ -16,7 +16,6 @@ import (
 // to winter as well.
 
 var softlockChecks = [](func(graph.Graph) error){
-	canEmberSeedSoftlock,
 	canD7ExitSoftlock,
 	canD2ExitSoftlock,
 	canD5ExitBraceletSoftlock,
@@ -29,37 +28,6 @@ func canSoftlock(g graph.Graph) error {
 		if err := check(g); err != nil {
 			return err
 		}
-	}
-	return nil
-}
-
-// since ember seeds can burn down bushes, make sure that the player doesn't
-// have access to ember seeds without having a sustainable means of removing
-// bushes first. flowers are covered by canFlowerSoftlock.
-func canEmberSeedSoftlock(g graph.Graph) error {
-	emberSeeds := g["ember seeds"]
-	if emberSeeds.GetMark(emberSeeds, nil) != graph.MarkTrue {
-		return nil
-	}
-
-	// temporarily make ammoless bush-removal items unavailable
-	disabledNodes := append(g["remove bush sustainable"].Parents)
-	disabledParents := make([][]*graph.Node, len(disabledNodes))
-	for i, node := range disabledNodes {
-		disabledParents[i] = node.Parents
-		node.ClearParents()
-	}
-	defer g.ExploreFromStart()
-	defer func() {
-		for i, node := range disabledNodes {
-			node.AddParents(disabledParents[i]...)
-		}
-	}()
-
-	// see if you can still reach the exit
-	g.ClearMarks()
-	if emberSeeds.GetMark(emberSeeds, nil) == graph.MarkTrue {
-		return errors.New("ember seed softlock")
 	}
 	return nil
 }
