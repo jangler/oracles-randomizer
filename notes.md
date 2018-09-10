@@ -65,6 +65,7 @@ these are en/us:
 - 0:0c74 = playSound, a is index
 - 0:1432 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:16eb = giveTreasure (a is ID, c is param)
+- 0:1717 = checkTreasureObtained
 - 0:184b = showText, bc is index
 	- 0:1936 = read byte from text table
 - 0:1956 = getThisRoomFlags

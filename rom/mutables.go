@@ -344,16 +344,12 @@ var constMutables = map[string]Mutable{
 		{0x22, 0x58a4}, {0x22, 0x58ea}, {0x23, 0x5645}, {0x23, 0x568b},
 		{0x24, 0x54fa}, {0x24, 0x5540}}, "\x36\xff\x35", "\x40\x40\x40"),
 
-	// extend the railing on moblin keep to prevent a one-way jump down to
-	// sunken city (player needs feather to get back to natzu river). one
+	// extend the railing on moblin keep to require only one warning
+	// interaction for the potential one-way jump in dimitri's region. one
 	// address per natzu region, then one for the ruined version.
-	"moblin keep rail 1": MutableStrings([]Addr{{0x21, 0x63e6}, {0x22, 0x603e},
-		{0x23, 0x5e44}, {0x24, 0x5ba6}}, "\xb3", "\x48"),
-	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ee}, {0x22, 0x6046},
-		{0x23, 0x5e4c}, {0x24, 0x5baf}}, "\x26", "\x53"),
-	"moblin keep rail 3": MutableStrings([]Addr{{0x21, 0x63f8}, {0x22, 0x6050},
-		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x53"),
-	"moblin keep rail 4": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
+	"moblin keep rail 1": MutableStrings([]Addr{{0x21, 0x63f8}, {0x22, 0x6050},
+		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x48"),
+	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
 		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
 	// and remove the cannon near the stairs so that players without flippers
 	// can exit (if they arrived by jumping and ran out of pegasus seeds).
@@ -463,10 +459,12 @@ var constMutables = map[string]Mutable{
 	"warning func": MutableString(Addr{0x15, 0x7947}, "\x15",
 		"\xc5\xd5\xcd\x4f\x79\xd1\xc1\xc9"+ // wrap function in push/pops
 			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load room, season, rod
-			"\xfe\x7c\x28\x09\xfe\x6e\x28\x0f\xfe\x3d\x28\x17\xc9"+ // jump by room
-			"\x78\xfe\x00\xc8\x79\xe6\x01\xc0\x18\x16"+ // flower
-			"\x78\xfe\x03\xc8\x79\xe6\x09\xfe\x09\xc8\x18\x0a"+ // diving spot
-			"\x78\xfe\x01\xc8\x79\xe6\x02\xc0\x18\x00"+ // waterfall
+			"\xfe\x7c\x28\x0d\xfe\x6e\x28\x13"+ // jump by room
+			"\xfe\x3d\x28\x1b\xfe\x5c\x28\x21\xc9"+ // jump by room
+			"\x78\xfe\x00\xc8\x79\xe6\x01\xc0\x18\x24"+ // flower
+			"\x78\xfe\x03\xc8\x79\xe6\x09\xfe\x09\xc8\x18\x18"+ // diving spot
+			"\x78\xfe\x01\xc8\x79\xe6\x02\xc0\x18\x0e"+ // waterfall
+			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\x18\x00"+ // keep
 			"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
 			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
 			"\x3e\x50\xcd\x74\x0c"+ // play sound
@@ -480,21 +478,26 @@ var constMutables = map[string]Mutable{
 			"\x04\x9f\x20\x75\x70\x03\xa4"+ // back up.
 			"\x02\x95\x73\x61\x79\x20\x49\x01"+ // Don't say I
 			"\x64\x69\x64\x04\x6f\x77\x61\x72\x6e\x03\x1b\x00"), // didn't warn you!
-	// use the interaction on the mount cucco waterfall/vine screen
+	// the interaction on the mount cucco waterfall/vine screen
 	"waterfall cliff interaction redirect": MutableString(Addr{0x11, 0x6c10},
 		"\xf2\x1f\x08\x68", "\xf3\xb0\x7e\xff"),
 	"waterfall cliff interactions": MutableString(Addr{0x11, 0x7eb0}, "\x11",
 		"\xf2\x1f\x08\x68\x68\x22\x0a\x20\x18\xfe"),
-	// use it on the moblin keep / woods of winter cliff
+	// natzu / woods of winter cliff
 	"flower cliff interaction redirect": MutableString(Addr{0x11, 0x6568},
 		"\xf2\x9c\x00\x58", "\xf3\xba\x7e\xff"),
 	"flower cliff interactions": MutableString(Addr{0x11, 0x7eba}, "\x11",
 		"\xf2\x9c\x00\x58\x58\x22\x0a\x30\x58\xfe"),
-	// use it at the sunken city diving spot
+	// sunken city diving spot
 	"diving spot interaction redirect": MutableString(Addr{0x11, 0x69cc},
 		"\xf2\x1f\x0d\x68", "\xf3\xc4\x7e\xff"),
 	"diving spot interactions": MutableString(Addr{0x11, 0x7ec4}, "\x11",
 		"\xf2\x1f\x0d\x68\x68\x3e\x31\x18\x68\x22\x0a\x64\x68\xfe"),
+	// moblin keep -> sunken city
+	"moblin keep interaction redirect": MutableString(Addr{0x11, 0x650b},
+		"\xf2\xab\x00\x40", "\xf3\xd2\x7e\xff"),
+	"moblin keep interactions": MutableString(Addr{0x11, 0x7ed2}, "\x11",
+		"\xf2\xab\x00\x40\x70\x22\x0a\x58\x44\xf8\x2d\x00\x33\xfe"),
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
