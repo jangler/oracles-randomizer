@@ -248,14 +248,13 @@ var constMutables = map[string]Mutable{
 	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
 	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
 
-	// stop rosa from spawning and activate her portal by default. the first is
-	// an essence check, and the second is a function that sets the portal's
-	// room flags to do the tile replacement.
-	"rosa spawn check": MutableByte(Addr{0x09, 0x67a3}, 0x40, 0x04),
+	// set room flags so that rosa never appears in the overworld, and her
+	// portal is activated by default.
 	"call set portal room flag": MutableString(Addr{0x04, 0x45f5},
 		"\xfa\x64\xcc", "\xcd\x51\x7e"),
 	"set portal room flag func": MutableString(Addr{0x04, 0x7e51}, "\x04",
-		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\xe1\xfa\x64\xcc\xc9"),
+		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\x2e\xcb\x7e\xf6\xc0\x77"+ // set flags
+			"\xe1\xfa\x64\xcc\xc9"), // do what the address normally does
 
 	// count number of essences, not highest number essence
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7da4}, 0xea, 0x76),
