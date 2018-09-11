@@ -1,8 +1,7 @@
 package prenode
 
 var portalPrenodes = map[string]*Prenode{
-	"rosa portal": Or("temple",
-		And("suburbs", Or("remove bush", "flute"))),
+	"rosa portal": Or("temple", And("suburbs", "remove bush")),
 
 	"swamp portal": Or("beach",
 		And("south swamp", "bracelet", Or("flute",
