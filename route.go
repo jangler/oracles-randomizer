@@ -142,8 +142,8 @@ const (
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
-	logChan chan string, doneChan chan int) *RouteLists {
+func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
+	doneChan chan int) *RouteLists {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
@@ -164,6 +164,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		default:
 		}
 
+		r := NewRoute()
 		companion = rollAnimalCompanion(src, r)
 		itemList, slotList = initRouteLists(src, r, companion)
 		logChan <- fmt.Sprintf("trying seed %08x", seed)
@@ -172,19 +173,11 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 		seasons = rollSeasons(src, r)
 		placeDungeonItems(src, r, itemList, usedItems, slotList, usedSlots)
 
-		// clear "old" slots and item counts, since we're starting fresh
-		for k := range r.TurnsReached {
-			delete(r.TurnsReached, k)
-		}
-		for i := range r.DungeonItems {
-			r.DungeonItems[i] = 0
-		}
-		r.Costs = 0
-
 		startTime := time.Now()
 
 		// slot progression items
 		done := r.Graph["done"]
+		success := true
 		for done.GetMark(done, false) != graph.MarkTrue {
 			if verbose {
 				logChan <- fmt.Sprintf("searching; have %d more slots",
@@ -193,6 +186,7 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 
 			// check to make sure this step isn't taking too long
 			if time.Now().Sub(startTime) > time.Second*10 {
+				success = false
 				break
 			}
 
@@ -214,12 +208,13 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 					}
 				}
 			} else {
+				success = false
 				break
 			}
 		}
 
 		// if goal was reached, fill unused slots
-		if done.GetMark(done, false) == graph.MarkTrue {
+		if success {
 			for slotList.Len() > 0 {
 				if verbose {
 					logChan <- fmt.Sprintf("done; filling %d more slots",
@@ -257,11 +252,6 @@ func findRoute(src *rand.Rand, seed uint32, r *Route, verbose bool,
 			}
 		}
 
-		itemList, slotList = initRouteLists(src, r, companion)
-		for e := itemList.Front(); e != nil; e = e.Next() {
-			e.Value.(*graph.Node).ClearParents()
-		}
-		r.Graph.ClearMarks()
 		usedItems, usedSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration

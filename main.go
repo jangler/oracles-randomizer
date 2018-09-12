@@ -424,6 +424,5 @@ func randomize(romData []byte, seedFlag string,
 func searchAsync(src *rand.Rand, seed uint32, verbose bool,
 	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
 	// find a viable random route
-	r := NewRoute()
-	retChan <- findRoute(src, seed, r, verbose, logChan, doneChan)
+	retChan <- findRoute(src, seed, verbose, logChan, doneChan)
 }
