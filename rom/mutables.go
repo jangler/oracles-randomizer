@@ -414,29 +414,32 @@ var constMutables = map[string]Mutable{
 	"pirate warp": MutableString(Addr{0x15, 0x5a1c},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 
-	// if entering certain warps blocked by snow piles or mushrooms, set the
-	// animal companion to appear right outside instead of where you left them.
-	// this requires adding some code at the end of the bank.
+	// if entering certain warps blocked by snow piles, mushrooms, or bushes,
+	// set the animal companion to appear right outside instead of where you
+	// left them.  this requires adding some code at the end of the bank.
 	"animal save point call": MutableString(Addr{0x04, 0x461e},
 		"\xfa\x64\xcc", "\xcd\x02\x7e"),
-	"set animal save point func": MutableString(Addr{0x04, 0x7e02}, "\x04",
-		// b = group, c = room, hl = table
-		"\xc5\xd5\x47\xfa\x64\xcc\x4f\x21\x2c\x7e"+
-			"\x2a\xb8\x20\x0e\x2a\xb9\x20\x0a"+ // check group and room
+	"animal save point func": MutableString(Addr{0x04, 0x7e02}, "\x04",
+		// b = group, c = room, d = animal room, hl = table
+		"\xc5\xd5\x47\xfa\x64\xcc\x4f\xfa\x42\xcc\x57\x21\x38\x7e"+
+			"\x2a\xb8\x20\x16\x2a\xb9\x20\x12"+ // check group and room
+			"\x2a\xfe\xff\x28\x03\xba\x20\x0a"+ // check animal room, if nonzero
 			"\x11\x42\xcc\x06\x03\xcd\x62\x04\x18\x0a"+ // set save pt, done
-			"\x2a\xb7\x20\xfc\x7e\x3c\x28\x02\x18\xe4"+ // go to next table entry
+			"\x2a\xb7\x20\xfc\x7e\x3c\x28\x02\x18\xdc"+ // go to next table entry
 			"\x79\xd1\xc1\xc9"), // done
-	// table entries are {entered group, entered room, saved room, saved y,
-	// saved x}.
-	"animal save point table": MutableString(Addr{0x04, 0x7e2c}, "\x04",
-		"\x04\xfa\xc2\x18\x68\x00"+ // square jewel cave
-			"\x01\x57\xb0\x48\x48\x00"+ // spool swamp subrosia portal
-			"\x05\xcc\x29\x28\x68\x00"+ // goron mountain cave
-			"\x05\xb3\x8e\x58\x88\x00"+ // cave outside d2
-			"\x04\xe1\x86\x48\x68\x00"+ // quicksand ring cave
-			"\x05\xc9\x28\x38\x58\x00"+ // goron mountain main
-			"\x05\xba\x2f\x18\x68\x00"+ // spring banana cave
-			"\x05\xbb\x2f\x18\x68\x00"+ // joy ring cave
+	// table entries are {entered group, entered room, animal room (or ff),
+	// saved room, saved y, saved x}.
+	"animal save point table": MutableString(Addr{0x04, 0x7e38}, "\x04",
+		"\x04\xfa\xc2\xc2\x18\x68\x00"+ // square jewel cave
+			"\x01\x57\xff\xb0\x48\x48\x00"+ // spool swamp subrosia portal
+			"\x05\xcc\xff\x29\x28\x68\x00"+ // goron mountain cave
+			"\x05\xb3\x8e\x8e\x58\x88\x00"+ // cave outside d2
+			"\x04\xe1\x86\x86\x48\x68\x00"+ // quicksand ring cave
+			"\x05\xc9\xff\x28\x38\x58\x00"+ // goron mountain main
+			"\x05\xba\xff\x2f\x18\x68\x00"+ // spring banana cave
+			"\x05\xbb\xff\x2f\x18\x68\x00"+ // joy ring cave
+			"\x01\x05\x9a\x9a\x34\x34\x00"+ // rosa portal
+			"\x04\x39\x8d\x8d\x38\x38\x00"+ // d2 entrance
 			"\xff"), // end of table
 
 	// moosh won't spawn in the mountains if you have the wrong number of
