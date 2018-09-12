@@ -158,6 +158,19 @@ var constMutables = map[string]Mutable{
 			"\x11\x0a\xd1\x21\x0a\xd0\x06\x04\xcd\x5b\x04"+ // move animal
 			"\x18\xde"), // jump to done
 
+	// animals called by flute normally veto any nonzero collision value for
+	// the purposes of entering a screen, but this allows double-wide bridges
+	// (1a and 1b) as well. this specifically fixes the problem of not being
+	// able to call an animal on the d1 screen, or on the bridge to the screen
+	// to the right. the vertical collision check isn't modified, since bridges
+	// only run horizontally.
+	"flute collision call horizontal": MutableStrings([]Addr{{0x09, 0x4d9a},
+		{0x09, 0x4dad}}, "\xcd\xd9\x4e", "\xcd\x7f\x7f"),
+	"flute collision func": MutableString(Addr{0x09, 0x7f7f}, "\x09",
+		"\x06\x01\x7e\xfe\x1a\x28\x06\xfe\x1b\x28\x02\xb7\xc0"+ // first tile
+			"\x7d\x80\x6f\x7e\xfe\x1a\x28\x05\xfe\x1b\x28\x01\xb7"+ // second
+			"\x7d\xc0\xcd\x89\x20\xaf\xc9"), // vanilla stuff
+
 	// if wearing dev ring, change season regardless of where link is standing.
 	"dev ring season call": MutableString(Addr{0x07, 0x5b75},
 		"\xfa\xb6\xcc\xfe\x08", "\xcd\x16\x79\x00\x00"),
