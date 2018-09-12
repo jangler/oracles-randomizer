@@ -82,7 +82,7 @@ var niceNames = map[string]string{
 	"square jewel chest": "spool swamp cave",
 
 	// natzu slots
-	"platform chest":     "naztu region, across water",
+	"platform chest":     "natzu region, across water",
 	"great moblin chest": "moblin keep",
 
 	// sunken city / mount cucco / goron mountain slots
