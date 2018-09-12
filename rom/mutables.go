@@ -473,8 +473,12 @@ var constMutables = map[string]Mutable{
 	// overwrite unused maku gate interaction with warning interaction
 	"warning script pointer": MutableWord(Addr{0x08, 0x5663}, 0x874e, 0x6d7f),
 	"warning script": MutableString(Addr{0x0b, 0x7f6d}, "\x0b",
-		// wait for link to hit trigger, then call func, then show text
-		"\xd0\xe0\x47\x79\xa0\xbd\xd7\x3c\x98\x26\x00\xbe\x00"),
+		"\xd0\xe0\x47\x79\xa0\xbd\xd7\x3c"+ // wait for collision and animation
+			"\x87\xe0\xcf\x7e\x7f\x83\x7f\x88\x7f"+ // jump based on cfe0 bits
+			"\x98\x26\x00\xbe\x00"+ // show cliff warning text
+			"\x98\x26\x01\xbe\x00"+ // show bush warning text
+			"\x98\x26\x02\xbe\x00"), // show hss skip warning text
+
 	// helper function, takes b = high byte of season addr, returns season in b
 	"read default season": MutableString(Addr{0x01, 0x7e89}, "\x01",
 		"\x26\x7e\x68\x7e\x47\xc9"),
@@ -484,27 +488,47 @@ var constMutables = map[string]Mutable{
 	"warning func": MutableString(Addr{0x15, 0x7947}, "\x15",
 		"\xc5\xd5\xcd\x4f\x79\xd1\xc1\xc9"+ // wrap function in push/pops
 			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load room, rod, season
-			"\xfe\x7c\x28\x0e\xfe\x6e\x28\x1e"+ // jump by room
-			"\xfe\x3d\x28\x26\xfe\x5c\x28\x36\x18\x42"+ // (cont.)
+			"\xfe\x7c\x28\x12\xfe\x6e\x28\x22\xfe\x3d\x28\x2a"+ // jump by room
+			"\xfe\x5c\x28\x3a\xfe\x78\x28\x44\x18\x55"+ // (cont.)
 			"\x06\x61\x1e\x01\x21\x89\x7e\xcd\x8a\x00\x78\xfe\x00\xc8"+ // flower season
-			"\x79\xe6\x01\xc0\x18\x2e"+ // flower rod
-			"\x78\xfe\x03\xc8\x79\xe6\x09\xfe\x09\xc8\x18\x22"+ // diving spot
+			"\x79\xe6\x01\xc0\x18\x3d"+ // flower rod
+			"\x78\xfe\x03\xc8\x79\xe6\x09\xfe\x09\xc8\x18\x31"+ // diving spot
 			"\x06\x65\x1e\x01\x21\x89\x7e\xcd\x8a\x00\x78\xfe\x01\xc8"+ // waterfall season
-			"\x79\xe6\x02\xc0\x18\x0e"+ // waterfall rod
-			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\x18\x00"+ // keep
+			"\x79\xe6\x02\xc0\x18\x1d"+ // waterfall rod
+			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\x18\x0f"+ // keep
+			"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf\x18\x04"+ // hss skip room
+			"\xaf\xea\xe0\xcf"+ // set cliff warning text
 			"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
 			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
 			"\x3e\x50\xcd\x74\x0c"+ // play sound
 			"\x21\xc0\xcf\xcb\xc6\xc9"), // set $cfc0 bit and ret
-	// overwrite unused rosa hide and seek text with warning text
-	"warning text": MutableString(Addr{0x1f, 0x4533}, "\x0c\x21",
-		"\x0c\x00\x03\xe8\x04\x98\x02\x76"+ // You know...
-			"\x02\x3b\x67\x6f\x20\x05\x73\x01"+ // If you go down
+
+	// all this text overwrites the text from the initial rosa encounter, which
+	// runs from 1f:4533 to 1f:45c1 inclusive. the last entry is displayed at
+	// the end of any warning message.
+	"cliff warning text": MutableString(Addr{0x1f, 0x4533}, "\x0c\x21",
+		"\x0c\x00\x02\x3b\x67\x6f\x20\x05\x73\x01"+ // If you go down
 			"\x74\x68\x65\x72\x65\x2c\x04\x2d\x20\x77\x6f\x6e\x27\x74\x01"+ // there, you won't
 			"\x62\x65\x20\x02\xa4\x05\x0f\x01"+ // be able to get
 			"\x04\x9f\x20\x75\x70\x03\xa4"+ // back up.
-			"\x02\x95\x73\x61\x79\x20\x49\x01"+ // Don't say I
-			"\x64\x69\x64\x04\x6f\x77\x61\x72\x6e\x03\x1b\x00"), // didn't warn you!
+			"\x07\x03"), // jump to end text
+	"bush warning addr": MutableWord(Addr{0x1c, 0x6b50}, 0xfb91, 0xdb91),
+	"bush warning text": MutableString(Addr{0x1f, 0x455d}, "\x55\x6d",
+		"\x0c\x00\x42\x72\x65\x61\x6b\x03\xa6\x62\x75\x73\x68\x65\x73\x01"+ // Breaking bushes
+			"\x03\x69\x04\xb5\x20\x04\xc4\x01"+ // with only those
+			"\x04\xcc\x20\x05\xe5\x75\x6e\x73\x61\x66\x65\x03\xa4"+ // items is unsafe.
+			"\x07\x03"), // jump to end text
+	"hss skip warning addr": MutableWord(Addr{0x1c, 0x6b52}, 0x1192, 0x0292),
+	"hss skip warning text": MutableString(Addr{0x1f, 0x4584}, "\x20\x05",
+		"\x0c\x00\x02\x3b\x73\x6b\x69\x70\x01"+ // If you skip
+			"\x6b\x65\x79\x73\x2c\x04\xaa\x03\x2c\x01"+ // keys, use them
+			"\x03\x70\x6c\x79\x03\xa4"+ // carefully.
+			"\x07\x03"), // jump to end text
+	"end warning addr": MutableWord(Addr{0x1c, 0x6b54}, 0x2592, 0x1d92),
+	"end warning text": MutableString(Addr{0x1f, 0x459f}, "\x01\x05",
+		"\x0c\x00\x43\x6f\x6e\x74\x69\x6e\x75\x65\x20\x61\x74\x01"+ // Continue at
+			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
+
 	// the interaction on the mount cucco waterfall/vine screen
 	"waterfall cliff interaction redirect": MutableString(Addr{0x11, 0x6c10},
 		"\xf2\x1f\x08\x68", "\xf3\xb0\x7e\xff"),
@@ -525,6 +549,11 @@ var constMutables = map[string]Mutable{
 		"\xf2\xab\x00\x40", "\xf3\xd2\x7e\xff"),
 	"moblin keep interactions": MutableString(Addr{0x11, 0x7ed2}, "\x11",
 		"\xf2\xab\x00\x40\x70\x22\x0a\x58\x44\xf8\x2d\x00\x33\xfe"),
+	// hss skip room
+	"hss skip room interaction redirect": MutableString(Addr{0x11, 0x7ada},
+		"\xf3\x93\x55", "\xf3\xe0\x7e"),
+	"hss skip room interactions": MutableString(Addr{0x11, 0x7ee0}, "\x11",
+		"\xf2\x22\x0a\x88\x10\xf3\x93\x55\xfe"),
 
 	// create a warning interaction when breaking bushes and flowers under
 	// certain circumstances.
@@ -541,6 +570,7 @@ var constMutables = map[string]Mutable{
 			"\x3e\x05\xcd\x17\x17\xd8"+ // sword
 			"\x3e\x06\xcd\x17\x17\xfe\x02\xc8"+ // boomerang, L-2
 			"\x21\x92\xc6\x3e\x09\xcd\x0e\x02"+ // set "already warned" flag
+			"\x21\xe0\xcf\x36\x01"+ // set warning text index
 			"\xcd\xc6\x3a\xc0\x36\x22\x2c\x36\x0a"+ // create warning object
 			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
 			"\xc9"), // ret

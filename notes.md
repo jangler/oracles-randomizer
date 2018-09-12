@@ -213,20 +213,25 @@ exist.
 
 text in the game is encoded using ascii values for letters and some punctuation
 from 20 (space) to 7a (lower case z). a value of 01 is a newline, and 00 ends
-the text. 02 to 0x are prefixes for dictionaries 00 to 0x-2. for example, 03 1f
-would "evaluate" to entry 1f in dictionary 1.
+the text. 02 to 05 are prefixes for dictionaries 00 to 03. for example, 03 1f
+would "evaluate" to entry 1f in dictionary 01.
 
 0c seems to be the start token for a text entry, and the following character
 determines the position of the text box on the screen. 00 positions it
 automatically at the top or bottom, depending on link's y position.
 
+07 is the prefix for a jump command, the next byte being the low byte of the
+current text block.  for example, index 2601 ending with 07 03 would jump to
+index 2603.
+
 see ages-disasm/text/ for text IDs and dictionary entries.
 
-3f:5c00 is the text pointer table; text IDs are two-bytes, so the address at
+3f:5c00 is the text pointer table; text IDs are two bytes, so the address at
 5c00+2h is read first, then the address at (5c00+2h)+2l is read. the game has
 two further tables for "text offsets" at 3f:4fe2 and 3f:4ffa, the first for
 text IDs less than 2c00 and the second for those greater or equal.
 
 0:184b is showText, and 0:1936 reads a byte from the text table. watching this
 function is probably the easiest way to determine where particular text data is
-in the rom.
+in the rom. watching 3f:4fa4 lets you determine the location of text *address*
+data (stored in hl).
