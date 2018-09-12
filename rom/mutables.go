@@ -264,10 +264,15 @@ var constMutables = map[string]Mutable{
 	// set room flags so that rosa never appears in the overworld, and her
 	// portal is activated by default.
 	"call set portal room flag": MutableString(Addr{0x04, 0x45f5},
-		"\xfa\x64\xcc", "\xcd\x5d\x7e"),
-	"set portal room flag func": MutableString(Addr{0x04, 0x7e5d}, "\x04",
-		"\xe5\x21\x9a\xc7\x7e\xf6\xc0\x77\x2e\xcb\x7e\xf6\xc0\x77"+ // set flags
+		"\xfa\x64\xcc", "\xcd\x7e\x7e"),
+	"set portal room flag func": MutableString(Addr{0x04, 0x7e7e}, "\x04",
+		"\xe5\x21\x9a\xc7\x7e\xf6\x60\x77\x2e\xcb\x7e\xf6\xc0\x77"+ // set flags
 			"\xe1\xfa\x64\xcc\xc9"), // do what the address normally does
+	// a hack so that a different flag can be used to set the portal tile
+	// replacement, allowing the bush-breaking warning interaction to be used
+	// on this screen.
+	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
+		"\x40\x33\xc5", "\x20\x33\xe6"),
 
 	// count number of essences, not highest number essence
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7da4}, 0xea, 0x76),
@@ -478,8 +483,8 @@ var constMutables = map[string]Mutable{
 	"warning func": MutableString(Addr{0x15, 0x7947}, "\x15",
 		"\xc5\xd5\xcd\x4f\x79\xd1\xc1\xc9"+ // wrap function in push/pops
 			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load room, rod, season
-			"\xfe\x7c\x28\x0d\xfe\x6e\x28\x1d"+ // jump by room
-			"\xfe\x3d\x28\x25\xfe\x5c\x28\x35\xc9"+ // jump by room
+			"\xfe\x7c\x28\x0e\xfe\x6e\x28\x1e"+ // jump by room
+			"\xfe\x3d\x28\x26\xfe\x5c\x28\x36\x18\x42"+ // (cont.)
 			"\x06\x61\x1e\x01\x21\x89\x7e\xcd\x8a\x00\x78\xfe\x00\xc8"+ // flower season
 			"\x79\xe6\x01\xc0\x18\x2e"+ // flower rod
 			"\x78\xfe\x03\xc8\x79\xe6\x09\xfe\x09\xc8\x18\x22"+ // diving spot
@@ -519,6 +524,25 @@ var constMutables = map[string]Mutable{
 		"\xf2\xab\x00\x40", "\xf3\xd2\x7e\xff"),
 	"moblin keep interactions": MutableString(Addr{0x11, 0x7ed2}, "\x11",
 		"\xf2\xab\x00\x40\x70\x22\x0a\x58\x44\xf8\x2d\x00\x33\xfe"),
+
+	// create a warning interaction when breaking bushes and flowers under
+	// certain circumstances.
+	"break bush warning call": MutableString(Addr{0x06, 0x477b},
+		"\x21\x26\xc6", "\xcd\xd4\x77"),
+	"break bush warning func": MutableString(Addr{0x06, 0x77d4}, "\x06",
+		"\xf5\xc5\xd5\xcd\xe1\x77\x21\x26\xc6\xd1\xc1\xf1\xc9"+ // wrapper
+			"\xfe\xc3\x28\x09\xfe\xc4\x28\x05\xfe\xe5\x28\x01\xc9"+ // tile
+			"\xfa\x4c\xcc\xfe\xa7\x28\x0d\xfe\x97\x28\x09"+ // jump by room
+			"\xfe\x8d\x28\x05\xfe\x9a\x28\x01\xc9"+ // (cont.)
+			"\x3e\x09\xcd\x17\x17\xd8"+ // "already warned" flag
+			"\x3e\x16\xcd\x17\x17\xd8"+ // bracelet
+			"\x3e\x0e\xcd\x17\x17\xd8"+ // flute
+			"\x3e\x05\xcd\x17\x17\xd8"+ // sword
+			"\x3e\x06\xcd\x17\x17\xfe\x02\xc8"+ // boomerang, L-2
+			"\x21\x92\xc6\x3e\x09\xcd\x0e\x02"+ // set "already warned" flag
+			"\xcd\xc6\x3a\xc0\x36\x22\x2c\x36\x0a"+ // create warning object
+			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
+			"\xc9"), // ret
 }
 
 var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}

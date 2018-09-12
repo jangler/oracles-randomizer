@@ -34,8 +34,6 @@ drenn's ages-disasm.
 - 3f:4445, 3f:444c, 3f:c45a = points for loading sprite data for an object
 
 
-## script commands (most are documented in more detail in ages-disasm)
-
 ## ram addresses not documented elsewhere
 
 - c63f-c640 = bought shop items
@@ -79,10 +77,9 @@ obtained (e.g. if a chest has been opened). some treasure rooms such as shops
 and npcs check other flags (usually treasure flags) instead of room flags, but
 there's a jp-only bug where the master diver and the chest in his room *both*
 set bit 5, meaning that if you get the master diver's item, the chest will be
-opened the next time you visit the room (but not vice versa, i think). bits 6
-and 7 are used to track whether other events have occurred, like if rosa needs
-to appear on her initial screen in the overworld, or if her portal has been
-discovered and activated. i rarely see bits 0-3 used for anything.
+opened the next time you visit the room (but not vice versa, i think). bit 7
+appears to immediately delete some interactions if set? bits 6 and 3 are also
+used, but i don't know for what in particular.
 
 current room flags are checked by function 0:1956, getThisRoomFlags.
 
