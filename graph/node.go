@@ -37,15 +37,16 @@ const (
 
 // A Node is a single point in the directed graph.
 type Node struct {
-	Name     string
-	Type     NodeType
-	GetMark  func(*Node, bool) Mark
-	IsStep   bool
-	IsSlot   bool
-	IsHard   bool
-	Mark     Mark
-	parents  []*Node
-	children []*Node
+	Name       string
+	Type       NodeType
+	GetMark    func(*Node, bool) Mark
+	IsStep     bool
+	IsSlot     bool
+	IsHard     bool
+	IsOptional bool
+	Mark       Mark
+	parents    []*Node
+	children   []*Node
 }
 
 // NewNode returns a new unconnected graph node, not yet part of any graph.
