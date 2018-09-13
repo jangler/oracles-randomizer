@@ -525,30 +525,28 @@ func arrangeListsForLog(r *Route, rl *RouteLists, verbose bool) {
 	for i := 0; i < rl.UsedItems.Len(); i++ {
 		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
 
-		var isExtra bool
-		if logic.Rupees[item.Name] == 0 {
-			// remove parent provisionally
-			for i, parent := range item.Parents {
-				if parent == slot {
-					item.Parents =
-						append(item.Parents[:i], item.Parents[i+1:]...)
-					break
-				}
+		// remove parent provisionally
+		for i, parent := range item.Parents {
+			if parent == slot {
+				item.Parents =
+					append(item.Parents[:i], item.Parents[i+1:]...)
+				break
 			}
+		}
 
-			// ask if anyone misses it
-			r.Graph.ClearMarks()
-			if isExtra = done.GetMark(done, false) == graph.MarkTrue; isExtra {
-				if verbose {
-					fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
-				}
-				rl.OptionalItems.PushBack(item)
-				rl.OptionalSlots.PushBack(slot)
-			} else {
-				item.Parents = append(item.Parents, slot)
-				rl.RequiredItems.PushBack(item)
-				rl.RequiredSlots.PushBack(slot)
+		// ask if anyone misses it
+		r.Graph.ClearMarks()
+		if logic.Rupees[item.Name] == 0 &&
+			done.GetMark(done, false) == graph.MarkTrue {
+			if verbose {
+				fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
 			}
+			rl.OptionalItems.PushBack(item)
+			rl.OptionalSlots.PushBack(slot)
+		} else {
+			item.Parents = append(item.Parents, slot)
+			rl.RequiredItems.PushBack(item)
+			rl.RequiredSlots.PushBack(slot)
 		}
 
 		ei, es = ei.Next(), es.Next()
