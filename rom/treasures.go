@@ -197,3 +197,15 @@ var uniqueIDTreasures = map[string]bool{}
 func TreasureHasUniqueID(name string) bool {
 	return uniqueIDTreasures[name]
 }
+
+// returns true iff a treasure can be lost permanently (i.e. outside of hide
+// and seek).
+func TreasureCanBeLost(name string) bool {
+	switch name {
+	case "shop shield L-1", "shield L-2", "star ore", "ribbon",
+		"spring banana", "ricky's gloves", "round jewel", "pyramid jewel",
+		"square jewel", "x-shapred jewel", "red ore", "blue ore", "hard ore":
+		return true
+	}
+	return false
+}

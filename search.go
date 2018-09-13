@@ -380,7 +380,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// at all, so only slot zero-ID treasures there.
 	//
 	// the other slots won't give you the item if you already have one with
-	// that ID, so only use items with unique IDs there.
+	// that ID, so only use items that have unique IDs and can't be lost.
 	switch slotNode.Name {
 	case "star ore spot", "hard ore slot":
 		if item.SubID() != 0 && !(itemNode.Name == "piece of heart" ||
@@ -388,7 +388,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 			return false
 		}
 	case "diver gift", "subrosian market 5", "village shop 3":
-		if !rom.TreasureHasUniqueID(itemNode.Name) {
+		if !rom.TreasureHasUniqueID(itemNode.Name) ||
+			rom.TreasureCanBeLost(itemNode.Name) {
 			return false
 		}
 	}
