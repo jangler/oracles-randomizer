@@ -1,12 +1,10 @@
-package prenode
+package logic
 
-// new set of holodrum prenodes, accounting for randomized seasons
-//
 // "ricky", "dimitri", and "moosh" refer to accessing those animal companions
 // in their designated regions (e.g. dimitri in sunken city). "x's flute" means
 // being able to call the animal in general.
 
-var holodrumPrenodes = map[string]*Prenode{
+var holodrumNodes = map[string]*Node{
 	"start": And(), // parent for nodes reachable by default
 
 	// horon village
@@ -250,7 +248,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"desert pit":   AndSlot("desert", "bracelet"),
 	"desert chest": AndSlot("desert", "flippers"),
 
-	// temple remains (the important logic is in the portal prenodes)
+	// temple remains (the important logic is in the portal nodes)
 	"temple remains": Or(
 		And("goron mountain", Or("flippers", "pegasus jump L-2"), "long jump"),
 		And("scent tree", "long jump")),
@@ -273,7 +271,7 @@ var holodrumPrenodes = map[string]*Prenode{
 	"holodrum plain west old man": And("ghastly stump", "ember seeds"),
 }
 
-var seasonPrenodes = map[string]*Prenode{
+var seasonNodes = map[string]*Node{
 	"north horon default spring": Root(),
 	"north horon default summer": Root(),
 	"north horon default autumn": Root(),

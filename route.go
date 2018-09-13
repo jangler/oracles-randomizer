@@ -11,18 +11,18 @@ import (
 	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
-	"github.com/jangler/oos-randomizer/prenode"
+	"github.com/jangler/oos-randomizer/logic"
 	"github.com/jangler/oos-randomizer/rom"
 )
 
 // give up completely if routing fails too many times
 const maxTries = 50
 
-// adds prenodes to the map based on default contents of item slots.
-func addDefaultItemNodes(nodes map[string]*prenode.Prenode) {
+// adds nodes to the map based on default contents of item slots.
+func addDefaultItemNodes(nodes map[string]*logic.Node) {
 	for key, slot := range rom.ItemSlots {
 		if key != "rod gift" { // real rod is an Or, not a Root
-			nodes[rom.FindTreasureName(slot.Treasure)] = prenode.Root()
+			nodes[rom.FindTreasureName(slot.Treasure)] = logic.Root()
 		}
 	}
 }
@@ -36,18 +36,18 @@ type Route struct {
 	Costs        int
 }
 
-// NewRoute returns an initialized route with all prenodes, and those prenodes
-// with the names in start functioning as givens (always satisfied). If no
-// names are given, only the normal start node functions as a given.
+// NewRoute returns an initialized route with all nodes, and those nodes with
+// the names in start functioning as givens (always satisfied). If no names are
+// given, only the normal start node functions as a given.
 func NewRoute(start ...string) *Route {
 	g := graph.New()
 
-	totalPrenodes := prenode.GetAll()
+	totalPrenodes := logic.GetAll()
 	addDefaultItemNodes(totalPrenodes)
 
 	// make start nodes given
 	for _, key := range start {
-		totalPrenodes[key] = prenode.And()
+		totalPrenodes[key] = logic.And()
 	}
 
 	addNodes(totalPrenodes, g)
@@ -56,7 +56,7 @@ func NewRoute(start ...string) *Route {
 	openSlots := make(map[string]*graph.Node, 0)
 	for name, pn := range totalPrenodes {
 		switch pn.Type {
-		case prenode.AndSlotType, prenode.OrSlotType:
+		case logic.AndSlotType, logic.OrSlotType:
 			openSlots[name] = g[name]
 		}
 	}
@@ -78,40 +78,40 @@ func (r *Route) ClearParents(node string) {
 }
 
 // if hard is false, "hard" nodes are omitted
-func addNodes(prenodes map[string]*prenode.Prenode, g graph.Graph) {
+func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
-		case prenode.AndType, prenode.AndSlotType, prenode.AndStepType,
-			prenode.HardAndType:
-			isStep := pn.Type == prenode.AndSlotType ||
-				pn.Type == prenode.AndStepType
-			isSlot := pn.Type == prenode.AndSlotType
-			isHard := pn.Type == prenode.HardAndType
+		case logic.AndType, logic.AndSlotType, logic.AndStepType,
+			logic.HardAndType:
+			isStep := pn.Type == logic.AndSlotType ||
+				pn.Type == logic.AndStepType
+			isSlot := pn.Type == logic.AndSlotType
+			isHard := pn.Type == logic.HardAndType
 
 			node := graph.NewNode(key, graph.AndType, isStep, isSlot, isHard)
 			g.AddNodes(node)
-		case prenode.OrType, prenode.OrSlotType, prenode.OrStepType,
-			prenode.RootType, prenode.HardOrType:
-			isStep := pn.Type == prenode.OrSlotType ||
-				pn.Type == prenode.OrStepType
-			isSlot := pn.Type == prenode.OrSlotType
+		case logic.OrType, logic.OrSlotType, logic.OrStepType, logic.RootType,
+			logic.HardOrType:
+			isStep := pn.Type == logic.OrSlotType ||
+				pn.Type == logic.OrStepType
+			isSlot := pn.Type == logic.OrSlotType
 			nodeType := graph.OrType
-			if pn.Type == prenode.RootType {
+			if pn.Type == logic.RootType {
 				nodeType = graph.RootType
 			}
-			isHard := pn.Type == prenode.HardOrType
+			isHard := pn.Type == logic.HardOrType
 
 			node := graph.NewNode(key, nodeType, isStep, isSlot, isHard)
 			g.AddNodes(node)
 		default:
-			panic("unknown prenode type for " + key)
+			panic("unknown logic type for " + key)
 		}
 	}
 }
 
 // nodes not in the graph are omitted (for example, "hard" nodes in a non-hard
 // graph)
-func addNodeParents(prenodes map[string]*prenode.Prenode, gs ...graph.Graph) {
+func addNodeParents(prenodes map[string]*logic.Node, gs ...graph.Graph) {
 	for k, pn := range prenodes {
 		for _, g := range gs {
 			if g[k] == nil {
@@ -199,7 +199,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 					usedItems.PushBack(items.Remove(items.Front()))
 					slot := slots.Remove(slots.Front()).(*graph.Node)
 					usedSlots.PushBack(slot)
-					r.Costs += prenode.Rupees[slot.Name]
+					r.Costs += logic.Rupees[slot.Name]
 
 					match := dungeonRegexp.FindStringSubmatch(slot.Name)
 					if match != nil {
@@ -418,7 +418,7 @@ func initRouteLists(src *rand.Rand, r *Route,
 	companion int) (itemList, slotList *list.List) {
 	// get slices of names
 	itemNames := make([]string, 0,
-		len(rom.ItemSlots)+len(prenode.ExtraItems()))
+		len(rom.ItemSlots)+len(logic.ExtraItems()))
 	slotNames := make([]string, 0, len(r.Slots))
 	for key, slot := range rom.ItemSlots {
 		if key != "rod gift" { // don't slot vanilla, seasonless rod
@@ -438,7 +438,7 @@ func initRouteLists(src *rand.Rand, r *Route,
 			itemNames = append(itemNames, treasureName)
 		}
 	}
-	for key := range prenode.ExtraItems() {
+	for key := range logic.ExtraItems() {
 		itemNames = append(itemNames, key)
 	}
 	for key := range r.Slots {

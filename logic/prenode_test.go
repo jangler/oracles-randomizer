@@ -1,11 +1,11 @@
-package prenode
+package logic
 
 import (
 	"testing"
 )
 
 // returns true iff p1 is a parent of p2.
-func isParent(p1Name string, p2 *Prenode) bool {
+func isParent(p1Name string, p2 *Node) bool {
 	for _, parent := range p2.Parents {
 		if parent == p1Name {
 			return true
@@ -15,12 +15,12 @@ func isParent(p1Name string, p2 *Prenode) bool {
 }
 
 func TestLinks(t *testing.T) {
-	prenodes := GetAll()
+	nodes := GetAll()
 
-	for name, p := range prenodes {
+	for name, p := range nodes {
 		// check if any non-root nodes are missing parents
 		if p.Type != RootType && len(p.Parents) == 0 && name != "start" {
-			t.Errorf("non-root prenode %s has no parents", name)
+			t.Errorf("non-root node %s has no parents", name)
 		}
 
 		// check if any non-slot nodes are missing children
@@ -30,19 +30,19 @@ func TestLinks(t *testing.T) {
 		default:
 			// ignore nodes which are present purely for -goal purposes
 			if name == "done" || name == "enter d2" ||
-				seasonPrenodes[name] != nil {
+				seasonNodes[name] != nil {
 				break
 			}
 
 			hasChildren := false
-			for _, p2 := range prenodes {
+			for _, p2 := range nodes {
 				if isParent(name, p2) {
 					hasChildren = true
 					break
 				}
 			}
 			if !hasChildren {
-				t.Errorf("non-slot prenode %s has no children", name)
+				t.Errorf("non-slot node %s has no children", name)
 			}
 		}
 	}

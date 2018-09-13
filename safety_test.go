@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/jangler/oos-randomizer/graph"
-	"github.com/jangler/oos-randomizer/prenode"
+	"github.com/jangler/oos-randomizer/logic"
 )
 
 // item placement from a 1.3.0 rom used for a race, updated for rod/seasons
@@ -160,8 +160,8 @@ func benchGraphCheck(b *testing.B, check func(graph.Graph) error) {
 	// make a list of base item nodes to use for testing
 	r := NewRoute()
 	g := r.Graph
-	baseItems := make([]*graph.Node, 0, len(prenode.ExtraItems()))
-	for name := range prenode.ExtraItems() {
+	baseItems := make([]*graph.Node, 0, len(logic.ExtraItems()))
+	for name := range logic.ExtraItems() {
 		baseItems = append(baseItems, g[name])
 	}
 

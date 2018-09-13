@@ -1,4 +1,4 @@
-package prenode
+package logic
 
 // subrosia has several large areas which are guaranteed to be traverseable as
 // long as you can get there in the first place:
@@ -13,7 +13,7 @@ package prenode
 // the other locations are isolated and only traverseable with some combination
 // of jumping and boulder removal.
 
-var subrosiaPrenodes = map[string]*Prenode{
+var subrosiaNodes = map[string]*Node{
 	"temple": Or("rosa portal",
 		And("beach", "ribbon"),
 		And("beach", "jump"),

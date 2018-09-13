@@ -1,16 +1,16 @@
-package prenode
+package logic
 
 // these are *extra* items that can be shuffled around in the route as root
 // nodes, in addition to the ones automatically added from checking default
 // item slot contents.
-var baseItemPrenodes = map[string]*Prenode{
+var baseItemNodes = map[string]*Node{
 	"fool's ore": Root(),
 
 	// could be uncommented and function as a filler item
 	// "bombchus": Root(),
 }
 
-var itemPrenodes = map[string]*Prenode{
+var itemNodes = map[string]*Node{
 	"rod": Or("winter", "summer", "spring", "autumn"),
 
 	"ricky's flute":   Root(),

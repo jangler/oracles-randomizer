@@ -3,11 +3,11 @@
 import re
 import sys
 
-# create an HTML checklist (scripts/checklist.html) from the prenodes. this
-# must be run from the repository's root folder.
+# create an HTML checklist (scripts/checklist.html) from the logic. this must
+# be run from the repository's root folder.
 
 
-files = 'prenode/holodrum.go', 'prenode/subrosia.go', 'prenode/dungeons.go'
+files = 'logic/holodrum.go', 'logic/subrosia.go', 'logic/dungeons.go'
 
 version_regexp = re.compile('const version = "(.+?)"')
 slot_regexp = re.compile('"(.+?)": +(And|Or)Slot')
@@ -72,6 +72,6 @@ with open('scripts/checklist.html', 'w') as outfile:
                 for name in slots]
 
         sections.append(section_template %
-                (filename[8:-3], '<br>\n'.join(elements)))
+                (filename[6:-3], '<br>\n'.join(elements)))
 
     outfile.write(doc_template % (version, version, '\n'.join(sections)))

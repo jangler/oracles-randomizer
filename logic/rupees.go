@@ -1,4 +1,4 @@
-package prenode
+package logic
 
 var Rupees = map[string]int{
 	"village shop 1":  -20,

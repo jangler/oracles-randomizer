@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
-	"github.com/jangler/oos-randomizer/prenode"
+	"github.com/jangler/oos-randomizer/logic"
 	"github.com/jangler/oos-randomizer/rom"
 )
 
@@ -206,7 +206,7 @@ func sortItemPool(pool *list.List, src *rand.Rand) {
 // because other requirements have to be met in order for them to be used.
 func isTurnNeutralItem(node *graph.Node) bool {
 	// like shop items
-	if prenode.Rupees[node.Name] != 0 {
+	if logic.Rupees[node.Name] != 0 {
 		return true
 	}
 
@@ -502,7 +502,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 
 func canAffordSlot(r *Route, slot *graph.Node) bool {
 	// if it doesn't cost anything, of course it's affordable
-	balance := prenode.Rupees[slot.Name]
+	balance := logic.Rupees[slot.Name]
 	if balance >= 0 {
 		return true
 	}
@@ -510,7 +510,7 @@ func canAffordSlot(r *Route, slot *graph.Node) bool {
 	// otherwise, count the net rupees available to the player
 	balance += r.Costs
 	for _, node := range r.Graph {
-		value := prenode.Rupees[node.Name]
+		value := logic.Rupees[node.Name]
 		if value > 0 && node.GetMark(node, false) == graph.MarkTrue {
 			balance += value
 		}

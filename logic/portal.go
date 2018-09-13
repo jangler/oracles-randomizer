@@ -1,6 +1,6 @@
-package prenode
+package logic
 
-var portalPrenodes = map[string]*Prenode{
+var portalNodes = map[string]*Node{
 	"rosa portal": Or("temple", And("suburbs", Or("remove bush", "flute"))),
 
 	"swamp portal": Or("beach",

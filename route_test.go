@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/jangler/oos-randomizer/graph"
-	"github.com/jangler/oos-randomizer/prenode"
+	"github.com/jangler/oos-randomizer/logic"
 )
 
 // check that graph logic is working as expected
@@ -71,7 +71,7 @@ func BenchmarkGraphExplore(b *testing.B) {
 	b.ResetTimer()
 
 	// explore all items from the d0 sword chest
-	for name := range prenode.ExtraItems() {
+	for name := range logic.ExtraItems() {
 		r.Graph.Explore(make(map[*graph.Node]bool), false, r.Graph[name])
 	}
 }

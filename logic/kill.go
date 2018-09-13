@@ -1,4 +1,4 @@
-package prenode
+package logic
 
 // these nodes do not define items, only which items can kill which enemies
 // under what circumstances, assuming that you've arrived in the room
@@ -43,7 +43,7 @@ package prenode
 //   - fool's ore
 //   - punch
 
-var killPrenodes = map[string]*Prenode{
+var killNodes = map[string]*Node{
 	"gale seed weapon":        And("gale seeds", Or("slingshot", HardAnd("satchel", "jump"))),
 	"gale boomerang":          And("gale satchel", "boomerang"), // stun, then drop from satchel
 	"slingshot kill normal":   And("slingshot", "seed kill normal"),
