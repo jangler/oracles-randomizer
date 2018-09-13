@@ -146,7 +146,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	// increment staleness, capping turn-neutral items at staleness 1.
 	for e := freeSlots.Front(); e != nil; e = e.Next() {
 		slot := e.Value.(*graph.Node)
-		if r.TurnsReached[slot] < 1 || !isTurnNeutralItem(slot) {
+		if r.TurnsReached[slot] < 2 || !isTurnNeutralItem(slot) {
 			r.TurnsReached[slot]++
 		}
 	}
