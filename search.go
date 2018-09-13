@@ -3,6 +3,7 @@ package main
 import (
 	"container/list"
 	"fmt"
+	"math"
 	"math/rand"
 	"regexp"
 	"sort"
@@ -33,9 +34,13 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	startTime := time.Now()
 
+	// at least one item must fit in a slot that has already been reached for
+	// no more than this many steps
+	maxStaleness := int(math.Abs(src.NormFloat64()))
+
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
-	freeSlots := getAvailableSlots(r, src, slotPool, fillUnused)
+	freeSlots := getAvailableSlots(r, src, slotPool, maxStaleness, fillUnused)
 	initialCount := countFunc(r)
 	newCount := initialCount
 
@@ -101,7 +106,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	// omit items not necessary for progression, then slot again from the start
 	cutExtraItems(r, usedItems, initialCount, countFunc, fillUnused)
 	usedSlots.Init()
-	usedTurnZeroSlot := false
+	usedUnstaleTurnSlot := false
 	for ei := usedItems.Front(); ei != nil; ei = ei.Next() {
 		item := ei.Value.(*graph.Node)
 		item.Parents = item.Parents[:len(item.Parents)-1]
@@ -119,8 +124,8 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 					item.Parents = item.Parents[:len(item.Parents)-1]
 				} else {
 					usedSlots.PushBack(slot)
-					if r.TurnsReached[slot] == 1 {
-						usedTurnZeroSlot = true
+					if r.TurnsReached[slot] <= maxStaleness {
+						usedUnstaleTurnSlot = true
 					}
 					break
 				}
@@ -130,12 +135,20 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// retry if none of the slotted items were placed in new slots (because
 	// they couldn't fit). shops and trees are exempt from this check.
-	if !fillUnused && !usedTurnZeroSlot {
+	if !fillUnused && !usedUnstaleTurnSlot {
 		for usedItems.Len() > 0 {
 			item := usedItems.Remove(usedItems.Front()).(*graph.Node)
 			item.Parents = item.Parents[:len(item.Parents)-1]
 		}
 		return list.New(), list.New()
+	}
+
+	// increment staleness, capping turn-neutral items at staleness 1.
+	for e := freeSlots.Front(); e != nil; e = e.Next() {
+		slot := e.Value.(*graph.Node)
+		if r.TurnsReached[slot] < 1 || !isTurnNeutralItem(slot) {
+			r.TurnsReached[slot]++
+		}
 	}
 
 	// remove the used nodes from the persistent pools
@@ -223,7 +236,7 @@ func isTurnNeutralItem(node *graph.Node) bool {
 // filter a list of item slots by those that can be reached, shuffle them, and
 // sort them by priority, returning a new list.
 func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
-	fillUnused bool) *list.List {
+	maxStaleness int, fillUnused bool) *list.List {
 	a := make([]*graph.Node, 0)
 	r.Graph.ClearMarks()
 	for e := pool.Front(); e != nil; e = e.Next() {
@@ -238,9 +251,10 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 		a[i], a[j] = a[j], a[i]
 	})
 
-	// prioritize newest slots
+	// prioritize newer slots
 	sort.Slice(a, func(i, j int) bool {
-		return r.TurnsReached[a[i]] < r.TurnsReached[a[j]]
+		return r.TurnsReached[a[i]] <= maxStaleness &&
+			r.TurnsReached[a[j]] > maxStaleness
 	})
 
 	// if filling unused, return only one slot at a time
@@ -252,7 +266,7 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 			switch node.Name {
 			case "d0 sword chest", "rod gift", "star ore spot", "hard ore slot",
 				"diver gift", "subrosian market 5", "village shop 1",
-				"village shop 2", "village shop 3":
+				"village shop 2", "village shop 3", "iron shield gift":
 				l.PushBack(node)
 				return l
 			}
@@ -270,13 +284,6 @@ func getAvailableSlots(r *Route, src *rand.Rand, pool *list.List,
 			l.PushBack(a[0])
 		}
 		return l
-	}
-
-	for _, slot := range a {
-		// cap turn-neutral items at a staleness value of 1
-		if r.TurnsReached[slot] < 1 || !isTurnNeutralItem(slot) {
-			r.TurnsReached[slot]++
-		}
 	}
 
 	l := list.New()
