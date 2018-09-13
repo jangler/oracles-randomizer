@@ -458,6 +458,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 	// slots reached
 	targetCount := countFunc(r)
 	retry = true
+	triedDowngradeToSatchel := false
 	for retry && !fillUnused {
 		retry = false
 
@@ -466,7 +467,8 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			var downgrade *graph.Node
 
 			// don't use a slingshot where a satchel will do
-			if strings.HasPrefix(item.Name, "slingshot") &&
+			if !triedDowngradeToSatchel &&
+				strings.HasPrefix(item.Name, "slingshot") &&
 				len(r.Graph["satchel 1"].Parents) == 0 &&
 				len(r.Graph["satchel 2"].Parents) == 0 {
 				downgrade = r.Graph["satchel 1"]
@@ -503,6 +505,14 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 
 			downgrade.Parents = downgrade.Parents[:len(downgrade.Parents)-1]
 			item.Parents = append(item.Parents, parent)
+
+			// if L-2 slingshot downgrade to satchel didn't work, still try to
+			// downgrade it to L-1 slingshot.
+			if !triedDowngradeToSatchel && item.Name == "slingshot L-2" &&
+				strings.HasPrefix(downgrade.Name, "satchel") {
+				triedDowngradeToSatchel, retry = true, true
+				break
+			}
 		}
 	}
 }
