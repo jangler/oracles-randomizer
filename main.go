@@ -1,6 +1,7 @@
 package main
 
 import (
+	"container/list"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -357,16 +358,12 @@ func randomize(romData []byte, seedFlag string,
 	}
 
 	// place selected treasures in slots
-	usedLines := make([]string, 0, rl.UsedSlots.Len())
 	for rl.UsedSlots.Len() > 0 {
 		slotName :=
 			rl.UsedSlots.Remove(rl.UsedSlots.Front()).(*graph.Node).Name
 		treasureName :=
 			rl.UsedItems.Remove(rl.UsedItems.Front()).(*graph.Node).Name
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
-
-		usedLines = append(usedLines, fmt.Sprintf("%-28s <- %s",
-			getNiceName(slotName), getNiceName(treasureName)))
 	}
 
 	// set rom seasons and animal data
@@ -387,32 +384,19 @@ func randomize(romData []byte, seedFlag string,
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", rl.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
-	summary <- ""
-	summary <- "used items, in (one possible) order:"
-	summary <- ""
-	// print boss keys, maps, and compasses last, even though they're
-	// slotted first
-	for _, usedLine := range usedLines[22:] {
-		summary <- usedLine
-	}
-	for _, usedLine := range usedLines[:22] {
-		summary <- usedLine
-	}
-	if rl.UnusedItems.Len() > 0 {
-		summary <- ""
-		summary <- "unused items:"
-		summary <- ""
-		for e := rl.UnusedItems.Front(); e != nil; e = e.Next() {
-			summary <- e.Value.(*graph.Node).Name
-		}
-	}
-
+	logItems(summary, "required items", rl.RequiredItems, rl.RequiredSlots)
+	logItems(summary, "optional items", rl.OptionalItems, rl.OptionalSlots)
 	summary <- ""
 	summary <- "default seasons:"
 	summary <- ""
 	for name, area := range rom.Seasons {
-		summary <- fmt.Sprintf("%s - %s", name, seasonsByID[int(area.New[0])])
+		summary <- fmt.Sprintf("%-15s <- %s",
+			name[:len(name)-7], seasonsByID[int(area.New[0])])
 	}
+	summary <- ""
+	summary <- fmt.Sprintf("natzu region <- %s", []string{
+		"", "natzu prairie", "natzu river", "natzu wasteland",
+	}[rl.Companion])
 
 	close(summary)
 	<-summaryDone
@@ -425,4 +409,19 @@ func searchAsync(src *rand.Rand, seed uint32, verbose bool,
 	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
 	// find a viable random route
 	retChan <- findRoute(src, seed, verbose, logChan, doneChan)
+}
+
+// send lines of item/slot info to a summary channel. this is a destructive
+// operation on the lists.
+func logItems(summary chan string, title string, items, slots *list.List) {
+	summary <- ""
+	summary <- title + ":"
+	summary <- ""
+
+	for slots.Len() > 0 {
+		slotName := slots.Remove(slots.Front()).(*graph.Node).Name
+		itemName := items.Remove(items.Front()).(*graph.Node).Name
+		summary <- fmt.Sprintf("%-28s <- %s",
+			getNiceName(slotName), getNiceName(itemName))
+	}
 }

@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
@@ -128,10 +127,12 @@ func addNodeParents(prenodes map[string]*logic.Node, gs ...graph.Graph) {
 }
 
 type RouteLists struct {
-	Seed                              uint32
-	Seasons                           map[string]byte
-	Companion                         int // 1 to 3
-	UsedItems, UnusedItems, UsedSlots *list.List
+	Seed                         uint32
+	Seasons                      map[string]byte
+	Companion                    int // 1 to 3
+	UsedItems, UsedSlots         *list.List
+	RequiredItems, RequiredSlots *list.List
+	OptionalItems, OptionalSlots *list.List
 }
 
 const (
@@ -149,12 +150,17 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
-	usedItems := list.New()
-	usedSlots := list.New()
+	rl := &RouteLists{
+		Seed:          seed,
+		UsedItems:     list.New(),
+		UsedSlots:     list.New(),
+		RequiredItems: list.New(),
+		RequiredSlots: list.New(),
+		OptionalItems: list.New(),
+		OptionalSlots: list.New(),
+	}
 
 	// try to find the route, retrying if needed
-	var seasons map[string]byte
-	var companion int
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
 		// abort if route was already found on another thread
@@ -165,13 +171,14 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		}
 
 		r := NewRoute()
-		companion = rollAnimalCompanion(src, r)
-		itemList, slotList = initRouteLists(src, r, companion)
+		rl.Companion = rollAnimalCompanion(src, r)
+		itemList, slotList = initRouteLists(src, r, rl.Companion)
 		logChan <- fmt.Sprintf("trying seed %08x", seed)
 
 		// slot initial nodes before algorithm slots progression items
-		seasons = rollSeasons(src, r)
-		placeDungeonItems(src, r, itemList, usedItems, slotList, usedSlots)
+		rl.Seasons = rollSeasons(src, r)
+		placeDungeonItems(src, r,
+			itemList, rl.UsedItems, slotList, rl.UsedSlots)
 
 		startTime := time.Now()
 
@@ -196,9 +203,9 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 
 			if items != nil {
 				for items.Len() > 0 {
-					usedItems.PushBack(items.Remove(items.Front()))
+					rl.UsedItems.PushBack(items.Remove(items.Front()))
 					slot := slots.Remove(slots.Front()).(*graph.Node)
-					usedSlots.PushBack(slot)
+					rl.UsedSlots.PushBack(slot)
 					r.Costs += logic.Rupees[slot.Name]
 
 					match := dungeonRegexp.FindStringSubmatch(slot.Name)
@@ -211,10 +218,14 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 				success = false
 				break
 			}
+
+			r.Graph.ClearMarks()
 		}
 
-		// if goal was reached, fill unused slots
 		if success {
+			arrangeListsForLog(r, rl, verbose)
+
+			// fill unused slots
 			for slotList.Len() > 0 {
 				if verbose {
 					logChan <- fmt.Sprintf("done; filling %d more slots",
@@ -230,8 +241,12 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 					countSteps, true)
 				if items != nil {
 					for items.Len() > 0 {
-						usedItems.PushBack(items.Remove(items.Front()))
-						usedSlots.PushBack(slots.Remove(slots.Front()))
+						item := items.Remove(items.Front())
+						slot := slots.Remove(slots.Front())
+						rl.UsedItems.PushBack(item)
+						rl.UsedSlots.PushBack(slot)
+						rl.OptionalItems.PushBack(item)
+						rl.OptionalSlots.PushBack(slot)
 					}
 				} else {
 					break
@@ -240,6 +255,19 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		}
 
 		if slotList.Len() == 0 {
+			// rotate dungeon items to the back of the lists
+			items, slots := rl.RequiredItems, rl.RequiredSlots
+			for i := 0; i < 6; i++ {
+				items.PushBack(items.Remove(items.Front()))
+				slots.PushBack(slots.Remove(slots.Front()))
+			}
+			items, slots = rl.OptionalItems, rl.OptionalSlots
+			for i := 0; i < 16; i++ {
+				items.PushBack(items.Remove(items.Front()))
+				slots.PushBack(slots.Remove(slots.Front()))
+			}
+
+			// and we're done
 			break
 		} else if verbose {
 			logChan <- "unfilled slots:"
@@ -252,7 +280,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 			}
 		}
 
-		usedItems, usedSlots = list.New(), list.New()
+		rl.UsedItems, rl.UsedSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
 		seed = uint32(src.Int31())
@@ -265,7 +293,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		return nil
 	}
 
-	return &RouteLists{seed, seasons, companion, usedItems, itemList, usedSlots}
+	return rl
 }
 
 var (
@@ -330,9 +358,10 @@ func dungeonIndex(node *graph.Node) int {
 }
 
 // place maps, compasses, and boss keys in chests in dungeons (before
-// attempting to slot the other ones)
+// attempting to slot the other ones).
 func placeDungeonItems(src *rand.Rand, r *Route,
 	itemList, usedItems, slotList, usedSlots *list.List) {
+
 	// place boss keys first
 	for i := 1; i < 9; i++ {
 		if i == 4 || i == 5 {
@@ -372,6 +401,8 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 			slotList.Remove(slotElem)
 			usedItems.PushBack(itemNode)
 			itemList.Remove(itemElem)
+
+			itemNode.Parents = append(itemNode.Parents, slotNode)
 		}
 	}
 }
@@ -469,30 +500,6 @@ func initRouteLists(src *rand.Rand, r *Route,
 	return itemList, slotList
 }
 
-// print the currently evaluating sequence of slotted items
-func printItemSequence(usedItems *list.List, logChan chan string) {
-	items := make([]string, 0, usedItems.Len())
-	for e := usedItems.Front(); e != nil; e = e.Next() {
-		items = append(items, e.Value.(*graph.Node).Name)
-	}
-	logChan <- fmt.Sprintf("trying %s", strings.Join(items, " -> "))
-}
-
-// print item/slot info on a succeeded route
-func announceSuccessDetails(r *Route, usedItems, usedSlots *list.List,
-	logChan chan string) {
-	logChan <- "slotted items:"
-
-	// iterate by rotating again for some reason
-	for i := 0; i < usedItems.Len(); i++ {
-		logChan <- fmt.Sprintf("%v <- %v",
-			usedItems.Front().Value.(*graph.Node),
-			usedSlots.Front().Value.(*graph.Node))
-		usedItems.MoveToBack(usedItems.Front())
-		usedSlots.MoveToBack(usedSlots.Front())
-	}
-}
-
 // return the number of "step" nodes in the given set
 func countSteps(r *Route) int {
 	r.Graph.ClearMarks()
@@ -506,4 +513,52 @@ func countSteps(r *Route) int {
 		}
 	}
 	return count
+}
+
+// break down the used items into required and optional items, so that the log
+// makes sense.
+func arrangeListsForLog(r *Route, rl *RouteLists, verbose bool) {
+	done := r.Graph["done"]
+
+	// figure out which items aren't necessary
+	ei, es := rl.UsedItems.Front(), rl.UsedSlots.Front()
+	for i := 0; i < rl.UsedItems.Len(); i++ {
+		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
+
+		var isExtra bool
+		if logic.Rupees[item.Name] == 0 {
+			// remove parent provisionally
+			for i, parent := range item.Parents {
+				if parent == slot {
+					item.Parents =
+						append(item.Parents[:i], item.Parents[i+1:]...)
+					break
+				}
+			}
+
+			// ask if anyone misses it
+			r.Graph.ClearMarks()
+			if isExtra = done.GetMark(done, false) == graph.MarkTrue; isExtra {
+				if verbose {
+					fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
+				}
+				rl.OptionalItems.PushBack(item)
+				rl.OptionalSlots.PushBack(slot)
+			} else {
+				item.Parents = append(item.Parents, slot)
+				rl.RequiredItems.PushBack(item)
+				rl.RequiredSlots.PushBack(slot)
+			}
+		}
+
+		ei, es = ei.Next(), es.Next()
+	}
+
+	// attach removed parents back to optional items
+	ei, es = rl.OptionalItems.Front(), rl.OptionalSlots.Front()
+	for i := 0; i < rl.OptionalItems.Len(); i++ {
+		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
+		item.Parents = append(item.Parents, slot)
+		ei, es = ei.Next(), es.Next()
+	}
 }
