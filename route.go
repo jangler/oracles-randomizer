@@ -532,8 +532,7 @@ func arrangeListsForLog(r *Route, rl *RouteLists, verbose bool) {
 
 		// ask if anyone misses it
 		r.Graph.ClearMarks()
-		if logic.Rupees[item.Name] == 0 &&
-			done.GetMark(done, false) == graph.MarkTrue {
+		if done.GetMark(done, false) == graph.MarkTrue {
 			if verbose {
 				fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
 			}
