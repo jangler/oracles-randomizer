@@ -281,6 +281,8 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		}
 
 		rl.UsedItems, rl.UsedSlots = list.New(), list.New()
+		rl.RequiredItems, rl.RequiredSlots = list.New(), list.New()
+		rl.OptionalItems, rl.OptionalSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
 		seed = uint32(src.Int31())
