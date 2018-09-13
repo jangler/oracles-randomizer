@@ -35,12 +35,17 @@ var itemNodes = map[string]*Node{
 	"scent satchel":   And("harvest scent seeds", "satchel"),
 	"pegasus satchel": And("harvest pegasus seeds", "satchel"),
 	"gale satchel":    And("harvest gale seeds", "satchel"),
+	"any satchel": Or("ember satchel", "mystery satchel", "scent satchel",
+		"pegasus satchel", "gale satchel"),
 
 	"ember slingshot":   And("harvest ember seeds", "slingshot"),
 	"mystery slingshot": And("harvest mystery seeds", "slingshot"),
 	"scent slingshot":   And("harvest scent seeds", "slingshot"),
 	"pegasus slingshot": And("harvest pegasus seeds", "slingshot"),
 	"gale slingshot":    And("harvest gale seeds", "slingshot"),
+	"any slingshot": Or("ember slingshot", "mystery slingshot",
+		"scent slingshot", "pegasus slingshot", "gale slingshot"),
+	"any slingshot L-2": And("slingshot L-2", "any slingshot"),
 
 	"ember seeds":   And("harvest ember seeds", "seed item"),
 	"mystery seeds": And("harvest mystery seeds", "seed item"),

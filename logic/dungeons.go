@@ -316,8 +316,8 @@ var d7Nodes = map[string]*Node{
 // non-HSS skip.
 var d8Nodes = map[string]*Node{
 	// 1F
-	"d8 eye key fall":     And("enter d8", "slingshot", "remove pot"),
-	"d8 ring chest":       AndSlot("enter d8", "slingshot L-2", "jump"),
+	"d8 eye key fall":     And("enter d8", "any slingshot", "remove pot"),
+	"d8 ring chest":       AndSlot("enter d8", "any slingshot L-2", "jump"),
 	"d8 hardhat room":     And("enter d8", "kill magunesu"),
 	"d8 hardhat key fall": And("d8 hardhat room", "kill hardhat (magnet)"),
 	"HSS skip":            HardAnd("d8 hardhat room", "kill zol", "bombs", "pegasus jump L-2"),
@@ -325,14 +325,14 @@ var d8Nodes = map[string]*Node{
 		Or("feather L-2", Hard("long jump")))),
 	"d8 compass chest":  AndSlot("d8 blade room"),
 	"d8 map chest":      AndSlot("d8 spinner"),
-	"d8 bomb room":      And("d8 HSS stairs", "slingshot L-2"),
+	"d8 bomb room":      And("d8 HSS stairs", "any slingshot L-2"),
 	"d8 bomb key chest": And("d8 bomb room", "bombs", "kill darknut"),
 	"d8 ice puzzle room": Or("d8 frypolar stairs",
 		And("d8 cross bridge A", Or("feather L-2", Hard("long jump")))),
 	"d8 cross bridge B": And("d8 ice puzzle room", Or(
 		"boomerang L-2", "pegasus jump L-2",
-		And("jump", Or("boomerang", "slingshot L-2")),
-		And("long jump", Or("bombs", "slingshot L-1")),
+		And("jump", Or("boomerang", "any slingshot L-2")),
+		And("long jump", Or("bombs", "any slingshot")),
 		HardAnd("long jump", Or("sword", "fool's ore")))),
 	// technically there are pots to throw in this room but i don't care
 	"d8 boss key chest": AndSlot("d8 cross bridge B", "kill keese",
