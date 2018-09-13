@@ -187,7 +187,8 @@ var holodrumPrenodes = map[string]*Prenode{
 		And("natzu river", "scent tree", "dimitri's flute"),
 		And("natzu wasteland", And("sunken city",
 			Or("flute", And("remove bush", "long jump")))))),
-	"platform chest": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
+	"platform chest": OrSlot(And("scent tree", Or("flippers", "dimitri's flute")),
+		And("sunken city", "natzu river", "pegasus jump L-2")),
 
 	// sunken city
 	"sunken city": Or(
