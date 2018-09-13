@@ -72,7 +72,7 @@ func (g Graph) Explore(start map[*Node]bool, hard bool,
 		reached[node] = true
 		node.Mark = MarkTrue
 
-		for _, child := range node.Children {
+		for _, child := range node.children {
 			if !reached[child] {
 				frontier[child] = true
 			}
@@ -90,7 +90,7 @@ func (g Graph) Explore(start map[*Node]bool, hard bool,
 			if node.GetMark(node, hard) == MarkTrue {
 				reached[node] = true
 				node.Mark = MarkTrue
-				for _, child := range node.Children {
+				for _, child := range node.children {
 					if !reached[child] && !tried[child] {
 						frontier[child] = true
 					}
@@ -122,7 +122,7 @@ func (g Graph) Reduce(target string) (Graph, error) {
 	// copy graph but remove start node
 	reduced := copyGraph(g)
 	if start := g["start"]; start != nil {
-		for _, child := range start.Children {
+		for _, child := range start.children {
 			removeParent(child, start)
 		}
 		delete(g, "start")
@@ -142,17 +142,17 @@ func (g Graph) Reduce(target string) (Graph, error) {
 				continue
 			}
 
-			switch len(node.Children) {
+			switch len(node.children) {
 			case 0:
 				node.ClearParents()
 				delete(reduced, name)
 			case 1:
-				if len(node.Parents) == 1 ||
-					node.Type == node.Children[0].Type {
+				if len(node.parents) == 1 ||
+					node.Type == node.children[0].Type {
 					done = false
-					node.Children[0].AddParents(node.Parents...)
-					removeParent(node.Children[0], node)
-					removeChild(node, node.Parents...)
+					node.children[0].AddParents(node.parents...)
+					removeParent(node.children[0], node)
+					removeChild(node, node.parents...)
 					delete(reduced, name)
 				}
 			}
@@ -160,13 +160,13 @@ func (g Graph) Reduce(target string) (Graph, error) {
 
 		// make direct parents of the target node parents only of that node
 		for _, node := range reduced {
-			if IsNodeInSlice(reduced[target], node.Children) {
-				for i := 0; i < len(node.Children); i++ {
-					if node.Children[i] != reduced[target] {
+			if IsNodeInSlice(reduced[target], node.children) {
+				for i := 0; i < len(node.children); i++ {
+					if node.children[i] != reduced[target] {
 						done = false
-						removeParent(node.Children[i], node)
-						node.Children =
-							append(node.Children[:i], node.Children[i+1:]...)
+						removeParent(node.children[i], node)
+						node.children =
+							append(node.children[:i], node.children[i+1:]...)
 						i--
 					}
 				}
@@ -190,11 +190,11 @@ func copyGraph(old Graph) Graph {
 
 	// add relationships
 	for name, node := range old {
-		for _, parent := range node.Parents {
+		for _, parent := range node.parents {
 			newNode := new[name]
-			newNode.Parents = append(newNode.Parents, new[parent.Name])
-			children := new[parent.Name].Children
-			new[parent.Name].Children = append(children, newNode)
+			newNode.parents = append(newNode.parents, new[parent.Name])
+			children := new[parent.Name].children
+			new[parent.Name].children = append(children, newNode)
 		}
 	}
 
@@ -203,9 +203,9 @@ func copyGraph(old Graph) Graph {
 
 // doesn't do anything if the child already doesn't have the parent
 func removeParent(child, removal *Node) {
-	for i, parent := range child.Parents {
+	for i, parent := range child.parents {
 		if parent == removal {
-			child.Parents = append(child.Parents[:i], child.Parents[i+1:]...)
+			child.parents = append(child.parents[:i], child.parents[i+1:]...)
 			break
 		}
 	}

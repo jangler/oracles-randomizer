@@ -75,10 +75,10 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 					continue
 				}
 
-				item.Parents = append(item.Parents, slot)
+				item.AddParents(slot)
 
 				if canSoftlock(r.Graph) != nil {
-					item.Parents = item.Parents[:len(item.Parents)-1]
+					item.RemoveParent(slot)
 				} else {
 					newCount = countFunc(r)
 					usedItems.PushBack(item)
@@ -92,7 +92,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			for usedItems.Len() > 0 {
 				item := usedItems.Remove(usedItems.Front()).(*graph.Node)
 				slot := usedSlots.Remove(usedSlots.Front()).(*graph.Node)
-				removeNodeFromSlice(slot, &item.Parents)
+				item.RemoveParent(slot)
 			}
 		}
 		itemPool.PushBack(itemPool.Remove(itemPool.Front()))
@@ -109,7 +109,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	usedUnstaleTurnSlot := false
 	for ei := usedItems.Front(); ei != nil; ei = ei.Next() {
 		item := ei.Value.(*graph.Node)
-		item.Parents = item.Parents[:len(item.Parents)-1]
+		item.PopParent()
 
 		for es := freeSlots.Front(); es != nil; es = es.Next() {
 			slot := es.Value.(*graph.Node)
@@ -118,10 +118,10 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 			}
 
 			if itemFitsInSlot(item, slot, nil) {
-				item.Parents = append(item.Parents, slot)
+				item.AddParents(slot)
 
 				if canSoftlock(r.Graph) != nil {
-					item.Parents = item.Parents[:len(item.Parents)-1]
+					item.RemoveParent(slot)
 				} else {
 					usedSlots.PushBack(slot)
 					if r.TurnsReached[slot] <= maxStaleness {
@@ -138,7 +138,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 	if !fillUnused && !usedUnstaleTurnSlot {
 		for usedItems.Len() > 0 {
 			item := usedItems.Remove(usedItems.Front()).(*graph.Node)
-			item.Parents = item.Parents[:len(item.Parents)-1]
+			item.PopParent()
 		}
 		return list.New(), list.New()
 	}
@@ -445,9 +445,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 
 		for e := usedItems.Front(); e != nil; e = e.Next() {
 			item := e.Value.(*graph.Node)
-
-			parent := item.Parents[len(item.Parents)-1]
-			item.Parents = item.Parents[:len(item.Parents)-1]
+			parent := item.PopParent()
 
 			testCount := countFunc(r)
 			if testCount > initialCount && canSoftlock(r.Graph) == nil {
@@ -457,7 +455,7 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 				break
 			}
 
-			item.Parents = append(item.Parents, parent)
+			item.AddParents(parent)
 		}
 	}
 
@@ -476,8 +474,8 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 			// don't use a slingshot where a satchel will do
 			if !triedDowngradeToSatchel &&
 				strings.HasPrefix(item.Name, "slingshot") &&
-				len(r.Graph["satchel 1"].Parents) == 0 &&
-				len(r.Graph["satchel 2"].Parents) == 0 {
+				r.Graph["satchel 1"].NumParents() == 0 &&
+				r.Graph["satchel 2"].NumParents() == 0 {
 				downgrade = r.Graph["satchel 1"]
 			}
 
@@ -493,13 +491,12 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 					r.Graph[strings.Replace(item.Name, "L-2", "L-1", 1)]
 			}
 
-			if downgrade == nil || len(downgrade.Parents) > 0 {
+			if downgrade == nil || downgrade.NumParents() > 0 {
 				continue
 			}
 
-			parent := item.Parents[len(item.Parents)-1]
-			item.Parents = item.Parents[:len(item.Parents)-1]
-			downgrade.Parents = append(downgrade.Parents, parent)
+			parent := item.PopParent()
+			downgrade.AddParents(parent)
 
 			testCount := countFunc(r)
 			if testCount >= targetCount && canSoftlock(r.Graph) == nil {
@@ -510,8 +507,8 @@ func cutExtraItems(r *Route, usedItems *list.List, initialCount int,
 				break
 			}
 
-			downgrade.Parents = downgrade.Parents[:len(downgrade.Parents)-1]
-			item.Parents = append(item.Parents, parent)
+			downgrade.RemoveParent(parent)
+			item.AddParents(parent)
 
 			// if L-2 slingshot downgrade to satchel didn't work, still try to
 			// downgrade it to L-1 slingshot.

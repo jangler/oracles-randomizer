@@ -378,7 +378,7 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 					slot := es.Value.(*graph.Node)
 					if dungeonIndex(slot) == i &&
 						rom.IsChest(rom.ItemSlots[slot.Name]) {
-						r.AddParent(item.Name, slot.Name)
+						item.AddParents(slot)
 
 						usedSlots.PushBack(slot)
 						slotList.Remove(es)
@@ -404,7 +404,7 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 			usedItems.PushBack(itemNode)
 			itemList.Remove(itemElem)
 
-			itemNode.Parents = append(itemNode.Parents, slotNode)
+			itemNode.AddParents(slotNode)
 		}
 	}
 }
@@ -528,13 +528,7 @@ func arrangeListsForLog(r *Route, rl *RouteLists, verbose bool) {
 		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
 
 		// remove parent provisionally
-		for i, parent := range item.Parents {
-			if parent == slot {
-				item.Parents =
-					append(item.Parents[:i], item.Parents[i+1:]...)
-				break
-			}
-		}
+		item.RemoveParent(slot)
 
 		// ask if anyone misses it
 		r.Graph.ClearMarks()
@@ -546,7 +540,7 @@ func arrangeListsForLog(r *Route, rl *RouteLists, verbose bool) {
 			rl.OptionalItems.PushBack(item)
 			rl.OptionalSlots.PushBack(slot)
 		} else {
-			item.Parents = append(item.Parents, slot)
+			item.AddParents(slot)
 			rl.RequiredItems.PushBack(item)
 			rl.RequiredSlots.PushBack(slot)
 		}
@@ -558,7 +552,7 @@ func arrangeListsForLog(r *Route, rl *RouteLists, verbose bool) {
 	ei, es = rl.OptionalItems.Front(), rl.OptionalSlots.Front()
 	for i := 0; i < rl.OptionalItems.Len(); i++ {
 		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
-		item.Parents = append(item.Parents, slot)
+		item.AddParents(slot)
 		ei, es = ei.Next(), es.Next()
 	}
 }

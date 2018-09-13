@@ -88,7 +88,7 @@ func canReachWithoutPrereq(g graph.Graph, goal, prereq *graph.Node) bool {
 	}
 
 	// check whether goal node is reachable if prereq is not
-	parents := prereq.Parents
+	parents := prereq.Parents()
 	prereq.ClearParents()
 	defer g.ExploreFromStart(true)
 	defer prereq.AddParents(parents...)

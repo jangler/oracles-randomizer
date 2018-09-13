@@ -1,5 +1,9 @@
 package graph
 
+import (
+	"fmt"
+)
+
 // this file defines operations on a dependency graph for the game, but does
 // not itself define the graph.
 
@@ -40,8 +44,8 @@ type Node struct {
 	IsSlot   bool
 	IsHard   bool
 	Mark     Mark
-	Parents  []*Node
-	Children []*Node
+	parents  []*Node
+	children []*Node
 }
 
 // NewNode returns a new unconnected graph node, not yet part of any graph.
@@ -55,8 +59,8 @@ func NewNode(name string, nodeType NodeType,
 		IsSlot:   isSlot,
 		IsHard:   isHard,
 		Mark:     MarkNone,
-		Parents:  make([]*Node, 0),
-		Children: make([]*Node, 0),
+		parents:  make([]*Node, 0),
+		children: make([]*Node, 0),
 	}
 
 	// set node's GetMark function based on type
@@ -77,7 +81,7 @@ func NewNode(name string, nodeType NodeType,
 func getAndMark(n *Node, hard bool) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
-		for _, parent := range n.Parents {
+		for _, parent := range n.parents {
 			if !hard && parent.IsHard {
 				continue
 			}
@@ -103,7 +107,7 @@ func getOrMark(n *Node, hard bool) Mark {
 
 		// prioritize already satisfied nodes
 	OrPeekLoop:
-		for _, parent := range n.Parents {
+		for _, parent := range n.parents {
 			if !hard && parent.IsHard {
 				continue
 			}
@@ -121,7 +125,7 @@ func getOrMark(n *Node, hard bool) Mark {
 		// then actually check them otherwise
 		if n.Mark == MarkPending {
 		OrGetLoop:
-			for _, parent := range n.Parents {
+			for _, parent := range n.parents {
 				if !hard && parent.IsHard {
 					continue
 				}
@@ -137,7 +141,7 @@ func getOrMark(n *Node, hard bool) Mark {
 			}
 		}
 
-		if (allPending && len(n.Parents) > 0) || n.Mark == MarkPending {
+		if (allPending && len(n.parents) > 0) || n.Mark == MarkPending {
 			n.Mark = MarkNone
 			return MarkFalse
 		}
@@ -146,23 +150,57 @@ func getOrMark(n *Node, hard bool) Mark {
 	return n.Mark
 }
 
+// Parents returns a copy of the node's slice of parents.
+func (n *Node) Parents() []*Node {
+	parents := make([]*Node, 0, len(n.parents))
+	parents = append(parents, n.parents...)
+	return parents
+}
+
+// NumParents returns the number of parents the node has. This is mode time-
+// and memory-efficient than taking the length of node.Parents().
+func (n *Node) NumParents() int {
+	return len(n.parents)
+}
+
 // AddParents makes the given nodes parents of the node, and likewise adds this
 // node to each parent's list of children. If a given parent is already a
 // parent of the node, nothing is done.
 func (n *Node) AddParents(parents ...*Node) {
 	for _, parent := range parents {
-		if !IsNodeInSlice(parent, n.Parents) {
-			n.Parents = append(n.Parents, parent)
+		if !IsNodeInSlice(parent, n.parents) {
+			n.parents = append(n.parents, parent)
 			addChild(n, parent)
 		}
 	}
 }
 
+// RemoveParent removes the given node from this node's parents. It panics if
+// the given node isn't actually a parent of this node.
+func (n *Node) RemoveParent(parent *Node) {
+	for i, p := range n.parents {
+		if p == parent {
+			n.parents = append(n.parents[:i], n.parents[i+1:]...)
+			removeChild(parent, n)
+			return
+		}
+	}
+
+	panic(fmt.Sprintf("RemoveParent: %v is not a parent of %v", parent, n))
+}
+
+// PopParent removes and returns the last parent of the node.
+func (n *Node) PopParent() *Node {
+	p := n.parents[len(n.parents)-1]
+	n.RemoveParent(p)
+	return p
+}
+
 // ClearParents makes the node into an effective root node (though not a Root
 // node).
 func (n *Node) ClearParents() {
-	removeChild(n, n.Parents...)
-	n.Parents = n.Parents[:0]
+	removeChild(n, n.parents...)
+	n.parents = n.parents[:0]
 }
 
 // String satisfies the fmt.Stringer interface.
@@ -182,15 +220,15 @@ func IsNodeInSlice(node *Node, slice []*Node) bool {
 
 func addChild(child *Node, parents ...*Node) {
 	for _, parent := range parents {
-		if !IsNodeInSlice(child, parent.Children) {
-			parent.Children = append(parent.Children, child)
+		if !IsNodeInSlice(child, parent.children) {
+			parent.children = append(parent.children, child)
 		}
 	}
 }
 
 func removeChild(child *Node, parents ...*Node) {
 	for _, parent := range parents {
-		removeNodeFromSlice(child, &parent.Children)
+		removeNodeFromSlice(child, &parent.children)
 	}
 }
 
