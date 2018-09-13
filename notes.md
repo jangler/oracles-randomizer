@@ -22,6 +22,7 @@ drenn's ages-disasm.
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 - 0:3ac6 = getFreeInteractionSlot
 - 0:3b36 = updateInteraction, d is object low byte
+- 1:5ece = updateSeedTreeRefillData
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
 - 5:4552 = companionTryToMount

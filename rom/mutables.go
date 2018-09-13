@@ -576,7 +576,14 @@ var constMutables = map[string]Mutable{
 			"\xc9"), // ret
 }
 
-var mapIconByTreeID = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
+var (
+	mapIconByTreeID  = []byte{0x15, 0x19, 0x16, 0x17, 0x18, 0x18}
+	roomByTreeID     = []byte{0xf8, 0x9e, 0x67, 0x72, 0x5f, 0x10}
+	roomNameByTreeID = []string{
+		"ember tree room", "mystery tree room", "scent tree room",
+		"pegasus tree room", "sunken gale tree room", "tarm gale tree room",
+	}
+)
 
 // like the item slots, these are (usually) no-ops until the randomizer touches
 // them.
@@ -592,6 +599,14 @@ var varMutables = map[string]Mutable{
 	"pegasus tree map icon":     MutableByte(Addr{0x02, 0x6c5a}, 0x17, 0x17),
 	"mystery tree map icon":     MutableByte(Addr{0x02, 0x6c5d}, 0x19, 0x19),
 	"ember tree map icon":       MutableByte(Addr{0x02, 0x6c60}, 0x15, 0x15),
+
+	// seed tree rooms (need to match seed types for regrowth)
+	"ember tree room":       MutableByte(Addr{0x01, 0x5eed}, 0xf8, 0xf8),
+	"mystery tree room":     MutableByte(Addr{0x01, 0x5eef}, 0x9e, 0x9e),
+	"scent tree room":       MutableByte(Addr{0x01, 0x5ef1}, 0x67, 0x67),
+	"pegasus tree room":     MutableByte(Addr{0x01, 0x5ef3}, 0x72, 0x72),
+	"sunken gale tree room": MutableByte(Addr{0x01, 0x5ef5}, 0x5f, 0x5f),
+	"tarm gale tree room":   MutableByte(Addr{0x01, 0x5ef7}, 0x10, 0x10),
 
 	// the satchel and slingshot should contain the type of seeds that grow on
 	// the horon village tree.

@@ -227,4 +227,11 @@ func setSeedData() {
 		id := ItemSlots[strings.Replace(name, " map icon", "", 1)].Treasure.id
 		mut.New[0] = mapIconByTreeID[int(id)]
 	}
+
+	for i, name := range []string{"ember tree", "mystery tree", "scent tree",
+		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
+		slot := ItemSlots[name]
+		mut := varMutables[roomNameByTreeID[slot.Treasure.id]].(*MutableRange)
+		mut.New[0] = roomByTreeID[i]
+	}
 }
