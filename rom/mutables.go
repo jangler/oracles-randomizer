@@ -533,6 +533,10 @@ var constMutables = map[string]Mutable{
 		"\x0c\x00\x43\x6f\x6e\x74\x69\x6e\x75\x65\x20\x61\x74\x01"+ // Continue at
 			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
 
+	// remove the original maku gate interaction
+	"maku gate interactions": MutableString(Addr{0x11, 0x634c},
+		"\xf2\x22\x0a\x30\x50\x2d\x84\x48\x68\x37\x84\x48\x68",
+		"\xf2\x2d\x84\x48\x68\x37\x84\x48\x68\xff"),
 	// the interaction on the mount cucco waterfall/vine screen
 	"waterfall cliff interaction redirect": MutableString(Addr{0x11, 0x6c10},
 		"\xf2\x1f\x08\x68", "\xf3\xb0\x7e\xff"),
