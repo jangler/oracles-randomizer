@@ -314,7 +314,7 @@ func randomize(romData []byte, seedFlag string,
 	}
 
 	// search for route, parallelized
-	routeChan := make(chan *RouteLists)
+	routeChan := make(chan *RouteInfo)
 	logChan := make(chan string)
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
@@ -336,10 +336,10 @@ func randomize(romData []byte, seedFlag string,
 	}()
 
 	// get return values
-	var rl *RouteLists
+	var ri *RouteInfo
 	for i := 0; i < numThreads; i++ {
-		rl = <-routeChan
-		if rl != nil {
+		ri = <-routeChan
+		if ri != nil {
 			break
 		}
 	}
@@ -353,24 +353,24 @@ func randomize(romData []byte, seedFlag string,
 	}()
 
 	// didn't find any route
-	if rl == nil {
+	if ri == nil {
 		return 0, nil, "", fmt.Errorf("no route found")
 	}
 
 	// place selected treasures in slots
-	for rl.UsedSlots.Len() > 0 {
+	for ri.UsedSlots.Len() > 0 {
 		slotName :=
-			rl.UsedSlots.Remove(rl.UsedSlots.Front()).(*graph.Node).Name
+			ri.UsedSlots.Remove(ri.UsedSlots.Front()).(*graph.Node).Name
 		treasureName :=
-			rl.UsedItems.Remove(rl.UsedItems.Front()).(*graph.Node).Name
+			ri.UsedItems.Remove(ri.UsedItems.Front()).(*graph.Node).Name
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 	}
 
 	// set rom seasons and animal data
-	for area, id := range rl.Seasons {
+	for area, id := range ri.Seasons {
 		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
 	}
-	rom.SetAnimal(rl.Companion)
+	rom.SetAnimal(ri.Companion)
 
 	// do it! (but don't write anything)
 	checksum, err := rom.Mutate(romData)
@@ -378,14 +378,15 @@ func randomize(romData []byte, seedFlag string,
 		return 0, nil, "", err
 	}
 
-	logFilename := fmt.Sprintf("oosrando_%s_%08x_log.txt", version, rl.Seed)
+	logFilename := fmt.Sprintf("oosrando_%s_%08x_log.txt", version, ri.Seed)
 	summary, summaryDone := getSummaryChannel(logFilename)
 
 	// write info to summary file
-	summary <- fmt.Sprintf("seed: %08x", rl.Seed)
+	summary <- fmt.Sprintf("seed: %08x", ri.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
-	logItems(summary, "required items", rl.RequiredItems, rl.RequiredSlots)
-	logItems(summary, "optional items", rl.OptionalItems, rl.OptionalSlots)
+	arrangeFinalListsForLog(ri.Route, ri, verbose)
+	logItems(summary, "progression items", ri.ProgressItems, ri.ProgressSlots)
+	logItems(summary, "extra items", ri.ExtraItems, ri.ExtraSlots)
 	summary <- ""
 	summary <- "default seasons:"
 	summary <- ""
@@ -396,17 +397,17 @@ func randomize(romData []byte, seedFlag string,
 	summary <- ""
 	summary <- fmt.Sprintf("natzu region <- %s", []string{
 		"", "natzu prairie", "natzu river", "natzu wasteland",
-	}[rl.Companion])
+	}[ri.Companion])
 
 	close(summary)
 	<-summaryDone
 
-	return rl.Seed, checksum, logFilename, nil
+	return ri.Seed, checksum, logFilename, nil
 }
 
 // searches for a route and logs and returns a route on the given channels.
 func searchAsync(src *rand.Rand, seed uint32, verbose bool,
-	logChan chan string, retChan chan *RouteLists, doneChan chan int) {
+	logChan chan string, retChan chan *RouteInfo, doneChan chan int) {
 	// find a viable random route
 	retChan <- findRoute(src, seed, verbose, logChan, doneChan)
 }
@@ -420,8 +421,12 @@ func logItems(summary chan string, title string, items, slots *list.List) {
 
 	for slots.Len() > 0 {
 		slotName := slots.Remove(slots.Front()).(*graph.Node).Name
-		itemName := items.Remove(items.Front()).(*graph.Node).Name
-		summary <- fmt.Sprintf("%-28s <- %s",
-			getNiceName(slotName), getNiceName(itemName))
+		item := items.Remove(items.Front()).(*graph.Node)
+		line := fmt.Sprintf("%-28s <- %s",
+			getNiceName(slotName), getNiceName(item.Name))
+		if item.IsOptional {
+			line += " (optional)"
+		}
+		summary <- line
 	}
 }
