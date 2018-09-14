@@ -48,7 +48,7 @@ The following items are **not** randomized:
 
 - Renewable shop items (bombs, shield, hearts, etc.)
 - Small keys
-- Pirate's bell
+- Pirate's bell (obtained by polishing rusty bell)
 - Found items (gasha seeds and pieces of heart outside of chests)
 - Subrosian dancing prizes after the first
 - Trading sequence items
@@ -64,28 +64,29 @@ The following items are **not** randomized:
 Other small changes have been made for convenience, to simplify randomization
 logic, or to prevent softlocks. The most notable are:
 
-- The intro sequence and pirate cutscene are removed.
-- Mystical seeds grow in all seasons.
-- Seeds can be collected if the player has either a slingshot or the satchel.
-- The cliff between Eastern Suburbs and Sunken City is blocked except in
-  spring.
+- The intro sequence and pirate cutscene are removed, and the Maku Seed
+  cutscenes are abbreviated.
+- Mystical seeds grow in all seasons, and can be collected with a slingshot as
+  well as a satchel.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
 - Fool's ore is randomized (the Strange Brothers trade you nothing for your
   feather).
-- The diving spot at the south end of Sunken City is removed.
-- **Holding start while closing the map screen outdoors warps to the seed tree
-  in Horon Village.** This also sets your save/respawn point to that screen.
-  Tree warping has a one-hour cooldown unless the `-freewarp` flag is
-  specified. Tree warp is not supported as a "feature" and has no warranty, so
-  consider possible consequences before using it.
+- **Holding start while closing the map screen outdoors (in the overworld or in
+  Subrosia) warps to the seed tree in Horon Village.** This also sets your
+  save/respawn point to that screen.  Tree warping has a one-hour cooldown
+  unless the `-freewarp` flag is specified. Tree warp is not supported as a
+  "feature" and has no warranty, so consider possible consequences before using
+  it.
+
 
 ## FAQ
 
 **Q: Do I have to do HSS skip or Poe skip?**
 
-A: No, but you can if you want to, and the randomizer accounts for those and other
-sequence breaks. Though depending on the seed, you might be expected to do any
-number of tricky things the vanilla game wouldn't expect of you.
+A: No, but you can if you want to. Poe skip is safe to do, but be careful using
+your small keys if you skip any by doing HSS skip. Barring these tricks and
+some other especially difficult maneuvers, you might be required to do any
+number of tricky things that the vanilla game wouldn't expect of you.
 
 **Q: I'm softlocked. Now what do I do?**
 
@@ -96,10 +97,11 @@ un-softlock.
 
 **Q: Are you going to make a randomizer for Oracle of Ages too?**
 
-A: Maybe, but not until the Seasons randomizer is reasonably feature-complete
-(as i see it). Ages also has some big sequence breaks and Crescent Island,
-which would both be tricky to account for in the logic unless they're just
-removed.
+A: Ages support will probably be the next feature priority for the randomizer,
+although I don't have immediate plans to start working on it. I don't know Ages
+nearly as well as I know Seasons, so expect Ages randomization to be initially
+poor at avoiding softlock cases. Perfoming D2 skip or text warps will
+definitely void any warranty of safety from the randomizer.
 
 **Q: Is there a place to discuss the randomizer?**
 
@@ -107,3 +109,8 @@ A: Yes, the Oracles Discord server (link
 [here](https://www.speedrun.com/oos/thread/3qwe1)). The server is mainly focused
 on speedrunning, but the #randomizer channel is for anything pertaining to the
 randomizer.
+
+**Q: Is there an item tracker I can use?**
+
+A: [EmoTracker](http://emosaru.com/index.php/emotracker/) has an oos-randomizer
+plugin developed by Herreteman.
