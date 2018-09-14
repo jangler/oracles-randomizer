@@ -226,7 +226,7 @@ var holodrumNodes = map[string]*Node{
 
 	// goron mountain
 	"goron mountain": Or(
-		And("mount cucco", "shovel", "bracelet"),
+		And("mount cucco", Or("shovel", "spring banana"), "bracelet"),
 		And("temple remains", "long jump", Or("flippers", "pegasus jump L-2")),
 		And("scent tree", "flippers")),
 	"goron chest": AndSlot("goron mountain", "feather L-2", "bombs"),
