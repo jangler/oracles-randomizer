@@ -561,7 +561,7 @@ var constMutables = map[string]Mutable{
 	"hss skip room interaction redirect": MutableString(Addr{0x11, 0x7ada},
 		"\xf3\x93\x55", "\xf3\xe0\x7e"),
 	"hss skip room interactions": MutableString(Addr{0x11, 0x7ee0}, "\x11",
-		"\xf2\x22\x0a\x88\x10\xf3\x93\x55\xfe"),
+		"\xf2\x22\x0a\x88\x98\xf3\x93\x55\xfe"),
 
 	// create a warning interaction when breaking bushes and flowers under
 	// certain circumstances.
