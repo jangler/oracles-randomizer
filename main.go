@@ -384,9 +384,8 @@ func randomize(romData []byte, seedFlag string,
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", ri.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
-	arrangeFinalListsForLog(ri.Route, ri, verbose)
-	logItems(summary, "progression items", ri.ProgressItems, ri.ProgressSlots)
-	logItems(summary, "extra items", ri.ExtraItems, ri.ExtraSlots)
+	logItems(summary, "required items", ri.ProgressItems, ri.ProgressSlots)
+	logItems(summary, "optional items", ri.ExtraItems, ri.ExtraSlots)
 	summary <- ""
 	summary <- "default seasons:"
 	summary <- ""
@@ -421,12 +420,8 @@ func logItems(summary chan string, title string, items, slots *list.List) {
 
 	for slots.Len() > 0 {
 		slotName := slots.Remove(slots.Front()).(*graph.Node).Name
-		item := items.Remove(items.Front()).(*graph.Node)
-		line := fmt.Sprintf("%-28s <- %s",
-			getNiceName(slotName), getNiceName(item.Name))
-		if item.IsOptional {
-			line += " (optional)"
-		}
-		summary <- line
+		itemName := items.Remove(items.Front()).(*graph.Node).Name
+		summary <- fmt.Sprintf("%-28s <- %s",
+			getNiceName(slotName), getNiceName(itemName))
 	}
 }

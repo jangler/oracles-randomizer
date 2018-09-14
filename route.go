@@ -224,7 +224,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		}
 
 		if success {
-			arrangeInitialListsForLog(r, ri, verbose)
+			arrangeListsForLog(r, ri, verbose)
 
 			// fill unused slots
 			for slotList.Len() > 0 {
@@ -521,7 +521,7 @@ func countSteps(r *Route) int {
 
 // break down the used items into required and optional items, so that the log
 // makes sense.
-func arrangeInitialListsForLog(r *Route, ri *RouteInfo, verbose bool) {
+func arrangeListsForLog(r *Route, ri *RouteInfo, verbose bool) {
 	done := r.Graph["done"]
 
 	// figure out which items aren't necessary
@@ -554,73 +554,6 @@ func arrangeInitialListsForLog(r *Route, ri *RouteInfo, verbose bool) {
 	for i := 0; i < ri.ExtraItems.Len(); i++ {
 		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
 		item.AddParents(slot)
-		ei, es = ei.Next(), es.Next()
-	}
-}
-
-// check whether non-required items can be optional progression items, and
-// move them into the appropriate list if so.
-func arrangeFinalListsForLog(r *Route, ri *RouteInfo, verbose bool) {
-	fmt.Println("seed found; generating log file")
-
-	// clear slots (but remember them) for a fresh search
-	storedParents := make(map[*graph.Node][]*graph.Node)
-	ei := ri.ProgressItems.Front()
-	for ei != nil {
-		item := ei.Value.(*graph.Node)
-		storedParents[item] = item.Parents()
-		item.ClearParents()
-		ei = ei.Next()
-	}
-	ei = ri.ExtraItems.Front()
-	for ei != nil {
-		item := ei.Value.(*graph.Node)
-		storedParents[item] = item.Parents()
-		item.ClearParents()
-		ei = ei.Next()
-	}
-
-	// add required items to the route one by one, and see if any extra items
-	// also open up progression
-	ei, es := ri.ProgressItems.Front(), ri.ProgressSlots.Front()
-	for ei != nil {
-		item := ei.Value.(*graph.Node)
-		item.AddParents(storedParents[item]...)
-		if verbose {
-			fmt.Printf("checking progress item %v\n", item)
-		}
-
-		count := countSteps(r)
-
-		exi, exs := ri.ExtraItems.Front(), ri.ExtraSlots.Front()
-		for exi != nil {
-			exiNext, exsNext := exi.Next(), exs.Next()
-
-			extraItem := exi.Value.(*graph.Node)
-			switch extraItem.Name {
-			case "gasha seed", "piece of heart", "dungeon map", "compass":
-				break
-			default:
-				extraItem.AddParents(storedParents[extraItem]...)
-				extraCount := countSteps(r)
-
-				if extraCount > count {
-					ri.ProgressItems.InsertAfter(extraItem, ei)
-					ri.ProgressSlots.InsertAfter(exs.Value.(*graph.Node), es)
-					ri.ExtraItems.Remove(exi)
-					ri.ExtraSlots.Remove(exs)
-					extraItem.IsOptional = true
-					if verbose {
-						fmt.Printf("%v is optional progression\n", extraItem)
-					}
-				}
-
-				extraItem.ClearParents()
-			}
-
-			exi, exs = exiNext, exsNext
-		}
-
 		ei, es = ei.Next(), es.Next()
 	}
 }
