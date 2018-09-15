@@ -60,7 +60,7 @@ var killNodes = map[string]*Node{
 	"pit kill normal":                 Or("sword", "beams", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "punch"),
 	"kill stalfos":                    Or("kill normal", "rod"),
 	"kill stalfos (throw)":            Or("kill stalfos", "bracelet"),
-	"hit lever":                       Or("sword", "boomerang", "rod", "ember seeds", "scent seeds", "any slingshot", "fool's ore", "punch"),
+	"hit lever":                       Or("sword", "boomerang", "rod", "ember seeds", "scent seeds", "any slingshot", "fool's ore", "punch", "shovel"),
 	"kill goriya bros":                Or("sword", "bombs", "fool's ore", "punch"),
 	"kill goriya":                     Or("kill normal"),
 	"kill goriya (pit)":               Or("kill goriya", "pit kill normal"),
