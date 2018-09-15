@@ -78,8 +78,8 @@ logic, or to prevent softlocks. The most notable are:
   "feature" and has no warranty, so consider possible consequences before using
   it.
 - In some situations, the game will give you warnings about what you're doing
-  or about to do. If you receive one, **what you're doing is out of logic and
-  could potentially lead to a softlock**—but in some cases you can also be fine
+  or about to do. If you receive one, what you're doing is out of logic and
+  could potentially lead to a softlock—but in some cases you can also be fine
   as long as you're careful.
 
 
