@@ -39,6 +39,8 @@ func main() {
 	flag.Usage = usage
 	flagFreewarp := flag.Bool(
 		"freewarp", false, "allow unlimited tree warp (no cooldown)")
+	flagNoMusic := flag.Bool(
+		"nomusic", false, "don't play any music in the modified ROM")
 	flagProfile := flag.String(
 		"profile", "", "write CPU profile to given filename")
 	flagSeed := flag.String("seed", "",
@@ -63,6 +65,9 @@ func main() {
 	}
 
 	rom.SetFreewarp(*flagFreewarp)
+	if *flagNoMusic {
+		rom.SetNoMusic()
+	}
 
 	switch flag.NArg() {
 	case 0: // no specified files, assume not using command line

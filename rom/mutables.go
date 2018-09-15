@@ -93,6 +93,11 @@ func SetFreewarp(freewarp bool) {
 	}
 }
 
+// SetNoMusic sets music off in the modified rom
+func SetNoMusic() {
+	constMutables["no music call"].(*MutableRange).New = []byte("\xcd\xc8\x3e")
+}
+
 // SetAnimal sets the flute type and Natzu region type based on a companion
 // number 1 to 3.
 func SetAnimal(companion int) {
@@ -107,6 +112,12 @@ var constMutables = map[string]Mutable{
 	"skip capcom call": MutableWord(Addr{0x03, 0x4d6c}, 0x3702, 0xd77d),
 	"skip capcom func": MutableString(Addr{0x03, 0x7dd7}, "\x03",
 		"\xe5\xfa\xb3\xcb\xfe\x94\x30\x03\xcd\x62\x08\xe1\xcd\x37\x02\xc9"),
+
+	// don't play any music if the -nomusic flag is given
+	"no music call": MutableString(Addr{0x00, 0x0c76},
+		"\x67\xf0\xb5", "\x67\xf0\xb5"), // modified only by SetNoMusic()
+	"no music func": MutableString(Addr{0x00, 0x3ec8}, "\x00",
+		"\x67\xfe\x40\x30\x03\x3e\x08\xc9\xf0\xb5\xc9"),
 
 	// start game with link below bushes, not above
 	"initial link placement": MutableByte(Addr{0x07, 0x4197}, 0x38, 0x58),
