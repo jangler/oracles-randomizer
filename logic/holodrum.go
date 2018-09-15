@@ -126,7 +126,7 @@ var holodrumNodes = map[string]*Node{
 	// spool swamp
 	"pegasus tree": AndSlot("ghastly stump", Or("holodrum plain default summer",
 		"summer", "feather L-2", "ricky", "moosh's flute")),
-	"floodgate key spot": AndSlot("pegasus tree", Or("bracelet", "hit lever")),
+	"floodgate key spot": AndSlot("pegasus tree", "hit lever"),
 	"spool stump": And("pegasus tree", Or("bracelet", "hit lever"),
 		Or("pegasus satchel", "flippers", "feather L-2"), "bracelet", "floodgate key"),
 	"dry swamp": Or(Or("spool swamp default summer",
