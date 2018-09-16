@@ -13,6 +13,7 @@ drenn's ages-disasm.
 - 0:1432 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:1702 = loseTreasure (a is ID)
+- 0:17b9 = getRandomRingOfGivenTier ?
 - 0:2215 = objectCopyPositionWithOffset
 - 0:2727 = objectCreateExclamationMark
 - 0:24d2 = interactionActuallyRunScript

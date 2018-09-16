@@ -237,6 +237,14 @@ var constMutables = map[string]Mutable{
 	"star ore flag check": MutableString(Addr{0x08, 0x62aa},
 		"\xc2\xd9\x3a", "\x00\x00\x00"),
 
+	// remove star ore from inventory when buying the first subrosian market
+	// item. this can't go in the gain/lose items table, since the given item
+	// doesn't necessarily have a unique ID.
+	"remove traded star ore call": MutableString(Addr{0x09, 0x7887},
+		"\xdf\x2a\x4e", "\xcd\xa0\x7f"),
+	"remove traded star ore func": MutableString(Addr{0x09, 0x7fa0}, "\x09",
+		"\xb7\x20\x07\xe5\x21\x9a\xc6\xcb\xae\xe1\xdf\x2a\x4e\xc9"),
+
 	// sell member's card in subrosian market before completing d3
 	"member's card essence check": MutableWord(Addr{0x09, 0x7750},
 		0xcb57, 0xf601),
