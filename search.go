@@ -384,9 +384,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	}
 
 	switch slotNode.Name {
-	// star ore and hard ore are special cases because they doesn't set sub ID
-	// at all, so only slot zero-ID treasures there.
-	case "star ore spot", "hard ore slot":
+	// hard ore is a special case because it doesn't set sub ID.
+	case "hard ore slot":
 		if item.SubID() != 0 && !(itemNode.Name == "piece of heart" ||
 			itemNode.Name == "gasha seed") {
 			return false
@@ -395,6 +394,12 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// ID, so only use items that have unique IDs and can't be lost.
 	case "diver gift", "subrosian market 5", "village shop 3":
 		if !rom.TreasureHasUniqueID(itemNode.Name) ||
+			rom.TreasureCanBeLost(itemNode.Name) {
+			return false
+		}
+	// star ore is the above two cases combined.
+	case "star ore spot":
+		if item.SubID() != 0 || !rom.TreasureHasUniqueID(itemNode.Name) ||
 			rom.TreasureCanBeLost(itemNode.Name) {
 			return false
 		}
