@@ -306,14 +306,14 @@ var constMutables = map[string]Mutable{
 	"leave H&S screen": MutableString(Addr{0x09, 0x65a0},
 		"\xcd\x32\x14\x1e\x49\x1a\xbe", "\xcd\x56\x19\xcb\x6e\x00\x00"),
 
-	// There are tables indicating extra items to "get" and "lose" upon getting
-	// an item. We remove the "lose fools ore" entry and insert a "get seeds
-	// from slingshot" entry.
-	"lose fools, get seeds from slingshot 1": MutableByte(Addr{0x3f, 0x4543},
-		0x00, 0x13),
-	"lose fools, get seeds from slingshot 2": MutableString(Addr{0x3f, 0x4545},
-		"\x45\x00\x52\x50\x51\x17\x1e\x00", "\x20\x00\x46\x45\x00\x52\x50\x51"),
-	"lose fools, get seeds from slingshot 3": MutableByte(Addr{0x3f, 0x44cf},
+	// give the player seeds when they get the slingshot, and don't take the
+	// player's: fool's ore when they get feather, star ore when they get
+	// ribbon, or red and blue ore when they get hard ore (just zero the whole
+	// "lose items" table).
+	"edit gain/lose items tables": MutableString(Addr{0x3f, 0x4543},
+		"\x00\x46\x45\x00\x52\x50\x51",
+		"\x13\x20\x20\x00\x00\x00\x00"),
+	"edit lose items table pointer": MutableByte(Addr{0x3f, 0x44cf},
 		0x44, 0x47),
 
 	// since slingshot doesn't increment seed capacity, set the level-zero
