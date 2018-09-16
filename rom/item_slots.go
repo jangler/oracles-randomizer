@@ -216,13 +216,13 @@ var ItemSlots = map[string]*MutableSlot{
 	"moblin road chest":   MutableChest("rupees, 30", 0x5102),
 	"sunken cave chest":   MutableChest("gasha seed", 0x5106),
 	"diver chest":         MutableChest("rupees, 50", 0x510e),
-	"dry lake west chest": MutableChest("piece of heart", 0x5112),
+	"dry lake east chest": MutableChest("piece of heart", 0x5112),
 	"goron chest":         MutableChest("armor ring L-2", 0x511a),
 	"platform chest":      MutableChest("rupees, 50", 0x5122),
 	"talon cave chest":    MutableChest("subrosian ring", 0x511e),
 	"tarm gasha chest":    MutableChest("gasha seed", 0x4fa8),
 	"moblin cliff chest":  MutableChest("gasha seed", 0x5089),
-	"dry lake east chest": &MutableSlot{
+	"dry lake west chest": &MutableSlot{
 		Treasure:   Treasures["rupees, 100"],
 		IDAddrs:    []Addr{{0x0b, 0x73a1}},
 		SubIDAddrs: []Addr{{0x0b, 0x73a5}},
