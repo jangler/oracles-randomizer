@@ -156,9 +156,9 @@ func Update(b []byte) ([]byte, error) {
 	}
 	setSeedData()
 	for _, name := range []string{"satchel initial seeds",
-		"slingshot initial seeds", "satchel initial selection",
-		"slingshot initial selection", "carry seeds in slingshot",
-		"ember tree map icon", "scent tree map icon", "mystery tree map icon",
+		"satchel initial selection", "slingshot initial selection",
+		"carry seeds in slingshot", "ember tree map icon",
+		"scent tree map icon", "mystery tree map icon",
 		"pegasus tree map icon", "sunken gale tree map icon",
 		"tarm gale tree map icon", "initial season"} {
 		err = varMutables[name].Mutate(b)
@@ -209,10 +209,14 @@ func setSeedData() {
 	seedIndex := seedIndexByTreeID[int(ItemSlots["ember tree"].Treasure.id)]
 
 	for _, name := range []string{"satchel initial seeds",
-		"slingshot initial seeds", "carry seeds in slingshot"} {
+		"carry seeds in slingshot"} {
 		mut := varMutables[name].(*MutableRange)
 		mut.New[0] = 0x20 + seedIndex
 	}
+
+	// slingshot starting seeds
+	varMutables["edit gain/lose items tables"].(*MutableRange).New[1] =
+		0x20 + seedIndex
 
 	for _, name := range []string{
 		"satchel initial selection", "slingshot initial selection"} {

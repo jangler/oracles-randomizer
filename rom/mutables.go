@@ -314,16 +314,6 @@ var constMutables = map[string]Mutable{
 	"leave H&S screen": MutableString(Addr{0x09, 0x65a0},
 		"\xcd\x32\x14\x1e\x49\x1a\xbe", "\xcd\x56\x19\xcb\x6e\x00\x00"),
 
-	// give the player seeds when they get the slingshot, and don't take the
-	// player's: fool's ore when they get feather, star ore when they get
-	// ribbon, or red and blue ore when they get hard ore (just zero the whole
-	// "lose items" table).
-	"edit gain/lose items tables": MutableString(Addr{0x3f, 0x4543},
-		"\x00\x46\x45\x00\x52\x50\x51",
-		"\x13\x20\x20\x00\x00\x00\x00"),
-	"edit lose items table pointer": MutableByte(Addr{0x3f, 0x44cf},
-		0x44, 0x47),
-
 	// since slingshot doesn't increment seed capacity, set the level-zero
 	// capacity of seeds to 20, and move the pointer up by one byte.
 	"satchel capacity": MutableString(Addr{0x3f, 0x4617},
@@ -635,10 +625,20 @@ var varMutables = map[string]Mutable{
 	"sunken gale tree room": MutableByte(Addr{0x01, 0x5ef5}, 0x5f, 0x5f),
 	"tarm gale tree room":   MutableByte(Addr{0x01, 0x5ef7}, 0x10, 0x10),
 
-	// the satchel and slingshot should contain the type of seeds that grow on
-	// the horon village tree.
-	"satchel initial seeds":   MutableByte(Addr{0x3f, 0x453b}, 0x20, 0x20),
-	"slingshot initial seeds": MutableByte(Addr{0x3f, 0x4544}, 0x46, 0x20),
+	// the satchel should contain the type of seeds that grow on the horon
+	// village tree.
+	"satchel initial seeds": MutableByte(Addr{0x3f, 0x453b}, 0x20, 0x20),
+
+	// give the player seeds when they get the slingshot, and don't take the
+	// player's: fool's ore when they get feather, star ore when they get
+	// ribbon, or red and blue ore when they get hard ore (just zero the whole
+	// "lose items" table). one byte of this is changed in setSeedData() to
+	// change what type of seeds the slingshot gives.
+	"edit gain/lose items tables": MutableString(Addr{0x3f, 0x4543},
+		"\x00\x46\x45\x00\x52\x50\x51",
+		"\x13\x20\x20\x00\x00\x00\x00"),
+	"edit lose items table pointer": MutableByte(Addr{0x3f, 0x44cf},
+		0x44, 0x47),
 
 	// the correct type of seed needs to be selected by default, otherwise the
 	// player may be unable to use seeds when they only have one type. there
