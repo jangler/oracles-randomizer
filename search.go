@@ -3,7 +3,6 @@ package main
 import (
 	"container/list"
 	"fmt"
-	"math"
 	"math/rand"
 	"regexp"
 	"sort"
@@ -36,7 +35,7 @@ func trySlotItemSet(r *Route, src *rand.Rand, itemPool, slotPool *list.List,
 
 	// at least one item must fit in a slot that has already been reached for
 	// no more than this many steps
-	maxStaleness := int(math.Abs(src.NormFloat64()))
+	maxStaleness := int(src.ExpFloat64())
 
 	// get a list of slots that are actually reachable; see what can be reached
 	// before slotting anything more
