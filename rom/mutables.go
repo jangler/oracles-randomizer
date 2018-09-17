@@ -346,10 +346,15 @@ var constMutables = map[string]Mutable{
 		"\xfa\x0b\xd0\xfe\x3c\xd8\xfe\x60\xd0",
 		"\xfe\x88\xd0\xfa\x0b\xd0\xfe\x3c\xd8"),
 
+	// you can softlock in d6 misusing keys without magnet gloves, so just move
+	// the magnet ball onto the button it needs to press to get the key the
+	// speedrun skips.
+	"move d6 magnet ball": MutableByte(Addr{0x15, 0x4f36}, 0x98, 0x58),
+
 	// if you go up the stairs into the room in d8 with the magnet ball and
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
-	"move magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
+	"move d8 magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
 
 	// move the trigger for the bridge from holodrum plain to natzu to the
 	// top-left corner of the screen, where it can't be hit, and replace the
