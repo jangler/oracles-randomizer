@@ -123,7 +123,7 @@ var killNodes = map[string]*Node{
 	"kill stalfos (pit)":    Or("kill stalfos", "pit kill normal"),
 	"kill gleeok":           Or("sword", "beams", "bombs", "fool's ore", "punch"),
 	"hit switch":            Or("sword", "beams", "boomerang", "rod", "any satchel", "any slingshot", "bombs", "fool's ore", "punch", "shovel"),
-	"kill frypolar":         Or("bracelet", "ember seeds"),
+	"kill frypolar":         Or(And("bracelet", "mystery seeds"), "ember seeds"),
 	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seed weapon", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
 	"kill medusa head":      Or("sword", "fool's ore"),
 	"kill floormaster":      Or("kill normal"),
