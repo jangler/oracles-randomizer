@@ -196,7 +196,7 @@ var holodrumNodes = map[string]*Node{
 		And("scent tree", Or(
 			And("natzu prairie", "flute"),
 			And("natzu river", Or(And("jump", Or("flippers", "flute")),
-				And("flute", "flippers"))),
+				HardAnd("flute", "flippers"))),
 			And("natzu wasteland", Or("flute",
 				And("remove bush", Or("feather L-2", Hard("long jump")))))))),
 	"sunken gale tree": AndSlot("sunken city",
