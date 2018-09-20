@@ -269,8 +269,8 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		ri.ExtraItems, ri.ExtraSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
-		seed = uint32(src.Int31())
-		src = rand.New(rand.NewSource(int64(seed)))
+		ri.Seed = uint32(src.Int31())
+		src = rand.New(rand.NewSource(int64(ri.Seed)))
 	}
 
 	if tries >= maxTries {
