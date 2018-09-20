@@ -611,6 +611,19 @@ var constMutables = map[string]Mutable{
 			"\xfe\x17\x20\x04\x21\x1e\x7a\xc9"+ // check feather
 			"\xfe\x19\xc0\x21\x21\x7a\xc9"+ // check satchel
 			"\x02\x1d\x11\x02\x2f\x22\x02\x28\x17\x00\x46\x20"), // data
+
+	// instead of directly giving the player items in the shop, spawn an item
+	// interaction on top of the player instead. this obviates some hard-coded
+	// shop data (sprite, text) and allows the item to progressively upgrade.
+	"shop spawn item call": MutableWord(Addr{0x08, 0x4bfc}, 0xeb16, 0xc07f),
+	"shop spawn item func": MutableString(Addr{0x08, 0x7fc0}, "\x08",
+		"\xc5\x47\x7d\xcd\xe1\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
+			"\xd5\xf5\xcd\xc6\x3a\xf1\x36\x60\x23\x22\x71"+ // spawn item
+			"\x11\x0b\xd0\xcd\x02\x22\xd1\xc9"+ // copy position and ret
+			"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9"), // check addr
+	// and zero the original text IDs
+	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
+		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
 }
 
 var (

@@ -30,8 +30,9 @@ func init() {
 	itemGfx["feather 1"] = itemGfx["feather L-1"]
 	itemGfx["feather 2"] = itemGfx["feather L-1"]
 
-	// override blaino's default collection mode
+	// override default collection modes for some gasha seed slots
 	ItemSlots["blaino gift"].CollectMode = CollectFind2
+	ItemSlots["member's shop 2"].CollectMode = CollectFind2
 
 	// get set of unique items (to determine which can be slotted freely)
 	treasureCounts := make(map[string]int)
@@ -201,10 +202,14 @@ func Verify(b []byte) []error {
 			"member's shop 1", "sword 2", "slingshot 2", "feather 2",
 			"satchel 2":
 			break
+		// shop items (use sub ID instead of param, no text)
+		case "village shop 3", "member's shop 2", "member's shop 3",
+			"zero shop text":
+			break
 		// misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
-			"member's shop 3", "subrosian market 5", "rod gift",
-			"rare peach stone", "ribbon", "blaino gift":
+			"subrosian market 5", "rod gift", "rare peach stone", "ribbon",
+			"blaino gift":
 			break
 		default:
 			if err := m.Check(b); err != nil {

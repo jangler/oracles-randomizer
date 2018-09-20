@@ -153,9 +153,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	//       be able to place progressive items in any of them.
 	if rom.TreasureIsProgressive(itemNode.Name) {
 		switch slotNode.Name {
-		case "village shop 1", "rod gift", "noble sword spot",
-			"member's shop 1", "member's shop 2", "member's shop 3",
-			"subrosian market 1", "subrosian market 2", "subrosian market 5":
+		case "rod gift", "noble sword spot", "subrosian market 1",
+			"subrosian market 2", "subrosian market 5":
 			return false
 		}
 	}
