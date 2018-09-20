@@ -125,16 +125,12 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	if src != nil {
 		if slotNode.Name == "d0 sword chest" {
 			switch itemNode.Name {
-			case "sword L-1", "sword L-2":
+			case "sword 1", "sword 2":
 				if src.Intn(2) != 0 {
 					return false
 				}
-			case "feather L-1", "feather L-2":
+			case "feather 1", "feather 2":
 				if src.Intn(2) != 0 {
-					return false
-				}
-			case "ricky's flute", "dimitri's flute", "moosh's flute":
-				if src.Intn(3) != 0 {
 					return false
 				}
 			case "winter", "spring", "summer", "autumn":
