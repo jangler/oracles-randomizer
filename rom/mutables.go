@@ -624,6 +624,15 @@ var constMutables = map[string]Mutable{
 	// and zero the original text IDs
 	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
 		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
+
+	// do the same for the subrosian market.
+	"market spawn item call": MutableString(Addr{0x09, 0x7891},
+		"\xcd\xeb\x16\x1e\x42", "\xcd\xae\x7f\x38\x0b"), // jump on carry flag
+	"market spawn item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
+		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x07"+
+			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
+			"\xcd\xc6\x3a\xf1\x36\x60\x23\x22\x71\xd5\x11"+ // spawn item
+			"\x0b\xd0\xcd\x02\x22\xd1\x37\xc9"), // copy position, scf, ret
 }
 
 var (

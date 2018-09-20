@@ -204,12 +204,12 @@ func Verify(b []byte) []error {
 			break
 		// shop items (use sub ID instead of param, no text)
 		case "village shop 3", "member's shop 2", "member's shop 3",
+			"subrosian market 1", "subrosian market 2", "subrosian market 5",
 			"zero shop text":
 			break
 		// misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
-			"subrosian market 5", "rod gift", "rare peach stone", "ribbon",
-			"blaino gift":
+			"rod gift", "rare peach stone", "ribbon", "blaino gift":
 			break
 		default:
 			if err := m.Check(b); err != nil {

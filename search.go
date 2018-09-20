@@ -146,15 +146,15 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	}
 
 	// some slots can't handle progressive items correctly. technically d0
-	// sword chest can't, but it's always the first chest, so it doesn't
+	// sword chest can't either, but it's always the first chest, so it doesn't
 	// matter.
 	//
-	// TODO: make these slots work, if possible, it's super restrictive not to
-	//       be able to place progressive items in any of them.
+	// TODO: make these slots work, if possible, it's restrictive not to
+	//       be able to place progressive items in them. the noble sword can't
+	//       even be vanilla with these restrictions!
 	if rom.TreasureIsProgressive(itemNode.Name) {
 		switch slotNode.Name {
-		case "rod gift", "noble sword spot", "subrosian market 1",
-			"subrosian market 2", "subrosian market 5":
+		case "rod gift", "noble sword spot":
 			return false
 		}
 	}

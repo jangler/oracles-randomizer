@@ -291,22 +291,19 @@ var ItemSlots = map[string]*MutableSlot{
 	"subrosian market 1": &MutableSlot{
 		Treasure:   Treasures["ribbon"],
 		IDAddrs:    []Addr{{0x09, 0x77da}},
-		ParamAddrs: []Addr{{0x09, 0x77db}},
-		TextAddrs:  []Addr{{0x09, 0x78b1}},
+		SubIDAddrs: []Addr{{0x09, 0x77db}},
 		GfxAddrs:   []Addr{{0x3f, 0x6a96}},
 	},
 	"subrosian market 2": &MutableSlot{
 		Treasure:   Treasures["rare peach stone"],
 		IDAddrs:    []Addr{{0x09, 0x77e2}},
-		ParamAddrs: []Addr{{0x09, 0x77e3}},
-		TextAddrs:  []Addr{{0x09, 0x78b5}},
+		SubIDAddrs: []Addr{{0x09, 0x77e3}},
 		GfxAddrs:   []Addr{{0x3f, 0x6aa2}},
 	},
 	"subrosian market 5": &MutableSlot{
 		Treasure:   Treasures["member's card"],
 		IDAddrs:    []Addr{{0x09, 0x77f4}, {0x09, 0x7755}},
-		ParamAddrs: []Addr{{0x09, 0x77f5}},
-		TextAddrs:  []Addr{{0x09, 0x78be}},
+		SubIDAddrs: []Addr{{0x09, 0x77f5}},
 		GfxAddrs:   []Addr{{0x3f, 0x6abd}},
 	},
 	"hard ore slot": &MutableSlot{
