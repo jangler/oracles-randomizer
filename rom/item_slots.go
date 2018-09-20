@@ -197,7 +197,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"x-shaped jewel chest": MutableChest("x-shaped jewel", 0x4f8a),
 	"round jewel gift":     MutableGift("round jewel", 0x7332),
 	"noble sword spot": &MutableSlot{
-		Treasure:   Treasures["sword L-2"],
+		Treasure:   Treasures["sword 2"],
 		IDAddrs:    []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
 		SubIDAddrs: []Addr{{0x0b, 0x6419}, {0x0b, 0x6420}},
 		GfxAddrs:   []Addr{{0x3f, 0x69f7}, {0x3f, 0x69fa}},
@@ -326,7 +326,7 @@ var ItemSlots = map[string]*MutableSlot{
 
 	// hero's cave
 	"d0 sword chest": &MutableSlot{
-		Treasure:   Treasures["sword L-1"],
+		Treasure:   Treasures["sword 1"],
 		IDAddrs:    []Addr{{0x0a, 0x7b90}},
 		ParamAddrs: []Addr{{0x0a, 0x7b92}},
 		TextAddrs:  []Addr{{0x0a, 0x7b9c}},
@@ -352,7 +352,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d2 boss key chest": MutableChest("d2 boss key", 0x4fdd),
 
 	// d3
-	"d3 feather chest":  MutableChest("feather L-1", 0x5015),
+	"d3 feather chest":  MutableChest("feather 1", 0x5015),
 	"d3 rupee chest":    MutableChest("rupees, 30", 0x4ff9),
 	"d3 gasha chest":    MutableChest("gasha seed", 0x5001),
 	"d3 bomb chest":     MutableChest("bombs, 10", 0x5019),
@@ -361,7 +361,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d3 boss key chest": MutableChest("d3 boss key", 0x4ffd),
 
 	// d4
-	"d4 slingshot chest": MutableChest("slingshot L-1", 0x502d),
+	"d4 slingshot chest": MutableChest("slingshot 1", 0x502d),
 	"d4 bomb chest":      MutableChest("bombs, 10", 0x5031),
 	"d4 map chest":       MutableChest("dungeon map", 0x5025),
 	"d4 compass chest":   MutableChest("compass", 0x5035),
@@ -383,7 +383,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d6 boss key chest":  MutableChest("d6 boss key", 0x5079),
 
 	// d7
-	"d7 cape chest":     MutableChest("feather L-2", 0x509e),
+	"d7 cape chest":     MutableChest("feather 2", 0x509e),
 	"d7 rupee chest":    MutableChest("rupees, 1", 0x509a),
 	"d7 ring chest":     MutableChest("power ring L-1", 0x50b6),
 	"d7 compass chest":  MutableChest("compass", 0x50aa),
@@ -391,7 +391,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d7 boss key chest": MutableChest("d7 boss key", 0x50a6),
 
 	// d8
-	"d8 HSS chest":      MutableChest("slingshot L-2", 0x50da),
+	"d8 HSS chest":      MutableChest("slingshot 2", 0x50da),
 	"d8 bomb chest":     MutableChest("bombs, 10", 0x50ba),
 	"d8 ring chest":     MutableChest("steadfast ring", 0x50c6),
 	"d8 compass chest":  MutableChest("compass", 0x50d2),

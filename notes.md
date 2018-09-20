@@ -32,9 +32,10 @@ drenn's ages-disasm.
 - 6:4713 = tryToBreakTile body
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation
+- 15:463f = some function for loading treasure data based on object id/subid
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
   is address to write to, b happens to be the treasure index)
-- 3f:4445, 3f:444c, 3f:c45a = points for loading sprite data for an object
+- 3f:4445, 3f:444c, 3f:445a = points for loading sprite data for an object
 
 
 ## ram addresses not documented elsewhere

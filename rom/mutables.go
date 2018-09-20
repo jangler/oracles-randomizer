@@ -596,6 +596,21 @@ var constMutables = map[string]Mutable{
 			"\xcd\xc6\x3a\xc0\x36\x22\x2c\x36\x0a"+ // create warning object
 			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
 			"\xc9"), // ret
+
+	// when the player picks up the sword, slingshot, feather, or satchel,
+	// decide whether to give the L-1 or L-2 version based on whether the
+	// player has the item already. boomerang isn't handled this way because
+	// the L-1 boomerang is all but useless for progression.
+	"progressive item call": MutableString(Addr{0x15, 0x465a},
+		"\x47\xcb\x37", "\xcd\xe8\x79"),
+	"progressive item func": MutableString(Addr{0x15, 0x79e8}, "\x15",
+		"\x47\xcb\x37\xf5\xcd\xf1\x79\xf1\xc9"+ // wrap in push/pop
+			"\x1e\x42\x1a\xcd\x17\x17\xd0\x1a"+ // ret if you don't have L-1
+			"\xfe\x05\x20\x04\x21\x18\x7a\xc9"+ // check sword
+			"\xfe\x13\x20\x04\x21\x1b\x7a\xc9"+ // check slingshot
+			"\xfe\x17\x20\x04\x21\x1e\x7a\xc9"+ // check feather
+			"\xfe\x19\xc0\x21\x21\x7a\xc9"+ // check satchel
+			"\x02\x1d\x11\x02\x2f\x22\x02\x28\x17\x00\x46\x20"), // data
 }
 
 var (
