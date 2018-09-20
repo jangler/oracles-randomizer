@@ -106,7 +106,7 @@ var killNodes = map[string]*Node{
 	"kill wizzrobe (pit, throw)":    Or("pit kill normal", "bracelet"),
 	"kill gohma":                    Or("scent slingshot", "ember slingshot"),
 	"remove mushroom":               Or("boomerang L-2", "bracelet"),
-	"kill moldorm":                  Or("sword", "bombs", "punch", "scent seeds"),
+	"kill moldorm":                  Or("sword", "bombs", "punch", "scent seeds", "fool's ore"),
 	"kill iron mask":                Or("kill normal"),
 	"kill armos":                    Or("sword", "bombs", "beams", "boomerang L-2", "scent seeds", "fool's ore"),
 	"kill darknut":                  Or("sword", "bombs", "beams", "scent seeds", "fool's ore", "punch"),
@@ -133,5 +133,5 @@ var killNodes = map[string]*Node{
 	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seed weapon", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
 	"kill medusa head":      Or("sword", "fool's ore"),
 	"kill floormaster":      Or("kill normal"),
-	"kill onox":             And("sword", "jump"), // probably, idc
+	"kill onox":             And("sword", "jump"),
 }
