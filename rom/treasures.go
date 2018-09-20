@@ -215,3 +215,14 @@ func TreasureCanBeLost(name string) bool {
 	}
 	return false
 }
+
+// returns true iff the treasure's level is decided dynamically based on what
+// level you currently have.
+func TreasureIsProgressive(name string) bool {
+	switch name {
+	case "sword 1", "sword 2", "slingshot 1", "slingshot 2", "feather 1",
+		"feather 2", "satchel 1", "satchel 2":
+		return true
+	}
+	return false
+}

@@ -145,6 +145,21 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		}
 	}
 
+	// some slots can't handle progressive items correctly. technically d0
+	// sword chest can't, but it's always the first chest, so it doesn't
+	// matter.
+	//
+	// TODO: make these slots work, if possible, it's super restrictive not to
+	//       be able to place progressive items in any of them.
+	if rom.TreasureIsProgressive(itemNode.Name) {
+		switch slotNode.Name {
+		case "village shop 1", "rod gift", "noble sword spot",
+			"member's shop 1", "member's shop 2", "member's shop 3",
+			"subrosian market 1", "subrosian market 2", "subrosian market 5":
+			return false
+		}
+	}
+
 	switch slotNode.Name {
 	// hard ore is a special case because it doesn't set sub ID.
 	case "hard ore slot":
