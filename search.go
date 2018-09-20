@@ -371,10 +371,6 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 				if src.Intn(2) != 0 {
 					return false
 				}
-			case "ricky's flute", "dimitri's flute", "moosh's flute":
-				if src.Intn(3) != 0 {
-					return false
-				}
 			case "winter", "spring", "summer", "autumn":
 				if src.Intn(4) != 0 {
 					return false
