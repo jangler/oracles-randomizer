@@ -460,6 +460,10 @@ var constMutables = map[string]Mutable{
 	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e36}, 0xca, 0xc3),
 	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ead}, 0x40, 0x00),
 
+	// remove the moosh and dimitri events in spool swamp.
+	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
+	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
+
 	// don't warp link using gale seeds if no trees have been reached (the menu
 	// gets stuck in an infinite loop)
 	"call gale seed check": MutableString(Addr{0x07, 0x4f45},
