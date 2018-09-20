@@ -12,8 +12,8 @@ var holodrumNodes = map[string]*Node{
 	"maku tree gift":   AndSlot("horon village", "pop maku bubble"),
 	"ember tree":       AndSlot("horon village", "seed item", "harvest tree"),
 	"village SE chest": AndSlot("horon village", "bombs"),
-	"village SW chest": AndSlot("horon village",
-		Or("remove bush", "flute"), Or("remove mushroom", "dimitri's flute")),
+	"village SW chest": AndSlot("horon village", Or("remove bush safe", "flute"),
+		Or("remove mushroom", "dimitri's flute")),
 	"village shop 1":  AndSlot("start"),
 	"village shop 2":  AndSlot("start"),
 	"village shop 3":  AndSlot("start"),
@@ -81,7 +81,7 @@ var holodrumNodes = map[string]*Node{
 			Or("ricky's flute", "woods of winter default summer",
 				And("enter d2 B", "bracelet"))))),
 	"moblin road chest": AndSlot("moblin road",
-		Or("bombs", "ricky's flute"), "remove bush",
+		Or("bombs", "ricky's flute"), "remove bush safe",
 		Or("woods of winter default spring", "spring",
 			"woods of winter default summer", "summer",
 			"woods of winter default autumn", "autumn")),
@@ -202,7 +202,7 @@ var holodrumNodes = map[string]*Node{
 		Or("cross water gap", "sunken city default winter")),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
 	"diver gift":            AndSlot("dimitri", "master's plaque"),
-	"sunken cave chest": AndSlot("sunken city", "flippers", "remove bush",
+	"sunken cave chest": AndSlot("sunken city", "flippers", "remove bush safe",
 		Or("sunken city default summer", "summer")),
 	"diver chest": AndSlot("dimitri"),
 
@@ -227,7 +227,8 @@ var holodrumNodes = map[string]*Node{
 		And("mount cucco", Or("shovel", "spring banana"), "bracelet"),
 		And("temple remains", "long jump", Or("flippers", "pegasus jump L-2")),
 		And("blaino's gym", "flippers")),
-	"goron chest": AndSlot("goron mountain", "feather L-2", "bombs"),
+	"goron chest": AndSlot("goron mountain", "bombs",
+		Or("feather L-2", Hard("long jump"))),
 
 	// tarm ruins
 	"tarm ruins": And("north swamp",

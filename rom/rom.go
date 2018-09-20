@@ -168,7 +168,8 @@ func Update(b []byte) ([]byte, error) {
 		"carry seeds in slingshot", "ember tree map icon",
 		"scent tree map icon", "mystery tree map icon",
 		"pegasus tree map icon", "sunken gale tree map icon",
-		"tarm gale tree map icon", "initial season"} {
+		"tarm gale tree map icon", "initial season",
+		"edit gain/lose items tables"} {
 		err = varMutables[name].Mutate(b)
 		if err != nil {
 			return nil, err

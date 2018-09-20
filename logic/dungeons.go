@@ -16,7 +16,7 @@ package logic
 var d0Nodes = map[string]*Node{
 	"d0 key chest":   And("enter d0"),
 	"d0 sword chest": AndSlot("enter d0", "d0 small key"),
-	"d0 rupee chest": OrSlot("remove bush", "flute"),
+	"d0 rupee chest": OrSlot("remove bush safe", "flute"),
 
 	"d0 small key": And("d0 key chest"),
 }
@@ -69,7 +69,7 @@ var d2Nodes = map[string]*Node{
 		And("d2 arrow room", "kill goriya", "kill rope")),
 	"d2 bracelet room":  And("d2 hardhat room", "kill hardhat (pit, throw)"),
 	"d2 bracelet chest": AndSlot("d2 bracelet room", "kill moblin (gap, throw)"),
-	"d2 bomb key chest": And("enter d2 B", "remove bush", "bombs"),
+	"d2 bomb key chest": And("enter d2 B", "remove bush safe", "bombs"),
 	"d2 blade key chest": Or(
 		And("enter d2 B", "bracelet"),
 		And("d2 arrow room", "kill rope", "kill goriya")),

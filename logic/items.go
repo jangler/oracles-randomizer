@@ -98,5 +98,5 @@ var itemNodes = map[string]*Node{
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),
 
-	"ore chunks": Or("shovel", "temple"),
+	"ore chunks": Or("shovel"),
 }

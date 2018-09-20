@@ -54,8 +54,14 @@ var killNodes = map[string]*Node{
 	// required enemies in normal route-ish order, but with prereqs first
 	"seed kill normal": Or("ember seeds", "scent seeds", "gale seed weapon", "gale boomerang", "mystery seeds"),
 	"pop maku bubble":  Or("sword", "rod", "seed kill normal", "pegasus slingshot", "bombs", "fool's ore"),
+
+	// the "safe" version is for areas where you can't possibly get stuck from
+	// being on the wrong side of a bush.
+	"remove bush safe": Or("sword", "boomerang L-2", "bracelet",
+		"ember seeds", "gale slingshot", "bombs"),
 	"remove bush": Or("sword", "boomerang L-2", "bracelet",
 		HardOr("ember seeds", "gale slingshot", "bombs")),
+
 	"kill normal":                     Or("sword", "bombs", "beams", "seed kill normal", "fool's ore", "punch"),
 	"pit kill normal":                 Or("sword", "beams", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "punch"),
 	"kill stalfos":                    Or("kill normal", "rod"),
@@ -123,7 +129,7 @@ var killNodes = map[string]*Node{
 	"kill stalfos (pit)":    Or("kill stalfos", "pit kill normal"),
 	"kill gleeok":           Or("sword", "beams", "bombs", "fool's ore", "punch"),
 	"hit switch":            Or("sword", "beams", "boomerang", "rod", "any satchel", "any slingshot", "bombs", "fool's ore", "punch", "shovel"),
-	"kill frypolar":         And("mystery seeds", Or("bracelet", "ember seeds")),
+	"kill frypolar":         Or(And("bracelet", "mystery seeds"), "ember seeds"),
 	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seed weapon", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
 	"kill medusa head":      Or("sword", "fool's ore"),
 	"kill floormaster":      Or("kill normal"),
