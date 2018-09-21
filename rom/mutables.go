@@ -597,49 +597,64 @@ var constMutables = map[string]Mutable{
 			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
 			"\xc9"), // ret
 
-	// general-purpose bank zero function for creating a treasure a,c with
-	// link's position. this replaces giveTreasure for the slots that use it.
-	"create treasure on link func": MutableString(Addr{0x00, 0x3ed3}, "\x00",
-		"\xc5\xd5\x47\xcd\x1b\x27\x11\x0b\xd0\xcd\x02\x22\xd1\xc1\xc9"),
+	// set hl = address of treasure data + 1 for item with ID a, sub ID c.
+	"get treasure data func": MutableString(Addr{0x00, 0x3ed3}, "\x00",
+		"\xf5\xc5\xd5\x47\x1e\x15\x21\xf4\x79\xcd\x8a\x00\xd1\xc1\xf1\xc9"),
+	"get treasure data body": MutableString(Addr{0x15, 0x79f4}, "\x15",
+		"\x78\xc5\x21\x29\x51\xcd\xc3\x01\x09"+ // add ID offset
+			"\xcb\x7e\x28\x09\x23\x2a\x66\x6f"+ // load as address if bit 7 set
+			"\xc1\x79\xc5\x18\xef"+ // use sub ID as second offset
+			"\x23\x06\x03\xd5\x11\xfd\xcd\xcd\x62\x04"+ // copy data
+			"\x21\xfd\xcd\xd1\xc1\xc9"), // set hl and ret
 
-	// when the player picks up the sword, slingshot, feather, or satchel,
-	// decide whether to give the L-1 or L-2 version based on whether the
-	// player has the item already. boomerang isn't handled this way because
-	// the L-1 boomerang is all but useless for progression.
-	"progressive item call": MutableString(Addr{0x15, 0x465a},
-		"\x47\xcb\x37", "\xcd\xe8\x79"),
-	"progressive item func": MutableString(Addr{0x15, 0x79e8}, "\x15",
-		"\x47\xcb\x37\xf5\xcd\xf1\x79\xf1\xc9"+ // wrap in push/pop
-			"\x1e\x42\x1a\xcd\x17\x17\xd0\x1a"+ // ret if you don't have L-1
-			"\xfe\x05\x20\x04\x21\x18\x7a\xc9"+ // check sword
-			"\xfe\x13\x20\x04\x21\x1b\x7a\xc9"+ // check slingshot
-			"\xfe\x17\x20\x04\x21\x1e\x7a\xc9"+ // check feather
-			"\xfe\x19\xc0\x21\x21\x7a\xc9"+ // check satchel
+	// change hl to point to different treasure data if the item is progressive
+	// and needs to be upgraded. param a = treasure ID.
+	"progressive item func": MutableString(Addr{0x00, 0x3ee3}, "\x00",
+		"\xd5\x5f\xcd\x17\x17\x7b\xd1\xd0"+ // ret if you don't have L-1
+			"\xfe\x05\x20\x04\x21\x0a\x3f\xc9"+ // check sword
+			"\xfe\x13\x20\x04\x21\x0d\x3f\xc9"+ // check slingshot
+			"\xfe\x17\x20\x04\x21\x10\x3f\xc9"+ // check feather
+			"\xfe\x19\xc0\x21\x13\x3f\xc9"+ // check satchel
 			"\x02\x1d\x11\x02\x2f\x22\x02\x28\x17\x00\x46\x20"), // data
+
+	// this replaces giveTreasure with a function that gives treasure, plays
+	// sound, and sets text based on item ID a and sub ID c, and accounting for
+	// item progression.
+	"give item func": MutableString(Addr{0x00, 0x3f18}, "\x00",
+		"\xcd\xd3\x3e\xcd\xe3\x3e"+ // get treasure data
+			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
+			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9"), // show text
+
+	// upgrade normal items (interactions with ID 60) as necessary when they're
+	// created.
+	"set normal progressive call": MutableString(Addr{0x15, 0x465a},
+		"\x47\xcb\x37", "\xcd\xe8\x79"),
+	"set normal progressive func": MutableString(Addr{0x15, 0x79e8}, "\x15",
+		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd\xe3\x3e\xf1\xc9"),
 
 	// instead of directly giving the player items in the shop, spawn an item
 	// interaction on top of the player instead. this obviates some hard-coded
 	// shop data (sprite, text) and allows the item to progressively upgrade.
-	"shop spawn item call": MutableWord(Addr{0x08, 0x4bfc}, 0xeb16, 0xc07f),
-	"shop spawn item func": MutableString(Addr{0x08, 0x7fc0}, "\x08",
+	"shop give item call": MutableWord(Addr{0x08, 0x4bfc}, 0xeb16, 0xc07f),
+	"shop give item func": MutableString(Addr{0x08, 0x7fc0}, "\x08",
 		"\xc5\x47\x7d\xcd\xd2\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
-			"\xcd\xd3\x3e\xc9"+ // spawn item and ret
+			"\xcd\x18\x3f\xc9"+ // give item and ret
 			"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9"), // check addr
 	// and zero the original text IDs
 	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
 		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
 
 	// do the same for the subrosian market.
-	"market spawn item call": MutableString(Addr{0x09, 0x7891},
+	"market give item call": MutableString(Addr{0x09, 0x7891},
 		"\xcd\xeb\x16\x1e\x42", "\xcd\xae\x7f\x38\x0b"), // jump on carry flag
-	"market spawn item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
+	"market give item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
 		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x07"+
 			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
-			"\xf1\xcd\xd3\x3e\xd1\x37\xc9"), // spawn item, scf, ret
+			"\xf1\xcd\x18\x3f\xd1\x37\xc9"), // give item, scf, ret
 
 	// spawn item on top of link in rod cutscene instead of giving it directly.
-	"rod spawn item call": MutableString(Addr{0x15, 0x70cf},
-		"\xcd\xeb\x16", "\xcd\xd3\x3e"),
+	"rod give item call": MutableString(Addr{0x15, 0x70cf},
+		"\xcd\xeb\x16", "\xcd\x18\x3f"),
 	"no rod text": MutableString(Addr{0x15, 0x70be},
 		"\xcd\x4b\x18", "\x00\x00\x00"),
 }
