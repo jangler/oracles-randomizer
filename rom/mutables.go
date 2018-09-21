@@ -663,22 +663,37 @@ var constMutables = map[string]Mutable{
 		"\xcd\xeb\x16", "\xcd\x18\x3f"),
 	"no rod text": MutableString(Addr{0x15, 0x70be},
 		"\xcd\x4b\x18", "\x00\x00\x00"),
+	"rod lookup": MutableString(Addr{0x15, 0x7a1a}, "\x15",
+		"\x21\xcc\x70\x5e\x23\x23\x4e\xc9"),
 
 	// load gfx data for randomized shop and market items.
 	"item gfx call": MutableString(Addr{0x3f, 0x443c},
 		"\x4f\x06\x00", "\xcd\x69\x71"),
 	"item gfx func": MutableString(Addr{0x3f, 0x7169}, "\x3f",
-		"\x43\x4f\xcd\x9c\x71\x28\x08\xcd\xac\x71\x28\x0a\x06\x00\xc9"+
+		"\x43\x4f\xcd\xc4\x71\x28\x0d"+ // compare w/ rod
+			"\xcd\xa7\x71\x28\x0f\xcd\xb7\x71\x28\x11\x06\x00\xc9"+ // shops
+			"\x1e\x15\x21\x1a\x7a\x18\x0c"+ // rod lookup call
 			"\x1e\x08\x21\xde\x7f\x18\x05\x1e\x09\x21\xca\x7f"+ // lookup calls
 			"\xcd\x8a\x00"+ // get treasure
 			"\x79\x4b\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get sprite
 			"\x3e\x60\x4f\x06\x00\xc9"), // replace object gfx w/ treasure gfx
 	// return z if object is randomized shop item.
-	"check randomized shop item": MutableString(Addr{0x3f, 0x719c}, "\x3f",
+	"check randomized shop item": MutableString(Addr{0x3f, 0x71a7}, "\x3f",
 		"\x79\xfe\x47\xc0\x7b\xb7\xc8\xfe\x02\xc8\xfe\x05\xc8\xfe\x0d\xc9"),
 	// same as above but for subrosia market.
-	"check randomized market item": MutableString(Addr{0x3f, 0x71ac}, "\x3f",
+	"check randomized market item": MutableString(Addr{0x3f, 0x71b7}, "\x3f",
 		"\x79\xfe\x81\xc0\x7b\xb7\xc8\xfe\x04\xc8\xfe\x0d\xc9"),
+	// and rod of seasons.
+	"check rod": MutableString(Addr{0x3f, 0x71c4}, "\x3f",
+		"\x79\xfe\xe6\xc0\x7b\xfe\x02\xc9"),
+
+	// force the item in the temple of seasons cutscene to use normal item
+	// animations.
+	"rod cutscene gfx call": MutableString(Addr{0x00, 0x2600},
+		"\x1e\x41\x1a", "\xcd\x32\x3f"),
+	"rod cutscene gfx func": MutableString(Addr{0x00, 0x3f32}, "\x00",
+		"\x1e\x41\x1a\xfe\xe6\xc0\x1c\x1a\xfe\x02\x28\x03\x1d\x1a\xc9"+
+			"\x3e\x60\xc9"),
 }
 
 var (

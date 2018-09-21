@@ -132,9 +132,6 @@ func Mutate(b []byte) ([]byte, error) {
 		}
 	}
 
-	// then fix rod graphics
-	b[ItemSlots["rod gift"].GfxAddrs[0].FullOffset()+2] += 1
-
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
 }
