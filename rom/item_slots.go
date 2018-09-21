@@ -200,7 +200,6 @@ var ItemSlots = map[string]*MutableSlot{
 		Treasure:   Treasures["sword 2"],
 		IDAddrs:    []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
 		SubIDAddrs: []Addr{{0x0b, 0x6419}, {0x0b, 0x6420}},
-		GfxAddrs:   []Addr{{0x3f, 0x69f7}, {0x3f, 0x69fa}},
 	},
 	"desert pit": &MutableSlot{
 		Treasure:   Treasures["rusty bell"],

@@ -663,29 +663,39 @@ var constMutables = map[string]Mutable{
 		"\xcd\xeb\x16", "\xcd\x18\x3f"),
 	"no rod text": MutableString(Addr{0x15, 0x70be},
 		"\xcd\x4b\x18", "\x00\x00\x00"),
+	// returns c,e = treasure ID,subID
 	"rod lookup": MutableString(Addr{0x15, 0x7a1a}, "\x15",
 		"\x21\xcc\x70\x5e\x23\x23\x4e\xc9"),
+
+	// returns c,e = treasure ID,subID
+	"noble sword lookup": MutableString(Addr{0x0b, 0x7f8d}, "\x0b",
+		"\x21\x18\x64\x4e\x23\x5e\xc9"),
 
 	// load gfx data for randomized shop and market items.
 	"item gfx call": MutableString(Addr{0x3f, 0x443c},
 		"\x4f\x06\x00", "\xcd\x69\x71"),
 	"item gfx func": MutableString(Addr{0x3f, 0x7169}, "\x3f",
-		"\x43\x4f\xcd\xc4\x71\x28\x0d"+ // compare w/ rod
-			"\xcd\xa7\x71\x28\x0f\xcd\xb7\x71\x28\x11\x06\x00\xc9"+ // shops
-			"\x1e\x15\x21\x1a\x7a\x18\x0c"+ // rod lookup call
-			"\x1e\x08\x21\xde\x7f\x18\x05\x1e\x09\x21\xca\x7f"+ // lookup calls
+		// check for matching object
+		"\x43\x4f\xcd\xcd\x71\x28\x12\xcd\xd5\x71\x28\x14"+ // rod, woods
+			"\xcd\xb0\x71\x28\x16\xcd\xc0\x71\x28\x18\x06\x00\xc9"+ // shops
+			// look up item ID, subID
+			"\x1e\x15\x21\x1a\x7a\x18\x13\x1e\x0b\x21\x8d\x7f\x18\x0c"+
+			"\x1e\x08\x21\xde\x7f\x18\x05\x1e\x09\x21\xca\x7f"+ // shops
 			"\xcd\x8a\x00"+ // get treasure
 			"\x79\x4b\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get sprite
 			"\x3e\x60\x4f\x06\x00\xc9"), // replace object gfx w/ treasure gfx
 	// return z if object is randomized shop item.
-	"check randomized shop item": MutableString(Addr{0x3f, 0x71a7}, "\x3f",
+	"check randomized shop item": MutableString(Addr{0x3f, 0x71b0}, "\x3f",
 		"\x79\xfe\x47\xc0\x7b\xb7\xc8\xfe\x02\xc8\xfe\x05\xc8\xfe\x0d\xc9"),
 	// same as above but for subrosia market.
-	"check randomized market item": MutableString(Addr{0x3f, 0x71b7}, "\x3f",
+	"check randomized market item": MutableString(Addr{0x3f, 0x71c0}, "\x3f",
 		"\x79\xfe\x81\xc0\x7b\xb7\xc8\xfe\x04\xc8\xfe\x0d\xc9"),
 	// and rod of seasons.
-	"check rod": MutableString(Addr{0x3f, 0x71c4}, "\x3f",
+	"check rod": MutableString(Addr{0x3f, 0x71cd}, "\x3f",
 		"\x79\xfe\xe6\xc0\x7b\xfe\x02\xc9"),
+	// and noble sword.
+	"check noble sword": MutableString(Addr{0x3f, 0x71d5}, "\x3f",
+		"\x79\xfe\x59\xc9"),
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
