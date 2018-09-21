@@ -23,8 +23,7 @@ func IsChest(ms *MutableSlot) bool {
 // (they seem to be compatible).
 func IsFound(ms *MutableSlot) bool {
 	switch ms.CollectMode {
-	case CollectRingBox, CollectUnderwater, CollectFind1, CollectFind2,
-		CollectAppear:
+	case CollectRingBox, CollectUnderwater, CollectFind1, CollectFind2:
 		return true
 	}
 	return false

@@ -8,9 +8,9 @@ import (
 // collection modes
 // i don't know what the difference between the two find modes is
 const (
+	CollectBuySatchel = 0x01
 	CollectRingBox    = 0x02
 	CollectUnderwater = 0x08
-	CollectBuySatchel = 0x01
 	CollectFind1      = 0x09
 	CollectFind2      = 0x0a
 	CollectAppear     = 0x1a // heart containers
