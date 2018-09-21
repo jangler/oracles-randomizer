@@ -92,5 +92,7 @@ var itemNodes = map[string]*Node{
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),
 
-	"ore chunks": Or("shovel"),
+	// technically the player can always get ore chunks if they can make it to
+	// subrosia, but shovel is the only way that isn't annoying.
+	"ore chunks": Or("shovel", Hard("start")),
 }
