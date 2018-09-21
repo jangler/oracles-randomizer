@@ -10,7 +10,7 @@ drenn's ages-disasm.
 - 0:045b = copyMemoryReverse, b is # bytes, de is src, hl is dest
 - 0:0462 = copyMemory, b is # bytes, hl is src, de is dest
 - 0:0c74 = playSound, a is index
-- 0:1432 = get tile at position bc (yyxx), returns a (id) and hl (addr)
+- 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:1702 = loseTreasure (a is ID)
 - 0:17b9 = getRandomRingOfGivenTier ?
@@ -27,8 +27,10 @@ drenn's ages-disasm.
 - 1:5ece = updateSeedTreeRefillData
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
+- 5:44aa = specialObjectGetRelativeTileWithDirectionTable
 - 5:4552 = companionTryToMount
 - 5:5471 = linkSetState, a is state, d is object low byte
+- 5:493b = companionRetIfNotFinishedWalkingIn
 - 6:4713 = tryToBreakTile body
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation

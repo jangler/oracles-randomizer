@@ -181,6 +181,14 @@ var constMutables = map[string]Mutable{
 		"\x06\x01\x7e\xfe\x1a\x28\x06\xfe\x1b\x28\x02\xb7\xc0"+ // first tile
 			"\x7d\x80\x6f\x7e\xfe\x1a\x28\x05\xfe\x1b\x28\x01\xb7"+ // second
 			"\x7d\xc0\xcd\x89\x20\xaf\xc9"), // vanilla stuff
+	// also need to do this so that dimitri and moosh don't immediately stop
+	// walking at the edge of the screen. and do ricky for consistency.
+	"ricky flute enter call": MutableString(Addr{0x05, 0x71ea},
+		"\xcd\xaa\x44\xb7", "\xcd\x2d\x7e\x00"),
+	"dimitri/moosh flute enter call": MutableString(Addr{0x05, 0x493b},
+		"\xcd\xaa\x44\xb7", "\xcd\x2d\x7e\x00"),
+	"flute enter func": MutableString(Addr{0x05, 0x7e2d}, "\x05",
+		"\xcd\xaa\x44\xb7\xc8\xfe\x1a\xc8\xfe\x1b\xc9"),
 
 	// if wearing dev ring, change season regardless of where link is standing.
 	"dev ring season call": MutableString(Addr{0x07, 0x5b75},
