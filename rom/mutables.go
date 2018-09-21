@@ -643,6 +643,20 @@ var constMutables = map[string]Mutable{
 	// and zero the original text IDs
 	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
 		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
+	// if the shop item is randomized, load gfx data for that item instead of
+	// gfx data for the shop item.
+	"shop item gfx call": MutableString(Addr{0x3f, 0x443c},
+		"\x4f\x06\x00", "\xcd\x69\x71"),
+	"shop item gfx func": MutableString(Addr{0x3f, 0x7169}, "\x3f",
+		"\x4f\xfe\x47\x20\x10"+ // only do this for shop items
+			"\x7b\xb7\x28\x0f\xfe\x02\x28\x0b\xfe\x05\x28\x07\xfe\x0d\x28\x03"+
+			"\x06\x00\xc9"+ // check shop item sub ID, ret if no match
+			"\x43\x1e\x08\x21\xde\x7f\xcd\x8a\x00\x79\x4b"+ // get item IDs
+			"\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get treasure sprite
+			"\x3e\x60\x4f\x06\x00\xc9"), // replace shop gfx w/ treasure gfx
+	// param = b (item index/subID), returns c,e = treasure ID,subID
+	"shop item lookup": MutableString(Addr{0x08, 0x7fde}, "\x08",
+		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
 	// do the same for the subrosian market.
 	"market give item call": MutableString(Addr{0x09, 0x7891},

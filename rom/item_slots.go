@@ -245,25 +245,21 @@ var ItemSlots = map[string]*MutableSlot{
 		Treasure:   Treasures["strange flute"],
 		IDAddrs:    []Addr{{0x08, 0x4ce8}, {0x08, 0x4af2}, {0x08, 0x4a8a}},
 		SubIDAddrs: []Addr{{0x08, 0x4ce9}},
-		GfxAddrs:   []Addr{{0x3f, 0x6940}},
 	},
 	"member's shop 1": &MutableSlot{
 		Treasure:   Treasures["satchel 2"],
 		IDAddrs:    []Addr{{0x08, 0x4cce}},
 		SubIDAddrs: []Addr{{0x08, 0x4ccf}},
-		GfxAddrs:   []Addr{{0x3f, 0x6919}},
 	},
 	"member's shop 2": &MutableSlot{
 		Treasure:   Treasures["gasha seed"],
 		IDAddrs:    []Addr{{0x08, 0x4cd2}},
 		SubIDAddrs: []Addr{{0x08, 0x4cd3}},
-		GfxAddrs:   []Addr{{0x3f, 0x691f}},
 	},
 	"member's shop 3": &MutableSlot{
 		Treasure:   Treasures["treasure map"],
 		IDAddrs:    []Addr{{0x08, 0x4cd8}},
 		SubIDAddrs: []Addr{{0x08, 0x4cd9}},
-		GfxAddrs:   []Addr{{0x3f, 0x6928}},
 	},
 
 	// subrosia
