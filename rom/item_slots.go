@@ -275,8 +275,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"rod gift": &MutableSlot{
 		Treasure:   Treasures["rod"],
 		IDAddrs:    []Addr{{0x15, 0x70ce}},
-		ParamAddrs: []Addr{{0x15, 0x70cc}},
-		TextAddrs:  []Addr{{0x15, 0x70bd}},
+		SubIDAddrs: []Addr{{0x15, 0x70cc}},
 		GfxAddrs:   []Addr{{0x3f, 0x6c25}},
 	},
 	"star ore spot": &MutableSlot{

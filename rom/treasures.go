@@ -86,7 +86,7 @@ var Treasures = map[string]*Treasure{
 	"sword 2":         &Treasure{0x05, 0x01, 0x52dd, 0x09, 0x01, 0x1c, 0x10},
 	"boomerang L-1":   &Treasure{0x06, 0x00, 0x52f1, 0x0a, 0x01, 0x22, 0x1c},
 	"boomerang L-2":   &Treasure{0x06, 0x01, 0x52f5, 0x38, 0x02, 0x23, 0x1d},
-	"rod":             &Treasure{0x07, 0x00, 0x52f9, 0x38, 0x07, 0x0a, 0x1e},
+	"rod":             &Treasure{0x07, 0x00, 0x52f9, 0x0a, 0x07, 0x0a, 0x1e},
 	"spring":          &Treasure{0x07, 0x02, 0x5301, 0x09, 0x00, 0x0d, 0x1e},
 	"summer":          &Treasure{0x07, 0x03, 0x5305, 0x09, 0x01, 0x0b, 0x1e},
 	"autumn":          &Treasure{0x07, 0x04, 0x5309, 0x09, 0x02, 0x0c, 0x1e},
@@ -211,17 +211,6 @@ func TreasureCanBeLost(name string) bool {
 	case "shop shield L-1", "shield L-2", "star ore", "ribbon",
 		"spring banana", "ricky's gloves", "round jewel", "pyramid jewel",
 		"square jewel", "x-shapred jewel", "red ore", "blue ore", "hard ore":
-		return true
-	}
-	return false
-}
-
-// returns true iff the treasure's level is decided dynamically based on what
-// level you currently have.
-func TreasureIsProgressive(name string) bool {
-	switch name {
-	case "sword 1", "sword 2", "slingshot 1", "slingshot 2", "feather 1",
-		"feather 2", "satchel 1", "satchel 2":
 		return true
 	}
 	return false

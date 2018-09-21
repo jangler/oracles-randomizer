@@ -597,6 +597,11 @@ var constMutables = map[string]Mutable{
 			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
 			"\xc9"), // ret
 
+	// general-purpose bank zero function for creating a treasure a,c with
+	// link's position. this replaces giveTreasure for the slots that use it.
+	"create treasure on link func": MutableString(Addr{0x00, 0x3ed3}, "\x00",
+		"\xc5\xd5\x47\xcd\x1b\x27\x11\x0b\xd0\xcd\x02\x22\xd1\xc1\xc9"),
+
 	// when the player picks up the sword, slingshot, feather, or satchel,
 	// decide whether to give the L-1 or L-2 version based on whether the
 	// player has the item already. boomerang isn't handled this way because
@@ -633,6 +638,12 @@ var constMutables = map[string]Mutable{
 			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
 			"\xcd\xc6\x3a\xf1\x36\x60\x23\x22\x71\xd5\x11"+ // spawn item
 			"\x0b\xd0\xcd\x02\x22\xd1\x37\xc9"), // copy position, scf, ret
+
+	// spawn item on top of link in rod cutscene instead of giving it directly.
+	"rod spawn item call": MutableString(Addr{0x15, 0x70cf},
+		"\xcd\xeb\x16", "\xcd\xd3\x3e"),
+	"no rod text": MutableString(Addr{0x15, 0x70be},
+		"\xcd\x4b\x18", "\x00\x00\x00"),
 }
 
 var (
