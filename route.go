@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
-	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -177,7 +176,8 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		placeDungeonItems(src, r,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
-		startTime := time.Now()
+		slotRecord := 0
+		i, maxIterations := 0, 1+itemList.Len()
 
 		// slot progression items
 		done := r.Graph["done"]
@@ -186,12 +186,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 			if verbose {
 				logChan <- fmt.Sprintf("searching; have %d more slots",
 					slotList.Len())
-			}
-
-			// check to make sure this step isn't taking too long
-			if time.Now().Sub(startTime) > time.Second*5 {
-				success = false
-				break
+				logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
 			}
 
 			eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
@@ -202,6 +197,11 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 				slot := slotList.Remove(eSlot).(*graph.Node)
 				ri.UsedSlots.PushBack(slot)
 				r.Costs += logic.Rupees[slot.Name]
+
+				if ri.UsedSlots.Len() > slotRecord {
+					slotRecord = ri.UsedSlots.Len()
+					i, maxIterations = 0, 1+itemList.Len()
+				}
 			} else {
 				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
 				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
@@ -211,6 +211,15 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 			}
 
 			r.Graph.ClearMarks()
+
+			i++
+			if i > maxIterations {
+				success = false
+				if verbose {
+					logChan <- "maximum iterations reached"
+				}
+				break
+			}
 		}
 
 		if success {
@@ -221,11 +230,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 				if verbose {
 					logChan <- fmt.Sprintf("done; filling %d more slots",
 						slotList.Len())
-				}
-
-				// check to make sure this step isn't taking too long
-				if time.Now().Sub(startTime) > time.Second*5 {
-					break
+					logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
 				}
 
 				eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
@@ -236,12 +241,25 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 					slot := slotList.Remove(eSlot).(*graph.Node)
 					ri.UsedSlots.PushBack(slot)
 					r.Costs += logic.Rupees[slot.Name]
+
+					if ri.UsedSlots.Len() > slotRecord {
+						slotRecord = ri.UsedSlots.Len()
+						i, maxIterations = 0, 1+itemList.Len()
+					}
 				} else {
 					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
 					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
 					itemList.PushBack(item)
 					slotList.PushBack(slot)
 					item.RemoveParent(slot)
+				}
+
+				i++
+				if i > maxIterations {
+					if verbose {
+						logChan <- "maximum iterations reached"
+					}
+					break
 				}
 			}
 		}
