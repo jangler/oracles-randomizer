@@ -642,13 +642,19 @@ var constMutables = map[string]Mutable{
 	"set normal progressive func": MutableString(Addr{0x15, 0x79e8}, "\x15",
 		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd\xe3\x3e\xf1\xc9"),
 
-	// check fake treasure ID 0f instead of treasure 3 in the shop.
-	"shop check fake flute": MutableStrings([]Addr{{0x08, 0x4a8a},
+	// check fake treasure ID 0f instead of ID of shop item 3.
+	"shop check fake id": MutableStrings([]Addr{{0x08, 0x4a8a},
 		{0x08, 0x4af2}}, "\x0e", "\x0f"),
-	"shop give fake flute call": MutableString(Addr{0x08, 0x4bfe},
+	"shop give fake id call": MutableString(Addr{0x08, 0x4bfe},
 		"\x1e\x42\x1a", "\xcd\xef\x7f"),
-	"shop give fake flute func": MutableString(Addr{0x08, 0x7fef}, "\x08",
+	"shop give fake id func": MutableString(Addr{0x08, 0x7fef}, "\x08",
 		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9"),
+
+	// check fake treasure ID 10 instead of ID of market item 5. the function
+	// is called as part of "market give item func" below.
+	"market check fake id": MutableByte(Addr{0x09, 0x7755}, 0x53, 0x10),
+	"market give fake id func": MutableString(Addr{0x09, 0x7fd4}, "\x09",
+		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6"),
 
 	// use the custom "give item" function in the shop instead of the normal
 	// one. this obviates some hard-coded shop data (sprite, text) and allows
@@ -669,7 +675,7 @@ var constMutables = map[string]Mutable{
 	"market give item call": MutableString(Addr{0x09, 0x7891},
 		"\xcd\xeb\x16\x1e\x42", "\xcd\xae\x7f\x38\x0b"), // jump on carry flag
 	"market give item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
-		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x07"+
+		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x18"+
 			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
 			"\xf1\xcd\x18\x3f\xd1\x37\xc9"), // give item, scf, ret
 	// param = b (item index/subID), returns c,e = treasure ID,subID

@@ -142,7 +142,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// these slots won't give you the item if you already have one with that
 	// ID, so only use items that have unique IDs and can't be lost.
 	switch slotNode.Name {
-	case "diver gift", "subrosian market 5", "star ore spot":
+	case "diver gift", "star ore spot":
 		if !rom.TreasureHasUniqueID(itemNode.Name) ||
 			rom.TreasureCanBeLost(itemNode.Name) {
 			return false
