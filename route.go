@@ -223,8 +223,6 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		}
 
 		if success {
-			arrangeListsForLog(r, ri, verbose)
-
 			// fill unused slots
 			for slotList.Len() > 0 {
 				if verbose {
@@ -265,6 +263,8 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		}
 
 		if slotList.Len() == 0 {
+			arrangeListsForLog(r, ri, verbose)
+
 			// rotate dungeon items to the back of the lists
 			items, slots := ri.ProgressItems, ri.ProgressSlots
 			for i := 0; i < 6; i++ {
