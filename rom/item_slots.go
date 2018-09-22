@@ -187,8 +187,8 @@ var ItemSlots = map[string]*MutableSlot{
 	"master's plaque chest": MutableChest("master's plaque", 0x510a),
 	"diver gift": &MutableSlot{
 		Treasure:   Treasures["flippers"],
-		IDAddrs:    []Addr{{0x0b, 0x730e}, {0x0b, 0x72f1}},
-		SubIDAddrs: []Addr{{0x0b, 0x730f}},
+		IDAddrs:    []Addr{{0x0b, 0x7f95}},
+		SubIDAddrs: []Addr{{0x0b, 0x7f96}},
 	},
 	"spring banana tree":   MutableFind("spring banana", 0x66c6),
 	"dragon key spot":      MutableFind("dragon key", 0x62a3),

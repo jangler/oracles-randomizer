@@ -166,6 +166,7 @@ reference.
 - 87 = jump table
 - 88 = set coordinates, byte = y, byte = x
 - 8f = set animation, byte = index
+- 92 = or memory, word = addr, byte = value
 - 98 = show text, word = index
 - 9c = set interaction text id, word = index
 - a0 = wait until bit of cfc0 is set

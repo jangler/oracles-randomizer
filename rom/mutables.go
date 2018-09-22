@@ -656,6 +656,13 @@ var constMutables = map[string]Mutable{
 	"market give fake id func": MutableString(Addr{0x09, 0x7fd4}, "\x09",
 		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6"),
 
+	// use fake treasure ID 11 instead of 2e for master diver.
+	"diver check fake id": MutableByte(Addr{0x0b, 0x72f1}, 0x2e, 0x11),
+	"diver give fake id call": MutableString(Addr{0x0b, 0x730d},
+		"\xde\x2e\x00", "\xc0\x94\x7f"),
+	"diver give fake id script": MutableString(Addr{0x0b, 0x7f94}, "\x0b",
+		"\xde\x2e\x00\x92\x94\xc6\x02\xc1"),
+
 	// use the custom "give item" function in the shop instead of the normal
 	// one. this obviates some hard-coded shop data (sprite, text) and allows
 	// the item to progressively upgrade.

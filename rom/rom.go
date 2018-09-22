@@ -143,6 +143,7 @@ func Mutate(b []byte) ([]byte, error) {
 	// explicitly set these IDs after their functions are created
 	ItemSlots["star ore spot"].Mutate(b)
 	ItemSlots["hard ore slot"].Mutate(b)
+	ItemSlots["diver gift"].Mutate(b)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
@@ -219,7 +220,7 @@ func Verify(b []byte) []error {
 		// misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
-			"star ore spot", "hard ore slot", "iron shield gift":
+			"star ore spot", "hard ore slot", "iron shield gift", "diver gift":
 			break
 		default:
 			if err := m.Check(b); err != nil {
