@@ -136,14 +136,6 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		}
 	}
 
-	// star ore checks whether you already have a treasure ID to determine
-	// whether you can dig up the item.
-	if slotNode.Name == "star ore spot" &&
-		(!rom.TreasureHasUniqueID(itemNode.Name) ||
-			rom.TreasureCanBeLost(itemNode.Name)) {
-		return false
-	}
-
 	// rod of seasons has special graphics something
 	if slotNode.Name == "rod gift" && !rom.CanSlotAsRod(itemNode.Name) {
 		return false

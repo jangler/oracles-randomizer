@@ -146,6 +146,7 @@ func Mutate(b []byte) ([]byte, error) {
 	ItemSlots["star ore spot"].Mutate(b)
 	ItemSlots["hard ore slot"].Mutate(b)
 	ItemSlots["diver gift"].Mutate(b)
+	ItemSlots["star ore spot"].Mutate(b)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil

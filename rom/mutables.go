@@ -644,6 +644,16 @@ var constMutables = map[string]Mutable{
 	"set normal progressive func": MutableString(Addr{0x15, 0x79e8}, "\x15",
 		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd\xe3\x3e\xf1\xc9"),
 
+	// utility function, call a function hl in bank 02, preserving af. e can't
+	// be used as a parameter to that function, but it can be returned.
+	"call bank 02": MutableString(Addr{0x00, 0x3f4d}, "\x00",
+		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9"),
+
+	// utility function, read a byte from hl in bank e into a and e.
+	"read byte from bank": MutableString(Addr{0x00, 0x3f55}, "\x00",
+		"\xfa\x97\xff\xf5\x7b\xea\x97\xff\xea\x22\x22"+ // switch bank
+			"\x5e\xf1\xea\x97\xff\xea\x22\x22\x7b\xc9"), // read and switch back
+
 	// check fake treasure ID 0f instead of ID of shop item 3.
 	"shop check fake id": MutableStrings([]Addr{{0x08, 0x4a8a},
 		{0x08, 0x4af2}}, "\x0e", "\x0f"),
@@ -664,6 +674,18 @@ var constMutables = map[string]Mutable{
 		"\xde\x2e\x00", "\xc0\x94\x7f"),
 	"diver give fake id script": MutableString(Addr{0x0b, 0x7f94}, "\x0b",
 		"\xde\x2e\x00\x92\x94\xc6\x02\xc1"),
+
+	// not much room left in bank 9, so this calls a bank 2 function that sets
+	// treasure ID 12 if applicable.
+	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
+	"star ore fake id call":  MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xdd7f),
+	"star ore fake id func": MutableString(Addr{0x09, 0x7fdd}, "\x09",
+		"\xf5\xd5\xe5\x57\x21\x21\x76\xcd\x4d\x3f\xe1\xd1\xf1\xcd\xeb\x16\xc9"),
+	"star ore fake id func 2": MutableString(Addr{0x02, 0x7621}, "\x02",
+		"\x7a\xfe\x45\xc0\xfa\x49\xcc\xfe\x01\xc0"+ // ret if wrong item/group
+			"\xfa\x4c\xcc\xfe\x65\x28\x0d\xfe\x66\x28\x09"+ // compare room
+			"\xfe\x75\x28\x05\xfe\x76\x28\x01\xc9"+ // cont.
+			"\x21\x94\xc6\xcb\xd6\xc9"), // set treasure id 12
 
 	// use the custom "give item" function in the shop instead of the normal
 	// one. this obviates some hard-coded shop data (sprite, text) and allows
