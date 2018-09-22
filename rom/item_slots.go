@@ -241,7 +241,7 @@ var ItemSlots = map[string]*MutableSlot{
 
 	"village shop 3": &MutableSlot{
 		Treasure:   Treasures["strange flute"],
-		IDAddrs:    []Addr{{0x08, 0x4ce8}, {0x08, 0x4af2}, {0x08, 0x4a8a}},
+		IDAddrs:    []Addr{{0x08, 0x4ce8}},
 		SubIDAddrs: []Addr{{0x08, 0x4ce9}},
 	},
 	"member's shop 1": &MutableSlot{

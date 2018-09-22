@@ -642,6 +642,14 @@ var constMutables = map[string]Mutable{
 	"set normal progressive func": MutableString(Addr{0x15, 0x79e8}, "\x15",
 		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd\xe3\x3e\xf1\xc9"),
 
+	// check fake treasure ID 0f instead of treasure 3 in the shop.
+	"shop check fake flute": MutableStrings([]Addr{{0x08, 0x4a8a},
+		{0x08, 0x4af2}}, "\x0e", "\x0f"),
+	"shop give fake flute call": MutableString(Addr{0x08, 0x4bfe},
+		"\x1e\x42\x1a", "\xcd\xef\x7f"),
+	"shop give fake flute func": MutableString(Addr{0x08, 0x7fef}, "\x08",
+		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9"),
+
 	// use the custom "give item" function in the shop instead of the normal
 	// one. this obviates some hard-coded shop data (sprite, text) and allows
 	// the item to progressively upgrade.
