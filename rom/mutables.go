@@ -632,9 +632,9 @@ var constMutables = map[string]Mutable{
 	"set normal progressive func": MutableString(Addr{0x15, 0x79e8}, "\x15",
 		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd\xe3\x3e\xf1\xc9"),
 
-	// instead of directly giving the player items in the shop, spawn an item
-	// interaction on top of the player instead. this obviates some hard-coded
-	// shop data (sprite, text) and allows the item to progressively upgrade.
+	// use the custom "give item" function in the shop instead of the normal
+	// one. this obviates some hard-coded shop data (sprite, text) and allows
+	// the item to progressively upgrade.
 	"shop give item call": MutableWord(Addr{0x08, 0x4bfc}, 0xeb16, 0xc07f),
 	"shop give item func": MutableString(Addr{0x08, 0x7fc0}, "\x08",
 		"\xc5\x47\x7d\xcd\xd2\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
@@ -658,7 +658,7 @@ var constMutables = map[string]Mutable{
 	"market item lookup": MutableString(Addr{0x09, 0x7fca}, "\x09",
 		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
-	// spawn item on top of link in rod cutscene instead of giving it directly.
+	// use custom "give item" func in rod cutscene.
 	"rod give item call": MutableString(Addr{0x15, 0x70cf},
 		"\xcd\xeb\x16", "\xcd\x18\x3f"),
 	"no rod text": MutableString(Addr{0x15, 0x70be},
