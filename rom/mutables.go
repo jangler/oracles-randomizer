@@ -493,8 +493,6 @@ var constMutables = map[string]Mutable{
 	// and skip the check for what level shield you currently have
 	"skip iron shield level check": MutableString(Addr{0x15, 0x62ac},
 		"\x38\x01", "\x18\x05"),
-	// for some reason the param of iron shield is incremented before giving it
-	"keep iron shield param": MutableByte(Addr{0x09, 0x42de}, 0x0c, 0x00),
 
 	// overwrite unused maku gate interaction with warning interaction
 	"warning script pointer": MutableWord(Addr{0x08, 0x5663}, 0x874e, 0x6d7f),
