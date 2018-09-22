@@ -273,8 +273,8 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"star ore spot": &MutableSlot{
 		Treasure:   Treasures["star ore"],
-		IDAddrs:    []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
-		SubIDAddrs: []Addr{}, // special case, not set at all
+		IDAddrs:    []Addr{{0x08, 0x7fea}, {0x08, 0x62fe}},
+		SubIDAddrs: []Addr{{0x08, 0x7fed}},
 	},
 	"blue ore chest":       MutableChest("blue ore", 0x4f9f),
 	"red ore chest":        MutableChest("red ore", 0x4fa3),

@@ -91,7 +91,6 @@ func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
 // for softlocks or the availability of the slot and item.
 func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	slot := rom.ItemSlots[slotNode.Name]
-	item := rom.Treasures[itemNode.Name]
 
 	// gasha seeds and pieces of heart can be placed in either chests or
 	// found/gift slots. beyond that, only unique items can be placed in
@@ -143,14 +142,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	switch slotNode.Name {
 	// these slots won't give you the item if you already have one with that
 	// ID, so only use items that have unique IDs and can't be lost.
-	case "diver gift", "subrosian market 5", "village shop 3":
+	case "diver gift", "subrosian market 5", "village shop 3", "star ore spot":
 		if !rom.TreasureHasUniqueID(itemNode.Name) ||
-			rom.TreasureCanBeLost(itemNode.Name) {
-			return false
-		}
-	// star ore is the above two cases combined.
-	case "star ore spot":
-		if item.SubID() != 0 || !rom.TreasureHasUniqueID(itemNode.Name) ||
 			rom.TreasureCanBeLost(itemNode.Name) {
 			return false
 		}

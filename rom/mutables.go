@@ -773,6 +773,12 @@ var varMutables = map[string]Mutable{
 	// should be set to match the western coast season
 	"season after pirate cutscene": MutableByte(Addr{0x15, 0x7946}, 0x15, 0x15),
 
+	// set sub ID for star ore
+	"star ore id call": MutableString(Addr{0x08, 0x62f2},
+		"\x2c\x36\x45", "\xcd\xe8\x7f"),
+	"star ore id func": MutableString(Addr{0x08, 0x7fe8}, "\x08",
+		"\x2c\x36\x45\x2c\x36\x00\xc9"),
+
 	// set sub ID for hard ore
 	"hard ore id call": MutableString(Addr{0x15, 0x5b83},
 		"\x2c\x36\x52", "\xcd\x22\x7a"),
