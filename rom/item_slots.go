@@ -297,8 +297,8 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"hard ore slot": &MutableSlot{
 		Treasure:   Treasures["hard ore"],
-		IDAddrs:    []Addr{{0x15, 0x5b85}, {0x09, 0x66eb}},
-		SubIDAddrs: []Addr{},
+		IDAddrs:    []Addr{{0x15, 0x7a24}, {0x09, 0x66eb}},
+		SubIDAddrs: []Addr{{0x15, 0x7a27}, {0x09, 0x66ea}},
 	},
 	"iron shield gift": &MutableSlot{
 		Treasure:   Treasures["shield L-2"],

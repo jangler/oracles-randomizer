@@ -99,7 +99,6 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	if itemNode.Name == "gasha seed" || itemNode.Name == "piece of heart" {
 		if slotNode.Name == "d0 sword chest" || slotNode.Name == "rod gift" ||
 			slotNode.Name == "iron shield gift" ||
-			slotNode.Name == "hard ore slot" ||
 			!(rom.IsChest(slot) || rom.IsFound(slot)) {
 			return false
 		}
@@ -142,12 +141,6 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	}
 
 	switch slotNode.Name {
-	// hard ore is a special case because it doesn't set sub ID.
-	case "hard ore slot":
-		if item.SubID() != 0 && !(itemNode.Name == "piece of heart" ||
-			itemNode.Name == "gasha seed") {
-			return false
-		}
 	// these slots won't give you the item if you already have one with that
 	// ID, so only use items that have unique IDs and can't be lost.
 	case "diver gift", "subrosian market 5", "village shop 3":
