@@ -170,7 +170,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		r := NewRoute()
 		ri.Companion = rollAnimalCompanion(src, r)
 		itemList, slotList = initRouteInfo(src, r, ri.Companion)
-		logChan <- fmt.Sprintf("trying seed %08x", seed)
+		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
 
 		// slot initial nodes before algorithm slots progression items
 		ri.Seasons = rollSeasons(src, r)
