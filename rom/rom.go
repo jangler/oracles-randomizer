@@ -25,6 +25,8 @@ func init() {
 	// use these graphics as default for progressive items
 	itemGfx["sword 1"] = itemGfx["sword L-1"]
 	itemGfx["sword 2"] = itemGfx["sword L-1"]
+	itemGfx["boomerang 1"] = itemGfx["boomerang L-1"]
+	itemGfx["boomerang 2"] = itemGfx["boomerang L-1"]
 	itemGfx["slingshot 1"] = itemGfx["slingshot L-1"]
 	itemGfx["slingshot 2"] = itemGfx["slingshot L-1"]
 	itemGfx["feather 1"] = itemGfx["feather L-1"]
@@ -208,9 +210,9 @@ func Verify(b []byte) []error {
 			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
 			break
 		// progressive items
-		case "noble sword spot", "d8 HSS chest", "d7 cape chest",
-			"member's shop 1", "sword 2", "slingshot 2", "feather 2",
-			"satchel 2":
+		case "noble sword spot", "d6 boomerang chest", "d8 HSS chest",
+			"d7 cape chest", "member's shop 1", "sword 2", "boomerang 2",
+			"slingshot 2", "feather 2", "satchel 2":
 			break
 		// shop items (use sub ID instead of param, no text)
 		case "village shop 3", "member's shop 2", "member's shop 3",

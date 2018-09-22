@@ -265,7 +265,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"summer tower":     BasicSlot("summer", 0x0b, 0x4fb9, 0x4fba),
 	"spring tower":     BasicSlot("spring", 0x0b, 0x4fb5, 0x4fb6),
 	"autumn tower":     BasicSlot("autumn", 0x0b, 0x4fc1, 0x4fc2),
-	"dance hall prize": MutableGift("boomerang L-1", 0x6646),
+	"dance hall prize": MutableGift("boomerang 1", 0x6646),
 	"rod gift": &MutableSlot{
 		Treasure:   Treasures["rod"],
 		IDAddrs:    []Addr{{0x15, 0x70ce}},
@@ -355,7 +355,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d5 compass chest":       MutableChest("compass", 0x5049),
 
 	// d6
-	"d6 boomerang chest": MutableChest("boomerang L-2", 0x507d),
+	"d6 boomerang chest": MutableChest("boomerang 2", 0x507d),
 	"d6 rupee chest A":   MutableChest("rupees, 10", 0x505d),
 	"d6 rupee chest B":   MutableChest("rupees, 5", 0x5065),
 	"d6 bomb chest":      MutableChest("bombs, 10", 0x5069),

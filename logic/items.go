@@ -19,6 +19,8 @@ var itemNodes = map[string]*Node{
 
 	"sword L-1":     Or("sword 1", "sword 2"),
 	"sword L-2":     And("sword 1", "sword 2"),
+	"boomerang L-1": Or("boomerang 1", "boomerang 2"),
+	"boomerang L-2": And("boomerang 1", "boomerang 2"),
 	"slingshot L-1": Or("slingshot 1", "slingshot 2"),
 	"slingshot L-2": And("slingshot 1", "slingshot 2"),
 	"feather L-1":   Or("feather 1", "feather 2"),

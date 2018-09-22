@@ -621,16 +621,18 @@ var constMutables = map[string]Mutable{
 	// and needs to be upgraded. param a = treasure ID.
 	"progressive item func": MutableString(Addr{0x00, 0x3ee3}, "\x00",
 		"\xd5\x5f\xcd\x17\x17\x7b\xd1\xd0"+ // ret if you don't have L-1
-			"\xfe\x05\x20\x04\x21\x0a\x3f\xc9"+ // check sword
-			"\xfe\x13\x20\x04\x21\x0d\x3f\xc9"+ // check slingshot
-			"\xfe\x17\x20\x04\x21\x10\x3f\xc9"+ // check feather
-			"\xfe\x19\xc0\x21\x13\x3f\xc9"+ // check satchel
-			"\x02\x1d\x11\x02\x2f\x22\x02\x28\x17\x00\x46\x20"), // data
+			"\xfe\x05\x20\x04\x21\x12\x3f\xc9"+ // check sword
+			"\xfe\x06\x20\x04\x21\x15\x3f\xc9"+ // check boomerang
+			"\xfe\x13\x20\x04\x21\x18\x3f\xc9"+ // check slingshot
+			"\xfe\x17\x20\x04\x21\x1b\x3f\xc9"+ // check feather
+			"\xfe\x19\xc0\x21\x1e\x3f\xc9"+ // check satchel
+			// treasure data
+			"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20"),
 
-	// this replaces giveTreasure with a function that gives treasure, plays
-	// sound, and sets text based on item ID a and sub ID c, and accounting for
-	// item progression.
-	"give item func": MutableString(Addr{0x00, 0x3f18}, "\x00",
+	// this is a replacement for giveTreasure that gives treasure, plays sound,
+	// and sets text based on item ID a and sub ID c, and accounting for item
+	// progression.
+	"give item func": MutableString(Addr{0x00, 0x3f21}, "\x00",
 		"\xcd\xd3\x3e\xcd\xe3\x3e"+ // get treasure data
 			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
 			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9"), // show text
@@ -669,7 +671,7 @@ var constMutables = map[string]Mutable{
 	"shop give item call": MutableWord(Addr{0x08, 0x4bfc}, 0xeb16, 0xc07f),
 	"shop give item func": MutableString(Addr{0x08, 0x7fc0}, "\x08",
 		"\xc5\x47\x7d\xcd\xd2\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
-			"\xcd\x18\x3f\xc9"+ // give item and ret
+			"\xcd\x21\x3f\xc9"+ // give item and ret
 			"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9"), // check addr
 	// and zero the original text IDs
 	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
@@ -684,14 +686,14 @@ var constMutables = map[string]Mutable{
 	"market give item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
 		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x18"+
 			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
-			"\xf1\xcd\x18\x3f\xd1\x37\xc9"), // give item, scf, ret
+			"\xf1\xcd\x21\x3f\xd1\x37\xc9"), // give item, scf, ret
 	// param = b (item index/subID), returns c,e = treasure ID,subID
 	"market item lookup": MutableString(Addr{0x09, 0x7fca}, "\x09",
 		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
 	// use custom "give item" func in rod cutscene.
 	"rod give item call": MutableString(Addr{0x15, 0x70cf},
-		"\xcd\xeb\x16", "\xcd\x18\x3f"),
+		"\xcd\xeb\x16", "\xcd\x21\x3f"),
 	"no rod text": MutableString(Addr{0x15, 0x70be},
 		"\xcd\x4b\x18", "\x00\x00\x00"),
 	// returns c,e = treasure ID,subID
@@ -731,8 +733,8 @@ var constMutables = map[string]Mutable{
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
 	"rod cutscene gfx call": MutableString(Addr{0x00, 0x2600},
-		"\x1e\x41\x1a", "\xcd\x32\x3f"),
-	"rod cutscene gfx func": MutableString(Addr{0x00, 0x3f32}, "\x00",
+		"\x1e\x41\x1a", "\xcd\x3b\x3f"),
+	"rod cutscene gfx func": MutableString(Addr{0x00, 0x3f3b}, "\x00",
 		"\x1e\x41\x1a\xfe\xe6\xc0\x1c\x1a\xfe\x02\x28\x03\x1d\x1a\xc9"+
 			"\x3e\x60\xc9"),
 }
