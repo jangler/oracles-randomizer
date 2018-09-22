@@ -22,8 +22,25 @@ func init() {
 		}
 	}
 
-	// override blaino's default collection mode
+	// use these graphics as default for progressive items
+	itemGfx["sword 1"] = itemGfx["sword L-1"]
+	itemGfx["sword 2"] = itemGfx["sword L-1"]
+	itemGfx["slingshot 1"] = itemGfx["slingshot L-1"]
+	itemGfx["slingshot 2"] = itemGfx["slingshot L-1"]
+	itemGfx["feather 1"] = itemGfx["feather L-1"]
+	itemGfx["feather 2"] = itemGfx["feather L-1"]
+
+	// override default collection modes for some gasha seed slots
 	ItemSlots["blaino gift"].CollectMode = CollectFind2
+	ItemSlots["member's shop 2"].CollectMode = CollectFind2
+
+	// explicitly set these slots to the lowest common denominator collection
+	// mode, since their collection mode isn't used anyway.
+	for _, name := range []string{"rod gift", "village shop 3",
+		"member's shop 1", "member's shop 2", "member's shop 3",
+		"subrosian market 1", "subrosian market 2", "subrosian market 5"} {
+		ItemSlots[name].CollectMode = CollectChest1
+	}
 
 	// get set of unique items (to determine which can be slotted freely)
 	treasureCounts := make(map[string]int)
@@ -123,8 +140,9 @@ func Mutate(b []byte) ([]byte, error) {
 		}
 	}
 
-	// then fix rod graphics
-	b[ItemSlots["rod gift"].GfxAddrs[0].FullOffset()+2] += 1
+	// explicitly set these IDs after their functions are created
+	ItemSlots["star ore spot"].Mutate(b)
+	ItemSlots["hard ore slot"].Mutate(b)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
@@ -178,17 +196,30 @@ func Verify(b []byte) []error {
 	errors := make([]error, 0)
 
 	for k, m := range getAllMutables() {
+		// ignore special cases that would error even when correct
 		switch k {
-		// special cases that will error normally.
-		// (flippers' collect mode is different between regions)
-		case "maku tree gift", "fool's ore", "noble sword spot", "flippers",
-			"ember tree seeds", "mystery tree seeds", "scent tree seeds",
-			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2",
-			"expert's ring", "energy ring", "toss ring", "fist ring",
-			"member's card", "treasure map", "member's shop 3",
-			"subrosian market 5", "member's shop 1", "ricky's flute",
-			"moosh's flute", "dimitri's flute", "strange flute", "rod gift",
-			"rare peach stone", "ribbon", "blaino gift":
+		// flutes
+		case "ricky's flute", "moosh's flute", "dimitri's flute",
+			"strange flute":
+			break
+		// mystical seeds
+		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
+			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
+			break
+		// progressive items
+		case "noble sword spot", "d8 HSS chest", "d7 cape chest",
+			"member's shop 1", "sword 2", "slingshot 2", "feather 2",
+			"satchel 2":
+			break
+		// shop items (use sub ID instead of param, no text)
+		case "village shop 3", "member's shop 2", "member's shop 3",
+			"subrosian market 1", "subrosian market 2", "subrosian market 5",
+			"zero shop text":
+			break
+		// misc.
+		case "maku tree gift", "fool's ore", "member's card", "treasure map",
+			"rod gift", "rare peach stone", "ribbon", "blaino gift",
+			"star ore spot", "hard ore slot":
 			break
 		default:
 			if err := m.Check(b); err != nil {

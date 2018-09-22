@@ -28,11 +28,9 @@ func addDefaultItemNodes(nodes map[string]*logic.Node) {
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph        graph.Graph
-	Slots        map[string]*graph.Node
-	TurnsReached map[*graph.Node]int
-	DungeonItems []int
-	Costs        int
+	Graph graph.Graph
+	Slots map[string]*graph.Node
+	Costs int
 }
 
 // NewRoute returns an initialized route with all nodes, and those nodes with
@@ -61,10 +59,8 @@ func NewRoute(start ...string) *Route {
 	}
 
 	return &Route{
-		Graph:        g,
-		Slots:        openSlots,
-		TurnsReached: make(map[*graph.Node]int),
-		DungeonItems: make([]int, 9),
+		Graph: g,
+		Slots: openSlots,
 	}
 }
 
@@ -193,31 +189,25 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 			}
 
 			// check to make sure this step isn't taking too long
-			if time.Now().Sub(startTime) > time.Second*10 {
+			if time.Now().Sub(startTime) > time.Second*5 {
 				success = false
 				break
 			}
 
-			// try to find a new combination of items that opens progression
-			items, slots := trySlotItemSet(r, src, itemList, slotList,
-				countSteps, false)
+			eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
+				countSteps, ri.UsedSlots.Len(), false)
 
-			if items != nil {
-				for items.Len() > 0 {
-					ri.UsedItems.PushBack(items.Remove(items.Front()))
-					slot := slots.Remove(slots.Front()).(*graph.Node)
-					ri.UsedSlots.PushBack(slot)
-					r.Costs += logic.Rupees[slot.Name]
-
-					match := dungeonRegexp.FindStringSubmatch(slot.Name)
-					if match != nil {
-						di, _ := strconv.Atoi(match[1])
-						r.DungeonItems[di]++
-					}
-				}
+			if eItem != nil {
+				ri.UsedItems.PushBack(itemList.Remove(eItem))
+				slot := slotList.Remove(eSlot).(*graph.Node)
+				ri.UsedSlots.PushBack(slot)
+				r.Costs += logic.Rupees[slot.Name]
 			} else {
-				success = false
-				break
+				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
+				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+				itemList.PushBack(item)
+				slotList.PushBack(slot)
+				item.RemoveParent(slot)
 			}
 
 			r.Graph.ClearMarks()
@@ -234,23 +224,24 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 				}
 
 				// check to make sure this step isn't taking too long
-				if time.Now().Sub(startTime) > time.Second*10 {
+				if time.Now().Sub(startTime) > time.Second*5 {
 					break
 				}
 
-				items, slots := trySlotItemSet(r, src, itemList, slotList,
-					countSteps, true)
-				if items != nil {
-					for items.Len() > 0 {
-						item := items.Remove(items.Front())
-						slot := slots.Remove(slots.Front())
-						ri.UsedItems.PushBack(item)
-						ri.UsedSlots.PushBack(slot)
-						ri.ExtraItems.PushBack(item)
-						ri.ExtraSlots.PushBack(slot)
-					}
+				eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
+					countSteps, ri.UsedSlots.Len(), true)
+
+				if eItem != nil {
+					ri.UsedItems.PushBack(itemList.Remove(eItem))
+					slot := slotList.Remove(eSlot).(*graph.Node)
+					ri.UsedSlots.PushBack(slot)
+					r.Costs += logic.Rupees[slot.Name]
 				} else {
-					break
+					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
+					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+					itemList.PushBack(item)
+					slotList.PushBack(slot)
+					item.RemoveParent(slot)
 				}
 			}
 		}
@@ -271,15 +262,6 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 			// and we're done
 			ri.Route = r
 			break
-		} else if verbose {
-			logChan <- "unfilled slots:"
-			for e := slotList.Front(); e != nil; e = e.Next() {
-				logChan <- e.Value.(*graph.Node).Name
-			}
-			logChan <- "unused items:"
-			for e := itemList.Front(); e != nil; e = e.Next() {
-				logChan <- e.Value.(*graph.Node).Name
-			}
 		}
 
 		ri.UsedItems, ri.UsedSlots = list.New(), list.New()
@@ -287,8 +269,8 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		ri.ExtraItems, ri.ExtraSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
-		seed = uint32(src.Int31())
-		src = rand.New(rand.NewSource(int64(seed)))
+		ri.Seed = uint32(src.Int31())
+		src = rand.New(rand.NewSource(int64(ri.Seed)))
 	}
 
 	if tries >= maxTries {
@@ -511,8 +493,7 @@ func countSteps(r *Route) int {
 	count := 0
 	for node := range reached {
 		if node.IsStep && node.Name != "village shop 1" &&
-			node.Name != "village shop 2" &&
-			(r.TurnsReached[node] > 0 || canAffordSlot(r, node)) {
+			node.Name != "village shop 2" && canAffordSlot(r, node) {
 			count++
 		}
 	}

@@ -10,7 +10,7 @@ var holodrumNodes = map[string]*Node{
 	// horon village
 	"horon village":    And("start"),
 	"maku tree gift":   AndSlot("horon village", "pop maku bubble"),
-	"ember tree":       AndSlot("horon village"),
+	"ember tree":       AndSlot("horon village", "seed item", "harvest tree"),
 	"village SE chest": AndSlot("horon village", "bombs"),
 	"village SW chest": AndSlot("horon village", Or("remove bush safe", "flute"),
 		Or("remove mushroom", "dimitri's flute")),
@@ -65,21 +65,16 @@ var holodrumNodes = map[string]*Node{
 			"eastern suburbs default spring", "spring",
 			"eastern suburbs default summer", "summer",
 			"eastern suburbs default autumn", "autumn"))),
-	"mystery tree": OrSlot(
-		And("fairy fountain", Or("eastern suburbs default winter", "winter"),
-			Or("shovel", And("jump", "bracelet"), "flute")),
-		And("fairy fountain", Or(
-			"eastern suburbs default spring", "spring",
-			"eastern suburbs default summer", "summer",
-			"eastern suburbs default autumn", "autumn"))),
-	"enter d2 A": And("mystery tree", Or("remove bush", "flute")),
+	"mystery tree": AndSlot("central woods of winter",
+		"seed item", "harvest tree"),
+	"enter d2 A": And("central woods of winter", Or("remove bush", "flute")),
 	"enter d2 B": Or(
-		And("mystery tree", "bracelet",
+		And("central woods of winter", "bracelet",
 			Or("woods of winter default summer", "ricky's flute")),
 		And("d2 blade key chest", "bracelet")),
 	"enter d2":         Or("enter d2 A", "enter d2 B"),
 	"outdoor d2 chest": AndSlot("enter d2 B"),
-	"mystery cave chest": AndSlot("mystery tree",
+	"mystery cave chest": AndSlot("central woods of winter",
 		Or("remove mushroom", "dimitri's flute"),
 		Or("feather L-2", "magnet gloves"),
 		Or("woods of winter default autumn", And("autumn",
@@ -97,11 +92,11 @@ var holodrumNodes = map[string]*Node{
 
 	// holodrum plain
 	"ghastly stump": Or(
-		"pegasus tree",
-		And("scent tree", Or("jump", "ricky", "flute",
+		"north swamp",
+		And("blaino's gym", Or("jump", "ricky", "flute",
 			And("flippers", "remove bush"), "holodrum plain default winter")),
 		And("south swamp", Or("flippers", "dimitri's flute"), "remove bush")),
-	"scent tree": OrSlot(
+	"blaino's gym": Or(
 		And("ghastly stump", Or("jump", "ricky", "flute", "winter",
 			"holodrum plain default winter")),
 		And("south swamp", Or("flippers", "dimitri's flute")),
@@ -115,19 +110,21 @@ var holodrumNodes = map[string]*Node{
 				Or("flippers", "dimitri's flute")))),
 		And("temple remains", "long jump"),
 		And("goron mountain", "flippers")),
-	"blaino gift":      AndSlot("scent tree"),
+	"scent tree":       AndSlot("blaino's gym", "seed item", "harvest tree"),
+	"blaino gift":      AndSlot("blaino's gym"),
 	"ricky":            Or("ricky's flute"),
-	"round jewel gift": AndSlot("scent tree", Or("flippers", "dimitri's flute")),
-	"water cave chest": AndSlot("scent tree", "flippers"),
-	"mushroom cave chest": AndSlot("scent tree", "flippers",
+	"round jewel gift": AndSlot("blaino's gym", Or("flippers", "dimitri's flute")),
+	"water cave chest": AndSlot("blaino's gym", "flippers"),
+	"mushroom cave chest": AndSlot("blaino's gym", "flippers",
 		Or("remove mushroom", "dimitri's flute"),
 		Or("holodrum plain default autumn", And("ghastly stump", "autumn"))),
 
 	// spool swamp
-	"pegasus tree": AndSlot("ghastly stump", Or("holodrum plain default summer",
+	"north swamp": And("ghastly stump", Or("holodrum plain default summer",
 		"summer", "feather L-2", "ricky", "moosh's flute")),
-	"floodgate key spot": AndSlot("pegasus tree", "hit lever"),
-	"spool stump": And("pegasus tree", Or("bracelet", "hit lever"),
+	"pegasus tree":       AndSlot("north swamp", "seed item", "harvest tree"),
+	"floodgate key spot": AndSlot("north swamp", "hit lever"),
+	"spool stump": And("north swamp", Or("bracelet", "hit lever"),
 		Or("pegasus satchel", "flippers", "feather L-2"), "bracelet", "floodgate key"),
 	"dry swamp": Or(Or("spool swamp default summer",
 		"spool swamp default autumn", "spool swamp default winter"),
@@ -136,7 +133,7 @@ var holodrumNodes = map[string]*Node{
 		And("spool stump", Or("flippers", "dimitri's flute")),
 		And("spool stump", "dry swamp", Or("long jump", "flute")),
 		And("ghastly stump", "remove bush", Or("flippers", "dimitri's flute")),
-		And("scent tree", Or("flippers", "dimitri's flute")),
+		And("blaino's gym", Or("flippers", "dimitri's flute")),
 		And("swamp portal", "bracelet")),
 	"square jewel chest": AndSlot("south swamp",
 		Or("spool swamp default winter", And("spool stump", "winter")),
@@ -148,7 +145,7 @@ var holodrumNodes = map[string]*Node{
 		"north horon default autumn", "north horon default winter"),
 	"north horon stump": Or(
 		And("horon village", Or("remove bush", "flute")),
-		And("scent tree", "bracelet"),
+		And("blaino's gym", "bracelet"),
 		And("south swamp", Or("flippers", "dimitri's flute"), Or("remove bush", "flute")),
 		And("lake portal", "not north horon default summer", "flippers", "jump"),
 		And("lake portal", "pegasus jump L-2", "north horon default winter")),
@@ -182,10 +179,10 @@ var holodrumNodes = map[string]*Node{
 	"natzu":           Or("natzu prairie", "natzu river", "natzu wasteland"),
 	"great moblin chest": AndSlot(Or("flippers", "pegasus jump L-2"), "bracelet", Or(
 		And("natzu prairie", "sunken city"),
-		And("natzu river", "scent tree", "dimitri's flute"),
+		And("natzu river", "blaino's gym", "dimitri's flute"),
 		And("natzu wasteland", And("sunken city",
 			Or("flute", And("remove bush", "long jump")))))),
-	"platform chest": OrSlot(And("scent tree", Or("flippers", "dimitri's flute")),
+	"platform chest": OrSlot(And("blaino's gym", Or("flippers", "dimitri's flute")),
 		And("sunken city", "natzu river", "pegasus jump L-2")),
 
 	// sunken city
@@ -193,15 +190,16 @@ var holodrumNodes = map[string]*Node{
 		And("mount cucco", "flippers",
 			Or(Hard("start"), "summer", "sunken city default summer")),
 		And("fairy fountain", Or("eastern suburbs default spring", "spring")),
-		And("scent tree", Or(
+		And("blaino's gym", Or(
 			And("natzu prairie", "flute"),
 			And("natzu river", Or(And("jump", Or("flippers", "flute")),
 				HardAnd("flute", "flippers"))),
 			And("natzu wasteland", Or("flute",
 				And("remove bush", Or("feather L-2", Hard("long jump")))))))),
-	"sunken gale tree": AndSlot("sunken city",
+	"sunken gale tree": AndSlot("sunken city", "seed item", "harvest tree",
 		Or("cross water gap", "sunken city default winter")),
-	"dimitri":               And("sunken gale tree", Or("dimitri's flute", "bombs")),
+	"dimitri": And("sunken city", Or("dimitri's flute", "bombs"),
+		Or("cross water gap", "sunken city default winter")),
 	"master's plaque chest": AndSlot("dimitri", "sword", "cross water gap"),
 	"diver gift":            AndSlot("dimitri", "master's plaque"),
 	"sunken cave chest": AndSlot("sunken city", "flippers", "remove bush safe",
@@ -228,21 +226,22 @@ var holodrumNodes = map[string]*Node{
 	"goron mountain": Or(
 		And("mount cucco", Or("shovel", "spring banana"), "bracelet"),
 		And("temple remains", "long jump", Or("flippers", "pegasus jump L-2")),
-		And("scent tree", "flippers")),
+		And("blaino's gym", "flippers")),
 	"goron chest": AndSlot("goron mountain", "bombs",
 		Or("feather L-2", Hard("long jump"))),
 
 	// tarm ruins
-	"tarm ruins": And("pegasus tree",
+	"tarm ruins": And("north swamp",
 		"square jewel", "pyramid jewel", "round jewel", "x-shaped jewel"),
 	"lost woods": And("tarm ruins", Or("lost woods default summer", "summer"),
 		Or("lost woods default winter", "winter"), "autumn", "remove mushroom"),
-	"noble sword spot": AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
-	"tarm gale tree":   AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
-	"enter d6": And("tarm gale tree", Or("tarm ruins default winter", "winter"),
+	"noble sword spot": AndSlot("lost woods", "seed item", "harvest tree",
+		"winter", "autumn", "spring", "summer"),
+	"tarm gale tree": AndSlot("lost woods", "winter", "autumn", "spring", "summer"),
+	"enter d6": And("noble sword spot", Or("tarm ruins default winter", "winter"),
 		Or("shovel", "ember seeds"), "remove bush"),
-	"tarm gasha chest": AndSlot("tarm gale tree", "remove mushroom", "ember seeds",
-		Or("tarm ruins default autumn", "autumn")),
+	"tarm gasha chest": AndSlot("noble sword spot", "remove mushroom",
+		"ember seeds", Or("tarm ruins default autumn", "autumn")),
 
 	// samasa desert
 	"desert":       And("suburbs", "pirate house"),
@@ -252,17 +251,17 @@ var holodrumNodes = map[string]*Node{
 	// temple remains (the important logic is in the portal nodes)
 	"temple remains": Or(
 		And("goron mountain", Or("flippers", "pegasus jump L-2"), "long jump"),
-		And("scent tree", "long jump")),
+		And("blaino's gym", "long jump")),
 
 	// northern peak
 	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence",
 		"d5 essence", "d6 essence", "d7 essence", "d8 essence"),
-	"enter d9": And("scent tree", "maku seed"),
+	"enter d9": And("blaino's gym", "maku seed"),
 
 	// old men
 	"goron mountain old man": And("goron mountain", "ember seeds"),
 	"western coast old man":  And("pirate ship", "ember seeds"),
-	"holodrum plain east old man": And("scent tree", "ember seeds",
+	"holodrum plain east old man": And("blaino's gym", "ember seeds",
 		Or("ricky's flute", "holodrum plain default summer",
 			And("ghastly stump", "summer"))),
 	"horon village old man":       And("horon village", "ember seeds"),
