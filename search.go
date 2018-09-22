@@ -97,7 +97,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// found/gift slots. beyond that, only unique items can be placed in
 	// non-chest slots.
 	if itemNode.Name == "gasha seed" || itemNode.Name == "piece of heart" {
-		if slotNode.Name == "d0 sword chest" || slotNode.Name == "rod gift" ||
+		if slotNode.Name == "d0 sword chest" ||
 			slotNode.Name == "iron shield gift" ||
 			!(rom.IsChest(slot) || rom.IsFound(slot)) {
 			return false

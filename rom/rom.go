@@ -34,6 +34,14 @@ func init() {
 	ItemSlots["blaino gift"].CollectMode = CollectFind2
 	ItemSlots["member's shop 2"].CollectMode = CollectFind2
 
+	// explicitly set these slots to the lowest common denominator collection
+	// mode, since their collection mode isn't used anyway.
+	for _, name := range []string{"rod gift", "village shop 3",
+		"member's shop 1", "member's shop 2", "member's shop 3",
+		"subrosian market 1", "subrosian market 2", "subrosian market 5"} {
+		ItemSlots[name].CollectMode = CollectChest1
+	}
+
 	// get set of unique items (to determine which can be slotted freely)
 	treasureCounts := make(map[string]int)
 	for _, slot := range ItemSlots {
@@ -209,7 +217,7 @@ func Verify(b []byte) []error {
 			break
 		// misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
-			"rod gift", "rare peach stone", "ribbon", "blaino gift", "rod",
+			"rod gift", "rare peach stone", "ribbon", "blaino gift",
 			"hard ore slot":
 			break
 		default:
