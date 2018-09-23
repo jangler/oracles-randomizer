@@ -336,12 +336,10 @@ var constMutables = map[string]Mutable{
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
 	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),
 
-	// getting the L-2 (or L-3) sword in the lost woods gives you two items;
-	// one for the item itself and another that gives you the item and also
-	// makes you do a spin slash animation. change the second ID bytes to a
-	// fake item so that one slot doesn't give two items / the same item twice.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641b}, 0x05, 0x3f),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6422}, 0x05, 0x3f),
+	// getting the L-2 (or L-3) sword in the lost woods normally gives a second
+	// "spin slash" item. remove this from the script.
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0xde, 0xc1),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0xde, 0xc1),
 
 	// remove the snow piles in front of the shovel house so that shovel isn't
 	// required not to softlock there (it's still required not to softlock in

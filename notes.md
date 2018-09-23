@@ -184,7 +184,7 @@ reference.
 - d3 = wait until flag is set, byte = flag, word = addr
 - d4 = wait until object byte equals value
 - d7 = set counter, byte = value
-- de = spawn item on link, word = id, subid (?)
+- de = spawn item on link, word = id, subid
 - e0 = call function in bank 15, word = addr
 - e1 = call function in bank 15, word = addr, byte = value of a and e
 - e3 = play sound, byte = index
