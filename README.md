@@ -42,6 +42,9 @@ Seed trees and default seasons for each area are also shuffled, and the satchel
 and slingshot will start with the type of seeds on the tree in Horon Village.
 The Natzu region matches whichever animal companion the randomized flute calls.
 
+For items that have two levels, the first you obtain will be L-1, and the
+second will be L-2, regardless of the order in which you obtain them.
+
 The randomizer will never require you to farm rupees if you spend them wisely.
 
 The following items are **not** randomized:
