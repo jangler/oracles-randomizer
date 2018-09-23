@@ -170,7 +170,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"lake chest": MutableChest("gasha seed", 0x4f92),
 	"maku tree gift": &MutableSlot{
 		Treasure:   Treasures["gnarled key"],
-		IDAddrs:    []Addr{{0x15, 0x613a}, {0x09, 0x7e16}, {0x09, 0x7dfd}},
+		IDAddrs:    []Addr{{0x15, 0x613a}, {0x09, 0x7e16}},
 		SubIDAddrs: []Addr{{0x15, 0x613d}, {0x09, 0x7e19}},
 	},
 	"village SW chest":   MutableChest("rupees, 20", 0x4f7e),
@@ -274,7 +274,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"star ore spot": &MutableSlot{
 		Treasure:   Treasures["star ore"],
-		IDAddrs:    []Addr{{0x08, 0x7fea}, {0x02, 0x7623}},
+		IDAddrs:    []Addr{{0x08, 0x7fea}},
 		SubIDAddrs: []Addr{{0x08, 0x7fed}},
 	},
 	"blue ore chest":       MutableChest("blue ore", 0x4f9f),

@@ -652,6 +652,11 @@ var constMutables = map[string]Mutable{
 		"\xfa\x97\xff\xf5\x7b\xea\x97\xff\xea\x22\x22"+ // switch bank
 			"\x5e\xf1\xea\x97\xff\xea\x22\x22\x7b\xc9"), // read and switch back
 
+	// check fake treasure ID 0a instead of ID of maku tree item. the flag is
+	// set in "bank 9 fake id call" below. this only matters if you leave the
+	// room without picking up the item.
+	"maku tree check fake id": MutableByte(Addr{0x09, 0x7dfd}, 0x42, 0x0a),
+
 	// check fake treasure ID 0f instead of ID of shop item 3.
 	"shop check fake id": MutableStrings([]Addr{{0x08, 0x4a8a},
 		{0x08, 0x4af2}}, "\x0e", "\x0f"),
@@ -676,14 +681,17 @@ var constMutables = map[string]Mutable{
 	// not much room left in bank 9, so this calls a bank 2 function that sets
 	// treasure ID 12 if applicable.
 	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
-	"star ore fake id call":  MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xdd7f),
-	"star ore fake id func": MutableString(Addr{0x09, 0x7fdd}, "\x09",
-		"\xf5\xd5\xe5\x57\x21\x21\x76\xcd\x4d\x3f\xe1\xd1\xf1\xcd\xeb\x16\xc9"),
-	"star ore fake id func 2": MutableString(Addr{0x02, 0x7621}, "\x02",
-		"\x7a\xfe\x45\xc0\xfa\x49\xcc\xfe\x01\xc0"+ // ret if wrong item/group
+
+	// shared by maku tree and star-shaped ore.
+	"bank 9 fake id call": MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xdd7f),
+	"bank 9 fake id func": MutableString(Addr{0x09, 0x7fdd}, "\x09",
+		"\xf5\xe5\x21\x21\x76\xcd\x4d\x3f\xe1\xf1\xcd\xeb\x16\xc9"),
+	"bank 2 fake id func": MutableString(Addr{0x02, 0x7621}, "\x02",
+		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x1b\xc9"+ // compare group
 			"\xfa\x4c\xcc\xfe\x65\x28\x0d\xfe\x66\x28\x09"+ // compare room
 			"\xfe\x75\x28\x05\xfe\x76\x28\x01\xc9"+ // cont.
-			"\x21\x94\xc6\xcb\xd6\xc9"), // set treasure id 12
+			"\x21\x94\xc6\xcb\xd6\xc9"+ // set treasure id 12
+			"\xfa\x4c\xcc\xfe\x0b\xc0\x21\x93\xc6\xcb\xd6\xc9"), // id 0a
 
 	// use the custom "give item" function in the shop instead of the normal
 	// one. this obviates some hard-coded shop data (sprite, text) and allows
