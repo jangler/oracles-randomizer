@@ -7,7 +7,6 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
-	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -28,11 +27,9 @@ func addDefaultItemNodes(nodes map[string]*logic.Node) {
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph        graph.Graph
-	Slots        map[string]*graph.Node
-	TurnsReached map[*graph.Node]int
-	DungeonItems []int
-	Costs        int
+	Graph graph.Graph
+	Slots map[string]*graph.Node
+	Costs int
 }
 
 // NewRoute returns an initialized route with all nodes, and those nodes with
@@ -61,10 +58,8 @@ func NewRoute(start ...string) *Route {
 	}
 
 	return &Route{
-		Graph:        g,
-		Slots:        openSlots,
-		TurnsReached: make(map[*graph.Node]int),
-		DungeonItems: make([]int, 9),
+		Graph: g,
+		Slots: openSlots,
 	}
 }
 
@@ -134,6 +129,7 @@ type RouteInfo struct {
 	UsedItems, UsedSlots         *list.List
 	ProgressItems, ProgressSlots *list.List
 	ExtraItems, ExtraSlots       *list.List
+	AttemptCount                 int
 }
 
 const (
@@ -174,14 +170,15 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		r := NewRoute()
 		ri.Companion = rollAnimalCompanion(src, r)
 		itemList, slotList = initRouteInfo(src, r, ri.Companion)
-		logChan <- fmt.Sprintf("trying seed %08x", seed)
+		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
 
 		// slot initial nodes before algorithm slots progression items
 		ri.Seasons = rollSeasons(src, r)
 		placeDungeonItems(src, r,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
-		startTime := time.Now()
+		slotRecord := 0
+		i, maxIterations := 0, 1+itemList.Len()
 
 		// slot progression items
 		done := r.Graph["done"]
@@ -190,75 +187,88 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 			if verbose {
 				logChan <- fmt.Sprintf("searching; have %d more slots",
 					slotList.Len())
+				logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
 			}
 
-			// check to make sure this step isn't taking too long
-			if time.Now().Sub(startTime) > time.Second*10 {
-				success = false
-				break
-			}
+			eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
+				countSteps, ri.UsedSlots.Len(), false)
 
-			// try to find a new combination of items that opens progression
-			items, slots := trySlotItemSet(r, src, itemList, slotList,
-				countSteps, false)
+			if eItem != nil {
+				ri.UsedItems.PushBack(itemList.Remove(eItem))
+				slot := slotList.Remove(eSlot).(*graph.Node)
+				ri.UsedSlots.PushBack(slot)
+				r.Costs += logic.Rupees[slot.Name]
 
-			if items != nil {
-				for items.Len() > 0 {
-					ri.UsedItems.PushBack(items.Remove(items.Front()))
-					slot := slots.Remove(slots.Front()).(*graph.Node)
-					ri.UsedSlots.PushBack(slot)
-					r.Costs += logic.Rupees[slot.Name]
-
-					match := dungeonRegexp.FindStringSubmatch(slot.Name)
-					if match != nil {
-						di, _ := strconv.Atoi(match[1])
-						r.DungeonItems[di]++
-					}
+				if ri.UsedSlots.Len() > slotRecord {
+					slotRecord = ri.UsedSlots.Len()
+					i, maxIterations = 0, 1+itemList.Len()
 				}
 			} else {
-				success = false
-				break
+				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
+				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+				itemList.PushBack(item)
+				slotList.PushBack(slot)
+				item.RemoveParent(slot)
 			}
 
 			r.Graph.ClearMarks()
+
+			i++
+			if i > maxIterations {
+				success = false
+				if verbose {
+					logChan <- "maximum iterations reached"
+				}
+				break
+			}
 		}
 
 		if success {
-			arrangeListsForLog(r, ri, verbose)
-
 			// fill unused slots
 			for slotList.Len() > 0 {
 				if verbose {
 					logChan <- fmt.Sprintf("done; filling %d more slots",
 						slotList.Len())
+					logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
 				}
 
-				// check to make sure this step isn't taking too long
-				if time.Now().Sub(startTime) > time.Second*10 {
-					break
-				}
+				eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
+					countSteps, ri.UsedSlots.Len(), true)
 
-				items, slots := trySlotItemSet(r, src, itemList, slotList,
-					countSteps, true)
-				if items != nil {
-					for items.Len() > 0 {
-						item := items.Remove(items.Front())
-						slot := slots.Remove(slots.Front())
-						ri.UsedItems.PushBack(item)
-						ri.UsedSlots.PushBack(slot)
-						ri.ExtraItems.PushBack(item)
-						ri.ExtraSlots.PushBack(slot)
+				if eItem != nil {
+					ri.UsedItems.PushBack(itemList.Remove(eItem))
+					slot := slotList.Remove(eSlot).(*graph.Node)
+					ri.UsedSlots.PushBack(slot)
+					r.Costs += logic.Rupees[slot.Name]
+
+					if ri.UsedSlots.Len() > slotRecord {
+						slotRecord = ri.UsedSlots.Len()
+						i, maxIterations = 0, 1+itemList.Len()
 					}
 				} else {
+					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
+					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+					itemList.PushBack(item)
+					slotList.PushBack(slot)
+					item.RemoveParent(slot)
+				}
+
+				i++
+				if i > maxIterations {
+					if verbose {
+						logChan <- "maximum iterations reached"
+					}
 					break
 				}
 			}
 		}
 
 		if slotList.Len() == 0 {
+			arrangeListsForLog(r, ri, verbose)
+
 			// rotate dungeon items to the back of the lists
 			items, slots := ri.ProgressItems, ri.ProgressSlots
-			for i := 0; i < 6; i++ {
+			for i := 0; i < 8; i++ {
 				items.PushBack(items.Remove(items.Front()))
 				slots.PushBack(slots.Remove(slots.Front()))
 			}
@@ -270,16 +280,8 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 
 			// and we're done
 			ri.Route = r
+			ri.AttemptCount = tries + 1
 			break
-		} else if verbose {
-			logChan <- "unfilled slots:"
-			for e := slotList.Front(); e != nil; e = e.Next() {
-				logChan <- e.Value.(*graph.Node).Name
-			}
-			logChan <- "unused items:"
-			for e := itemList.Front(); e != nil; e = e.Next() {
-				logChan <- e.Value.(*graph.Node).Name
-			}
 		}
 
 		ri.UsedItems, ri.UsedSlots = list.New(), list.New()
@@ -287,8 +289,8 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		ri.ExtraItems, ri.ExtraSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
-		seed = uint32(src.Int31())
-		src = rand.New(rand.NewSource(int64(seed)))
+		ri.Seed = uint32(src.Int31())
+		src = rand.New(rand.NewSource(int64(ri.Seed)))
 	}
 
 	if tries >= maxTries {
@@ -368,10 +370,6 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 
 	// place boss keys first
 	for i := 1; i < 9; i++ {
-		if i == 4 || i == 5 {
-			continue
-		}
-
 		slotted := false
 		for ei := itemList.Front(); ei != nil && !slotted; ei = ei.Next() {
 			item := ei.Value.(*graph.Node)
@@ -511,8 +509,7 @@ func countSteps(r *Route) int {
 	count := 0
 	for node := range reached {
 		if node.IsStep && node.Name != "village shop 1" &&
-			node.Name != "village shop 2" &&
-			(r.TurnsReached[node] > 0 || canAffordSlot(r, node)) {
+			node.Name != "village shop 2" && canAffordSlot(r, node) {
 			count++
 		}
 	}

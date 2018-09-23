@@ -336,12 +336,10 @@ var constMutables = map[string]Mutable{
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
 	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),
 
-	// getting the L-2 (or L-3) sword in the lost woods gives you two items;
-	// one for the item itself and another that gives you the item and also
-	// makes you do a spin slash animation. change the second ID bytes to a
-	// fake item so that one slot doesn't give two items / the same item twice.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641b}, 0x05, 0x3f),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6422}, 0x05, 0x3f),
+	// getting the L-2 (or L-3) sword in the lost woods normally gives a second
+	// "spin slash" item. remove this from the script.
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0xde, 0xc1),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0xde, 0xc1),
 
 	// remove the snow piles in front of the shovel house so that shovel isn't
 	// required not to softlock there (it's still required not to softlock in
@@ -493,8 +491,6 @@ var constMutables = map[string]Mutable{
 	// and skip the check for what level shield you currently have
 	"skip iron shield level check": MutableString(Addr{0x15, 0x62ac},
 		"\x38\x01", "\x18\x05"),
-	// for some reason the param of iron shield is incremented before giving it
-	"keep iron shield param": MutableByte(Addr{0x09, 0x42de}, 0x0c, 0x00),
 
 	// overwrite unused maku gate interaction with warning interaction
 	"warning script pointer": MutableWord(Addr{0x08, 0x5663}, 0x874e, 0x6d7f),
@@ -608,6 +604,167 @@ var constMutables = map[string]Mutable{
 			"\xcd\xc6\x3a\xc0\x36\x22\x2c\x36\x0a"+ // create warning object
 			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
 			"\xc9"), // ret
+
+	// set hl = address of treasure data + 1 for item with ID a, sub ID c.
+	"get treasure data func": MutableString(Addr{0x00, 0x3ed3}, "\x00",
+		"\xf5\xc5\xd5\x47\x1e\x15\x21\xf4\x79\xcd\x8a\x00\xd1\xc1\xf1\xc9"),
+	"get treasure data body": MutableString(Addr{0x15, 0x79f4}, "\x15",
+		"\x78\xc5\x21\x29\x51\xcd\xc3\x01\x09"+ // add ID offset
+			"\xcb\x7e\x28\x09\x23\x2a\x66\x6f"+ // load as address if bit 7 set
+			"\xc1\x79\xc5\x18\xef"+ // use sub ID as second offset
+			"\x23\x06\x03\xd5\x11\xfd\xcd\xcd\x62\x04"+ // copy data
+			"\x21\xfd\xcd\xd1\xc1\xc9"), // set hl and ret
+
+	// change hl to point to different treasure data if the item is progressive
+	// and needs to be upgraded. param a = treasure ID.
+	"progressive item func": MutableString(Addr{0x00, 0x3ee3}, "\x00",
+		"\xd5\x5f\xcd\x17\x17\x7b\xd1\xd0"+ // ret if you don't have L-1
+			"\xfe\x05\x20\x04\x21\x12\x3f\xc9"+ // check sword
+			"\xfe\x06\x20\x04\x21\x15\x3f\xc9"+ // check boomerang
+			"\xfe\x13\x20\x04\x21\x18\x3f\xc9"+ // check slingshot
+			"\xfe\x17\x20\x04\x21\x1b\x3f\xc9"+ // check feather
+			"\xfe\x19\xc0\x21\x1e\x3f\xc9"+ // check satchel
+			// treasure data
+			"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20"),
+
+	// this is a replacement for giveTreasure that gives treasure, plays sound,
+	// and sets text based on item ID a and sub ID c, and accounting for item
+	// progression.
+	"give item func": MutableString(Addr{0x00, 0x3f21}, "\x00",
+		"\xcd\xd3\x3e\xcd\xe3\x3e"+ // get treasure data
+			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
+			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9"), // show text
+
+	// upgrade normal items (interactions with ID 60) as necessary when they're
+	// created.
+	"set normal progressive call": MutableString(Addr{0x15, 0x465a},
+		"\x47\xcb\x37", "\xcd\xe8\x79"),
+	"set normal progressive func": MutableString(Addr{0x15, 0x79e8}, "\x15",
+		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd\xe3\x3e\xf1\xc9"),
+
+	// utility function, call a function hl in bank 02, preserving af. e can't
+	// be used as a parameter to that function, but it can be returned.
+	"call bank 02": MutableString(Addr{0x00, 0x3f4d}, "\x00",
+		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9"),
+
+	// utility function, read a byte from hl in bank e into a and e.
+	"read byte from bank": MutableString(Addr{0x00, 0x3f55}, "\x00",
+		"\xfa\x97\xff\xf5\x7b\xea\x97\xff\xea\x22\x22"+ // switch bank
+			"\x5e\xf1\xea\x97\xff\xea\x22\x22\x7b\xc9"), // read and switch back
+
+	// check fake treasure ID 0a instead of ID of maku tree item. the flag is
+	// set in "bank 9 fake id call" below. this only matters if you leave the
+	// room without picking up the item.
+	"maku tree check fake id": MutableByte(Addr{0x09, 0x7dfd}, 0x42, 0x0a),
+
+	// check fake treasure ID 0f instead of ID of shop item 3.
+	"shop check fake id": MutableStrings([]Addr{{0x08, 0x4a8a},
+		{0x08, 0x4af2}}, "\x0e", "\x0f"),
+	"shop give fake id call": MutableString(Addr{0x08, 0x4bfe},
+		"\x1e\x42\x1a", "\xcd\xef\x7f"),
+	"shop give fake id func": MutableString(Addr{0x08, 0x7fef}, "\x08",
+		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9"),
+
+	// check fake treasure ID 10 instead of ID of market item 5. the function
+	// is called as part of "market give item func" below.
+	"market check fake id": MutableByte(Addr{0x09, 0x7755}, 0x53, 0x10),
+	"market give fake id func": MutableString(Addr{0x09, 0x7fd4}, "\x09",
+		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6"),
+
+	// use fake treasure ID 11 instead of 2e for master diver.
+	"diver check fake id": MutableByte(Addr{0x0b, 0x72f1}, 0x2e, 0x11),
+	"diver give fake id call": MutableString(Addr{0x0b, 0x730d},
+		"\xde\x2e\x00", "\xc0\x94\x7f"),
+	"diver give fake id script": MutableString(Addr{0x0b, 0x7f94}, "\x0b",
+		"\xde\x2e\x00\x92\x94\xc6\x02\xc1"),
+
+	// not much room left in bank 9, so this calls a bank 2 function that sets
+	// treasure ID 12 if applicable.
+	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
+
+	// shared by maku tree and star-shaped ore.
+	"bank 9 fake id call": MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xdd7f),
+	"bank 9 fake id func": MutableString(Addr{0x09, 0x7fdd}, "\x09",
+		"\xf5\xe5\x21\x21\x76\xcd\x4d\x3f\xe1\xf1\xcd\xeb\x16\xc9"),
+	"bank 2 fake id func": MutableString(Addr{0x02, 0x7621}, "\x02",
+		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x1b\xc9"+ // compare group
+			"\xfa\x4c\xcc\xfe\x65\x28\x0d\xfe\x66\x28\x09"+ // compare room
+			"\xfe\x75\x28\x05\xfe\x76\x28\x01\xc9"+ // cont.
+			"\x21\x94\xc6\xcb\xd6\xc9"+ // set treasure id 12
+			"\xfa\x4c\xcc\xfe\x0b\xc0\x21\x93\xc6\xcb\xd6\xc9"), // id 0a
+
+	// use the custom "give item" function in the shop instead of the normal
+	// one. this obviates some hard-coded shop data (sprite, text) and allows
+	// the item to progressively upgrade.
+	"shop give item call": MutableWord(Addr{0x08, 0x4bfc}, 0xeb16, 0xc07f),
+	"shop give item func": MutableString(Addr{0x08, 0x7fc0}, "\x08",
+		"\xc5\x47\x7d\xcd\xd2\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
+			"\xcd\x21\x3f\xc9"+ // give item and ret
+			"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9"), // check addr
+	// and zero the original text IDs
+	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
+		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
+	// param = b (item index/subID), returns c,e = treasure ID,subID
+	"shop item lookup": MutableString(Addr{0x08, 0x7fde}, "\x08",
+		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9"),
+
+	// do the same for the subrosian market.
+	"market give item call": MutableString(Addr{0x09, 0x7891},
+		"\xcd\xeb\x16\x1e\x42", "\xcd\xae\x7f\x38\x0b"), // jump on carry flag
+	"market give item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
+		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x18"+
+			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
+			"\xf1\xcd\x21\x3f\xd1\x37\xc9"), // give item, scf, ret
+	// param = b (item index/subID), returns c,e = treasure ID,subID
+	"market item lookup": MutableString(Addr{0x09, 0x7fca}, "\x09",
+		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9"),
+
+	// use custom "give item" func in rod cutscene.
+	"rod give item call": MutableString(Addr{0x15, 0x70cf},
+		"\xcd\xeb\x16", "\xcd\x21\x3f"),
+	"no rod text": MutableString(Addr{0x15, 0x70be},
+		"\xcd\x4b\x18", "\x00\x00\x00"),
+	// returns c,e = treasure ID,subID
+	"rod lookup": MutableString(Addr{0x15, 0x7a1a}, "\x15",
+		"\x21\xcc\x70\x5e\x23\x23\x4e\xc9"),
+
+	// returns c,e = treasure ID,subID
+	"noble sword lookup": MutableString(Addr{0x0b, 0x7f8d}, "\x0b",
+		"\x21\x18\x64\x4e\x23\x5e\xc9"),
+
+	// load gfx data for randomized shop and market items.
+	"item gfx call": MutableString(Addr{0x3f, 0x443c},
+		"\x4f\x06\x00", "\xcd\x69\x71"),
+	"item gfx func": MutableString(Addr{0x3f, 0x7169}, "\x3f",
+		// check for matching object
+		"\x43\x4f\xcd\xcd\x71\x28\x12\xcd\xd5\x71\x28\x14"+ // rod, woods
+			"\xcd\xb0\x71\x28\x16\xcd\xc0\x71\x28\x18\x06\x00\xc9"+ // shops
+			// look up item ID, subID
+			"\x1e\x15\x21\x1a\x7a\x18\x13\x1e\x0b\x21\x8d\x7f\x18\x0c"+
+			"\x1e\x08\x21\xde\x7f\x18\x05\x1e\x09\x21\xca\x7f"+ // shops
+			"\xcd\x8a\x00"+ // get treasure
+			"\x79\x4b\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get sprite
+			"\x3e\x60\x4f\x06\x00\xc9"), // replace object gfx w/ treasure gfx
+	// return z if object is randomized shop item.
+	"check randomized shop item": MutableString(Addr{0x3f, 0x71b0}, "\x3f",
+		"\x79\xfe\x47\xc0\x7b\xb7\xc8\xfe\x02\xc8\xfe\x05\xc8\xfe\x0d\xc9"),
+	// same as above but for subrosia market.
+	"check randomized market item": MutableString(Addr{0x3f, 0x71c0}, "\x3f",
+		"\x79\xfe\x81\xc0\x7b\xb7\xc8\xfe\x04\xc8\xfe\x0d\xc9"),
+	// and rod of seasons.
+	"check rod": MutableString(Addr{0x3f, 0x71cd}, "\x3f",
+		"\x79\xfe\xe6\xc0\x7b\xfe\x02\xc9"),
+	// and noble sword.
+	"check noble sword": MutableString(Addr{0x3f, 0x71d5}, "\x3f",
+		"\x79\xfe\x59\xc9"),
+
+	// force the item in the temple of seasons cutscene to use normal item
+	// animations.
+	"rod cutscene gfx call": MutableString(Addr{0x00, 0x2600},
+		"\x1e\x41\x1a", "\xcd\x3b\x3f"),
+	"rod cutscene gfx func": MutableString(Addr{0x00, 0x3f3b}, "\x00",
+		"\x1e\x41\x1a\xfe\xe6\xc0\x1c\x1a\xfe\x02\x28\x03\x1d\x1a\xc9"+
+			"\x3e\x60\xc9"),
 }
 
 var (
@@ -676,6 +833,18 @@ var varMutables = map[string]Mutable{
 
 	// should be set to match the western coast season
 	"season after pirate cutscene": MutableByte(Addr{0x15, 0x7946}, 0x15, 0x15),
+
+	// set sub ID for star ore
+	"star ore id call": MutableString(Addr{0x08, 0x62f2},
+		"\x2c\x36\x45", "\xcd\xe8\x7f"),
+	"star ore id func": MutableString(Addr{0x08, 0x7fe8}, "\x08",
+		"\x2c\x36\x45\x2c\x36\x00\xc9"),
+
+	// set sub ID for hard ore
+	"hard ore id call": MutableString(Addr{0x15, 0x5b83},
+		"\x2c\x36\x52", "\xcd\x22\x7a"),
+	"hard ore id func": MutableString(Addr{0x15, 0x7a22}, "\x15",
+		"\x2c\x36\x52\x2c\x36\x00\xc9"),
 }
 
 var Seasons = map[string]*MutableRange{

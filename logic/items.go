@@ -17,6 +17,16 @@ var itemNodes = map[string]*Node{
 	"dimitri's flute": Root(),
 	"moosh's flute":   Root(),
 
+	"sword L-1":     Or("sword 1", "sword 2"),
+	"sword L-2":     And("sword 1", "sword 2"),
+	"boomerang L-1": Or("boomerang 1", "boomerang 2"),
+	"boomerang L-2": And("boomerang 1", "boomerang 2"),
+	"slingshot L-1": Or("slingshot 1", "slingshot 2"),
+	"slingshot L-2": And("slingshot 1", "slingshot 2"),
+	"feather L-1":   Or("feather 1", "feather 2"),
+	"feather L-2":   And("feather 1", "feather 2"),
+	"satchel":       Or("satchel 1", "satchel 2"),
+
 	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds": And("seed item", Or(
 		And("ember tree seeds", "harvest tree"), "d5 armos key chest",
@@ -27,8 +37,6 @@ var itemNodes = map[string]*Node{
 	"harvest scent seeds":   And("scent tree seeds", "seed item", "harvest tree"),
 	"harvest pegasus seeds": And("pegasus tree seeds", "seed item", "harvest tree"),
 	"harvest gale seeds":    And("gale tree seeds", "seed item", "harvest tree"),
-
-	"satchel": Or("satchel 1", "satchel 2"),
 
 	"ember satchel":   And("harvest ember seeds", "satchel"),
 	"mystery satchel": And("harvest mystery seeds", "satchel"),

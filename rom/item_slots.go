@@ -24,7 +24,7 @@ func IsChest(ms *MutableSlot) bool {
 func IsFound(ms *MutableSlot) bool {
 	switch ms.CollectMode {
 	case CollectRingBox, CollectUnderwater, CollectFind1, CollectFind2,
-		CollectAppear:
+		CollectFind3:
 		return true
 	}
 	return false
@@ -170,7 +170,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"lake chest": MutableChest("gasha seed", 0x4f92),
 	"maku tree gift": &MutableSlot{
 		Treasure:   Treasures["gnarled key"],
-		IDAddrs:    []Addr{{0x15, 0x613a}, {0x09, 0x7e16}, {0x09, 0x7dfd}},
+		IDAddrs:    []Addr{{0x15, 0x613a}, {0x09, 0x7e16}},
 		SubIDAddrs: []Addr{{0x15, 0x613d}, {0x09, 0x7e19}},
 	},
 	"village SW chest":   MutableChest("rupees, 20", 0x4f7e),
@@ -188,8 +188,8 @@ var ItemSlots = map[string]*MutableSlot{
 	"master's plaque chest": MutableChest("master's plaque", 0x510a),
 	"diver gift": &MutableSlot{
 		Treasure:   Treasures["flippers"],
-		IDAddrs:    []Addr{{0x0b, 0x730e}, {0x0b, 0x72f1}},
-		SubIDAddrs: []Addr{{0x0b, 0x730f}},
+		IDAddrs:    []Addr{{0x0b, 0x7f95}},
+		SubIDAddrs: []Addr{{0x0b, 0x7f96}},
 	},
 	"spring banana tree":   MutableFind("spring banana", 0x66c6),
 	"dragon key spot":      MutableFind("dragon key", 0x62a3),
@@ -197,10 +197,9 @@ var ItemSlots = map[string]*MutableSlot{
 	"x-shaped jewel chest": MutableChest("x-shaped jewel", 0x4f8a),
 	"round jewel gift":     MutableGift("round jewel", 0x7332),
 	"noble sword spot": &MutableSlot{
-		Treasure:   Treasures["sword L-2"],
+		Treasure:   Treasures["sword 2"],
 		IDAddrs:    []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
 		SubIDAddrs: []Addr{{0x0b, 0x6419}, {0x0b, 0x6420}},
-		GfxAddrs:   []Addr{{0x3f, 0x69f7}, {0x3f, 0x69fa}},
 	},
 	"desert pit": &MutableSlot{
 		Treasure:   Treasures["rusty bell"],
@@ -243,31 +242,23 @@ var ItemSlots = map[string]*MutableSlot{
 
 	"village shop 3": &MutableSlot{
 		Treasure:   Treasures["strange flute"],
-		IDAddrs:    []Addr{{0x08, 0x4ce8}, {0x08, 0x4af2}, {0x08, 0x4a8a}},
-		ParamAddrs: []Addr{{0x08, 0x4ce9}},
-		TextAddrs:  []Addr{{0x08, 0x4d53}},
-		GfxAddrs:   []Addr{{0x3f, 0x6940}},
+		IDAddrs:    []Addr{{0x08, 0x4ce8}},
+		SubIDAddrs: []Addr{{0x08, 0x4ce9}},
 	},
 	"member's shop 1": &MutableSlot{
 		Treasure:   Treasures["satchel 2"],
 		IDAddrs:    []Addr{{0x08, 0x4cce}},
-		ParamAddrs: []Addr{{0x08, 0x4ccf}},
-		TextAddrs:  []Addr{{0x08, 0x4d46}},
-		GfxAddrs:   []Addr{{0x3f, 0x6919}},
+		SubIDAddrs: []Addr{{0x08, 0x4ccf}},
 	},
 	"member's shop 2": &MutableSlot{
 		Treasure:   Treasures["gasha seed"],
 		IDAddrs:    []Addr{{0x08, 0x4cd2}},
-		ParamAddrs: []Addr{{0x08, 0x4cd3}},
-		TextAddrs:  []Addr{{0x08, 0x4d48}},
-		GfxAddrs:   []Addr{{0x3f, 0x691f}},
+		SubIDAddrs: []Addr{{0x08, 0x4cd3}},
 	},
 	"member's shop 3": &MutableSlot{
 		Treasure:   Treasures["treasure map"],
 		IDAddrs:    []Addr{{0x08, 0x4cd8}},
-		ParamAddrs: []Addr{{0x08, 0x4cd9}},
-		TextAddrs:  []Addr{{0x08, 0x4d4b}},
-		GfxAddrs:   []Addr{{0x3f, 0x6928}},
+		SubIDAddrs: []Addr{{0x08, 0x4cd9}},
 	},
 
 	// subrosia
@@ -275,18 +266,16 @@ var ItemSlots = map[string]*MutableSlot{
 	"summer tower":     BasicSlot("summer", 0x0b, 0x4fb9, 0x4fba),
 	"spring tower":     BasicSlot("spring", 0x0b, 0x4fb5, 0x4fb6),
 	"autumn tower":     BasicSlot("autumn", 0x0b, 0x4fc1, 0x4fc2),
-	"dance hall prize": MutableGift("boomerang L-1", 0x6646),
+	"dance hall prize": MutableGift("boomerang 1", 0x6646),
 	"rod gift": &MutableSlot{
 		Treasure:   Treasures["rod"],
 		IDAddrs:    []Addr{{0x15, 0x70ce}},
-		ParamAddrs: []Addr{{0x15, 0x70cc}},
-		TextAddrs:  []Addr{{0x15, 0x70bd}},
-		GfxAddrs:   []Addr{{0x3f, 0x6c25}},
+		SubIDAddrs: []Addr{{0x15, 0x70cc}},
 	},
 	"star ore spot": &MutableSlot{
 		Treasure:   Treasures["star ore"],
-		IDAddrs:    []Addr{{0x08, 0x62f4}, {0x08, 0x62fe}},
-		SubIDAddrs: []Addr{}, // special case, not set at all
+		IDAddrs:    []Addr{{0x08, 0x7fea}},
+		SubIDAddrs: []Addr{{0x08, 0x7fed}},
 	},
 	"blue ore chest":       MutableChest("blue ore", 0x4f9f),
 	"red ore chest":        MutableChest("red ore", 0x4fa3),
@@ -295,38 +284,32 @@ var ItemSlots = map[string]*MutableSlot{
 	"subrosian market 1": &MutableSlot{
 		Treasure:   Treasures["ribbon"],
 		IDAddrs:    []Addr{{0x09, 0x77da}},
-		ParamAddrs: []Addr{{0x09, 0x77db}},
-		TextAddrs:  []Addr{{0x09, 0x78b1}},
-		GfxAddrs:   []Addr{{0x3f, 0x6a96}},
+		SubIDAddrs: []Addr{{0x09, 0x77db}},
 	},
 	"subrosian market 2": &MutableSlot{
 		Treasure:   Treasures["rare peach stone"],
 		IDAddrs:    []Addr{{0x09, 0x77e2}},
-		ParamAddrs: []Addr{{0x09, 0x77e3}},
-		TextAddrs:  []Addr{{0x09, 0x78b5}},
-		GfxAddrs:   []Addr{{0x3f, 0x6aa2}},
+		SubIDAddrs: []Addr{{0x09, 0x77e3}},
 	},
 	"subrosian market 5": &MutableSlot{
 		Treasure:   Treasures["member's card"],
-		IDAddrs:    []Addr{{0x09, 0x77f4}, {0x09, 0x7755}},
-		ParamAddrs: []Addr{{0x09, 0x77f5}},
-		TextAddrs:  []Addr{{0x09, 0x78be}},
-		GfxAddrs:   []Addr{{0x3f, 0x6abd}},
+		IDAddrs:    []Addr{{0x09, 0x77f4}},
+		SubIDAddrs: []Addr{{0x09, 0x77f5}},
 	},
 	"hard ore slot": &MutableSlot{
 		Treasure:   Treasures["hard ore"],
-		IDAddrs:    []Addr{{0x15, 0x5b85}, {0x09, 0x66eb}},
-		SubIDAddrs: []Addr{},
+		IDAddrs:    []Addr{{0x15, 0x7a24}, {0x09, 0x66eb}},
+		SubIDAddrs: []Addr{{0x15, 0x7a27}, {0x09, 0x66ea}},
 	},
 	"iron shield gift": &MutableSlot{
 		Treasure:   Treasures["shield L-2"],
 		IDAddrs:    []Addr{{0x15, 0x62be}},
-		ParamAddrs: []Addr{{0x15, 0x62b4}},
+		SubIDAddrs: []Addr{{0x15, 0x62b4}},
 	},
 
 	// hero's cave
 	"d0 sword chest": &MutableSlot{
-		Treasure:   Treasures["sword L-1"],
+		Treasure:   Treasures["sword 1"],
 		IDAddrs:    []Addr{{0x0a, 0x7b90}},
 		ParamAddrs: []Addr{{0x0a, 0x7b92}},
 		TextAddrs:  []Addr{{0x0a, 0x7b9c}},
@@ -352,7 +335,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d2 boss key chest": MutableChest("d2 boss key", 0x4fdd),
 
 	// d3
-	"d3 feather chest":  MutableChest("feather L-1", 0x5015),
+	"d3 feather chest":  MutableChest("feather 1", 0x5015),
 	"d3 rupee chest":    MutableChest("rupees, 30", 0x4ff9),
 	"d3 gasha chest":    MutableChest("gasha seed", 0x5001),
 	"d3 bomb chest":     MutableChest("bombs, 10", 0x5019),
@@ -361,19 +344,21 @@ var ItemSlots = map[string]*MutableSlot{
 	"d3 boss key chest": MutableChest("d3 boss key", 0x4ffd),
 
 	// d4
-	"d4 slingshot chest": MutableChest("slingshot L-1", 0x502d),
+	"d4 slingshot chest": MutableChest("slingshot 1", 0x502d),
 	"d4 bomb chest":      MutableChest("bombs, 10", 0x5031),
 	"d4 map chest":       MutableChest("dungeon map", 0x5025),
 	"d4 compass chest":   MutableChest("compass", 0x5035),
+	"d4 boss key spot":   MutableGift("d4 boss key", 0x4c0b),
 
 	// d5
 	"d5 magnet gloves chest": MutableChest("magnet gloves", 0x503d),
 	"d5 large rupee chest":   MutableChest("rupees, 100", 0x5041),
 	"d5 map chest":           MutableChest("dungeon map", 0x5039),
 	"d5 compass chest":       MutableChest("compass", 0x5049),
+	"d5 boss key spot":       MutableGift("d5 boss key", 0x4c22),
 
 	// d6
-	"d6 boomerang chest": MutableChest("boomerang L-2", 0x507d),
+	"d6 boomerang chest": MutableChest("boomerang 2", 0x507d),
 	"d6 rupee chest A":   MutableChest("rupees, 10", 0x505d),
 	"d6 rupee chest B":   MutableChest("rupees, 5", 0x5065),
 	"d6 bomb chest":      MutableChest("bombs, 10", 0x5069),
@@ -383,7 +368,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d6 boss key chest":  MutableChest("d6 boss key", 0x5079),
 
 	// d7
-	"d7 cape chest":     MutableChest("feather L-2", 0x509e),
+	"d7 cape chest":     MutableChest("feather 2", 0x509e),
 	"d7 rupee chest":    MutableChest("rupees, 1", 0x509a),
 	"d7 ring chest":     MutableChest("power ring L-1", 0x50b6),
 	"d7 compass chest":  MutableChest("compass", 0x50aa),
@@ -391,7 +376,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d7 boss key chest": MutableChest("d7 boss key", 0x50a6),
 
 	// d8
-	"d8 HSS chest":      MutableChest("slingshot L-2", 0x50da),
+	"d8 HSS chest":      MutableChest("slingshot 2", 0x50da),
 	"d8 bomb chest":     MutableChest("bombs, 10", 0x50ba),
 	"d8 ring chest":     MutableChest("steadfast ring", 0x50c6),
 	"d8 compass chest":  MutableChest("compass", 0x50d2),

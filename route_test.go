@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -14,13 +17,8 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"feather L-2": "d0 sword chest",
+			"feather 1": "d0 sword chest",
 		}, "maku tree gift", false)
-
-	checkReach(t, g,
-		map[string]string{
-			"feather L-2": "d0 sword chest",
-		}, "lake chest", true)
 
 	checkReach(t, g,
 		map[string]string{
@@ -29,18 +27,7 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"feather L-2": "d0 sword chest",
-			"winter":      "lake chest",
-		}, "maku tree gift", true)
-
-	checkReach(t, g,
-		map[string]string{
-			"boomerang L-2": "d0 sword chest",
-		}, "maku tree gift", false)
-
-	checkReach(t, g,
-		map[string]string{
-			"sword L-1":        "d0 sword chest",
+			"sword 1":          "d0 sword chest",
 			"ember tree seeds": "ember tree",
 			"satchel 1":        "maku tree gift",
 			"member's card":    "d0 rupee chest",
@@ -48,8 +35,8 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"sword L-1": "d0 sword chest",
-			"bracelet":  "maku tree gift",
+			"sword 1":  "d0 sword chest",
+			"bracelet": "maku tree gift",
 		}, "floodgate key spot", false)
 
 	checkReach(t, g,
@@ -113,4 +100,36 @@ func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
 			t.Errorf("expected not to reach %s, but could", target)
 		}
 	}
+}
+
+func TestFindRoute(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+	}
+
+	totalRoutes, totalAttempts := 10, 0
+	rand.Seed(time.Now().UnixNano())
+
+	logChan, doneChan := make(chan string), make(chan int)
+	go func() {
+		for {
+			select {
+			case <-logChan:
+			case <-doneChan:
+				println("received")
+				break
+			}
+		}
+	}()
+
+	for i := 0; i < totalRoutes; i++ {
+		println(fmt.Sprintf("finding route %d/%d", i, totalRoutes))
+		seed := uint32(rand.Int())
+		src := rand.New(rand.NewSource(int64(seed)))
+		totalAttempts += findRoute(src, seed, false,
+			logChan, doneChan).AttemptCount
+	}
+
+	println(fmt.Sprintf("average %d attempts per route",
+		totalAttempts/totalRoutes))
 }

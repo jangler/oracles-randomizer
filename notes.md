@@ -11,10 +11,13 @@ drenn's ages-disasm.
 - 0:0462 = copyMemory, b is # bytes, hl is src, de is dest
 - 0:0c74 = playSound, a is index
 - 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
+- 0:15e9 = interactionInitGraphics
+	- 3f:4404 = interactionLoadGraphics
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:1702 = loseTreasure (a is ID)
 - 0:17b9 = getRandomRingOfGivenTier ?
-- 0:2215 = objectCopyPositionWithOffset
+- 0:21fd, 0:2202, 0:2215 = objectCopyPosition, objectCopyPosition rawAddress,
+  objectCopyPositionWithOffset
 - 0:2727 = objectCreateExclamationMark
 - 0:24d2 = interactionActuallyRunScript
 - 0:24fe = interactionSetScript, hl is address in bank b
@@ -34,9 +37,10 @@ drenn's ages-disasm.
 - 6:4713 = tryToBreakTile body
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation
+- 15:463f = some function for loading treasure data based on object id/subid
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
   is address to write to, b happens to be the treasure index)
-- 3f:4445, 3f:444c, 3f:c45a = points for loading sprite data for an object
+- 3f:4445, 3f:444c, 3f:445a = points for loading sprite data for an object
 
 
 ## ram addresses not documented elsewhere
@@ -162,6 +166,7 @@ reference.
 - 87 = jump table
 - 88 = set coordinates, byte = y, byte = x
 - 8f = set animation, byte = index
+- 92 = or memory, word = addr, byte = value
 - 98 = show text, word = index
 - 9c = set interaction text id, word = index
 - a0 = wait until bit of cfc0 is set
@@ -179,7 +184,7 @@ reference.
 - d3 = wait until flag is set, byte = flag, word = addr
 - d4 = wait until object byte equals value
 - d7 = set counter, byte = value
-- de = spawn item on link, word = id, subid (?)
+- de = spawn item on link, word = id, subid
 - e0 = call function in bank 15, word = addr
 - e1 = call function in bank 15, word = addr, byte = value of a and e
 - e3 = play sound, byte = index
