@@ -63,6 +63,10 @@ func init() {
 		"moosh's flute"} {
 		TreasureIsUnique[name] = true
 	}
+	for _, name := range []string{"d1 boss key", "d2 boss key", "d3 boss key",
+		"d6 boss key", "d7 boss key", "d8 boss key"} {
+		delete(TreasureIsUnique, name)
+	}
 }
 
 // Addr is a fully-specified memory address.
