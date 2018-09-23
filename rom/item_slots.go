@@ -23,7 +23,8 @@ func IsChest(ms *MutableSlot) bool {
 // (they seem to be compatible).
 func IsFound(ms *MutableSlot) bool {
 	switch ms.CollectMode {
-	case CollectRingBox, CollectUnderwater, CollectFind1, CollectFind2:
+	case CollectRingBox, CollectUnderwater, CollectFind1, CollectFind2,
+		CollectFind3:
 		return true
 	}
 	return false
@@ -347,12 +348,14 @@ var ItemSlots = map[string]*MutableSlot{
 	"d4 bomb chest":      MutableChest("bombs, 10", 0x5031),
 	"d4 map chest":       MutableChest("dungeon map", 0x5025),
 	"d4 compass chest":   MutableChest("compass", 0x5035),
+	"d4 boss key spot":   MutableGift("d4 boss key", 0x4c0b),
 
 	// d5
 	"d5 magnet gloves chest": MutableChest("magnet gloves", 0x503d),
 	"d5 large rupee chest":   MutableChest("rupees, 100", 0x5041),
 	"d5 map chest":           MutableChest("dungeon map", 0x5039),
 	"d5 compass chest":       MutableChest("compass", 0x5049),
+	"d5 boss key spot":       MutableGift("d5 boss key", 0x4c22),
 
 	// d6
 	"d6 boomerang chest": MutableChest("boomerang 2", 0x507d),

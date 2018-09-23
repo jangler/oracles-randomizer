@@ -267,7 +267,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 
 			// rotate dungeon items to the back of the lists
 			items, slots := ri.ProgressItems, ri.ProgressSlots
-			for i := 0; i < 6; i++ {
+			for i := 0; i < 8; i++ {
 				items.PushBack(items.Remove(items.Front()))
 				slots.PushBack(slots.Remove(slots.Front()))
 			}
@@ -368,10 +368,6 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 
 	// place boss keys first
 	for i := 1; i < 9; i++ {
-		if i == 4 || i == 5 {
-			continue
-		}
-
 		slotted := false
 		for ei := itemList.Front(); ei != nil && !slotted; ei = ei.Next() {
 			item := ei.Value.(*graph.Node)

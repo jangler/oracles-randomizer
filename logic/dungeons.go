@@ -150,7 +150,7 @@ var d4Nodes = map[string]*Node{
 	"d4 final minecart":  And("enter agunima", "kill agunima"),
 	"d4 torch key chest": And("enter agunima", "ember slingshot", "jump"),
 	"d4 slingshot chest": AndSlot("d4 final minecart", "d4 key C"),
-	"d4 boss key spot": And("d4 final minecart", "hit very far lever",
+	"d4 boss key spot": AndSlot("d4 final minecart", "hit very far lever",
 		"jump", "d4 key D", "flippers"),
 	"d4 basement stairs": And("d4 final minecart", "hit far lever", "kill wizzrobe (pit, throw)", "d4 key E"),
 
@@ -160,12 +160,11 @@ var d4Nodes = map[string]*Node{
 	"d4 essence":      AndStep("enter gohma", "kill gohma"),
 
 	// fixed items
-	"d4 key A":    And("d4 pot key fall"),
-	"d4 key B":    And("d4 dark key chest"),
-	"d4 key C":    And("d4 water key fall"),
-	"d4 key D":    And("d4 pre-mid key"),
-	"d4 key E":    And("d4 torch key chest"),
-	"d4 boss key": And("d4 boss key spot"),
+	"d4 key A": And("d4 pot key fall"),
+	"d4 key B": And("d4 dark key chest"),
+	"d4 key C": And("d4 water key fall"),
+	"d4 key D": And("d4 pre-mid key"),
+	"d4 key E": And("d4 torch key chest"),
 }
 
 var d5Nodes = map[string]*Node{
@@ -198,9 +197,10 @@ var d5Nodes = map[string]*Node{
 	"enter syger":          And("d5 cart bay", "cross magnet gap", "d5 key B"),
 	"d5 post-syger":        And("enter syger", "kill syger"),
 	"d5 push ball":         And("d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"),
-	"d5 boss key spot":     And("d5 push ball", "d5 key D", "long jump", "sidescroll magnets"), // being nice
-	"enter digdogger":      And("d5 post-syger", "d5 key E", "magnet gloves", "d5 boss key"),
-	"d5 essence":           AndStep("enter digdogger", "kill digdogger"),
+	"d5 boss key spot": AndSlot("d5 push ball", "d5 key D", "long jump",
+		"sidescroll magnets"), // being nice
+	"enter digdogger": And("d5 post-syger", "d5 key E", "magnet gloves", "d5 boss key"),
+	"d5 essence":      AndStep("enter digdogger", "kill digdogger"),
 
 	// fixed items
 	"d5 key A":    And("d5 cart key chest"),
