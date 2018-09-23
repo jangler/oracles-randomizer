@@ -129,6 +129,7 @@ type RouteInfo struct {
 	UsedItems, UsedSlots         *list.List
 	ProgressItems, ProgressSlots *list.List
 	ExtraItems, ExtraSlots       *list.List
+	AttemptCount                 int
 }
 
 const (
@@ -279,6 +280,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 
 			// and we're done
 			ri.Route = r
+			ri.AttemptCount = tries + 1
 			break
 		}
 

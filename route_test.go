@@ -1,7 +1,10 @@
 package main
 
 import (
+	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -97,4 +100,36 @@ func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
 			t.Errorf("expected not to reach %s, but could", target)
 		}
 	}
+}
+
+func TestFindRoute(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+	}
+
+	totalRoutes, totalAttempts := 10, 0
+	rand.Seed(time.Now().UnixNano())
+
+	logChan, doneChan := make(chan string), make(chan int)
+	go func() {
+		for {
+			select {
+			case <-logChan:
+			case <-doneChan:
+				println("received")
+				break
+			}
+		}
+	}()
+
+	for i := 0; i < totalRoutes; i++ {
+		println(fmt.Sprintf("finding route %d/%d", i, totalRoutes))
+		seed := uint32(rand.Int())
+		src := rand.New(rand.NewSource(int64(seed)))
+		totalAttempts += findRoute(src, seed, false,
+			logChan, doneChan).AttemptCount
+	}
+
+	println(fmt.Sprintf("average %d attempts per route",
+		totalAttempts/totalRoutes))
 }
