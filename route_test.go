@@ -14,13 +14,8 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"feather L-2": "d0 sword chest",
+			"feather 1": "d0 sword chest",
 		}, "maku tree gift", false)
-
-	checkReach(t, g,
-		map[string]string{
-			"feather L-2": "d0 sword chest",
-		}, "lake chest", true)
 
 	checkReach(t, g,
 		map[string]string{
@@ -29,18 +24,7 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"feather L-2": "d0 sword chest",
-			"winter":      "lake chest",
-		}, "maku tree gift", true)
-
-	checkReach(t, g,
-		map[string]string{
-			"boomerang L-2": "d0 sword chest",
-		}, "maku tree gift", false)
-
-	checkReach(t, g,
-		map[string]string{
-			"sword L-1":        "d0 sword chest",
+			"sword 1":          "d0 sword chest",
 			"ember tree seeds": "ember tree",
 			"satchel 1":        "maku tree gift",
 			"member's card":    "d0 rupee chest",
@@ -48,8 +32,8 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"sword L-1": "d0 sword chest",
-			"bracelet":  "maku tree gift",
+			"sword 1":  "d0 sword chest",
+			"bracelet": "maku tree gift",
 		}, "floodgate key spot", false)
 
 	checkReach(t, g,
