@@ -63,22 +63,6 @@ func init() {
 		"moosh's flute"} {
 		TreasureIsUnique[name] = true
 	}
-
-	// get set of items with unique IDs (more restrictive than the above)
-	idCounts := make(map[byte]int)
-	for _, t := range Treasures {
-		if idCounts[t.id] == 0 {
-			idCounts[t.id] = 1
-		} else {
-			idCounts[t.id]++
-		}
-	}
-	for name, t := range Treasures {
-		if (idCounts[t.id] == 1 && name != "gasha seed" &&
-			name != "piece of heart") || strings.HasSuffix(name, "flute") {
-			uniqueIDTreasures[name] = true
-		}
-	}
 }
 
 // Addr is a fully-specified memory address.

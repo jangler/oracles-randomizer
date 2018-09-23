@@ -199,12 +199,6 @@ func FindTreasureName(t *Treasure) string {
 // initialized automatically in init() based on contents of item slots
 var TreasureIsUnique = map[string]bool{}
 
-var uniqueIDTreasures = map[string]bool{}
-
-func TreasureHasUniqueID(name string) bool {
-	return uniqueIDTreasures[name]
-}
-
 // returns true iff a treasure can be lost permanently (i.e. outside of hide
 // and seek).
 func TreasureCanBeLost(name string) bool {
