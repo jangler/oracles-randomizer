@@ -186,16 +186,12 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"great moblin chest":    MutableChest("piece of heart", 0x4f8e),
 	"master's plaque chest": MutableChest("master's plaque", 0x510a),
-	"diver gift": &MutableSlot{
-		Treasure:   Treasures["flippers"],
-		IDAddrs:    []Addr{{0x0b, 0x7f95}},
-		SubIDAddrs: []Addr{{0x0b, 0x7f96}},
-	},
-	"spring banana tree":   MutableFind("spring banana", 0x66c6),
-	"dragon key spot":      MutableFind("dragon key", 0x62a3),
-	"pyramid jewel spot":   MutableGift("pyramid jewel", 0x734e),
-	"x-shaped jewel chest": MutableChest("x-shaped jewel", 0x4f8a),
-	"round jewel gift":     MutableGift("round jewel", 0x7332),
+	"diver gift":            MutableGift("flippers", 0x7f95),
+	"spring banana tree":    MutableFind("spring banana", 0x66c6),
+	"dragon key spot":       MutableFind("dragon key", 0x62a3),
+	"pyramid jewel spot":    MutableGift("pyramid jewel", 0x734e),
+	"x-shaped jewel chest":  MutableChest("x-shaped jewel", 0x4f8a),
+	"round jewel gift":      MutableGift("round jewel", 0x7332),
 	"noble sword spot": &MutableSlot{
 		Treasure:   Treasures["sword 2"],
 		IDAddrs:    []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
@@ -262,10 +258,10 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 
 	// subrosia
-	"winter tower":     BasicSlot("winter", 0x0b, 0x4fc5, 0x4fc6),
-	"summer tower":     BasicSlot("summer", 0x0b, 0x4fb9, 0x4fba),
-	"spring tower":     BasicSlot("spring", 0x0b, 0x4fb5, 0x4fb6),
-	"autumn tower":     BasicSlot("autumn", 0x0b, 0x4fc1, 0x4fc2),
+	"winter tower":     MutableGift("winter", 0x4fc5),
+	"summer tower":     MutableGift("summer", 0x4fb9),
+	"spring tower":     MutableGift("spring", 0x4fb5),
+	"autumn tower":     MutableGift("autumn", 0x4fc1),
 	"dance hall prize": MutableGift("boomerang 1", 0x6646),
 	"rod gift": &MutableSlot{
 		Treasure:   Treasures["rod"],
