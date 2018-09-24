@@ -50,7 +50,7 @@ var subrosiaNodes = map[string]*Node{
 	"pirate's bell":      And("temple", "rusty bell"),
 	"cross winter tower": Or("hit far switch", "jump"),
 	"winter tower":       AndSlot("temple", "cross winter tower"),
-	"summer tower":       AndSlot("beach", "ribbon"),
+	"summer tower":       AndSlot("beach", "ribbon", "bracelet"),
 	"spring tower":       AndSlot("hide and seek", "jump"),
 	"autumn tower":       AndSlot("temple", "jump", "bomb flower"),
 	"blue ore chest": AndSlot("hide and seek",
