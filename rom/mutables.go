@@ -244,6 +244,10 @@ var constMutables = map[string]Mutable{
 	// digging, and disabling the check seems to be sometimes necessary (?)
 	"star ore flag check": MutableString(Addr{0x08, 0x62aa},
 		"\xc2\xd9\x3a", "\x00\x00\x00"),
+	// a vanilla bug lets star ore be dug up on the first screen even if you
+	// already have the item. so… make first try a second instance of second
+	// try.
+	"star ore bugfix": MutableWord(Addr{0x08, 0x62d5}, 0x6656, 0x7624),
 
 	// remove star ore from inventory when buying the first subrosian market
 	// item. this can't go in the gain/lose items table, since the given item
