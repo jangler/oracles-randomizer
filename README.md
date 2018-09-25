@@ -74,6 +74,7 @@ logic, or to prevent softlocks. The most notable are:
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
 - Fool's ore is randomized (the Strange Brothers trade you nothing for your
   feather).
+- Shovel is not required to retrieve the stolen feather.
 - **Holding start while closing the map screen outdoors (in the overworld or in
   Subrosia) warps to the seed tree in Horon Village.** This also sets your
   save/respawn point to that screen.  Tree warping has a one-hour cooldown
