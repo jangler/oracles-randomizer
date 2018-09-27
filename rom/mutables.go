@@ -460,7 +460,7 @@ var constMutables = map[string]Mutable{
 			"\x05\xc9\x2a\x38\x18\x00"+ // goron mountain main
 			"\x05\xba\x2f\x18\x68\x00"+ // spring banana cave
 			"\x05\xbb\x2f\x18\x68\x00"+ // joy ring cave
-			"\x01\x05\x9a\x34\x34\x00"+ // rosa portal
+			"\x01\x05\x9a\x38\x48\x00"+ // rosa portal
 			"\x04\x39\x8d\x38\x38\x00"+ // d2 entrance
 			"\xff"), // end of table
 
@@ -769,6 +769,13 @@ var constMutables = map[string]Mutable{
 	"rod cutscene gfx func": MutableString(Addr{0x00, 0x3f3b}, "\x00",
 		"\x1e\x41\x1a\xfe\xe6\xc0\x1c\x1a\xfe\x02\x28\x03\x1d\x1a\xc9"+
 			"\x3e\x60\xc9"),
+
+	// move the bushes on the rosa portal screen by one tile so that it's
+	// possible to leave and re-enter without breaking bushes.
+	"move rosa portal bushes": MutableStrings([]Addr{
+		{0x21, 0x7454}, {0x22, 0x709d}, {0x23, 0x6ea9}, {0x24, 0x6b9f}},
+		"\x0e\xc4\xf7\x4d\x5f\x11\x6e\x38\xc4\x11\x5e\xf7\x5d\x11",
+		"\x38\xc4\xf7\x4d\x04\x5d\x6e\x38\xc4\x11\x5e\xf7\x4d\x5f"),
 }
 
 var (
