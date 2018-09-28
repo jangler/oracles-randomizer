@@ -426,6 +426,15 @@ func logItems(summary chan string, title string, items, slots *list.List) {
 	for slots.Len() > 0 {
 		slotName := slots.Remove(slots.Front()).(*graph.Node).Name
 		itemName := items.Remove(items.Front()).(*graph.Node).Name
+
+		// rings in market are random, not fixed
+		switch slotName {
+		case "subrosian market 1", "subrosian market 2", "subrosian market 5":
+			if tier := rom.RingTiers[itemName]; tier != 0 {
+				itemName = fmt.Sprintf("random tier %d ring", 4-tier)
+			}
+		}
+
 		summary <- fmt.Sprintf("%-28s <- %s",
 			getNiceName(slotName), getNiceName(itemName))
 	}
