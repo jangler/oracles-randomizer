@@ -622,7 +622,7 @@ var constMutables = map[string]Mutable{
 	// change hl to point to different treasure data if the item is progressive
 	// and needs to be upgraded. param a = treasure ID.
 	"progressive item func": MutableString(Addr{0x00, 0x3ee3}, "\x00",
-		"\xd5\x5f\xcd\x17\x17\x7b\xd1\xd0"+ // ret if you don't have L-1
+		"\xd5\x5f\xcd\x6a\x3f\x7b\xd1\xd0"+ // ret if you don't have L-1
 			"\xfe\x05\x20\x04\x21\x12\x3f\xc9"+ // check sword
 			"\xfe\x06\x20\x04\x21\x15\x3f\xc9"+ // check boomerang
 			"\xfe\x13\x20\x04\x21\x18\x3f\xc9"+ // check slingshot
@@ -630,6 +630,13 @@ var constMutables = map[string]Mutable{
 			"\xfe\x19\xc0\x21\x1e\x3f\xc9"+ // check satchel
 			// treasure data
 			"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20"),
+	// use cape graphics for stolen feather if applicable.
+	"upgrade stolen feather func": MutableString(Addr{0x00, 0x3f6a}, "\x00",
+		"\xcd\x17\x17\xd8\xf5\x7b"+ // ret if you have the item
+			"\xfe\x17\x20\x13\xd5\x1e\x43\x1a\xfe\x02\xd1\x20\x0a"+ // check IDs
+			"\xfa\xb4\xc6\xfe\x02\x20\x03"+ // check feather level
+			"\x21\x89\x3f\xf1\xc9"+ // set hl if match
+			"\x02\x37\x17"), // treasure data
 
 	// this is a replacement for giveTreasure that gives treasure, plays sound,
 	// and sets text based on item ID a and sub ID c, and accounting for item
@@ -741,26 +748,25 @@ var constMutables = map[string]Mutable{
 		"\x4f\x06\x00", "\xcd\x69\x71"),
 	"item gfx func": MutableString(Addr{0x3f, 0x7169}, "\x3f",
 		// check for matching object
-		"\x43\x4f\xcd\xcd\x71\x28\x12\xcd\xd5\x71\x28\x14"+ // rod, woods
-			"\xcd\xb0\x71\x28\x16\xcd\xc0\x71\x28\x18\x06\x00\xc9"+ // shops
+		"\x43\x4f\xcd\xdc\x71\x28\x17\x79\xfe\x59\x28\x19"+ // rod, woods
+			"\xcd\xbf\x71\x28\x1b\xcd\xcf\x71\x28\x1d"+ // shops
+			"\x79\xfe\x6e\x28\x1f\x06\x00\xc9"+ // feather
 			// look up item ID, subID
-			"\x1e\x15\x21\x1a\x7a\x18\x13\x1e\x0b\x21\x8d\x7f\x18\x0c"+
-			"\x1e\x08\x21\xde\x7f\x18\x05\x1e\x09\x21\xca\x7f"+ // shops
+			"\x1e\x15\x21\x1a\x7a\x18\x1d\x1e\x0b\x21\x8d\x7f\x18\x16"+
+			"\x1e\x08\x21\xde\x7f\x18\x0f\x1e\x09\x21\xca\x7f\x18\x08"+
+			"\xfa\xb4\xc6\xc6\x15\x5f\x18\x0e"+ // feather
 			"\xcd\x8a\x00"+ // get treasure
 			"\x79\x4b\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get sprite
 			"\x3e\x60\x4f\x06\x00\xc9"), // replace object gfx w/ treasure gfx
 	// return z if object is randomized shop item.
-	"check randomized shop item": MutableString(Addr{0x3f, 0x71b0}, "\x3f",
+	"check randomized shop item": MutableString(Addr{0x3f, 0x71bf}, "\x3f",
 		"\x79\xfe\x47\xc0\x7b\xb7\xc8\xfe\x02\xc8\xfe\x05\xc8\xfe\x0d\xc9"),
 	// same as above but for subrosia market.
-	"check randomized market item": MutableString(Addr{0x3f, 0x71c0}, "\x3f",
+	"check randomized market item": MutableString(Addr{0x3f, 0x71cf}, "\x3f",
 		"\x79\xfe\x81\xc0\x7b\xb7\xc8\xfe\x04\xc8\xfe\x0d\xc9"),
 	// and rod of seasons.
-	"check rod": MutableString(Addr{0x3f, 0x71cd}, "\x3f",
+	"check rod": MutableString(Addr{0x3f, 0x71dc}, "\x3f",
 		"\x79\xfe\xe6\xc0\x7b\xfe\x02\xc9"),
-	// and noble sword.
-	"check noble sword": MutableString(Addr{0x3f, 0x71d5}, "\x3f",
-		"\x79\xfe\x59\xc9"),
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
@@ -782,8 +788,8 @@ var constMutables = map[string]Mutable{
 		"\xcc\xe5\x17", "\x00\x00\x00"),
 	// instead, have any satchel refill all seeds.
 	"satchel seed refill call": MutableString(Addr{0x00, 0x16f6},
-		"\xcd\xc8\x44", "\xcd\xd9\x71"),
-	"satchel seed refill func": MutableString(Addr{0x3f, 0x71d9}, "\x3f",
+		"\xcd\xc8\x44", "\xcd\xe4\x71"),
+	"satchel seed refill func": MutableString(Addr{0x3f, 0x71e4}, "\x3f",
 		"\xc5\xcd\xc8\x44\xc1\x78\xfe\x19\xc0\xc5\xd5\xcd\xe5\x17\xd1\xc1\xc9"),
 }
 
