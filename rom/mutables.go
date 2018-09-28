@@ -776,6 +776,15 @@ var constMutables = map[string]Mutable{
 		{0x21, 0x7454}, {0x22, 0x709d}, {0x23, 0x6ea9}, {0x24, 0x6b9f}},
 		"\x0e\xc4\xf7\x4d\x5f\x11\x6e\x38\xc4\x11\x5e\xf7\x5d\x11",
 		"\x38\xc4\xf7\x4d\x04\x5d\x6e\x38\xc4\x11\x5e\xf7\x4d\x5f"),
+
+	// prevent the first member's shop item from always refilling all seeds.
+	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
+		"\xcc\xe5\x17", "\x00\x00\x00"),
+	// instead, have any satchel refill all seeds.
+	"satchel seed refill call": MutableString(Addr{0x00, 0x16f6},
+		"\xcd\xc8\x44", "\xcd\xd9\x71"),
+	"satchel seed refill func": MutableString(Addr{0x3f, 0x71d9}, "\x3f",
+		"\xc5\xcd\xc8\x44\xc1\x78\xfe\x19\xc0\xc5\xd5\xcd\xe5\x17\xd1\xc1\xc9"),
 }
 
 var (

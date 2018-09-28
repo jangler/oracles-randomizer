@@ -15,7 +15,8 @@ drenn's ages-disasm.
 	- 3f:4404 = interactionLoadGraphics
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:1702 = loseTreasure (a is ID)
-- 0:17b9 = getRandomRingOfGivenTier ?
+- 0:17e5 = refill all seeds
+- 0:17b9 = getRandomRingOfGivenTier
 - 0:21fd, 0:2202, 0:2215 = objectCopyPosition, objectCopyPosition rawAddress,
   objectCopyPositionWithOffset
 - 0:2727 = objectCreateExclamationMark
