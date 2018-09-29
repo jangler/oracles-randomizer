@@ -15,7 +15,8 @@ drenn's ages-disasm.
 	- 3f:4404 = interactionLoadGraphics
 - 0:16eb = giveTreasure (a is ID, c is param)
 - 0:1702 = loseTreasure (a is ID)
-- 0:17b9 = getRandomRingOfGivenTier ?
+- 0:17e5 = refill all seeds
+- 0:17b9 = getRandomRingOfGivenTier
 - 0:21fd, 0:2202, 0:2215 = objectCopyPosition, objectCopyPosition rawAddress,
   objectCopyPositionWithOffset
 - 0:2727 = objectCreateExclamationMark
@@ -25,6 +26,9 @@ drenn's ages-disasm.
 - 0:2542 = interactionSaveScriptAddress
 - 0:393e = loadSmallRoomLayout
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
+	- 0:3979, 0:3987 = decompressLayoutMode2, decompressLayoutMode2Helper
+	- 0:399c, 0:39aa = decompressLayoutMode1, decompressLayoutMode1Helper
+	- 0:39cb = decompressLayoutHelper
 - 0:3ac6 = getFreeInteractionSlot
 - 0:3b36 = updateInteraction, d is object low byte
 - 1:5ece = updateSeedTreeRefillData
@@ -197,8 +201,12 @@ reference.
 room layouts start with the top left tile and proceed left to right. some parts
 of rooms are compressed, meaning that groups of the same tile (which need not
 be consecutive) are represented by one instance of the tile ID. the
-compression is determined periodically by some non-tile bytes. i don't know how
-it works beyond that.
+compression is determined periodically by some non-tile bytes.
+
+compression "mode 1" uses one byte as a bitmask of locations in the next 8
+tiles where the tile at the next byte appears. following those two bytes, there
+is one byte for each unset bit in the bitmask to determine the non-compressed
+tiles. the cycle repeats.
 
 large rooms (i.e. dungeons) use a different kind of compression.
 

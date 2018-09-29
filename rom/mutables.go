@@ -460,7 +460,7 @@ var constMutables = map[string]Mutable{
 			"\x05\xc9\x2a\x38\x18\x00"+ // goron mountain main
 			"\x05\xba\x2f\x18\x68\x00"+ // spring banana cave
 			"\x05\xbb\x2f\x18\x68\x00"+ // joy ring cave
-			"\x01\x05\x9a\x34\x34\x00"+ // rosa portal
+			"\x01\x05\x9a\x38\x48\x00"+ // rosa portal
 			"\x04\x39\x8d\x38\x38\x00"+ // d2 entrance
 			"\xff"), // end of table
 
@@ -622,7 +622,7 @@ var constMutables = map[string]Mutable{
 	// change hl to point to different treasure data if the item is progressive
 	// and needs to be upgraded. param a = treasure ID.
 	"progressive item func": MutableString(Addr{0x00, 0x3ee3}, "\x00",
-		"\xd5\x5f\xcd\x17\x17\x7b\xd1\xd0"+ // ret if you don't have L-1
+		"\xd5\x5f\xcd\x6a\x3f\x7b\xd1\xd0"+ // ret if you don't have L-1
 			"\xfe\x05\x20\x04\x21\x12\x3f\xc9"+ // check sword
 			"\xfe\x06\x20\x04\x21\x15\x3f\xc9"+ // check boomerang
 			"\xfe\x13\x20\x04\x21\x18\x3f\xc9"+ // check slingshot
@@ -630,6 +630,13 @@ var constMutables = map[string]Mutable{
 			"\xfe\x19\xc0\x21\x1e\x3f\xc9"+ // check satchel
 			// treasure data
 			"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20"),
+	// use cape graphics for stolen feather if applicable.
+	"upgrade stolen feather func": MutableString(Addr{0x00, 0x3f6a}, "\x00",
+		"\xcd\x17\x17\xd8\xf5\x7b"+ // ret if you have the item
+			"\xfe\x17\x20\x13\xd5\x1e\x43\x1a\xfe\x02\xd1\x20\x0a"+ // check IDs
+			"\xfa\xb4\xc6\xfe\x02\x20\x03"+ // check feather level
+			"\x21\x89\x3f\xf1\xc9"+ // set hl if match
+			"\x02\x37\x17"), // treasure data
 
 	// this is a replacement for giveTreasure that gives treasure, plays sound,
 	// and sets text based on item ID a and sub ID c, and accounting for item
@@ -672,7 +679,7 @@ var constMutables = map[string]Mutable{
 	// check fake treasure ID 10 instead of ID of market item 5. the function
 	// is called as part of "market give item func" below.
 	"market check fake id": MutableByte(Addr{0x09, 0x7755}, 0x53, 0x10),
-	"market give fake id func": MutableString(Addr{0x09, 0x7fd4}, "\x09",
+	"market give fake id func": MutableString(Addr{0x09, 0x7fdb}, "\x09",
 		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6"),
 
 	// use fake treasure ID 11 instead of 2e for master diver.
@@ -687,8 +694,8 @@ var constMutables = map[string]Mutable{
 	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
 
 	// shared by maku tree and star-shaped ore.
-	"bank 9 fake id call": MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xdd7f),
-	"bank 9 fake id func": MutableString(Addr{0x09, 0x7fdd}, "\x09",
+	"bank 9 fake id call": MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xe47f),
+	"bank 9 fake id func": MutableString(Addr{0x09, 0x7fe4}, "\x09",
 		"\xf5\xe5\x21\x21\x76\xcd\x4d\x3f\xe1\xf1\xcd\xeb\x16\xc9"),
 	"bank 2 fake id func": MutableString(Addr{0x02, 0x7621}, "\x02",
 		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x1b\xc9"+ // compare group
@@ -713,14 +720,15 @@ var constMutables = map[string]Mutable{
 		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
 	// do the same for the subrosian market.
-	"market give item call": MutableString(Addr{0x09, 0x7891},
-		"\xcd\xeb\x16\x1e\x42", "\xcd\xae\x7f\x38\x0b"), // jump on carry flag
+	"market give item call": MutableString(Addr{0x09, 0x788a},
+		"\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42",
+		"\x00\x00\x00\x00\x00\x00\x00\xcd\xae\x7f\x38\x0b"), // jump on carry flag
 	"market give item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
-		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x18"+
-			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
+		"\xf5\x7d\xfe\xdb\x28\x16\xfe\xe3\x28\x12\xfe\xf5\x28\x1f"+
+			"\xf1\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42\xc9"+
 			"\xf1\xcd\x21\x3f\xd1\x37\xc9"), // give item, scf, ret
 	// param = b (item index/subID), returns c,e = treasure ID,subID
-	"market item lookup": MutableString(Addr{0x09, 0x7fca}, "\x09",
+	"market item lookup": MutableString(Addr{0x09, 0x7fd1}, "\x09",
 		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
 	// use custom "give item" func in rod cutscene.
@@ -741,26 +749,25 @@ var constMutables = map[string]Mutable{
 		"\x4f\x06\x00", "\xcd\x69\x71"),
 	"item gfx func": MutableString(Addr{0x3f, 0x7169}, "\x3f",
 		// check for matching object
-		"\x43\x4f\xcd\xcd\x71\x28\x12\xcd\xd5\x71\x28\x14"+ // rod, woods
-			"\xcd\xb0\x71\x28\x16\xcd\xc0\x71\x28\x18\x06\x00\xc9"+ // shops
+		"\x43\x4f\xcd\xdc\x71\x28\x17\x79\xfe\x59\x28\x19"+ // rod, woods
+			"\xcd\xbf\x71\x28\x1b\xcd\xcf\x71\x28\x1d"+ // shops
+			"\x79\xfe\x6e\x28\x1f\x06\x00\xc9"+ // feather
 			// look up item ID, subID
-			"\x1e\x15\x21\x1a\x7a\x18\x13\x1e\x0b\x21\x8d\x7f\x18\x0c"+
-			"\x1e\x08\x21\xde\x7f\x18\x05\x1e\x09\x21\xca\x7f"+ // shops
+			"\x1e\x15\x21\x1a\x7a\x18\x1d\x1e\x0b\x21\x8d\x7f\x18\x16"+
+			"\x1e\x08\x21\xde\x7f\x18\x0f\x1e\x09\x21\xd1\x7f\x18\x08"+
+			"\xfa\xb4\xc6\xc6\x15\x5f\x18\x0e"+ // feather
 			"\xcd\x8a\x00"+ // get treasure
 			"\x79\x4b\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get sprite
 			"\x3e\x60\x4f\x06\x00\xc9"), // replace object gfx w/ treasure gfx
 	// return z if object is randomized shop item.
-	"check randomized shop item": MutableString(Addr{0x3f, 0x71b0}, "\x3f",
+	"check randomized shop item": MutableString(Addr{0x3f, 0x71bf}, "\x3f",
 		"\x79\xfe\x47\xc0\x7b\xb7\xc8\xfe\x02\xc8\xfe\x05\xc8\xfe\x0d\xc9"),
 	// same as above but for subrosia market.
-	"check randomized market item": MutableString(Addr{0x3f, 0x71c0}, "\x3f",
+	"check randomized market item": MutableString(Addr{0x3f, 0x71cf}, "\x3f",
 		"\x79\xfe\x81\xc0\x7b\xb7\xc8\xfe\x04\xc8\xfe\x0d\xc9"),
 	// and rod of seasons.
-	"check rod": MutableString(Addr{0x3f, 0x71cd}, "\x3f",
+	"check rod": MutableString(Addr{0x3f, 0x71dc}, "\x3f",
 		"\x79\xfe\xe6\xc0\x7b\xfe\x02\xc9"),
-	// and noble sword.
-	"check noble sword": MutableString(Addr{0x3f, 0x71d5}, "\x3f",
-		"\x79\xfe\x59\xc9"),
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
@@ -769,6 +776,23 @@ var constMutables = map[string]Mutable{
 	"rod cutscene gfx func": MutableString(Addr{0x00, 0x3f3b}, "\x00",
 		"\x1e\x41\x1a\xfe\xe6\xc0\x1c\x1a\xfe\x02\x28\x03\x1d\x1a\xc9"+
 			"\x3e\x60\xc9"),
+
+	// move the bushes on the rosa portal screen by one tile so that it's
+	// possible to leave and re-enter without breaking bushes.
+	"move rosa portal bushes": MutableStrings([]Addr{
+		{0x21, 0x7454}, {0x22, 0x709d}, {0x23, 0x6ea9}, {0x24, 0x6b9f}},
+		"\x0e\xc4\xf7\x4d\x5f\x11\x6e\x38\xc4\x11\x5e\xf7\x5d\x11",
+		"\x38\xc4\xf7\x4d\x04\x5d\x6e\x38\xc4\x11\x5e\xf7\x4d\x5f"),
+
+	// prevent the first member's shop item from always refilling all seeds.
+	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
+		"\xcc\xe5\x17", "\x00\x00\x00"),
+	// instead, have any satchel refill all seeds.
+	"satchel seed refill call": MutableString(Addr{0x00, 0x16f6},
+		"\xcd\xc8\x44", "\xcd\xe4\x71"),
+	"satchel seed refill func": MutableString(Addr{0x3f, 0x71e4}, "\x3f",
+		"\xc5\xcd\xc8\x44\xc1\xf5\x78\xfe\x19\x20\x07"+
+			"\xc5\xd5\xcd\xe5\x17\xd1\xc1\xf1\x47\xc9"),
 }
 
 var (
