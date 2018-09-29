@@ -121,17 +121,6 @@ func Mutate(b []byte) ([]byte, error) {
 
 	setSeedData()
 
-	// rings in market are random, not fixed
-	for slotName, slot := range ItemSlots {
-		switch slotName {
-		case "subrosian market 1", "subrosian market 2", "subrosian market 5":
-			itemName := FindTreasureName(slot.Treasure)
-			if tier := RingTiers[itemName]; tier != 0 {
-				slot.Treasure.subID = tier
-			}
-		}
-	}
-
 	var err error
 	mutables := getAllMutables()
 	for _, k := range orderedKeys(mutables) {

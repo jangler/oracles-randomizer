@@ -214,19 +214,3 @@ func TreasureCanBeLost(name string) bool {
 	}
 	return false
 }
-
-// maps rings to (sometimes made up) tiers to use when they're placed in the
-// subrosia market, since the market can't handle specific rings. these are
-// backwards from 3 to 0.
-var RingTiers = map[string]byte{
-	"discovery ring": 3,
-	"moblin ring":    3,
-	"steadfast ring": 2,
-	"rang ring L-1":  2,
-	"blast ring":     2,
-	"octo ring":      3,
-	"quicksand ring": 2,
-	"armor ring L-2": 1,
-	"power ring L-1": 2,
-	"subrosian ring": 3,
-}

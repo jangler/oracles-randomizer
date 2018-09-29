@@ -679,7 +679,7 @@ var constMutables = map[string]Mutable{
 	// check fake treasure ID 10 instead of ID of market item 5. the function
 	// is called as part of "market give item func" below.
 	"market check fake id": MutableByte(Addr{0x09, 0x7755}, 0x53, 0x10),
-	"market give fake id func": MutableString(Addr{0x09, 0x7fd4}, "\x09",
+	"market give fake id func": MutableString(Addr{0x09, 0x7fdb}, "\x09",
 		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6"),
 
 	// use fake treasure ID 11 instead of 2e for master diver.
@@ -694,8 +694,8 @@ var constMutables = map[string]Mutable{
 	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
 
 	// shared by maku tree and star-shaped ore.
-	"bank 9 fake id call": MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xdd7f),
-	"bank 9 fake id func": MutableString(Addr{0x09, 0x7fdd}, "\x09",
+	"bank 9 fake id call": MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xe47f),
+	"bank 9 fake id func": MutableString(Addr{0x09, 0x7fe4}, "\x09",
 		"\xf5\xe5\x21\x21\x76\xcd\x4d\x3f\xe1\xf1\xcd\xeb\x16\xc9"),
 	"bank 2 fake id func": MutableString(Addr{0x02, 0x7621}, "\x02",
 		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x1b\xc9"+ // compare group
@@ -720,14 +720,15 @@ var constMutables = map[string]Mutable{
 		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
 	// do the same for the subrosian market.
-	"market give item call": MutableString(Addr{0x09, 0x7891},
-		"\xcd\xeb\x16\x1e\x42", "\xcd\xae\x7f\x38\x0b"), // jump on carry flag
+	"market give item call": MutableString(Addr{0x09, 0x788a},
+		"\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42",
+		"\x00\x00\x00\x00\x00\x00\x00\xcd\xae\x7f\x38\x0b"), // jump on carry flag
 	"market give item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
-		"\xf5\x7d\xfe\xdb\x28\x0f\xfe\xe3\x28\x0b\xfe\xf5\x28\x18"+
-			"\xf1\xcd\xeb\x16\x1e\x42\xc9"+ // do the normal thing if no match
+		"\xf5\x7d\xfe\xdb\x28\x16\xfe\xe3\x28\x12\xfe\xf5\x28\x1f"+
+			"\xf1\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42\xc9"+
 			"\xf1\xcd\x21\x3f\xd1\x37\xc9"), // give item, scf, ret
 	// param = b (item index/subID), returns c,e = treasure ID,subID
-	"market item lookup": MutableString(Addr{0x09, 0x7fca}, "\x09",
+	"market item lookup": MutableString(Addr{0x09, 0x7fd1}, "\x09",
 		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
 	// use custom "give item" func in rod cutscene.
@@ -753,7 +754,7 @@ var constMutables = map[string]Mutable{
 			"\x79\xfe\x6e\x28\x1f\x06\x00\xc9"+ // feather
 			// look up item ID, subID
 			"\x1e\x15\x21\x1a\x7a\x18\x1d\x1e\x0b\x21\x8d\x7f\x18\x16"+
-			"\x1e\x08\x21\xde\x7f\x18\x0f\x1e\x09\x21\xca\x7f\x18\x08"+
+			"\x1e\x08\x21\xde\x7f\x18\x0f\x1e\x09\x21\xd1\x7f\x18\x08"+
 			"\xfa\xb4\xc6\xc6\x15\x5f\x18\x0e"+ // feather
 			"\xcd\x8a\x00"+ // get treasure
 			"\x79\x4b\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get sprite
