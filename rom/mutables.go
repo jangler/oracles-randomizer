@@ -793,6 +793,10 @@ var constMutables = map[string]Mutable{
 	"satchel seed refill func": MutableString(Addr{0x3f, 0x71e4}, "\x3f",
 		"\xc5\xcd\xc8\x44\x78\xc1\xf5\x78\xfe\x19\x20\x07"+
 			"\xc5\xd5\xcd\xe5\x17\xd1\xc1\xf1\x47\xc9"),
+
+	// blaino normally sets bit 6 of active ring to "unequip" it instead of
+	// setting it to $ff. this only matters for the dev ring.
+	"fix blaino ring unequip": MutableWord(Addr{0x00, 0x2376}, 0xcbf6, 0x36ff),
 }
 
 var (
