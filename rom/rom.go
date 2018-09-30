@@ -12,6 +12,8 @@ import (
 const bankSize = 0x4000
 
 func init() {
+	initCode()
+
 	// rings and boss keys all have the same sprite
 	for name, treasure := range Treasures {
 		if treasure.id == 0x2d {
