@@ -29,7 +29,7 @@ var itemNodes = map[string]*Node{
 
 	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds": And("seed item", Or(
-		And("ember tree seeds", "harvest tree"), "d5 armos key chest",
+		And("ember tree seeds", "harvest tree"), "d5 armos chest",
 		And("harvest bush", Or("enter agunima", "enter d7")))),
 	"harvest mystery seeds": And("seed item", Or(
 		And("mystery tree seeds", "harvest tree"),
@@ -90,7 +90,7 @@ var itemNodes = map[string]*Node{
 	"kill for bombs": Or("sword", "ember seeds", "scent seeds",
 		Hard("mystery seeds"), "fool's ore", "punch"),
 	"bombs": Or(Hard("enter d2 B"),
-		And("harvest bush", Or("d2 bracelet room", "d2 spinner room")),
+		And("harvest bush", "d2 bracelet room"),
 		And("bombs, 10", Or("remove pot", "shovel", "remove flover", "flute",
 			And("kill for bombs", Or("suburbs", "fairy fountain",
 				And("mount cucco", Or("spring",
