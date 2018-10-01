@@ -222,56 +222,48 @@ var d6Nodes = map[string]*Node{
 	"d6 3 keys": And("d6 key A", "d6 key B", "d6 key C"),
 }
 
+// this does *not* account for poe skip.
 var d7Nodes = map[string]*Node{
 	// 1F
-	"d7 wizzrobe key chest": And("enter d7", "kill wizzrobe"),
-	"d7 ring chest":         AndSlot("enter d7", "d7 key A"),
+	"d7 wizzrobe chest": And("enter d7", "kill wizzrobe"),
+	"d7 ring chest":     AndSlot("enter d7", "d7 key A"),
 	"enter poe A": And("d7 ring chest",
 		Or("ember slingshot", "mystery slingshot")),
 	"d7 compass chest": AndSlot("enter d7", "bombs"),
-	"d7 map chest": AndSlot("d7 pot room", "jump",
-		Or("d7 key B", HardAnd("d7 key A", "poe skip"))),
-	"poe skip": HardAnd("enter d7", "bombs", "bracelet", "feather", "pegasus satchel"),
+	"d7 map chest":     AndSlot("d7 pot room", "jump", "d7 key B"),
 
 	// B1F
-	"d7 armos room": And("enter d7", "bracelet",
-		Or(And("enter poe A", "kill poe sister"), Hard("poe skip"))),
-	"d7 zol key fall":       And("d7 armos room", "jump"),
-	"d7 pot room":           And("d7 armos room"),
-	"d7 magunesu key chest": And("d7 magunesu room", "kill magunesu", "jump", "magnet gloves"),
-	"enter poe B": And("d7 pot room", "d7 key B",
-		Or("d7 key C", HardAnd("d7 key A", "poe skip"))),
-	"d7 water stairs": And("enter poe B", "ember seeds", "kill poe sister", "flippers"),
-	"d7 cape chest":   AndSlot("d7 trampoline pair", "jump", "kill stalfos (pit)"),
+	"d7 pot room": And("enter d7", "bracelet", "enter poe A",
+		"kill poe sister"),
+	"d7 zol button": And("d7 pot room", "jump"),
+	"d7 magunesu chest": And("d7 armos puzzle", "long jump", "kill magunesu",
+		"magnet gloves"),
+	"enter poe B":     And("d7 pot room", "d7 3 keys", "ember seeds"),
+	"d7 water stairs": And("enter poe B", "flippers"),
+	"d7 cape chest":   AndSlot("d7 water stairs", "d7 cross bridge"),
 
 	// B2F
-	"d7 fool's gap":     Or("long jump", "magnet gloves"),
-	"d7 armos puzzle":   And("d7 pot room", "kill keese", "d7 fool's gap"), // being nice
-	"d7 armos key fall": And("d7 armos puzzle"),
-	"d7 magunesu room":  And("d7 armos puzzle", "long jump"),
+	"d7 armos puzzle": And("d7 pot room", Or("long jump", "magnet gloves")),
 	"d7 cross bridge": Or("feather L-2", "kill darknut (across pit)",
 		And("jump", "magnet gloves")),
-	"d7 trampoline pair": And("d7 water stairs", "d7 cross bridge"),
-	"d7 moldorm room": And("d7 water stairs", "feather L-2",
-		Or("d7 key D", HardAnd("d7 key C", "poe skip"))),
-	"enter poe sisters": And("d7 moldorm room", "kill moldorm", "feather L-2"),
-	"d7 stairs room":    And("enter poe sisters", "kill poe sister"),
-	"d7 rupee chest":    AndSlot("d7 stairs room"),
-	"d7 enter skipped": And("d7 stairs room", Or(
-		And("magnet gloves", "jump"), HardAnd("pegasus jump L-2"))),
-	"d7 skipped key poof": And("d7 enter skipped", "kill wizzrobe (pit)", "kill stalfos (pit)"),
-	"d7 boss key chest": AndSlot("d7 stairs room", "jump", "hit switch",
-		"kill stalfos", Or("d7 key E",
-			HardAnd("poe skip", "d7 key D", "d7 enter skipped"))),
-	"enter gleeok": And("d7 stairs room", "d7 boss key"),
-	"d7 essence":   AndStep("enter gleeok", "kill gleeok"),
+	"d7 moldorm room": And("d7 water stairs", "feather L-2", "d7 4 keys"),
+	"d7 rupee chest":  AndSlot("d7 moldorm room", "kill moldorm"),
+	"d7 skipped room": And("d7 rupee chest"),
+	"d7 boss key chest": AndSlot("d7 rupee chest", "d7 key E",
+		Or("pegasus satchel", Hard("start"))),
+	"d7 essence": AndStep("d7 rupee chest", "d7 boss key",
+		"kill gleeok"),
 
 	// fixed items
-	"d7 key A": And("d7 wizzrobe key chest"),
-	"d7 key B": And("d7 zol key fall"),
-	"d7 key C": And("d7 armos key fall"),
-	"d7 key D": And("d7 magunesu key chest"),
-	"d7 key E": And("d7 skipped key poof"),
+	"d7 key A": And("d7 wizzrobe chest"),
+	"d7 key B": And("d7 zol button"),
+	"d7 key C": And("d7 armos puzzle"),
+	"d7 key D": And("d7 magunesu chest"),
+	"d7 key E": And("d7 skipped room"),
+	"d7 3 keys": Or(
+		And("d7 key B", Or("d7 key C", "d7 key D")),
+		And("d7 key C", "d7 key D")),
+	"d7 4 keys": And("d7 key A", "d7 key B", "d7 key C", "d7 key D"),
 }
 
 // this does *not* account for HSS skip.
