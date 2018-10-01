@@ -392,16 +392,6 @@ var constMutables = map[string]Mutable{
 		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x48"),
 	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
 		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
-	// and remove the cannon near the stairs so that players without flippers
-	// can exit (if they arrived by jumping and ran out of pegasus seeds).
-	"remove keep cannon object": MutableByte(Addr{0x11, 0x6563}, 0xf8, 0xff),
-	"replace moblin keep cannon tiles": MutableStrings([]Addr{{0x21, 0x6bee},
-		{0x22, 0x6835}, {0x23, 0x664e}},
-		"\xa4\x06\x18\xb9\xa5\xb2\x0d\x1c\xf2\x1a\x25\xb5\xb6",
-		"\xb9\x06\x18\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
-	"replace ruined keep cannon tiles": MutableString(Addr{0x24, 0x632c},
-		"\xa6\x04\x08\x83\xa7\xb9\xb2\x0d\x1c\xf2\x1a\x25\xa9\xb6",
-		"\xb9\x04\x08\x83\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
 
 	// normally none of the desert pits will work if the player already has the
 	// rusty bell
