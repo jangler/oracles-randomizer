@@ -348,7 +348,7 @@ var ItemSlots = map[string]*MutableSlot{
 
 	// d5
 	"d5 magnet gloves chest": MutableChest("magnet gloves", 0x503d),
-	"d5 large rupee chest":   MutableChest("rupees, 100", 0x5041),
+	"d5 rupee chest":         MutableChest("rupees, 100", 0x5041),
 	"d5 map chest":           MutableChest("dungeon map", 0x5039),
 	"d5 compass chest":       MutableChest("compass", 0x5049),
 	"d5 boss key spot":       MutableGift("d5 boss key", 0x4c22),

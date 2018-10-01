@@ -142,6 +142,8 @@ var d4Nodes = map[string]*Node{
 	"enter agunima": And("d4 pre-mid chest"), // alias for external reference
 }
 
+// the keys in this dungeon suck, so i'm not even going to bother with "hard"
+// logic for them.
 var d5Nodes = map[string]*Node{
 	// general
 	"cross magnet gap":   Or("pegasus jump L-2", "magnet gloves"),
@@ -149,41 +151,37 @@ var d5Nodes = map[string]*Node{
 	"sidescroll magnets": Or("magnet jump", "pegasus jump L-2"),
 
 	// 1F (it's the only F)
-	"d5 cart bay":       And("enter d5", Or("flippers", "long jump")),
-	"d5 cart key chest": And("d5 cart bay", "hit lever"),
-	"d5 underground A":  Or("d5 stairs A in", "d5 stairs C in"),
-	"d5 stairs A in":    And("d5 cart bay"),
-	"d5 stairs B out": Or(
-		And("d5 stairs A in", "jump"),
-		And("d5 stairs C in", "bombs", "jump")),
-	// stairs B out is one-way
-	"d5 map chest":           AndSlot("d5 stairs B out"),
-	"d5 magnet gloves chest": AndSlot("d5 stairs B out", "cross large pool", "d5 key A"),
-	"d5 left key chest":      And("enter d5", "cross magnet gap"),
-	"d5 stairs C out":        And("d5 underground A", "bombs", "jump"),
-	"d5 stairs C in":         And("enter d5", "magnet gloves"),
-	"d5 large rupee chest": OrSlot("d5 stairs C out",
-		And("enter d5", "magnet gloves")),
-	"d5 compass chest":     AndSlot("enter d5", "kill moldorm", "kill iron mask"),
-	"d5 armos key chest":   And("d5 stairs C out", "kill moldorm", "kill iron mask", "kill armos"),
-	"d5 float key chest":   And("d5 cart bay", "cross magnet gap"),
-	"d5 drop ball":         And("d5 cart bay", "hit lever", "kill darknut (pit)"),
-	"d5 pre-mid key chest": And("d5 cart bay", "cross magnet gap"),
-	"enter syger":          And("d5 cart bay", "cross magnet gap", "d5 key B"),
-	"d5 post-syger":        And("enter syger", "kill syger"),
-	"d5 push ball":         And("d5 drop ball", "d5 post-syger", "d5 key C", "magnet gloves"),
-	"d5 boss key spot": AndSlot("d5 push ball", "d5 key D", "long jump",
-		"sidescroll magnets"), // being nice
-	"enter digdogger": And("d5 post-syger", "d5 key E", "magnet gloves", "d5 boss key"),
-	"d5 essence":      AndStep("enter digdogger", "kill digdogger"),
+	"d5 cart bay":   And("enter d5", Or("flippers", "long jump")),
+	"d5 cart chest": And("d5 cart bay", "hit lever"),
+	"d5 pot room": And("enter d5", "jump",
+		Or("d5 cart bay", And("magnet gloves", "bombs"))),
+	"d5 map chest": AndSlot("d5 pot room", "kill gibdo", "kill zol"),
+	"d5 magnet gloves chest": AndSlot("d5 pot room", "cross large pool",
+		"d5 5 keys"),
+	"d5 left chest": And("enter d5", "cross magnet gap"),
+	"d5 rupee chest": AndSlot("enter d5",
+		Or("magnet gloves", And("d5 cart bay", "jump", "bombs"))),
+	"d5 compass chest": AndSlot("enter d5", "kill moldorm", "kill iron mask"),
+	"d5 armos chest": And("d5 rupee chest", "kill moldorm", "kill iron mask",
+		"kill armos"),
+	"d5 spinner chest": And("d5 cart bay", "cross magnet gap"),
+	"d5 drop ball":     And("d5 cart bay", "hit lever", "kill darknut (pit)"),
+	"d5 pre-mid chest": And("d5 cart bay", Or("magnet gloves", "feather L-2")),
+	"d5 post-syger":    And("d5 pre-mid chest", "kill syger"), // keys after
+	"d5 boss key spot": AndSlot("d5 drop ball", "d5 post-syger",
+		"magnet gloves", Or("long jump", "kill magunesu"), "d5 5 keys",
+		"sidescroll magnets"),
+	"d5 essence": AndStep("d5 post-syger", "magnet gloves", "d5 boss key",
+		"d5 5 keys"),
 
 	// fixed items
-	"d5 key A":    And("d5 cart key chest"),
-	"d5 key B":    And("d5 left key chest"),
-	"d5 key C":    And("d5 armos key chest"),
-	"d5 key D":    And("d5 float key chest"),
-	"d5 key E":    And("d5 pre-mid key chest"),
-	"d5 boss key": And("d5 boss key spot"),
+	"d5 key A": And("d5 cart chest"),
+	"d5 key B": And("d5 left chest"),
+	"d5 key C": And("d5 armos chest"),
+	"d5 key D": And("d5 spinner chest"),
+	"d5 key E": And("d5 pre-mid chest"),
+	"d5 5 keys": And("d5 key A", "d5 key B", "d5 key C", "d5 key D",
+		"d5 key E"),
 }
 
 // all the rupee chests in this dungeon are trivial, so i'm ignoring which is
