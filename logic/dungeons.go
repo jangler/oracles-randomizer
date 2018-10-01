@@ -1,17 +1,11 @@
 package logic
 
-// keep chests and chest items separate, so they can be altered later
-// if possible
+// keep small keys and their chests separate, so that they can be changed into
+// slots if small keys are ever randomized.
 //
-// the dungeon should rely on overworld information as little as possible.
+// dungeons should rely on overworld information as little as possible.
 // ideally "enter <dungeon>" is the only overworld item the dungeon nodes
-// reference (and that node should not be defined here)
-//
-// make sure there's only *one* reference to each small key in a dungeon's
-// requirements. it might make key counting easier for the routing algorithm.
-//
-// not that keys can NOT be numbered 1..n because of the code generation
-// syntax; label them A..N instead.
+// reference (and that node should not be defined here).
 
 var d0Nodes = map[string]*Node{
 	"d0 key chest":   And("enter d0"),
@@ -27,106 +21,78 @@ var d1Nodes = map[string]*Node{
 	"d1 compass chest":  AndSlot("d1 map chest"),
 	"d1 gasha chest":    AndSlot("d1 map chest", "kill goriya"),
 	"d1 bomb chest":     AndSlot("d1 map chest", "hit lever"),
-	"d1 key chest":      And("d1 map chest", "hit lever"),
+	"d1 key chest":      And("d1 bomb chest"),
 	"enter goriya bros": And("d1 bomb chest", "bombs", "d1 key B"),
 	"d1 satchel spot":   AndSlot("enter goriya bros", "kill goriya bros"),
 	"d1 boss key chest": AndSlot("d1 map chest",
 		Or("ember seeds", "mystery seeds"), "kill goriya (pit)"),
 	"d1 ring chest": AndSlot("enter d1", Or("ember seeds", "mystery seeds")),
-	"enter aquamentus": And("enter d1", Or("ember seeds", "mystery seeds"),
-		"d1 boss key"),
-	"d1 essence": AndStep("enter aquamentus", "kill aquamentus"),
+	"d1 essence": AndStep("d1 ring chest", "d1 boss key",
+		"kill aquamentus"),
 
 	"d1 key A": And("d1 key fall"),
 	"d1 key B": And("d1 key chest"),
 }
 
-// this is tricky because of the multiple entrances. the nexus is what
-// i'll call the "arrow room" because of the arrow-shaped block arrangement in
-// it. you can either get to this room by entering the main way and lighting
-// the torches, or by entering the third way (into the roller room), pushing
-// the rollers, and killing ropes and goriya.
-//
-// another weird thing about this dungeon is that if you enter via the
-// secondary entrances, the save location is set to just outside the main
-// entrance. this doesn't really matter because you need to remove bushes in
-// order to use any entrance, though.
-//
-// you can actually complete this entire dungeon without ember seeds (or
-// mystery seeds), since they're only required to open one door, which you can
-// circumvent via the various entrances.
 var d2Nodes = map[string]*Node{
 	"d2 5-rupee chest": AndSlot("d2 torch room"),
-	"d2 key fall":      And("d2 torch room", "kill rope"),
-	"d2 arrow room": Or(
-		And("d2 torch room", Or("ember seeds", "mystery seeds")),
-		And("enter d2 B", "bracelet")),
-	"d2 rupee room":   And("d2 arrow room", "bombs"),
-	"d2 hardhat room": And("d2 arrow room", "d2 key A"),
-	"d2 map chest":    AndSlot("d2 hardhat room", "remove pot"),
-	"d2 compass chest": OrSlot(
-		And("d2 torch room", Or("ember seeds", "mystery seeds"), "kill rope"),
-		And("d2 arrow room", "kill goriya", "kill rope")),
+	"d2 rope room":     And("d2 torch room", "kill rope"),
+	"d2 arrow room": Or("enter d2 B",
+		And("d2 torch room", Or("ember seeds", "mystery seeds"))),
+	"d2 rupee room":     And("d2 arrow room", "bombs"),
+	"d2 hardhat room":   And("d2 arrow room", Or("d2 2 keys", Hard("d2 1 key"))),
+	"d2 map chest":      AndSlot("d2 hardhat room", "remove pot"),
+	"d2 compass chest":  AndSlot("d2 arrow room", "kill normal"),
 	"d2 bracelet room":  And("d2 hardhat room", "kill hardhat (pit, throw)"),
 	"d2 bracelet chest": AndSlot("d2 bracelet room", "kill moblin (gap, throw)"),
-	"d2 bomb key chest": And("enter d2 B", "remove bush safe", "bombs"),
-	"d2 blade key chest": Or(
-		And("enter d2 B", "bracelet"),
-		And("d2 arrow room", "kill rope", "kill goriya")),
+	"d2 spiral chest":   And("enter d2 B", "bombs"),
+	"d2 blade chest":    Or("enter d2 B", And("d2 arrow room", "kill normal")),
 
-	"d2 bomb wall": And("d2 blade key chest"), // alias for external reference
-
-	// from here on it's entirely linear
+	// from here on it's entirely linear.
 	"d2 10-rupee chest": AndSlot("d2 bomb wall", "bombs", "bracelet"),
-	"enter facade":      And("d2 10-rupee chest", "remove pot", "d2 key B"),
-	"d2 spinner":        And("enter facade", "kill facade", Or("d2 key C", "bombs")),
-	"d2 boss key chest": AndSlot("enter facade", "kill facade", "d2 key C",
-		"bombs"),
-	"enter dodongo": And("d2 boss key chest", "d2 boss key"),
-	"d2 essence":    AndStep("enter dodongo", "kill dodongo"),
+	"d2 spinner": And("d2 10-rupee chest",
+		Or("d2 2 keys", Hard("d2 1 key"))),
+	"d2 boss key chest": AndSlot("d2 spinner", "d2 3 keys"),
+	"d2 essence":        And("d2 spinner", "d2 boss key"),
 
-	"d2 key A": And("d2 key fall"),
-	"d2 key B": And("d2 bomb key chest"),
-	"d2 key C": And("d2 blade key chest"),
+	"d2 key A": And("d2 rope room"),
+	"d2 key B": And("d2 spiral chest"),
+	"d2 key C": And("d2 blade chest"),
+	"d2 1 key": Or("d2 key A", "d2 key B", "d2 key C"),
+	"d2 2 keys": Or(And("d2 key A", "d2 key B"), And("d2 key A", "d2 key C"),
+		And("d2 key B", "d2 key C")),
+	"d2 3 keys": And("d2 key A", "d2 key B", "d2 key C"),
 
 	"d2 torch room": Or("enter d2 A", "d2 compass chest"),
+	"d2 bomb wall":  And("d2 blade chest"), // alias for external reference
 }
 
 var d3Nodes = map[string]*Node{
 	// first floor
-	"d3 mimic stairs": Or("d3 feather stairs",
-		And("enter d3", "kill spiked beetle (throw)", "bracelet")),
-	"d3 roller key chest": And("d3 mimic stairs", "bracelet"),
-	"d3 feather stairs": Or("d3 mimic stairs", "d3 basement B in",
-		And("enter d3", "jump")),
-	"d3 basement B in": And("jump", Or("d3 feather stairs", "d3 basement B out")),
-	"d3 basement B out": Or(
-		And("d3 basement B in", "jump"),
-		And("d3 trampoline stairs", "bracelet")),
-	"d3 rupee chest":    AndSlot("d3 feather stairs"),
-	"enter omuai":       And("d3 mimic stairs", "jump", "d3 key B"),
-	"d3 gasha chest":    AndSlot("d3 mimic stairs", "jump"),
-	"d3 omuai stairs":   And("enter omuai", "kill omuai"),
-	"d3 boss key chest": AndSlot("d3 omuai stairs", "jump"),
-	"d3 basement A in":  And("jump", Or("d3 feather stairs", "d3 basement A out")),
-	"d3 basement A out": Or("d3 trampoline stairs",
-		And("d3 basement A in", "jump")),
-	"d3 trampoline stairs": Or("d3 basement A out",
-		And("d3 compass chest", "bracelet")),
-	"d3 compass chest": AndSlot("d3 basement B out", "jump"),
+	"d3 center":       And("enter d3", "kill spiked beetle (throw)"),
+	"d3 mimic stairs": Or("d3 rupee chest", And("d3 center", "bracelet")),
+	"d3 roller chest": And("d3 mimic stairs", "bracelet"),
+	"d3 rupee chest":  OrSlot("d3 mimic stairs", And("d3 center", "jump")),
+	"d3 gasha chest":  AndSlot("d3 mimic stairs", "jump"),
+	"d3 omuai stairs": And("d3 mimic stairs", "jump",
+		Or("d3 2 keys", Hard("d3 1 key")), "kill omuai"),
+	"d3 boss key chest": AndSlot("d3 omuai stairs"),
 
 	// second floor
-	"d3 bomb chest":           AndSlot("d3 mimic stairs"),
-	"d3 map chest":            AndSlot("d3 bomb chest", "bombs"),
-	"d3 feather room":         And("d3 rupee chest", "d3 key A"),
-	"d3 feather chest":        AndSlot("d3 feather room", "kill mimic"),
-	"d3 trampoline key chest": And("d3 trampoline stairs", "jump"),
-	"enter mothula":           And("d3 omuai stairs", "d3 boss key"),
-	"d3 essence":              AndStep("enter mothula", "kill mothula"),
+	"d3 bomb chest": AndSlot("d3 mimic stairs"),
+	"d3 map chest":  AndSlot("d3 bomb chest", "bombs"),
+	"d3 feather chest": AndSlot("d3 rupee chest",
+		Or("d3 2 keys", Hard("d3 1 key")), "kill mimic"),
+	"d3 trampoline chest": And("d3 center", "jump"),
+	"d3 compass chest":    AndSlot("d3 center", "jump"),
+	"enter mothula":       And("d3 omuai stairs", "d3 boss key"),
+	"d3 essence":          AndStep("enter mothula", "kill mothula"),
 
 	// fixed items
-	"d3 key A": And("d3 roller key chest"),
-	"d3 key B": And("d3 trampoline key chest"),
+	"d3 key A":  And("d3 roller chest"),
+	"d3 key B":  And("d3 trampoline chest"),
+	"d3 1 key":  Or("d3 key A", "d3 key B"),
+	"d3 2 keys": And("d3 key A", "d3 key B"),
 }
 
 // this whole dungeon is basically a tree so all the links are one-way
