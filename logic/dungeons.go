@@ -95,42 +95,51 @@ var d3Nodes = map[string]*Node{
 	"d3 2 keys": And("d3 key A", "d3 key B"),
 }
 
-// this whole dungeon is basically a tree so all the links are one-way
 var d4Nodes = map[string]*Node{
 	// left branch from entrance
-	"d4 bomb chest":     AndSlot("enter d4", "cross large pool"),
-	"d4 pot key fall":   And("d4 bomb chest", "bombs", "bracelet"),
-	"d4 statue stairs":  And("d4 bomb chest", "hit lever"),
-	"d4 map chest":      AndSlot("d4 statue stairs"),
-	"d4 dark key chest": And("d4 statue stairs", "jump"),
+	"d4 bomb chest": AndSlot("enter d4", "cross large pool"),
+	"d4 pot room":   And("d4 bomb chest", "bombs", "bracelet"),
+	"d4 map chest":  AndSlot("d4 bomb chest", "hit lever"),
+	"d4 dark chest": And("d4 map chest", "jump"),
 
 	// 2F (ground floor), right branch
-	"d4 compass chest":   AndSlot("enter d4", "cross large pool", "d4 key A", "bombs"),
-	"d4 roller minecart": And("enter d4", "flippers", "d4 key A", "jump"),
-	"d4 water key fall":  And("d4 roller minecart", "hit lever", "kill water tektite (throw)", "kill like-like (pit, throw)", "flippers"),
-	"d4 stalfos stairs":  And("d4 roller minecart", "kill shrouded stalfos (throw)", "jump", "d4 key B"),
+	"d4 compass chest": AndSlot("enter d4", "cross large pool", "bombs",
+		"d4 1 key"),
+	"d4 roller minecart": And("enter d4", "flippers", "jump", "d4 1 key"),
+	"d4 water key key room": And("d4 roller minecart", "hit lever", "flippers",
+		Or("kill normal", "bracelet")),
+	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
+		Or("kill stalfos", "bracelet")),
 
 	// 1F
-	"d4 pre-mid key":     And("d4 stalfos stairs"),
-	"enter agunima":      And("d4 pre-mid key", "jump"), // being nice
-	"d4 final minecart":  And("enter agunima", "kill agunima"),
-	"d4 torch key chest": And("enter agunima", "ember slingshot", "jump"),
-	"d4 slingshot chest": AndSlot("d4 final minecart", "d4 key C"),
+	"d4 pre-mid chest":  And("d4 stalfos stairs"),
+	"d4 final minecart": And("d4 stalfos stairs", "kill agunima"),
+	"d4 torch chest":    And("d4 stalfos stairs", "ember slingshot"),
+	"d4 slingshot chest": AndSlot("d4 final minecart",
+		Or("d4 5 keys", Hard("d4 2 keys"))),
 	"d4 boss key spot": AndSlot("d4 final minecart", "hit very far lever",
-		"jump", "d4 key D", "flippers"),
-	"d4 basement stairs": And("d4 final minecart", "hit far lever", "kill wizzrobe (pit, throw)", "d4 key E"),
+		Or("d4 5 keys", Hard("d4 2 keys"))),
+	"d4 basement stairs": And("d4 final minecart", "hit far lever",
+		Or("d4 5 keys", Hard("d4 2 keys"))),
 
 	// B1F
-	"d4 cross bridge": Or("ember slingshot", "mystery slingshot", "long jump"),
-	"enter gohma":     And("d4 basement stairs", "d4 cross bridge", "d4 boss key"),
-	"d4 essence":      AndStep("enter gohma", "kill gohma"),
+	"enter gohma": And("d4 basement stairs", "d4 boss key",
+		Or("ember slingshot", "mystery slingshot", "long jump")),
+	"d4 essence": AndStep("enter gohma", "kill gohma"),
 
 	// fixed items
-	"d4 key A": And("d4 pot key fall"),
-	"d4 key B": And("d4 dark key chest"),
-	"d4 key C": And("d4 water key fall"),
-	"d4 key D": And("d4 pre-mid key"),
-	"d4 key E": And("d4 torch key chest"),
+	"d4 key A": And("d4 pot room"),
+	"d4 key B": And("d4 dark chest"),
+	"d4 key C": And("d4 water key room"),
+	"d4 key D": And("d4 pre-mid chest"),
+	"d4 key E": And("d4 torch chest"),
+	"d4 1 key": Or("d4 key A", "d4 key B"),
+	"d4 2 keys": Or(And("d4 key A", "d4 key B"), And("d4 key A", "d4 key C"),
+		And("d4 key B", "d4 key C")),
+	"d4 5 keys": And("d4 key A", "d4 key B", "d4 key C", "d4 key D",
+		"d4 key E"),
+
+	"enter agunima": And("d4 pre-mid chest"), // alias for external reference
 }
 
 var d5Nodes = map[string]*Node{
