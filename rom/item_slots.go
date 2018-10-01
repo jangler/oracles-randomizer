@@ -373,7 +373,7 @@ var ItemSlots = map[string]*MutableSlot{
 
 	// d8
 	"d8 HSS chest":      MutableChest("slingshot 2", 0x50da),
-	"d8 bomb chest":     MutableChest("bombs, 10", 0x50ba),
+	"d8 SW lava chest":  MutableChest("bombs, 10", 0x50ba),
 	"d8 ring chest":     MutableChest("steadfast ring", 0x50c6),
 	"d8 compass chest":  MutableChest("compass", 0x50d2),
 	"d8 map chest":      MutableChest("dungeon map", 0x50de),
