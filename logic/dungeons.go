@@ -238,7 +238,8 @@ var d7Nodes = map[string]*Node{
 	"d7 zol button": And("d7 pot room", "jump"),
 	"d7 magunesu chest": And("d7 armos puzzle", "long jump", "kill magunesu",
 		"magnet gloves"),
-	"enter poe B":     And("d7 pot room", "d7 3 keys", "ember seeds"),
+	"enter poe B": And("d7 pot room", "d7 3 keys", "ember seeds",
+		Or("pegasus satchel", "slingshot L-2")),
 	"d7 water stairs": And("enter poe B", "flippers"),
 	"d7 cape chest":   AndSlot("d7 water stairs", "d7 cross bridge"),
 
