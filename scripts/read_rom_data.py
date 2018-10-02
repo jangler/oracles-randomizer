@@ -115,6 +115,7 @@ INTERACTION_MODES = {
     0xf2: "DV interaction",
     0xf6: "random entities",
     0xf7: "specific entity",
+    0xf8: "part",
 }
 
 NV_INTERACTIONS = {}
@@ -214,7 +215,9 @@ DV_INTERACTIONS = {
     0xe2: ("statue eyes", {}),
 }
 
-PARTS = {}
+PARTS = {
+    0x13: ("owl statue", {}),
+}
 
 TREASURES = {
     0x00: ("none", {}),
