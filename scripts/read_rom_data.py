@@ -582,6 +582,8 @@ def name_objects(objects):
         elif obj["mode"] in "DV interaction":
             obj["variety"] = list(lookup_entry(DV_INTERACTIONS,
                     *obj["variety"]))
+        elif obj["mode"] == "part":
+            obj["variety"] = list(lookup_entry(PARTS, *obj["variety"]))
 
 
 with open(args.romfile, "rb") as f:
