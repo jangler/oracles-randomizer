@@ -93,7 +93,7 @@ func SetFreewarp(freewarp bool) {
 	}
 }
 
-// SetNoMusic sets music off in the modified rom
+// SetNoMusic sets music off in the modified ROM.
 func SetNoMusic() {
 	constMutables["no music call"].(*MutableRange).New = []byte("\xcd\xc8\x3e")
 }
@@ -106,18 +106,12 @@ func SetAnimal(companion int) {
 }
 
 // consider these mutables constants; they aren't changed in the randomization
-// process.
+// process. try to generally order them by address, unless a grouping between
+// mutables in different banks makes more sense.
 var constMutables = map[string]Mutable{
-	// allow skipping the capcom screen after one second by pressing start
-	"skip capcom call": MutableWord(Addr{0x03, 0x4d6c}, 0x3702, 0xd77d),
-	"skip capcom func": MutableString(Addr{0x03, 0x7dd7}, "\x03",
-		"\xe5\xfa\xb3\xcb\xfe\x94\x30\x03\xcd\x62\x08\xe1\xcd\x37\x02\xc9"),
-
-	// don't play any music if the -nomusic flag is given
+	// don't play any music if the -nomusic flag is given.
 	"no music call": MutableString(Addr{0x00, 0x0c76},
 		"\x67\xf0\xb5", "\x67\xf0\xb5"), // modified only by SetNoMusic()
-	"no music func": MutableString(Addr{0x00, 0x3ec8}, "\x00",
-		"\x67\xfe\x40\x30\x03\x3e\x08\xc9\xf0\xb5\xc9"),
 
 	// start game with link below bushes, not above
 	"initial link placement": MutableByte(Addr{0x07, 0x4197}, 0x38, 0x58),
@@ -132,83 +126,8 @@ var constMutables = map[string]Mutable{
 		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6"+
 			"\x36\x40\xc9"),
 
-	// warp to ember tree if holding start when closing the map screen, using
-	// the playtime counter as a cooldown. this also sets the player's respawn
-	// point.
-	"outdoor map jump redirect": MutableString(Addr{0x02, 0x6089},
-		"\xc2\x7b\x4f", "\xc4\xbb\x75"),
-	"dungeon map jump redirect": MutableString(Addr{0x02, 0x602c},
-		"\xc2\x7b\x4f", "\xc4\xbb\x75"),
-	"tree warp": MutableString(Addr{0x02, 0x75bb}, "\x02",
-		"\xfa\x81\xc4\xe6\x08\x28\x33"+ // close as normal if start not held
-			"\xfa\x49\xcc\xfe\x02\x30\x07"+ // check if indoors
-			"\x21\x25\xc6\xcb\x7e\x28\x06"+ // check if cooldown is up
-			"\x3e\x5a\xcd\x74\x0c\xc9"+ // play error sound and ret
-			"\x21\x22\xc6\x11\xf8\x75\x06\x04\xcd\x5b\x04"+ // copy playtime
-			"\x21\x2b\xc6\x11\xfc\x75\x06\x06\xcd\x5b\x04"+ // copy save point
-			"\x21\xb7\xcb\x36\x05\xaf\xcd\x7b\x5e\xc3\x7b\x4f"+ // close + warp
-			"\x40\xb4\xfc\xff\x00\xf8\x02\x02\x34\x38"), // data for copies
-
-	// warp to room under cursor if wearing developer ring. this goes right
-	// after the normal tree warp code (but doesn't fall through from it).
-	"dev ring tree warp call": MutableWord(Addr{0x02, 0x5e9b},
-		0x890c, 0x0276),
-	"dev ring tree warp func": MutableString(Addr{0x02, 0x7602}, "\x02",
-		"\xfa\xc5\xc6\xfe\x40\x20\x12\xfa\x49\xcc\xfe\x02\x30\x0b\xf6\x80"+
-			"\xea\x63\xcc\xfa\xb6\xcb\xea\x64\xcc\x3e\x03\xcd\x89\x0c\xc9"),
-
-	// if wearing dev ring, warp to animal companion if it's already in the
-	// same room when playing the flute.
-	"dev ring flute call": MutableWord(Addr{0x09, 0x4e2c}, 0xd93a, 0x4e7f),
-	"dev ring flute func": MutableString(Addr{0x09, 0x7f4e}, "\x09",
-		"\xd5\xfa\xc5\xc6\xfe\x40\x20\x07"+ // check dev ring
-			"\xfa\x04\xd1\xfe\x01\x28\x04"+ // check animal companion
-			"\xd1\xc3\xd9\x3a"+ // done
-			"\xcd\xc6\x3a\x20\x0c\x36\x05"+ // create poof
-			"\x11\x0a\xd0\x2e\x4a\x06\x04\xcd\x5b\x04"+ // move poof
-			"\x11\x0a\xd1\x21\x0a\xd0\x06\x04\xcd\x5b\x04"+ // move animal
-			"\x18\xde"), // jump to done
-
-	// animals called by flute normally veto any nonzero collision value for
-	// the purposes of entering a screen, but this allows double-wide bridges
-	// (1a and 1b) as well. this specifically fixes the problem of not being
-	// able to call an animal on the d1 screen, or on the bridge to the screen
-	// to the right. the vertical collision check isn't modified, since bridges
-	// only run horizontally.
-	"flute collision call horizontal": MutableStrings([]Addr{{0x09, 0x4d9a},
-		{0x09, 0x4dad}}, "\xcd\xd9\x4e", "\xcd\x7f\x7f"),
-	"flute collision func": MutableString(Addr{0x09, 0x7f7f}, "\x09",
-		"\x06\x01\x7e\xfe\x1a\x28\x06\xfe\x1b\x28\x02\xb7\xc0"+ // first tile
-			"\x7d\x80\x6f\x7e\xfe\x1a\x28\x05\xfe\x1b\x28\x01\xb7"+ // second
-			"\x7d\xc0\xcd\x89\x20\xaf\xc9"), // vanilla stuff
-	// also need to do this so that dimitri and moosh don't immediately stop
-	// walking at the edge of the screen. and do ricky for consistency.
-	"ricky flute enter call": MutableString(Addr{0x05, 0x71ea},
-		"\xcd\xaa\x44\xb7", "\xcd\x2d\x7e\x00"),
-	"dimitri/moosh flute enter call": MutableString(Addr{0x05, 0x493b},
-		"\xcd\xaa\x44\xb7", "\xcd\x2d\x7e\x00"),
-	"flute enter func": MutableString(Addr{0x05, 0x7e2d}, "\x05",
-		"\xcd\xaa\x44\xb7\xc8\xfe\x1a\xc8\xfe\x1b\xc9"),
-
-	// if wearing dev ring, change season regardless of where link is standing.
-	"dev ring season call": MutableString(Addr{0x07, 0x5b75},
-		"\xfa\xb6\xcc\xfe\x08", "\xcd\x16\x79\x00\x00"),
-	"dev ring season func": MutableString(Addr{0x07, 0x7916}, "\x07",
-		"\xfa\xc5\xc6\xfe\x40\xc8\xfa\xb6\xcc\xfe\x08\xc9"),
-
 	// have maku gate open from start
 	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
-
-	// have horon village shop stock *and* sell items from the start, including
-	// the flute. also don't stop the flute from appearing because of animal
-	// flags, since it probably won't be a flute at all.
-	"horon shop stock check":   MutableByte(Addr{0x08, 0x4adb}, 0x05, 0x02),
-	"horon shop sell check":    MutableByte(Addr{0x08, 0x48d0}, 0x05, 0x02),
-	"horon shop flute check 1": MutableByte(Addr{0x08, 0x4b02}, 0xcb, 0xf6),
-	"horon shop flute check 2": MutableWord(Addr{0x08, 0x4afb},
-		0xcb6f, 0xafaf),
-	// and don't set a ricky flag when buying the "flute"
-	"shop no set ricky flag": MutableByte(Addr{0x0b, 0x4826}, 0x20, 0x00),
 
 	// this all has to do with animals and flutes:
 	// this edits ricky's script so that he never gives his flute.
@@ -230,16 +149,6 @@ var constMutables = map[string]Mutable{
 		[]Addr{{0x09, 0x4e4c}, {0x09, 0x6f08}, {0x09, 0x737e}},
 		"\x10\xc6\xfe\x0c", "\xaf\xc6\xfe\x02"),
 
-	// "activate" a flute by setting its icon and song when obtained. also
-	// activates the corresponding animal companion.
-	"flute set icon call": MutableWord(Addr{0x3f, 0x452c}, 0x4e45, 0x4d71),
-	"flute set icon func": MutableString(Addr{0x3f, 0x714d}, "\x3f",
-		"\xf5\xd5\xe5\x78\xfe\x0e\x20\x0d\x1e\xaf\x79\xd6\x0a\x12\xc6\x42"+
-			"\x26\xc6\x6f\xcb\xfe\xe1\xd1\xf1\xcd\x4e\x45\xc9"),
-
-	// don't require rod to get items from season spirits
-	"season spirit rod check": MutableByte(Addr{0x0b, 0x4eb2}, 0x07, 0x02),
-
 	// i don't know what global flag 0e is. it's only checked in for star ore
 	// digging, and disabling the check seems to be sometimes necessary (?)
 	"star ore flag check": MutableString(Addr{0x08, 0x62aa},
@@ -249,36 +158,9 @@ var constMutables = map[string]Mutable{
 	// try.
 	"star ore bugfix": MutableWord(Addr{0x08, 0x62d5}, 0x6656, 0x7624),
 
-	// remove star ore from inventory when buying the first subrosian market
-	// item. this can't go in the gain/lose items table, since the given item
-	// doesn't necessarily have a unique ID.
-	"remove traded star ore call": MutableString(Addr{0x09, 0x7887},
-		"\xdf\x2a\x4e", "\xcd\xa0\x7f"),
-	"remove traded star ore func": MutableString(Addr{0x09, 0x7fa0}, "\x09",
-		"\xb7\x20\x07\xe5\x21\x9a\xc6\xcb\xae\xe1\xdf\x2a\x4e\xc9"),
-
 	// sell member's card in subrosian market before completing d3
 	"member's card essence check": MutableWord(Addr{0x09, 0x7750},
 		0xcb57, 0xf601),
-
-	// give member's card, treasure map, fool's ore, and identified flutes
-	// graphics in treasure sprite table
-	"member's card gfx": MutableString(Addr{0x3f, 0x67b4},
-		"\x00\x00\x00", "\x5d\x0c\x13"),
-	"treasure map gfx": MutableString(Addr{0x3f, 0x67b7},
-		"\x00\x00\x00", "\x65\x14\x33"),
-	"fool's ore gfx": MutableString(Addr{0x3f, 0x67ba},
-		"\x00\x00\x00", "\x60\x14\x00"),
-	"ricky's flute gfx": MutableString(Addr{0x3f, 0x67bd},
-		"\x00\x00\x00", "\x5f\x16\x33"),
-	"dimitri's flute gfx": MutableString(Addr{0x3f, 0x67c0},
-		"\x00\x00\x00", "\x5f\x16\x23"),
-	"moosh's flute gfx": MutableString(Addr{0x3f, 0x67c3},
-		"\x00\x00\x00", "\x5f\x16\x13"),
-	"rare peach stone gfx": MutableString(Addr{0x3f, 0x67c6},
-		"\x00\x00\x00", "\x5d\x10\x26"),
-	"ribbon gfx": MutableString(Addr{0x3f, 0x67c9},
-		"\x00\x00\x00", "\x65\x0c\x23"),
 
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e72}, 0xcb, 0xf6),
@@ -292,22 +174,11 @@ var constMutables = map[string]Mutable{
 	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
 	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
 
-	// set room flags so that rosa never appears in the overworld, and her
-	// portal is activated by default.
-	"set portal room flag call": MutableString(Addr{0x04, 0x45f5},
-		"\xfa\x64\xcc", "\xcd\x6c\x7e"),
-	"set portal room flag func": MutableString(Addr{0x04, 0x7e6c}, "\x04",
-		"\xe5\x21\x9a\xc7\x7e\xf6\x60\x77\x2e\xcb\x7e\xf6\xc0\x77"+ // set flags
-			"\xe1\xfa\x64\xcc\xc9"), // do what the address normally does
-	// a hack so that a different flag can be used to set the portal tile
+	// a hack so that a different flag can be used to set the rosa portal tile
 	// replacement, allowing the bush-breaking warning interaction to be used
 	// on this screen.
 	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
 		"\x40\x33\xc5", "\x20\x33\xe6"),
-
-	// count number of essences, not highest number essence
-	"maku seed check 1": MutableByte(Addr{0x09, 0x7da4}, 0xea, 0x76),
-	"maku seed check 2": MutableByte(Addr{0x09, 0x7da6}, 0x30, 0x18),
 
 	// move sleeping talon and his mushroom so they don't block the chest
 	"move talon":    MutableWord(Addr{0x11, 0x6d2b}, 0x6858, 0x88a8),
@@ -326,12 +197,6 @@ var constMutables = map[string]Mutable{
 	"leave H&S screen": MutableString(Addr{0x09, 0x65a0},
 		"\xcd\x32\x14\x1e\x49\x1a\xbe", "\xcd\x56\x19\xcb\x6e\x00\x00"),
 
-	// since slingshot doesn't increment seed capacity, set the level-zero
-	// capacity of seeds to 20, and move the pointer up by one byte.
-	"satchel capacity": MutableString(Addr{0x3f, 0x4617},
-		"\x20\x50\x99", "\x20\x20\x50"),
-	"satchel capacity pointer": MutableByte(Addr{0x3f, 0x460e}, 0x16, 0x17),
-
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
 	"wooden sword second item": MutableByte(Addr{0x0a, 0x7bb9}, 0x05, 0x3f),
@@ -340,149 +205,20 @@ var constMutables = map[string]Mutable{
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
 	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),
 
-	// getting the L-2 (or L-3) sword in the lost woods normally gives a second
-	// "spin slash" item. remove this from the script.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0xde, 0xc1),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0xde, 0xc1),
-
-	// remove the snow piles in front of the shovel house so that shovel isn't
-	// required not to softlock there (it's still required not to softlock in
-	// hide and seek 2)
-	"remove snow piles": MutableByte(Addr{0x24, 0x6474}, 0xd9, 0x04),
-
-	// restrict the area triggering sokra to talk to link in horon village to
-	// the left side of the burnable trees (prevents softlock)
-	"resize sokra trigger": MutableString(Addr{0x08, 0x5ba5},
-		"\xfa\x0b\xd0\xfe\x3c\xd8\xfe\x60\xd0",
-		"\xfe\x88\xd0\xfa\x0b\xd0\xfe\x3c\xd8"),
-
-	// you can softlock in d6 misusing keys without magnet gloves, so just move
-	// the magnet ball onto the button it needs to press to get the key the
-	// speedrun skips.
-	"move d6 magnet ball": MutableByte(Addr{0x15, 0x4f36}, 0x98, 0x58),
-
-	// if you go up the stairs into the room in d8 with the magnet ball and
-	// can't move it, you don't have room to go back down the stairs. this
-	// moves the magnet ball's starting position one more tile away.
-	"move d8 magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
-
 	// move the trigger for the bridge from holodrum plain to natzu to the
 	// top-left corner of the screen, where it can't be hit, and replace the
 	// lever tile as well. this prevents the bridge from blocking the waterway.
 	"remove bridge trigger": MutableWord(Addr{0x11, 0x6737},
 		0x6868, 0x0000),
-	"remove prairie bridge lever": MutableByte(Addr{0x21, 0x6267},
-		0xb1, 0x04),
-	"remove wasteland bridge lever": MutableByte(Addr{0x23, 0x5cb7},
-		0xb1, 0x04),
+	"remove prairie lever":   MutableByte(Addr{0x21, 0x6267}, 0xb1, 0x04),
+	"remove wasteland lever": MutableByte(Addr{0x23, 0x5cb7}, 0xb1, 0x04),
 
 	// grow seeds in all seasons
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
 
-	// block the waterfalls from mt cucco to sunken city, so that there only
-	// needs to be one warning interaction at the vines.
-	"block waterfalls": MutableStrings([]Addr{{0x21, 0x5bd1}, {0x21, 0x5c17},
-		{0x22, 0x58a4}, {0x22, 0x58ea}, {0x23, 0x5645}, {0x23, 0x568b},
-		{0x24, 0x54fa}, {0x24, 0x5540}}, "\x36\xff\x35", "\x40\x40\x40"),
-
-	// extend the railing on moblin keep to require only one warning
-	// interaction for the potential one-way jump in dimitri's region. one
-	// address per natzu region, then one for the ruined version.
-	"moblin keep rail 1": MutableStrings([]Addr{{0x21, 0x63f8}, {0x22, 0x6050},
-		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x48"),
-	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
-		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
-	// and remove the cannon near the stairs so that players without flippers
-	// can exit (if they arrived by jumping and ran out of pegasus seeds).
-	"remove keep cannon object": MutableByte(Addr{0x11, 0x6563}, 0xf8, 0xff),
-	"replace moblin keep cannon tiles": MutableStrings([]Addr{{0x21, 0x6bee},
-		{0x22, 0x6835}, {0x23, 0x664e}},
-		"\xa4\x06\x18\xb9\xa5\xb2\x0d\x1c\xf2\x1a\x25\xb5\xb6",
-		"\xb9\x06\x18\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
-	"replace ruined keep cannon tiles": MutableString(Addr{0x24, 0x632c},
-		"\xa6\x04\x08\x83\xa7\xb9\xb2\x0d\x1c\xf2\x1a\x25\xa9\xb6",
-		"\xb9\x04\x08\x83\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
-
-	// normally none of the desert pits will work if the player already has the
-	// rusty bell
-	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
-
-	// replace the rock/flower outside of d6 with a normal bush so that the
-	// player doesn't get softlocked if they exit d6 without gale satchel or
-	// default spring.
-	"replace d6 flower spring": MutableByte(Addr{0x21, 0x4e73}, 0xd8, 0xc4),
-	"replace d6 flower non-spring": MutableStrings(
-		[]Addr{{0x22, 0x4b83}, {0x23, 0x4973}, {0x24, 0x45d0}},
-		"\x92", "\xc4"),
-
-	// replace the stairs outside the portal in eyeglass lake in summer with a
-	// railing, because if the player jumps off those stairs in summer they
-	// fall into the noble sword room.
-	"replace lake stairs": MutableString(Addr{0x22, 0x791b},
-		"\x36\xd0\x35", "\x40\x40\x40"),
-
-	// replace some currents in spool swamp in spring so that the player isn't
-	// trapped by them.
-	"replace currents 1": MutableWord(Addr{0x21, 0x7ab1}, 0xd2d2, 0xd3d3),
-	"replace currents 2": MutableString(Addr{0x21, 0x7ab6},
-		"\xd3\xd2\xd2", "\xd4\xd4\xd4"),
-	"replace currents 3": MutableByte(Addr{0x21, 0x7abe}, 0xd3, 0xd1),
-
 	// change destination of initial transition in pirate cutscene.
 	"pirate warp": MutableString(Addr{0x15, 0x5a1c},
 		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
-
-	// if entering certain warps blocked by snow piles, mushrooms, or bushes,
-	// set the animal companion to appear right outside instead of where you
-	// left them. this requires adding some code at the end of the bank.
-	"animal save point call": MutableString(Addr{0x04, 0x461e},
-		"\xfa\x64\xcc", "\xcd\x02\x7e"),
-	"animal save point func": MutableString(Addr{0x04, 0x7e02}, "\x04",
-		// b = group, c = room, d = animal room, hl = table
-		"\xc5\xd5\x47\xfa\x64\xcc\x4f\xfa\x42\xcc\x57\x21\x34\x7e"+
-			"\x2a\xb8\x20\x12\x2a\xb9\x20\x0e\x7e\xba\x20\x0a"+ // check criteria
-			"\x11\x42\xcc\x06\x03\xcd\x62\x04\x18\x0a"+ // set save pt, done
-			"\x2a\xb7\x20\xfc\x7e\x3c\x28\x02\x18\xe0"+ // go to next table entry
-			"\x79\xd1\xc1\xc9"), // done
-	// table entries are {entered group, entered room, animal room, saved y,
-	// saved x}.
-	"animal save point table": MutableString(Addr{0x04, 0x7e34}, "\x04",
-		"\x04\xfa\xc2\x18\x68\x00"+ // square jewel cave
-			"\x05\xcc\x2a\x38\x18\x00"+ // goron mountain cave
-			"\x05\xb3\x8e\x58\x88\x00"+ // cave outside d2
-			"\x04\xe1\x86\x48\x68\x00"+ // quicksand ring cave
-			"\x05\xc9\x2a\x38\x18\x00"+ // goron mountain main
-			"\x05\xba\x2f\x18\x68\x00"+ // spring banana cave
-			"\x05\xbb\x2f\x18\x68\x00"+ // joy ring cave
-			"\x01\x05\x9a\x38\x48\x00"+ // rosa portal
-			"\x04\x39\x8d\x38\x38\x00"+ // d2 entrance
-			"\xff"), // end of table
-
-	// moosh won't spawn in the mountains if you have the wrong number of
-	// essences. bit 6 seems related to this, and needs to be zero too?
-	"skip moosh essence check 1": MutableByte(Addr{0x0f, 0x7429}, 0x03, 0x00),
-	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e36}, 0xca, 0xc3),
-	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ead}, 0x40, 0x00),
-
-	// remove the moosh and dimitri events in spool swamp.
-	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
-	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
-
-	// don't warp link using gale seeds if no trees have been reached (the menu
-	// gets stuck in an infinite loop)
-	"call gale seed check": MutableString(Addr{0x07, 0x4f45},
-		"\xfa\x50\xcc\x3d", "\xcd\xf0\x78\x00"),
-	"gale seed check": MutableString(Addr{0x07, 0x78f0}, "\x07",
-		"\xfa\x50\xcc\x3d\xc0\xaf\x21\xf8\xc7\xb6\x21\x9e\xc7\xb6\x21\x72\xc7"+
-			"\xb6\x21\x67\xc7\xb6\x21\x5f\xc7\xb6\x21\x10\xc7\xb6\xcb\x67"+
-			"\x20\x02\x3c\xc9\xaf\xc9"),
-
-	// end maku seed script as soon as link gets the seed
-	"abbreviate maku seed cutscene": MutableString(Addr{0x0b, 0x71ec},
-		"\xe1\x23\x61\x01", "\xb6\x19\xbe\x00"),
-	// end northen peak barrier cutscene as soon as the barrier is broken
-	"abbreviate barrier cutscene": MutableString(Addr{0x0b, 0x79f1},
-		"\x88\x18\x50\xf8", "\xb6\x1d\xbe\x00"),
 
 	// skip shield check for forging hard ore
 	"skip iron shield check": MutableByte(Addr{0x0b, 0x75c7}, 0x01, 0x02),
@@ -493,119 +229,6 @@ var constMutables = map[string]Mutable{
 	// helper function, takes b = high byte of season addr, returns season in b
 	"read default season": MutableString(Addr{0x01, 0x7e89}, "\x01",
 		"\x26\x7e\x68\x7e\x47\xc9"),
-
-	// all this text overwrites the text from the initial rosa encounter, which
-	// runs from 1f:4533 to 1f:45c1 inclusive. the last entry is displayed at
-	// the end of any warning message.
-	"cliff warning text": MutableString(Addr{0x1f, 0x4533}, "\x0c\x21",
-		"\x0c\x00\x02\x3b\x67\x6f\x20\x05\x73\x01"+ // If you go down
-			"\x74\x68\x65\x72\x65\x2c\x04\x2d\x20\x77\x6f\x6e\x27\x74\x01"+ // there, you won't
-			"\x62\x65\x20\x02\xa4\x05\x0f\x01"+ // be able to get
-			"\x04\x9f\x20\x75\x70\x03\xa4"+ // back up.
-			"\x07\x03"), // jump to end text
-	"bush warning addr": MutableWord(Addr{0x1c, 0x6b50}, 0xfb91, 0xdb91),
-	"bush warning text": MutableString(Addr{0x1f, 0x455d}, "\x55\x6d",
-		"\x0c\x00\x42\x72\x65\x61\x6b\x03\xa6\x62\x75\x73\x68\x65\x73\x01"+ // Breaking bushes
-			"\x03\x69\x04\xb5\x20\x04\xc4\x01"+ // with only those
-			"\x04\xcc\x20\x05\xe5\x75\x6e\x73\x61\x66\x65\x03\xa4"+ // items is unsafe.
-			"\x07\x03"), // jump to end text
-	"hss skip warning addr": MutableWord(Addr{0x1c, 0x6b52}, 0x1192, 0x0292),
-	"hss skip warning text": MutableString(Addr{0x1f, 0x4584}, "\x20\x05",
-		"\x0c\x00\x02\x3b\x73\x6b\x69\x70\x01"+ // If you skip
-			"\x6b\x65\x79\x73\x2c\x04\xaa\x03\x2c\x01"+ // keys, use them
-			"\x03\x70\x6c\x79\x03\xa4"+ // carefully.
-			"\x07\x03"), // jump to end text
-	"end warning addr": MutableWord(Addr{0x1c, 0x6b54}, 0x2592, 0x1d92),
-	"end warning text": MutableString(Addr{0x1f, 0x459f}, "\x01\x05",
-		"\x0c\x00\x43\x6f\x6e\x74\x69\x6e\x75\x65\x20\x61\x74\x01"+ // Continue at
-			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
-
-	// remove the original maku gate interaction
-	"maku gate interactions": MutableString(Addr{0x11, 0x634c},
-		"\xf2\x22\x0a\x30\x50\x2d\x84\x48\x68\x37\x84\x48\x68",
-		"\xf2\x2d\x84\x48\x68\x37\x84\x48\x68\xff"),
-	// the interaction on the mount cucco waterfall/vine screen
-	"waterfall cliff interaction redirect": MutableString(Addr{0x11, 0x6c10},
-		"\xf2\x1f\x08\x68", "\xf3\xb0\x7e\xff"),
-	"waterfall cliff interactions": MutableString(Addr{0x11, 0x7eb0}, "\x11",
-		"\xf2\x1f\x08\x68\x68\x22\x0a\x20\x18\xfe"),
-	// natzu / woods of winter cliff
-	"flower cliff interaction redirect": MutableString(Addr{0x11, 0x6568},
-		"\xf2\x9c\x00\x58", "\xf3\xba\x7e\xff"),
-	"flower cliff interactions": MutableString(Addr{0x11, 0x7eba}, "\x11",
-		"\xf2\x9c\x00\x58\x58\x22\x0a\x30\x58\xfe"),
-	// sunken city diving spot
-	"diving spot interaction redirect": MutableString(Addr{0x11, 0x69cc},
-		"\xf2\x1f\x0d\x68", "\xf3\xc4\x7e\xff"),
-	"diving spot interactions": MutableString(Addr{0x11, 0x7ec4}, "\x11",
-		"\xf2\x1f\x0d\x68\x68\x3e\x31\x18\x68\x22\x0a\x64\x68\xfe"),
-	// moblin keep -> sunken city
-	"moblin keep interaction redirect": MutableString(Addr{0x11, 0x650b},
-		"\xf2\xab\x00\x40", "\xf3\xd2\x7e\xff"),
-	"moblin keep interactions": MutableString(Addr{0x11, 0x7ed2}, "\x11",
-		"\xf2\xab\x00\x40\x70\x22\x0a\x58\x44\xf8\x2d\x00\x33\xfe"),
-	// hss skip room
-	"hss skip room interaction redirect": MutableString(Addr{0x11, 0x7ada},
-		"\xf3\x93\x55", "\xf3\xe0\x7e"),
-	"hss skip room interactions": MutableString(Addr{0x11, 0x7ee0}, "\x11",
-		"\xf2\x22\x0a\x88\x98\xf3\x93\x55\xfe"),
-
-	// create a warning interaction when breaking bushes and flowers under
-	// certain circumstances.
-	"break bush warning call": MutableString(Addr{0x06, 0x477b},
-		"\x21\x26\xc6", "\xcd\xd4\x77"),
-	"break bush warning func": MutableString(Addr{0x06, 0x77d4}, "\x06",
-		"\xf5\xc5\xd5\xcd\xe1\x77\x21\x26\xc6\xd1\xc1\xf1\xc9"+ // wrapper
-			"\xfe\xc3\x28\x09\xfe\xc4\x28\x05\xfe\xe5\x28\x01\xc9"+ // tile
-			"\xfa\x4c\xcc\xfe\xa7\x28\x0d\xfe\x97\x28\x09"+ // jump by room
-			"\xfe\x8d\x28\x05\xfe\x9a\x28\x01\xc9"+ // (cont.)
-			"\x3e\x09\xcd\x17\x17\xd8"+ // "already warned" flag
-			"\x3e\x16\xcd\x17\x17\xd8"+ // bracelet
-			"\x3e\x0e\xcd\x17\x17\xd8"+ // flute
-			"\x3e\x05\xcd\x17\x17\xd8"+ // sword
-			"\x3e\x06\xcd\x17\x17\xfe\x02\xc8"+ // boomerang, L-2
-			"\x21\x92\xc6\x3e\x09\xcd\x0e\x02"+ // set "already warned" flag
-			"\x21\xe0\xcf\x36\x01"+ // set warning text index
-			"\xcd\xc6\x3a\xc0\x36\x22\x2c\x36\x0a"+ // create warning object
-			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
-			"\xc9"), // ret
-
-	// change hl to point to different treasure data if the item is progressive
-	// and needs to be upgraded. param a = treasure ID.
-	"progressive item func": MutableString(Addr{0x00, 0x3ee3}, "\x00",
-		"\xd5\x5f\xcd\x6a\x3f\x7b\xd1\xd0"+ // ret if you don't have L-1
-			"\xfe\x05\x20\x04\x21\x12\x3f\xc9"+ // check sword
-			"\xfe\x06\x20\x04\x21\x15\x3f\xc9"+ // check boomerang
-			"\xfe\x13\x20\x04\x21\x18\x3f\xc9"+ // check slingshot
-			"\xfe\x17\x20\x04\x21\x1b\x3f\xc9"+ // check feather
-			"\xfe\x19\xc0\x21\x1e\x3f\xc9"+ // check satchel
-			// treasure data
-			"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20"),
-	// use cape graphics for stolen feather if applicable.
-	"upgrade stolen feather func": MutableString(Addr{0x00, 0x3f6a}, "\x00",
-		"\xcd\x17\x17\xd8\xf5\x7b"+ // ret if you have the item
-			"\xfe\x17\x20\x13\xd5\x1e\x43\x1a\xfe\x02\xd1\x20\x0a"+ // check IDs
-			"\xfa\xb4\xc6\xfe\x02\x20\x03"+ // check feather level
-			"\x21\x89\x3f\xf1\xc9"+ // set hl if match
-			"\x02\x37\x17"), // treasure data
-
-	// this is a replacement for giveTreasure that gives treasure, plays sound,
-	// and sets text based on item ID a and sub ID c, and accounting for item
-	// progression.
-	"give item func": MutableString(Addr{0x00, 0x3f21}, "\x00",
-		"\xcd\xd3\x3e\xcd\xe3\x3e"+ // get treasure data
-			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
-			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9"), // show text
-
-	// utility function, call a function hl in bank 02, preserving af. e can't
-	// be used as a parameter to that function, but it can be returned.
-	"call bank 02": MutableString(Addr{0x00, 0x3f4d}, "\x00",
-		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9"),
-
-	// utility function, read a byte from hl in bank e into a and e.
-	"read byte from bank": MutableString(Addr{0x00, 0x3f55}, "\x00",
-		"\xfa\x97\xff\xf5\x7b\xea\x97\xff\xea\x22\x22"+ // switch bank
-			"\x5e\xf1\xea\x97\xff\xea\x22\x22\x7b\xc9"), // read and switch back
 
 	// check fake treasure ID 0a instead of ID of maku tree item. the flag is
 	// set in "bank 9 fake id call" below. this only matters if you leave the
@@ -633,8 +256,8 @@ var constMutables = map[string]Mutable{
 	"diver give fake id script": MutableString(Addr{0x0b, 0x7f94}, "\x0b",
 		"\xde\x2e\x00\x92\x94\xc6\x02\xc1"),
 
-	// not much room left in bank 9, so this calls a bank 2 function that sets
-	// treasure ID 12 if applicable.
+	// check fake treasure id 12 to determine whether the subrosia seaside item
+	// has been dug up.
 	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
 
 	// shared by maku tree and star-shaped ore.
@@ -685,34 +308,194 @@ var constMutables = map[string]Mutable{
 	"noble sword lookup": MutableString(Addr{0x0b, 0x7f8d}, "\x0b",
 		"\x21\x18\x64\x4e\x23\x5e\xc9"),
 
-	// force the item in the temple of seasons cutscene to use normal item
-	// animations.
-	"rod cutscene gfx call": MutableString(Addr{0x00, 0x2600},
-		"\x1e\x41\x1a", "\xcd\x3b\x3f"),
-	"rod cutscene gfx func": MutableString(Addr{0x00, 0x3f3b}, "\x00",
-		"\x1e\x41\x1a\xfe\xe6\xc0\x1c\x1a\xfe\x02\x28\x03\x1d\x1a\xc9"+
-			"\x3e\x60\xc9"),
+	// bank 00
+
+	// blaino normally sets bit 6 of active ring to "unequip" it instead of
+	// setting it to $ff. this only matters for the dev ring.
+	"fix blaino ring unequip": MutableWord(Addr{0x00, 0x2376}, 0xcbf6, 0x36ff),
+
+	// banks 08-09 (most interaction-specific non-script behavior?)
+
+	// have horon village shop stock *and* sell items from the start, including
+	// the flute. also don't stop the flute from appearing because of animal
+	// flags, since it probably won't be a flute at all.
+	"horon shop stock check":   MutableByte(Addr{0x08, 0x4adb}, 0x05, 0x02),
+	"horon shop sell check":    MutableByte(Addr{0x08, 0x48d0}, 0x05, 0x02),
+	"horon shop flute check 1": MutableByte(Addr{0x08, 0x4b02}, 0xcb, 0xf6),
+	"horon shop flute check 2": MutableWord(Addr{0x08, 0x4afb},
+		0xcb6f, 0xafaf),
+
+	// prevent the first member's shop item from always refilling all seeds.
+	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
+		"\xcc\xe5\x17", "\x00\x00\x00"),
+
+	// restrict the area triggering sokra to talk to link in horon village to
+	// the left side of the burnable trees (prevents softlock).
+	"resize sokra trigger": MutableString(Addr{0x08, 0x5ba5},
+		"\xfa\x0b\xd0\xfe\x3c\xd8\xfe\x60\xd0",
+		"\xfe\x88\xd0\xfa\x0b\xd0\xfe\x3c\xd8"),
+
+	// normally none of the desert pits will work if the player already has the
+	// rusty bell.
+	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
+
+	// moosh won't spawn in the mountains if you have the wrong number of
+	// essences. bit 6 seems related to this, and needs to be zero too?
+	"skip moosh essence check 1": MutableByte(Addr{0x0f, 0x7429}, 0x03, 0x00),
+	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e36}, 0xca, 0xc3),
+	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ead}, 0x40, 0x00),
+
+	// count number of essences, not highest numbered essence.
+	"maku seed check 1": MutableByte(Addr{0x09, 0x7da4}, 0xea, 0x76),
+	"maku seed check 2": MutableByte(Addr{0x09, 0x7da6}, 0x30, 0x18),
+
+	// bank 0b (scripts)
+
+	// don't set a ricky flag when buying the "flute".
+	"shop no set ricky flag": MutableByte(Addr{0x0b, 0x4826}, 0x20, 0x00),
+
+	// don't require rod to get items from season spirits.
+	"season spirit rod check": MutableByte(Addr{0x0b, 0x4eb2}, 0x07, 0x02),
+
+	// getting the L-2 (or L-3) sword in the lost woods normally gives a second
+	// "spin slash" item. remove this from the script.
+	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0xde, 0xc1),
+	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0xde, 0xc1),
+
+	// end maku seed script as soon as link gets the seed.
+	"abbreviate maku seed cutscene": MutableString(Addr{0x0b, 0x71ec},
+		"\xe1\x23\x61\x01", "\xb6\x19\xbe\x00"),
+	// end northen peak barrier cutscene as soon as the barrier is broken.
+	"abbreviate barrier cutscene": MutableString(Addr{0x0b, 0x79f1},
+		"\x88\x18\x50\xf8", "\xb6\x1d\xbe\x00"),
+
+	// bank 11 (interactions)
+
+	// remove the original maku gate interaction, now used as the warning
+	// interaction.
+	"maku gate interactions": MutableString(Addr{0x11, 0x634c},
+		"\xf2\x22\x0a\x30\x50\x2d\x84\x48\x68\x37\x84\x48\x68",
+		"\xf2\x2d\x84\x48\x68\x37\x84\x48\x68\xff"),
+
+	// remove the moosh and dimitri events in spool swamp.
+	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
+	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
+
+	// bank 15 (script functions)
+
+	// you can softlock in d6 misusing keys without magnet gloves, so just move
+	// the magnet ball onto the button it needs to press to get the key the
+	// speedrun skips.
+	"move d6 magnet ball": MutableByte(Addr{0x15, 0x4f36}, 0x98, 0x58),
+
+	// if you go up the stairs into the room in d8 with the magnet ball and
+	// can't move it, you don't have room to go back down the stairs. this
+	// moves the magnet ball's starting position one more tile away.
+	"move d8 magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
+
+	// banks 1c-1f (text)
+
+	// all this text overwrites the text from the initial rosa encounter, which
+	// runs from 1f:4533 to 1f:45c1 inclusive. the last entry is displayed at
+	// the end of any warning message.
+	"cliff warning text": MutableString(Addr{0x1f, 0x4533}, "\x0c\x21",
+		"\x0c\x00\x02\x3b\x67\x6f\x20\x05\x73\x01"+ // If you go down
+			"\x74\x68\x65\x72\x65\x2c\x04\x2d\x20\x77\x6f\x6e\x27\x74\x01"+ // there, you won't
+			"\x62\x65\x20\x02\xa4\x05\x0f\x01"+ // be able to get
+			"\x04\x9f\x20\x75\x70\x03\xa4"+ // back up.
+			"\x07\x03"), // jump to end text
+	"bush warning addr": MutableWord(Addr{0x1c, 0x6b50}, 0xfb91, 0xdb91),
+	"bush warning text": MutableString(Addr{0x1f, 0x455d}, "\x55\x6d",
+		"\x0c\x00\x42\x72\x65\x61\x6b\x03\xa6\x62\x75\x73\x68\x65\x73\x01"+ // Breaking bushes
+			"\x03\x69\x04\xb5\x20\x04\xc4\x01"+ // with only those
+			"\x04\xcc\x20\x05\xe5\x75\x6e\x73\x61\x66\x65\x03\xa4"+ // items is unsafe.
+			"\x07\x03"), // jump to end text
+	"hss skip warning addr": MutableWord(Addr{0x1c, 0x6b52}, 0x1192, 0x0292),
+	"hss skip warning text": MutableString(Addr{0x1f, 0x4584}, "\x20\x05",
+		"\x0c\x00\x02\x3b\x73\x6b\x69\x70\x01"+ // If you skip
+			"\x6b\x65\x79\x73\x2c\x04\xaa\x03\x2c\x01"+ // keys, use them
+			"\x03\x70\x6c\x79\x03\xa4"+ // carefully.
+			"\x07\x03"), // jump to end text
+	"end warning addr": MutableWord(Addr{0x1c, 0x6b54}, 0x2592, 0x1d92),
+	"end warning text": MutableString(Addr{0x1f, 0x459f}, "\x01\x05",
+		"\x0c\x00\x43\x6f\x6e\x74\x69\x6e\x75\x65\x20\x61\x74\x01"+ // Continue at
+			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
+
+	// banks 21-24 (room layouts)
+
+	// replace the rock/flower outside of d6 with a normal bush so that the
+	// player doesn't get softlocked if they exit d6 without gale satchel or
+	// default spring.
+	"replace d6 flower spring": MutableByte(Addr{0x21, 0x4e73}, 0xd8, 0xc4),
+	"replace d6 flower non-spring": MutableStrings(
+		[]Addr{{0x22, 0x4b83}, {0x23, 0x4973}, {0x24, 0x45d0}},
+		"\x92", "\xc4"),
 
 	// move the bushes on the rosa portal screen by one tile so that it's
-	// possible to leave and re-enter without breaking bushes.
+	// block the waterfalls from mt cucco to sunken city, so that there only
+	// needs to be one warning interaction at the vines.
+	"block waterfalls": MutableStrings([]Addr{{0x21, 0x5bd1}, {0x21, 0x5c17},
+		{0x22, 0x58a4}, {0x22, 0x58ea}, {0x23, 0x5645}, {0x23, 0x568b},
+		{0x24, 0x54fa}, {0x24, 0x5540}}, "\x36\xff\x35", "\x40\x40\x40"),
+
+	// extend the railing on moblin keep to require only one warning
+	// interaction for the potential one-way jump in dimitri's region. one
+	// address per natzu region, then one for the ruined version.
+	"moblin keep rail 1": MutableStrings([]Addr{{0x21, 0x63f8}, {0x22, 0x6050},
+		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x48"),
+	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
+		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
+
+	// make it possible to leave and re-enter rosa's portal without breaking
+	// bushes.
 	"move rosa portal bushes": MutableStrings([]Addr{
 		{0x21, 0x7454}, {0x22, 0x709d}, {0x23, 0x6ea9}, {0x24, 0x6b9f}},
 		"\x0e\xc4\xf7\x4d\x5f\x11\x6e\x38\xc4\x11\x5e\xf7\x5d\x11",
 		"\x38\xc4\xf7\x4d\x04\x5d\x6e\x38\xc4\x11\x5e\xf7\x4d\x5f"),
 
-	// prevent the first member's shop item from always refilling all seeds.
-	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
-		"\xcc\xe5\x17", "\x00\x00\x00"),
-	// instead, have any satchel refill all seeds.
-	"satchel seed refill call": MutableString(Addr{0x00, 0x16f6},
-		"\xcd\xc8\x44", "\xcd\xe4\x71"),
-	"satchel seed refill func": MutableString(Addr{0x3f, 0x71e4}, "\x3f",
-		"\xc5\xcd\xc8\x44\x78\xc1\xf5\x78\xfe\x19\x20\x07"+
-			"\xc5\xd5\xcd\xe5\x17\xd1\xc1\xf1\x47\xc9"),
+	// replace some currents in spool swamp in spring so that the player isn't
+	// trapped by them.
+	"replace currents 1": MutableWord(Addr{0x21, 0x7ab1}, 0xd2d2, 0xd3d3),
+	"replace currents 2": MutableString(Addr{0x21, 0x7ab6},
+		"\xd3\xd2\xd2", "\xd4\xd4\xd4"),
+	"replace currents 3": MutableByte(Addr{0x21, 0x7abe}, 0xd3, 0xd1),
 
-	// blaino normally sets bit 6 of active ring to "unequip" it instead of
-	// setting it to $ff. this only matters for the dev ring.
-	"fix blaino ring unequip": MutableWord(Addr{0x00, 0x2376}, 0xcbf6, 0x36ff),
+	// replace the stairs outside the portal in eyeglass lake in summer with a
+	// railing, because if the player jumps off those stairs in summer they
+	// fall into the noble sword room.
+	"replace lake stairs": MutableString(Addr{0x22, 0x791b},
+		"\x36\xd0\x35", "\x40\x40\x40"),
+
+	// remove the snow piles in front of holly's house so that shovel isn't
+	// required not to softlock there.
+	"remove snow piles": MutableByte(Addr{0x24, 0x6474}, 0xd9, 0x04),
+
+	// bank 3f
+
+	// since slingshot doesn't increment seed capacity, set the level-zero
+	// capacity of seeds to 20, and move the pointer up by one byte.
+	"satchel capacity": MutableString(Addr{0x3f, 0x4617},
+		"\x20\x50\x99", "\x20\x20\x50"),
+	"satchel capacity pointer": MutableByte(Addr{0x3f, 0x460e}, 0x16, 0x17),
+
+	// give member's card, treasure map, fool's ore, and identified flutes
+	// graphics in treasure sprite table
+	"member's card gfx": MutableString(Addr{0x3f, 0x67b4},
+		"\x00\x00\x00", "\x5d\x0c\x13"),
+	"treasure map gfx": MutableString(Addr{0x3f, 0x67b7},
+		"\x00\x00\x00", "\x65\x14\x33"),
+	"fool's ore gfx": MutableString(Addr{0x3f, 0x67ba},
+		"\x00\x00\x00", "\x60\x14\x00"),
+	"ricky's flute gfx": MutableString(Addr{0x3f, 0x67bd},
+		"\x00\x00\x00", "\x5f\x16\x33"),
+	"dimitri's flute gfx": MutableString(Addr{0x3f, 0x67c0},
+		"\x00\x00\x00", "\x5f\x16\x23"),
+	"moosh's flute gfx": MutableString(Addr{0x3f, 0x67c3},
+		"\x00\x00\x00", "\x5f\x16\x13"),
+	"rare peach stone gfx": MutableString(Addr{0x3f, 0x67c6},
+		"\x00\x00\x00", "\x5d\x10\x26"),
+	"ribbon gfx": MutableString(Addr{0x3f, 0x67c9},
+		"\x00\x00\x00", "\x65\x0c\x23"),
 }
 
 var (
