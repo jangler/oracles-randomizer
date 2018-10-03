@@ -12,8 +12,6 @@ import (
 const bankSize = 0x4000
 
 func init() {
-	initCode()
-
 	// rings and boss keys all have the same sprite
 	for name, treasure := range Treasures {
 		if treasure.id == 0x2d {
@@ -118,8 +116,10 @@ func orderedKeys(m map[string]Mutable) []string {
 func Mutate(b []byte) ([]byte, error) {
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, Seasons["north horon season"].New[0]}
+	/* TODO
 	varMutables["season after pirate cutscene"].(*MutableRange).New =
 		[]byte{Seasons["western coast season"].New[0]}
+	*/
 
 	setSeedData()
 

@@ -85,11 +85,11 @@ func (mr *MutableRange) Check(b []byte) error {
 
 // SetFreewarp sets whether tree warp in the generated ROM will have a
 // cooldown (true = no cooldown).
-func SetFreewarp(freewarp bool) {
+func (r *ROM) SetFreewarp(freewarp bool) {
 	if freewarp {
-		constMutables["tree warp"].(*MutableRange).New[19] = 0x18
+		r.mutables["tree warp"].(*MutableRange).New[19] = 0x18
 	} else {
-		constMutables["tree warp"].(*MutableRange).New[19] = 0x28
+		r.mutables["tree warp"].(*MutableRange).New[19] = 0x28
 	}
 }
 
@@ -225,10 +225,6 @@ var constMutables = map[string]Mutable{
 	// and skip the check for what level shield you currently have
 	"skip iron shield level check": MutableString(Addr{0x15, 0x62ac},
 		"\x38\x01", "\x18\x05"),
-
-	// helper function, takes b = high byte of season addr, returns season in b
-	"read default season": MutableString(Addr{0x01, 0x7e89}, "\x01",
-		"\x26\x7e\x68\x7e\x47\xc9"),
 
 	// check fake treasure ID 0a instead of ID of maku tree item. the flag is
 	// set in "bank 9 fake id call" below. this only matters if you leave the
