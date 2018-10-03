@@ -313,6 +313,15 @@ var constMutables = map[string]Mutable{
 	"move talon":    MutableWord(Addr{0x11, 0x6d2b}, 0x6858, 0x88a8),
 	"move mushroom": MutableWord(Addr{0x0b, 0x6080}, 0x6848, 0x78a8),
 
+	// change water tiles outside d4 from deep to shallow (prevents softlock
+	// from entering without flippers or default summer).
+	"change d4 water tiles": MutableStrings(
+		[]Addr{{0x21, 0x54a9}, {0x22, 0x5197}, {0x23, 0x4f6c}},
+		"\xfd\x6b\x6b\x53\xfa\x3f\xfd", "\xfa\x6b\x6b\x53\xfa\x3f\xfa"),
+	"change d4 water tiles winter": MutableString(Addr{0x24, 0x4cec},
+		"\xfd\x00\xfc\x06\xfd\xfd\xfd\xfd",
+		"\xdc\x00\xfc\x06\xdc\xdc\xdc\xdc"),
+
 	// feather game: don't give fools ore, and don't return fools ore
 	"get fools ore": MutableString(Addr{0x14, 0x4881},
 		"\xe0\xeb\x58", "\xf0\xf0\xf0"),
@@ -392,16 +401,6 @@ var constMutables = map[string]Mutable{
 		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x48"),
 	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
 		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
-	// and remove the cannon near the stairs so that players without flippers
-	// can exit (if they arrived by jumping and ran out of pegasus seeds).
-	"remove keep cannon object": MutableByte(Addr{0x11, 0x6563}, 0xf8, 0xff),
-	"replace moblin keep cannon tiles": MutableStrings([]Addr{{0x21, 0x6bee},
-		{0x22, 0x6835}, {0x23, 0x664e}},
-		"\xa4\x06\x18\xb9\xa5\xb2\x0d\x1c\xf2\x1a\x25\xb5\xb6",
-		"\xb9\x06\x18\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
-	"replace ruined keep cannon tiles": MutableString(Addr{0x24, 0x632c},
-		"\xa6\x04\x08\x83\xa7\xb9\xb2\x0d\x1c\xf2\x1a\x25\xa9\xb6",
-		"\xb9\x04\x08\x83\xb9\xb9\xb2\x0d\x1c\xf2\x1a\x25\xb9\xb9"),
 
 	// normally none of the desert pits will work if the player already has the
 	// rusty bell
@@ -797,6 +796,15 @@ var constMutables = map[string]Mutable{
 	// blaino normally sets bit 6 of active ring to "unequip" it instead of
 	// setting it to $ff. this only matters for the dev ring.
 	"fix blaino ring unequip": MutableWord(Addr{0x00, 0x2376}, 0xcbf6, 0x36ff),
+
+	// custom script command to use on d1 entrance screen: wait until bit of
+	// cfc0 is set, and set ccaa to 01 meanwhile. fixes a vanilla bug where
+	// dismounting an animal on that screen allowed you to enter without key.
+	"d1 entrance script cmd": MutableByte(Addr{0x0b, 0x4dea}, 0xa0, 0xb2),
+	"d1 entrance cmd jump":   MutableWord(Addr{0x0b, 0x406d}, 0x0341, 0x9c7f),
+	"d1 entrance cmd func": MutableString(Addr{0x0b, 0x7f9c}, "\x0b",
+		"\xe1\xfa\x49\xcc\xfe\x00\xc0\xfa\x4c\xcc\xfe\x96\xc0"+ // check room
+			"\x3e\x01\xea\xaa\xcc\xaf\xc3\x2d\x43"),
 }
 
 var (

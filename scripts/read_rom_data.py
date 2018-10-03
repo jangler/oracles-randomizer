@@ -115,6 +115,7 @@ INTERACTION_MODES = {
     0xf2: "DV interaction",
     0xf6: "random entities",
     0xf7: "specific entity",
+    0xf8: "part",
 }
 
 NV_INTERACTIONS = {}
@@ -181,7 +182,8 @@ DV_INTERACTIONS = {
     # 0x20 0x01 used for button -> small key chest in d0
     # 0x20 0x02 used for button -> small key chest in d1
     # 0x20 0x03 used for boss room in d1
-    # 0x21 and 0x22 are outside the d1 entrance
+    0x21: ("gnarled keyhole", {}),
+    # 0x22 are outside the d1 entrance
     # 0x25 0x00 and 0x01 are on the cat-stuck-in-tree screen
     # 0x26 0x00 and 0x01 are also on the cat-stuck-in-tree screen
     # 0x37 0x82 is on the ember tree screen
@@ -214,7 +216,9 @@ DV_INTERACTIONS = {
     0xe2: ("statue eyes", {}),
 }
 
-PARTS = {}
+PARTS = {
+    0x13: ("owl statue", {}),
+}
 
 TREASURES = {
     0x00: ("none", {}),
@@ -578,6 +582,8 @@ def name_objects(objects):
         elif obj["mode"] in "DV interaction":
             obj["variety"] = list(lookup_entry(DV_INTERACTIONS,
                     *obj["variety"]))
+        elif obj["mode"] == "part":
+            obj["variety"] = list(lookup_entry(PARTS, *obj["variety"]))
 
 
 with open(args.romfile, "rb") as f:

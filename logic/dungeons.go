@@ -279,8 +279,9 @@ var d7Nodes = map[string]*Node{
 	"d7 magunesu key chest": And("d7 magunesu room", "kill magunesu", "jump", "magnet gloves"),
 	"enter poe B": And("d7 pot room", "d7 key B",
 		Or("d7 key C", HardAnd("d7 key A", "poe skip"))),
-	"d7 water stairs": And("enter poe B", "ember seeds", "kill poe sister", "flippers"),
-	"d7 cape chest":   AndSlot("d7 trampoline pair", "jump", "kill stalfos (pit)"),
+	"d7 water stairs": And("enter poe B", "ember seeds",
+		Or("pegasus satchel", "slingshot L-2"), "kill poe sister", "flippers"),
+	"d7 cape chest": AndSlot("d7 trampoline pair", "jump", "kill stalfos (pit)"),
 
 	// B2F
 	"d7 fool's gap":     Or("long jump", "magnet gloves"),

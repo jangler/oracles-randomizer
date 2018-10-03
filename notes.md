@@ -161,26 +161,58 @@ does something like disable all other objects. bank 15 contains unique
 functions called by scripts; general-purpose ones are in bank 0.
 
 for a complete list of script commands, see
-ages-disasm/include/script_commands.s, but some are listed here for quick
-reference.
+ages-disasm/include/script_commands.s, but some are listed here with addresses.
 
 - 00 = end script
-- 80 = set interaction.state
-- 84 = spawn interaction
-- 87 = jump table
-- 88 = set coordinates, byte = y, byte = x
-- 8f = set animation, byte = index
-- 92 = or memory, word = addr, byte = value
-- 98 = show text, word = index
-- 9c = set interaction text id, word = index
-- a0 = wait until bit of cfc0 is set
-- a7 = ? takes two bytes of params ?
-- b0 = jump if room flag, byte = flag, word = addr
-- b3 = jump if c6xx set, byte = value to bitwise and with word addr
-- b5 = jump if global flag, byte = flag, word = addr
-- b6 = set global flag, byte = flag
-- b8 = disable objects
-- bd/be = disable/enable input
+- 80 = 4186, set interaction.state
+- 81 = 4197
+- 82 = 419d
+- 83 = 258f
+- 84 = 41a2, spawn interaction
+- 85 = 41ca
+- 86 = 4a1c
+- 87 = 41f8, jump table
+- 88 = 4203, set coordinates, byte = y, byte = x
+- 89 = 4213
+- 8a = 4280
+- 8b = 421a
+- 8c = 422c
+- 8d = 4236
+- 8e = 4240
+- 8f = 425e, set animation, byte = index
+- 90 = 42fd
+- 91 = 4319
+- 92 = 43fc, or memory, word = addr, byte = value
+- 93 = 4252
+- 94 = 4247
+- 95 = 4221
+- 96 = 4290
+- 97 = 42a0
+- 98 = 42c1, show text, word = index
+- 99 = 42ed
+- 9a = 42e2
+- 9b = 43c7
+- 9c = 43de, set interaction text id, word = index
+- 9d = 43d1
+- 9e = 44e4
+- 9f = 42cc
+- a0-a7 = 432b, wait until bit of cfc0 is set
+- a8-af = 433d, toggle bit of cfc0
+- b0 = 43a7, jump if room flag, byte = flag, word = addr
+- b1 = 43bb
+- b2 = 4103, custom script, set ccaa = 01 and jump to command a0
+- b3 = 435d, jump if c6xx set, byte = value to bitwise and with word addr
+- b4 = 44ca
+- b5 = 4562, jump if global flag, byte = flag, word = addr
+- b6 = 4573, set global flag, byte = flag
+- b7 = 4103, nop
+- b8 = 4168, disable objects
+- b9 = 4170
+- ba = 4173
+- bb = 414c
+- bc = 4162
+- bd/be = 4147/415e, disable/enable input
+- bf = 4103, nop
 - c0 = call another script
 - c3 = jump to script addr based on text option
 - c4 = jump to script addr

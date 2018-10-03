@@ -218,7 +218,7 @@ var holodrumNodes = map[string]*Node{
 		Or("moosh", "pegasus jump L-2", Hard("feather L-2"))),
 	"talon cave":         And("mount cucco", Or("sunken city default spring", "spring")),
 	"dragon keyhole":     And("talon cave", "winter", "jump", "bracelet"),
-	"enter d4":           And("dragon key", "dragon keyhole", "summer", "cross water gap"),
+	"enter d4":           And("dragon key", "dragon keyhole", "summer"),
 	"pyramid jewel spot": AndSlot("talon cave", "flippers"),
 	"talon cave chest":   AndSlot("talon cave"),
 
