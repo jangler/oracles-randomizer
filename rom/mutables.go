@@ -313,6 +313,15 @@ var constMutables = map[string]Mutable{
 	"move talon":    MutableWord(Addr{0x11, 0x6d2b}, 0x6858, 0x88a8),
 	"move mushroom": MutableWord(Addr{0x0b, 0x6080}, 0x6848, 0x78a8),
 
+	// change water tiles outside d4 from deep to shallow (prevents softlock
+	// from entering without flippers or default summer).
+	"change d4 water tiles": MutableStrings(
+		[]Addr{{0x21, 0x54a9}, {0x22, 0x5197}, {0x23, 0x4f6c}},
+		"\xfd\x6b\x6b\x53\xfa\x3f\xfd", "\xfa\x6b\x6b\x53\xfa\x3f\xfa"),
+	"change d4 water tiles winter": MutableString(Addr{0x24, 0x4cec},
+		"\xfd\x00\xfc\x06\xfd\xfd\xfd\xfd",
+		"\xdc\x00\xfc\x06\xdc\xdc\xdc\xdc"),
+
 	// feather game: don't give fools ore, and don't return fools ore
 	"get fools ore": MutableString(Addr{0x14, 0x4881},
 		"\xe0\xeb\x58", "\xf0\xf0\xf0"),
