@@ -98,6 +98,8 @@ func (r *ROM) initEndOfBank() {
 	// this *must* be the first function at the end of bank zero (for now).
 	r.appendToBank(0x00, "no music func",
 		"\x67\xfe\x40\x30\x03\x3e\x08\xc9\xf0\xb5\xc9")
+	r.replace(0x00, 0x0c76, "no music call",
+		"\x67\xf0\xb5", "\x67\xf0\xb5") // modified only by SetNoMusic()
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
@@ -140,14 +142,15 @@ func (r *ROM) initEndOfBank() {
 	// this is a replacement for giveTreasure that gives treasure, plays sound,
 	// and sets text based on item ID a and sub ID c, and accounting for item
 	// progression.
-	r.appendToBank(0x00, "give item func",
+	giveItem := r.appendToBank(0x00, "give item func",
 		"\xcd\xd3\x3e\xcd\xe3\x3e"+ // get treasure data
 			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
 			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9") // show text
 
 	// utility function, call a function hl in bank 02, preserving af. e can't
 	// be used as a parameter to that function, but it can be returned.
-	r.appendToBank(0x00, "call bank 02", "\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9")
+	callBank2 := r.appendToBank(0x00, "call bank 02",
+		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9")
 
 	// utility function, read a byte from hl in bank e into a and e.
 	r.appendToBank(0x00, "read byte from bank",
@@ -274,6 +277,25 @@ func (r *ROM) initEndOfBank() {
 
 	// bank 08
 
+	// use the custom "give item" function in the shop instead of the normal
+	// one. this obviates some hard-coded shop data (sprite, text) and allows
+	// the item to progressively upgrade.
+	// param = b (item index/subID), returns c,e = treasure ID,subID
+	r.appendToBank(0x08, "shop item lookup",
+		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9")
+	shopGiveItem := r.appendToBank(0x08, "shop give item func",
+		"\xc5\x47\x7d\xcd\xd2\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
+			"\xcd\x21\x3f\xc9"+ // give item and ret
+			"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9") // check addr
+	r.replace(0x08, 0x4bfc, "shop give item call",
+		"\xeb\x16", shopGiveItem)
+
+	// give fake treasure 0f for the strange flute item.
+	r.appendToBank(0x08, "shop give fake id func",
+		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9")
+	r.replace(0x08, 0x4bfe, "shop give fake id call",
+		"\x1e\x42\x1a", "\xcd\xef\x7f")
+
 	// ORs the default season in the given area (low byte b in bank 1) with the
 	// seasons the rod has (c), then ANDs and compares the results with d.
 	warningHelper := r.appendToBank(0x15, "warning helper",
@@ -310,6 +332,17 @@ func (r *ROM) initEndOfBank() {
 
 	// bank 09
 
+	// shared by maku tree and star-shaped ore.
+	bank2IDFunc := r.appendToBank(0x02, "bank 2 fake id func",
+		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x1b\xc9"+ // compare group
+			"\xfa\x4c\xcc\xfe\x65\x28\x0d\xfe\x66\x28\x09"+ // compare room
+			"\xfe\x75\x28\x05\xfe\x76\x28\x01\xc9"+ // cont.
+			"\x21\x94\xc6\xcb\xd6\xc9"+ // set treasure id 12
+			"\xfa\x4c\xcc\xfe\x0b\xc0\x21\x93\xc6\xcb\xd6\xc9") // id 0a
+	bank9IDFunc := r.appendToBank(0x09, "bank 9 fake id func",
+		"\xf5\xe5\x21"+bank2IDFunc+"\xcd"+callBank2+"\xe1\xf1\xcd\xeb\x16\xc9")
+	r.replace(0x09, 0x42e1, "bank 9 fake id call", "\xeb\x16", bank9IDFunc)
+
 	// animals called by flute normally veto any nonzero collision value for
 	// the purposes of entering a screen, but this allows double-wide bridges
 	// (1a and 1b) as well. this specifically fixes the problem of not being
@@ -342,6 +375,31 @@ func (r *ROM) initEndOfBank() {
 		"\xb7\x20\x07\xe5\x21\x9a\xc6\xcb\xae\xe1\xdf\x2a\x4e\xc9")
 	r.replace(0x09, 0x7887, "trade star ore call",
 		"\xdf\x2a\x4e", "\xcd"+tradeStarOre)
+
+	// use custom "give item" func in the subrosian market.
+	r.appendToBank(0x09, "market give fake id func",
+		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6")
+	// param = b (item index/subID), returns c,e = treasure ID,subID
+	r.appendToBank(0x09, "market item lookup",
+		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9")
+	marketGiveItem := r.appendToBank(0x09, "market give item func",
+		"\xf5\x7d\xfe\xdb\x28\x16\xfe\xe3\x28\x12\xfe\xf5\x28\x1f"+
+			"\xf1\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42\xc9"+
+			"\xf1\xcd"+giveItem+"\xd1\x37\xc9") // give item, scf, ret
+	r.replace(0x09, 0x788a, "market give item call",
+		"\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42",
+		"\x00\x00\x00\x00\x00\x00\x00\xcd"+marketGiveItem+"\x38\x0b")
+
+	// bank 0b
+
+	diverIDScript := r.appendToBank(0x0b, "diver give fake id script",
+		"\xde\x2e\x00\x92\x94\xc6\x02\xc1")
+	r.replace(0x0b, 0x730d, "diver give fake id call",
+		"\xde\x2e\x00", "\xc0"+diverIDScript)
+
+	// returns c,e = treasure ID,subID
+	r.appendToBank(0x0b, "noble sword lookup",
+		"\x21\x18\x64\x4e\x23\x5e\xc9")
 
 	// bank 11
 
@@ -395,6 +453,10 @@ func (r *ROM) initEndOfBank() {
 		"\x2c\x36\x52\x2c\x36\x00\xc9")
 	r.replace(0x15, 0x5b83, "hard ore id call",
 		"\x2c\x36\x52", "\xcd"+hardOreFunc)
+
+	// use custom "give item" func in rod cutscene.
+	r.replace(0x15, 0x70cf, "rod give item call",
+		"\xcd\xeb\x16", "\xcd"+giveItem)
 
 	// bank 3f
 

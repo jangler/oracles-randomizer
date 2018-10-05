@@ -95,7 +95,10 @@ func (r *ROM) SetFreewarp(freewarp bool) {
 
 // SetNoMusic sets music off in the modified ROM.
 func SetNoMusic() {
-	constMutables["no music call"].(*MutableRange).New = []byte("\xcd\xc8\x3e")
+	mut := constMutables["no music func"].(*MutableRange)
+	funcAddr := addrString(mut.Addrs[0].Offset)
+	constMutables["no music call"].(*MutableRange).New =
+		[]byte("\xcd" + funcAddr)
 }
 
 // SetAnimal sets the flute type and Natzu region type based on a companion
@@ -109,10 +112,6 @@ func SetAnimal(companion int) {
 // process. try to generally order them by address, unless a grouping between
 // mutables in different banks makes more sense.
 var constMutables = map[string]Mutable{
-	// don't play any music if the -nomusic flag is given.
-	"no music call": MutableString(Addr{0x00, 0x0c76},
-		"\x67\xf0\xb5", "\x67\xf0\xb5"), // modified only by SetNoMusic()
-
 	// start game with link below bushes, not above
 	"initial link placement": MutableByte(Addr{0x07, 0x4197}, 0x38, 0x58),
 	// make link actionable as soon as he drops into the world.
@@ -226,83 +225,27 @@ var constMutables = map[string]Mutable{
 	"skip iron shield level check": MutableString(Addr{0x15, 0x62ac},
 		"\x38\x01", "\x18\x05"),
 
-	// check fake treasure ID 0a instead of ID of maku tree item. the flag is
-	// set in "bank 9 fake id call" below. this only matters if you leave the
-	// room without picking up the item.
+	// check fake treasure ID 0a for maku tree item. this only matters if you
+	// leave the screen without picking up the item.
 	"maku tree check fake id": MutableByte(Addr{0x09, 0x7dfd}, 0x42, 0x0a),
-
-	// check fake treasure ID 0f instead of ID of shop item 3.
+	// check fake treasure ID 0f for shop item 3.
 	"shop check fake id": MutableStrings([]Addr{{0x08, 0x4a8a},
 		{0x08, 0x4af2}}, "\x0e", "\x0f"),
-	"shop give fake id call": MutableString(Addr{0x08, 0x4bfe},
-		"\x1e\x42\x1a", "\xcd\xef\x7f"),
-	"shop give fake id func": MutableString(Addr{0x08, 0x7fef}, "\x08",
-		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9"),
-
-	// check fake treasure ID 10 instead of ID of market item 5. the function
-	// is called as part of "market give item func" below.
+	// check fake treasure ID 10 for market item 5.
 	"market check fake id": MutableByte(Addr{0x09, 0x7755}, 0x53, 0x10),
-	"market give fake id func": MutableString(Addr{0x09, 0x7fdb}, "\x09",
-		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6"),
-
-	// use fake treasure ID 11 instead of 2e for master diver.
+	// check fake treasure ID 11 for master diver.
 	"diver check fake id": MutableByte(Addr{0x0b, 0x72f1}, 0x2e, 0x11),
-	"diver give fake id call": MutableString(Addr{0x0b, 0x730d},
-		"\xde\x2e\x00", "\xc0\x94\x7f"),
-	"diver give fake id script": MutableString(Addr{0x0b, 0x7f94}, "\x0b",
-		"\xde\x2e\x00\x92\x94\xc6\x02\xc1"),
-
-	// check fake treasure id 12 to determine whether the subrosia seaside item
-	// has been dug up.
+	// check fake treasure ID 12 for subrosia seaside,
 	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
 
-	// shared by maku tree and star-shaped ore.
-	"bank 9 fake id call": MutableWord(Addr{0x09, 0x42e1}, 0xeb16, 0xe47f),
-	"bank 9 fake id func": MutableString(Addr{0x09, 0x7fe4}, "\x09",
-		"\xf5\xe5\x21\x21\x76\xcd\x4d\x3f\xe1\xf1\xcd\xeb\x16\xc9"),
-	"bank 2 fake id func": MutableString(Addr{0x02, 0x7621}, "\x02",
-		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x1b\xc9"+ // compare group
-			"\xfa\x4c\xcc\xfe\x65\x28\x0d\xfe\x66\x28\x09"+ // compare room
-			"\xfe\x75\x28\x05\xfe\x76\x28\x01\xc9"+ // cont.
-			"\x21\x94\xc6\xcb\xd6\xc9"+ // set treasure id 12
-			"\xfa\x4c\xcc\xfe\x0b\xc0\x21\x93\xc6\xcb\xd6\xc9"), // id 0a
-
-	// use the custom "give item" function in the shop instead of the normal
-	// one. this obviates some hard-coded shop data (sprite, text) and allows
-	// the item to progressively upgrade.
-	"shop give item call": MutableWord(Addr{0x08, 0x4bfc}, 0xeb16, 0xc07f),
-	"shop give item func": MutableString(Addr{0x08, 0x7fc0}, "\x08",
-		"\xc5\x47\x7d\xcd\xd2\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
-			"\xcd\x21\x3f\xc9"+ // give item and ret
-			"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9"), // check addr
-	// and zero the original text IDs
+	// zero the original shop item text (don't remember if this is actually
+	// necessary).
 	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
 		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
-	// param = b (item index/subID), returns c,e = treasure ID,subID
-	"shop item lookup": MutableString(Addr{0x08, 0x7fde}, "\x08",
-		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9"),
 
-	// do the same for the subrosian market.
-	"market give item call": MutableString(Addr{0x09, 0x788a},
-		"\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42",
-		"\x00\x00\x00\x00\x00\x00\x00\xcd\xae\x7f\x38\x0b"), // jump on carry flag
-	"market give item func": MutableString(Addr{0x09, 0x7fae}, "\x09",
-		"\xf5\x7d\xfe\xdb\x28\x16\xfe\xe3\x28\x12\xfe\xf5\x28\x1f"+
-			"\xf1\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42\xc9"+
-			"\xf1\xcd\x21\x3f\xd1\x37\xc9"), // give item, scf, ret
-	// param = b (item index/subID), returns c,e = treasure ID,subID
-	"market item lookup": MutableString(Addr{0x09, 0x7fd1}, "\x09",
-		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9"),
-
-	// use custom "give item" func in rod cutscene.
-	"rod give item call": MutableString(Addr{0x15, 0x70cf},
-		"\xcd\xeb\x16", "\xcd\x21\x3f"),
+	// zero normal rod text.
 	"no rod text": MutableString(Addr{0x15, 0x70be},
 		"\xcd\x4b\x18", "\x00\x00\x00"),
-
-	// returns c,e = treasure ID,subID
-	"noble sword lookup": MutableString(Addr{0x0b, 0x7f8d}, "\x0b",
-		"\x21\x18\x64\x4e\x23\x5e\xc9"),
 
 	// bank 00
 
