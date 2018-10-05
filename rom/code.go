@@ -116,14 +116,21 @@ func (r *ROM) initEndOfBank() {
 			"\xc1\x79\xc5\x18\xef"+ // use sub ID as second offset
 			"\x23\x06\x03\xd5\x11\xfd\xcd\xcd\x62\x04"+ // copy data
 			"\x21\xfd\xcd\xd1\xc1\xc9") // set hl and ret
-	r.appendToBank(0x00, "treasure data func",
+	getTreasureData := r.appendToBank(0x00, "treasure data func",
 		"\xf5\xc5\xd5\x47\x1e\x15\x21"+treasureDataBody+
 			"\xcd\x8a\x00\xd1\xc1\xf1\xc9")
 
+	// use cape graphics for stolen feather if applicable.
+	upgradeFeather := r.appendToBank(0x00, "upgrade stolen feather func",
+		"\xcd\x17\x17\xd8\xf5\x7b"+ // ret if you have the item
+			"\xfe\x17\x20\x13\xd5\x1e\x43\x1a\xfe\x02\xd1\x20\x0a"+ // check IDs
+			"\xfa\xb4\xc6\xfe\x02\x20\x03"+ // check feather level
+			"\x21\x89\x3f\xf1\xc9"+ // set hl if match
+			"\x02\x37\x17") // treasure data
 	// change hl to point to different treasure data if the item is progressive
 	// and needs to be upgraded. param a = treasure ID.
-	r.appendToBank(0x00, "progressive item func",
-		"\xd5\x5f\xcd\x6a\x3f\x7b\xd1\xd0"+ // ret if you don't have L-1
+	progressiveItemFunc := r.appendToBank(0x00, "progressive item func",
+		"\xd5\x5f\xcd"+upgradeFeather+"\x7b\xd1\xd0"+ // ret if missing L-1
 			"\xfe\x05\x20\x04\x21\x12\x3f\xc9"+ // check sword
 			"\xfe\x06\x20\x04\x21\x15\x3f\xc9"+ // check boomerang
 			"\xfe\x13\x20\x04\x21\x18\x3f\xc9"+ // check slingshot
@@ -131,19 +138,12 @@ func (r *ROM) initEndOfBank() {
 			"\xfe\x19\xc0\x21\x1e\x3f\xc9"+ // check satchel
 			// treasure data
 			"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20")
-	// use cape graphics for stolen feather if applicable.
-	r.appendToBank(0x00, "upgrade stolen feather func",
-		"\xcd\x17\x17\xd8\xf5\x7b"+ // ret if you have the item
-			"\xfe\x17\x20\x13\xd5\x1e\x43\x1a\xfe\x02\xd1\x20\x0a"+ // check IDs
-			"\xfa\xb4\xc6\xfe\x02\x20\x03"+ // check feather level
-			"\x21\x89\x3f\xf1\xc9"+ // set hl if match
-			"\x02\x37\x17") // treasure data
 
 	// this is a replacement for giveTreasure that gives treasure, plays sound,
 	// and sets text based on item ID a and sub ID c, and accounting for item
 	// progression.
 	giveItem := r.appendToBank(0x00, "give item func",
-		"\xcd\xd3\x3e\xcd\xe3\x3e"+ // get treasure data
+		"\xcd"+getTreasureData+"\xcd"+progressiveItemFunc+ // get treasure data
 			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
 			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9") // show text
 
@@ -160,7 +160,8 @@ func (r *ROM) initEndOfBank() {
 	// bank 01
 
 	// helper function, takes b = high byte of season addr, returns season in b
-	r.appendToBank(0x01, "read default season", "\x26\x7e\x68\x7e\x47\xc9")
+	readSeason := r.appendToBank(0x01, "read default season",
+		"\x26\x7e\x68\x7e\x47\xc9")
 
 	// bank 02
 
@@ -240,9 +241,8 @@ func (r *ROM) initEndOfBank() {
 
 	// create a warning interaction when breaking bushes and flowers under
 	// certain circumstances.
-	bushWarning := r.appendToBank(0x06, "break bush warning func",
-		"\xf5\xc5\xd5\xcd\xe1\x77\x21\x26\xc6\xd1\xc1\xf1\xc9"+ // wrapper
-			"\xfe\xc3\x28\x09\xfe\xc4\x28\x05\xfe\xe5\x28\x01\xc9"+ // tile
+	bushWarningBody := r.appendToBank(0x06, "break bush warning body",
+		"\xfe\xc3\x28\x09\xfe\xc4\x28\x05\xfe\xe5\x28\x01\xc9"+ // tile
 			"\xfa\x4c\xcc\xfe\xa7\x28\x0d\xfe\x97\x28\x09"+ // jump by room
 			"\xfe\x8d\x28\x05\xfe\x9a\x28\x01\xc9"+ // (cont.)
 			"\x3e\x09\xcd\x17\x17\xd8"+ // "already warned" flag
@@ -255,6 +255,8 @@ func (r *ROM) initEndOfBank() {
 			"\xcd\xc6\x3a\xc0\x36\x22\x2c\x36\x0a"+ // create warning object
 			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
 			"\xc9") // ret
+	bushWarning := r.appendToBank(0x06, "break bush warning func",
+		"\xf5\xc5\xd5\xcd"+bushWarningBody+"\x21\x26\xc6\xd1\xc1\xf1\xc9")
 	r.replace(0x06, 0x477b, "bush warning call",
 		"\x21\x26\xc6", "\xcd"+bushWarning)
 
@@ -281,40 +283,44 @@ func (r *ROM) initEndOfBank() {
 	// one. this obviates some hard-coded shop data (sprite, text) and allows
 	// the item to progressively upgrade.
 	// param = b (item index/subID), returns c,e = treasure ID,subID
-	r.appendToBank(0x08, "shop item lookup",
+	shopLookup := r.appendToBank(0x08, "shop item lookup",
 		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9")
+	shopCheckAddr := r.appendToBank(0x08, "shop check addr",
+		"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9")
 	shopGiveItem := r.appendToBank(0x08, "shop give item func",
-		"\xc5\x47\x7d\xcd\xd2\x7f\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
-			"\xcd\x21\x3f\xc9"+ // give item and ret
-			"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9") // check addr
+		"\xc5\x47\x7d\xcd"+shopCheckAddr+"\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
+			"\xcd\x21\x3f\xc9") // give item and ret
 	r.replace(0x08, 0x4bfc, "shop give item call",
 		"\xeb\x16", shopGiveItem)
 
 	// give fake treasure 0f for the strange flute item.
-	r.appendToBank(0x08, "shop give fake id func",
+	shopIDFunc := r.appendToBank(0x08, "shop give fake id func",
 		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9")
 	r.replace(0x08, 0x4bfe, "shop give fake id call",
-		"\x1e\x42\x1a", "\xcd\xef\x7f")
+		"\x1e\x42\x1a", "\xcd"+shopIDFunc)
 
 	// ORs the default season in the given area (low byte b in bank 1) with the
 	// seasons the rod has (c), then ANDs and compares the results with d.
 	warningHelper := r.appendToBank(0x15, "warning helper",
-		"\x1e\x01\x21\x89\x7e\xcd\x8a\x00"+ // get default season
+		"\x1e\x01\x21"+readSeason+"\xcd\x8a\x00"+ // get default season
 			"\x78\xb7\x3e\x01\x28\x05\xcb\x27\x05\x20\xfb"+ // match rod format
 			"\xb1\xa2\xba\xc9") // OR with c, AND with d, compare with d, ret
 	// this communicates with the warning script by setting bit zero of $cfc0
 	// if the warning needs to be displayed (based on room, season, etc), and
 	// also displays the exclamation mark if so.
 	warningFunc := r.appendToBank(0x15, "warning func",
-		"\xc5\xd5\xcd"+addrString(r.endOfBank[0x15]+8)+"\xd1\xc1\xc9"+ // wrap in push/pops
-			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load room, season, rod
+		"\xc5\xd5\xcd"+addrString(r.endOfBank[0x15]+8)+"\xd1\xc1\xc9"+ // wrap
+			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load env data
 			"\xfe\x7c\x28\x12\xfe\x6e\x28\x18\xfe\x3d\x28\x22"+ // jump by room
 			"\xfe\x5c\x28\x28\xfe\x78\x28\x32\x18\x43"+ // (cont.)
 			"\x06\x61\x16\x01\xcd"+warningHelper+"\xc8\x18\x35"+ // flower cliff
-			"\x78\xfe\x03\xc8\x06\x61\x16\x09\xcd"+warningHelper+"\xc8\x18\x27"+ // diving spot
-			"\x06\x65\x16\x02\xcd"+warningHelper+"\xc8\x18\x1d"+ // waterfall cliff
+			"\x78\xfe\x03\xc8\x06\x61\x16\x09\xcd"+warningHelper+
+			"\xc8\x18\x27"+ // diving spot
+			"\x06\x65\x16\x02\xcd"+warningHelper+
+			"\xc8\x18\x1d"+ // waterfall cliff
 			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\x18\x0f"+ // keep
-			"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf\x18\x04"+ // hss skip room
+			"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf"+
+			"\x18\x04"+ // hss skip room
 			"\xaf\xea\xe0\xcf"+ // set cliff warning text
 			"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
 			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
@@ -377,15 +383,17 @@ func (r *ROM) initEndOfBank() {
 		"\xdf\x2a\x4e", "\xcd"+tradeStarOre)
 
 	// use custom "give item" func in the subrosian market.
-	r.appendToBank(0x09, "market give fake id func",
-		"\xe5\x21\x94\xc6\xcb\xc6\xe1\x18\xe6")
+	marketFinalGiveItem := r.appendToBank(0x09, "market final give item",
+		"\xf1\xcd"+giveItem+"\xd1\x37\xc9") // give item, scf, ret
+	marketIDFunc := r.appendToBank(0x09, "market give fake id func",
+		"\xe5\x21\x94\xc6\xcb\xc6\xe1\xca"+marketFinalGiveItem)
 	// param = b (item index/subID), returns c,e = treasure ID,subID
-	r.appendToBank(0x09, "market item lookup",
+	marketLookup := r.appendToBank(0x09, "market item lookup",
 		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9")
 	marketGiveItem := r.appendToBank(0x09, "market give item func",
-		"\xf5\x7d\xfe\xdb\x28\x16\xfe\xe3\x28\x12\xfe\xf5\x28\x1f"+
-			"\xf1\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42\xc9"+
-			"\xf1\xcd"+giveItem+"\xd1\x37\xc9") // give item, scf, ret
+		"\xf5\x7d\xfe\xdb\xca"+marketFinalGiveItem+
+			"\xfe\xe3\xca"+marketFinalGiveItem+"\xfe\xf5\xca"+marketIDFunc+
+			"\xf1\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42\xc9")
 	r.replace(0x09, 0x788a, "market give item call",
 		"\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42",
 		"\x00\x00\x00\x00\x00\x00\x00\xcd"+marketGiveItem+"\x38\x0b")
@@ -398,7 +406,7 @@ func (r *ROM) initEndOfBank() {
 		"\xde\x2e\x00", "\xc0"+diverIDScript)
 
 	// returns c,e = treasure ID,subID
-	r.appendToBank(0x0b, "noble sword lookup",
+	nobleSwordLookup := r.appendToBank(0x0b, "noble sword lookup",
 		"\x21\x18\x64\x4e\x23\x5e\xc9")
 
 	// bank 11
@@ -433,10 +441,10 @@ func (r *ROM) initEndOfBank() {
 
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created.
-	progressiveItemFunc := r.appendToBank(0x15, "normal progressive func",
-		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd\xe3\x3e\xf1\xc9")
+	normalProgressiveFunc := r.appendToBank(0x15, "normal progressive func",
+		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd"+progressiveItemFunc+"\xf1\xc9")
 	r.replace(0x15, 0x465a, "set normal progressive call",
-		"\x47\xcb\x37", "\xcd"+progressiveItemFunc)
+		"\x47\xcb\x37", "\xcd"+normalProgressiveFunc)
 
 	// should be set to match the western coast season
 	pirateSeason := r.appendToBank(0x15, "season after pirate cutscene", "\x15")
@@ -483,15 +491,17 @@ func (r *ROM) initEndOfBank() {
 	itemGfxFunc := r.appendToBank(0x3f, "item gfx func",
 		// check for matching object
 		"\x43\x4f\xcd"+checkRod+"\x28\x17\x79\xfe\x59\x28\x19"+ // rod, woods
-			"\xcd"+checkShopItem+"\x28\x1b\xcd"+checkMarketItem+"\x28\x1d"+ // shops
+			"\xcd"+checkShopItem+"\x28\x1b\xcd"+
+			checkMarketItem+"\x28\x1d"+ // shops
 			"\x79\xfe\x6e\x28\x1f\x06\x00\xc9"+ // feather
 			// look up item ID, subID
 			"\x1e\x15\x21"+rodLookup+"\x18\x1d"+
-			"\x1e\x0b\x21\x8d\x7f\x18\x16"+
-			"\x1e\x08\x21\xde\x7f\x18\x0f\x1e\x09\x21\xd1\x7f\x18\x08"+
+			"\x1e\x0b\x21"+nobleSwordLookup+"\x18\x16"+
+			"\x1e\x08\x21"+shopLookup+"\x18\x0f"+
+			"\x1e\x09\x21"+marketLookup+"\x18\x08"+
 			"\xfa\xb4\xc6\xc6\x15\x5f\x18\x0e"+ // feather
-			"\xcd\x8a\x00"+ // get treasure
-			"\x79\x4b\xcd\xd3\x3e\xcd\xe3\x3e\x23\x23\x5e"+ // get sprite
+			"\xcd\x8a\x00\x79\x4b\xcd"+getTreasureData+ // get treasure
+			"\xcd"+progressiveItemFunc+"\x23\x23\x5e"+ // get sprite
 			"\x3e\x60\x4f\x06\x00\xc9") // replace object gfx w/ treasure gfx
 	r.replace(0x3f, 0x443c, "item gfx call", "\x4f\x06\x00", "\xcd"+itemGfxFunc)
 
