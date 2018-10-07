@@ -126,17 +126,19 @@ func initEndOfBank() {
 			"\xfa\xb4\xc6\xfe\x02\x20\x03"+ // check feather level
 			"\x21\x89\x3f\xf1\xc9"+ // set hl if match
 			"\x02\x37\x17") // treasure data
+	// treasure data
+	progData := r.endOfBank[0x00]
+	r.appendToBank(0x00, "progressive item data",
+		"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20")
 	// change hl to point to different treasure data if the item is progressive
 	// and needs to be upgraded. param a = treasure ID.
 	progressiveItemFunc := r.appendToBank(0x00, "progressive item func",
 		"\xd5\x5f\xcd"+upgradeFeather+"\x7b\xd1\xd0"+ // ret if missing L-1
-			"\xfe\x05\x20\x04\x21\x12\x3f\xc9"+ // check sword
-			"\xfe\x06\x20\x04\x21\x15\x3f\xc9"+ // check boomerang
-			"\xfe\x13\x20\x04\x21\x18\x3f\xc9"+ // check slingshot
-			"\xfe\x17\x20\x04\x21\x1b\x3f\xc9"+ // check feather
-			"\xfe\x19\xc0\x21\x1e\x3f\xc9"+ // check satchel
-			// treasure data
-			"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20")
+			"\xfe\x05\x20\x04\x21"+addrString(progData)+"\xc9"+ // sword
+			"\xfe\x06\x20\x04\x21"+addrString(progData+3)+"\xc9"+ // boomerang
+			"\xfe\x13\x20\x04\x21"+addrString(progData+6)+"\xc9"+ // slingshot
+			"\xfe\x17\x20\x04\x21"+addrString(progData+9)+"\xc9"+ // feather
+			"\xfe\x19\xc0\x21"+addrString(progData+12)+"\xc9") // satchel
 
 	// this is a replacement for giveTreasure that gives treasure, plays sound,
 	// and sets text based on item ID a and sub ID c, and accounting for item
