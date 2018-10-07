@@ -458,10 +458,21 @@ func initEndOfBank() {
 
 	// bank 15
 
+	// look up item collection mode in a table based on room. if no entry is
+	// found, the original mode (a) is preserved. the table is three bytes per
+	// entry, (group, room, collect mode). ff ends the table.
+	collectModeTable := r.appendToBank(0x15, "collection mode table",
+		"\x00\xf5\x38\xff")
+	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
+		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
+			"\x2a\xfe\xff\x28\x0e\xb8\x20\x07\x2a\xb9\x20\x04"+
+			"\x2a\x18\x05\x23\x23\x18\xed\x7b\xe1\xc1\xc9")
+
 	// upgrade normal items (interactions with ID 60) as necessary when they're
-	// created.
+	// created, and set collection mode.
 	normalProgressiveFunc := r.appendToBank(0x15, "normal progressive func",
-		"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd"+progressiveItemFunc+"\xf1\xc9")
+		"\xcd"+collectModeLookup+"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd"+
+			progressiveItemFunc+"\xf1\xc9")
 	r.replace(0x15, 0x465a, "set normal progressive call",
 		"\x47\xcb\x37", "\xcd"+normalProgressiveFunc)
 
