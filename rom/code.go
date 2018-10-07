@@ -20,15 +20,14 @@ func addCode(name string, bank byte, offset uint16, code string) uint16 {
 	return uint16(len(code))
 }
 
-type ROM struct {
+type romBanks struct {
 	endOfBank []uint16
 }
 
 var codeMutables = map[string]Mutable{}
 
-// New returns a newly initialized ROM.
-func New() *ROM {
-	r := ROM{
+func newRomBanks() *romBanks {
+	r := romBanks{
 		endOfBank: make([]uint16, 0x40),
 	}
 
@@ -54,7 +53,7 @@ func New() *ROM {
 // it with the given name, and returns the address of the data as a string such
 // as "\xc8\x3e" for 0x3ec8. it panics if the end of the bank is zero or if the
 // data would overflow the bank.
-func (r *ROM) appendToBank(bank byte, name, data string) string {
+func (r *romBanks) appendToBank(bank byte, name, data string) string {
 	eob := r.endOfBank[bank]
 
 	if eob == 0 {
@@ -75,18 +74,18 @@ func (r *ROM) appendToBank(bank byte, name, data string) string {
 // replace replaces the old data at the given address with the new data, and
 // associates the change with the given name. actual replacement will fail at
 // runtime if the old data does not match the original data in the ROM.
-func (r *ROM) replace(bank byte, offset uint16, name, old, new string) {
+func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 	codeMutables[name] = MutableString(Addr{bank, offset}, old, new)
 }
 
 // replaceMultiple acts as replace, but operates on multiple addresses.
-func (r *ROM) replaceMultiple(addrs []Addr, name, old, new string) {
+func (r *romBanks) replaceMultiple(addrs []Addr, name, old, new string) {
 	codeMutables[name] = MutableStrings(addrs, old, new)
 }
 
 // initEndOfBank adds end-of-bank mutables and mutables that point to them.
 func initEndOfBank() {
-	r := New()
+	r := newRomBanks()
 
 	// try to order these first by bank, then by call location. maybe group
 	// them into subfunctions when applicable?
