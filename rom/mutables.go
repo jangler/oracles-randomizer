@@ -399,6 +399,11 @@ var fixedMutables = map[string]Mutable{
 	"remove rock outside d5": MutableStrings([]Addr{
 		{0x21, 0x7448}, {0x22, 0x7091}, {0x23, 0x6e9d}, {0x24, 0x6b93}},
 		"\xc0", "\x12"),
+	// but add an extra (non-interactable) rock on the actual D5 screen so that
+	// ricky can't jump up the cliff.
+	"add rock outside d5": MutableStrings([]Addr{
+		{0x21, 0x7031}, {0x22, 0x6c6e}, {0x23, 0x6a7c}, {0x24, 0x677d}},
+		"\x12", "\x64"),
 
 	// make it possible to leave and re-enter rosa's portal without breaking
 	// bushes.
