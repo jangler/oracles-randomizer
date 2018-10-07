@@ -71,7 +71,7 @@ var holodrumNodes = map[string]*Node{
 	"enter d2 B": Or(
 		And("central woods of winter", "bracelet",
 			Or("woods of winter default summer", "ricky's flute")),
-		And("d2 blade key chest", "bracelet")),
+		And("d2 blade chest", "bracelet")),
 	"enter d2":         Or("enter d2 A", "enter d2 B"),
 	"outdoor d2 chest": AndSlot("enter d2 B"),
 	"mystery cave chest": AndSlot("central woods of winter",
