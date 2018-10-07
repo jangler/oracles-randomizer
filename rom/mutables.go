@@ -108,10 +108,10 @@ func SetAnimal(companion int) {
 		[]byte{byte(companion + 0x0a)}
 }
 
-// consider these mutables constants; they aren't changed in the randomization
-// process. try to generally order them by address, unless a grouping between
-// mutables in different banks makes more sense.
-var constMutables = map[string]Mutable{
+// these mutables have fixed addresses and don't reference other mutables. try
+// to generally order them by address, unless a grouping between mutables in
+// different banks makes more sense.
+var fixedMutables = map[string]Mutable{
 	// start game with link below bushes, not above
 	"initial link placement": MutableByte(Addr{0x07, 0x4197}, 0x38, 0x58),
 	// make link actionable as soon as he drops into the world.
@@ -462,7 +462,8 @@ var (
 )
 
 // like the item slots, these are (usually) no-ops until the randomizer touches
-// them.
+// them. these are also fixed, but generally need to have their values set
+// elsewhere in order to do anything.
 var varMutables = map[string]Mutable{
 	// set initial season correctly in the init variables. this replaces
 	// null-terminating whoever's son's name, which *should* be zeroed anyway.
@@ -554,7 +555,7 @@ func getAllMutables() map[string]Mutable {
 	}
 
 	mutableSets := []map[string]Mutable{
-		constMutables,
+		fixedMutables,
 		treasureMutables,
 		slotMutables,
 		varMutables,

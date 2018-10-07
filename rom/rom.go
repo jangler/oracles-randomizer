@@ -158,8 +158,8 @@ func Update(b []byte) ([]byte, error) {
 	var err error
 
 	// change fixed mutables
-	for _, k := range orderedKeys(constMutables) {
-		err = constMutables[k].Mutate(b)
+	for _, k := range orderedKeys(fixedMutables) {
+		err = fixedMutables[k].Mutate(b)
 		if err != nil {
 			return nil, err
 		}
