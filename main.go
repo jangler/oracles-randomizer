@@ -64,8 +64,7 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	_ = flagFreewarp
-	// rom.SetFreewarp(*flagFreewarp) // TODO
+	rom.SetFreewarp(*flagFreewarp)
 	if *flagNoMusic {
 		rom.SetNoMusic()
 	}

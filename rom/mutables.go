@@ -85,19 +85,19 @@ func (mr *MutableRange) Check(b []byte) error {
 
 // SetFreewarp sets whether tree warp in the generated ROM will have a
 // cooldown (true = no cooldown).
-func (r *ROM) SetFreewarp(freewarp bool) {
+func SetFreewarp(freewarp bool) {
 	if freewarp {
-		r.mutables["tree warp"].(*MutableRange).New[19] = 0x18
+		codeMutables["tree warp"].(*MutableRange).New[19] = 0x18
 	} else {
-		r.mutables["tree warp"].(*MutableRange).New[19] = 0x28
+		codeMutables["tree warp"].(*MutableRange).New[19] = 0x28
 	}
 }
 
 // SetNoMusic sets music off in the modified ROM.
 func SetNoMusic() {
-	mut := constMutables["no music func"].(*MutableRange)
+	mut := codeMutables["no music func"].(*MutableRange)
 	funcAddr := addrString(mut.Addrs[0].Offset)
-	constMutables["no music call"].(*MutableRange).New =
+	codeMutables["no music call"].(*MutableRange).New =
 		[]byte("\xcd" + funcAddr)
 }
 
@@ -500,12 +500,6 @@ var varMutables = map[string]Mutable{
 
 	// determines what natzu looks like and what animal the flute calls
 	"animal region": MutableByte(Addr{0x07, 0x41a6}, 0x0b, 0x0b),
-
-	// set sub ID for star ore
-	"star ore id call": MutableString(Addr{0x08, 0x62f2},
-		"\x2c\x36\x45", "\xcd\xe8\x7f"),
-	"star ore id func": MutableString(Addr{0x08, 0x7fe8}, "\x08",
-		"\x2c\x36\x45\x2c\x36\x00\xc9"),
 }
 
 var Seasons = map[string]*MutableRange{
@@ -550,6 +544,7 @@ func getAllMutables() map[string]Mutable {
 		slotMutables,
 		varMutables,
 		seasonMutables,
+		codeMutables,
 	}
 
 	// initialize master map w/ adequate capacity

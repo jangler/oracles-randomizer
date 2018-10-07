@@ -67,6 +67,8 @@ func init() {
 		"d6 boss key", "d7 boss key", "d8 boss key"} {
 		delete(TreasureIsUnique, name)
 	}
+
+	initEndOfBank()
 }
 
 // Addr is a fully-specified memory address.
@@ -116,12 +118,21 @@ func orderedKeys(m map[string]Mutable) []string {
 func Mutate(b []byte) ([]byte, error) {
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, Seasons["north horon season"].New[0]}
-	/* TODO
-	varMutables["season after pirate cutscene"].(*MutableRange).New =
+	codeMutables["season after pirate cutscene"].(*MutableRange).New =
 		[]byte{Seasons["western coast season"].New[0]}
-	*/
 
 	setSeedData()
+
+	// explicitly set these addresses and IDs after their functions
+	codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
+	ItemSlots["star ore spot"].IDAddrs[0].Offset = codeAddr.Offset + 2
+	ItemSlots["star ore spot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+	codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
+	ItemSlots["hard ore slot"].IDAddrs[0].Offset = codeAddr.Offset + 2
+	ItemSlots["hard ore slot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+	codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
+	ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
+	ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
 
 	var err error
 	mutables := getAllMutables()
@@ -132,11 +143,10 @@ func Mutate(b []byte) ([]byte, error) {
 		}
 	}
 
-	// explicitly set these IDs after their functions are created
+	// explicitly set these IDs after their functions are written
 	ItemSlots["star ore spot"].Mutate(b)
 	ItemSlots["hard ore slot"].Mutate(b)
 	ItemSlots["diver gift"].Mutate(b)
-	ItemSlots["star ore spot"].Mutate(b)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil

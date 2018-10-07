@@ -186,7 +186,7 @@ var ItemSlots = map[string]*MutableSlot{
 	},
 	"great moblin chest":    MutableChest("piece of heart", 0x4f8e),
 	"master's plaque chest": MutableChest("master's plaque", 0x510a),
-	"diver gift":            MutableGift("flippers", 0x7f95),
+	"diver gift":            MutableGift("flippers", 0x0000), // addr set at EOB
 	"spring banana tree":    MutableFind("spring banana", 0x66c6),
 	"dragon key spot":       MutableFind("dragon key", 0x62a3),
 	"pyramid jewel spot":    MutableGift("pyramid jewel", 0x734e),
@@ -268,10 +268,10 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x15, 0x70ce}},
 		SubIDAddrs: []Addr{{0x15, 0x70cc}},
 	},
-	"star ore spot": &MutableSlot{
+	"star ore spot": &MutableSlot{ // addrs set dynamically at EOB
 		Treasure:   Treasures["star ore"],
-		IDAddrs:    []Addr{{0x08, 0x7fea}},
-		SubIDAddrs: []Addr{{0x08, 0x7fed}},
+		IDAddrs:    []Addr{{0x08, 0x0000}},
+		SubIDAddrs: []Addr{{0x08, 0x0000}},
 	},
 	"blue ore chest":       MutableChest("blue ore", 0x4f9f),
 	"red ore chest":        MutableChest("red ore", 0x4fa3),
@@ -292,10 +292,10 @@ var ItemSlots = map[string]*MutableSlot{
 		IDAddrs:    []Addr{{0x09, 0x77f4}},
 		SubIDAddrs: []Addr{{0x09, 0x77f5}},
 	},
-	"hard ore slot": &MutableSlot{
+	"hard ore slot": &MutableSlot{ // addrs set dynamically at EOB
 		Treasure:   Treasures["hard ore"],
-		IDAddrs:    []Addr{{0x15, 0x7a24}, {0x09, 0x66eb}},
-		SubIDAddrs: []Addr{{0x15, 0x7a27}, {0x09, 0x66ea}},
+		IDAddrs:    []Addr{{0x15, 0x0000}, {0x09, 0x66eb}},
+		SubIDAddrs: []Addr{{0x15, 0x0000}, {0x09, 0x66ea}},
 	},
 	"iron shield gift": &MutableSlot{
 		Treasure:   Treasures["shield L-2"],

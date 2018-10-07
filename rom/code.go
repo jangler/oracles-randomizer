@@ -15,21 +15,21 @@ func addrString(addr uint16) string {
 
 // adds code at the given address, returning the length of the byte string.
 func addCode(name string, bank byte, offset uint16, code string) uint16 {
-	constMutables[name] = MutableString(Addr{bank, offset},
+	codeMutables[name] = MutableString(Addr{bank, offset},
 		string([]byte{bank}), code)
 	return uint16(len(code))
 }
 
 type ROM struct {
 	endOfBank []uint16
-	mutables  map[string]Mutable
 }
+
+var codeMutables = map[string]Mutable{}
 
 // New returns a newly initialized ROM.
 func New() *ROM {
 	r := ROM{
 		endOfBank: make([]uint16, 0x40),
-		mutables:  make(map[string]Mutable),
 	}
 
 	r.endOfBank[0x00] = 0x3ec8
@@ -40,15 +40,12 @@ func New() *ROM {
 	r.endOfBank[0x05] = 0x7e2d
 	r.endOfBank[0x06] = 0x77d4
 	r.endOfBank[0x07] = 0x78f0
+	r.endOfBank[0x08] = 0x7fc0
 	r.endOfBank[0x09] = 0x7f4e
+	r.endOfBank[0x0b] = 0x7f6d
 	r.endOfBank[0x11] = 0x7eb0
 	r.endOfBank[0x15] = 0x792d
 	r.endOfBank[0x3f] = 0x714d
-
-	for k, v := range constMutables {
-		r.mutables[k] = v
-	}
-	r.initEndOfBank()
 
 	return &r
 }
@@ -68,7 +65,7 @@ func (r *ROM) appendToBank(bank byte, name, data string) string {
 		panic(fmt.Sprintf("not enough space for %s in bank %02x", name, bank))
 	}
 
-	r.mutables[name] =
+	codeMutables[name] =
 		MutableString(Addr{bank, eob}, string([]byte{bank}), data)
 	r.endOfBank[bank] += uint16(len(data))
 
@@ -79,16 +76,18 @@ func (r *ROM) appendToBank(bank byte, name, data string) string {
 // associates the change with the given name. actual replacement will fail at
 // runtime if the old data does not match the original data in the ROM.
 func (r *ROM) replace(bank byte, offset uint16, name, old, new string) {
-	r.mutables[name] = MutableString(Addr{bank, offset}, old, new)
+	codeMutables[name] = MutableString(Addr{bank, offset}, old, new)
 }
 
 // replaceMultiple acts as replace, but operates on multiple addresses.
 func (r *ROM) replaceMultiple(addrs []Addr, name, old, new string) {
-	r.mutables[name] = MutableStrings(addrs, old, new)
+	codeMutables[name] = MutableStrings(addrs, old, new)
 }
 
 // initEndOfBank adds end-of-bank mutables and mutables that point to them.
-func (r *ROM) initEndOfBank() {
+func initEndOfBank() {
+	r := New()
+
 	// try to order these first by bank, then by call location. maybe group
 	// them into subfunctions when applicable?
 
@@ -151,11 +150,6 @@ func (r *ROM) initEndOfBank() {
 	// be used as a parameter to that function, but it can be returned.
 	callBank2 := r.appendToBank(0x00, "call bank 02",
 		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9")
-
-	// utility function, read a byte from hl in bank e into a and e.
-	r.appendToBank(0x00, "read byte from bank",
-		"\xfa\x97\xff\xf5\x7b\xea\x97\xff\xea\x22\x22"+ // switch bank
-			"\x5e\xf1\xea\x97\xff\xea\x22\x22\x7b\xc9") // read and switch back
 
 	// bank 01
 
@@ -289,7 +283,7 @@ func (r *ROM) initEndOfBank() {
 		"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9")
 	shopGiveItem := r.appendToBank(0x08, "shop give item func",
 		"\xc5\x47\x7d\xcd"+shopCheckAddr+"\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
-			"\xcd\x21\x3f\xc9") // give item and ret
+			"\xcd"+giveItem+"\xc9") // give item and ret
 	r.replace(0x08, 0x4bfc, "shop give item call",
 		"\xeb\x16", shopGiveItem)
 
@@ -335,6 +329,12 @@ func (r *ROM) initEndOfBank() {
 			"\x98\x26\x01\xbe\x00"+ // show bush warning text
 			"\x98\x26\x02\xbe\x00") // show hss skip warning text
 	r.replace(0x08, 0x5663, "warning script pointer", "\x87\x4e", warningScript)
+
+	// set sub ID for star ore
+	starOreIDFunc := r.appendToBank(0x08, "star ore id func",
+		"\x2c\x36\x45\x2c\x36\x00\xc9")
+	r.replace(0x08, 0x62f2, "star ore id call",
+		"\x2c\x36\x45", "\xcd"+starOreIDFunc)
 
 	// bank 09
 
@@ -400,9 +400,9 @@ func (r *ROM) initEndOfBank() {
 
 	// bank 0b
 
-	diverIDScript := r.appendToBank(0x0b, "diver give fake id script",
+	diverIDScript := r.appendToBank(0x0b, "diver fake id script",
 		"\xde\x2e\x00\x92\x94\xc6\x02\xc1")
-	r.replace(0x0b, 0x730d, "diver give fake id call",
+	r.replace(0x0b, 0x730d, "diver fake id call",
 		"\xde\x2e\x00", "\xc0"+diverIDScript)
 
 	// returns c,e = treasure ID,subID
