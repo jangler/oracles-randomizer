@@ -299,15 +299,6 @@ var constMutables = map[string]Mutable{
 
 	// bank 0b (scripts)
 
-	// custom script command to use on d1 entrance screen: wait until bit of
-	// cfc0 is set, and set ccaa to 01 meanwhile. fixes a vanilla bug where
-	// dismounting an animal on that screen allowed you to enter without key.
-	"d1 entrance script cmd": MutableByte(Addr{0x0b, 0x4dea}, 0xa0, 0xb2),
-	"d1 entrance cmd jump":   MutableWord(Addr{0x0b, 0x406d}, 0x0341, 0x9c7f),
-	"d1 entrance cmd func": MutableString(Addr{0x0b, 0x7f9c}, "\x0b",
-		"\xe1\xfa\x49\xcc\xfe\x00\xc0\xfa\x4c\xcc\xfe\x96\xc0"+ // check room
-			"\x3e\x01\xea\xaa\xcc\xaf\xc3\x2d\x43"),
-
 	// don't set a ricky flag when buying the "flute".
 	"shop no set ricky flag": MutableByte(Addr{0x0b, 0x4826}, 0x20, 0x00),
 

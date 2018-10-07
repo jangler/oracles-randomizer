@@ -402,6 +402,15 @@ func initEndOfBank() {
 
 	// bank 0b
 
+	// custom script command to use on d1 entrance screen: wait until bit of
+	// cfc0 is set, and set ccaa to 01 meanwhile. fixes a vanilla bug where
+	// dismounting an animal on that screen allowed you to enter without key.
+	r.replace(0x0b, 0x4dea, "d1 entrance script cmd", "\xa0", "\xb2")
+	d1EntranceFunc := r.appendToBank(0x0b, "d1 entrance cmd func",
+		"\xe1\xfa\x49\xcc\xfe\x00\xc0\xfa\x4c\xcc\xfe\x96\xc0"+ // check room
+			"\x3e\x01\xea\xaa\xcc\xaf\xc3\x2d\x43")
+	r.replace(0x0b, 0x406d, "d1 entrance cmd jump", "\x03\x41", d1EntranceFunc)
+
 	diverIDScript := r.appendToBank(0x0b, "diver fake id script",
 		"\xde\x2e\x00\x92\x94\xc6\x02\xc1")
 	r.replace(0x0b, 0x730d, "diver fake id call",
