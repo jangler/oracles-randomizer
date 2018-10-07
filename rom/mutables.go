@@ -394,6 +394,12 @@ var constMutables = map[string]Mutable{
 	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
 		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
 
+	// remove the rock blocking exit from D5, since it makes no difference in
+	// logic and is a softlock unless otherwise prevented.
+	"remove rock outside d5": MutableStrings([]Addr{
+		{0x21, 0x7448}, {0x22, 0x7091}, {0x23, 0x6e9d}, {0x24, 0x6b93}},
+		"\xc0", "\x12"),
+
 	// make it possible to leave and re-enter rosa's portal without breaking
 	// bushes.
 	"move rosa portal bushes": MutableStrings([]Addr{

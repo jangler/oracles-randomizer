@@ -18,7 +18,6 @@ import (
 var softlockChecks = [](func(graph.Graph) error){
 	canD7ExitSoftlock,
 	canD2ExitSoftlock,
-	canD5ExitBraceletSoftlock,
 }
 
 // check for known softlock conditions
@@ -62,19 +61,6 @@ func canD2ExitSoftlock(g graph.Graph) error {
 		(canReachWithoutPrereq(g, g["central woods of winter"], g["jump"]) ||
 			canReachWithoutPrereq(g, g["central woods of winter"], g["bracelet"])) {
 		return errors.New("d2 exit softlock")
-	}
-	return nil
-}
-
-// exiting d5 without bracelet if it's not default autumn means you're stuck.
-func canD5ExitBraceletSoftlock(g graph.Graph) error {
-	autumn := g["north horon default autumn"]
-	if autumn.GetMark(autumn, true) == graph.MarkTrue {
-		return nil
-	}
-
-	if canReachWithoutPrereq(g, g["enter d5"], g["bracelet"]) {
-		return errors.New("d5 exit bracelet softlock")
 	}
 	return nil
 }
