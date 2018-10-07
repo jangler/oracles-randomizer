@@ -9,6 +9,7 @@ drenn's ages-disasm.
 - 0:008a = interBankCall
 - 0:045b = copyMemoryReverse, b is # bytes, de is src, hl is dest
 - 0:0462 = copyMemory, b is # bytes, hl is src, de is dest
+- 0:0775 = loadTileset, a is index
 - 0:0c74 = playSound, a is index
 - 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:15e9 = interactionInitGraphics
@@ -17,6 +18,7 @@ drenn's ages-disasm.
 - 0:1702 = loseTreasure (a is ID)
 - 0:17e5 = refill all seeds
 - 0:17b9 = getRandomRingOfGivenTier
+- 0:1ddd = lookupCollisionTable, hl = table, scf if a is in table
 - 0:21fd, 0:2202, 0:2215 = objectCopyPosition, objectCopyPosition rawAddress,
   objectCopyPositionWithOffset
 - 0:2727 = objectCreateExclamationMark
@@ -36,8 +38,9 @@ drenn's ages-disasm.
 	- 3:4d68 = state1 (fading in)
 - 5:44aa = specialObjectGetRelativeTileWithDirectionTable
 - 5:4552 = companionTryToMount
-- 5:5471 = linkSetState, a is state, d is object low byte
 - 5:493b = companionRetIfNotFinishedWalkingIn
+- 5:5471 = linkSetState, a is state, d is object low byte
+- 5:5fdb = checkCliffTile, scf if cliff
 - 6:4713 = tryToBreakTile body
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation

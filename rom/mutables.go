@@ -422,7 +422,10 @@ var fixedMutables = map[string]Mutable{
 
 	// remove the snow piles in front of holly's house so that shovel isn't
 	// required not to softlock there.
-	"remove snow piles": MutableByte(Addr{0x24, 0x6474}, 0xd9, 0x04),
+	"remove holly snow piles": MutableByte(Addr{0x24, 0x6474}, 0xd9, 0x04),
+	// remove some snow piles outside D7 for the same reason.
+	"remove d7 snow piles": MutableString(Addr{0x24, 0x7910},
+		"\xd9\xa0\xb9\xd9", "\x2b\xa0\xb9\x2b"),
 
 	// bank 3f
 

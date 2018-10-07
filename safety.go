@@ -16,7 +16,6 @@ import (
 // to winter as well.
 
 var softlockChecks = [](func(graph.Graph) error){
-	canD7ExitSoftlock,
 	canD2ExitSoftlock,
 }
 
@@ -27,21 +26,6 @@ func canSoftlock(g graph.Graph) error {
 		if err := check(g); err != nil {
 			return err
 		}
-	}
-	return nil
-}
-
-// the player needs shovel before they can enter D7, or else they can be stuck
-// if the default season is winter when they exit.
-func canD7ExitSoftlock(g graph.Graph) error {
-	// no snow piles == no softlock
-	winter := g["western coast default winter"]
-	if winter.GetMark(winter, true) == graph.MarkFalse {
-		return nil
-	}
-
-	if canReachWithoutPrereq(g, g["enter d7"], g["shovel"]) {
-		return errors.New("d7 exit softlock")
 	}
 	return nil
 }

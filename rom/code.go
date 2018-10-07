@@ -232,6 +232,15 @@ func initEndOfBank() {
 	r.replaceMultiple([]Addr{{0x05, 0x71ea}, {0x05, 0x493b}},
 		"animal enter call", "\xcd\xaa\x44\xb7", "\xcd"+fluteEnterFunc+"\x00")
 
+	// let link jump down the cliff outside d7, in case of winter sans shovel.
+	cliffLookupFunc := r.appendToBank(0x05, "cliff lookup func",
+		"\xf5\xfa\x49\xcc\xb7\x20\x10"+ // cp group
+			"\xfa\x4c\xcc\xfe\xd0\x20\x09"+ // cp room
+			"\xf1\xfe\xa8\x20\x05\x3e\x08\x37\xc9"+ // cp tile
+			"\xf1\xc3\xdd\x1d") // jp to normal lookup
+	r.replace(0x05, 0x5fe8, "cliff lookup call",
+		"\xcd\xdd\x1d", "\xcd"+cliffLookupFunc)
+
 	// bank 06
 
 	// create a warning interaction when breaking bushes and flowers under
