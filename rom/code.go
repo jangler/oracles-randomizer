@@ -2,6 +2,7 @@ package rom
 
 import (
 	"fmt"
+	"strings"
 )
 
 // this file is for mutables that go at the end of banks. each should be a
@@ -462,7 +463,7 @@ func initEndOfBank() {
 	// found, the original mode (a) is preserved. the table is three bytes per
 	// entry, (group, room, collect mode). ff ends the table.
 	collectModeTable := r.appendToBank(0x15, "collection mode table",
-		"\x00\xf5\x38\xff")
+		makeCollectModeTable())
 	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
 		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
 			"\x2a\xfe\xff\x28\x0e\xb8\x20\x07\x2a\xb9\x20\x04"+
@@ -541,4 +542,33 @@ func initEndOfBank() {
 		"\xf5\xd5\xe5\x78\xfe\x0e\x20\x0d\x1e\xaf\x79\xd6\x0a\x12\xc6\x42"+
 			"\x26\xc6\x6f\xcb\xfe\xe1\xd1\xf1\xcd\x4e\x45\xc9")
 	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
+}
+
+// returns a byte table of (group, room, collect mode) entries for randomized
+// items.
+func makeCollectModeTable() string {
+	b := new(strings.Builder)
+
+	for _, slot := range ItemSlots {
+		// trees and slots where it doesn't matter (shops, rod)
+		if slot.collectMode == 0 {
+			continue
+		}
+
+		_, err := b.Write([]byte{slot.group, slot.room, slot.collectMode})
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	// add other three star ore screens
+	for _, room := range []byte{0x65, 0x75, 0x76} {
+		_, err := b.Write([]byte{0x01, room, collectDig})
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	b.Write([]byte{0xff})
+	return b.String()
 }

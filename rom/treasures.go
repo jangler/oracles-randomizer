@@ -8,18 +8,19 @@ import (
 // collection modes
 // i don't know what the difference between the two find modes is
 const (
-	CollectBuySatchel = 0x01
-	CollectRingBox    = 0x02
-	CollectUnderwater = 0x08 // pyramid jewel
-	CollectFind1      = 0x09
-	CollectFind2      = 0x0a
-	CollectFind3      = 0x19 // d5 boss key
-	CollectAppear     = 0x1a // heart containers
-	CollectFall       = 0x29
-	CollectChest1     = 0x38 // most items
-	CollectDive       = 0x49
-	CollectChest2     = 0x68 // map and compass
-	CollectDig        = 0x5a
+	collectNil        = 0x00 // custom, for shop items
+	collectBuySatchel = 0x01
+	collectRingBox    = 0x02
+	collectUnderwater = 0x08 // pyramid jewel
+	collectFind1      = 0x09
+	collectFind2      = 0x0a
+	collectFind3      = 0x19 // d5 boss key
+	collectAppear     = 0x1a // heart containers
+	collectFall       = 0x29
+	collectChest      = 0x38 // most chests
+	collectDive       = 0x49
+	collectChest2     = 0x68 // map and compass
+	collectDig        = 0x5a
 )
 
 // A Treasure is data associated with a particular item ID and sub ID.
@@ -37,10 +38,6 @@ type Treasure struct {
 // SubID returns item sub ID of the treasure.
 func (t Treasure) SubID() byte {
 	return t.subID
-}
-
-func (t Treasure) CollectMode() byte {
-	return t.mode
 }
 
 // RealAddr returns the total offset of the treasure data in a JP ROM.

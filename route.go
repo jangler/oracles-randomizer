@@ -376,8 +376,7 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 			if item.Name == fmt.Sprintf("d%d boss key", i) {
 				for es := slotList.Front(); es != nil; es = es.Next() {
 					slot := es.Value.(*graph.Node)
-					if dungeonIndex(slot) == i &&
-						rom.IsChest(rom.ItemSlots[slot.Name]) {
+					if dungeonIndex(slot) == i {
 						item.AddParents(slot)
 
 						usedSlots.PushBack(slot)
@@ -413,7 +412,7 @@ func getDungeonItem(index int, itemName string, slotList,
 	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
-		if dungeonIndex(slot) != index || !rom.IsChest(rom.ItemSlots[slot.Name]) {
+		if dungeonIndex(slot) != index {
 			continue
 		}
 

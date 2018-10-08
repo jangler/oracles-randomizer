@@ -90,20 +90,6 @@ func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
 // in trees, certain item slots not accomodating sub IDs. this doesn't check
 // for softlocks or the availability of the slot and item.
 func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
-	slot := rom.ItemSlots[slotNode.Name]
-
-	// gasha seeds and pieces of heart can be placed in either chests or
-	// found/gift slots. beyond that, only unique items can be placed in
-	// non-chest slots.
-	if itemNode.Name == "gasha seed" || itemNode.Name == "piece of heart" {
-		if !(rom.IsChest(slot) || rom.IsFound(slot)) {
-			return false
-		}
-	} else if (!rom.IsChest(slot) || slotNode.Name == "d0 sword chest") &&
-		!rom.TreasureIsUnique[itemNode.Name] {
-		return false
-	}
-
 	// dummy shop slots 1 and 2 can only hold their vanilla items.
 	if slotNode.Name == "village shop 1" && itemNode.Name != "bombs, 10" {
 		return false

@@ -11,6 +11,7 @@ drenn's ages-disasm.
 - 0:0462 = copyMemory, b is # bytes, hl is src, de is dest
 - 0:0775 = loadTileset, a is index
 - 0:0c74 = playSound, a is index
+- 0:109a = getChestData
 - 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:15e9 = interactionInitGraphics
 	- 3f:4404 = interactionLoadGraphics
