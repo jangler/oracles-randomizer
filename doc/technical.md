@@ -1,7 +1,7 @@
-# developer notes
+# technical notes
 
 function names and ram address names, when present, correspond to those in
-drenn's ages-disasm.
+drenn's ages-disasm. addresses are for seasons.
 
 
 ## functions not documented elsewhere
