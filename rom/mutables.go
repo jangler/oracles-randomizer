@@ -200,10 +200,11 @@ var fixedMutables = map[string]Mutable{
 		"\xcd\x56\x19\xcb\x6e\x20", "\x3e\x17\xcd\x17\x17\x38"),
 	// and make the feather appear without needing to be dug up
 	"stolen feather appears": MutableByte(Addr{0x15, 0x5335}, 0x5a, 0x1a),
-	// AND allow transition away from the screen once the feather is retrieved
-	// (not once the hole is dug)
+	// AND allow transition away from the screen if you have feather (not once
+	// the hole is dug)
 	"leave H&S screen": MutableString(Addr{0x09, 0x65a0},
-		"\xcd\x32\x14\x1e\x49\x1a\xbe", "\xcd\x56\x19\xcb\x6e\x00\x00"),
+		"\xcd\x32\x14\x1e\x49\x1a\xbe\xc8",
+		"\x3e\x17\xcd\x17\x17\x00\x00\xd0"),
 
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
