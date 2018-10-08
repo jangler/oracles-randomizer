@@ -14,8 +14,8 @@ const (
 	collectUnderwater = 0x08 // pyramid jewel
 	collectFind1      = 0x09
 	collectFind2      = 0x0a
-	collectFind3      = 0x19 // d5 boss key
-	collectAppear     = 0x1a // heart containers
+	collectAppear1    = 0x19 // d5 boss key
+	collectAppear2    = 0x1a // heart containers
 	collectFall       = 0x29
 	collectChest      = 0x38 // most chests
 	collectDive       = 0x49

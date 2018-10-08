@@ -35,6 +35,7 @@ drenn's ages-disasm. addresses are for seasons.
 	- 0:39cb = decompressLayoutHelper
 - 0:3ac6 = getFreeInteractionSlot
 - 0:3b36 = updateInteraction, d is object low byte
+- 1:49e5 = check for compass beep
 - 1:5ece = updateSeedTreeRefillData
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)

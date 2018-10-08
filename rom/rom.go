@@ -214,7 +214,8 @@ func Verify(b []byte) []error {
 		// misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
-			"star ore spot", "hard ore slot", "iron shield gift", "diver gift":
+			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
+			"d5 boss key spot":
 			break
 		default:
 			if err := m.Check(b); err != nil {
@@ -292,7 +293,7 @@ func setCompassData(b []byte) {
 		name := fmt.Sprintf("d%d boss key", i)
 		slot := lookupItemSlot(name)
 		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
-		b[offset] = b[offset] | 0x30 // set bits 4 and 5
+		b[offset] = (b[offset] & 0x8f) | 0x30 // set bits 4 and 5, reset bit 6
 	}
 }
 

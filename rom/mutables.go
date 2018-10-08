@@ -196,6 +196,12 @@ var fixedMutables = map[string]Mutable{
 	// setting it to $ff. this only matters for the dev ring.
 	"fix blaino ring unequip": MutableWord(Addr{0x00, 0x2376}, 0xcbf6, 0x36ff),
 
+	// bank 01
+
+	// the d5 boss key room is hard-coded to make a compass beep, even though
+	// the room's can beep based on dungeon room properties.
+	"fix d5 boss key beep": MutableByte(Addr{0x01, 0x4a0a}, 0x0c, 0x00),
+
 	// bank 04
 
 	// a hack so that a different flag can be used to set the rosa portal tile

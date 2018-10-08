@@ -463,7 +463,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d5 compass chest": MutableChest(
 		"compass", 0x5049, 0x04, 0x9d, collectChest2, 0x8a),
 	"d5 boss key spot": MutableScriptItem(
-		"d5 boss key", 0x4c22, 0x06, 0x8b, collectFind3, 0x8a),
+		"d5 boss key", 0x4c22, 0x06, 0x8b, collectFind2, 0x8a),
 
 	// d6
 	"d6 boomerang chest": MutableChest(
