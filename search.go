@@ -127,11 +127,6 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
-	// magnet gloves in first chest in d7 can be a softlock with poe skip
-	if slotNode.Name == "d7 ring chest" && itemNode.Name == "magnet gloves" {
-		return false
-	}
-
 	// and only seeds can be slotted in seed trees, of course
 	switch itemNode.Name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
