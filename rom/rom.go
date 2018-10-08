@@ -137,6 +137,8 @@ func Mutate(b []byte) ([]byte, error) {
 	ItemSlots["hard ore slot"].Mutate(b)
 	ItemSlots["diver gift"].Mutate(b)
 
+	setCompassData(b)
+
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
 }
@@ -274,6 +276,26 @@ func setTreasureMapData() {
 	}
 }
 
+// match the compass's beep beep beep boops to the actual boss key locations.
+func setCompassData(b []byte) {
+	// clear original boss key flags
+	for _, name := range []string{"d1 boss key chest", "d2 boss key chest",
+		"d3 boss key chest", "d4 boss key spot", "d5 boss key spot",
+		"d6 boss key chest", "d7 boss key chest", "d8 boss key chest"} {
+		slot := ItemSlots[name]
+		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
+		b[offset] = b[offset] & 0xcf // reset bits 4 and 5
+	}
+
+	// add new boss key flags
+	for i := 1; i <= 8; i++ {
+		name := fmt.Sprintf("d%d boss key", i)
+		slot := lookupItemSlot(name)
+		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
+		b[offset] = b[offset] | 0x30 // set bits 4 and 5
+	}
+}
+
 // returns the slot where the named item was placed. this only works for unique
 // items, of course.
 func lookupItemSlot(itemName string) *MutableSlot {
@@ -284,4 +306,13 @@ func lookupItemSlot(itemName string) *MutableSlot {
 		}
 	}
 	return nil
+}
+
+// get the location of the dungeon properties byte for a specific room.
+func getDungeonPropertiesAddr(group, room byte) *Addr {
+	offset := 0x4d41 + uint16(room)
+	if group%2 != 0 {
+		offset += 0x100
+	}
+	return &Addr{0x01, offset}
 }

@@ -27,6 +27,7 @@ drenn's ages-disasm.
 - 0:24fe = interactionSetScript, hl is address in bank b
 - 0:250c = runScript, d is object low byte
 - 0:2542 = interactionSaveScriptAddress
+- 0:2d2a = getThisRoomDungeonFlags
 - 0:393e = loadSmallRoomLayout
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 	- 0:3979, 0:3987 = decompressLayoutMode2, decompressLayoutMode2Helper
