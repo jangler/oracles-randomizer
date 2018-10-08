@@ -125,9 +125,6 @@ var fixedMutables = map[string]Mutable{
 		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6"+
 			"\x36\x40\xc9"),
 
-	// have maku gate open from start
-	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
-
 	// this all has to do with animals and flutes:
 	// this edits ricky's script so that he never gives his flute.
 	"ricky skip flute script":  MutableByte(Addr{0x0b, 0x6b7a}, 0x0b, 0x7f),
@@ -148,49 +145,9 @@ var fixedMutables = map[string]Mutable{
 		[]Addr{{0x09, 0x4e4c}, {0x09, 0x6f08}, {0x09, 0x737e}},
 		"\x10\xc6\xfe\x0c", "\xaf\xc6\xfe\x02"),
 
-	// i don't know what global flag 0e is. it's only checked in for star ore
-	// digging, and disabling the check seems to be sometimes necessary (?)
-	"star ore flag check": MutableString(Addr{0x08, 0x62aa},
-		"\xc2\xd9\x3a", "\x00\x00\x00"),
-	// a vanilla bug lets star ore be dug up on the first screen even if you
-	// already have the item. so… make first try a second instance of second
-	// try.
-	"star ore bugfix": MutableWord(Addr{0x08, 0x62d5}, 0x6656, 0x7624),
-
-	// sell member's card in subrosian market before completing d3
-	"member's card essence check": MutableWord(Addr{0x09, 0x7750},
-		0xcb57, 0xf601),
-
-	// initiate all these events without requiring essences
-	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e72}, 0xcb, 0xf6),
-	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e40}, 0xcb, 0xf6),
-	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e56}, 0x2e, 0x04),
-	"master essence check 1":    MutableByte(Addr{0x0a, 0x4bf5}, 0x02, 0x00),
-	"master essence check 2":    MutableByte(Addr{0x0a, 0x4bea}, 0x40, 0x02),
-	"master essence check 3":    MutableByte(Addr{0x08, 0x5887}, 0x40, 0x02),
-	"round jewel essence check": MutableByte(Addr{0x0a, 0x4f8b}, 0x05, 0x00),
-	"pirate essence check":      MutableByte(Addr{0x08, 0x6c32}, 0x20, 0x00),
-	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
-	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
-
-	// a hack so that a different flag can be used to set the rosa portal tile
-	// replacement, allowing the bush-breaking warning interaction to be used
-	// on this screen.
-	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
-		"\x40\x33\xc5", "\x20\x33\xe6"),
-
 	// move sleeping talon and his mushroom so they don't block the chest
 	"move talon":    MutableWord(Addr{0x11, 0x6d2b}, 0x6858, 0x88a8),
 	"move mushroom": MutableWord(Addr{0x0b, 0x6080}, 0x6848, 0x78a8),
-
-	// change water tiles outside d4 from deep to shallow (prevents softlock
-	// from entering without flippers or default summer).
-	"change d4 water tiles": MutableStrings(
-		[]Addr{{0x21, 0x54a9}, {0x22, 0x5197}, {0x23, 0x4f6c}},
-		"\xfd\x6b\x6b\x53\xfa\x3f\xfd", "\xfa\x6b\x6b\x53\xfa\x3f\xfa"),
-	"change d4 water tiles winter": MutableString(Addr{0x24, 0x4cec},
-		"\xfd\x00\xfc\x06\xfd\xfd\xfd\xfd",
-		"\xdc\x00\xfc\x06\xdc\xdc\xdc\xdc"),
 
 	// feather game: don't give fools ore, and don't return fools ore
 	"get fools ore": MutableString(Addr{0x14, 0x4881},
@@ -206,14 +163,6 @@ var fixedMutables = map[string]Mutable{
 		"\xcd\x32\x14\x1e\x49\x1a\xbe\xc8",
 		"\x3e\x17\xcd\x17\x17\x00\x00\xd0"),
 
-	// stop the hero's cave event from giving you a second wooden sword that
-	// you use to spin slash
-	"wooden sword second item": MutableByte(Addr{0x0a, 0x7bb9}, 0x05, 0x3f),
-
-	// change the noble sword's animation pointers to match regular items
-	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
-	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),
-
 	// move the trigger for the bridge from holodrum plain to natzu to the
 	// top-left corner of the screen, where it can't be hit, and replace the
 	// lever tile as well. this prevents the bridge from blocking the waterway.
@@ -221,13 +170,6 @@ var fixedMutables = map[string]Mutable{
 		0x6868, 0x0000),
 	"remove prairie lever":   MutableByte(Addr{0x21, 0x6267}, 0xb1, 0x04),
 	"remove wasteland lever": MutableByte(Addr{0x23, 0x5cb7}, 0xb1, 0x04),
-
-	// grow seeds in all seasons
-	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
-
-	// change destination of initial transition in pirate cutscene.
-	"pirate warp": MutableString(Addr{0x15, 0x5a1c},
-		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 
 	// skip shield check for forging hard ore
 	"skip iron shield check": MutableByte(Addr{0x0b, 0x75c7}, 0x01, 0x02),
@@ -248,22 +190,24 @@ var fixedMutables = map[string]Mutable{
 	// check fake treasure ID 12 for subrosia seaside,
 	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
 
-	// zero the original shop item text (don't remember if this is actually
-	// necessary).
-	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
-		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
-
-	// zero normal rod text.
-	"no rod text": MutableString(Addr{0x15, 0x70be},
-		"\xcd\x4b\x18", "\x00\x00\x00"),
-
 	// bank 00
 
 	// blaino normally sets bit 6 of active ring to "unequip" it instead of
 	// setting it to $ff. this only matters for the dev ring.
 	"fix blaino ring unequip": MutableWord(Addr{0x00, 0x2376}, 0xcbf6, 0x36ff),
 
-	// banks 08-09 (most interaction-specific non-script behavior?)
+	// bank 04
+
+	// a hack so that a different flag can be used to set the rosa portal tile
+	// replacement, allowing the bush-breaking warning interaction to be used
+	// on this screen.
+	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
+		"\x40\x33\xc5", "\x20\x33\xe6"),
+
+	// have maku gate open from start
+	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
+
+	// banks 08-0a (most interaction-specific non-script behavior?)
 
 	// have horon village shop stock *and* sell items from the start, including
 	// the flute. also don't stop the flute from appearing because of animal
@@ -278,11 +222,37 @@ var fixedMutables = map[string]Mutable{
 	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
 		"\xcc\xe5\x17", "\x00\x00\x00"),
 
+	// zero the original shop item text (don't remember if this is actually
+	// necessary).
+	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
+		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
+
+	// initiate all these events without requiring essences
+	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e72}, 0xcb, 0xf6),
+	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e40}, 0xcb, 0xf6),
+	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e56}, 0x2e, 0x04),
+	"master essence check 1":    MutableByte(Addr{0x0a, 0x4bf5}, 0x02, 0x00),
+	"master essence check 2":    MutableByte(Addr{0x0a, 0x4bea}, 0x40, 0x02),
+	"master essence check 3":    MutableByte(Addr{0x08, 0x5887}, 0x40, 0x02),
+	"round jewel essence check": MutableByte(Addr{0x0a, 0x4f8b}, 0x05, 0x00),
+	"pirate essence check":      MutableByte(Addr{0x08, 0x6c32}, 0x20, 0x00),
+	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
+	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
+
 	// restrict the area triggering sokra to talk to link in horon village to
 	// the left side of the burnable trees (prevents softlock).
 	"resize sokra trigger": MutableString(Addr{0x08, 0x5ba5},
 		"\xfa\x0b\xd0\xfe\x3c\xd8\xfe\x60\xd0",
 		"\xfe\x88\xd0\xfa\x0b\xd0\xfe\x3c\xd8"),
+
+	// i don't know what global flag 0e is. it's only checked in for star ore
+	// digging, and disabling the check seems to be sometimes necessary (?)
+	"star ore flag check": MutableString(Addr{0x08, 0x62aa},
+		"\xc2\xd9\x3a", "\x00\x00\x00"),
+	// a vanilla bug lets star ore be dug up on the first screen even if you
+	// already have the item. so… make first try a second instance of second
+	// try.
+	"star ore bugfix": MutableWord(Addr{0x08, 0x62d5}, 0x6656, 0x7624),
 
 	// normally none of the desert pits will work if the player already has the
 	// rusty bell.
@@ -294,9 +264,17 @@ var fixedMutables = map[string]Mutable{
 	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e36}, 0xca, 0xc3),
 	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ead}, 0x40, 0x00),
 
+	// sell member's card in subrosian market before completing d3
+	"member's card essence check": MutableWord(Addr{0x09, 0x7750},
+		0xcb57, 0xf601),
+
 	// count number of essences, not highest numbered essence.
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7da4}, 0xea, 0x76),
 	"maku seed check 2": MutableByte(Addr{0x09, 0x7da6}, 0x30, 0x18),
+
+	// stop the hero's cave event from giving you a second wooden sword that
+	// you use to spin slash
+	"wooden sword second item": MutableByte(Addr{0x0a, 0x7bb9}, 0x05, 0x3f),
 
 	// bank 0b (scripts)
 
@@ -318,6 +296,11 @@ var fixedMutables = map[string]Mutable{
 	"abbreviate barrier cutscene": MutableString(Addr{0x0b, 0x79f1},
 		"\x88\x18\x50\xf8", "\xb6\x1d\xbe\x00"),
 
+	// bank 0d
+
+	// grow seeds in all seasons
+	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
+
 	// bank 11 (interactions)
 
 	// remove the original maku gate interaction, now used as the warning
@@ -330,6 +313,12 @@ var fixedMutables = map[string]Mutable{
 	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
 	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
 
+	// bank 14
+
+	// change the noble sword's animation pointers to match regular items
+	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
+	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),
+
 	// bank 15 (script functions)
 
 	// you can softlock in d6 misusing keys without magnet gloves, so just move
@@ -341,6 +330,14 @@ var fixedMutables = map[string]Mutable{
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
 	"move d8 magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
+
+	// change destination of initial transition in pirate cutscene.
+	"pirate warp": MutableString(Addr{0x15, 0x5a1c},
+		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
+
+	// zero normal rod text.
+	"no rod text": MutableString(Addr{0x15, 0x70be},
+		"\xcd\x4b\x18", "\x00\x00\x00"),
 
 	// banks 1c-1f (text)
 
@@ -379,6 +376,15 @@ var fixedMutables = map[string]Mutable{
 	"replace d6 flower non-spring": MutableStrings(
 		[]Addr{{0x22, 0x4b83}, {0x23, 0x4973}, {0x24, 0x45d0}},
 		"\x92", "\xc4"),
+
+	// change water tiles outside d4 from deep to shallow (prevents softlock
+	// from entering without flippers or default summer).
+	"change d4 water tiles": MutableStrings(
+		[]Addr{{0x21, 0x54a9}, {0x22, 0x5197}, {0x23, 0x4f6c}},
+		"\xfd\x6b\x6b\x53\xfa\x3f\xfd", "\xfa\x6b\x6b\x53\xfa\x3f\xfa"),
+	"change d4 water tiles winter": MutableString(Addr{0x24, 0x4cec},
+		"\xfd\x00\xfc\x06\xfd\xfd\xfd\xfd",
+		"\xdc\x00\xfc\x06\xdc\xdc\xdc\xdc"),
 
 	// move the bushes on the rosa portal screen by one tile so that it's
 	// block the waterfalls from mt cucco to sunken city, so that there only
