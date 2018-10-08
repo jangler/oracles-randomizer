@@ -166,7 +166,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"master's plaque chest": MutableChest(
 		"master's plaque", 0x510a, 0x05, 0xbc, collectChest, 0x2e),
 	"diver gift": MutableScriptItem( // addr set at EOB
-		"flippers", 0x0000, 0x05, 0xbd, collectRingBox, 0x2e),
+		"flippers", 0x0000, 0x05, 0xbd, collectNil, 0x2e), // special case
 	"spring banana tree": MutableFind(
 		"spring banana", 0x66c6, 0x00, 0x0f, collectFind2, 0x0f),
 	"dragon key spot": MutableFind(
