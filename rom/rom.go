@@ -285,7 +285,7 @@ func setCompassData(b []byte) {
 		"d6 boss key chest", "d7 boss key chest", "d8 boss key chest"} {
 		slot := ItemSlots[name]
 		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
-		b[offset] = b[offset] & 0xcf // reset bits 4 and 5
+		b[offset] = b[offset] & 0xef // reset bit 4
 	}
 
 	// add new boss key flags
@@ -293,7 +293,7 @@ func setCompassData(b []byte) {
 		name := fmt.Sprintf("d%d boss key", i)
 		slot := lookupItemSlot(name)
 		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
-		b[offset] = (b[offset] & 0x8f) | 0x30 // set bits 4 and 5, reset bit 6
+		b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
 	}
 }
 

@@ -28,6 +28,9 @@ drenn's ages-disasm. addresses are for seasons.
 - 0:250c = runScript, d is object low byte
 - 0:2542 = interactionSaveScriptAddress
 - 0:2d2a = getThisRoomDungeonFlags
+	- bit 4 = has key / boss key (for compass beep)
+	- bit 5 = has chest (for map display)
+	- bit 6 = ?? if this is set, no compass beep
 - 0:393e = loadSmallRoomLayout
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 	- 0:3979, 0:3987 = decompressLayoutMode2, decompressLayoutMode2Helper
