@@ -493,7 +493,7 @@ var ItemSlots = map[string]*MutableSlot{
 	"d7 compass chest": MutableChest(
 		"compass", 0x50aa, 0x05, 0x52, collectChest2, 0xd0),
 	"d7 map chest": MutableChest(
-		"dungeon map", 0x50b2, 0x05, 0x59, collectChest2, 0xd0),
+		"dungeon map", 0x50b2, 0x05, 0x58, collectChest2, 0xd0),
 	"d7 boss key chest": MutableChest(
 		"d7 boss key", 0x50a6, 0x05, 0x48, collectChest, 0xd0),
 
