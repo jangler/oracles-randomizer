@@ -110,6 +110,7 @@ func Mutate(b []byte) ([]byte, error) {
 		[]byte{Seasons["western coast season"].New[0]}
 
 	setSeedData()
+	setTreasureMapData()
 
 	// explicitly set these addresses and IDs after their functions
 	codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
@@ -262,4 +263,25 @@ func setSeedData() {
 		mut := varMutables[roomNameByTreeID[slot.Treasure.id]].(*MutableRange)
 		mut.New[0] = roomByTreeID[i]
 	}
+}
+
+// set the locations of the sparkles for the jewels on the treasure map.
+func setTreasureMapData() {
+	for _, name := range []string{"round", "pyramid", "square", "x-shaped"} {
+		mut := varMutables[name+" jewel coords"].(*MutableRange)
+		slot := lookupItemSlot(name + " jewel")
+		mut.New[0] = slot.mapCoords
+	}
+}
+
+// returns the slot where the named item was placed. this only works for unique
+// items, of course.
+func lookupItemSlot(itemName string) *MutableSlot {
+	t := Treasures[itemName]
+	for _, slot := range ItemSlots {
+		if slot.Treasure == t {
+			return slot
+		}
+	}
+	return nil
 }

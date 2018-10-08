@@ -493,6 +493,12 @@ var varMutables = map[string]Mutable{
 	"sunken gale tree room": MutableByte(Addr{0x01, 0x5ef5}, 0x5f, 0x5f),
 	"tarm gale tree room":   MutableByte(Addr{0x01, 0x5ef7}, 0x10, 0x10),
 
+	// locations of sparkles on treasure map
+	"round jewel coords":    MutableByte(Addr{0x02, 0x6663}, 0xb5, 0xb5),
+	"pyramid jewel coords":  MutableByte(Addr{0x02, 0x6664}, 0x1d, 0x1d),
+	"square jewel coords":   MutableByte(Addr{0x02, 0x6665}, 0xc2, 0xc2),
+	"x-shaped jewel coords": MutableByte(Addr{0x02, 0x6666}, 0xf4, 0xf4),
+
 	// the satchel should contain the type of seeds that grow on the horon
 	// village tree.
 	"satchel initial seeds": MutableByte(Addr{0x3f, 0x453b}, 0x20, 0x20),
