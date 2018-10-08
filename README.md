@@ -105,11 +105,8 @@ un-softlock.
 
 **Q: Are you going to make a randomizer for Oracle of Ages too?**
 
-A: Ages support will probably be the next feature priority for the randomizer,
-although I don't have immediate plans to start working on it. I don't know Ages
-nearly as well as I know Seasons, so expect Ages randomization to be initially
-poor at avoiding softlock cases. Perfoming D2 skip or text warps will
-definitely void any warranty of safety from the randomizer.
+A: Ages support is the next feature priority for the randomizer and is
+underway, but there's no particular timeline for it.
 
 **Q: Is there a place to discuss the randomizer?**
 
