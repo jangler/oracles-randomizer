@@ -213,7 +213,7 @@ var holodrumNodes = map[string]*Node{
 	"spring banana cucco": And("mount cucco", "bracelet"),
 	"spring banana tree": AndSlot("spring banana cucco", "jump",
 		Or("sunken city default spring", "spring"), Or("sword", "fool's ore")),
-	"moosh": And("mount cucco", Or("moosh's flute", "spring banana")),
+	"moosh": And("mount cucco", "spring banana"),
 	"dragon key spot": AndSlot("mount cucco",
 		Or("moosh", "pegasus jump L-2", Hard("feather L-2"))),
 	"talon cave":         And("mount cucco", Or("sunken city default spring", "spring")),
