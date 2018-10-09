@@ -25,7 +25,8 @@ There are three ways to use the randomizer:
 ## Download
 
 You can download executables for Windows, macOS, and Linux from the
-[releases](https://github.com/jangler/oos-randomizer/releases) page.
+[releases](https://github.com/jangler/oos-randomizer/releases) page. Don't use
+the "Download ZIP" link on the main page; that only contains the source code.
 
 
 ## Randomization notes
@@ -41,9 +42,11 @@ and slingshot will start with the type of seeds on the tree in Horon Village.
 The Natzu region matches whichever animal companion the randomized flute calls.
 
 For items that have two levels, the first you obtain will be L-1, and the
-second will be L-2, regardless of the order in which you obtain them.
+second will be L-2, regardless of the order in which you obtain them. The L-2
+shield is an exception.
 
-The randomizer will never require you to farm rupees if you spend them wisely.
+The randomizer will never require you to farm rupees if you spend them
+optimally.
 
 The following items are **not** randomized:
 
