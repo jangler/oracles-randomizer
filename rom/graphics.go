@@ -76,8 +76,7 @@ var itemGfx = map[string]int{
 	"ember tree seeds":   0x5f0620,
 	"scent tree seeds":   0x5f0830,
 	"pegasus tree seeds": 0x5f0a10,
-	"gale tree seeds 1":  0x5f0c10,
-	"gale tree seeds 2":  0x5f0c10,
+	"gale tree seeds":    0x5f0c10,
 	"mystery tree seeds": 0x5f0e00,
 }
 

@@ -12,8 +12,7 @@ var niceNames = map[string]string{
 	"mystery tree seeds": "mystery seeds",
 	"scent tree seeds":   "scent seeds",
 	"pegasus tree seeds": "pegasus seeds",
-	"gale tree seeds 1":  "gale seeds",
-	"gale tree seeds 2":  "gale seeds",
+	"gale tree seeds":    "gale seeds",
 
 	// equip items
 	"shop shield L-1": "wooden shield",

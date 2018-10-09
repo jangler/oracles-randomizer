@@ -125,7 +125,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// and only seeds can be slotted in seed trees, of course
 	switch itemNode.Name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
-		"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
+		"pegasus tree seeds", "gale tree seeds":
 		switch slotNode.Name {
 		case "ember tree", "mystery tree", "scent tree",
 			"pegasus tree", "sunken gale tree", "tarm gale tree":

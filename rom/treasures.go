@@ -177,14 +177,11 @@ var Treasures = map[string]*Treasure{
 
 	// not real treasures, just placeholders for seeds in trees
 	"ember tree seeds":   &Treasure{id: 0x00},
-	"mystery tree seeds": &Treasure{id: 0x01},
-	"scent tree seeds":   &Treasure{id: 0x02},
-	"pegasus tree seeds": &Treasure{id: 0x03},
-	"gale tree seeds 1":  &Treasure{id: 0x04},
-	"gale tree seeds 2":  &Treasure{id: 0x05},
+	"scent tree seeds":   &Treasure{id: 0x01},
+	"pegasus tree seeds": &Treasure{id: 0x02},
+	"gale tree seeds":    &Treasure{id: 0x03},
+	"mystery tree seeds": &Treasure{id: 0x04},
 }
-
-var seedIndexByTreeID = []byte{0, 4, 1, 2, 3, 3}
 
 // FindTreasureName does a reverse lookup of the treasure in the map to return
 // its name. It returns an empty string if not found.

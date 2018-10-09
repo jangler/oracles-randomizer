@@ -35,7 +35,6 @@ var itemNodes = map[string]*Node{
 	"feather L-2":   And("feather 1", "feather 2"),
 	"satchel":       Or("satchel 1", "satchel 2"),
 
-	"gale tree seeds": Or("gale tree seeds 1", "gale tree seeds 2"),
 	"harvest ember seeds": And("seed item", Or(
 		And("ember tree seeds", "harvest tree"), "d5 armos chest",
 		And("harvest bush", Or("enter agunima", "enter d7")))),

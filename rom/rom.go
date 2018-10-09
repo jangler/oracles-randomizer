@@ -199,7 +199,7 @@ func Verify(b []byte) []error {
 			break
 		// mystical seeds
 		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
-			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
+			"pegasus tree seeds", "gale tree seeds":
 			break
 		// progressive items
 		case "noble sword spot", "d6 boomerang chest", "d8 HSS chest",
@@ -234,22 +234,22 @@ func Verify(b []byte) []error {
 // grows on the horon village tree, and set the map icon for each tree to match
 // the seed type.
 func setSeedData() {
-	seedIndex := seedIndexByTreeID[int(ItemSlots["ember tree"].Treasure.id)]
+	seedType := ItemSlots["ember tree"].Treasure.id
 
 	for _, name := range []string{"satchel initial seeds",
 		"carry seeds in slingshot"} {
 		mut := varMutables[name].(*MutableRange)
-		mut.New[0] = 0x20 + seedIndex
+		mut.New[0] = 0x20 + seedType
 	}
 
 	// slingshot starting seeds
 	varMutables["edit gain/lose items tables"].(*MutableRange).New[1] =
-		0x20 + seedIndex
+		0x20 + seedType
 
 	for _, name := range []string{
 		"satchel initial selection", "slingshot initial selection"} {
 		mut := varMutables[name].(*MutableRange)
-		mut.New[1] = seedIndex
+		mut.New[1] = seedType
 	}
 
 	for _, name := range []string{"ember tree map icon", "scent tree map icon",
@@ -257,14 +257,7 @@ func setSeedData() {
 		"sunken gale tree map icon", "tarm gale tree map icon"} {
 		mut := varMutables[name].(*MutableRange)
 		id := ItemSlots[strings.Replace(name, " map icon", "", 1)].Treasure.id
-		mut.New[0] = mapIconByTreeID[int(id)]
-	}
-
-	for i, name := range []string{"ember tree", "mystery tree", "scent tree",
-		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
-		slot := ItemSlots[name]
-		mut := varMutables[roomNameByTreeID[slot.Treasure.id]].(*MutableRange)
-		mut.New[0] = roomByTreeID[i]
+		mut.New[0] = 0x15 + id
 	}
 }
 

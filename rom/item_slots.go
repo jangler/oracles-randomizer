@@ -518,26 +518,26 @@ var ItemSlots = map[string]*MutableSlot{
 	// these are "fake" item slots in that they don't slot real treasures
 	"ember tree": &MutableSlot{
 		Treasure: Treasures["ember tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x64ce}},
+		IDAddrs:  []Addr{{0x0d, 0x68fb}},
 	},
 	"mystery tree": &MutableSlot{
 		Treasure: Treasures["mystery tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x67e0}},
+		IDAddrs:  []Addr{{0x0d, 0x68fe}},
 	},
 	"scent tree": &MutableSlot{
 		Treasure: Treasures["scent tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x685f}},
+		IDAddrs:  []Addr{{0x0d, 0x6901}},
 	},
 	"pegasus tree": &MutableSlot{
 		Treasure: Treasures["pegasus tree seeds"],
-		IDAddrs:  []Addr{{0x11, 0x6873}},
+		IDAddrs:  []Addr{{0x0d, 0x6904}},
 	},
 	"sunken gale tree": &MutableSlot{
-		Treasure: Treasures["gale tree seeds 1"],
-		IDAddrs:  []Addr{{0x11, 0x69b3}},
+		Treasure: Treasures["gale tree seeds"],
+		IDAddrs:  []Addr{{0x0d, 0x6907}},
 	},
 	"tarm gale tree": &MutableSlot{
-		Treasure: Treasures["gale tree seeds 2"],
-		IDAddrs:  []Addr{{0x11, 0x6a49}},
+		Treasure: Treasures["gale tree seeds"],
+		IDAddrs:  []Addr{{0x0d, 0x690a}},
 	},
 }
