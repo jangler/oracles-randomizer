@@ -97,7 +97,7 @@ var killNodes = map[string]*Node{
 	"jump hit lever":        And("jump", "hit lever gap"),
 	"long jump hit lever":   And("long jump", "hit lever"),
 	"hit far lever":         Or("jump hit lever", "long jump hit lever", "boomerang", "any slingshot"),
-	"kill gohma":            And("scent seeds", "ember seeds", Or("slingshot", Hard("start"))),
+	"kill gohma":            And(Or("scent seeds", "ember seeds"), Or("slingshot", Hard("start"))),
 	"remove mushroom":       Or("boomerang L-2", "bracelet"),
 	"kill moldorm":          Or("sword", "bombs", "punch", "scent seeds", "fool's ore"),
 	"kill iron mask":        Or("kill normal"),
