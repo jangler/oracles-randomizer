@@ -537,9 +537,12 @@ func arrangeListsForLog(r *Route, ri *RouteInfo, verbose bool) {
 		// remove parent provisionally
 		item.RemoveParent(slot)
 
-		// ask if anyone misses it
+		// ask if anyone misses it. first item is a special case: it's always
+		// required, but it might only be required for rupees, which aren't
+		// counted here.
 		r.Graph.ClearMarks()
-		if done.GetMark(done, false) == graph.MarkTrue {
+		if slot.Name != "d0 sword chest" &&
+			done.GetMark(done, false) == graph.MarkTrue {
 			if verbose {
 				fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
 			}
