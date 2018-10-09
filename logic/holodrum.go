@@ -72,7 +72,6 @@ var holodrumNodes = map[string]*Node{
 		And("central woods of winter", "bracelet",
 			Or("woods of winter default summer", "ricky's flute")),
 		And("d2 blade chest", "bracelet")),
-	"enter d2":         Or("enter d2 A", "enter d2 B"),
 	"outdoor d2 chest": AndSlot("enter d2 B"),
 	"mystery cave chest": AndSlot("central woods of winter",
 		Or("remove mushroom", "dimitri's flute"),
@@ -176,7 +175,6 @@ var holodrumNodes = map[string]*Node{
 	"natzu prairie":   Root("start"),
 	"natzu river":     Root(),
 	"natzu wasteland": Root(),
-	"natzu":           Or("natzu prairie", "natzu river", "natzu wasteland"),
 	"great moblin chest": AndSlot(Or("flippers", "pegasus jump L-2"), "bracelet", Or(
 		And("natzu prairie", "sunken city"),
 		And("natzu river", "blaino's gym", "dimitri's flute"),

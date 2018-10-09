@@ -65,6 +65,5 @@ var subrosiaNodes = map[string]*Node{
 		"temple", "bomb flower"),
 	"iron shield gift": AndSlot("temple", "hard ore"),
 
-	"eruption room": Or("remains portal"),
-	"enter d8":      Or("d8 portal"),
+	"enter d8": Or("d8 portal"),
 }

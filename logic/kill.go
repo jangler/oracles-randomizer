@@ -49,7 +49,6 @@ var killNodes = map[string]*Node{
 	"slingshot kill normal": And("slingshot", "seed kill normal"),
 	"jump kill normal":      And("jump", "kill normal"),
 	"jump pit normal":       And("jump", "pit kill normal"),
-	"kill dodongo":          And("bombs", "bracelet"),
 
 	// required enemies in normal route-ish order, but with prereqs first
 	"seed kill normal": Or("ember seeds", "scent seeds", "gale seed weapon", "gale boomerang", "mystery seeds"),
@@ -73,10 +72,8 @@ var killNodes = map[string]*Node{
 	"kill aquamentus":                 Or("sword", "beams", "scent seeds", "bombs", "fool's ore", "punch"),
 	"hit far switch":                  Or("beams", "boomerang", "bombs", "any slingshot"),
 	"toss bombs":                      And("bombs", "toss ring"),
-	"hit very far switch":             Or("beams", "boomerang", "toss bombs", "any slingshot"),
 	"kill rope":                       Or("kill normal"),
 	"kill hardhat (pit, throw)":       Or("gale seed weapon", "sword", "beams", "boomerang", "shield", "scent seeds", "rod", "bombs", Hard("shovel"), "fool's ore", "bracelet"),
-	"kill moblin":                     Or("kill normal"),
 	"kill moblin (gap, throw)":        Or("sword", "beams", "scent seeds", "slingshot kill normal", "bombs", "fool's ore", "punch", "jump kill normal", "jump pit normal"),
 	"kill zol":                        Or("kill normal"),
 	"remove pot":                      Or("sword L-2", "bracelet"),
@@ -115,19 +112,14 @@ var killNodes = map[string]*Node{
 	"finish manhandla":      Or("sword", "bombs", "any slingshot", "fool's ore"),
 	"kill manhandla":        And("boomerang L-2", "finish manhandla"),
 	"kill wizzrobe":         Or("kill normal"),
-	"kill keese":            Or("kill normal", "boomerang"),
 	"kill magunesu":         Or("sword", "fool's ore", "punch"), // even bombs don't work!
 	"kill poe sister":       Or("sword", "beams", "ember seeds", "scent seeds", "bombs", "fool's ore", "punch"),
 	"kill darknut (across pit)": Or(
 		Or("beams", "toss bombs", "scent slingshot", "magnet gloves"),
 		And("feather L-2", "kill darknut (pit)")),
-	"kill wizzrobe (pit)":   Or("pit kill normal"),
-	"kill stalfos (pit)":    Or("kill stalfos", "pit kill normal"),
-	"kill gleeok":           Or("sword", "beams", "bombs", "fool's ore", "punch"),
-	"hit switch":            Or("sword", "beams", "boomerang", "rod", "any satchel", "any slingshot", "bombs", "fool's ore", "punch", "shovel"),
-	"kill frypolar":         Or(And("bracelet", "mystery seeds"), "ember seeds"),
-	"kill pols voice (pit)": Or("sword", "beams", "boomerang", "rod", "scent seeds", "gale seed weapon", "bombs", "shield", "shovel", "fool's ore", "punch", "flute"),
-	"kill medusa head":      Or("sword", "fool's ore"),
-	"kill floormaster":      Or("kill normal"),
-	"kill onox":             And("sword", "jump"),
+	"kill gleeok":      Or("sword", "beams", "bombs", "fool's ore", "punch"),
+	"kill frypolar":    Or(And("bracelet", "mystery seeds"), "ember seeds"),
+	"kill medusa head": Or("sword", "fool's ore"),
+	"kill floormaster": Or("kill normal"),
+	"kill onox":        And("sword", "jump"),
 }
