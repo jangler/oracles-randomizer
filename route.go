@@ -445,6 +445,9 @@ func fillList(l *list.List, a []*graph.Node) {
 	}
 }
 
+var seedNames = []string{"ember tree seeds", "scent tree seeds",
+	"pegasus tree seeds", "gale tree seeds", "mystery tree seeds"}
+
 // return shuffled lists of item and slot nodes
 func initRouteInfo(src *rand.Rand, r *Route,
 	companion int) (itemList, slotList *list.List) {
@@ -453,9 +456,15 @@ func initRouteInfo(src *rand.Rand, r *Route,
 		len(rom.ItemSlots)+len(logic.ExtraItems()))
 	slotNames := make([]string, 0, len(r.Slots))
 	for key, slot := range rom.ItemSlots {
-		if key != "rod gift" { // don't slot vanilla, seasonless rod
-			treasureName := rom.FindTreasureName(slot.Treasure)
+		switch key {
+		case "rod gift": // don't slot vanilla, seasonless rod
+			break
+		case "tarm gale tree": // use random duplicate seed type
+			treasureName := seedNames[rand.Intn(len(seedNames))]
+			itemNames = append(itemNames, treasureName)
+		default:
 			// substitute identified flute for strange flute
+			treasureName := rom.FindTreasureName(slot.Treasure)
 			if treasureName == "strange flute" {
 				switch companion {
 				case ricky:
