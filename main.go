@@ -45,8 +45,6 @@ func main() {
 		"profile", "", "write CPU profile to given filename")
 	flagSeed := flag.String("seed", "",
 		"specific random seed to use (32-bit hex number)")
-	flagUpdate := flag.Bool(
-		"update", false, "update already randomized ROM to this version")
 	flagVerbose := flag.Bool(
 		"verbose", false, "print more detailed output to terminal")
 	flag.Parse()
@@ -77,7 +75,6 @@ func main() {
 			fatal(err, true)
 		}
 
-		// decide whether to randomize or update the file
 		if err := handleFile(romData, flag.Arg(0), *flagSeed,
 			*flagVerbose); err != nil {
 			fatal(err, true)
@@ -91,7 +88,6 @@ func main() {
 			fatal(err, true)
 		}
 
-		// decide whether to randomize or update the file
 		if err := handleFile(b, flag.Arg(0), *flagSeed,
 			*flagVerbose); err != nil {
 			fatal(err, true)
@@ -109,20 +105,14 @@ func main() {
 		var sum []byte
 		var seed uint32
 		var logFilename string
-		if *flagUpdate {
-			fmt.Printf("updating %s\n", flag.Arg(0))
-			sum, err = rom.Update(b)
-		} else {
-			fmt.Printf("randomizing %s\n", flag.Arg(0))
-			seed, sum, logFilename, err = randomize(b, *flagSeed, *flagVerbose)
-		}
+		fmt.Printf("randomizing %s\n", flag.Arg(0))
+		seed, sum, logFilename, err = randomize(b, *flagSeed, *flagVerbose)
 		if err != nil {
 			fatal(err, false)
 		}
 
 		// write file
-		if err := writeROM(b, flag.Arg(1), logFilename, seed, sum,
-			*flagUpdate); err != nil {
+		if err := writeROM(b, flag.Arg(1), logFilename, seed, sum); err != nil {
 			fatal(err, false)
 		}
 	default:
@@ -131,8 +121,8 @@ func main() {
 }
 
 // attempt to write rom data to a file and print summary info.
-func writeROM(b []byte, filename, logFilename string, seed uint32, sum []byte,
-	update bool) error {
+func writeROM(b []byte, filename, logFilename string, seed uint32,
+	sum []byte) error {
 	// write file
 	f, err := os.Create(filename)
 	if err != nil {
@@ -144,14 +134,10 @@ func writeROM(b []byte, filename, logFilename string, seed uint32, sum []byte,
 	}
 
 	// print summary
-	if !update {
-		fmt.Printf("seed: %08x\n", seed)
-	}
+	fmt.Printf("seed: %08x\n", seed)
 	fmt.Printf("sha-1 sum: %x\n", string(sum))
 	fmt.Printf("wrote new rom to %s\n", filename)
-	if !update {
-		fmt.Printf("wrote log file to %s\n", logFilename)
-	}
+	fmt.Printf("wrote log file to %s\n", logFilename)
 
 	return nil
 }
@@ -223,6 +209,9 @@ func readGivenROM(filename string) ([]byte, error) {
 		return nil, fmt.Errorf("%s is a JP ROM; only US is supported",
 			filename)
 	}
+	if !rom.IsVanilla(b) {
+		return nil, fmt.Errorf("%s is an unrecognized OoS ROM", filename)
+	}
 
 	return b, nil
 }
@@ -235,26 +224,15 @@ func handleFile(romData []byte, filename, seedFlag string, verbose bool) error {
 	var outName, logFilename string
 
 	// operate on rom data
-	update := !rom.IsVanilla(romData)
-	if update {
-		fmt.Printf("updating %s\n", flag.Arg(0))
-		sum, err = rom.Update(romData)
-		if err != nil {
-			return err
-		}
-		outName = fmt.Sprintf("%s_%s_update.gbc",
-			strings.Replace(filename, ".gbc", "", 1), version)
-	} else {
-		fmt.Printf("randomizing %s\n", flag.Arg(0))
-		seed, sum, logFilename, err = randomize(romData, seedFlag, verbose)
-		if err != nil {
-			return err
-		}
-		outName = fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
+	fmt.Printf("randomizing %s\n", flag.Arg(0))
+	seed, sum, logFilename, err = randomize(romData, seedFlag, verbose)
+	if err != nil {
+		return err
 	}
+	outName = fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
 
 	// write to file
-	return writeROM(romData, outName, logFilename, seed, sum, update)
+	return writeROM(romData, outName, logFilename, seed, sum)
 }
 
 // sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or

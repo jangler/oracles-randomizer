@@ -5,20 +5,18 @@ the locations of items and mystical seeds, randomizes the default season for
 each area, and writes the modified ROM to a new file. It also bypasses essence
 checks for overworld events that are necessary for progress, so the dungeons
 can be done in any order that the randomized items facilitate. However, you do
-have to collect all 8 essences to get the Maku Seed and finish the game.
+need to collect all 8 essences to get the Maku Seed and finish the game.
 
 
 ## Usage
 
 There are three ways to use the randomizer:
 
-1. Place the randomizer in the same directory as your vanila OoS ROM (or vice
-   versa), and run it. The randomizer will automatically choose the vanilla ROM
-   and write the randomized ROM and log to a new file.
-2. In Windows, drag your ROM onto the executable. If the ROM is vanilla, it
-   will be randomized; otherwise it will be updated to the latest version,
-   applying bugfixes and other changes when applicable. In either case the
-   original file is not overwritten.
+1. In Windows, place the randomizer in the same directory as your vanila OoS
+   ROM (or vice versa), and run it. The randomizer will automatically choose
+   the vanilla ROM and write the randomized ROM and log to a new file.
+2. In Windows, drag your vanilla OoS ROM onto the executable. The randomizer
+   will write the randomized ROM and log to a new file.
 3. Use the command line. Type `oos-randomizer -h` to view the usage summary.
    The `-freewarp` and `-seed` options are probably the only useful end-user
    ones.
@@ -99,9 +97,7 @@ number of tricky things that the vanilla game wouldn't expect of you.
 **Q: I'm softlocked. Now what do I do?**
 
 A: If you're softlocked by location, use tree warp. Otherwise, open an issue
-about it or tell me in Discord, and provide the log file. Depending on the
-problem, you may be able to `-update` your ROM using the next patch version to
-un-softlock.
+about it or tell me in Discord, and provide the log file.
 
 **Q: Are you going to make a randomizer for Oracle of Ages too?**
 

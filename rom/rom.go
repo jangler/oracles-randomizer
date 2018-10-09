@@ -143,48 +143,6 @@ func Mutate(b []byte) ([]byte, error) {
 	return outSum[:], nil
 }
 
-// Update changes the content of loaded ROM bytes, but does not re-randomize
-// any fields.
-func Update(b []byte) ([]byte, error) {
-	var err error
-
-	// change fixed mutables
-	for _, k := range orderedKeys(fixedMutables) {
-		err = fixedMutables[k].Mutate(b)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	varMutables["initial season"].(*MutableRange).New =
-		[]byte{0x2d, b[Seasons["north horon season"].Addrs[0].FullOffset()]}
-	varMutables["season after pirate cutscene"].(*MutableRange).New =
-		[]byte{b[Seasons["western coast season"].Addrs[0].FullOffset()]}
-
-	// change seed mechanics based on the ROM's existing tree information
-	for _, name := range []string{"ember tree", "scent tree", "mystery tree",
-		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
-		ItemSlots[name].Treasure.id =
-			b[ItemSlots[name].IDAddrs[0].FullOffset()]
-	}
-	setSeedData()
-	for _, name := range []string{"satchel initial seeds",
-		"satchel initial selection", "slingshot initial selection",
-		"carry seeds in slingshot", "ember tree map icon",
-		"scent tree map icon", "mystery tree map icon",
-		"pegasus tree map icon", "sunken gale tree map icon",
-		"tarm gale tree map icon", "initial season",
-		"edit gain/lose items tables"} {
-		err = varMutables[name].Mutate(b)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	outSum := sha1.Sum(b)
-	return outSum[:], nil
-}
-
 // Verify checks all the package's data against the ROM to see if it matches.
 // It returns a slice of errors describing each mismatch.
 func Verify(b []byte) []error {
