@@ -355,14 +355,17 @@ func initEndOfBank() {
 			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
 			"\x3e\x50\xcd\x74\x0c"+ // play sound
 			"\x21\xc0\xcf\xcb\xc6\xc9") // set $cfc0 bit and ret
-	// overwrite unused maku gate interaction with warning interaction
-	warningScript := r.appendToBank(0x0b, "warningScript",
-		"\xd0\xe0"+warningFunc+
-			"\xa0\xbd\xd7\x3c"+ // wait for collision and animation
-			"\x87\xe0\xcf\x7e\x7f\x83\x7f\x88\x7f"+ // jump based on cfe0 bits
-			"\x98\x26\x00\xbe\x00"+ // show cliff warning text
-			"\x98\x26\x01\xbe\x00"+ // show bush warning text
-			"\x98\x26\x02\xbe\x00") // show hss skip warning text
+	warnCliff := r.appendToBank(0x0b, "cliff warning script",
+		"\x98\x26\x00\xbe\x00") // show cliff warning text
+	warnBush := r.appendToBank(0x0b, "bush warning script",
+		"\x98\x26\x01\xbe\x00") // show bush warning text
+	warnSkip := r.appendToBank(0x0b, "skip warning script",
+		"\x98\x26\x02\xbe\x00") // show key skip warning text
+	// point to this script instead of the normal maku gate script
+	warningScript := r.appendToBank(0x0b, "warning script",
+		"\xcb\x4c\xcc\xd9\x87\x4e"+ // use maku gate script if on that screen
+			"\xd0\xe0"+warningFunc+"\xa0\xbd\xd7\x3c"+ // wait for collision
+			"\x87\xe0\xcf"+warnCliff+warnBush+warnSkip) // jump table
 	r.replace(0x08, 0x5663, "warning script pointer", "\x87\x4e", warningScript)
 
 	// set sub ID for star ore
@@ -505,8 +508,9 @@ func initEndOfBank() {
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created, and set collection mode.
 	normalProgressiveFunc := r.appendToBank(0x15, "normal progressive func",
-		"\xcd"+collectModeLookup+"\x47\xcb\x37\xf5\x1e\x42\x1a\xcd"+
-			progressiveItemFunc+"\xf1\xc9")
+		"\xcd"+collectModeLookup+"\x47\xcb\x37\xf5"+
+			"\x1e\x43\x1a\xfe\x02\x30\x05"+ // don't upgrade spin slash
+			"\x1b\x1a\xcd"+progressiveItemFunc+"\xf1\xc9")
 	r.replace(0x15, 0x465a, "set normal progressive call",
 		"\x47\xcb\x37", "\xcd"+normalProgressiveFunc)
 

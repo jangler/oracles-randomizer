@@ -210,9 +210,6 @@ var fixedMutables = map[string]Mutable{
 	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
 		"\x40\x33\xc5", "\x20\x33\xe6"),
 
-	// have maku gate open from start
-	"maku gate check": MutableByte(Addr{0x04, 0x61a3}, 0x7e, 0x66),
-
 	// banks 08-0a (most interaction-specific non-script behavior?)
 
 	// have horon village shop stock *and* sell items from the start, including
@@ -308,12 +305,6 @@ var fixedMutables = map[string]Mutable{
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
 
 	// bank 11 (interactions)
-
-	// remove the original maku gate interaction, now used as the warning
-	// interaction.
-	"maku gate interactions": MutableString(Addr{0x11, 0x634c},
-		"\xf2\x22\x0a\x30\x50\x2d\x84\x48\x68\x37\x84\x48\x68",
-		"\xf2\x2d\x84\x48\x68\x37\x84\x48\x68\xff"),
 
 	// remove the moosh and dimitri events in spool swamp.
 	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),

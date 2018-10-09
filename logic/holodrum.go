@@ -9,7 +9,7 @@ var holodrumNodes = map[string]*Node{
 
 	// horon village
 	"horon village":    And("start"),
-	"maku tree gift":   AndSlot("horon village", "pop maku bubble"),
+	"maku tree gift":   AndSlot("horon village", "sword"),
 	"ember tree":       AndSlot("horon village", "seed item", "harvest tree"),
 	"village SE chest": AndSlot("horon village", "bombs"),
 	"village SW chest": AndSlot("horon village", Or("remove bush safe", "flute"),
