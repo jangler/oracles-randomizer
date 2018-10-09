@@ -53,11 +53,6 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 
 			item.AddParents(slot)
 
-			if canSoftlock(r.Graph) != nil {
-				item.RemoveParent(slot)
-				continue
-			}
-
 			if slotPool.Len() == numUsedSlots+1 && !fillUnused {
 				newCount := countFunc(r)
 				if newCount <= initialCount {

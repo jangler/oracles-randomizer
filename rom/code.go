@@ -182,6 +182,26 @@ func initEndOfBank() {
 			"\xea\x63\xcc\xfa\xb6\xcb\xea\x64\xcc\x3e\x03\xcd\x89\x0c\xc9")
 	r.replace(0x02, 0x5e9b, "dev ring warp call", "\x89\x0c", devWarp)
 
+	// load a custom room layout for the problematic woods of winter screen in
+	// winter. the code here is one 8-tile compression block per line.
+	winterLayout := r.appendToBank(0x02, "winter layout",
+		"\x55\x80\x81\x81\x81\x81"+
+			"\x7c\x16\x80\x82\x17"+
+			"\xf0\x1b\xc4\xc4\x70\x72"+
+			"\x00\x01\x0d\x17\xc4\x80\x81\x70\x71"+
+			"\x60\x04\x70\x71\x1a\x1b\x1c\xf7"+
+			"\x05\x80\x81\x81\x70\x71\x9e\x9f"+
+			"\x1c\x16\x04\x15\x17\x80\x81"+
+			"\x30\x1b\x99\x9b\xd9\x1a\x01\x19"+
+			"\x00\x70\x71\x15\x16\x17\xf7\x7a\x8c"+
+			"\x11\x18\x19\x80\x81\x01\x19\x70")
+	loadWinterLayout := r.appendToBank(0x00, "load winter layout",
+		"\xd5\xfa\x4c\xcc\xfe\x9d\x20\x14\xfa\x4e\xcc\xfe\x03\x20\x0d"+
+			"\xfa\x49\xcc\xb7\x20\x07\x3e\x02\xe0\x8c\x21"+winterLayout+
+			"\xf0\x8c\xc3\xe2\x39")
+	r.replace(0x00, 0x39df, "jump to winter layout",
+		"\xd5\xf0\x8c", "\xc3"+loadWinterLayout)
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
@@ -234,10 +254,13 @@ func initEndOfBank() {
 		"animal enter call", "\xcd\xaa\x44\xb7", "\xcd"+fluteEnterFunc+"\x00")
 
 	// let link jump down the cliff outside d7, in case of winter sans shovel.
+	// also let link jump down the snow cliff added in woods of winter.
 	cliffLookupFunc := r.appendToBank(0x05, "cliff lookup func",
-		"\xf5\xfa\x49\xcc\xb7\x20\x10"+ // cp group
-			"\xfa\x4c\xcc\xfe\xd0\x20\x09"+ // cp room
-			"\xf1\xfe\xa8\x20\x05\x3e\x08\x37\xc9"+ // cp tile
+		"\xf5\xfa\x49\xcc\xb7\x20\x00"+ // cp group
+			"\xfa\x4c\xcc\xfe\xd0\x20\x00\xf1"+ // d7 entrance
+			"\xfe\xa8\x20\x00\x3e\x08\x37\xc9"+ // cp tile
+			"\xfe\x9d\x20\x00\xf1"+ // woods of winter
+			"\xfe\x99\x20\x00\xfe\x9b\x20\x00\x3e\x10\x37\xc9"+ // cp tile
 			"\xf1\xc3\xdd\x1d") // jp to normal lookup
 	r.replace(0x05, 0x5fe8, "cliff lookup call",
 		"\xcd\xdd\x1d", "\xcd"+cliffLookupFunc)
