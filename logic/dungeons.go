@@ -16,7 +16,7 @@ var d0Nodes = map[string]*Node{
 }
 
 var d1Nodes = map[string]*Node{
-	"d1 key fall":       And("enter d1", "kill stalfos (throw)"),
+	"d1 key fall":       And("enter d1", "kill stalfos"),
 	"d1 map chest":      AndSlot("d1 key A", "kill stalfos"),
 	"d1 compass chest":  AndSlot("d1 map chest"),
 	"d1 gasha chest":    AndSlot("d1 map chest", "kill goriya"),
@@ -25,8 +25,9 @@ var d1Nodes = map[string]*Node{
 	"enter goriya bros": And("d1 bomb chest", "bombs", "d1 key B"),
 	"d1 satchel spot":   AndSlot("enter goriya bros", "kill goriya bros"),
 	"d1 boss key chest": AndSlot("d1 map chest",
-		Or("ember seeds", "mystery seeds"), "kill goriya (pit)"),
-	"d1 ring chest": AndSlot("enter d1", Or("ember seeds", "mystery seeds")),
+		Or("ember seeds", Hard("mystery seeds")), "kill goriya (pit)"),
+	"d1 ring chest": AndSlot("enter d1",
+		Or("ember seeds", Hard("mystery seeds"))),
 	"d1 essence": AndStep("d1 ring chest", "d1 boss key",
 		"kill aquamentus"),
 
@@ -38,13 +39,14 @@ var d2Nodes = map[string]*Node{
 	"d2 5-rupee chest": AndSlot("d2 torch room"),
 	"d2 rope room":     And("d2 torch room", "kill rope"),
 	"d2 arrow room": Or("enter d2 B",
-		And("d2 torch room", Or("ember seeds", "mystery seeds"))),
-	"d2 rupee room":     And("d2 arrow room", "bombs"),
-	"d2 hardhat room":   And("d2 arrow room", Or("d2 2 keys", Hard("d2 1 key"))),
+		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
+	"d2 rupee room": And("d2 arrow room", "bombs"),
+	"d2 hardhat room": And("d2 arrow room",
+		Or("d2 2 keys", Hard("d2 1 key"))),
 	"d2 map chest":      AndSlot("d2 hardhat room", "remove pot"),
 	"d2 compass chest":  AndSlot("d2 arrow room", "kill normal"),
-	"d2 bracelet room":  And("d2 hardhat room", "kill hardhat (pit, throw)"),
-	"d2 bracelet chest": AndSlot("d2 bracelet room", "kill moblin (gap, throw)"),
+	"d2 bracelet room":  And("d2 hardhat room", "kill hardhat (pit)"),
+	"d2 bracelet chest": AndSlot("d2 bracelet room", "kill moblin (gap)"),
 	"d2 spiral chest":   And("enter d2 B", "bombs"),
 	"d2 blade chest":    Or("enter d2 B", And("d2 arrow room", "kill normal")),
 
@@ -69,12 +71,12 @@ var d2Nodes = map[string]*Node{
 
 var d3Nodes = map[string]*Node{
 	// first floor
-	"d3 center":       And("enter d3", "kill spiked beetle (throw)"),
+	"d3 center":       And("enter d3", "kill spiked beetle"),
 	"d3 mimic stairs": Or("d3 rupee chest", And("d3 center", "bracelet")),
 	"d3 roller chest": And("d3 mimic stairs", "bracelet"),
-	"d3 rupee chest":  OrSlot("d3 mimic stairs", And("d3 center", "jump")),
-	"d3 gasha chest":  AndSlot("d3 mimic stairs", "jump"),
-	"d3 omuai stairs": And("d3 mimic stairs", "jump",
+	"d3 rupee chest":  OrSlot("d3 mimic stairs", And("d3 center", "jump 2")),
+	"d3 gasha chest":  AndSlot("d3 mimic stairs", "jump 2"),
+	"d3 omuai stairs": And("d3 mimic stairs", "jump 2",
 		Or("d3 2 keys", Hard("d3 1 key")), "kill omuai"),
 	"d3 boss key chest": AndSlot("d3 omuai stairs"),
 
@@ -83,8 +85,8 @@ var d3Nodes = map[string]*Node{
 	"d3 map chest":  AndSlot("d3 bomb chest", "bombs"),
 	"d3 feather chest": AndSlot("d3 rupee chest",
 		Or("d3 2 keys", Hard("d3 1 key")), "kill mimic"),
-	"d3 trampoline chest": And("d3 center", "jump"),
-	"d3 compass chest":    AndSlot("d3 center", "jump"),
+	"d3 trampoline chest": And("d3 center", "jump 2"),
+	"d3 compass chest":    AndSlot("d3 center", "jump 2"),
 	"enter mothula":       And("d3 omuai stairs", "d3 boss key"),
 	"d3 essence":          AndStep("enter mothula", "kill mothula"),
 
@@ -97,19 +99,18 @@ var d3Nodes = map[string]*Node{
 
 var d4Nodes = map[string]*Node{
 	// left branch from entrance
-	"d4 bomb chest": AndSlot("enter d4", "cross large pool"),
+	"d4 bomb chest": AndSlot("enter d4", Or("flippers", "jump 6")),
 	"d4 pot room":   And("d4 bomb chest", "bombs", "bracelet"),
 	"d4 map chest":  AndSlot("d4 bomb chest", "hit lever"),
-	"d4 dark chest": And("d4 map chest", "jump"),
+	"d4 dark chest": And("d4 map chest", "jump 2"),
 
 	// 2F (ground floor), right branch
-	"d4 compass chest": AndSlot("enter d4", "cross large pool", "bombs",
-		"d4 1 key"),
-	"d4 roller minecart": And("enter d4", "flippers", "jump", "d4 1 key"),
+	"d4 compass chest": AndSlot("enter d4", Or("flippers", "jump 6"), "bombs",
+		"d4 1 key"), // might be possible w/ cape + bomb boost?
+	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 1 key"),
 	"d4 water key room": And("d4 roller minecart", "hit lever", "flippers",
-		Or("kill normal", "bracelet")),
-	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
-		Or("kill stalfos", "bracelet")),
+		"kill normal"),
+	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys", "kill stalfos"),
 
 	// 1F
 	"d4 pre-mid chest":  And("d4 stalfos stairs"),
@@ -124,7 +125,7 @@ var d4Nodes = map[string]*Node{
 
 	// B1F
 	"enter gohma": And("d4 basement stairs", "d4 boss key",
-		Or("ember slingshot", "mystery slingshot", "long jump")),
+		Or("ember slingshot", Hard("mystery slingshot"), "jump 3")),
 	"d4 essence": AndStep("enter gohma", "kill gohma"),
 
 	// fixed items
@@ -145,34 +146,28 @@ var d4Nodes = map[string]*Node{
 // the keys in this dungeon suck, so i'm not even going to bother with "hard"
 // logic for them.
 var d5Nodes = map[string]*Node{
-	// general
-	"cross magnet gap":   Or("pegasus jump L-2", "magnet gloves"),
-	"magnet jump":        And("jump", "magnet gloves"),
-	"sidescroll magnets": Or("magnet jump", "pegasus jump L-2"),
-
 	// 1F (it's the only F)
-	"d5 cart bay":   And("enter d5", Or("flippers", "long jump")),
+	"d5 cart bay":   And("enter d5", Or("flippers", "jump 3")),
 	"d5 cart chest": And("d5 cart bay", "hit lever"),
-	"d5 pot room": And("enter d5", "jump",
-		Or("d5 cart bay", And("magnet gloves", "bombs"))),
+	"d5 pot room": And("enter d5", Or("magnet gloves", "bombs", "jump 2"),
+		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel")))),
 	"d5 map chest": AndSlot("d5 pot room", "kill gibdo", "kill zol"),
-	"d5 magnet gloves chest": AndSlot("d5 pot room", "cross large pool",
+	"d5 magnet gloves chest": AndSlot("d5 pot room", Or("flippers", "jump 6"),
 		"d5 5 keys"),
-	"d5 left chest": And("enter d5", "cross magnet gap"),
-	"d5 rupee chest": AndSlot("enter d5",
-		Or("magnet gloves", And("d5 cart bay", "jump", "bombs"))),
+	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
+	"d5 rupee chest": AndSlot("enter d5", Or("magnet gloves",
+		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel")), "bombs"))),
 	"d5 compass chest": AndSlot("enter d5", "kill moldorm", "kill iron mask"),
 	"d5 armos chest": And("d5 rupee chest", "kill moldorm", "kill iron mask",
 		"kill armos"),
-	"d5 spinner chest": And("d5 cart bay", "cross magnet gap"),
+	"d5 spinner chest": And("d5 cart bay", Or("magnet gloves", "jump 6")),
 	"d5 drop ball":     And("d5 cart bay", "hit lever", "kill darknut (pit)"),
-	"d5 pre-mid chest": And("d5 cart bay", Or("magnet gloves", "feather L-2")),
+	"d5 pre-mid chest": And("d5 cart bay", Or("magnet gloves", "jump 4")),
 	"d5 post-syger":    And("d5 pre-mid chest", "kill syger"), // keys after
 	"d5 boss key spot": AndSlot("d5 drop ball", "d5 post-syger",
-		"magnet gloves", Or("long jump", "kill magunesu"), "d5 5 keys",
-		"sidescroll magnets"),
-	"d5 essence": AndStep("d5 post-syger", "magnet gloves", "d5 boss key",
-		"d5 5 keys"),
+		"magnet gloves", Or("kill magunesu", Hard("jump 2")), "d5 5 keys"),
+	"d5 essence": AndStep("d5 post-syger", "magnet gloves",
+		Or("jump 2", Hard("start")), "d5 boss key", "d5 5 keys"),
 
 	// fixed items
 	"d5 key A": And("d5 cart chest"),
@@ -191,7 +186,7 @@ var d6Nodes = map[string]*Node{
 	"d6 rupee chest A": AndSlot("enter d6"),
 	"d6 rupee room":    And("enter d6", "bombs"),
 	"d6 magkey room": And("enter d6",
-		Or(And("magnet gloves", "jump"), "pegasus jump L-2")),
+		Or(And("magnet gloves", "jump 2"), "jump 4")),
 	"d6 compass chest": AndSlot("enter d6", Or("d6 3 keys", Hard("d6 1 key"))),
 	"d6 map chest":     AndSlot("enter d6"),
 	"d6 rupee chest C": AndSlot("enter d6"),
@@ -199,11 +194,12 @@ var d6Nodes = map[string]*Node{
 	"d6 torch stairs":  And("d6 U-room", "ember seeds"),
 
 	// 2F
-	"d6 skipped chest":   And("enter d6", "break crystal"),
-	"d6 bomb chest":      AndSlot("d6 compass chest", "long jump"),
+	"d6 skipped chest":   And("enter d6", "magnet gloves", "break crystal"),
+	"d6 bomb chest":      AndSlot("d6 compass chest"),
 	"d6 rupee chest B":   AndSlot("d6 bomb chest", "bombs"),
 	"d6 boomerang chest": AndSlot("d6 rupee chest B"),
-	"d6 boss key chest":  AndSlot("d6 torch stairs", "pegasus satchel", "jump"),
+	"d6 boss key chest": AndSlot("d6 torch stairs",
+		"pegasus satchel", "jump 2"),
 
 	// 3F
 	"d6 vire chest": And("d6 boss key chest", "kill stalfos"),
@@ -228,30 +224,29 @@ var d7Nodes = map[string]*Node{
 	"d7 wizzrobe chest": And("enter d7", "kill wizzrobe"),
 	"d7 ring chest":     AndSlot("enter d7", "d7 key A"),
 	"enter poe A": And("d7 ring chest",
-		Or("ember slingshot", "mystery slingshot")),
+		Or("ember slingshot", Hard("mystery slingshot"))),
 	"d7 compass chest": AndSlot("enter d7", "bombs"),
-	"d7 map chest":     AndSlot("d7 pot room", "jump", "d7 key B"),
+	"d7 map chest":     AndSlot("d7 pot room", "jump 2", "d7 key B"),
 
 	// B1F
 	"d7 pot room": And("enter d7", "bracelet", "enter poe A",
 		"kill poe sister"),
-	"d7 zol button": And("d7 pot room", "jump"),
-	"d7 magunesu chest": And("d7 armos puzzle", "long jump", "kill magunesu",
+	"d7 zol button": And("d7 pot room", "jump 2"),
+	"d7 magunesu chest": And("d7 armos puzzle", "jump 3", "kill magunesu",
 		"magnet gloves"),
 	"enter poe B": And("d7 pot room", "d7 3 keys", "ember seeds",
-		Or("pegasus satchel", "slingshot L-2")),
+		Or("pegasus satchel", "slingshot L-2", Hard("start"))),
 	"d7 water stairs": And("enter poe B", "flippers"),
 	"d7 cape chest":   AndSlot("d7 water stairs", "d7 cross bridge"),
 
 	// B2F
-	"d7 armos puzzle": And("d7 pot room", Or("long jump", "magnet gloves")),
-	"d7 cross bridge": Or("feather L-2", "kill darknut (across pit)",
-		And("jump", "magnet gloves")),
-	"d7 moldorm room": And("d7 water stairs", "feather L-2", "d7 4 keys"),
-	"d7 rupee chest":  AndSlot("d7 moldorm room", "kill moldorm"),
-	"d7 skipped room": And("d7 rupee chest"),
-	"d7 boss key chest": AndSlot("d7 rupee chest", "d7 key E",
-		Or("pegasus satchel", Hard("start"))),
+	"d7 armos puzzle": And("d7 pot room", Or("jump 3", "magnet gloves")),
+	"d7 cross bridge": Or("jump 4", "kill darknut (across pit)",
+		And("jump 2", "magnet gloves")),
+	"d7 moldorm room":   And("d7 water stairs", "jump 3", "d7 4 keys"),
+	"d7 rupee chest":    AndSlot("d7 moldorm room", "kill moldorm"),
+	"d7 skipped room":   And("d7 rupee chest"),
+	"d7 boss key chest": AndSlot("d7 rupee chest", "d7 key E"),
 	"d7 essence": AndStep("d7 rupee chest", "d7 boss key",
 		"kill gleeok"),
 
@@ -270,20 +265,19 @@ var d7Nodes = map[string]*Node{
 // this does *not* account for HSS skip.
 var d8Nodes = map[string]*Node{
 	// 1F
-	"d8 eye room":      And("enter d8", "any slingshot", "remove pot"),
-	"d8 ring chest":    AndSlot("enter d8", "any slingshot L-2", "jump"),
-	"d8 hardhat room":  And("enter d8", "kill magunesu"),
-	"d8 hardhat key":   And("d8 hardhat room", "kill hardhat (magnet)"),
-	"d8 compass chest": AndSlot("d8 hardhat room", "d8 1 key", "long jump"),
-	"d8 map chest":     AndSlot("d8 spinner"),
+	"d8 eye room":     And("enter d8", "any slingshot", "remove pot"),
+	"d8 ring chest":   AndSlot("enter d8", "any slingshot L-2", "jump 2"),
+	"d8 hardhat room": And("enter d8", "kill magunesu"),
+	"d8 hardhat key":  And("d8 hardhat room", "kill hardhat (magnet)"),
+	"d8 compass chest": AndSlot("d8 hardhat room", "d8 1 key",
+		Or("jump 4", Hard("jump 3"))),
+	"d8 map chest": AndSlot("d8 spinner"),
 	"d8 bomb chest": And("d8 HSS chest", "any slingshot L-2", "bombs",
 		"kill darknut"),
 	"d8 ice puzzle room": And("d8 HSS chest", "kill frypolar", "ember seeds",
 		"slingshot L-2"),
 	"d8 boss key chest": AndSlot("d8 ice puzzle room",
-		Or("feather L-2", Hard("long jump")),
-		Or("pegasus jump L-2", "boomerang", "bombs", "any slingshot",
-			HardAnd("feather L-2", Or("sword", "fool's ore")))),
+		Or("jump 6", "boomerang L-2", Hard("start"))),
 	"d8 crystal room": And("d8 ice puzzle room", "d8 4 keys"),
 	"d8 ghost armos":  And("d8 crystal room"),
 	"d8 NW crystal":   And("d8 crystal room", "d8 7 keys"),
