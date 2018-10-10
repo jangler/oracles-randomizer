@@ -18,12 +18,12 @@ func TestGraph(t *testing.T) {
 	checkReach(t, g,
 		map[string]string{
 			"feather 1": "d0 sword chest",
-		}, "maku tree gift", false)
+		}, "maku tree gift", false, false)
 
 	checkReach(t, g,
 		map[string]string{
 			"sword 1": "d0 sword chest",
-		}, "maku tree gift", true)
+		}, "maku tree gift", false, true)
 
 	checkReach(t, g,
 		map[string]string{
@@ -31,13 +31,13 @@ func TestGraph(t *testing.T) {
 			"ember tree seeds": "ember tree",
 			"satchel 1":        "maku tree gift",
 			"member's card":    "d0 rupee chest",
-		}, "member's shop 1", true)
+		}, "member's shop 1", false, true)
 
 	checkReach(t, g,
 		map[string]string{
 			"sword 1":  "d0 sword chest",
 			"bracelet": "maku tree gift",
-		}, "floodgate key spot", false)
+		}, "floodgate key spot", false, false)
 
 	checkReach(t, g,
 		map[string]string{
@@ -49,7 +49,31 @@ func TestGraph(t *testing.T) {
 
 			"woods of winter default summer": "",
 			"woods of winter default winter": "start",
-		}, "shovel gift", false)
+		}, "shovel gift", false, false)
+
+	// check normal vs hard
+	checkReach(t, g,
+		map[string]string{
+			"sword 1":            "d0 sword chest",
+			"satchel 1":          "d0 rupee chest",
+			"feather 1":          "maku tree gift",
+			"feather 2":          "village shop 3",
+			"pegasus tree seeds": "ember tree",
+
+			"north horon default winter": "",
+			"north horon default summer": "start",
+		}, "village portal", false, false)
+	checkReach(t, g,
+		map[string]string{
+			"sword 1":            "d0 sword chest",
+			"satchel 1":          "d0 rupee chest",
+			"feather 1":          "maku tree gift",
+			"feather 2":          "village shop 3",
+			"pegasus tree seeds": "ember tree",
+
+			"north horon default winter": "",
+			"north horon default summer": "start",
+		}, "village portal", true, true)
 }
 
 func BenchmarkGraphExplore(b *testing.B) {
@@ -65,11 +89,8 @@ func BenchmarkGraphExplore(b *testing.B) {
 
 // helper function for testing whether a node is reachable given a certain
 // slotting
-//
-// TODO refactor this and checkSoftlockWithSlots, since they share most of
-//      their code
 func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
-	target string, expect bool) {
+	target string, hard, expect bool) {
 	t.Helper()
 
 	// add parents at the start of the function, and remove them at the end. if
@@ -91,9 +112,9 @@ func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
 			}
 		}
 	}()
-	g.ExploreFromStart(false)
+	g.ExploreFromStart(hard)
 
-	if (g[target].GetMark(g[target], false) == graph.MarkTrue) != expect {
+	if (g[target].GetMark(g[target], hard) == graph.MarkTrue) != expect {
 		if expect {
 			t.Errorf("expected to reach %s, but could not", target)
 		} else {
@@ -126,7 +147,7 @@ func TestFindRoute(t *testing.T) {
 		println(fmt.Sprintf("finding route %d/%d", i, totalRoutes))
 		seed := uint32(rand.Int())
 		src := rand.New(rand.NewSource(int64(seed)))
-		totalAttempts += findRoute(src, seed, false,
+		totalAttempts += findRoute(src, seed, false, false,
 			logChan, doneChan).AttemptCount
 	}
 

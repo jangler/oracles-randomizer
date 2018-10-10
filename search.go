@@ -20,9 +20,9 @@ func nodeInList(n *graph.Node, l *list.List) bool {
 	return false
 }
 
-func trySlotRandomItem(r *Route, src *rand.Rand,
-	itemPool, slotPool *list.List, countFunc func(r *Route) int,
-	numUsedSlots int, fillUnused bool) (usedItem, usedSlot *list.Element) {
+func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
+	slotPool *list.List, countFunc func(*Route, bool) int, numUsedSlots int,
+	hard, fillUnused bool) (usedItem, usedSlot *list.Element) {
 	// we're dead
 	if slotPool.Len() == 0 || itemPool.Len() == 0 {
 		return nil, nil
@@ -31,7 +31,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 	// this is the last slot, so it has to open up progression
 	var initialCount int
 	if slotPool.Len() == numUsedSlots+1 && !fillUnused {
-		initialCount = countFunc(r)
+		initialCount = countFunc(r, hard)
 	}
 
 	// try placing an item in the first slot until one fits
@@ -39,8 +39,8 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 		slot := es.Value.(*graph.Node)
 
 		r.Graph.ClearMarks()
-		if slot.GetMark(slot, false) != graph.MarkTrue ||
-			!canAffordSlot(r, slot) {
+		if slot.GetMark(slot, hard) != graph.MarkTrue ||
+			!canAffordSlot(r, slot, hard) {
 			continue
 		}
 
@@ -54,7 +54,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 			item.AddParents(slot)
 
 			if slotPool.Len() == numUsedSlots+1 && !fillUnused {
-				newCount := countFunc(r)
+				newCount := countFunc(r, hard)
 				if newCount <= initialCount {
 					item.RemoveParent(slot)
 					continue
@@ -144,7 +144,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	return true
 }
 
-func canAffordSlot(r *Route, slot *graph.Node) bool {
+func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	// if it doesn't cost anything, of course it's affordable
 	balance := logic.Rupees[slot.Name]
 	if balance >= 0 {
@@ -155,7 +155,7 @@ func canAffordSlot(r *Route, slot *graph.Node) bool {
 	balance += r.Costs
 	for _, node := range r.Graph {
 		value := logic.Rupees[node.Name]
-		if value > 0 && node.GetMark(node, false) == graph.MarkTrue {
+		if value > 0 && node.GetMark(node, hard) == graph.MarkTrue {
 			balance += value
 		}
 	}

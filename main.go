@@ -39,6 +39,8 @@ func main() {
 	flag.Usage = usage
 	flagFreewarp := flag.Bool(
 		"freewarp", false, "allow unlimited tree warp (no cooldown)")
+	flagHard := flag.Bool(
+		"hard", false, "require some plays outside normal logic")
 	flagNoMusic := flag.Bool(
 		"nomusic", false, "don't play any music in the modified ROM")
 	flagProfile := flag.String(
@@ -75,7 +77,7 @@ func main() {
 			fatal(err, true)
 		}
 
-		if err := handleFile(romData, flag.Arg(0), *flagSeed,
+		if err := handleFile(romData, flag.Arg(0), *flagSeed, *flagHard,
 			*flagVerbose); err != nil {
 			fatal(err, true)
 		}
@@ -88,7 +90,7 @@ func main() {
 			fatal(err, true)
 		}
 
-		if err := handleFile(b, flag.Arg(0), *flagSeed,
+		if err := handleFile(b, flag.Arg(0), *flagSeed, *flagHard,
 			*flagVerbose); err != nil {
 			fatal(err, true)
 		}
@@ -106,7 +108,8 @@ func main() {
 		var seed uint32
 		var logFilename string
 		fmt.Printf("randomizing %s\n", flag.Arg(0))
-		seed, sum, logFilename, err = randomize(b, *flagSeed, *flagVerbose)
+		seed, sum, logFilename, err = randomize(b, *flagSeed, *flagHard,
+			*flagVerbose)
 		if err != nil {
 			fatal(err, false)
 		}
@@ -217,7 +220,8 @@ func readGivenROM(filename string) ([]byte, error) {
 }
 
 // decide whether to randomize or update the file
-func handleFile(romData []byte, filename, seedFlag string, verbose bool) error {
+func handleFile(romData []byte, filename, seedFlag string,
+	hard, verbose bool) error {
 	var seed uint32
 	var sum []byte
 	var err error
@@ -225,7 +229,7 @@ func handleFile(romData []byte, filename, seedFlag string, verbose bool) error {
 
 	// operate on rom data
 	fmt.Printf("randomizing %s\n", flag.Arg(0))
-	seed, sum, logFilename, err = randomize(romData, seedFlag, verbose)
+	seed, sum, logFilename, err = randomize(romData, seedFlag, hard, verbose)
 	if err != nil {
 		return err
 	}
@@ -264,7 +268,7 @@ func readFileBytes(filename string) ([]byte, error) {
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
 func randomize(romData []byte, seedFlag string,
-	verbose bool) (uint32, []byte, string, error) {
+	hard, verbose bool) (uint32, []byte, string, error) {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return 0, nil, "", errs[0]
@@ -302,7 +306,7 @@ func randomize(romData []byte, seedFlag string,
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
 	for i := 0; i < numThreads; i++ {
-		go searchAsync(rand.New(sources[i]), seeds[i], verbose, logChan,
+		go searchAsync(rand.New(sources[i]), seeds[i], hard, verbose, logChan,
 			routeChan, doneChan)
 	}
 
@@ -388,10 +392,10 @@ func randomize(romData []byte, seedFlag string,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, seed uint32, verbose bool,
+func searchAsync(src *rand.Rand, seed uint32, hard, verbose bool,
 	logChan chan string, retChan chan *RouteInfo, doneChan chan int) {
 	// find a viable random route
-	retChan <- findRoute(src, seed, verbose, logChan, doneChan)
+	retChan <- findRoute(src, seed, hard, verbose, logChan, doneChan)
 }
 
 // send lines of item/slot info to a summary channel. this is a destructive

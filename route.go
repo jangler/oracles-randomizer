@@ -71,7 +71,6 @@ func (r *Route) ClearParents(node string) {
 	r.Graph[node].ClearParents()
 }
 
-// if hard is false, "hard" nodes are omitted
 func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
@@ -103,8 +102,6 @@ func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
 	}
 }
 
-// nodes not in the graph are omitted (for example, "hard" nodes in a non-hard
-// graph)
 func addNodeParents(prenodes map[string]*logic.Node, gs ...graph.Graph) {
 	for k, pn := range prenodes {
 		for _, g := range gs {
@@ -140,8 +137,8 @@ const (
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
-	doneChan chan int) *RouteInfo {
+func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
+	logChan chan string, doneChan chan int) *RouteInfo {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
@@ -183,7 +180,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		// slot progression items
 		done := r.Graph["done"]
 		success := true
-		for done.GetMark(done, false) != graph.MarkTrue {
+		for done.GetMark(done, hard) != graph.MarkTrue {
 			if verbose {
 				logChan <- fmt.Sprintf("searching; have %d more slots",
 					slotList.Len())
@@ -191,7 +188,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 			}
 
 			eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
-				countSteps, ri.UsedSlots.Len(), false)
+				countSteps, ri.UsedSlots.Len(), hard, false)
 
 			if eItem != nil {
 				ri.UsedItems.PushBack(itemList.Remove(eItem))
@@ -233,7 +230,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 				}
 
 				eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
-					countSteps, ri.UsedSlots.Len(), true)
+					countSteps, ri.UsedSlots.Len(), hard, true)
 
 				if eItem != nil {
 					ri.UsedItems.PushBack(itemList.Remove(eItem))
@@ -264,7 +261,7 @@ func findRoute(src *rand.Rand, seed uint32, verbose bool, logChan chan string,
 		}
 
 		if slotList.Len() == 0 {
-			arrangeListsForLog(r, ri, verbose)
+			arrangeListsForLog(r, ri, hard, verbose)
 
 			// rotate dungeon items to the back of the lists
 			items, slots := ri.ProgressItems, ri.ProgressSlots
@@ -511,13 +508,13 @@ func initRouteInfo(src *rand.Rand, r *Route,
 }
 
 // return the number of "step" nodes in the given set
-func countSteps(r *Route) int {
+func countSteps(r *Route, hard bool) int {
 	r.Graph.ClearMarks()
-	reached := r.Graph.ExploreFromStart(false)
+	reached := r.Graph.ExploreFromStart(hard)
 	count := 0
 	for node := range reached {
 		if node.IsStep && node.Name != "village shop 1" &&
-			node.Name != "village shop 2" && canAffordSlot(r, node) {
+			node.Name != "village shop 2" && canAffordSlot(r, node, hard) {
 			count++
 		}
 	}
@@ -526,7 +523,7 @@ func countSteps(r *Route) int {
 
 // break down the used items into required and optional items, so that the log
 // makes sense.
-func arrangeListsForLog(r *Route, ri *RouteInfo, verbose bool) {
+func arrangeListsForLog(r *Route, ri *RouteInfo, hard, verbose bool) {
 	done := r.Graph["done"]
 
 	// figure out which items aren't necessary
@@ -542,7 +539,7 @@ func arrangeListsForLog(r *Route, ri *RouteInfo, verbose bool) {
 		// counted here.
 		r.Graph.ClearMarks()
 		if slot.Name != "d0 sword chest" &&
-			done.GetMark(done, false) == graph.MarkTrue {
+			done.GetMark(done, hard) == graph.MarkTrue {
 			if verbose {
 				fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
 			}
