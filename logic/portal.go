@@ -1,7 +1,8 @@
 package logic
 
 var portalNodes = map[string]*Node{
-	"rosa portal": Or("temple", And("suburbs", Or("remove bush", "flute"))),
+	"rosa portal": Or("temple",
+		And("suburbs", Or("remove bush", "flute", "dimitri to suburbs"))),
 
 	"swamp portal": Or("beach",
 		And("south swamp", "bracelet", Or("flute",

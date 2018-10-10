@@ -10,7 +10,7 @@ package logic
 var d0Nodes = map[string]*Node{
 	"d0 key chest":   And("enter d0"),
 	"d0 sword chest": AndSlot("enter d0", "d0 small key"),
-	"d0 rupee chest": OrSlot("remove bush safe", "flute"),
+	"d0 rupee chest": OrSlot("remove bush safe", "flute", "dimitri to west"),
 
 	"d0 small key": And("d0 key chest"),
 }
