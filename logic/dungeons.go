@@ -40,9 +40,8 @@ var d2Nodes = map[string]*Node{
 	"d2 rope room":     And("d2 torch room", "kill rope"),
 	"d2 arrow room": Or("enter d2 B",
 		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
-	"d2 rupee room": And("d2 arrow room", "bombs"),
-	"d2 hardhat room": And("d2 arrow room",
-		Or("d2 2 keys", Hard("d2 1 key"))),
+	"d2 rupee room":     And("d2 arrow room", "bombs"),
+	"d2 hardhat room":   And("d2 arrow room", "d2 2 keys"), // min. 1 key
 	"d2 map chest":      AndSlot("d2 hardhat room", "remove pot"),
 	"d2 compass chest":  AndSlot("d2 arrow room", "kill normal"),
 	"d2 bracelet room":  And("d2 hardhat room", "kill hardhat (pit)"),
@@ -52,15 +51,13 @@ var d2Nodes = map[string]*Node{
 
 	// from here on it's entirely linear.
 	"d2 10-rupee chest": AndSlot("d2 bomb wall", "bombs", "bracelet"),
-	"d2 spinner": And("d2 10-rupee chest",
-		Or("d2 2 keys", Hard("d2 1 key"))),
+	"d2 spinner":        And("d2 10-rupee chest", "d2 2 keys"), // min. 1 key
 	"d2 boss key chest": AndSlot("d2 spinner", "d2 3 keys"),
 	"d2 essence":        And("d2 spinner", "d2 boss key"),
 
 	"d2 key A": And("d2 rope room"),
 	"d2 key B": And("d2 spiral chest"),
 	"d2 key C": And("d2 blade chest"),
-	"d2 1 key": Or("d2 key A", "d2 key B", "d2 key C"),
 	"d2 2 keys": Or(And("d2 key A", "d2 key B"), And("d2 key A", "d2 key C"),
 		And("d2 key B", "d2 key C")),
 	"d2 3 keys": And("d2 key A", "d2 key B", "d2 key C"),
@@ -76,15 +73,15 @@ var d3Nodes = map[string]*Node{
 	"d3 roller chest": And("d3 mimic stairs", "bracelet"),
 	"d3 rupee chest":  OrSlot("d3 mimic stairs", And("d3 center", "jump 2")),
 	"d3 gasha chest":  AndSlot("d3 mimic stairs", "jump 2"),
-	"d3 omuai stairs": And("d3 mimic stairs", "jump 2",
-		Or("d3 2 keys", Hard("d3 1 key")), "kill omuai"),
+	"d3 omuai stairs": And("d3 mimic stairs", "jump 2", "kill omuai",
+		"d3 2 keys"), // min. 1 key
 	"d3 boss key chest": AndSlot("d3 omuai stairs"),
 
 	// second floor
 	"d3 bomb chest": AndSlot("d3 mimic stairs"),
 	"d3 map chest":  AndSlot("d3 bomb chest", "bombs"),
-	"d3 feather chest": AndSlot("d3 rupee chest",
-		Or("d3 2 keys", Hard("d3 1 key")), "kill mimic"),
+	"d3 feather chest": AndSlot("d3 rupee chest", "kill mimic",
+		"d3 2 keys"), // min. 1 key
 	"d3 trampoline chest": And("d3 center", "jump 2"),
 	"d3 compass chest":    AndSlot("d3 center", "jump 2"),
 	"enter mothula":       And("d3 omuai stairs", "d3 boss key"),
@@ -93,7 +90,6 @@ var d3Nodes = map[string]*Node{
 	// fixed items
 	"d3 key A":  And("d3 roller chest"),
 	"d3 key B":  And("d3 trampoline chest"),
-	"d3 1 key":  Or("d3 key A", "d3 key B"),
 	"d3 2 keys": And("d3 key A", "d3 key B"),
 }
 
@@ -113,15 +109,14 @@ var d4Nodes = map[string]*Node{
 	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys", "kill stalfos"),
 
 	// 1F
-	"d4 pre-mid chest":  And("d4 stalfos stairs"),
-	"d4 final minecart": And("d4 stalfos stairs", "kill agunima"),
-	"d4 torch chest":    And("d4 stalfos stairs", "ember slingshot"),
-	"d4 slingshot chest": AndSlot("d4 final minecart",
-		Or("d4 5 keys", Hard("d4 2 keys"))),
+	"d4 pre-mid chest":   And("d4 stalfos stairs"),
+	"d4 final minecart":  And("d4 stalfos stairs", "kill agunima"),
+	"d4 torch chest":     And("d4 stalfos stairs", "ember slingshot"),
+	"d4 slingshot chest": AndSlot("d4 final minecart", "d4 5 keys"), // min. 2 keys
 	"d4 boss key spot": AndSlot("d4 final minecart", "hit very far lever",
-		Or("d4 5 keys", Hard("d4 2 keys"))),
+		"d4 5 keys"), // min. 2 keys
 	"d4 basement stairs": And("d4 final minecart", "hit far lever",
-		Or("d4 5 keys", Hard("d4 2 keys"))),
+		"d4 5 keys"), // min. 2 keys
 
 	// B1F
 	"enter gohma": And("d4 basement stairs", "d4 boss key",
@@ -187,7 +182,7 @@ var d6Nodes = map[string]*Node{
 	"d6 rupee room":    And("enter d6", "bombs"),
 	"d6 magkey room": And("enter d6",
 		Or(And("magnet gloves", "jump 2"), "jump 4")),
-	"d6 compass chest": AndSlot("enter d6", Or("d6 3 keys", Hard("d6 1 key"))),
+	"d6 compass chest": AndSlot("enter d6", "d6 3 keys"), // min. 1 key
 	"d6 map chest":     AndSlot("enter d6"),
 	"d6 rupee chest C": AndSlot("enter d6"),
 	"d6 U-room":        And("enter d6", "break crystal", "boomerang L-2"),
@@ -203,7 +198,7 @@ var d6Nodes = map[string]*Node{
 
 	// 3F
 	"d6 vire chest": And("d6 boss key chest", "kill stalfos"),
-	"enter vire":    And("d6 vire chest", Or("d6 3 keys", Hard("d6 1 key"))),
+	"enter vire":    And("d6 vire chest", "d6 3 keys"), // min. 1 key
 
 	// 5F
 	"d6 pre-boss room": And("enter vire", "kill vire", "kill hardhat (magnet)"),
@@ -214,7 +209,6 @@ var d6Nodes = map[string]*Node{
 	"d6 key A":  And("d6 magkey room"),
 	"d6 key B":  And("d6 vire chest"),
 	"d6 key C":  And("d6 skipped chest"),
-	"d6 1 key":  Or("d6 key A", "d6 key B", "d6 key C"),
 	"d6 3 keys": And("d6 key A", "d6 key B", "d6 key C"),
 }
 
