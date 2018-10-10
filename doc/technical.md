@@ -7,6 +7,7 @@ drenn's ages-disasm. addresses are for seasons.
 ## functions not documented elsewhere
 
 - 0:008a = interBankCall
+- 0:041a = getRandomNumber
 - 0:045b = copyMemoryReverse, b is # bytes, de is src, hl is dest
 - 0:0462 = copyMemory, b is # bytes, hl is src, de is dest
 - 0:0775 = loadTileset, a is index

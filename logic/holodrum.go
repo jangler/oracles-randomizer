@@ -45,7 +45,8 @@ var holodrumNodes = map[string]*Node{
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			"flippers", "jump 2", "ricky's flute", "dimitri's flute"))),
 	"fairy fountain": Or(
-		And("sunken city", Or("eastern suburbs default spring", "spring")),
+		And("sunken city",
+			Or("eastern suburbs default spring", "spring", "gale satchel")),
 		And("suburbs", Or("eastern suburbs default winter", "winter",
 			"flippers", "jump 2", "ricky's flute", "dimitri's flute"))),
 	"moblin road": Or(
@@ -54,8 +55,9 @@ var holodrumNodes = map[string]*Node{
 			"sunken city default spring", "spring",
 			"sunken city default summer", "summer",
 			"sunken city default autumn", "autumn"),
-			And(Or("eastern suburbs default winter", "winter"),
-				Or("eastern suburbs default spring", "spring")))),
+			Or("gale satchel", And(
+				Or("eastern suburbs default winter", "winter"),
+				Or("eastern suburbs default spring", "spring"))))),
 	"shovel gift": AndSlot("moblin road",
 		Or("woods of winter default winter", "winter")),
 	"central woods of winter": And("fairy fountain", Or(
@@ -189,11 +191,12 @@ var holodrumNodes = map[string]*Node{
 	// sunken city
 	"sunken city": Or(
 		And("mount cucco", "flippers",
-			Or("summer", "sunken city default summer")),
+			Or("summer", "sunken city default summer", "gale satchel")),
 		And("fairy fountain", Or("eastern suburbs default spring", "spring")),
 		And("blaino's gym", Or(
 			And("natzu prairie", "flute"),
-			And("natzu river", "jump 2", Or("flippers", "flute")),
+			And("natzu river", And(Or("flippers", "flute"), "jump 2"),
+				And("flute", "flippers", "gale satchel")),
 			And("natzu wasteland", Or("flute", And(
 				Or("boomerang L-2", Hard("remove bush")),
 				Or("jump 4", Hard("jump 3")))))))),

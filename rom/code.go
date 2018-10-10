@@ -300,6 +300,17 @@ func initEndOfBank() {
 	r.replace(0x06, 0x477b, "bush warning call",
 		"\x21\x26\xc6", "\xcd"+bushWarning)
 
+	// replace a random item drop with gale seeds 1/4 of the time if the player
+	// is out of gale seeds. this is important so that the one-way cliffs can
+	// be in logic with gale seeds.
+	galeDrop := r.appendToBank(0x06, "gale drop func",
+		"\x3e\x23\xcd\x17\x17\xd0\x2e\xb8\xb6\xc0"+
+			"\xcd\x1a\x04\xfe\x40\xd0\x0e\x08\xc9")
+	galeDropWrapper := r.appendToBank(0x06, "gale drop wrapper",
+		"\xcd"+galeDrop+"\xcd\xa7\x3e\xc9")
+	r.replace(0x06, 0x47f5, "gale drop call",
+		"\xcd\xa7\x3e", "\xcd"+galeDropWrapper)
+
 	// bank 07
 
 	// don't warp link using gale seeds if no trees have been reached (the menu
@@ -345,23 +356,29 @@ func initEndOfBank() {
 		"\x1e\x01\x21"+readSeason+"\xcd\x8a\x00"+ // get default season
 			"\x78\xb7\x3e\x01\x28\x05\xcb\x27\x05\x20\xfb"+ // match rod format
 			"\xb1\xa2\xba\xc9") // OR with c, AND with d, compare with d, ret
+	// returns c if the player has gale seeds and the seed satchel. used for
+	// warnings for cliffs and diving.
+	checkGaleSatchel := r.appendToBank(0x15, "check gale satchel",
+		"\xc5\x47\x3e\x19\xcd\x17\x17\x30\x05\x3e\x23\xcd\x17\x17\x78\xc1\xc9")
 	// this communicates with the warning script by setting bit zero of $cfc0
 	// if the warning needs to be displayed (based on room, season, etc), and
 	// also displays the exclamation mark if so.
 	warningFunc := r.appendToBank(0x15, "warning func",
 		"\xc5\xd5\xcd"+addrString(r.endOfBank[0x15]+8)+"\xd1\xc1\xc9"+ // wrap
 			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load env data
-			"\xfe\x46\x28\x46\xfe\x7c\x28\x12\xfe\x6e\x28\x18"+ //jump by room
-			"\xfe\x3d\x28\x22\xfe\x5c\x28\x28\xfe\x78\x28\x38\x18\x49"+ // cont.
-			"\x06\x61\x16\x01\xcd"+warningHelper+"\xc8\x18\x3b"+ // flower cliff
-			"\x78\xfe\x03\xc8\x06\x61\x16\x09\xcd"+warningHelper+
-			"\xc8\x18\x2d"+ // diving spot
-			"\x06\x65\x16\x02\xcd"+warningHelper+
-			"\xc8\x18\x23"+ // waterfall cliff
-			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\x18\x15"+ // keep
+			"\xfe\x46\x28\x56\xfe\x7c\x28\x12\xfe\x6e\x28\x1c"+ //jump by room
+			"\xfe\x3d\x28\x2a\xfe\x5c\x28\x34\xfe\x78\x28\x48\x18\x59"+ // cont.
+			"\xcd"+checkGaleSatchel+"\xd8"+ // flower cliff
+			"\x06\x61\x16\x01\xcd"+warningHelper+"\xc8\x18\x47"+ // cont.
+			"\x78\xfe\x03\xc8\xcd"+checkGaleSatchel+"\xd8"+ // diving spot
+			"\x06\x61\x16\x09\xcd"+warningHelper+"\xc8\x18\x35"+ // cont.
+			"\xcd"+checkGaleSatchel+"\xd8"+ // waterfall cliff"
+			"\x06\x65\x16\x02\xcd"+warningHelper+"\xc8\x18\x27"+ // cont.
+			"\xcd"+checkGaleSatchel+"\xd8"+ // moblin keep
+			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\x18\x15"+ // cont.
 			"\xfa\x5a\xca\xcb\x67\xc0"+ // room after poe skip (falls through)
-			"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf"+
-			"\x18\x04"+ // hss skip room
+			"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf"+ // hss skip
+			"\x18\x04"+ // cont.
 			"\xaf\xea\xe0\xcf"+ // set cliff warning text
 			"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
 			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
