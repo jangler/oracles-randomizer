@@ -42,7 +42,7 @@ Passing the `-hard` flag to the randomizer on the command line enables the
 things that are out of normal logic, with the exceptions of:
 
 - Warnings
-- Farming
+- Farming rupees
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
 - Magic rings
