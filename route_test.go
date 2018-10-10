@@ -22,7 +22,7 @@ func TestGraph(t *testing.T) {
 
 	checkReach(t, g,
 		map[string]string{
-			"winter": "d0 sword chest",
+			"sword 1": "d0 sword chest",
 		}, "maku tree gift", true)
 
 	checkReach(t, g,
