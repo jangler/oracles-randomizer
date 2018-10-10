@@ -1,6 +1,6 @@
 # Oracle of Seasons randomizer
 
-This program reads a Zelda: Oracle of Seasons ROM (US version only) shuffles
+This program reads a Zelda: Oracle of Seasons ROM (US version only), shuffles
 the locations of items and mystical seeds, randomizes the default season for
 each area, and writes the modified ROM to a new file. It also bypasses essence
 checks for overworld events that are necessary for progress, so the dungeons
@@ -92,7 +92,7 @@ logic, or to prevent softlocks. The most notable are:
 **Q: Is [thing] in logic?**
 
 A: See
-[logic.md]([https://github.com/jangler/oos-randomizer/blob/master/doc/logic.md).
+[logic.md](https://github.com/jangler/oos-randomizer/blob/master/doc/logic.md).
 
 **Q: I'm softlocked. Now what do I do?**
 
