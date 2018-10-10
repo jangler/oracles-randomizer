@@ -84,6 +84,13 @@ func (r *romBanks) replaceMultiple(addrs []Addr, name, old, new string) {
 	codeMutables[name] = MutableStrings(addrs, old, new)
 }
 
+// for some reason the maku tree has a different room for every number of
+// essences you have.
+var (
+	makuTreeRooms = []byte{0x0b, 0x0c, 0x7b, 0x2b, 0x2c, 0x2d, 0x5b, 0x5c, 0x5d}
+	starOreRooms  = []byte{0x66, 0x76, 0x75, 0x65}
+)
+
 // initEndOfBank adds end-of-bank mutables and mutables that point to them.
 func initEndOfBank() {
 	r := newRomBanks()
@@ -152,6 +159,11 @@ func initEndOfBank() {
 	// be used as a parameter to that function, but it can be returned.
 	callBank2 := r.appendToBank(0x00, "call bank 02",
 		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9")
+
+	// increment (hl) until it equals either register a or ff. returns z if a
+	// match was found.
+	searchValue := r.appendToBank(0x00, "search value",
+		"\xc5\x47\x2a\xb8\x28\x06\x3c\x28\x02\x18\xf7\x3c\x78\xc1\xc9")
 
 	// bank 01
 
@@ -377,12 +389,16 @@ func initEndOfBank() {
 	// bank 09
 
 	// shared by maku tree and star-shaped ore.
+	starOreRoomTable := r.appendToBank(0x02, "star ore room table",
+		string(starOreRooms)+"\xff")
+	makuTreeRoomTable := r.appendToBank(0x02, "maku tree room table",
+		string(makuTreeRooms)+"\xff")
 	bank2IDFunc := r.appendToBank(0x02, "bank 2 fake id func",
-		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x1b\xc9"+ // compare group
-			"\xfa\x4c\xcc\xfe\x65\x28\x0d\xfe\x66\x28\x09"+ // compare room
-			"\xfe\x75\x28\x05\xfe\x76\x28\x01\xc9"+ // cont.
-			"\x21\x94\xc6\xcb\xd6\xc9"+ // set treasure id 12
-			"\xfa\x4c\xcc\xfe\x0b\xc0\x21\x93\xc6\xcb\xd6\xc9") // id 0a
+		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x11\xc9"+ // compare group
+			"\xfa\x4c\xcc\x21"+starOreRoomTable+"\xcd"+searchValue+
+			"\xc0\x21\x94\xc6\xcb\xd6\xc9"+
+			"\xfa\x4c\xcc\x21"+makuTreeRoomTable+"\xcd"+searchValue+
+			"\xc0\x21\x93\xc6\xcb\xd6\xc9")
 	bank9IDFunc := r.appendToBank(0x09, "bank 9 fake id func",
 		"\xf5\xe5\x21"+bank2IDFunc+"\xcd"+callBank2+"\xe1\xf1\xcd\xeb\x16\xc9")
 	r.replace(0x09, 0x42e1, "bank 9 fake id call", "\xeb\x16", bank9IDFunc)
@@ -435,6 +451,13 @@ func initEndOfBank() {
 	r.replace(0x09, 0x788a, "market give item call",
 		"\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42",
 		"\x00\x00\x00\x00\x00\x00\x00\xcd"+marketGiveItem+"\x38\x0b")
+
+	// check treasure id 0a to determine whether the maku tree gives its intro
+	// speech and item, but return the number of essences in a.
+	makuTreeCheckItem := r.appendToBank(0x09, "maku tree check item",
+		"\xcd\x17\x17\xfa\xbb\xc6\xc9")
+	r.replace(0x09, 0x7d93, "maku tree check item call",
+		"\x3e\x40\xcd\x17\x17", "\x3e\x0a\xcd"+makuTreeCheckItem)
 
 	// bank 0b
 
@@ -600,12 +623,15 @@ func makeCollectModeTable() string {
 	}
 
 	// add other three star ore screens
-	for _, room := range []byte{0x65, 0x75, 0x76} {
-		_, err := b.Write([]byte{0x01, room, collectDig})
-		if err != nil {
-			panic(err)
-		}
+	for _, room := range starOreRooms[1:] {
+		b.Write([]byte{0x01, room, collectDig})
 	}
+
+	// add other eight maku tree screens
+	for _, room := range makuTreeRooms[1 : len(makuTreeRooms)-1] {
+		b.Write([]byte{0x02, room, collectFall})
+	}
+	b.Write([]byte{0x02, 0x5d, collectFind0}) // maku seed
 
 	b.Write([]byte{0xff})
 	return b.String()
