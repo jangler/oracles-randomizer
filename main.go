@@ -371,6 +371,11 @@ func randomize(romData []byte, seedFlag string,
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", ri.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
+	if hard {
+		summary <- fmt.Sprintf("difficulty: hard")
+	} else {
+		summary <- fmt.Sprintf("difficulty: normal")
+	}
 	logItems(summary, "required items", ri.ProgressItems, ri.ProgressSlots)
 	logItems(summary, "optional items", ri.ExtraItems, ri.ExtraSlots)
 	summary <- ""
