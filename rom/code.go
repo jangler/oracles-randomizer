@@ -266,9 +266,12 @@ func initEndOfBank() {
 		"animal enter call", "\xcd\xaa\x44\xb7", "\xcd"+fluteEnterFunc+"\x00")
 
 	// let link jump down the cliff outside d7, in case of winter sans shovel.
-	// also let link jump down the snow cliff added in woods of winter.
+	// also let link jump down the snow cliff added in woods of winter. also
+	// lets link jump over any tile if wearing dev ring while shielding.
 	cliffLookupFunc := r.appendToBank(0x05, "cliff lookup func",
-		"\xf5\xfa\x49\xcc\xb7\x20\x21"+ // cp group
+		"\xf5\xfa\xc5\xc6\xfe\x40\x20\x0c\xfa\x89\xcc\xb7\x28\x06"+ // dev
+			"\xf1\xfa\x09\xd0\x37\xc9"+ // always jump if dev ring + shield
+			"\xfa\x49\xcc\xb7\x20\x21"+ // cp group
 			"\xfa\x4c\xcc\xfe\xd0\x20\x09\xf1"+ // d7 entrance
 			"\xfe\xa8\x20\x16\x3e\x08\x37\xc9"+ // cp tile
 			"\xfe\x9d\x20\x0d\xf1"+ // woods of winter
