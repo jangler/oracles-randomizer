@@ -360,41 +360,51 @@ func initEndOfBank() {
 	// warnings for cliffs and diving.
 	checkGaleSatchel := r.appendToBank(0x15, "check gale satchel",
 		"\xc5\x47\x3e\x19\xcd\x17\x17\x30\x05\x3e\x23\xcd\x17\x17\x78\xc1\xc9")
+	warnGeneric := r.appendToBank(0x15, "warn generic",
+		"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
+			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
+			"\x3e\x50\xcd\x74\x0c"+ // play sound
+			"\x21\xc0\xcf\xcb\xc6\xc9") // set $cfc0 bit and ret
+	warnCliff := r.appendToBank(0x15, "warn cliff",
+		"\xaf\xea\xe0\xcf\xc3"+warnGeneric)
+	warnFlowerCliff := r.appendToBank(0x15, "warn flower cliff",
+		"\xcd"+checkGaleSatchel+"\xd8"+
+			"\x06\x61\x16\x01\xcd"+warningHelper+"\xc8\xc3"+warnCliff)
+	warnDivingSpot := r.appendToBank(0x15, "warn diving spot",
+		"\x78\xfe\x03\xc8\xcd"+checkGaleSatchel+"\xd8"+
+			"\x06\x61\x16\x09\xcd"+warningHelper+"\xc8\xc3"+warnCliff)
+	warnWaterfallCliff := r.appendToBank(0x15, "warn waterfall cliff",
+		"\xcd"+checkGaleSatchel+"\xd8"+
+			"\x06\x65\x16\x02\xcd"+warningHelper+"\xc8\xc3"+warnCliff)
+	warnMoblinKeep := r.appendToBank(0x15, "warn moblin keep",
+		"\xcd"+checkGaleSatchel+"\xd8"+
+			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\xc3"+warnCliff)
+	warnHSSSkip := r.appendToBank(0x15, "warn hss skip",
+		"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf"+
+			"\xc3"+warnGeneric)
+	warnPoeSkip := r.appendToBank(0x15, "warn poe skip",
+		"\xfa\x5a\xca\xcb\x67\xc0\xc3"+warnHSSSkip)
 	// this communicates with the warning script by setting bit zero of $cfc0
 	// if the warning needs to be displayed (based on room, season, etc), and
 	// also displays the exclamation mark if so.
 	warningFunc := r.appendToBank(0x15, "warning func",
 		"\xc5\xd5\xcd"+addrString(r.endOfBank[0x15]+8)+"\xd1\xc1\xc9"+ // wrap
 			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load env data
-			"\xfe\x46\x28\x56\xfe\x7c\x28\x12\xfe\x6e\x28\x1c"+ //jump by room
-			"\xfe\x3d\x28\x2a\xfe\x5c\x28\x34\xfe\x78\x28\x48\x18\x59"+ // cont.
-			"\xcd"+checkGaleSatchel+"\xd8"+ // flower cliff
-			"\x06\x61\x16\x01\xcd"+warningHelper+"\xc8\x18\x47"+ // cont.
-			"\x78\xfe\x03\xc8\xcd"+checkGaleSatchel+"\xd8"+ // diving spot
-			"\x06\x61\x16\x09\xcd"+warningHelper+"\xc8\x18\x35"+ // cont.
-			"\xcd"+checkGaleSatchel+"\xd8"+ // waterfall cliff"
-			"\x06\x65\x16\x02\xcd"+warningHelper+"\xc8\x18\x27"+ // cont.
-			"\xcd"+checkGaleSatchel+"\xd8"+ // moblin keep
-			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\x18\x15"+ // cont.
-			"\xfa\x5a\xca\xcb\x67\xc0"+ // room after poe skip (falls through)
-			"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf"+ // hss skip
-			"\x18\x04"+ // cont.
-			"\xaf\xea\xe0\xcf"+ // set cliff warning text
-			"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
-			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
-			"\x3e\x50\xcd\x74\x0c"+ // play sound
-			"\x21\xc0\xcf\xcb\xc6\xc9") // set $cfc0 bit and ret
-	warnCliff := r.appendToBank(0x0b, "cliff warning script",
+			"\xfe\x46\xca"+warnPoeSkip+"\xfe\x7c\xca"+warnFlowerCliff+
+			"\xfe\x6e\xca"+warnDivingSpot+"\xfe\x3d\xca"+warnWaterfallCliff+
+			"\xfe\x5c\xca"+warnMoblinKeep+"\xfe\x78\xca"+warnHSSSkip+
+			"\xc3"+warnGeneric)
+	warnCliffText := r.appendToBank(0x0b, "cliff warning script",
 		"\x98\x26\x00\xbe\x00") // show cliff warning text
-	warnBush := r.appendToBank(0x0b, "bush warning script",
+	warnBushText := r.appendToBank(0x0b, "bush warning script",
 		"\x98\x26\x01\xbe\x00") // show bush warning text
-	warnSkip := r.appendToBank(0x0b, "skip warning script",
+	warnSkipText := r.appendToBank(0x0b, "skip warning script",
 		"\x98\x26\x02\xbe\x00") // show key skip warning text
 	// point to this script instead of the normal maku gate script
 	warningScript := r.appendToBank(0x0b, "warning script",
 		"\xcb\x4c\xcc\xd9\x87\x4e"+ // use maku gate script if on that screen
 			"\xd0\xe0"+warningFunc+"\xa0\xbd\xd7\x3c"+ // wait for collision
-			"\x87\xe0\xcf"+warnCliff+warnBush+warnSkip) // jump table
+			"\x87\xe0\xcf"+warnCliffText+warnBushText+warnSkipText) // jp table
 	r.replace(0x08, 0x5663, "warning script pointer", "\x87\x4e", warningScript)
 
 	// set sub ID for star ore
