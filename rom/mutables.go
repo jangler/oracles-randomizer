@@ -257,6 +257,11 @@ var fixedMutables = map[string]Mutable{
 	// try.
 	"star ore bugfix": MutableWord(Addr{0x08, 0x62d5}, 0x6656, 0x7624),
 
+	// prevent leaving sunken city with dimitri unless you have his flute, in
+	// order to prevent a variety of softlocks.
+	"block dimitri exit": MutableString(Addr{0x09, 0x6f34},
+		"\xfa\x10\xc6\xfe\x0c", "\xfa\xaf\xc6\xfe\x02"),
+
 	// normally none of the desert pits will work if the player already has the
 	// rusty bell.
 	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
