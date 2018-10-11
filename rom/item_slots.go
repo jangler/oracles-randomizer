@@ -389,7 +389,7 @@ var ItemSlots = map[string]*MutableSlot{
 		GfxAddrs:    []Addr{{0x3f, 0x6676}},
 		group:       0x04,
 		room:        0x06,
-		collectMode: collectChest,
+		collectMode: collectNil,
 		mapCoords:   0xd4,
 	},
 	"d0 rupee chest": MutableChest(

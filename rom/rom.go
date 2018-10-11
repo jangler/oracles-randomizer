@@ -173,7 +173,7 @@ func Verify(b []byte) []error {
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
 			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
-			"d5 boss key spot":
+			"d5 boss key spot", "sword 1":
 			break
 		default:
 			if err := m.Check(b); err != nil {
