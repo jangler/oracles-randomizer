@@ -74,6 +74,7 @@ drenn's ages-disasm. addresses are for seasons.
 - cc49 = active group
 - cc4c = active room
 - cc63-cc66 = data about room transition (group, room, ??, link position)
+- cc89 = level of shield that link is using, if using a shield
 - ccab = allow screen transitions only if zero in treasure H&S
 - ccb6 = active tile (under link)? rod of seasons only works when this == 8
 - ccea = disable interactions (?)
