@@ -271,8 +271,8 @@ var holodrumNodes = map[string]*Node{
 		And("blaino's gym", "jump 3")),
 
 	// northern peak
-	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence",
-		"d5 essence", "d6 essence", "d7 essence", "d8 essence"),
+	"maku seed": And("sword", "d1 essence", "d2 essence", "d3 essence",
+		"d4 essence", "d5 essence", "d6 essence", "d7 essence", "d8 essence"),
 	"enter d9": And("blaino's gym", "maku seed"),
 
 	// old men
