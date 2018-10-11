@@ -549,17 +549,25 @@ func initEndOfBank() {
 
 	// look up item collection mode in a table based on room. if no entry is
 	// found, the original mode (a) is preserved. the table is three bytes per
-	// entry, (group, room, collect mode). ff ends the table. the master
-	// diver's cave is a special case; if link is on the right side of the
-	// room, collection mode 02 is used instead.
+	// entry, (group, room, collect mode). ff ends the table. master diver room
+	// and d7 compass room are a special case as they have two items.
 	collectModeTable := r.appendToBank(0x15, "collection mode table",
 		makeCollectModeTable())
+	// cp link's position if in diver room, set mode to 02 if on right side,
+	// ret z if set
+	collectModeDiver := r.appendToBank(0x15, "diver collect mode",
+		"\x3e\x05\xb8\xc0\x3e\xbd\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd8"+
+			"\xaf\x3e\x02\xc9")
+	// cp link's position if in d7 compass room, set mode to default if on
+	// left side, ret z if set
+	collectModeD7Key := r.appendToBank(0x15, "d7 key collect mode",
+		"\x3e\x05\xb8\xc0\x3e\x52\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd0"+
+			"\xaf\x7b\xc9")
 	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
 		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\x28\x23\xb8\x20\x1c\x2a\xb9\x20\x19"+
-			"\x3e\x05\xb8\x20\x10\x3e\xbd\xb9\x20\x0b\xfa\x0d\xd0\xfe\x80"+
-			"\x38\x04\x3e\x02\x18\x08\x2a\x18\x05\x23\x23\x18\xd8"+
-			"\x7b\xe1\xc1\xc9")
+			"\x2a\xfe\xff\x28\x18\xb8\x20\x11\x2a\xb9\x20\x0e"+
+			"\xcd"+collectModeDiver+"\x28\x0d\xcd"+collectModeD7Key+"\x28\x08"+
+			"\x2a\x18\x05\x23\x23\x18\xe3\x7b\xe1\xc1\xc9")
 
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created, and set collection mode.
