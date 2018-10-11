@@ -9,7 +9,7 @@ version="$(git tag --contains HEAD)"
 appname="$(basename "$PWD")"
 
 unix2dos -n README.md README.txt
-unix2dos -n scripts/checklist.html checklist.html
+unix2dos -n doc/checklist.html checklist.html
 
 mkdir -p "dist/$version"
 GOOS=windows GOARCH=386 go build
