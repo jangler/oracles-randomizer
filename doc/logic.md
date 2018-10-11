@@ -28,8 +28,8 @@ Out of logic:
 - Lighting torches using mystery seeds
 - Using only bombs or mystery seeds as a weapon
 - Using only scent or gale seeds from the seed satchel as a weapon
-- Lighting the second Poe sister's torches without pegasus seeds or hyper
-  slingshot
+- Lighting the second Poe sister's torches without either pegasus seeds or
+  hyper slingshot
 - Fighting Frypolar without slingshot
 - D8 sidescrollers without cape
 - Magic rings
