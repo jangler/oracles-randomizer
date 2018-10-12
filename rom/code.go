@@ -549,8 +549,8 @@ func initEndOfBank() {
 
 	// look up item collection mode in a table based on room. if no entry is
 	// found, the original mode (a) is preserved. the table is three bytes per
-	// entry, (group, room, collect mode). ff ends the table. master diver room
-	// and d7 compass room are a special case as they have two items.
+	// entry, (group, room, collect mode). ff ends the table. rooms that
+	// contain more than one item are special cases.
 	collectModeTable := r.appendToBank(0x15, "collection mode table",
 		makeCollectModeTable())
 	// cp link's position if in diver room, set mode to 02 if on right side,
@@ -563,11 +563,16 @@ func initEndOfBank() {
 	collectModeD7Key := r.appendToBank(0x15, "d7 key collect mode",
 		"\x3e\x05\xb8\xc0\x3e\x52\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd0"+
 			"\xaf\x7b\xc9")
+	// if link already has the maku tree's item, use default mode.
+	collectModeMakuSeed := r.appendToBank(0x15, "maku seed collect mode",
+		"\x3e\x02\xb8\xc0\x3e\x5d\xb9\xc0\x3e\x0a\xcd\x17\x17\x38\x02"+
+			"\x3c\xc9\xaf\x7b\xc9")
 	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
 		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\x28\x18\xb8\x20\x11\x2a\xb9\x20\x0e"+
-			"\xcd"+collectModeDiver+"\x28\x0d\xcd"+collectModeD7Key+"\x28\x08"+
-			"\x2a\x18\x05\x23\x23\x18\xe3\x7b\xe1\xc1\xc9")
+			"\x2a\xfe\xff\x28\x1d\xb8\x20\x16\x2a\xb9\x20\x13"+
+			"\xcd"+collectModeDiver+"\x28\x12\xcd"+collectModeD7Key+"\x28\x0d"+
+			"\xcd"+collectModeMakuSeed+"\x28\x08"+
+			"\x2a\x18\x05\x23\x23\x18\xde\x7b\xe1\xc1\xc9")
 
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created, and set collection mode.
@@ -669,10 +674,9 @@ func makeCollectModeTable() string {
 	}
 
 	// add other eight maku tree screens
-	for _, room := range makuTreeRooms[1 : len(makuTreeRooms)-1] {
+	for _, room := range makuTreeRooms[1:] {
 		b.Write([]byte{0x02, room, collectFall})
 	}
-	b.Write([]byte{0x02, 0x5d, collectFind0}) // maku seed
 
 	b.Write([]byte{0xff})
 	return b.String()
