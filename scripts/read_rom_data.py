@@ -60,6 +60,8 @@ TREASURE_PTR_TABLE = 0x15, 0x5129
 
 MUSIC = { # and sound effects
     0x03: "overworld",
+    0x04: "temple remains",
+    0x05: "tarm ruins",
     0x0a: "horon village",
     0x0d: "essence room",
     0x0e: "house",
@@ -73,6 +75,7 @@ MUSIC = { # and sound effects
     0x18: "ancient ruins",
     0x19: "explorer's crypt",
     0x1a: "sword and shield maze",
+    0x1b: "onox's castle",
     0x28: "subrosia",
     0x35: "samasa desert",
     0x36: "cave",
