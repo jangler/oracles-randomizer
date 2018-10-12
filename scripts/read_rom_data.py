@@ -146,8 +146,12 @@ ENTITIES = {
     0x53: ("dragonfly", {}),
     0x59: ("fixed drop", {
         0x00: "fairy",
+        0x01: "heart",
         0x04: "bombs",
         0x05: "ember seeds",
+        0x06: "scent seeds",
+        0x07: "pegasus seeds",
+        0x08: "gale seeds",
         0x09: "mystery seeds",
     }),
     0x5a: ("seed tree", {
