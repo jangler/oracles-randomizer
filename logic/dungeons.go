@@ -95,18 +95,18 @@ var d3Nodes = map[string]*Node{
 
 var d4Nodes = map[string]*Node{
 	// left branch from entrance
-	"d4 bomb chest": AndSlot("enter d4", Or("flippers", "jump 6")),
+	"d4 bomb chest": AndSlot("enter d4", Or("flippers", "jump 4")),
 	"d4 pot room":   And("d4 bomb chest", "bombs", "bracelet"),
 	"d4 map chest":  AndSlot("d4 bomb chest", "hit lever"),
 	"d4 dark chest": And("d4 map chest", "jump 2"),
 
 	// 2F (ground floor), right branch
-	"d4 compass chest": AndSlot("enter d4", Or("flippers", "jump 6"), "bombs",
-		"d4 1 key"), // might be possible w/ cape + bomb boost?
+	"d4 compass chest": AndSlot("enter d4", Or("flippers", "jump 4"), "bombs",
+		"d4 1 key"),
 	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 1 key"),
-	"d4 water key room": And("d4 roller minecart", "hit lever", "flippers",
-		"kill normal"),
-	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys", "kill stalfos"),
+	"d4 water key room":  And("d4 roller minecart", "hit lever", "kill normal"),
+	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
+		"kill stalfos"),
 
 	// 1F
 	"d4 pre-mid chest":   And("d4 stalfos stairs"),
@@ -237,8 +237,8 @@ var d7Nodes = map[string]*Node{
 	"d7 armos puzzle": And("d7 pot room", Or("jump 3", "magnet gloves")),
 	"d7 cross bridge": Or("jump 4", "kill darknut (across pit)",
 		And("jump 2", "magnet gloves")),
-	"d7 poe sisters":    And("d7 water stairs", "jump 3", "d7 4 keys"),
-	"d7 rupee chest":    AndSlot("d7 moldorm room", "kill moldorm", "jump 4"),
+	"d7 rupee chest": AndSlot("d7 water stairs", "kill moldorm", "jump 4",
+		"d7 4 keys"),
 	"d7 skipped room":   And("d7 rupee chest"),
 	"d7 boss key chest": AndSlot("d7 rupee chest", "d7 key E"),
 	"d7 essence": AndStep("d7 rupee chest", "d7 boss key",
@@ -263,7 +263,7 @@ var d7Nodes = map[string]*Node{
 var d8Nodes = map[string]*Node{
 	// 1F
 	"d8 eye room": And("enter d8", "remove pot", Or("any slingshot",
-		HardAnd("bomb jump 2",
+		HardAnd("jump 2",
 			Or("ember satchel", "scent satchel", "mystery satchel")))),
 	"d8 ring chest":   AndSlot("enter d8", "any slingshot L-2", "jump 2"),
 	"d8 hardhat room": And("enter d8", "kill magunesu"),

@@ -180,11 +180,12 @@ var holodrumNodes = map[string]*Node{
 	"natzu prairie":   Root("start"),
 	"natzu river":     Root(),
 	"natzu wasteland": Root(),
-	"great moblin chest": AndSlot(Or("flippers", "jump 6"), "bracelet", Or(
-		And("natzu prairie", "sunken city"),
-		And("natzu river", "blaino's gym", "dimitri's flute"),
-		And("natzu wasteland", "sunken city",
-			Or("flute", And("remove bush", Or("jump 4", Hard("jump 3"))))))),
+	"great moblin chest": AndSlot(Or("flippers", "bomb jump 4"),
+		"bracelet", Or(
+			And("natzu prairie", "sunken city"),
+			And("natzu river", "blaino's gym", "dimitri's flute"),
+			And("natzu wasteland", "sunken city", Or("flute",
+				And("remove bush", Or("jump 4", Hard("jump 3"))))))),
 	"platform chest": OrSlot(
 		And("blaino's gym", Or("flippers", "dimitri's flute")),
 		And("sunken city", "natzu river", "jump 6")),
@@ -234,7 +235,7 @@ var holodrumNodes = map[string]*Node{
 	// goron mountain
 	"goron mountain": Or(
 		And("mount cucco", Or("shovel", "spring banana"), "bracelet"),
-		And("temple remains", "jump 3", Or("flippers", "jump 6")),
+		And("temple remains", "jump 3", Or("flippers", "bomb jump 4")),
 		And("blaino's gym", "flippers")),
 	"goron chest": AndSlot("goron mountain", "bombs", "bomb jump 3"),
 
@@ -259,7 +260,7 @@ var holodrumNodes = map[string]*Node{
 
 	// temple remains (the important logic is in the portal nodes)
 	"temple remains": Or(
-		And("goron mountain", Or("flippers", "jump 6"), "jump 3"),
+		And("goron mountain", Or("flippers", "bomb jump 4"), "jump 3"),
 		And("blaino's gym", "jump 3")),
 
 	// northern peak
