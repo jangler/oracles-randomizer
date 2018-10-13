@@ -282,27 +282,6 @@ func initEndOfBank() {
 
 	// bank 06
 
-	// create a warning interaction when breaking bushes and flowers under
-	// certain circumstances.
-	bushWarningBody := r.appendToBank(0x06, "break bush warning body",
-		"\xfe\xc3\x28\x09\xfe\xc4\x28\x05\xfe\xe5\x28\x01\xc9"+ // tile
-			"\xfa\x4c\xcc\xfe\xa7\x28\x0d\xfe\x97\x28\x09"+ // jump by room
-			"\xfe\x8d\x28\x05\xfe\x9a\x28\x01\xc9"+ // (cont.)
-			"\x3e\x09\xcd\x17\x17\xd8"+ // "already warned" flag
-			"\x3e\x16\xcd\x17\x17\xd8"+ // bracelet
-			"\x3e\x0e\xcd\x17\x17\xd8"+ // flute
-			"\x3e\x05\xcd\x17\x17\xd8"+ // sword
-			"\x3e\x06\xcd\x17\x17\xfe\x02\xc8"+ // boomerang, L-2
-			"\x21\x92\xc6\x3e\x09\xcd\x0e\x02"+ // set "already warned" flag
-			"\x21\xe0\xcf\x36\x01"+ // set warning text index
-			"\xcd\xc6\x3a\xc0\x36\x22\x2c\x36\x0a"+ // create warning object
-			"\x2e\x4a\x11\x0a\xd0\x06\x04\xcd\x5b\x04"+ // place it on link
-			"\xc9") // ret
-	bushWarning := r.appendToBank(0x06, "break bush warning func",
-		"\xf5\xc5\xd5\xcd"+bushWarningBody+"\x21\x26\xc6\xd1\xc1\xf1\xc9")
-	r.replace(0x06, 0x477b, "bush warning call",
-		"\x21\x26\xc6", "\xcd"+bushWarning)
-
 	// replace a random item drop with gale seeds 1/4 of the time if the player
 	// is out of gale seeds. this is important so that the one-way cliffs can
 	// be in logic with gale seeds.
@@ -400,7 +379,7 @@ func initEndOfBank() {
 	warnCliffText := r.appendToBank(0x0b, "cliff warning script",
 		"\x98\x26\x00\xbe\x00") // show cliff warning text
 	warnBushText := r.appendToBank(0x0b, "bush warning script",
-		"\x98\x26\x01\xbe\x00") // show bush warning text
+		"\x00") // impossible since 2.2.0
 	warnSkipText := r.appendToBank(0x0b, "skip warning script",
 		"\x98\x26\x02\xbe\x00") // show key skip warning text
 	// point to this script instead of the normal maku gate script

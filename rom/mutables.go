@@ -352,12 +352,6 @@ var fixedMutables = map[string]Mutable{
 			"\x62\x65\x20\x02\xa4\x05\x0f\x01"+ // be able to get
 			"\x04\x9f\x20\x75\x70\x03\xa4"+ // back up.
 			"\x07\x03"), // jump to end text
-	"bush warning addr": MutableWord(Addr{0x1c, 0x6b50}, 0xfb91, 0xdb91),
-	"bush warning text": MutableString(Addr{0x1f, 0x455d}, "\x55\x6d",
-		"\x0c\x00\x42\x72\x65\x61\x6b\x03\xa6\x62\x75\x73\x68\x65\x73\x01"+ // Breaking bushes
-			"\x03\x69\x04\xb5\x20\x04\xc4\x01"+ // with only those
-			"\x04\xcc\x20\x05\xe5\x75\x6e\x73\x61\x66\x65\x03\xa4"+ // items is unsafe.
-			"\x07\x03"), // jump to end text
 	"hss skip warning addr": MutableWord(Addr{0x1c, 0x6b52}, 0x1192, 0x0292),
 	"hss skip warning text": MutableString(Addr{0x1f, 0x4584}, "\x20\x05",
 		"\x0c\x00\x02\x3b\x73\x6b\x69\x70\x01"+ // If you skip
