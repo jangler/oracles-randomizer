@@ -38,5 +38,5 @@ var portalNodes = map[string]*Node{
 	// dead end
 	"d8 portal": And("remains portal", "bombs",
 		Or("temple remains default summer", "summer"),
-		Or("jump 6", And("jump 3", "magnet gloves"))),
+		Or("jump 6", And("bomb jump 2", "magnet gloves"))),
 }

@@ -95,10 +95,13 @@ var itemNodes = map[string]*Node{
 					"sunken city default spring"))))))),
 
 	// jump x pit tiles
-	"jump 2": Or("feather L-1", "feather L-2"),
-	"jump 3": Or(And("feather L-1", "pegasus satchel"), "feather L-2"),
-	"jump 4": And("feather L-2"),
-	"jump 6": And("feather L-2", "pegasus satchel"),
+	"jump 2":      Or("feather L-1", "feather L-2"),
+	"jump 3":      Or(And("feather L-1", "pegasus satchel"), "feather L-2"),
+	"bomb jump 2": Or("jump 3", HardAnd("jump 2", "bombs")),
+	"bomb jump 3": Or("jump 4", HardAnd("jump 3", "bombs")),
+	"jump 4":      And("feather L-2"),
+	"bomb jump 4": Or("jump 6", HardAnd("jump 4", "bombs")),
+	"jump 6":      And("feather L-2", "pegasus satchel"),
 
 	"harvest tree": Or("sword", "rod", "fool's ore"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),

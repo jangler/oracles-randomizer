@@ -22,6 +22,8 @@ var holodrumNodes = map[string]*Node{
 	"member's shop 3": AndSlot("member's card"),
 
 	// western coast
+	//
+	// possible but not in logic: reaching the stump without feather
 	"x-shaped jewel chest": AndSlot("horon village",
 		Or("ember slingshot", Hard("mystery slingshot")),
 		"mystery seeds", "kill moldorm"),
@@ -86,8 +88,7 @@ var holodrumNodes = map[string]*Node{
 	"moblin cliff chest": AndSlot("suburbs", "bracelet",
 		Or("jump 3", "magnet gloves"),
 		Or("eastern suburbs default spring", "spring")),
-	"linked dive chest": AndSlot("moblin road",
-		Or("flippers", "jump 4", HardAnd("jump 3", "bombs"))),
+	"linked dive chest": AndSlot("moblin road", Or("flippers", "bomb jump 3")),
 
 	// holodrum plain
 	"ghastly stump": Or("north swamp",
@@ -124,7 +125,7 @@ var holodrumNodes = map[string]*Node{
 	"pegasus tree":       AndSlot("north swamp", "seed item", "harvest tree"),
 	"floodgate key spot": AndSlot("north swamp", "hit lever"),
 	"spool stump": And("north swamp", "hit lever", "bracelet", "floodgate key",
-		Or("pegasus satchel", "flippers", "jump 4", HardAnd("bombs", "jump 3"))),
+		Or("pegasus satchel", "flippers", "bomb jump 3")),
 	"dry swamp": Or("spool swamp default summer",
 		"spool swamp default autumn", "spool swamp default winter",
 		And("spool stump", Or("summer", "autumn", "winter"))),
@@ -235,8 +236,7 @@ var holodrumNodes = map[string]*Node{
 		And("mount cucco", Or("shovel", "spring banana"), "bracelet"),
 		And("temple remains", "jump 3", Or("flippers", "jump 6")),
 		And("blaino's gym", "flippers")),
-	"goron chest": AndSlot("goron mountain", "bombs",
-		Or("jump 4", Hard("jump 3"))),
+	"goron chest": AndSlot("goron mountain", "bombs", "bomb jump 3"),
 
 	// tarm ruins
 	"tarm ruins": And("north swamp",

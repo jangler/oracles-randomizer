@@ -14,12 +14,10 @@ package logic
 // of jumping and boulder removal.
 
 var subrosiaNodes = map[string]*Node{
-	"cross lava lake": Or("jump 6", HardAnd("bombs", "jump 4")),
-
 	"temple": Or("rosa portal",
 		And("beach", "ribbon"),
 		And("beach", "jump 2"),
-		And("hide and seek", "cross lava lake"),
+		And("hide and seek", "bomb jump 4"),
 		And("bridge", "jump 2")),
 
 	"beach": Or("swamp portal",
@@ -32,7 +30,7 @@ var subrosiaNodes = map[string]*Node{
 
 	"hide and seek": Or("mountain portal",
 		And("pirate house", "jump 2"),
-		And("cross lava lake", Or("temple", "bridge"))),
+		And("bomb jump 4", Or("temple", "bridge"))),
 
 	"pirate house": Or("village portal", And("hide and seek", "jump 2")),
 
@@ -42,9 +40,8 @@ var subrosiaNodes = map[string]*Node{
 
 	"bridge": Or(
 		And("temple", "jump 2"),
-		And("remains portal", "bracelet",
-			Or("jump 4", HardAnd("bombs", "jump 3"))),
-		And("hide and seek", "cross lava lake")),
+		And("remains portal", "bracelet", "bomb jump 3"),
+		And("hide and seek", "bomb jump 4")),
 
 	"dance hall prize": AndSlot("temple"),
 	"rod gift":         AndSlot("temple"),

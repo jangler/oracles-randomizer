@@ -142,13 +142,13 @@ var d4Nodes = map[string]*Node{
 // logic for them.
 var d5Nodes = map[string]*Node{
 	// 1F (it's the only F)
-	"d5 cart bay":   And("enter d5", Or("flippers", "jump 3")),
+	"d5 cart bay":   And("enter d5", Or("flippers", "bomb jump 2")),
 	"d5 cart chest": And("d5 cart bay", "hit lever"),
-	"d5 pot room": And("enter d5", Or("magnet gloves", "bombs", "jump 2"),
-		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel")))),
+	"d5 pot room": And("enter d5", Or(And("magnet gloves", "bombs", "jump 2"),
+		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel"))))),
 	"d5 map chest": AndSlot("d5 pot room", "kill gibdo", "kill zol"),
-	"d5 magnet gloves chest": AndSlot("d5 pot room", Or("flippers", "jump 6"),
-		"d5 5 keys"),
+	"d5 magnet gloves chest": AndSlot("d5 pot room",
+		Or("flippers", "jump 6", Hard("jump 4")), "d5 5 keys"),
 	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 rupee chest": AndSlot("enter d5", Or("magnet gloves",
 		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel")), "bombs"))),
@@ -237,8 +237,8 @@ var d7Nodes = map[string]*Node{
 	"d7 armos puzzle": And("d7 pot room", Or("jump 3", "magnet gloves")),
 	"d7 cross bridge": Or("jump 4", "kill darknut (across pit)",
 		And("jump 2", "magnet gloves")),
-	"d7 moldorm room":   And("d7 water stairs", "jump 3", "d7 4 keys"),
-	"d7 rupee chest":    AndSlot("d7 moldorm room", "kill moldorm"),
+	"d7 poe sisters":    And("d7 water stairs", "jump 3", "d7 4 keys"),
+	"d7 rupee chest":    AndSlot("d7 moldorm room", "kill moldorm", "jump 4"),
 	"d7 skipped room":   And("d7 rupee chest"),
 	"d7 boss key chest": AndSlot("d7 rupee chest", "d7 key E"),
 	"d7 essence": AndStep("d7 rupee chest", "d7 boss key",
@@ -257,9 +257,14 @@ var d7Nodes = map[string]*Node{
 }
 
 // this does *not* account for HSS skip.
+//
+// possible but not in logic: hitting the sets of three eye statues quickly
+// enough to make the chest/stairs appear, without HSS
 var d8Nodes = map[string]*Node{
 	// 1F
-	"d8 eye room":     And("enter d8", "any slingshot", "remove pot"),
+	"d8 eye room": And("enter d8", "remove pot", Or("any slingshot",
+		HardAnd("bomb jump 2",
+			Or("ember satchel", "scent satchel", "mystery satchel")))),
 	"d8 ring chest":   AndSlot("enter d8", "any slingshot L-2", "jump 2"),
 	"d8 hardhat room": And("enter d8", "kill magunesu"),
 	"d8 hardhat key":  And("d8 hardhat room", "kill hardhat (magnet)"),
