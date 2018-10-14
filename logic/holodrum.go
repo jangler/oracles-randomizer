@@ -86,7 +86,7 @@ var holodrumNodes = map[string]*Node{
 			"woods of winter default summer", "summer",
 			"woods of winter default autumn", "autumn")),
 	"moblin cliff chest": AndSlot("suburbs", "bracelet",
-		Or("jump 3", "magnet gloves"),
+		Or("bomb jump 2", "magnet gloves"),
 		Or("eastern suburbs default spring", "spring")),
 	"linked dive chest": AndSlot("moblin road", Or("flippers", "bomb jump 3")),
 
@@ -157,7 +157,8 @@ var holodrumNodes = map[string]*Node{
 	"wet eyeglass lake": Or("not north horon default summer",
 		"spring", "autumn", "winter"),
 	"d5 stump": Or(
-		And("lake portal", "not north horon default summer", "flippers"),
+		And("lake portal", "not north horon default summer",
+			Or("flippers", And("north horon default winter", "jump 6"))),
 		And("north horon stump", Or("jump 2", "ricky's flute", "moosh's flute"),
 			Or("north horon default winter", "winter", "flippers",
 				And("bracelet", "dimitri's flute")))),
@@ -185,7 +186,7 @@ var holodrumNodes = map[string]*Node{
 			And("natzu prairie", "sunken city"),
 			And("natzu river", "blaino's gym", "dimitri's flute"),
 			And("natzu wasteland", "sunken city", Or("flute",
-				And("remove bush", Or("jump 4", Hard("jump 3"))))))),
+				And("remove bush", "bomb jump 3"))))),
 	"platform chest": OrSlot(
 		And("blaino's gym", Or("flippers", "dimitri's flute")),
 		And("sunken city", "natzu river", "jump 6")),
