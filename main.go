@@ -233,7 +233,11 @@ func handleFile(romData []byte, filename, seedFlag string,
 	if err != nil {
 		return err
 	}
-	outName = fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
+	hardString := ""
+	if hard {
+		hardString = "_hard"
+	}
+	outName = fmt.Sprintf("oosrando_%s_%08x%s.gbc", version, seed, hardString)
 
 	// write to file
 	return writeROM(romData, outName, logFilename, seed, sum)
@@ -365,7 +369,12 @@ func randomize(romData []byte, seedFlag string,
 		return 0, nil, "", err
 	}
 
-	logFilename := fmt.Sprintf("oosrando_%s_%08x_log.txt", version, ri.Seed)
+	hardString := ""
+	if hard {
+		hardString = "hard_"
+	}
+	logFilename := fmt.Sprintf("oosrando_%s_%08x_%slog.txt",
+		version, ri.Seed, hardString)
 	summary, summaryDone := getSummaryChannel(logFilename)
 
 	// write info to summary file
