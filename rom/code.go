@@ -365,7 +365,8 @@ func initEndOfBank() {
 		"\xcd\x56\x19\xcb\x76\xc0\xcb\xf6\x3e\x02\xea\xe0\xcf"+
 			"\xc3"+warnGeneric)
 	warnPoeSkip := r.appendToBank(0x15, "warn poe skip",
-		"\xfa\x5a\xca\xcb\x67\xc0\xc3"+warnHSSSkip)
+		"\xfa\x5a\xca\xcb\x67\xc0"+
+			"\x3e\x08\xcd\x17\x17\xd8\xc3"+warnHSSSkip)
 	// this communicates with the warning script by setting bit zero of $cfc0
 	// if the warning needs to be displayed (based on room, season, etc), and
 	// also displays the exclamation mark if so.
