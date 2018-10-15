@@ -41,8 +41,7 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 		panic(fmt.Sprintf("not enough space for %s in bank %02x", name, bank))
 	}
 
-	codeMutables[name] =
-		MutableString(Addr{bank, eob}, string([]byte{bank}), data)
+	codeMutables[name] = MutableString(Addr{bank, eob}, "", data)
 	r.endOfBank[bank] += uint16(len(data))
 
 	return addrString(eob)
