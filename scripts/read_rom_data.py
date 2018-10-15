@@ -9,7 +9,7 @@ import sys
 import yaml
 
 
-parser = argparse.ArgumentParser(description="read data from an oos rom.",
+parser = argparse.ArgumentParser(description="read data from an oracles rom.",
         epilog="""
 if action is "getroom", two additional hex integer parameters must be
 privided for the group ID and room ID of a specific room to get data
@@ -53,10 +53,15 @@ def full_addr(bank_num, offset):
     return offset
 
 
-MUSIC_PTR_TABLE = 0x04, 0x483c
-OBJECT_PTR_TABLE = 0x11, 0x5b3b
-CHEST_PTR_TABLE = 0x15, 0x4f6c
-TREASURE_PTR_TABLE = 0x15, 0x5129
+MUSIC_PTR_TABLE = (0x04, 0x04), (0x483c, 0x495c)
+OBJECT_PTR_TABLE = (0x11, 0x15), (0x5b3b, 0x432b)
+CHEST_PTR_TABLE = (0x15, 0x16), (0x4f6c, 0x5108)
+TREASURE_PTR_TABLE = (0x15, 0x16), (0x5129, 0x5332)
+
+
+def get_table(table, game):
+    return table[0][game], table[1][game]
+
 
 MUSIC = { # and sound effects
     0x03: "overworld",
@@ -305,25 +310,27 @@ def read_ptr(buf, bank, addr):
     return struct.unpack_from('<H', buf, offset=full_addr(bank, addr))[0]
 
 
-def read_music(buf, group, room, name=True):
-    bank, addr = MUSIC_PTR_TABLE
+def read_music(buf, game, group, room, name=True):
+    bank, addr = get_table(MUSIC_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2) + room
 
     value = read_byte(buf, bank, addr)
     if name:
         if value in MUSIC:
-            return MUSIC[value]
+            return [value, MUSIC[value]]
 
     return value
 
 
-def read_objects(buf, group, room, name=True):
+def read_objects(buf, game, group, room, name=True):
     # read initial pointer
-    bank, addr = OBJECT_PTR_TABLE
+    bank, addr = get_table(OBJECT_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2) + room * 2
     addr = read_ptr(buf, bank, addr)
 
     # read objects (recursively if more pointers are involved)
+    if game == AGES:
+        bank = 0x12
     objects = []
     while read_byte(buf, bank, addr) != 0xff:
         new_objects, addr = read_interaction(buf, bank, addr, name)
@@ -482,9 +489,9 @@ def read_interaction(buf, bank, addr, name=True):
     return objects, addr
 
 
-def read_chest(buf, group, room):
+def read_chest(buf, game, group, room):
     # read initial pointer
-    bank, addr = CHEST_PTR_TABLE
+    bank, addr = get_table(CHEST_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2)
 
     # loop through group chests until marker 0xff is reached.
@@ -507,8 +514,8 @@ def read_chest(buf, group, room):
     return None
 
 
-def get_chests(buf, group):
-    bank, addr = CHEST_PTR_TABLE
+def get_chests(buf, game, group):
+    bank, addr = get_table(CHEST_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2)
 
     # loop through group chests until marker 0xff is reached
@@ -522,7 +529,7 @@ def get_chests(buf, group):
         chests.append({
             "address": [bank, addr+2],
             "location": [group, room],
-            "music": read_music(rom, group, room, name=False),
+            "music": read_music(rom, game, group, room, name=False),
             "treasure": list(lookup_entry(TREASURES,
                     treasure_id, treasure_subid))
         })
@@ -532,18 +539,22 @@ def get_chests(buf, group):
     return chests
 
 
-def search_objects(rom, mode, obj_id=None, obj_subid=None):
+def search_objects(rom, game, mode, obj_id=None, obj_subid=None):
     # read all interactions in all rooms in all groups, and collate the
     # accumulated objects that match the given ID.
     objects = []
     for group in range(6):
-        bank, addr = OBJECT_PTR_TABLE
+        bank, addr = get_table(OBJECT_PTR_TABLE, game)
         addr = read_ptr(rom, bank, addr + group * 2)
 
         # loop through rooms until the high byte is fxxx, which means that the
         # interaction pointers have ended and the interaction data has started
         for room in range(0x100):
+            if game == AGES:
+                bank = OBJECT_PTR_TABLE[0][AGES]
             room_addr = read_ptr(rom, bank, addr + room * 2)
+            if game == AGES:
+                bank = 0x12
 
             # read objects (recursively if more pointers are involved)
             room_objects = []
@@ -558,7 +569,7 @@ def search_objects(rom, mode, obj_id=None, obj_subid=None):
                         if obj_subid is None or obj["variety"][1] == obj_subid:
                             full_obj = {
                                 "location": [group, room],
-                                "music": read_music(rom, group, room),
+                                "music": read_music(rom, game, group, room),
                             }
                             full_obj.update(obj)
                             objects.append(full_obj)
@@ -568,8 +579,8 @@ def search_objects(rom, mode, obj_id=None, obj_subid=None):
     return objects
 
 
-def get_treasure(rom, treasure_id, treasure_subid):
-    bank, addr = TREASURE_PTR_TABLE
+def get_treasure(rom, game, treasure_id, treasure_subid):
+    bank, addr = get_table(TREASURE_PTR_TABLE, game)
     addr += treasure_id * 4
     if rom[full_addr(bank, addr)] & 0x80:
         addr = read_ptr(rom, bank, addr + 1)
@@ -593,8 +604,17 @@ def name_objects(objects):
             obj["variety"] = list(lookup_entry(PARTS, *obj["variety"]))
 
 
+SEASONS, AGES = 0, 1
+
 with open(args.romfile, "rb") as f:
     rom = f.read()
+    if rom[0x134:0x13d].decode('ascii') == "ZELDA DIN":
+        game = SEASONS
+    elif rom[0x134:0x13f].decode('ascii') == "ZELDA NAYRU":
+        game = AGES
+    else:
+        fatal("unknown ROM: " + rom[0x134:0x143].decode('ascii'))
+
 
 if args.action == "getroom":
     if len(args.args) != 2:
@@ -606,9 +626,9 @@ if args.action == "getroom":
     room_data = {
         "group": group,
         "room": room,
-        "music": read_music(rom, group, room),
-        "objects": read_objects(rom, group, room),
-        "chest": read_chest(rom, group, room),
+        "music": read_music(rom, game, group, room),
+        "objects": read_objects(rom, game, group, room),
+        "chest": read_chest(rom, game, group, room),
     }
 
     yaml.dump(room_data, sys.stdout)
@@ -616,15 +636,15 @@ elif args.action == "searchchests":
     if len(args.args) == 0: # all groups
         chests = []
         for group in range(8):
-            chests += get_chests(rom, group)
+            chests += get_chests(rom, game, group)
     elif len(args.args) == 1: # specific group
         group = int(args.args[0], 16)
-        chests = get_chests(rom, group)
+        chests = get_chests(rom, game, group)
     elif len(args.args) == 2: # specific group and music
         group = int(args.args[0], 16)
         music = int(args.args[1], 16)
 
-        chests = get_chests(rom, group)
+        chests = get_chests(rom, game, group)
 
         # filter by music
         chests = [chest for chest in chests if chest["music"] == music]
@@ -645,7 +665,7 @@ elif args.action == "searchobjects":
     obj_id = int(args.args[1], 16)
     obj_subid = int(args.args[2], 16) if len(args.args) > 2 else None
 
-    objects = search_objects(rom, mode, obj_id, obj_subid)
+    objects = search_objects(rom, game, mode, obj_id, obj_subid)
     name_objects(objects)
 
     yaml.dump(objects, sys.stdout)
@@ -656,19 +676,19 @@ elif args.action == "treasure":
     treasure_id = int(args.args[0], 16)
     treasure_subid = int(args.args[1], 16)
 
-    treasure = get_treasure(rom, treasure_id, treasure_subid)
+    treasure = get_treasure(rom, game, treasure_id, treasure_subid)
 
     yaml.dump(treasure, sys.stdout)
 elif args.action == "keesanity":
     if len(args.args) != 1:
         fatal("keesanity expects 1 arg, got", len(args.args))
 
-    rand_enemies = search_objects(rom, 0xf6)
+    rand_enemies = search_objects(rom, game, 0xf6)
     for enemy in rand_enemies:
         addr = full_addr(*enemy["address"])
         rom = rom[:addr] + bytes([0xe0, 0x32, 0x00]) + rom[addr+3:]
 
-    specific_enemies = search_objects(rom, 0xf7)
+    specific_enemies = search_objects(rom, game, 0xf7)
     for enemy in specific_enemies:
         addr = full_addr(*enemy["address"])
         rom = rom[:addr] + bytes([0x32, 0x00]) + rom[addr+2:]
