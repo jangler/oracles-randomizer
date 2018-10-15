@@ -137,7 +137,7 @@ const (
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
+func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 	logChan chan string, doneChan chan int) *RouteInfo {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
@@ -152,6 +152,10 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 		ProgressSlots: list.New(),
 		ExtraItems:    list.New(),
 		ExtraSlots:    list.New(),
+	}
+
+	if game == rom.GameAges {
+		return ri
 	}
 
 	// try to find the route, retrying if needed

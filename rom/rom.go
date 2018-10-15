@@ -1,5 +1,6 @@
-// Package rom deals with the structure of the OOS ROM file itself. The given
-// addresses are for the Japanese version of the game.
+// Package rom deals with the structure of the oracles ROM files themselves.
+// The given addresses are for the English versions of the games, and if two
+// are specified, Ages comes first.
 package rom
 
 import (
@@ -11,7 +12,29 @@ import (
 
 const bankSize = 0x4000
 
-func init() {
+const (
+	GameNil = iota
+	GameAges
+	GameSeasons
+)
+
+func Init(game int) {
+	if game == GameAges {
+		ItemSlots = AgesSlots
+		fixedMutables = agesFixedMutables
+		varMutables = agesVarMutables
+		initAgesEOB()
+	} else {
+		ItemSlots = SeasonsSlots
+		fixedMutables = seasonsFixedMutables
+		varMutables = seasonsVarMutables
+		initSeasonsEOB()
+
+		for k, v := range Seasons {
+			varMutables[k] = v
+		}
+	}
+
 	// rings and boss keys all have the same sprite
 	for name, treasure := range Treasures {
 		if treasure.id == 0x2d {
@@ -55,8 +78,6 @@ func init() {
 		"d6 boss key", "d7 boss key", "d8 boss key"} {
 		delete(TreasureIsUnique, name)
 	}
-
-	initEndOfBank()
 }
 
 // Addr is a fully-specified memory address.
@@ -75,6 +96,10 @@ func (a *Addr) FullOffset() int {
 	return bankOffset + int(a.Offset)
 }
 
+func IsAges(b []byte) bool {
+	return string(b[0x134:0x13f]) == "ZELDA NAYRU"
+}
+
 func IsSeasons(b []byte) bool {
 	return string(b[0x134:0x13d]) == "ZELDA DIN"
 }
@@ -84,8 +109,12 @@ func IsUS(b []byte) bool {
 }
 
 func IsVanilla(b []byte) bool {
-	knownSum := "\xba\x12\x68\x29\x0f\xb2\xb1\xb7\x05\x05\xd2\xd7\xb5\x82\x5f" +
-		"\xc8\xa4\x81\x6a\x4b"
+	knownSum := "\x88\x03\x74\xfb\x97\x8b\x18\xaf\x4a\xa5\x29\xe2\xe3\x2f\x7f" +
+		"\xfb\x4d\x7d\xd2\xf4"
+	if IsSeasons(b) {
+		knownSum = "\xba\x12\x68\x29\x0f\xb2\xb1\xb7\x05\x05\xd2\xd7\xb5\x82" +
+			"\x5f\xc8\xa4\x81\x6a\x4b"
+	}
 	sum := sha1.Sum(b)
 
 	return string(sum[:]) == knownSum
@@ -103,25 +132,27 @@ func orderedKeys(m map[string]Mutable) []string {
 
 // Mutate changes the contents of loaded ROM bytes in place. It returns a
 // checksum of the result or an error.
-func Mutate(b []byte) ([]byte, error) {
-	varMutables["initial season"].(*MutableRange).New =
-		[]byte{0x2d, Seasons["north horon season"].New[0]}
-	codeMutables["season after pirate cutscene"].(*MutableRange).New =
-		[]byte{Seasons["western coast season"].New[0]}
+func Mutate(b []byte, game int) ([]byte, error) {
+	if game == GameSeasons {
+		varMutables["initial season"].(*MutableRange).New =
+			[]byte{0x2d, Seasons["north horon season"].New[0]}
+		codeMutables["season after pirate cutscene"].(*MutableRange).New =
+			[]byte{Seasons["western coast season"].New[0]}
 
-	setSeedData()
-	setTreasureMapData()
+		setSeedData()
+		setTreasureMapData()
 
-	// explicitly set these addresses and IDs after their functions
-	codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
-	ItemSlots["star ore spot"].IDAddrs[0].Offset = codeAddr.Offset + 2
-	ItemSlots["star ore spot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
-	codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
-	ItemSlots["hard ore slot"].IDAddrs[0].Offset = codeAddr.Offset + 2
-	ItemSlots["hard ore slot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
-	codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
-	ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
-	ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
+		// explicitly set these addresses and IDs after their functions
+		codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
+		ItemSlots["star ore spot"].IDAddrs[0].Offset = codeAddr.Offset + 2
+		ItemSlots["star ore spot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+		codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
+		ItemSlots["hard ore slot"].IDAddrs[0].Offset = codeAddr.Offset + 2
+		ItemSlots["hard ore slot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
+		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
+		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
+	}
 
 	var err error
 	mutables := getAllMutables()
@@ -133,11 +164,13 @@ func Mutate(b []byte) ([]byte, error) {
 	}
 
 	// explicitly set these IDs after their functions are written
-	ItemSlots["star ore spot"].Mutate(b)
-	ItemSlots["hard ore slot"].Mutate(b)
-	ItemSlots["diver gift"].Mutate(b)
+	if game == GameSeasons {
+		ItemSlots["star ore spot"].Mutate(b)
+		ItemSlots["hard ore slot"].Mutate(b)
+		ItemSlots["diver gift"].Mutate(b)
 
-	setCompassData(b)
+		setCompassData(b)
+	}
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
@@ -145,9 +178,8 @@ func Mutate(b []byte) ([]byte, error) {
 
 // Verify checks all the package's data against the ROM to see if it matches.
 // It returns a slice of errors describing each mismatch.
-func Verify(b []byte) []error {
+func Verify(b []byte, game int) []error {
 	errors := make([]error, 0)
-
 	for k, m := range getAllMutables() {
 		// ignore special cases that would error even when correct
 		switch k {
