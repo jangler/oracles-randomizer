@@ -18,8 +18,8 @@ There are three ways to use the randomizer:
 2. In Windows, drag your vanilla OoS ROM onto the executable. The randomizer
    will write the randomized ROM and log to a new file.
 3. Use the command line. Type `oos-randomizer -h` to view the usage summary.
-   The `-freewarp` and `-seed` options are probably the only useful end-user
-   ones.
+   This is required to specify hard difficulty using the `-hard` option and to
+   specify a seed using `-seed`.
 
 
 ## Download
@@ -31,7 +31,7 @@ the "Download ZIP" link on the main page; that only contains the source code.
 
 ## Randomization notes
 
-Items and chests are randomied, with exceptions listed below. The rod of
+Items and chests are randomized, with exceptions listed below. The rod of
 seasons is split into four items, each of which will give you one season and
 the rod itself (if you don't already have it).
 
