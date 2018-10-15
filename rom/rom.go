@@ -32,18 +32,6 @@ func init() {
 	itemGfx["feather 1"] = itemGfx["feather L-1"]
 	itemGfx["feather 2"] = itemGfx["feather L-1"]
 
-	// override default collection modes for some gasha seed slots
-	ItemSlots["blaino gift"].CollectMode = CollectFind2
-	ItemSlots["member's shop 2"].CollectMode = CollectFind2
-
-	// explicitly set these slots to the lowest common denominator collection
-	// mode, since their collection mode isn't used anyway.
-	for _, name := range []string{"rod gift", "village shop 3",
-		"member's shop 1", "member's shop 2", "member's shop 3",
-		"subrosian market 1", "subrosian market 2", "subrosian market 5"} {
-		ItemSlots[name].CollectMode = CollectChest1
-	}
-
 	// get set of unique items (to determine which can be slotted freely)
 	treasureCounts := make(map[string]int)
 	for _, slot := range ItemSlots {
@@ -67,6 +55,8 @@ func init() {
 		"d6 boss key", "d7 boss key", "d8 boss key"} {
 		delete(TreasureIsUnique, name)
 	}
+
+	initEndOfBank()
 }
 
 // Addr is a fully-specified memory address.
@@ -116,10 +106,22 @@ func orderedKeys(m map[string]Mutable) []string {
 func Mutate(b []byte) ([]byte, error) {
 	varMutables["initial season"].(*MutableRange).New =
 		[]byte{0x2d, Seasons["north horon season"].New[0]}
-	varMutables["season after pirate cutscene"].(*MutableRange).New =
+	codeMutables["season after pirate cutscene"].(*MutableRange).New =
 		[]byte{Seasons["western coast season"].New[0]}
 
 	setSeedData()
+	setTreasureMapData()
+
+	// explicitly set these addresses and IDs after their functions
+	codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
+	ItemSlots["star ore spot"].IDAddrs[0].Offset = codeAddr.Offset + 2
+	ItemSlots["star ore spot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+	codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
+	ItemSlots["hard ore slot"].IDAddrs[0].Offset = codeAddr.Offset + 2
+	ItemSlots["hard ore slot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+	codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
+	ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
+	ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
 
 	var err error
 	mutables := getAllMutables()
@@ -130,53 +132,12 @@ func Mutate(b []byte) ([]byte, error) {
 		}
 	}
 
-	// explicitly set these IDs after their functions are created
+	// explicitly set these IDs after their functions are written
 	ItemSlots["star ore spot"].Mutate(b)
 	ItemSlots["hard ore slot"].Mutate(b)
 	ItemSlots["diver gift"].Mutate(b)
-	ItemSlots["star ore spot"].Mutate(b)
 
-	outSum := sha1.Sum(b)
-	return outSum[:], nil
-}
-
-// Update changes the content of loaded ROM bytes, but does not re-randomize
-// any fields.
-func Update(b []byte) ([]byte, error) {
-	var err error
-
-	// change fixed mutables
-	for _, k := range orderedKeys(constMutables) {
-		err = constMutables[k].Mutate(b)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	varMutables["initial season"].(*MutableRange).New =
-		[]byte{0x2d, b[Seasons["north horon season"].Addrs[0].FullOffset()]}
-	varMutables["season after pirate cutscene"].(*MutableRange).New =
-		[]byte{b[Seasons["western coast season"].Addrs[0].FullOffset()]}
-
-	// change seed mechanics based on the ROM's existing tree information
-	for _, name := range []string{"ember tree", "scent tree", "mystery tree",
-		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
-		ItemSlots[name].Treasure.id =
-			b[ItemSlots[name].IDAddrs[0].FullOffset()]
-	}
-	setSeedData()
-	for _, name := range []string{"satchel initial seeds",
-		"satchel initial selection", "slingshot initial selection",
-		"carry seeds in slingshot", "ember tree map icon",
-		"scent tree map icon", "mystery tree map icon",
-		"pegasus tree map icon", "sunken gale tree map icon",
-		"tarm gale tree map icon", "initial season",
-		"edit gain/lose items tables"} {
-		err = varMutables[name].Mutate(b)
-		if err != nil {
-			return nil, err
-		}
-	}
+	setCompassData(b)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
@@ -196,7 +157,7 @@ func Verify(b []byte) []error {
 			break
 		// mystical seeds
 		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
-			"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
+			"pegasus tree seeds", "gale tree seeds":
 			break
 		// progressive items
 		case "noble sword spot", "d6 boomerang chest", "d8 HSS chest",
@@ -204,14 +165,15 @@ func Verify(b []byte) []error {
 			"slingshot 2", "feather 2", "satchel 2":
 			break
 		// shop items (use sub ID instead of param, no text)
-		case "village shop 3", "member's shop 2", "member's shop 3",
-			"subrosian market 1", "subrosian market 2", "subrosian market 5",
-			"zero shop text":
+		case "village shop 1", "village shop 2", "village shop 3",
+			"member's shop 2", "member's shop 3", "subrosian market 1",
+			"subrosian market 2", "subrosian market 5", "zero shop text":
 			break
 		// misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
-			"star ore spot", "hard ore slot", "iron shield gift", "diver gift":
+			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
+			"d5 boss key spot", "sword 1":
 			break
 		default:
 			if err := m.Check(b); err != nil {
@@ -230,22 +192,22 @@ func Verify(b []byte) []error {
 // grows on the horon village tree, and set the map icon for each tree to match
 // the seed type.
 func setSeedData() {
-	seedIndex := seedIndexByTreeID[int(ItemSlots["ember tree"].Treasure.id)]
+	seedType := ItemSlots["ember tree"].Treasure.id
 
 	for _, name := range []string{"satchel initial seeds",
 		"carry seeds in slingshot"} {
 		mut := varMutables[name].(*MutableRange)
-		mut.New[0] = 0x20 + seedIndex
+		mut.New[0] = 0x20 + seedType
 	}
 
 	// slingshot starting seeds
 	varMutables["edit gain/lose items tables"].(*MutableRange).New[1] =
-		0x20 + seedIndex
+		0x20 + seedType
 
 	for _, name := range []string{
 		"satchel initial selection", "slingshot initial selection"} {
 		mut := varMutables[name].(*MutableRange)
-		mut.New[1] = seedIndex
+		mut.New[1] = seedType
 	}
 
 	for _, name := range []string{"ember tree map icon", "scent tree map icon",
@@ -253,13 +215,56 @@ func setSeedData() {
 		"sunken gale tree map icon", "tarm gale tree map icon"} {
 		mut := varMutables[name].(*MutableRange)
 		id := ItemSlots[strings.Replace(name, " map icon", "", 1)].Treasure.id
-		mut.New[0] = mapIconByTreeID[int(id)]
+		mut.New[0] = 0x15 + id
+	}
+}
+
+// set the locations of the sparkles for the jewels on the treasure map.
+func setTreasureMapData() {
+	for _, name := range []string{"round", "pyramid", "square", "x-shaped"} {
+		mut := varMutables[name+" jewel coords"].(*MutableRange)
+		slot := lookupItemSlot(name + " jewel")
+		mut.New[0] = slot.mapCoords
+	}
+}
+
+// match the compass's beep beep beep boops to the actual boss key locations.
+func setCompassData(b []byte) {
+	// clear original boss key flags
+	for _, name := range []string{"d1 boss key chest", "d2 boss key chest",
+		"d3 boss key chest", "d4 boss key spot", "d5 boss key spot",
+		"d6 boss key chest", "d7 boss key chest", "d8 boss key chest"} {
+		slot := ItemSlots[name]
+		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
+		b[offset] = b[offset] & 0xef // reset bit 4
 	}
 
-	for i, name := range []string{"ember tree", "mystery tree", "scent tree",
-		"pegasus tree", "sunken gale tree", "tarm gale tree"} {
-		slot := ItemSlots[name]
-		mut := varMutables[roomNameByTreeID[slot.Treasure.id]].(*MutableRange)
-		mut.New[0] = roomByTreeID[i]
+	// add new boss key flags
+	for i := 1; i <= 8; i++ {
+		name := fmt.Sprintf("d%d boss key", i)
+		slot := lookupItemSlot(name)
+		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
+		b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
 	}
+}
+
+// returns the slot where the named item was placed. this only works for unique
+// items, of course.
+func lookupItemSlot(itemName string) *MutableSlot {
+	t := Treasures[itemName]
+	for _, slot := range ItemSlots {
+		if slot.Treasure == t {
+			return slot
+		}
+	}
+	return nil
+}
+
+// get the location of the dungeon properties byte for a specific room.
+func getDungeonPropertiesAddr(group, room byte) *Addr {
+	offset := 0x4d41 + uint16(room)
+	if group%2 != 0 {
+		offset += 0x100
+	}
+	return &Addr{0x01, offset}
 }

@@ -3,8 +3,8 @@
 import re
 import sys
 
-# create an HTML checklist (scripts/checklist.html) from the logic. this must
-# be run from the repository's root folder.
+# create an HTML checklist (doc/checklist.html) from the logic. this must be
+# run from the repository's root folder.
 
 
 files = 'logic/holodrum.go', 'logic/subrosia.go', 'logic/dungeons.go'
@@ -47,7 +47,7 @@ with open('names.go') as f:
         if match:
             names[match.group(1)] = match.group(2)
 
-with open('scripts/checklist.html', 'w') as outfile:
+with open('doc/checklist.html', 'w') as outfile:
     sections = []
 
     for filename in files:

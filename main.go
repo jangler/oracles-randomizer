@@ -39,14 +39,14 @@ func main() {
 	flag.Usage = usage
 	flagFreewarp := flag.Bool(
 		"freewarp", false, "allow unlimited tree warp (no cooldown)")
+	flagHard := flag.Bool(
+		"hard", false, "require some plays outside normal logic")
 	flagNoMusic := flag.Bool(
 		"nomusic", false, "don't play any music in the modified ROM")
 	flagProfile := flag.String(
 		"profile", "", "write CPU profile to given filename")
 	flagSeed := flag.String("seed", "",
 		"specific random seed to use (32-bit hex number)")
-	flagUpdate := flag.Bool(
-		"update", false, "update already randomized ROM to this version")
 	flagVerbose := flag.Bool(
 		"verbose", false, "print more detailed output to terminal")
 	flag.Parse()
@@ -77,8 +77,7 @@ func main() {
 			fatal(err, true)
 		}
 
-		// decide whether to randomize or update the file
-		if err := handleFile(romData, flag.Arg(0), *flagSeed,
+		if err := handleFile(romData, flag.Arg(0), *flagSeed, *flagHard,
 			*flagVerbose); err != nil {
 			fatal(err, true)
 		}
@@ -91,8 +90,7 @@ func main() {
 			fatal(err, true)
 		}
 
-		// decide whether to randomize or update the file
-		if err := handleFile(b, flag.Arg(0), *flagSeed,
+		if err := handleFile(b, flag.Arg(0), *flagSeed, *flagHard,
 			*flagVerbose); err != nil {
 			fatal(err, true)
 		}
@@ -109,20 +107,15 @@ func main() {
 		var sum []byte
 		var seed uint32
 		var logFilename string
-		if *flagUpdate {
-			fmt.Printf("updating %s\n", flag.Arg(0))
-			sum, err = rom.Update(b)
-		} else {
-			fmt.Printf("randomizing %s\n", flag.Arg(0))
-			seed, sum, logFilename, err = randomize(b, *flagSeed, *flagVerbose)
-		}
+		fmt.Printf("randomizing %s\n", flag.Arg(0))
+		seed, sum, logFilename, err = randomize(b, *flagSeed, *flagHard,
+			*flagVerbose)
 		if err != nil {
 			fatal(err, false)
 		}
 
 		// write file
-		if err := writeROM(b, flag.Arg(1), logFilename, seed, sum,
-			*flagUpdate); err != nil {
+		if err := writeROM(b, flag.Arg(1), logFilename, seed, sum); err != nil {
 			fatal(err, false)
 		}
 	default:
@@ -131,8 +124,8 @@ func main() {
 }
 
 // attempt to write rom data to a file and print summary info.
-func writeROM(b []byte, filename, logFilename string, seed uint32, sum []byte,
-	update bool) error {
+func writeROM(b []byte, filename, logFilename string, seed uint32,
+	sum []byte) error {
 	// write file
 	f, err := os.Create(filename)
 	if err != nil {
@@ -144,14 +137,10 @@ func writeROM(b []byte, filename, logFilename string, seed uint32, sum []byte,
 	}
 
 	// print summary
-	if !update {
-		fmt.Printf("seed: %08x\n", seed)
-	}
+	fmt.Printf("seed: %08x\n", seed)
 	fmt.Printf("sha-1 sum: %x\n", string(sum))
 	fmt.Printf("wrote new rom to %s\n", filename)
-	if !update {
-		fmt.Printf("wrote log file to %s\n", logFilename)
-	}
+	fmt.Printf("wrote log file to %s\n", logFilename)
 
 	return nil
 }
@@ -223,38 +212,35 @@ func readGivenROM(filename string) ([]byte, error) {
 		return nil, fmt.Errorf("%s is a JP ROM; only US is supported",
 			filename)
 	}
+	if !rom.IsVanilla(b) {
+		return nil, fmt.Errorf("%s is an unrecognized OoS ROM", filename)
+	}
 
 	return b, nil
 }
 
 // decide whether to randomize or update the file
-func handleFile(romData []byte, filename, seedFlag string, verbose bool) error {
+func handleFile(romData []byte, filename, seedFlag string,
+	hard, verbose bool) error {
 	var seed uint32
 	var sum []byte
 	var err error
 	var outName, logFilename string
 
 	// operate on rom data
-	update := !rom.IsVanilla(romData)
-	if update {
-		fmt.Printf("updating %s\n", flag.Arg(0))
-		sum, err = rom.Update(romData)
-		if err != nil {
-			return err
-		}
-		outName = fmt.Sprintf("%s_%s_update.gbc",
-			strings.Replace(filename, ".gbc", "", 1), version)
-	} else {
-		fmt.Printf("randomizing %s\n", flag.Arg(0))
-		seed, sum, logFilename, err = randomize(romData, seedFlag, verbose)
-		if err != nil {
-			return err
-		}
-		outName = fmt.Sprintf("oosrando_%s_%08x.gbc", version, seed)
+	fmt.Printf("randomizing %s\n", flag.Arg(0))
+	seed, sum, logFilename, err = randomize(romData, seedFlag, hard, verbose)
+	if err != nil {
+		return err
 	}
+	hardString := ""
+	if hard {
+		hardString = "_hard"
+	}
+	outName = fmt.Sprintf("oosrando_%s_%08x%s.gbc", version, seed, hardString)
 
 	// write to file
-	return writeROM(romData, outName, logFilename, seed, sum, update)
+	return writeROM(romData, outName, logFilename, seed, sum)
 }
 
 // sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or
@@ -286,7 +272,7 @@ func readFileBytes(filename string) ([]byte, error) {
 
 // messes up rom data and writes it to a file. this also calls rom.Verify().
 func randomize(romData []byte, seedFlag string,
-	verbose bool) (uint32, []byte, string, error) {
+	hard, verbose bool) (uint32, []byte, string, error) {
 	// make sure rom data is a match first
 	if errs := rom.Verify(romData); errs != nil {
 		return 0, nil, "", errs[0]
@@ -324,7 +310,7 @@ func randomize(romData []byte, seedFlag string,
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
 	for i := 0; i < numThreads; i++ {
-		go searchAsync(rand.New(sources[i]), seeds[i], verbose, logChan,
+		go searchAsync(rand.New(sources[i]), seeds[i], hard, verbose, logChan,
 			routeChan, doneChan)
 	}
 
@@ -383,12 +369,22 @@ func randomize(romData []byte, seedFlag string,
 		return 0, nil, "", err
 	}
 
-	logFilename := fmt.Sprintf("oosrando_%s_%08x_log.txt", version, ri.Seed)
+	hardString := ""
+	if hard {
+		hardString = "hard_"
+	}
+	logFilename := fmt.Sprintf("oosrando_%s_%08x_%slog.txt",
+		version, ri.Seed, hardString)
 	summary, summaryDone := getSummaryChannel(logFilename)
 
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", ri.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
+	if hard {
+		summary <- fmt.Sprintf("difficulty: hard")
+	} else {
+		summary <- fmt.Sprintf("difficulty: normal")
+	}
 	logItems(summary, "required items", ri.ProgressItems, ri.ProgressSlots)
 	logItems(summary, "optional items", ri.ExtraItems, ri.ExtraSlots)
 	summary <- ""
@@ -410,10 +406,10 @@ func randomize(romData []byte, seedFlag string,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, seed uint32, verbose bool,
+func searchAsync(src *rand.Rand, seed uint32, hard, verbose bool,
 	logChan chan string, retChan chan *RouteInfo, doneChan chan int) {
 	// find a viable random route
-	retChan <- findRoute(src, seed, verbose, logChan, doneChan)
+	retChan <- findRoute(src, seed, hard, verbose, logChan, doneChan)
 }
 
 // send lines of item/slot info to a summary channel. this is a destructive

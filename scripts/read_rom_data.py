@@ -60,6 +60,8 @@ TREASURE_PTR_TABLE = 0x15, 0x5129
 
 MUSIC = { # and sound effects
     0x03: "overworld",
+    0x04: "temple remains",
+    0x05: "tarm ruins",
     0x0a: "horon village",
     0x0d: "essence room",
     0x0e: "house",
@@ -73,6 +75,7 @@ MUSIC = { # and sound effects
     0x18: "ancient ruins",
     0x19: "explorer's crypt",
     0x1a: "sword and shield maze",
+    0x1b: "onox's castle",
     0x28: "subrosia",
     0x35: "samasa desert",
     0x36: "cave",
@@ -146,8 +149,12 @@ ENTITIES = {
     0x53: ("dragonfly", {}),
     0x59: ("fixed drop", {
         0x00: "fairy",
+        0x01: "heart",
         0x04: "bombs",
         0x05: "ember seeds",
+        0x06: "scent seeds",
+        0x07: "pegasus seeds",
+        0x08: "gale seeds",
         0x09: "mystery seeds",
     }),
     0x5a: ("seed tree", {

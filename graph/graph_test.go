@@ -2,15 +2,19 @@ package graph
 
 import "testing"
 
+func newNormalNode(name string, nodeType NodeType) *Node {
+	return NewNode(name, nodeType, false, false, false)
+}
+
 // tests Graph.Reduce on a graph that is effectively a linked list
 func TestListReduce(t *testing.T) {
 	g := New()
 
 	// nodes with only one parent can always be collapsed
-	a := NewNode("A", OrType, false)
-	b := NewNode("B", AndType, false)
-	c := NewNode("C", OrType, false)
-	d := NewNode("D", RootType, false)
+	a := newNormalNode("A", OrType)
+	b := newNormalNode("B", AndType)
+	c := newNormalNode("C", OrType)
+	d := newNormalNode("D", RootType)
 	g.AddNodes(a, b, c, d)
 
 	// so this graph is just |A <- &B <- |C <- .D
@@ -23,7 +27,7 @@ func TestListReduce(t *testing.T) {
 	// and we want it to collapse to |A <- .D
 	expectedGraph := New()
 	expectedGraph.AddNodes(
-		NewNode("A", OrType, false), NewNode("D", RootType, false))
+		newNormalNode("A", OrType), newNormalNode("D", RootType))
 	expectedGraph.AddParents(map[string][]string{"A": []string{"D"}})
 
 	reduced, err := g.Reduce("A")
@@ -38,17 +42,17 @@ func TestTreeReduce(t *testing.T) {
 	given := New()
 
 	// only nodes of the same type should be collapsed
-	a := NewNode("A", OrType, false)
-	b := NewNode("B", OrType, false)
-	c := NewNode("C", AndType, false)
-	d := NewNode("D", RootType, false)
-	e := NewNode("E", RootType, false)
-	f := NewNode("F", OrType, false)
-	g := NewNode("G", AndType, false)
-	h := NewNode("H", RootType, false)
-	i := NewNode("I", RootType, false)
-	j := NewNode("J", RootType, false)
-	k := NewNode("K", RootType, false)
+	a := newNormalNode("A", OrType)
+	b := newNormalNode("B", OrType)
+	c := newNormalNode("C", AndType)
+	d := newNormalNode("D", RootType)
+	e := newNormalNode("E", RootType)
+	f := newNormalNode("F", OrType)
+	g := newNormalNode("G", AndType)
+	h := newNormalNode("H", RootType)
+	i := newNormalNode("I", RootType)
+	j := newNormalNode("J", RootType)
+	k := newNormalNode("K", RootType)
 	given.AddNodes(a, b, c, d, e, f, g, h, i, j, k)
 
 	// this graph is:
@@ -75,15 +79,15 @@ func TestTreeReduce(t *testing.T) {
 	//          <- .K
 	expected := New()
 	expected.AddNodes(
-		NewNode("A", OrType, false),
-		NewNode("D", RootType, false),
-		NewNode("E", RootType, false),
-		NewNode("C", AndType, false),
-		NewNode("F", OrType, false),
-		NewNode("H", RootType, false),
-		NewNode("I", RootType, false),
-		NewNode("J", RootType, false),
-		NewNode("K", RootType, false))
+		newNormalNode("A", OrType),
+		newNormalNode("D", RootType),
+		newNormalNode("E", RootType),
+		newNormalNode("C", AndType),
+		newNormalNode("F", OrType),
+		newNormalNode("H", RootType),
+		newNormalNode("I", RootType),
+		newNormalNode("J", RootType),
+		newNormalNode("K", RootType))
 	expected.AddParents(map[string][]string{
 		"A": []string{"D", "E", "C"},
 		"C": []string{"F", "J", "K"},
@@ -101,12 +105,12 @@ func TestTreeReduce(t *testing.T) {
 func TestGraphReduce(t *testing.T) {
 	given := New()
 
-	a := NewNode("A", AndType, false)
-	b := NewNode("B", OrType, false)
-	c := NewNode("C", AndType, false)
-	d := NewNode("D", RootType, false)
-	e := NewNode("E", RootType, false)
-	f := NewNode("F", RootType, false)
+	a := newNormalNode("A", AndType)
+	b := newNormalNode("B", OrType)
+	c := newNormalNode("C", AndType)
+	d := newNormalNode("D", RootType)
+	e := newNormalNode("E", RootType)
+	f := newNormalNode("F", RootType)
 	given.AddNodes(a, b, c, d, e, f)
 
 	// this graph is:
@@ -127,10 +131,10 @@ func TestGraphReduce(t *testing.T) {
 	//    <- .F
 	expected := New()
 	expected.AddNodes(
-		NewNode("A", AndType, false),
-		NewNode("D", RootType, false),
-		NewNode("E", RootType, false),
-		NewNode("F", RootType, false))
+		newNormalNode("A", AndType),
+		newNormalNode("D", RootType),
+		newNormalNode("E", RootType),
+		newNormalNode("F", RootType))
 	expected.AddParents(map[string][]string{
 		"A": []string{"D", "E", "F"},
 	})
@@ -163,7 +167,7 @@ func compareGraphs(t *testing.T, given, expected Graph) {
 
 	// compare node relationships
 	for name, node := range expected {
-		expectedParents, givenParents := node.Parents, given[name].Parents
+		expectedParents, givenParents := node.parents, given[name].parents
 		if len(expectedParents) == len(givenParents) {
 			for _, parent := range expectedParents {
 				if !isEquivalentNodeInSlice(parent, givenParents) {

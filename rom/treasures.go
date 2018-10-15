@@ -8,18 +8,19 @@ import (
 // collection modes
 // i don't know what the difference between the two find modes is
 const (
-	CollectBuySatchel = 0x01
-	CollectRingBox    = 0x02
-	CollectUnderwater = 0x08 // pyramid jewel
-	CollectFind1      = 0x09
-	CollectFind2      = 0x0a
-	CollectFind3      = 0x19 // d5 boss key
-	CollectAppear     = 0x1a // heart containers
-	CollectFall       = 0x29
-	CollectChest1     = 0x38 // most items
-	CollectDive       = 0x49
-	CollectChest2     = 0x68 // map and compass
-	CollectDig        = 0x5a
+	collectNil        = 0x00 // custom, for shop items
+	collectBuySatchel = 0x01
+	collectFind0      = 0x02 // flippers, ring box, maku seed, idk
+	collectUnderwater = 0x08 // pyramid jewel
+	collectFind1      = 0x09
+	collectFind2      = 0x0a
+	collectAppear1    = 0x19 // d5 boss key
+	collectAppear2    = 0x1a // heart containers
+	collectFall       = 0x29
+	collectChest      = 0x38 // most chests
+	collectDive       = 0x49
+	collectChest2     = 0x68 // map and compass
+	collectDig        = 0x5a
 )
 
 // A Treasure is data associated with a particular item ID and sub ID.
@@ -37,10 +38,6 @@ type Treasure struct {
 // SubID returns item sub ID of the treasure.
 func (t Treasure) SubID() byte {
 	return t.subID
-}
-
-func (t Treasure) CollectMode() byte {
-	return t.mode
 }
 
 // RealAddr returns the total offset of the treasure data in a JP ROM.
@@ -84,7 +81,7 @@ var Treasures = map[string]*Treasure{
 	"shop shield L-1": &Treasure{0x01, 0x00, 0x52bd, 0x0a, 0x01, 0x1f, 0x13},
 	"shield L-2":      &Treasure{0x01, 0x01, 0x52c1, 0x0a, 0x02, 0x20, 0x14},
 	"bombs, 10":       &Treasure{0x03, 0x00, 0x52c9, 0x38, 0x10, 0x4d, 0x05},
-	"sword 1":         &Treasure{0x05, 0x00, 0x52d9, 0x38, 0x01, 0x1c, 0x10},
+	"sword 1":         &Treasure{0x05, 0x00, 0x52d9, 0x00, 0x01, 0x1c, 0x10},
 	"sword 2":         &Treasure{0x05, 0x01, 0x52dd, 0x09, 0x01, 0x1c, 0x10},
 	"boomerang 1":     &Treasure{0x06, 0x00, 0x52f1, 0x0a, 0x01, 0x22, 0x1c},
 	"boomerang 2":     &Treasure{0x06, 0x01, 0x52f5, 0x38, 0x01, 0x22, 0x1c},
@@ -180,14 +177,11 @@ var Treasures = map[string]*Treasure{
 
 	// not real treasures, just placeholders for seeds in trees
 	"ember tree seeds":   &Treasure{id: 0x00},
-	"mystery tree seeds": &Treasure{id: 0x01},
-	"scent tree seeds":   &Treasure{id: 0x02},
-	"pegasus tree seeds": &Treasure{id: 0x03},
-	"gale tree seeds 1":  &Treasure{id: 0x04},
-	"gale tree seeds 2":  &Treasure{id: 0x05},
+	"scent tree seeds":   &Treasure{id: 0x01},
+	"pegasus tree seeds": &Treasure{id: 0x02},
+	"gale tree seeds":    &Treasure{id: 0x03},
+	"mystery tree seeds": &Treasure{id: 0x04},
 }
-
-var seedIndexByTreeID = []byte{0, 4, 1, 2, 3, 3}
 
 // FindTreasureName does a reverse lookup of the treasure in the map to return
 // its name. It returns an empty string if not found.

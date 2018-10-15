@@ -20,9 +20,9 @@ func nodeInList(n *graph.Node, l *list.List) bool {
 	return false
 }
 
-func trySlotRandomItem(r *Route, src *rand.Rand,
-	itemPool, slotPool *list.List, countFunc func(r *Route) int,
-	numUsedSlots int, fillUnused bool) (usedItem, usedSlot *list.Element) {
+func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
+	slotPool *list.List, countFunc func(*Route, bool) int, numUsedSlots int,
+	hard, fillUnused bool) (usedItem, usedSlot *list.Element) {
 	// we're dead
 	if slotPool.Len() == 0 || itemPool.Len() == 0 {
 		return nil, nil
@@ -31,7 +31,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 	// this is the last slot, so it has to open up progression
 	var initialCount int
 	if slotPool.Len() == numUsedSlots+1 && !fillUnused {
-		initialCount = countFunc(r)
+		initialCount = countFunc(r, hard)
 	}
 
 	// try placing an item in the first slot until one fits
@@ -39,8 +39,8 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 		slot := es.Value.(*graph.Node)
 
 		r.Graph.ClearMarks()
-		if slot.GetMark(slot, false) != graph.MarkTrue ||
-			!canAffordSlot(r, slot) {
+		if slot.GetMark(slot, hard) != graph.MarkTrue ||
+			!canAffordSlot(r, slot, hard) {
 			continue
 		}
 
@@ -53,13 +53,8 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 
 			item.AddParents(slot)
 
-			if canSoftlock(r.Graph) != nil {
-				item.RemoveParent(slot)
-				continue
-			}
-
 			if slotPool.Len() == numUsedSlots+1 && !fillUnused {
-				newCount := countFunc(r)
+				newCount := countFunc(r, hard)
 				if newCount <= initialCount {
 					item.RemoveParent(slot)
 					continue
@@ -90,20 +85,6 @@ func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
 // in trees, certain item slots not accomodating sub IDs. this doesn't check
 // for softlocks or the availability of the slot and item.
 func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
-	slot := rom.ItemSlots[slotNode.Name]
-
-	// gasha seeds and pieces of heart can be placed in either chests or
-	// found/gift slots. beyond that, only unique items can be placed in
-	// non-chest slots.
-	if itemNode.Name == "gasha seed" || itemNode.Name == "piece of heart" {
-		if !(rom.IsChest(slot) || rom.IsFound(slot)) {
-			return false
-		}
-	} else if (!rom.IsChest(slot) || slotNode.Name == "d0 sword chest") &&
-		!rom.TreasureIsUnique[itemNode.Name] {
-		return false
-	}
-
 	// dummy shop slots 1 and 2 can only hold their vanilla items.
 	if slotNode.Name == "village shop 1" && itemNode.Name != "bombs, 10" {
 		return false
@@ -141,15 +122,10 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
-	// magnet gloves in first chest in d7 can be a softlock with poe skip
-	if slotNode.Name == "d7 ring chest" && itemNode.Name == "magnet gloves" {
-		return false
-	}
-
 	// and only seeds can be slotted in seed trees, of course
 	switch itemNode.Name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
-		"pegasus tree seeds", "gale tree seeds 1", "gale tree seeds 2":
+		"pegasus tree seeds", "gale tree seeds":
 		switch slotNode.Name {
 		case "ember tree", "mystery tree", "scent tree",
 			"pegasus tree", "sunken gale tree", "tarm gale tree":
@@ -168,7 +144,7 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	return true
 }
 
-func canAffordSlot(r *Route, slot *graph.Node) bool {
+func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	// if it doesn't cost anything, of course it's affordable
 	balance := logic.Rupees[slot.Name]
 	if balance >= 0 {
@@ -179,7 +155,7 @@ func canAffordSlot(r *Route, slot *graph.Node) bool {
 	balance += r.Costs
 	for _, node := range r.Graph {
 		value := logic.Rupees[node.Name]
-		if value > 0 && node.GetMark(node, false) == graph.MarkTrue {
+		if value > 0 && node.GetMark(node, hard) == graph.MarkTrue {
 			balance += value
 		}
 	}

@@ -13,30 +13,30 @@ var portalNodes = map[string]*Node{
 				"remove flower")))),
 
 	// jump added since it's effectively useless otherwise
-	"mountain portal": And("jump", Or("mount cucco", "hide and seek")),
+	"mountain portal": And("jump 2", Or("mount cucco", "hide and seek")),
 
 	"lake portal": Or("furnace", And("north horon stump", Or(
-		And("wet eyeglass lake", Or("jump", "ricky's flute", "moosh's flute"),
+		And("wet eyeglass lake", Or("jump 2", "ricky's flute", "moosh's flute"),
 			Or("flippers", And("dimitri's flute", "bracelet"))),
-		And(Or("north horon default winter", "winter"), "pegasus jump L-2")))),
+		And(Or("north horon default winter", "winter"), "jump 6")))),
 
 	"village portal": Or(
-		And("horon village", "boomerang L-2"),
-		And("horon village", "pegasus jump L-2"),
+		And("horon village", Or("boomerang L-2", Hard("jump 6"))),
 		And("pirate house", "hit lever")),
 
 	// effectively one-way
-	"remains portal": And("temple remains", Or("temple remains default winter", "winter"), Or(
-		And("shovel", "remove bush", "pegasus jump L-2"),
-		And(Or("temple remains default spring", "spring"),
-			"remove flower", "remove bush", "pegasus jump L-2", "winter"),
-		And(Or("temple remains default summer", "summer"),
-			"remove bush", "pegasus jump L-2", "winter"),
-		And(Or("temple remains default autumn", "autumn"),
-			"remove bush", "jump", "winter"))),
+	"remains portal": And("temple remains",
+		Or("temple remains default winter", "winter"), Or(
+			HardAnd("shovel", "remove bush", "jump 6"),
+			HardAnd(Or("temple remains default spring", "spring"),
+				"remove flower", "remove bush", "jump 6", "winter"),
+			HardAnd(Or("temple remains default summer", "summer"),
+				"remove bush", "jump 6", "winter"),
+			And(Or("temple remains default autumn", "autumn"),
+				"remove bush", "jump 2", "winter"))),
 
 	// dead end
 	"d8 portal": And("remains portal", "bombs",
 		Or("temple remains default summer", "summer"),
-		Or("pegasus jump L-2", And("long jump", "magnet gloves"))),
+		Or("jump 6", And("bomb jump 2", "magnet gloves"))),
 }

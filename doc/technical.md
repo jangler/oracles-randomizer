@@ -1,15 +1,18 @@
-# developer notes
+# technical notes
 
 function names and ram address names, when present, correspond to those in
-drenn's ages-disasm.
+drenn's ages-disasm. addresses are for seasons.
 
 
 ## functions not documented elsewhere
 
 - 0:008a = interBankCall
+- 0:041a = getRandomNumber
 - 0:045b = copyMemoryReverse, b is # bytes, de is src, hl is dest
 - 0:0462 = copyMemory, b is # bytes, hl is src, de is dest
+- 0:0775 = loadTileset, a is index
 - 0:0c74 = playSound, a is index
+- 0:109a = getChestData
 - 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:15e9 = interactionInitGraphics
 	- 3f:4404 = interactionLoadGraphics
@@ -17,6 +20,7 @@ drenn's ages-disasm.
 - 0:1702 = loseTreasure (a is ID)
 - 0:17e5 = refill all seeds
 - 0:17b9 = getRandomRingOfGivenTier
+- 0:1ddd = lookupCollisionTable, hl = table, scf if a is in table
 - 0:21fd, 0:2202, 0:2215 = objectCopyPosition, objectCopyPosition rawAddress,
   objectCopyPositionWithOffset
 - 0:2727 = objectCreateExclamationMark
@@ -24,6 +28,10 @@ drenn's ages-disasm.
 - 0:24fe = interactionSetScript, hl is address in bank b
 - 0:250c = runScript, d is object low byte
 - 0:2542 = interactionSaveScriptAddress
+- 0:2d2a = getThisRoomDungeonFlags
+	- bit 4 = has key / boss key (for compass beep)
+	- bit 5 = has chest (for map display)
+	- bit 6 = ?? if this is set, no compass beep
 - 0:393e = loadSmallRoomLayout
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 	- 0:3979, 0:3987 = decompressLayoutMode2, decompressLayoutMode2Helper
@@ -31,13 +39,16 @@ drenn's ages-disasm.
 	- 0:39cb = decompressLayoutHelper
 - 0:3ac6 = getFreeInteractionSlot
 - 0:3b36 = updateInteraction, d is object low byte
+- 0:3ea7 = getFreePartSlot
+- 1:49e5 = check for compass beep
 - 1:5ece = updateSeedTreeRefillData
 - 3:4cf5 = intro capcomScreen
 	- 3:4d68 = state1 (fading in)
 - 5:44aa = specialObjectGetRelativeTileWithDirectionTable
 - 5:4552 = companionTryToMount
-- 5:5471 = linkSetState, a is state, d is object low byte
 - 5:493b = companionRetIfNotFinishedWalkingIn
+- 5:5471 = linkSetState, a is state, d is object low byte
+- 5:5fdb = checkCliffTile, scf if cliff
 - 6:4713 = tryToBreakTile body
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation
@@ -63,6 +74,7 @@ drenn's ages-disasm.
 - cc49 = active group
 - cc4c = active room
 - cc63-cc66 = data about room transition (group, room, ??, link position)
+- cc89 = level of shield that link is using, if using a shield
 - ccab = allow screen transitions only if zero in treasure H&S
 - ccb6 = active tile (under link)? rod of seasons only works when this == 8
 - ccea = disable interactions (?)
