@@ -115,18 +115,12 @@ func initSeasonsEOB() {
 
 	// bank 02
 
-	// warp to ember tree if holding start when closing the map screen, using
-	// the playtime counter as a cooldown. this also sets the player's respawn
-	// point.
+	// warp to ember tree if holding start when closing the map screen.
 	treeWarp := r.appendToBank(0x02, "tree warp",
-		"\xfa\x81\xc4\xe6\x08\x28\x33"+ // close as normal if start not held
-			"\xfa\x49\xcc\xfe\x02\x30\x07"+ // check if indoors
-			"\x21\x25\xc6\xcb\x7e\x28\x06"+ // check if cooldown is up
+		"\xfa\x81\xc4\xe6\x08\x28\x16"+ // close as normal if start not held
+			"\xfa\x49\xcc\xfe\x02\x38\x06"+ // check if indoors
 			"\x3e\x5a\xcd\x74\x0c\xc9"+ // play error sound and ret
-			"\x21\x22\xc6\x11\xf8\x75\x06\x04\xcd\x5b\x04"+ // copy playtime
-			"\x21\x2b\xc6\x11\xfc\x75\x06\x06\xcd\x5b\x04"+ // copy save point
-			"\x21\xb7\xcb\x36\x05\xaf\xcd\x7b\x5e\xc3\x7b\x4f"+ // close + warp
-			"\x40\xb4\xfc\xff\x00\xf8\x02\x02\x34\x38") // data for copies
+			"\x21\xb7\xcb\x36\x05\xaf\xcd\x7b\x5e\xc3\x7b\x4f") // close + warp
 	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "tree warp jump",
 		"\xc2\x7b\x4f", "\xc4"+treeWarp)
 
