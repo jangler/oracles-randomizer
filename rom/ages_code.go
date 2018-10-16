@@ -6,6 +6,7 @@ func newAgesRomBanks() *romBanks {
 	}
 
 	r.endOfBank[0x00] = 0x3ef8
+	r.endOfBank[0x02] = 0x7e93
 	r.endOfBank[0x03] = 0x7ebd
 	r.endOfBank[0x04] = 0x7edb
 
@@ -23,6 +24,18 @@ func initAgesEOB() {
 		"\x67\xfe\x40\x30\x03\x3e\x08\xc9\xf0\xb7\xc9")
 	r.replace(0x00, 0x0c9a, "no music call",
 		"\x67\xf0\xb7", "\x67\xf0\xb7") // modified only by SetNoMusic()
+
+	// bank 02
+
+	// warp to ember tree if holding start when closing the map screen.
+	treeWarp := r.appendToBank(0x02, "tree warp",
+		"\xfa\x81\xc4\xe6\x08\x28\x1b"+ // close as normal if start not held
+			"\xfa\x2d\xcc\xfe\x02\x38\x06"+ // check if indoors
+			"\x3e\x5a\xcd\x98\x0c\xc9"+ // play error sound and ret
+			"\x21\xb7\xcb\x36\x02\xb7\x28\x02\x36\x03"+ // set tree based on age
+			"\xaf\xcd\xac\x5f\xc3\xba\x4f") // close + warp
+	r.replaceMultiple([]Addr{{0x02, 0x6133}, {0x02, 0x618b}}, "tree warp jump",
+		"\xc2\xba\x4f", "\xc4"+treeWarp)
 
 	// bank 03
 
