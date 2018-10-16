@@ -37,6 +37,12 @@ func initAgesEOB() {
 	r.replaceMultiple([]Addr{{0x02, 0x6133}, {0x02, 0x618b}}, "tree warp jump",
 		"\xc2\xba\x4f", "\xc4"+treeWarp)
 
+	// warp to room under cursor if wearing developer ring.
+	devWarp := r.appendToBank(0x02, "dev ring warp func",
+		"\xfa\xcb\xc6\xfe\x40\x20\x12\xfa\x2d\xcc\xfe\x02\x30\x0b\xf6\x80"+
+			"\xea\x47\xcc\xfa\xb6\xcb\xea\x48\xcc\x3e\x03\xcd\xad\x0c\xc9")
+	r.replace(0x02, 0x5fcc, "dev ring warp call", "\xad\x0c", devWarp)
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
