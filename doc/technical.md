@@ -1,23 +1,25 @@
 # technical notes
 
 function names and ram address names, when present, correspond to those in
-drenn's ages-disasm. addresses are for seasons.
+drenn's ages-disasm. single addresses are for seasons; double addresses are
+ages/seasons, in that order. if an address ends in a slash, it's the same for
+both games.
 
 
 ## functions not documented elsewhere
 
-- 0:008a = interBankCall
-- 0:041a = getRandomNumber
-- 0:045b = copyMemoryReverse, b is # bytes, de is src, hl is dest
-- 0:0462 = copyMemory, b is # bytes, hl is src, de is dest
+- 0:008a/ = interBankCall
+- 0:043e/041a = getRandomNumber
+- 0:047f/045b = copyMemoryReverse, b is # bytes, de is src, hl is dest
+- 0:0486/0462 = copyMemory, b is # bytes, hl is src, de is dest
 - 0:0775 = loadTileset, a is index
-- 0:0c74 = playSound, a is index
-- 0:109a = getChestData
+- 0:0c98/0c74 = playSound, a is index
+- 0:10cc/109a = getChestData
 - 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:15e9 = interactionInitGraphics
 	- 3f:4404 = interactionLoadGraphics
-- 0:16eb = giveTreasure (a is ID, c is param)
-- 0:1702 = loseTreasure (a is ID)
+- 0:171c/16eb = giveTreasure (a is ID, c is param)
+- 0:1733/1702 = loseTreasure (a is ID)
 - 0:17e5 = refill all seeds
 - 0:17b9 = getRandomRingOfGivenTier
 - 0:1ddd = lookupCollisionTable, hl = table, scf if a is in table
@@ -61,18 +63,18 @@ drenn's ages-disasm. addresses are for seasons.
 ## ram addresses not documented elsewhere
 
 - c63f-c640 = bought shop items
-- c680-c6?? = inventory (starting with equipped items)
-- c6a2/c6a3 = health / max health
+- c688/c680 = inventory (starting with equipped items)
+- c6a2-c6a3 = health-maxHealth
 - c6a5-c6a6, c6a7-c6a8 = rupees, ore chunks
 - c6b0 = obtained seasons
 - c6b5-c6b9 = seed count (ember, scent, pegasus, gale, mystery)
 - c6bb = obtained essence flags
-- c6c0-c6c4, c6c5 = rings in box, active ring
+- c6c0-c6c4, c6cb/c6c5 = rings in box, active ring
 
-- cbb6 = index of room under cursor in map menu
+- cbb6/ = index of room under cursor in map menu
 - cc4e = current season
-- cc49 = active group
-- cc4c = active room
+- cc2d/cc49 = active group
+- cc30/cc4c = active room
 - cc63-cc66 = data about room transition (group, room, ??, link position)
 - cc89 = level of shield that link is using, if using a shield
 - ccab = allow screen transitions only if zero in treasure H&S
@@ -85,16 +87,17 @@ drenn's ages-disasm. addresses are for seasons.
 
 ## flags
 
-treasure flags begin at c692, are indexed by item ID, and determine
+treasure flags begin at c69a/c692, are indexed by item ID, and determine
 whether link is considered to have a given item (regardless of whether it
 appears in his equip menu, or whether its other parameters such as quantity or
-level are set. treasure flags are checked by 0:1717, checkTreasureObtained.
+level are set. treasure flags are checked by 0:1748/1717,
+checkTreasureObtained.
 
-(some) global flags begin at c6ca. these are pretty general-purpose. they are
-checked and set by 0:30c7 and 0:30cd, respectively.
+(some) global flags begin at c6d0/c6ca. these are pretty general-purpose. they
+are checked and set by 0:31f3/30c7 and 0:31f9/30cd, respectively.
 
 room flags begin at cx00 depending on the group the room is in, starting at
-c700 for group 0 (overworld), c800 for group 1 (subrosia) and group 2
+c700 for group 0 (overworld), c800 for group 1 (past/subrosia) and group 2
 (buildings), c900 (?) for group 4 (caves and dungeons), and ca00 (?) for group
 5 (other caves and dungeons). bit 4 tracks whether the room has been explored,
 and bit 5 is commonly used to track whether the treasure in the room has been
@@ -106,17 +109,17 @@ opened the next time you visit the room (but not vice versa, i think). bit 7
 appears to immediately delete some interactions if set? bits 6 and 3 are also
 used, but i don't know for what in particular.
 
-current room flags are checked by function 0:1956, getThisRoomFlags.
+current room flags are checked by function 0:197d/1956, getThisRoomFlags.
 
-animal companion flags go from c643-c646, with the bytes being for ricky,
-dimitri, moosh, then misc. bit 7 determines whether the animal is ready to be
-ridden; i think the others are specific to each animal.
+animal companion flags go from c646-c649/c643-c646, with the bytes being for
+ricky, dimitri, moosh, then misc. bit 7 determines whether the animal is ready
+to be ridden; i think the others are specific to each animal.
 
 
 ## treasures
 
-15:5129 is the treasure data pointer table, indexed by treasure ID, then
-incremented by sub ID. each treasure entry is four bytes: collection mode,
+16:5332/15:5129 is the treasure data pointer table, indexed by treasure ID,
+then incremented by sub ID. each treasure entry is four bytes: collection mode,
 parameter used in giveTreasure, text index, and sprite index.
 
 collection mode determines whether an item appears from a chest when opened, is
@@ -140,11 +143,12 @@ script.
 ## interactions
 
 each room has a list of interactions associated with it, with pointer table
-starting at 11:5b3b and being indexed by room group, then room ID. fx bytes
-denote the beginning of an interaction or series of interactions that take the
-same parameters, except for f3, fe and ff, which respectively mean "jump to
-pointer", "return from pointer", and "end list". unambiguous entries not
-beginning with fx jump to the denoted address.
+starting at 15:432b/11:5b3b and being indexed by room group, then room ID (in
+ages, the pointers are to bank 12, not 15). fx bytes denote the beginning of an
+interaction or series of interactions that take the same parameters, except for
+f3, fe and ff, which respectively mean "jump to pointer", "return from
+pointer", and "end list". unambiguous entries not beginning with fx jump to the
+denoted address.
 
 room interaction lists can be retrieved based on group and room ID using the
 rom data script.
