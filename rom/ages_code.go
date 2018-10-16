@@ -56,7 +56,8 @@ func initAgesEOB() {
 	// format is (group, room, YX, tile ID), with ff ending the table. if bit 0
 	// of the room is set, no replacements are made.
 	tileReplaceTable := r.appendToBank(0x04, "tile replace table",
-		"\x04\x1b\x03\x78"+ // key door in D1
+		"\x03\x0f\x66\xf9"+ // water in d6 past entrance
+			"\x04\x1b\x03\x78"+ // key door in D1
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xcd\x7d\x19\xe6\x01\x20\x28"+
