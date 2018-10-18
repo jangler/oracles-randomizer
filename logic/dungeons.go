@@ -212,7 +212,10 @@ var d6Nodes = map[string]*Node{
 	"d6 3 keys": And("d6 key A", "d6 key B", "d6 key C"),
 }
 
-// this does *not* account for poe skip.
+// poe skip with magnet gloves is possible in hard logic since you can't
+// keylock that way and there's no warning, but you can still waste a key on
+// the first key door, so the only difference it makes is that you don't have
+// to kill the first poe.
 var d7Nodes = map[string]*Node{
 	// 1F
 	"d7 wizzrobe chest": And("enter d7", "kill wizzrobe"),
@@ -223,8 +226,9 @@ var d7Nodes = map[string]*Node{
 	"d7 map chest":     AndSlot("d7 pot room", "jump 2", "d7 key B"),
 
 	// B1F
-	"d7 pot room": And("enter d7", "bracelet", "enter poe A",
-		"kill poe sister"),
+	"d7 pot room": And("enter d7", "bracelet", Or(
+		And("enter poe A", "kill poe sister"),
+		HardAnd("magnet gloves", "jump 2", "pegasus satchel"))),
 	"d7 zol button": And("d7 pot room", "jump 2"),
 	"d7 magunesu chest": And("d7 armos puzzle", "jump 3", "kill magunesu",
 		"magnet gloves"),
@@ -250,9 +254,9 @@ var d7Nodes = map[string]*Node{
 	"d7 key C": And("d7 armos puzzle"),
 	"d7 key D": And("d7 magunesu chest"),
 	"d7 key E": And("d7 skipped room"),
-	"d7 3 keys": Or(
+	"d7 3 keys": And("d7 key A", Or(
 		And("d7 key B", Or("d7 key C", "d7 key D")),
-		And("d7 key C", "d7 key D")),
+		And("d7 key C", "d7 key D"))),
 	"d7 4 keys": And("d7 key A", "d7 key B", "d7 key C", "d7 key D"),
 }
 
