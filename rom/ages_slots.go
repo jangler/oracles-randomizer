@@ -27,7 +27,7 @@ var agesSlots = map[string]*MutableSlot{
 	"D6 entrance pool":     agesChest("toss ring", 0x5161, 0x03, 0x0e),
 	// "sea of storms cave present": nil, // special linked chest?
 	"mayor plen's house":      agesChest("green luck ring", 0x5171, 0x03, 0xf9),
-	"cresent seafloor cave":   agesChest("piece of heart", 0x5175, 0x03, 0xfd),
+	"crescent seafloor cave":  agesChest("piece of heart", 0x5175, 0x03, 0xfd),
 	"goron's hiding place":    agesChest("gold joy ring", 0x52f7, 0x05, 0xbd),
 	"ridge base cave present": agesChest("rupees, 50", 0x52fb, 0x05, 0xb9),
 	"ridge NE cave present":   agesChest("gasha seed", 0x52ff, 0x05, 0xee),
