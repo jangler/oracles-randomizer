@@ -7,6 +7,7 @@ import (
 // A MutableSlot is an item slot (chest, gift, etc). It references room data
 // and treasure data.
 type MutableSlot struct {
+	treasureName             string
 	Treasure                 *Treasure
 	IDAddrs, SubIDAddrs      []Addr
 	ParamAddrs, TextAddrs    []Addr
@@ -93,13 +94,13 @@ func (ms *MutableSlot) Check(b []byte) error {
 func BasicSlot(treasure string, bank byte, idOffset, subIDOffset uint16,
 	group, room, mode, coords byte) *MutableSlot {
 	return &MutableSlot{
-		Treasure:    Treasures[treasure],
-		IDAddrs:     []Addr{{bank, idOffset}},
-		SubIDAddrs:  []Addr{{bank, subIDOffset}},
-		group:       group,
-		room:        room,
-		collectMode: mode,
-		mapCoords:   coords,
+		treasureName: treasure,
+		IDAddrs:      []Addr{{bank, idOffset}},
+		SubIDAddrs:   []Addr{{bank, subIDOffset}},
+		group:        group,
+		room:         room,
+		collectMode:  mode,
+		mapCoords:    coords,
 	}
 }
 

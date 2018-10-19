@@ -20,12 +20,18 @@ const (
 
 func Init(game int) {
 	if game == GameAges {
-		ItemSlots = AgesSlots
+		ItemSlots = agesSlots
+		Treasures = agesTreasures
 		fixedMutables = agesFixedMutables
 		varMutables = agesVarMutables
 		initAgesEOB()
+
+		Treasures["tune of echoes"] = &(*Treasures["harp"])
+		Treasures["tune of currents"] = &(*Treasures["harp"])
+		Treasures["tune of ages"] = &(*Treasures["harp"])
 	} else {
-		ItemSlots = SeasonsSlots
+		ItemSlots = seasonsSlots
+		Treasures = seasonsTreasures
 		fixedMutables = seasonsFixedMutables
 		varMutables = seasonsVarMutables
 		initSeasonsEOB()
@@ -33,6 +39,10 @@ func Init(game int) {
 		for k, v := range Seasons {
 			varMutables[k] = v
 		}
+	}
+
+	for _, slot := range ItemSlots {
+		slot.Treasure = Treasures[slot.treasureName]
 	}
 
 	// rings and boss keys all have the same sprite

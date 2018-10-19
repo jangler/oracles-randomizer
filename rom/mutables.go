@@ -113,7 +113,7 @@ func getAllMutables() map[string]Mutable {
 	slotMutables := make(map[string]Mutable)
 	treasureMutables := make(map[string]Mutable)
 	for k, v := range ItemSlots {
-		if v.Treasure.addr != 0 {
+		if v.Treasure.addr.Offset != 0 {
 			treasureMutables[FindTreasureName(v.Treasure)] = v.Treasure
 		}
 		slotMutables[k] = v
