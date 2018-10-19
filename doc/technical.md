@@ -39,7 +39,7 @@ both games.
 	- 0:3979, 0:3987 = decompressLayoutMode2, decompressLayoutMode2Helper
 	- 0:399c, 0:39aa = decompressLayoutMode1, decompressLayoutMode1Helper
 	- 0:39cb = decompressLayoutHelper
-- 0:3ac6 = getFreeInteractionSlot
+- 0:3aef/3ac6 = getFreeInteractionSlot
 - 0:3b36 = updateInteraction, d is object low byte
 - 0:3ea7 = getFreePartSlot
 - 1:49e5 = check for compass beep
@@ -172,8 +172,8 @@ data while being displayed?
 
 each object can have a script associated with it if its dx58-dx59 word is
 nonzero. this word determines the current address in a series of script
-commands in bank b. scripts are run concurrently unless a particular script
-does something like disable all other objects. bank 15 contains unique
+commands in bank c/b. scripts are run concurrently unless a particular script
+does something like disable all other objects. bank 16?/15 contains unique
 functions called by scripts; general-purpose ones are in bank 0.
 
 for a complete list of script commands, see
