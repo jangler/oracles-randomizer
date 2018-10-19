@@ -1,8 +1,16 @@
 package rom
 
+// seasonsChest constructs a MutableSlot from a treasure name and an address in
+// bank $15, where the ID and sub-ID are two consecutive bytes at that address.
+// This applies to almost all chests, and exclusively to chests.
+func seasonsChest(treasure string, addr uint16,
+	group, room, mode, coords byte) *MutableSlot {
+	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, mode, coords)
+}
+
 var seasonsSlots = map[string]*MutableSlot{
 	// holodrum
-	"lake chest": MutableChest(
+	"lake chest": seasonsChest(
 		"gasha seed", 0x4f92, 0x00, 0xb8, collectChest, 0xb8),
 	"maku tree gift": &MutableSlot{
 		treasureName: "gnarled key",
@@ -13,13 +21,13 @@ var seasonsSlots = map[string]*MutableSlot{
 		collectMode:  collectFall,
 		mapCoords:    0xc9,
 	},
-	"village SW chest": MutableChest(
+	"village SW chest": seasonsChest(
 		"rupees, 20", 0x4f7e, 0x00, 0xf5, collectChest, 0xf5),
-	"village SE chest": MutableChest(
+	"village SE chest": seasonsChest(
 		"rupees, 20", 0x4f82, 0x00, 0xf9, collectChest, 0xf9),
 	"shovel gift": MutableScriptItem(
 		"shovel", 0x6a6c, 0x03, 0xa3, collectFind2, 0x7f),
-	"outdoor d2 chest": MutableChest(
+	"outdoor d2 chest": seasonsChest(
 		"gasha seed", 0x4f86, 0x00, 0x8e, collectChest, 0x8e),
 	"blaino gift": MutableScriptItem(
 		"gasha seed", 0x64cc, 0x03, 0xb4, collectFind1, 0x78),
@@ -34,9 +42,9 @@ var seasonsSlots = map[string]*MutableSlot{
 		collectMode:  collectChest,
 		mapCoords:    0xc2,
 	},
-	"great moblin chest": MutableChest(
+	"great moblin chest": seasonsChest(
 		"piece of heart", 0x4f8e, 0x00, 0x5b, collectChest, 0x5b),
-	"master's plaque chest": MutableChest(
+	"master's plaque chest": seasonsChest(
 		"master's plaque", 0x510a, 0x05, 0xbc, collectChest, 0x2e),
 	"diver gift": MutableScriptItem( // addr set at EOB
 		"flippers", 0x0000, 0x05, 0xbd, collectNil, 0x2e), // special case
@@ -46,7 +54,7 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dragon key", 0x62a3, 0x00, 0x1a, collectFind1, 0x1a),
 	"pyramid jewel spot": MutableScriptItem(
 		"pyramid jewel", 0x734e, 0x07, 0xe5, collectUnderwater, 0x1d),
-	"x-shaped jewel chest": MutableChest(
+	"x-shaped jewel chest": seasonsChest(
 		"x-shaped jewel", 0x4f8a, 0x00, 0xf4, collectChest, 0xf4),
 	"round jewel gift": MutableScriptItem(
 		"round jewel", 0x7332, 0x03, 0x94, collectFind2, 0xb5),
@@ -68,35 +76,35 @@ var seasonsSlots = map[string]*MutableSlot{
 		collectMode:  collectFind2,
 		mapCoords:    0xbf,
 	},
-	"desert chest": MutableChest(
+	"desert chest": seasonsChest(
 		"blast ring", 0x4f9a, 0x00, 0xff, collectChest, 0xff),
-	"western coast chest": MutableChest(
+	"western coast chest": seasonsChest(
 		"rang ring L-1", 0x4f96, 0x00, 0xe3, collectChest, 0xe3),
-	"coast house chest": MutableChest(
+	"coast house chest": seasonsChest(
 		"bombs, 10", 0x4fac, 0x03, 0x88, collectChest, 0xd2),
-	"water cave chest": MutableChest(
+	"water cave chest": seasonsChest(
 		"octo ring", 0x5081, 0x04, 0xe0, collectChest, 0xb3),
-	"mushroom cave chest": MutableChest(
+	"mushroom cave chest": seasonsChest(
 		"quicksand ring", 0x5085, 0x04, 0xe1, collectChest, 0x87),
-	"mystery cave chest": MutableChest(
+	"mystery cave chest": seasonsChest(
 		"moblin ring", 0x50fe, 0x05, 0xb3, collectChest, 0x8e),
-	"moblin road chest": MutableChest(
+	"moblin road chest": seasonsChest(
 		"rupees, 30", 0x5102, 0x05, 0xb4, collectChest, 0x7d),
-	"sunken cave chest": MutableChest(
+	"sunken cave chest": seasonsChest(
 		"gasha seed", 0x5106, 0x05, 0xb5, collectChest, 0x4f),
-	"diver chest": MutableChest( // TODO this shares room w/ diver gift
+	"diver chest": seasonsChest( // TODO this shares room w/ diver gift
 		"rupees, 50", 0x510e, 0x05, 0xbd, collectChest, 0x2e),
-	"dry lake east chest": MutableChest(
+	"dry lake east chest": seasonsChest(
 		"piece of heart", 0x5112, 0x05, 0xc0, collectChest, 0xaa),
-	"goron chest": MutableChest(
+	"goron chest": seasonsChest(
 		"armor ring L-2", 0x511a, 0x05, 0xc8, collectChest, 0x18),
-	"platform chest": MutableChest(
+	"platform chest": seasonsChest(
 		"rupees, 50", 0x5122, 0x05, 0x0e, collectChest, 0x49),
-	"talon cave chest": MutableChest(
+	"talon cave chest": seasonsChest(
 		"subrosian ring", 0x511e, 0x05, 0xb6, collectChest, 0x1b),
-	"tarm gasha chest": MutableChest(
+	"tarm gasha chest": seasonsChest(
 		"gasha seed", 0x4fa8, 0x03, 0x9b, collectChest, 0x10),
-	"moblin cliff chest": MutableChest(
+	"moblin cliff chest": seasonsChest(
 		"gasha seed", 0x5089, 0x04, 0xf7, collectChest, 0xcc),
 	"dry lake west chest": &MutableSlot{
 		treasureName: "rupees, 100",
@@ -199,13 +207,13 @@ var seasonsSlots = map[string]*MutableSlot{
 		collectMode:  collectDig,
 		mapCoords:    0xb0,
 	},
-	"blue ore chest": MutableChest(
+	"blue ore chest": seasonsChest(
 		"blue ore", 0x4f9f, 0x01, 0x41, collectChest, 0x1e),
-	"red ore chest": MutableChest(
+	"red ore chest": seasonsChest(
 		"red ore", 0x4fa3, 0x01, 0x58, collectChest, 0xb9),
-	"non-rosa gasha chest": MutableChest(
+	"non-rosa gasha chest": seasonsChest(
 		"gasha seed", 0x5095, 0x04, 0xf1, collectChest, 0x25),
-	"rosa gasha chest": MutableChest(
+	"rosa gasha chest": seasonsChest(
 		"gasha seed", 0x5116, 0x05, 0xc6, collectChest, 0xb0),
 	"subrosian market 1": &MutableSlot{
 		treasureName: "ribbon",
@@ -265,123 +273,123 @@ var seasonsSlots = map[string]*MutableSlot{
 		collectMode:  collectNil,
 		mapCoords:    0xd4,
 	},
-	"d0 rupee chest": MutableChest(
+	"d0 rupee chest": seasonsChest(
 		"rupees, 30", 0x4fb5, 0x04, 0x05, collectChest, 0xd4),
 
 	// d1
 	"d1 satchel spot": MutableFind(
 		"satchel 1", 0x66b1, 0x06, 0x09, collectFind2, 0x96),
-	"d1 gasha chest": MutableChest(
+	"d1 gasha chest": seasonsChest(
 		"gasha seed", 0x4fbd, 0x04, 0x0d, collectChest, 0x96),
-	"d1 bomb chest": MutableChest(
+	"d1 bomb chest": seasonsChest(
 		"bombs, 10", 0x4fc5, 0x04, 0x10, collectChest, 0x96),
-	"d1 ring chest": MutableChest(
+	"d1 ring chest": seasonsChest(
 		"discovery ring", 0x4fd1, 0x04, 0x17, collectChest, 0x96),
-	"d1 compass chest": MutableChest(
+	"d1 compass chest": seasonsChest(
 		"compass", 0x4fc1, 0x04, 0x0f, collectChest2, 0x96),
-	"d1 map chest": MutableChest(
+	"d1 map chest": seasonsChest(
 		"dungeon map", 0x4fd5, 0x04, 0x19, collectChest2, 0x96),
-	"d1 boss key chest": MutableChest(
+	"d1 boss key chest": seasonsChest(
 		"d1 boss key", 0x4fcd, 0x04, 0x14, collectChest, 0x96),
 
 	// d2
-	"d2 bracelet chest": MutableChest(
+	"d2 bracelet chest": seasonsChest(
 		"bracelet", 0x4fe1, 0x04, 0x2a, collectChest, 0x8d),
-	"d2 10-rupee chest": MutableChest(
+	"d2 10-rupee chest": seasonsChest(
 		"rupees, 10", 0x4fd9, 0x04, 0x1f, collectChest, 0x8d),
-	"d2 5-rupee chest": MutableChest(
+	"d2 5-rupee chest": seasonsChest(
 		"rupees, 5", 0x4ff5, 0x04, 0x38, collectChest, 0x8d),
-	"d2 map chest": MutableChest(
+	"d2 map chest": seasonsChest(
 		"dungeon map", 0x4fe5, 0x04, 0x2b, collectChest2, 0x8d),
-	"d2 compass chest": MutableChest(
+	"d2 compass chest": seasonsChest(
 		"compass", 0x4ff1, 0x04, 0x36, collectChest2, 0x8d),
-	"d2 boss key chest": MutableChest(
+	"d2 boss key chest": seasonsChest(
 		"d2 boss key", 0x4fdd, 0x04, 0x24, collectChest, 0x8d),
 
 	// d3
-	"d3 feather chest": MutableChest(
+	"d3 feather chest": seasonsChest(
 		"feather 1", 0x5015, 0x04, 0x50, collectChest, 0x60),
-	"d3 rupee chest": MutableChest(
+	"d3 rupee chest": seasonsChest(
 		"rupees, 30", 0x4ff9, 0x04, 0x41, collectChest, 0x60),
-	"d3 gasha chest": MutableChest(
+	"d3 gasha chest": seasonsChest(
 		"gasha seed", 0x5001, 0x04, 0x44, collectChest, 0x60),
-	"d3 bomb chest": MutableChest(
+	"d3 bomb chest": seasonsChest(
 		"bombs, 10", 0x5019, 0x04, 0x54, collectChest, 0x60),
-	"d3 compass chest": MutableChest(
+	"d3 compass chest": seasonsChest(
 		"compass", 0x5009, 0x04, 0x4d, collectChest2, 0x60),
-	"d3 map chest": MutableChest(
+	"d3 map chest": seasonsChest(
 		"dungeon map", 0x5011, 0x04, 0x51, collectChest2, 0x60),
-	"d3 boss key chest": MutableChest(
+	"d3 boss key chest": seasonsChest(
 		"d3 boss key", 0x4ffd, 0x04, 0x46, collectChest, 0x60),
 
 	// d4
-	"d4 slingshot chest": MutableChest(
+	"d4 slingshot chest": seasonsChest(
 		"slingshot 1", 0x502d, 0x04, 0x73, collectChest, 0x1d),
-	"d4 bomb chest": MutableChest(
+	"d4 bomb chest": seasonsChest(
 		"bombs, 10", 0x5031, 0x04, 0x7f, collectChest, 0x1d),
-	"d4 map chest": MutableChest(
+	"d4 map chest": seasonsChest(
 		"dungeon map", 0x5025, 0x04, 0x69, collectChest2, 0x1d),
-	"d4 compass chest": MutableChest(
+	"d4 compass chest": seasonsChest(
 		"compass", 0x5035, 0x04, 0x83, collectChest2, 0x1d),
 	"d4 boss key spot": MutableScriptItem(
 		"d4 boss key", 0x4c0b, 0x04, 0x6c, collectDive, 0x1d),
 
 	// d5
-	"d5 magnet gloves chest": MutableChest(
+	"d5 magnet gloves chest": seasonsChest(
 		"magnet gloves", 0x503d, 0x04, 0x89, collectChest, 0x89),
-	"d5 rupee chest": MutableChest(
+	"d5 rupee chest": seasonsChest(
 		"rupees, 100", 0x5041, 0x04, 0x97, collectChest, 0x8a),
-	"d5 map chest": MutableChest(
+	"d5 map chest": seasonsChest(
 		"dungeon map", 0x5039, 0x04, 0x8f, collectChest2, 0x8f),
-	"d5 compass chest": MutableChest(
+	"d5 compass chest": seasonsChest(
 		"compass", 0x5049, 0x04, 0x9d, collectChest2, 0x8a),
 	"d5 boss key spot": MutableScriptItem(
 		"d5 boss key", 0x4c22, 0x06, 0x8b, collectFind2, 0x8a),
 
 	// d6
-	"d6 boomerang chest": MutableChest(
+	"d6 boomerang chest": seasonsChest(
 		"boomerang 2", 0x507d, 0x04, 0xd0, collectChest, 0x00),
-	"d6 rupee chest A": MutableChest(
+	"d6 rupee chest A": seasonsChest(
 		"rupees, 10", 0x505d, 0x04, 0xaf, collectChest, 0x00),
-	"d6 rupee chest B": MutableChest(
+	"d6 rupee chest B": seasonsChest(
 		"rupees, 5", 0x5065, 0x04, 0xb3, collectChest, 0x00),
-	"d6 bomb chest": MutableChest(
+	"d6 bomb chest": seasonsChest(
 		"bombs, 10", 0x5069, 0x04, 0xbf, collectChest, 0x00),
-	"d6 rupee chest C": MutableChest(
+	"d6 rupee chest C": seasonsChest(
 		"rupees, 5", 0x5075, 0x04, 0xc3, collectChest, 0x00),
-	"d6 compass chest": MutableChest(
+	"d6 compass chest": seasonsChest(
 		"compass", 0x5059, 0x04, 0xad, collectChest2, 0x00),
-	"d6 map chest": MutableChest(
+	"d6 map chest": seasonsChest(
 		"dungeon map", 0x5061, 0x04, 0xb0, collectChest2, 0x00),
-	"d6 boss key chest": MutableChest(
+	"d6 boss key chest": seasonsChest(
 		"d6 boss key", 0x5079, 0x04, 0xc4, collectChest, 0x00),
 
 	// d7
-	"d7 cape chest": MutableChest(
+	"d7 cape chest": seasonsChest(
 		"feather 2", 0x509e, 0x05, 0x44, collectChest, 0xd0),
-	"d7 rupee chest": MutableChest(
+	"d7 rupee chest": seasonsChest(
 		"rupees, 1", 0x509a, 0x05, 0x43, collectChest, 0xd0),
-	"d7 ring chest": MutableChest(
+	"d7 ring chest": seasonsChest(
 		"power ring L-1", 0x50b6, 0x05, 0x5a, collectChest, 0xd0),
-	"d7 compass chest": MutableChest(
+	"d7 compass chest": seasonsChest(
 		"compass", 0x50aa, 0x05, 0x52, collectChest2, 0xd0),
-	"d7 map chest": MutableChest(
+	"d7 map chest": seasonsChest(
 		"dungeon map", 0x50b2, 0x05, 0x58, collectChest2, 0xd0),
-	"d7 boss key chest": MutableChest(
+	"d7 boss key chest": seasonsChest(
 		"d7 boss key", 0x50a6, 0x05, 0x48, collectChest, 0xd0),
 
 	// d8
-	"d8 HSS chest": MutableChest(
+	"d8 HSS chest": seasonsChest(
 		"slingshot 2", 0x50da, 0x05, 0x8d, collectChest, 0x04),
-	"d8 SW lava chest": MutableChest(
+	"d8 SW lava chest": seasonsChest(
 		"bombs, 10", 0x50ba, 0x05, 0x6a, collectChest, 0x04),
-	"d8 ring chest": MutableChest(
+	"d8 ring chest": seasonsChest(
 		"steadfast ring", 0x50c6, 0x05, 0x7d, collectChest, 0x04),
-	"d8 compass chest": MutableChest(
+	"d8 compass chest": seasonsChest(
 		"compass", 0x50d2, 0x05, 0x8b, collectChest2, 0x04),
-	"d8 map chest": MutableChest(
+	"d8 map chest": seasonsChest(
 		"dungeon map", 0x50de, 0x05, 0x8e, collectChest2, 0x04),
-	"d8 boss key chest": MutableChest(
+	"d8 boss key chest": seasonsChest(
 		"d8 boss key", 0x50ca, 0x05, 0x80, collectChest, 0x04),
 
 	// don't use this slot; no one knows about it and it's not required for

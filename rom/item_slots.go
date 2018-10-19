@@ -104,14 +104,6 @@ func BasicSlot(treasure string, bank byte, idOffset, subIDOffset uint16,
 	}
 }
 
-// MutableChest constructs a MutableSlot from a treasure name and an address in
-// bank $15, where the ID and sub-ID are two consecutive bytes at that address.
-// This applies to almost all chests, and exclusively (?) to chests.
-func MutableChest(treasure string, addr uint16,
-	group, room, mode, coords byte) *MutableSlot {
-	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, mode, coords)
-}
-
 // MutableScriptItem constructs a MutableSlot from a treasure name and an
 // address in bank $0b, where the ID and sub-ID are two consecutive bytes at
 // that address.  This applies to most items given by NPCs.
