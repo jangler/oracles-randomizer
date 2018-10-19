@@ -3,10 +3,9 @@ package rom
 // agesChest constructs a MutableSlot from a treasure name and an address in
 // bank $16, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to almost all chests, and exclusively to chests.
-func agesChest(treasure string, addr uint16,
-	group, room, coords byte) *MutableSlot {
+func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
 	return BasicSlot(treasure, 0x16, addr, addr+1,
-		group, room, collectChest, coords)
+		group, room, collectChest, 0)
 }
 
 var agesSlots = map[string]*MutableSlot{
@@ -17,42 +16,40 @@ var agesSlots = map[string]*MutableSlot{
 		"nayru's house": CustomSlot("tune of echoes",
 			0x03, 0xae, collectFind2, 0x3a),
 	*/
-	"lynna city chest": agesChest("rupees, 30", 0x511e,
-		0x00, 0x49, 0x49),
-	"fairies' woods chest": agesChest("rupees, 50", 0x5122,
-		0x00, 0x84, 0x84),
-	"fairies' coast chest": agesChest("green holy ring", 0x5126,
-		0x00, 0x91, 0x91),
-	"zora seas chest": agesChest("whimsical ring", 0x512e,
-		0x00, 0xd5, 0xd5),
-	"talus peaks chest": agesChest("gasha seed", 0x5132,
-		0x00, 0x63, 0x63),
-	"ruined keep": agesChest("armor ring L-1", 0x5144,
-		0x02, 0xbe, 0x09),
-	"nuun cave": agesChest("light ring L-1", 0x5154,
-		0x02, 0xf4, 0x37),
-	"zora village present": agesChest("gasha seed", 0x515c,
-		0x02, 0xc0, 0xc0),
-	"D6 entrance pool": agesChest("toss ring", 0x5161,
-		0x03, 0x0e, 0x3c),
+	"lynna city chest":     agesChest("rupees, 30", 0x511e, 0x00, 0x49),
+	"fairies' woods chest": agesChest("rupees, 50", 0x5122, 0x00, 0x84),
+	"fairies' coast chest": agesChest("green holy ring", 0x5126, 0x00, 0x91),
+	"zora seas chest":      agesChest("whimsical ring", 0x512e, 0x00, 0xd5),
+	"talus peaks chest":    agesChest("gasha seed", 0x5132, 0x00, 0x63),
+	"ruined keep":          agesChest("armor ring L-1", 0x5144, 0x02, 0xbe),
+	"nuun cave":            agesChest("light ring L-1", 0x5154, 0x02, 0xf4),
+	"zora village present": agesChest("gasha seed", 0x515c, 0x02, 0xc0),
+	"D6 entrance pool":     agesChest("toss ring", 0x5161, 0x03, 0x0e),
 	// "sea of storms cave present": nil, // special linked chest?
-	"mayor plen's house": agesChest("green luck ring", 0x5171,
-		0x03, 0xf9, 0x57),
-	"cresent island underwater cave": agesChest("piece of heart", 0x5175,
-		0x03, 0xfd, 0xda),
+	"mayor plen's house":      agesChest("green luck ring", 0x5171, 0x03, 0xf9),
+	"cresent seafloor cave":   agesChest("piece of heart", 0x5175, 0x03, 0xfd),
+	"goron's hiding place":    agesChest("gold joy ring", 0x52f7, 0x05, 0xbd),
+	"ridge base cave present": agesChest("rupees, 50", 0x52fb, 0x05, 0xb9),
+	"ridge NE cave present":   agesChest("gasha seed", 0x52ff, 0x05, 0xee),
+	"goron diamond cave":      agesChest("bombs, 10", 0x5303, 0x05, 0xdd),
+	"ridge west cave":         agesChest("rupees, 30", 0x5307, 0x05, 0xc0),
+	"zora NW cave":            agesChest("blue luck ring", 0x531f, 0x05, 0xc7),
+	"zora palace chest":       agesChest("rupees, 200", 0x532b, 0x05, 0xac),
 
 	// overworld past
-	"sea of no return": agesChest("blue ring", 0x5137,
-		0x01, 0x6d, 0x6d),
-	"bomb goron head": agesChest("rupees, 100", 0x5148,
-		0x02, 0xfc, 0x0d),
-	"tokay cave past": agesChest("gasha seed", 0x514c,
-		0x02, 0xce, 0xcd),
-	"zora cave past": agesChest("red holy ring", 0x5158,
-		0x02, 0x4f, 0xc5),
-	"ridge bush cave": agesChest("rupees, 100", 0x5165,
-		0x03, 0x1f, 0x1c),
+	"sea of no return": agesChest("blue ring", 0x5137, 0x01, 0x6d),
+	"bomb goron head":  agesChest("rupees, 100", 0x5148, 0x02, 0xfc),
+	"tokay cave past":  agesChest("gasha seed", 0x514c, 0x02, 0xce),
+	"zora cave past":   agesChest("red holy ring", 0x5158, 0x02, 0x4f),
+	"ridge bush cave":  agesChest("rupees, 100", 0x5165, 0x03, 0x1f),
 	// "sea of storms cave past": nil, // special linked chest?
+	"deku forest cave west": agesChest("rupees, 30", 0x52f3, 0x05, 0xb5),
+	"ridge past diamonds":   agesChest("rupees, 50", 0x530f, 0x05, 0xe1),
+	"ridge past base":       agesChest("gasha seed", 0x5313, 0x05, 0xe0),
+	"deku forest cave east": agesChest("gasha seed", 0x5317, 0x05, 0xb3),
+	"palace chest":          agesChest("gold luck ring", 0x531b, 0x05, 0xcb),
+	"tokay crystal cave":    agesChest("gasha seed", 0x5323, 0x05, 0xca),
+	"tokay pot cave":        agesChest("power ring L-2", 0x532f, 0x05, 0xf7),
 
 	// dungeons TODO
 }
