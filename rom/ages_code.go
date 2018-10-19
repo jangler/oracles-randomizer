@@ -10,6 +10,8 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x03] = 0x7ebd
 	r.endOfBank[0x04] = 0x7edb
 	r.endOfBank[0x05] = 0x7d9d
+	r.endOfBank[0x10] = 0x7ef4
+	r.endOfBank[0x12] = 0x7e8f
 
 	return &r
 }
@@ -51,6 +53,14 @@ func initAgesEOB() {
 		"\xe5\xfa\xb3\xcb\xfe\x94\x30\x03\xcd\x86\x08\xe1\xcd\x37\x02\xc9")
 	r.replace(0x03, 0x4d6c, "skip capcom call", "\x37\x02", skipCapcom)
 
+	// set intro flags to skip opening
+	skipOpening := r.appendToBank(0x03, "skip opening",
+		"\xcd\xf9\x31\x3e\x0a\xcd\xf9\x31"+ // set global flags
+			"\xe5\x21\x7a\xc7\xcb\xf6\x2e\x6a\xcb\xf6"+ // set room flags
+			"\x2e\x59\xcb\xf6\x2e\x39\x36\xc8\xe1\xc9") // set more room flags
+	r.replace(0x03, 0x6e97, "call skip opening",
+		"\xc3\xf9\x31", "\xc3"+skipOpening)
+
 	// bank 04
 
 	// look up tiles in custom replacement table after loading a room. the
@@ -82,4 +92,21 @@ func initAgesEOB() {
 			"\xf1\xc3\x1f\x1e") // jp to normal lookup
 	r.replace(0x05, 0x6083, "call cliff lookup",
 		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
+
+	// bank 10
+
+	// override heart piece with starting item on starting item screen.
+	foundItemLookup := r.appendToBank(0x10, "found item lookup",
+		"\x01\x00\x2b\xfa\x2d\xcc\xb7\xc0\xfa\x30\xcc\xfe\x39\xc0"+
+			"\x01\x00\x05\xc9")
+	r.replace(0x10, 0x74bd, "call found item lookup",
+		"\x01\x00\x2b", "\xcd"+foundItemLookup)
+
+	// bank 12
+
+	// replace nayru intro screen interaction with starting item.
+	startingItem := r.appendToBank(0x12, "starting item",
+		"\xf2\xdc\x07\x28\x78\xfe")
+	r.replace(0x12, 0x5b06, "starting item pointer",
+		"\xf1\x6b\x01", "\xf3"+startingItem)
 }
