@@ -9,6 +9,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x02] = 0x7e93
 	r.endOfBank[0x03] = 0x7ebd
 	r.endOfBank[0x04] = 0x7edb
+	r.endOfBank[0x05] = 0x7d9d
 
 	return &r
 }
@@ -67,4 +68,17 @@ func initAgesEOB() {
 			"\x23\x23\x23\x18\xe5\xc1\xcd\xef\x5f\xc9")
 	r.replace(0x00, 0x38c0, "tile replace call",
 		"\xcd\xef\x5f", "\xcd"+tileReplaceFunc)
+
+	// bank 05
+
+	// if wearing dev ring, jump over any tile like a ledge by pressing B with
+	// no B item equipped.
+	cliffLookup := r.appendToBank(0x05, "cliff lookup",
+		"\xf5\xfa\xcb\xc6\xfe\x40\x20\x13"+ // check ring
+			"\xfa\x88\xc6\xb7\x20\x0d"+ // check B item
+			"\xfa\x81\xc4\xe6\x02\x28\x06"+ // check input
+			"\xf1\xfa\x09\xd0\x37\xc9"+ // jump over ledge
+			"\xf1\xc3\x1f\x1e") // jp to normal lookup
+	r.replace(0x05, 0x6083, "call cliff lookup",
+		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
 }
