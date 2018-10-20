@@ -10,6 +10,8 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x03] = 0x7ebd
 	r.endOfBank[0x04] = 0x7edb
 	r.endOfBank[0x05] = 0x7d9d
+	r.endOfBank[0x0b] = 0x7fa8
+	r.endOfBank[0x0c] = 0x7f94
 	r.endOfBank[0x10] = 0x7ef4
 	r.endOfBank[0x12] = 0x7e8f
 
@@ -92,6 +94,17 @@ func initAgesEOB() {
 			"\xf1\xc3\x1f\x1e") // jp to normal lookup
 	r.replace(0x05, 0x6083, "call cliff lookup",
 		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
+
+	// bank 0c
+
+	// if ricky isn't on tingle's screen or you have ricky's flute, end the
+	// script after getting the chart.
+	endTingleScript := r.appendToBank(0x0c, "end tingle script",
+		"\xc7\x00\xd1\xff"+addrString(r.endOfBank[0x0c]+9)+"\xbe\x7d\xfe"+
+			"\xcb\xb5\xc6\x01"+addrString(r.endOfBank[0x0c]+6)+
+			"\x91\x03\xd1\x02\xc1")
+	r.replace(0x0c, 0x7e2a, "call end tingle script",
+		"\x91\x03\xd1\x02", "\xc0"+endTingleScript+"\xba")
 
 	// bank 10
 

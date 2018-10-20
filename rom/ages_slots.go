@@ -32,6 +32,7 @@ var agesSlots = map[string]*MutableSlot{
 	"cheval's test":        agesScriptItem("flippers", 0x723b, 0x05, 0xbf),
 	"cheval's invention":   agesScriptItem("cheval rope", 0x7232, 0x05, 0xb6),
 	"tingle's gift":        agesScriptItem("island chart", 0x7e20, 0x00, 0x79),
+	"tingle's upgrade":     agesScriptItem("satchel 2", 0x7e7a, 0x00, 0x79),
 	"lynna city chest":     agesChest("rupees, 30", 0x511e, 0x00, 0x49),
 	"fairies' woods chest": agesChest("rupees, 50", 0x5122, 0x00, 0x84),
 	"fairies' coast chest": agesChest("green holy ring", 0x5126, 0x00, 0x91),

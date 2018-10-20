@@ -213,11 +213,14 @@ func Verify(b []byte, game int) []error {
 			"member's shop 2", "member's shop 3", "subrosian market 1",
 			"subrosian market 2", "subrosian market 5", "zero shop text":
 			break
-		// misc.
+		// seasons misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
 			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
-			"d5 boss key spot", "sword 1", "nayru's house", "maku tree":
+			"d5 boss key spot":
+			break
+		// ages misc.
+		case "sword 1", "nayru's house", "maku tree", "tingle's upgrade":
 			break
 		default:
 			if err := m.Check(b); err != nil {
