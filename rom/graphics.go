@@ -20,6 +20,7 @@ var itemGfx = map[string]int{
 	"dungeon map":      0x5e0033,
 	"compass":          0x5e0413,
 	"small key":        0x5e0c50,
+	"graveyard key":    0x5e0e50,
 	"gnarled key":      0x5e0e50,
 	"boss key":         0x5e0853,
 	"floodgate key":    0x5e1040,
@@ -71,6 +72,7 @@ var itemGfx = map[string]int{
 	"cheval rope":      0x651033,
 	"spring banana":    0x651033,
 	"treasure map":     0x651433,
+	"island chart":     0x651443,
 	"rusty bell":       0x651823,
 	"star ore":         0x660033,
 

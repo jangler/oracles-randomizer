@@ -8,15 +8,30 @@ func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
 		group, room, collectChest, 0)
 }
 
+// for items given by script command de.
+func agesScriptItem(treasure string, addr uint16,
+	group, room byte) *MutableSlot {
+	return BasicSlot(treasure, 0x0c, addr, addr+1, group, room, collectFind2, 0)
+}
+
 var agesSlots = map[string]*MutableSlot{
 	// overworld present
 	// "impa's gift": CustomSlot("sword 1", 0x00, 0x39, collectFind2, 0x39),
 	"nayru's house": BasicSlot("harp", 0x0b, 0x6828, 0x6827,
 		0x03, 0xae, collectFind2, 0x3a),
-	"cheval's test": BasicSlot("flippers", 0x0c, 0x723b, 0x723c,
-		0x05, 0xbf, collectFind2, 0x5b),
-	"cheval's invention": BasicSlot("cheval rope", 0x0c, 0x7232, 0x7233,
-		0x05, 0xb6, collectFind2, 0x5b),
+	"maku tree": &MutableSlot{
+		treasureName: "satchel 1",
+		IDAddrs:      []Addr{{0x15, 0x70e0}, {0x15, 0x7115}},
+		SubIDAddrs:   []Addr{{0x15, 0x70e3}, {0x15, 0x7118}},
+		group:        0x00,
+		room:         0x38,
+		collectMode:  collectFall,
+	},
+	"grave under tree": BasicSlot("graveyard key", 0x10, 0x750d, 0x750c,
+		0x05, 0xed, collectFall, 0x8d),
+	"cheval's test":        agesScriptItem("flippers", 0x723b, 0x05, 0xbf),
+	"cheval's invention":   agesScriptItem("cheval rope", 0x7232, 0x05, 0xb6),
+	"tingle's gift":        agesScriptItem("island chart", 0x7e20, 0x00, 0x79),
 	"lynna city chest":     agesChest("rupees, 30", 0x511e, 0x00, 0x49),
 	"fairies' woods chest": agesChest("rupees, 50", 0x5122, 0x00, 0x84),
 	"fairies' coast chest": agesChest("green holy ring", 0x5126, 0x00, 0x91),
@@ -38,11 +53,12 @@ var agesSlots = map[string]*MutableSlot{
 	"zora palace chest":       agesChest("rupees, 200", 0x532b, 0x05, 0xac),
 
 	// overworld past
-	"sea of no return": agesChest("blue ring", 0x5137, 0x01, 0x6d),
-	"bomb goron head":  agesChest("rupees, 100", 0x5148, 0x02, 0xfc),
-	"tokay cave past":  agesChest("gasha seed", 0x514c, 0x02, 0xce),
-	"zora cave past":   agesChest("red holy ring", 0x5158, 0x02, 0x4f),
-	"ridge bush cave":  agesChest("rupees, 100", 0x5165, 0x03, 0x1f),
+	"black tower worker": agesScriptItem("shovel", 0x65e3, 0x04, 0xe1),
+	"sea of no return":   agesChest("blue ring", 0x5137, 0x01, 0x6d),
+	"bomb goron head":    agesChest("rupees, 100", 0x5148, 0x02, 0xfc),
+	"tokay cave past":    agesChest("gasha seed", 0x514c, 0x02, 0xce),
+	"zora cave past":     agesChest("red holy ring", 0x5158, 0x02, 0x4f),
+	"ridge bush cave":    agesChest("rupees, 100", 0x5165, 0x03, 0x1f),
 	// "sea of storms cave past": nil, // special linked chest?
 	"deku forest cave west": agesChest("rupees, 30", 0x52f3, 0x05, 0xb5),
 	"ridge past diamonds":   agesChest("rupees, 50", 0x530f, 0x05, 0xe1),
