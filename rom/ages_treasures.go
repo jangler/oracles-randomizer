@@ -37,4 +37,11 @@ var agesTreasures = map[string]*Treasure{
 	"blue ring":       agesTreasure(0x2d, 0x27, 0x56c6, 0x38, 0x08, 0x54, 0x0e),
 
 	"gasha seed": agesTreasure(0x34, 0x01, 0x5582, 0x38, 0x01, 0x4b, 0x0d),
+
+	// not real treasures, just placeholders for seeds in trees
+	"ember tree seeds":   &Treasure{id: 0x00},
+	"scent tree seeds":   &Treasure{id: 0x01},
+	"pegasus tree seeds": &Treasure{id: 0x02},
+	"gale tree seeds":    &Treasure{id: 0x03},
+	"mystery tree seeds": &Treasure{id: 0x04},
 }

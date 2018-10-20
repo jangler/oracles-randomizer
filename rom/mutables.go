@@ -113,6 +113,9 @@ func getAllMutables() map[string]Mutable {
 	slotMutables := make(map[string]Mutable)
 	treasureMutables := make(map[string]Mutable)
 	for k, v := range ItemSlots {
+		if v.Treasure == nil {
+			log.Fatalf("treasure named %s for %s is nil", v.treasureName, k)
+		}
 		if v.Treasure.addr.Offset != 0 {
 			treasureMutables[FindTreasureName(v.Treasure)] = v.Treasure
 		}

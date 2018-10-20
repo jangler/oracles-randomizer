@@ -145,7 +145,6 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		codeMutables["season after pirate cutscene"].(*MutableRange).New =
 			[]byte{Seasons["western coast season"].New[0]}
 
-		setSeedData()
 		setTreasureMapData()
 
 		// explicitly set these addresses and IDs after their functions
@@ -159,6 +158,8 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
 		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
 	}
+
+	setSeedData(game)
 
 	var err error
 	mutables := getAllMutables()
@@ -231,32 +232,78 @@ func Verify(b []byte, game int) []error {
 // set the initial satchel and slingshot seeds (and selections) based on what
 // grows on the horon village tree, and set the map icon for each tree to match
 // the seed type.
-func setSeedData() {
-	seedType := ItemSlots["ember tree"].Treasure.id
-
-	for _, name := range []string{"satchel initial seeds",
-		"carry seeds in slingshot"} {
-		mut := varMutables[name].(*MutableRange)
-		mut.New[0] = 0x20 + seedType
+func setSeedData(game int) {
+	var seedType byte
+	if game == GameSeasons {
+		seedType = ItemSlots["ember tree"].Treasure.id
+	} else {
+		seedType = ItemSlots["south lynna tree"].Treasure.id
 	}
 
-	// slingshot starting seeds
-	varMutables["edit gain/lose items tables"].(*MutableRange).New[1] =
-		0x20 + seedType
+	if game == GameSeasons {
+		for _, name := range []string{"satchel initial seeds",
+			"carry seeds in slingshot"} {
+			mut := varMutables[name].(*MutableRange)
+			mut.New[0] = 0x20 + seedType
+		}
 
-	for _, name := range []string{
-		"satchel initial selection", "slingshot initial selection"} {
-		mut := varMutables[name].(*MutableRange)
-		mut.New[1] = seedType
-	}
+		// slingshot starting seeds
+		varMutables["edit gain/lose items tables"].(*MutableRange).New[1] =
+			0x20 + seedType
 
-	for _, name := range []string{"ember tree map icon", "scent tree map icon",
-		"mystery tree map icon", "pegasus tree map icon",
-		"sunken gale tree map icon", "tarm gale tree map icon"} {
-		mut := varMutables[name].(*MutableRange)
-		id := ItemSlots[strings.Replace(name, " map icon", "", 1)].Treasure.id
-		mut.New[0] = 0x15 + id
+		for _, name := range []string{
+			"satchel initial selection", "slingshot initial selection"} {
+			mut := varMutables[name].(*MutableRange)
+			mut.New[1] = seedType
+		}
+
+		for _, name := range []string{"ember tree map icon",
+			"scent tree map icon", "mystery tree map icon",
+			"pegasus tree map icon", "sunken gale tree map icon",
+			"tarm gale tree map icon"} {
+			mut := varMutables[name].(*MutableRange)
+			slotName := strings.Replace(name, " map icon", "", 1)
+			id := ItemSlots[slotName].Treasure.id
+			mut.New[0] = 0x15 + id
+		}
+	} else {
+		// set high nybbles (seed types) of seed tree interactions
+		setTreeNybble(varMutables["symmetry city tree sub ID"],
+			ItemSlots["symmetry city tree"])
+		setTreeNybble(varMutables["south lynna present tree sub ID"],
+			ItemSlots["south lynna tree"])
+		setTreeNybble(varMutables["crescent island tree sub ID"],
+			ItemSlots["crescent island tree"])
+		setTreeNybble(varMutables["zora village present tree sub ID"],
+			ItemSlots["zora village tree"])
+		setTreeNybble(varMutables["rolling ridge west tree sub ID"],
+			ItemSlots["rolling ridge west tree"])
+		setTreeNybble(varMutables["ambi's palace tree sub ID"],
+			ItemSlots["ambi's palace tree"])
+		setTreeNybble(varMutables["rolling ridge east tree sub ID"],
+			ItemSlots["rolling ridge east tree"])
+		setTreeNybble(varMutables["south lynna past tree sub ID"],
+			ItemSlots["south lynna tree"])
+		setTreeNybble(varMutables["deku forest tree sub ID"],
+			ItemSlots["deku forest tree"])
+		setTreeNybble(varMutables["zora village past tree sub ID"],
+			ItemSlots["zora village tree"])
+
+		// set map icons
+		for _, name := range []string{"crescent island tree",
+			"symmetry city tree", "south lynna tree", "zora village tree",
+			"rolling ridge west tree", "ambi's palace tree",
+			"rolling ridge east tree", "deku forest tree"} {
+			mut := varMutables[name+" map icon"].(*MutableRange)
+			mut.New[0] = 0x15 + ItemSlots[name].Treasure.id
+		}
 	}
+}
+
+// sets the high nybble (seed type) of a seed tree interaction in ages.
+func setTreeNybble(subID Mutable, slot *MutableSlot) {
+	mut := subID.(*MutableRange)
+	mut.New[0] = (mut.Old[0] & 0x0f) | (slot.Treasure.id << 4)
 }
 
 // set the locations of the sparkles for the jewels on the treasure map.

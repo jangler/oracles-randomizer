@@ -49,4 +49,17 @@ var agesSlots = map[string]*MutableSlot{
 	"tokay pot cave":        agesChest("power ring L-2", 0x532f, 0x05, 0xf7),
 
 	// dungeons TODO
+
+	// seed trees work differently in ages; the seed type is determined by the
+	// high nybble of the tree sub ID, and the low nybble is used to identify it
+	// for regrowth purposes. so these can't be set directly like ordinary item
+	// slots can.
+	"symmetry city tree":      &MutableSlot{treasureName: "gale tree seeds"},
+	"south lynna tree":        &MutableSlot{treasureName: "ember tree seeds"},
+	"crescent island tree":    &MutableSlot{treasureName: "scent tree seeds"},
+	"zora village tree":       &MutableSlot{treasureName: "gale tree seeds"},
+	"rolling ridge west tree": &MutableSlot{treasureName: "pegasus tree seeds"},
+	"ambi's palace tree":      &MutableSlot{treasureName: "scent tree seeds"},
+	"rolling ridge east tree": &MutableSlot{treasureName: "mystery tree seeds"},
+	"deku forest tree":        &MutableSlot{treasureName: "mystery tree seeds"},
 }
