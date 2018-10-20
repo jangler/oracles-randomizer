@@ -158,7 +158,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
 		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
 	} else {
-		setAgesGfx("cheval's challenge")
+		setAgesGfx("cheval's test")
 		setAgesGfx("cheval's invention")
 	}
 
@@ -371,7 +371,10 @@ func setAgesGfx(name string) {
 	mut.New = []byte{byte((gfx >> 16) + 0x1c), byte(gfx >> 8), byte(gfx)}
 
 	// different animation requires different palette / transform bits
-	if gfx&0x0f == 0x03 {
-		mut.New[2] = byte(0x02 | (gfx & 0xf0))
+	switch gfx & 0x0f {
+	case 0x00:
+		mut.New[2]++
+	case 0x03:
+		mut.New[2]--
 	}
 }

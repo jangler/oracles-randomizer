@@ -58,7 +58,7 @@ var agesVarMutables = map[string]Mutable{
 		Addr{0x02, 0x6d2c}, 0x19, 0x19),
 
 	// item graphics
-	"cheval's challenge gfx": MutableString(Addr{0x3f, 0x6a56},
+	"cheval's test gfx": MutableString(Addr{0x3f, 0x6a56},
 		"\x79\x04\x52", "\x79\x04\x52"),
 	"cheval's invention gfx": MutableString(Addr{0x3f, 0x6a53},
 		"\x81\x10\x32", "\x81\x10\x32"),

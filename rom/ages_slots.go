@@ -13,7 +13,7 @@ var agesSlots = map[string]*MutableSlot{
 	// "impa's gift": CustomSlot("sword 1", 0x00, 0x39, collectFind2, 0x39),
 	"nayru's house": BasicSlot("harp", 0x0b, 0x6828, 0x6827,
 		0x03, 0xae, collectFind2, 0x3a),
-	"cheval's challenge": BasicSlot("flippers", 0x0c, 0x723b, 0x723c,
+	"cheval's test": BasicSlot("flippers", 0x0c, 0x723b, 0x723c,
 		0x05, 0xbf, collectFind2, 0x5b),
 	"cheval's invention": BasicSlot("cheval rope", 0x0c, 0x7232, 0x7233,
 		0x05, 0xb6, collectFind2, 0x5b),
