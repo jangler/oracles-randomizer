@@ -10,12 +10,9 @@ func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
 
 var agesSlots = map[string]*MutableSlot{
 	// overworld present
-	/*
-		"impa's gift": CustomSlot("sword 1",
-			0x00, 0x39, collectFind2, 0x39),
-		"nayru's house": CustomSlot("tune of echoes",
-			0x03, 0xae, collectFind2, 0x3a),
-	*/
+	// "impa's gift": CustomSlot("sword 1", 0x00, 0x39, collectFind2, 0x39),
+	"nayru's house": BasicSlot("harp", 0x0b, 0x6828, 0x6827,
+		0x01, 0xae, collectFind2, 0x3a),
 	"lynna city chest":     agesChest("rupees, 30", 0x511e, 0x00, 0x49),
 	"fairies' woods chest": agesChest("rupees, 50", 0x5122, 0x00, 0x84),
 	"fairies' coast chest": agesChest("green holy ring", 0x5126, 0x00, 0x91),

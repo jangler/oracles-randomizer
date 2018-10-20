@@ -25,10 +25,6 @@ func Init(game int) {
 		fixedMutables = agesFixedMutables
 		varMutables = agesVarMutables
 		initAgesEOB()
-
-		Treasures["tune of echoes"] = &(*Treasures["harp"])
-		Treasures["tune of currents"] = &(*Treasures["harp"])
-		Treasures["tune of ages"] = &(*Treasures["harp"])
 	} else {
 		ItemSlots = seasonsSlots
 		Treasures = seasonsTreasures
@@ -180,6 +176,8 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["diver gift"].Mutate(b)
 
 		setCompassData(b)
+	} else {
+		ItemSlots["nayru's house"].Mutate(b)
 	}
 
 	outSum := sha1.Sum(b)
@@ -215,7 +213,7 @@ func Verify(b []byte, game int) []error {
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
 			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
-			"d5 boss key spot", "sword 1":
+			"d5 boss key spot", "sword 1", "nayru's house":
 			break
 		default:
 			if err := m.Check(b); err != nil {
