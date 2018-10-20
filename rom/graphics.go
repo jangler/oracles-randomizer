@@ -1,6 +1,7 @@
 package rom
 
-// first two bytes determine sprite; final one determines graphics flags.
+// first two bytes determine sprite; final one determines graphics flags. the
+// first byte is 1c higher in ages.
 var itemGfx = map[string]int{
 	"rupees, 1":        0x5c0400,
 	"rupees, 5":        0x5c0410,
@@ -67,6 +68,7 @@ var itemGfx = map[string]int{
 	"moosh's flute":    0x5f1613,
 	"ricky's gloves":   0x641c53,
 	"ribbon":           0x650c23,
+	"cheval rope":      0x651033,
 	"spring banana":    0x651033,
 	"treasure map":     0x651433,
 	"rusty bell":       0x651823,

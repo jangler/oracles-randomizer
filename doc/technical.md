@@ -17,7 +17,7 @@ both games.
 - 0:10cc/109a = getChestData
 - 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:15e9 = interactionInitGraphics
-	- 3f:4404 = interactionLoadGraphics
+	- 3f:4404/ = interactionLoadGraphics
 - 0:171c/16eb = giveTreasure (a is ID, c is param)
 - 0:1733/1702 = loseTreasure (a is ID)
 - 0:17e5 = refill all seeds
@@ -267,12 +267,11 @@ tiles common to different tilesets usually have the same IDs.
 
 ## graphics
 
-sprite entries in the table at 3f:63a3 (i think this is the same in jp and
-en/us?) are three bytes. the first two determine the index of the sprite, and
-the second byte is evens only; odds don't make a difference. the third
-determines palette, transformations, and other information. one nybble is
-devoted exclusively (?) to which palette the sprite uses, although only 8
-exist.
+sprite entries in the table at 3f:6247/63a3 are three bytes. the first two
+determine the index of the sprite, and the second byte is evens only; odds
+don't make a difference. the third determines palette, transformations, and
+other information. one nybble is devoted exclusively (?) to which palette the
+sprite uses, although only 8 exist.
 
 
 ## text

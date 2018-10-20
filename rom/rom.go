@@ -157,6 +157,9 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
 		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
 		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
+	} else {
+		setAgesGfx("cheval's challenge")
+		setAgesGfx("cheval's invention")
 	}
 
 	setSeedData(game)
@@ -354,4 +357,21 @@ func getDungeonPropertiesAddr(group, room byte) *Addr {
 		offset += 0x100
 	}
 	return &Addr{0x01, offset}
+}
+
+// interaction 6b in ages requires explicit graphics settings, unlike in
+// seasons.
+func setAgesGfx(name string) {
+	mut := varMutables[name+" gfx"].(*MutableRange)
+	treasureName := FindTreasureName(ItemSlots[name].Treasure)
+	gfx := itemGfx[treasureName]
+	if gfx == 0 {
+		panic("no item graphics for " + treasureName)
+	}
+	mut.New = []byte{byte((gfx >> 16) + 0x1c), byte(gfx >> 8), byte(gfx)}
+
+	// different animation requires different palette / transform bits
+	if gfx&0x0f == 0x03 {
+		mut.New[2] = byte(0x02 | (gfx & 0xf0))
+	}
 }
