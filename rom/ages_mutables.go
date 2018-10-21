@@ -76,6 +76,8 @@ var agesVarMutables = map[string]Mutable{
 		"\x79\x04\x52", "\x79\x04\x52"),
 	"cheval's invention gfx": MutableString(Addr{0x3f, 0x6a53},
 		"\x81\x10\x32", "\x81\x10\x32"),
+	"wild tokay game gfx": MutableString(Addr{0x3f, 0x6795},
+		"\x83\x00\x03", "\x83\x00\x03"),
 	"shop, 150 rupees gfx": MutableString(Addr{0x3f, 0x69c6},
 		"\x7c\x16\x03", "\x7c\x16\x03"),
 }

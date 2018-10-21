@@ -60,6 +60,7 @@ var agesItemGfx = map[string]int{
 	"cheval rope":      0x811033,
 	"ricky's gloves":   0x811c53,
 	"island chart":     0x811443,
+	"broken sword":     0x818813,
 	"brother emblem":   0x820033,
 	"rock brisket":     0x820453,
 	"lava juice":       0x820853,
@@ -70,6 +71,7 @@ var agesItemGfx = map[string]int{
 	"tokay eyeball":    0x821a50,
 	"scent seedling":   0x830003,
 	"tuni nut":         0x830653,
+	"bomb flower":      0x830a04,
 
 	// but shouldn't be slotted anywhere that needs graphics data
 	"ember tree seeds":   0x7c0620,

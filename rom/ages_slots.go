@@ -14,6 +14,13 @@ func agesScriptItem(treasure string, addr uint16,
 	return BasicSlot(treasure, 0x0c, addr, addr+1, group, room, collectFind2, 0)
 }
 
+// same as agesScriptItem, but for scripts in bank 15 that are copied to the
+// c3xx buffer.
+func agesBufferItem(treasure string, addr uint16,
+	group, room byte) *MutableSlot {
+	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, collectFind2, 0)
+}
+
 var agesSlots = map[string]*MutableSlot{
 	// overworld present
 	// "impa's gift": nil // TODO
@@ -35,6 +42,7 @@ var agesSlots = map[string]*MutableSlot{
 		0x00, 0x98, collectDigPile, 0x98),
 	"tingle's gift":    agesScriptItem("island chart", 0x7e20, 0x00, 0x79),
 	"tingle's upgrade": agesScriptItem("satchel 2", 0x7e7a, 0x00, 0x79),
+	"wild tokay game":  agesBufferItem("scent seedling", 0x5bbb, 0x02, 0xde),
 	"shop, 150 rupees": &MutableSlot{
 		treasureName: "strange flute",
 		IDAddrs:      []Addr{{0x09, 0x4511}},
@@ -43,6 +51,18 @@ var agesSlots = map[string]*MutableSlot{
 		room:         0x5e,
 		collectMode:  collectFind2,
 	},
+	"symmetry city brother": agesBufferItem("tuni nut", 0x7929, 0x03, 0x6f),
+	"defeat great moblin":   agesScriptItem("bomb flower", 0x757d, 0x00, 0x09),
+	"goron elder":           agesBufferItem("crown key", 0x7386, 0x05, 0xc3),
+	"target carts 1": &MutableSlot{
+		treasureName: "rock brisket",
+		IDAddrs:      []Addr{{0x15, 0x66e8}, {0x0c, 0x6e71}},
+		SubIDAddrs:   []Addr{{0x15, 0x66e9}, {0x0c, 0x6e72}},
+		group:        0x05,
+		room:         0xd8,
+		collectMode:  collectFind2,
+	},
+	"old zora":             agesBufferItem("broken sword", 0x61ad, 0x02, 0xf5),
 	"lynna city chest":     agesChest("rupees, 30", 0x511e, 0x00, 0x49),
 	"fairies' woods chest": agesChest("rupees, 50", 0x5122, 0x00, 0x84),
 	"fairies' coast chest": agesChest("green holy ring", 0x5126, 0x00, 0x91),

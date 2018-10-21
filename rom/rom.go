@@ -164,6 +164,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	} else {
 		setAgesGfx("cheval's test", true)
 		setAgesGfx("cheval's invention", true)
+		setAgesGfx("wild tokay game", false)
 		setAgesGfx("shop, 150 rupees", false)
 	}
 
@@ -226,7 +227,7 @@ func Verify(b []byte, game int) []error {
 			break
 		// ages misc.
 		case "sword 1", "nayru's house", "maku tree", "tingle's upgrade",
-			"south shore dirt":
+			"south shore dirt", "goron elder", "target carts 1":
 			break
 		default:
 			if err := m.Check(b); err != nil {
