@@ -11,6 +11,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x04] = 0x7edb
 	r.endOfBank[0x05] = 0x7d9d
 	r.endOfBank[0x09] = 0x7dee
+	r.endOfBank[0x0a] = 0x7e09
 	r.endOfBank[0x0b] = 0x7fa8
 	r.endOfBank[0x0c] = 0x7f94
 	r.endOfBank[0x10] = 0x7ef4
@@ -104,6 +105,22 @@ func initAgesEOB() {
 		"\xfe\x0d\x20\x05\x21\x9a\xc6\xcb\xfe\x21\xf7\x44\xc9")
 	r.replace(0x09, 0x4418, "call shop set fake ID",
 		"\x21\xf7\x44", "\xcd"+shopSetFakeID)
+
+	// set treasure ID 08 (magnet gloves) when getting item from south shore
+	// dirt pile.
+	digSetFakeID := r.appendToBank(0x09, "dirt set fake ID",
+		"\x5f\xfa\x2d\xcc\xb7\x20\x0e\xfa\x30\xcc\xfe\x98\x20\x07"+
+			"\xe5\x21\x9b\xc6\xcb\xc6\xe1\x7b\xc3\x1c\x17")
+	r.replace(0x09, 0x4c4e, "call dirt set fake ID",
+		"\xcd\x1c\x17", "\xcd"+digSetFakeID)
+
+	// bank 0a
+
+	// set sub ID for south short dig item.
+	dirtSpawnItem := r.appendToBank(0x0a, "dirt spawn item",
+		"\xcd\xd4\x27\xc0\xcd\x42\x22\xaf\xc9")
+	r.replace(0x0a, 0x5e3e, "call dirt spawn item",
+		"\xcd\xc5\x24", "\xcd"+dirtSpawnItem)
 
 	// bank 0c
 

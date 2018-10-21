@@ -20,6 +20,7 @@ const (
 	collectChest      = 0x38 // most chests
 	collectDive       = 0x49
 	collectChest2     = 0x68 // map and compass
+	collectDigPile    = 0x51
 	collectDig        = 0x5a
 )
 

@@ -19,7 +19,19 @@ var agesFixedMutables = map[string]Mutable{
 	// initializing.
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
-	// check for fake treasure ID (rod) so that non-unique items can be sold
+	// dig up item on south shore regardless of ricky state
+	"south shore ricky check 1": MutableByte(Addr{0x04, 0x6b77}, 0x0a, 0x00),
+	"south shore ricky check 2": MutableByte(Addr{0x04, 0x6b7b}, 0x06, 0x00),
+	"south shore ricky check 3": MutableByte(Addr{0x0a, 0x5e2f}, 0x12, 0x00),
+	"south shore ricky check 4": MutableByte(Addr{0x0a, 0x5e33}, 0x0e, 0x00),
+	// and check fake treasure ID 08 (magnet gloves) instead of ricky's gloves
+	"south shore fake ID": MutableStrings([]Addr{{0x04, 0x6b7d},
+		{0x0a, 0x5e35}}, "\x48", "\x08"),
+
+	// sell flute from lynna city shop from the start
+	"shop flute flag check": MutableString(Addr{0x09, 0x4333},
+		"\x28\x04", "\x00\x00"),
+	// check for fake treasure ID 07 (rod) so that non-unique items can be sold
 	"shop fake ID": MutableByte(Addr{0x09, 0x4328}, 0x0e, 0x07),
 }
 
