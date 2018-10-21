@@ -10,6 +10,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x03] = 0x7ebd
 	r.endOfBank[0x04] = 0x7edb
 	r.endOfBank[0x05] = 0x7d9d
+	r.endOfBank[0x09] = 0x7dee
 	r.endOfBank[0x0b] = 0x7fa8
 	r.endOfBank[0x0c] = 0x7f94
 	r.endOfBank[0x10] = 0x7ef4
@@ -94,6 +95,15 @@ func initAgesEOB() {
 			"\xf1\xc3\x1f\x1e") // jp to normal lookup
 	r.replace(0x05, 0x6083, "call cliff lookup",
 		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
+
+	// bank 09
+
+	// set treasure ID 07 (rod of seasons) when buying the 150 rupee shop item,
+	// so that the shop can check this specific ID.
+	shopSetFakeID := r.appendToBank(0x09, "shop set fake ID",
+		"\xfe\x0d\x20\x05\x21\x9a\xc6\xcb\xfe\x21\xf7\x44\xc9")
+	r.replace(0x09, 0x4418, "call shop set fake ID",
+		"\x21\xf7\x44", "\xcd"+shopSetFakeID)
 
 	// bank 0c
 

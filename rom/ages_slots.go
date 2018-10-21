@@ -16,7 +16,7 @@ func agesScriptItem(treasure string, addr uint16,
 
 var agesSlots = map[string]*MutableSlot{
 	// overworld present
-	// "impa's gift": CustomSlot("sword 1", 0x00, 0x39, collectFind2, 0x39),
+	// "impa's gift": nil // TODO
 	"nayru's house": BasicSlot("harp", 0x0b, 0x6828, 0x6827,
 		0x03, 0xae, collectFind2, 0x3a),
 	"maku tree": &MutableSlot{
@@ -50,7 +50,7 @@ var agesSlots = map[string]*MutableSlot{
 	"nuun cave":            agesChest("light ring L-1", 0x5154, 0x02, 0xf4),
 	"zora village present": agesChest("gasha seed", 0x515c, 0x02, 0xc0),
 	"D6 entrance pool":     agesChest("toss ring", 0x5161, 0x03, 0x0e),
-	// "sea of storms cave present": nil, // special linked chest?
+	// "sea of storms cave present": nil, // TODO special linked chest?
 	"mayor plen's house":      agesChest("green luck ring", 0x5171, 0x03, 0xf9),
 	"crescent seafloor cave":  agesChest("piece of heart", 0x5175, 0x03, 0xfd),
 	"goron's hiding place":    agesChest("gold joy ring", 0x52f7, 0x05, 0xbd),
@@ -68,7 +68,7 @@ var agesSlots = map[string]*MutableSlot{
 	"tokay cave past":    agesChest("gasha seed", 0x514c, 0x02, 0xce),
 	"zora cave past":     agesChest("red holy ring", 0x5158, 0x02, 0x4f),
 	"ridge bush cave":    agesChest("rupees, 100", 0x5165, 0x03, 0x1f),
-	// "sea of storms cave past": nil, // special linked chest?
+	// "sea of storms cave past": nil, // TODO special linked chest?
 	"deku forest cave west": agesChest("rupees, 30", 0x52f3, 0x05, 0xb5),
 	"ridge past diamonds":   agesChest("rupees, 50", 0x530f, 0x05, 0xe1),
 	"ridge past base":       agesChest("gasha seed", 0x5313, 0x05, 0xe0),

@@ -19,6 +19,8 @@ var agesFixedMutables = map[string]Mutable{
 	// initializing.
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
+	// check for fake treasure ID (rod) so that non-unique items can be sold
+	"shop fake ID": MutableByte(Addr{0x09, 0x4328}, 0x0e, 0x07),
 }
 
 var agesVarMutables = map[string]Mutable{
