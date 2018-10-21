@@ -16,6 +16,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x0c] = 0x7f94
 	r.endOfBank[0x10] = 0x7ef4
 	r.endOfBank[0x12] = 0x7e8f
+	r.endOfBank[0x15] = 0x7bfb
 
 	return &r
 }
@@ -149,4 +150,19 @@ func initAgesEOB() {
 		"\xf2\xdc\x07\x28\x78\xfe")
 	r.replace(0x12, 0x5b06, "starting item pointer",
 		"\xf1\x6b\x01", "\xf3"+startingItem)
+
+	// bank 15
+
+	// always make "boomerang" second prize for target carts, checking room
+	// flag 6 to track it.
+	targetCartsItem := r.appendToBank(0x15, "target carts item",
+		"\xcd\x7d\x19\xcb\x77\x3e\x04\xca\xbb\x66\xcd\x3e\x04\xc3\xa5\x66")
+	r.replace(0x15, 0x66a2, "call target carts item",
+		"\xcd\x3e\x04", "\xc3"+targetCartsItem)
+	// set room flag 6 when "boomerang" is given in script.
+	targetCartsFlag := r.appendToBank(0x0c, "target carts flag",
+		"\xde\x06\x02\xb1\x40\xc1")
+	r.replace(0x0c, 0x6e6e, "jump target carts flag",
+		"\x88\x6e", targetCartsFlag)
+
 }

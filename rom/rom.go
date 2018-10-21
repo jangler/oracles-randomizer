@@ -166,6 +166,11 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setAgesGfx("cheval's invention", true)
 		setAgesGfx("wild tokay game", false)
 		setAgesGfx("shop, 150 rupees", false)
+
+		// explicitly set these addresses and IDs after their functions
+		codeAddr := codeMutables["target carts flag"].(*MutableRange).Addrs[0]
+		ItemSlots["target carts 2"].IDAddrs[1].Offset = codeAddr.Offset + 1
+		ItemSlots["target carts 2"].SubIDAddrs[1].Offset = codeAddr.Offset + 2
 	}
 
 	setSeedData(game)
@@ -188,6 +193,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setCompassData(b)
 	} else {
 		ItemSlots["nayru's house"].Mutate(b)
+		ItemSlots["target carts 2"].Mutate(b)
 	}
 
 	outSum := sha1.Sum(b)
@@ -227,7 +233,8 @@ func Verify(b []byte, game int) []error {
 			break
 		// ages misc.
 		case "sword 1", "nayru's house", "maku tree", "tingle's upgrade",
-			"south shore dirt", "goron elder", "target carts 1":
+			"south shore dirt", "goron elder", "target carts 1",
+			"target carts 2":
 			break
 		default:
 			if err := m.Check(b); err != nil {

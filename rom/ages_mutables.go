@@ -33,6 +33,17 @@ var agesFixedMutables = map[string]Mutable{
 		"\x28\x04", "\x00\x00"),
 	// check for fake treasure ID 07 (rod) so that non-unique items can be sold
 	"shop fake ID": MutableByte(Addr{0x09, 0x4328}, 0x0e, 0x07),
+
+	// skip normal boomerang check in target carts, since EOB code handles it
+	"skip target carts boomerang check": MutableString(Addr{0x15, 0x66ae},
+		"\x20\x0b", "\x18\x0b"),
+	// and remove "boomerang" from random prizes
+	"target carts prize table": MutableString(Addr{0x15, 0x66e5},
+		"\x04\x04\x04", "\x03\x03\x03"),
+
+	// skip ralph cutscene entering palace
+	"skip ralph at palace": MutableString(Addr{0x08, 0x6e61},
+		"\xcb\x6f", "\xe6\x00"),
 }
 
 var agesVarMutables = map[string]Mutable{

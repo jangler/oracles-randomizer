@@ -55,9 +55,19 @@ var agesSlots = map[string]*MutableSlot{
 	"defeat great moblin":   agesScriptItem("bomb flower", 0x757d, 0x00, 0x09),
 	"goron elder":           agesBufferItem("crown key", 0x7386, 0x05, 0xc3),
 	"target carts 1": &MutableSlot{
+		// TODO the first one needs to have an "appear" collection mode
 		treasureName: "rock brisket",
 		IDAddrs:      []Addr{{0x15, 0x66e8}, {0x0c, 0x6e71}},
 		SubIDAddrs:   []Addr{{0x15, 0x66e9}, {0x0c, 0x6e72}},
+		group:        0x05,
+		room:         0xd8,
+		collectMode:  collectFind2,
+	},
+	"target carts 2": &MutableSlot{ // second addrs set dynamically at EOB
+		// TODO the first one needs to have an "appear" collection mode
+		treasureName: "boomerang",
+		IDAddrs:      []Addr{{0x15, 0x66f0}, {0x0c, 0x0000}},
+		SubIDAddrs:   []Addr{{0x15, 0x66f1}, {0x0c, 0x0000}},
 		group:        0x05,
 		room:         0xd8,
 		collectMode:  collectFind2,
