@@ -2,6 +2,10 @@ package rom
 
 import "testing"
 
+func init() {
+	Init(GameAges) // XXX have to change this manually to test each game
+}
+
 func TestGraphicsPresent(t *testing.T) {
 	for name, _ := range Treasures {
 		if itemGfx[name] == 0 {

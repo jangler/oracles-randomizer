@@ -267,7 +267,7 @@ tiles common to different tilesets usually have the same IDs.
 
 ## graphics
 
-sprite entries in the table at 3f:6247/63a3 are three bytes. the first two
+sprite entries in the table at 3f:6427/6425 are three bytes. the first two
 determine the index of the sprite, and the second byte is evens only; odds
 don't make a difference. the third determines palette, transformations, and
 other information. one nybble is devoted exclusively (?) to which palette the

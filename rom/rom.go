@@ -18,18 +18,22 @@ const (
 	GameSeasons
 )
 
+var itemGfx map[string]int
+
 func Init(game int) {
 	if game == GameAges {
 		ItemSlots = agesSlots
 		Treasures = agesTreasures
 		fixedMutables = agesFixedMutables
 		varMutables = agesVarMutables
+		itemGfx = agesItemGfx
 		initAgesEOB()
 	} else {
 		ItemSlots = seasonsSlots
 		Treasures = seasonsTreasures
 		fixedMutables = seasonsFixedMutables
 		varMutables = seasonsVarMutables
+		itemGfx = seasonsItemGfx
 		initSeasonsEOB()
 
 		for k, v := range Seasons {
@@ -158,8 +162,9 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
 		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
 	} else {
-		setAgesGfx("cheval's test")
-		setAgesGfx("cheval's invention")
+		setAgesGfx("cheval's test", true)
+		setAgesGfx("cheval's invention", true)
+		setAgesGfx("shop, 150 rupees", false)
 	}
 
 	setSeedData(game)
@@ -362,22 +367,24 @@ func getDungeonPropertiesAddr(group, room byte) *Addr {
 	return &Addr{0x01, offset}
 }
 
-// interaction 6b in ages requires explicit graphics settings, unlike in
-// seasons.
-func setAgesGfx(name string) {
+// some item-related interactions need explicit graphics changes, including
+// interaction 6b (not needed in seasons).
+func setAgesGfx(name string, is6B bool) {
 	mut := varMutables[name+" gfx"].(*MutableRange)
 	treasureName := FindTreasureName(ItemSlots[name].Treasure)
 	gfx := itemGfx[treasureName]
 	if gfx == 0 {
 		panic("no item graphics for " + treasureName)
 	}
-	mut.New = []byte{byte((gfx >> 16) + 0x1c), byte(gfx >> 8), byte(gfx)}
+	mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
 
-	// different animation requires different palette / transform bits
-	switch gfx & 0x0f {
-	case 0x00:
-		mut.New[2]++
-	case 0x03:
-		mut.New[2]--
+	if is6B {
+		// different animation requires different palette / transform bits
+		switch gfx & 0x0f {
+		case 0x00:
+			mut.New[2]++
+		case 0x03:
+			mut.New[2]--
+		}
 	}
 }

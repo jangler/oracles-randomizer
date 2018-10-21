@@ -57,6 +57,7 @@ MUSIC_PTR_TABLE = (0x04, 0x04), (0x483c, 0x495c)
 OBJECT_PTR_TABLE = (0x11, 0x15), (0x5b3b, 0x432b)
 CHEST_PTR_TABLE = (0x15, 0x16), (0x4f6c, 0x5108)
 TREASURE_PTR_TABLE = (0x15, 0x16), (0x5129, 0x5332)
+SPRITE_PTR_TABLE = (0x3f, 0x3f), (0x6425, 0x6427)
 
 
 def get_table(table, game):
@@ -579,6 +580,16 @@ def search_objects(rom, game, mode, obj_id=None, obj_subid=None):
     return objects
 
 
+def get_sprite(rom, game, sprite_id):
+    bank, addr = get_table(SPRITE_PTR_TABLE, game)
+    addr += 0x60 * 3
+    offset = full_addr(bank, addr)
+    addr = rom[offset+1] * 0x100 + rom[offset-1]
+    addr += sprite_id * 3
+    offset = full_addr(bank, addr)
+    return [addr] + list(rom[offset:offset+3])
+
+
 def get_treasure(rom, game, treasure_id, treasure_subid):
     bank, addr = get_table(TREASURE_PTR_TABLE, game)
     addr += treasure_id * 4
@@ -586,7 +597,10 @@ def get_treasure(rom, game, treasure_id, treasure_subid):
         addr = read_ptr(rom, bank, addr + 1)
     addr += treasure_subid * 4
     offset = full_addr(bank, addr)
-    return [addr] + list(rom[offset:offset+4])
+    return {
+        "data": [addr] + list(rom[offset:offset+4]),
+        "gfx": get_sprite(rom, game, rom[offset+3]),
+    }
 
 
 def name_objects(objects):

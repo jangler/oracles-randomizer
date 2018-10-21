@@ -1,15 +1,14 @@
 package rom
 
-// first two bytes determine sprite; final one determines graphics flags. the
-// first byte is 1c higher in ages.
-var itemGfx = map[string]int{
+// first two bytes determine sprite; final one determines graphics flags.
+var seasonsItemGfx = map[string]int{
 	"rupees, 1":        0x5c0400,
 	"rupees, 5":        0x5c0410,
 	"rupees, 10":       0x5c0420,
 	"rupees, 20":       0x5c0640,
-	"rupees, 30":       0x5c0650,
-	"rupees, 50":       0x5c0843,
-	"rupees, 100":      0x5c0853,
+	"rupees, 30":       0x5c0640,
+	"rupees, 50":       0x5c0650,
+	"rupees, 100":      0x5c0843,
 	"flippers":         0x5d0453,
 	"ring":             0x5d0810,
 	"gasha seed":       0x5d0a10,
@@ -20,7 +19,6 @@ var itemGfx = map[string]int{
 	"dungeon map":      0x5e0033,
 	"compass":          0x5e0413,
 	"small key":        0x5e0c50,
-	"graveyard key":    0x5e0e50,
 	"gnarled key":      0x5e0e50,
 	"boss key":         0x5e0853,
 	"floodgate key":    0x5e1040,
@@ -69,10 +67,8 @@ var itemGfx = map[string]int{
 	"moosh's flute":    0x5f1613,
 	"ricky's gloves":   0x641c53,
 	"ribbon":           0x650c23,
-	"cheval rope":      0x651033,
 	"spring banana":    0x651033,
 	"treasure map":     0x651433,
-	"island chart":     0x651443,
 	"rusty bell":       0x651823,
 	"star ore":         0x660033,
 
