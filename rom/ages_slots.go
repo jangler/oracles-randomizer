@@ -4,21 +4,23 @@ package rom
 // bank $16, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to almost all chests, and exclusively to chests.
 func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
-	return BasicSlot(treasure, 0x16, addr, addr+1,
-		group, room, collectChest, 0)
+	mode := agesTreasures[treasure].mode
+	return BasicSlot(treasure, 0x16, addr, addr+1, group, room, mode, 0)
 }
 
 // for items given by script command de.
 func agesScriptItem(treasure string, addr uint16,
 	group, room byte) *MutableSlot {
-	return BasicSlot(treasure, 0x0c, addr, addr+1, group, room, collectFind2, 0)
+	mode := agesTreasures[treasure].mode
+	return BasicSlot(treasure, 0x0c, addr, addr+1, group, room, mode, 0)
 }
 
 // same as agesScriptItem, but for scripts in bank 15 that are copied to the
-// c3xx buffer.
+// c3xx buffer. some non-scripted items in bank 15 also use this format.
 func agesBufferItem(treasure string, addr uint16,
 	group, room byte) *MutableSlot {
-	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, collectFind2, 0)
+	mode := agesTreasures[treasure].mode
+	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, mode, 0)
 }
 
 var agesSlots = map[string]*MutableSlot{

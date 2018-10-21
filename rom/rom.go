@@ -232,9 +232,8 @@ func Verify(b []byte, game int) []error {
 			"d5 boss key spot":
 			break
 		// ages misc.
-		case "sword 1", "nayru's house", "maku tree", "tingle's upgrade",
-			"south shore dirt", "goron elder", "target carts 1",
-			"target carts 2":
+		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
+			"target carts 1", "target carts 2", "big bang game":
 			break
 		default:
 			if err := m.Check(b); err != nil {

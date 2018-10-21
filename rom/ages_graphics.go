@@ -49,7 +49,7 @@ var agesItemGfx = map[string]int{
 	"power glove":      0x7d1050,
 	"bracelet":         0x7d1250,
 	"shovel":           0x7d1640,
-	"boomerang L-1":    0x7d1850,
+	"boomerang":        0x7d1850,
 	"switch hook":      0x7d1e40,
 	"long hook":        0x7d1e40,
 	"bombchus":         0x7e0050,
