@@ -162,10 +162,13 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
 		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
 	} else {
-		setAgesGfx("cheval's test", true)
-		setAgesGfx("cheval's invention", true)
-		setAgesGfx("wild tokay game", false)
-		setAgesGfx("shop, 150 rupees", false)
+		setAgesGfx("cheval's test", 0x6b)
+		setAgesGfx("cheval's invention", 0x6b)
+		setAgesGfx("tokay hut", 0x6b)
+		setAgesGfx("wild tokay game", 0x63)
+		setAgesGfx("shop, 150 rupees", 0x47)
+		setAgesGfx("library present", 0x80)
+		setAgesGfx("library past", 0x80)
 
 		// explicitly set these addresses and IDs after their functions
 		codeAddr := codeMutables["target carts flag"].(*MutableRange).Addrs[0]
@@ -210,30 +213,28 @@ func Verify(b []byte, game int) []error {
 		// flutes
 		case "ricky's flute", "moosh's flute", "dimitri's flute",
 			"strange flute":
-			break
 		// mystical seeds
 		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
 			"pegasus tree seeds", "gale tree seeds":
-			break
 		// progressive items
 		case "noble sword spot", "d6 boomerang chest", "d8 HSS chest",
 			"d7 cape chest", "member's shop 1", "sword 2", "boomerang 2",
 			"slingshot 2", "feather 2", "satchel 2":
-			break
 		// shop items (use sub ID instead of param, no text)
 		case "village shop 1", "village shop 2", "village shop 3",
 			"member's shop 2", "member's shop 3", "subrosian market 1",
 			"subrosian market 2", "subrosian market 5", "zero shop text":
-			break
 		// seasons misc.
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
 			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
 			"d5 boss key spot":
-			break
 		// ages misc.
 		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
-			"target carts 1", "target carts 2", "big bang game":
+			"target carts 1", "target carts 2", "big bang game", "tokay hut":
+		// ages, script item using collect mode other than 0a
+		case "trade lava juice", "goron dancing past", "goron elder",
+			"tingle's upgrade", "king zora":
 			break
 		default:
 			if err := m.Check(b); err != nil {
@@ -377,7 +378,7 @@ func getDungeonPropertiesAddr(group, room byte) *Addr {
 
 // some item-related interactions need explicit graphics changes, including
 // interaction 6b (not needed in seasons).
-func setAgesGfx(name string, is6B bool) {
+func setAgesGfx(name string, interactionID byte) {
 	mut := varMutables[name+" gfx"].(*MutableRange)
 	treasureName := FindTreasureName(ItemSlots[name].Treasure)
 	gfx := itemGfx[treasureName]
@@ -386,13 +387,24 @@ func setAgesGfx(name string, is6B bool) {
 	}
 	mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
 
-	if is6B {
-		// different animation requires different palette / transform bits
+	switch interactionID {
+	case 0x6b:
 		switch gfx & 0x0f {
-		case 0x00:
+		case 0x00, 0x02:
 			mut.New[2]++
 		case 0x03:
 			mut.New[2]--
+		default:
+			panic(treasureName + " item gfx are incompatible with " + name)
+		}
+	case 0x80:
+		switch gfx & 0x0f {
+		case 0x00, 0x03:
+			mut.New[2] = byte(gfx&0xf0) | 0x04
+		case 0x02:
+			break
+		default:
+			panic(treasureName + " item gfx are incompatible with " + name)
 		}
 	}
 }

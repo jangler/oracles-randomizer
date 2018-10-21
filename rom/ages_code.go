@@ -164,5 +164,4 @@ func initAgesEOB() {
 		"\xde\x06\x02\xb1\x40\xc1")
 	r.replace(0x0c, 0x6e6e, "jump target carts flag",
 		"\x88\x6e", targetCartsFlag)
-
 }

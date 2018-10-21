@@ -11,16 +11,14 @@ func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
 // for items given by script command de.
 func agesScriptItem(treasure string, addr uint16,
 	group, room byte) *MutableSlot {
-	mode := agesTreasures[treasure].mode
-	return BasicSlot(treasure, 0x0c, addr, addr+1, group, room, mode, 0)
+	return BasicSlot(treasure, 0x0c, addr, addr+1, group, room, collectFind2, 0)
 }
 
 // same as agesScriptItem, but for scripts in bank 15 that are copied to the
 // c3xx buffer. some non-scripted items in bank 15 also use this format.
 func agesBufferItem(treasure string, addr uint16,
 	group, room byte) *MutableSlot {
-	mode := agesTreasures[treasure].mode
-	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, mode, 0)
+	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, collectFind2, 0)
 }
 
 var agesSlots = map[string]*MutableSlot{
@@ -44,6 +42,7 @@ var agesSlots = map[string]*MutableSlot{
 		0x00, 0x98, collectDigPile, 0x98),
 	"tingle's gift":    agesScriptItem("island chart", 0x7e20, 0x00, 0x79),
 	"tingle's upgrade": agesScriptItem("satchel 2", 0x7e7a, 0x00, 0x79),
+	"tokay hut":        agesScriptItem("bombs, 10", 0x722d, 0x02, 0xe3),
 	"wild tokay game":  agesBufferItem("scent seedling", 0x5bbb, 0x02, 0xde),
 	"shop, 150 rupees": &MutableSlot{
 		treasureName: "strange flute",
@@ -89,6 +88,11 @@ var agesSlots = map[string]*MutableSlot{
 	"shooting gallery":     agesBufferItem("lava juice", 0x5285, 0x03, 0xe7),
 	"trade lava juice":     agesScriptItem("goron letter", 0x6ee9, 0x03, 0x1f),
 	"goron dancing past":   agesScriptItem("mermaid key", 0x699f, 0x02, 0xef),
+	"king zora":            agesScriptItem("library key", 0x7ae4, 0x05, 0xab),
+	"library present":      agesBufferItem("book of seals", 0x5db9, 0x05, 0xc8),
+	"library past":         agesBufferItem("fairy powder", 0x5dd8, 0x05, 0xe4),
+	"zora's reward":        agesScriptItem("zora scale", 0x7c48, 0x02, 0xa0),
+	"piratian captain":     agesBufferItem("tokay eyeball", 0x7969, 0x05, 0xf8),
 	"old zora":             agesBufferItem("broken sword", 0x61ad, 0x02, 0xf5),
 	"lynna city chest":     agesChest("rupees, 30", 0x511e, 0x00, 0x49),
 	"fairies' woods chest": agesChest("rupees, 50", 0x5122, 0x00, 0x84),
