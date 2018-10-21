@@ -115,6 +115,23 @@ animal companion flags go from c646-c649/c643-c646, with the bytes being for
 ricky, dimitri, moosh, then misc. bit 7 determines whether the animal is ready
 to be ridden; i think the others are specific to each animal.
 
+### ages flags
+
+- 12 = past maku tree opened gate
+- 15 = gave rafton rope; spawns ricky in forest of time
+- 16 = defeated great moblin
+- 1b = got island chart from tingle?
+- 1d = needed for flute to appear in shop
+- 21 = landed in the world at start of game
+- 2a = entered symmetry city brother's house
+- 2e = listened to symmetry city wife's problem
+- 2f = got crown key from goron elder
+- 32 = saw ralph cutscene outside ambi's palace
+- 3d = entered world after intro cutscene
+- 3f = past maku tree opened gate (2)
+- 41 = surprised guy dialogue when entering past done
+- 43 = talked to cheval; triggers ralph cutscene outside
+
 
 ## treasures
 
