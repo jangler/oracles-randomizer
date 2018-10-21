@@ -66,9 +66,12 @@ def get_table(table, game):
 
 MUSIC = { # and sound effects
     0x03: "overworld",
-    0x04: "temple remains",
-    0x05: "tarm ruins",
-    0x0a: "horon village",
+    0x04: "temple remains / overworld past",
+    0x05: "tarm ruins / crescent island",
+    0x07: "ambi's palace",
+    0x0a: "horon village / lynna city",
+    0x0b: "lynna village",
+    0x0c: "zora village",
     0x0d: "essence room",
     0x0e: "house",
     0x0f: "fairy fountain",
@@ -82,10 +85,15 @@ MUSIC = { # and sound effects
     0x19: "D7",
     0x1a: "D8",
     0x1b: "onox's castle",
+    0x20: "sea of no return",
+    0x24: "symmetry city present",
+    0x25: "symmetry city past",
     0x28: "subrosia",
+    0x30: "fairies' woods",
     0x35: "samasa desert",
     0x36: "cave",
-    0x3e: "goron mountain",
+    0x3e: "goron mountain / rolling ridge",
+    0x46: "northern peak / black tower",
     0x4c: "got item",
     0x4d: "puzzle solved (short)",
     0x4e: "damage enemy",
@@ -192,13 +200,12 @@ DV_INTERACTIONS = {
         0x14: "N opens for torches",
         0x15: "W opens for torches",
     }),
-    # 0x20 0x01 used for button -> small key chest in d0
-    # 0x20 0x02 used for button -> small key chest in d1
-    # 0x20 0x03 used for boss room in d1
+    0x20: ("dungeon script", {}),
     0x21: ("gnarled keyhole", {}),
-    # 0x22 are outside the d1 entrance
+    # 0x22 is outside the d1 entrance
     # 0x25 0x00 and 0x01 are on the cat-stuck-in-tree screen
     # 0x26 0x00 and 0x01 are also on the cat-stuck-in-tree screen
+    0x31: ("subrosia portal", {}),
     # 0x37 0x82 is on the ember tree screen
     0x38: ("d1 old man", {}),
     # 0x44 0x09 is in impa's house
@@ -206,6 +213,7 @@ DV_INTERACTIONS = {
     0x47: ("shop item", {}),
     0x6b: ("placed item", {
         0x0a: "piece of heart",
+        0x0c: "flippers",
         # 0x17 is the bridge in the horon subrosia portal cave?
         0x91: "gasha seed",
         0x1f: "gasha seed", # both gasha seeds? maybe set different room flags
@@ -215,15 +223,21 @@ DV_INTERACTIONS = {
     0x7e: ("miniboss portal", {}),
     0x7f: ("essence", {}),
     0x9d: ("impa", {}),
+    0xb3: ("harp of ages", {}),
     0xc6: ("wooden sword", {}),
     0xc7: (0xc7, {
         0x04: "renewable bush",
     }),
-    0xdc: ("warp", {
-        0x01: "doorway",
-        0x02: "chimney",
+    0xdc: ("various", {
+        0x01: "doorway warp?",
+        0x02: "chimney warp?",
+        0x07: "piece of heart",
     }),
-    0x31: ("subrosia portal", {}),
+    0xe1: ("time portal", {
+        0x00: "dormant",
+        0x01: "east of maku tree",
+        0x02: "south of maku tree",
+    }),
     # 0xa5 0x09 used on screen where link falls in the intro
     # 0xdc 0x01 and 0x02 outside hero's cave. entrance ??
     0xe2: ("statue eyes", {}),
