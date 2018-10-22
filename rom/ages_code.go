@@ -10,6 +10,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x03] = 0x7ebd
 	r.endOfBank[0x04] = 0x7edb
 	r.endOfBank[0x05] = 0x7d9d
+	r.endOfBank[0x06] = 0x7a31
 	r.endOfBank[0x09] = 0x7dee
 	r.endOfBank[0x0a] = 0x7e09
 	r.endOfBank[0x0b] = 0x7fa8
@@ -69,19 +70,23 @@ func initAgesEOB() {
 	// bank 04
 
 	// look up tiles in custom replacement table after loading a room. the
-	// format is (group, room, YX, tile ID), with ff ending the table. if bit 0
-	// of the room is set, no replacements are made.
+	// format is (group, room, bitmask, YX, tile ID), with ff ending the table.
+	// if the bitmask AND the current room flags is nonzero, the replacement is
+	// not made.
 	tileReplaceTable := r.appendToBank(0x04, "tile replace table",
-		"\x01\x48\x45\xd7"+ // portal south of past maku tree
-			"\x03\x0f\x66\xf9"+ // water in d6 past entrance
-			"\x04\x1b\x03\x78"+ // key door in D1
+		"\x01\x48\x00\x45\xd7"+ // portal south of past maku tree
+			"\x00\x39\x00\x63\xf0"+ // open chest on intro screen
+			"\x00\x39\x20\x63\xf1"+ // closed chest on intro screen
+			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
+			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
-		"\xcd\x7d\x19\xe6\x01\x20\x28"+
-			"\xc5\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f"+
-			"\x2a\xfe\xff\x28\x16\xb8\x20\x0e\x2a\xb9\x20\x0b"+
-			"\xd5\x16\xcf\x2a\x5f\x2a\x12\xd1\x18\xea"+
-			"\x23\x23\x23\x18\xe5\xc1\xcd\xef\x5f\xc9")
+		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
+			"\xfa\x30\xcc\x4f"+ // load room flags, table addr, group, room
+			"\x2a\xfe\xff\x28\x1b\xb8\x20\x12\x2a\xb9\x20\x0f"+
+			"\x2a\xa3\x20\x0c"+ // compare group, room, flags
+			"\xd5\x16\xcf\x2a\x5f\x2a\x12\xd1\x18\xe6"+ // replace
+			"\x23\x23\x23\x23\x18\xe0\xd1\xc1\xcd\xef\x5f\xc9")
 	r.replace(0x00, 0x38c0, "tile replace call",
 		"\xcd\xef\x5f", "\xcd"+tileReplaceFunc)
 
@@ -140,23 +145,6 @@ func initAgesEOB() {
 			"\x91\x03\xd1\x02\xc1")
 	r.replace(0x0c, 0x7e2a, "call end tingle script",
 		"\x91\x03\xd1\x02", "\xc0"+endTingleScript+"\xba")
-
-	// bank 10
-
-	// override heart piece with starting item on starting item screen.
-	foundItemLookup := r.appendToBank(0x10, "found item lookup",
-		"\x01\x00\x2b\xfa\x2d\xcc\xb7\xc0\xfa\x30\xcc\xfe\x39\xc0"+
-			"\x01\x00\x05\xc9")
-	r.replace(0x10, 0x74bd, "call found item lookup",
-		"\x01\x00\x2b", "\xcd"+foundItemLookup)
-
-	// bank 12
-
-	// replace nayru intro screen interaction with starting item.
-	startingItem := r.appendToBank(0x12, "starting item",
-		"\xf2\xdc\x07\x28\x78\xfe")
-	r.replace(0x12, 0x5b06, "starting item pointer",
-		"\xf1\x6b\x01", "\xf3"+startingItem)
 
 	// bank 15
 

@@ -232,7 +232,7 @@ func Verify(b []byte, game int) []error {
 		// ages misc.
 		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
 			"target carts 1", "target carts 2", "big bang game", "tokay hut",
-			"sea of storms present", "sea of storms past":
+			"sea of storms present", "sea of storms past", "starting chest":
 		// ages, script item using collect mode other than 0a
 		case "trade lava juice", "goron dancing past", "goron elder",
 			"tingle's upgrade", "king zora", "d2 thwomp shelf":
