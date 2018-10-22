@@ -235,7 +235,7 @@ func Verify(b []byte, game int) []error {
 			"sea of storms present", "sea of storms past":
 		// ages, script item using collect mode other than 0a
 		case "trade lava juice", "goron dancing past", "goron elder",
-			"tingle's upgrade", "king zora":
+			"tingle's upgrade", "king zora", "d2 thwomp shelf":
 			break
 		default:
 			if err := m.Check(b); err != nil {

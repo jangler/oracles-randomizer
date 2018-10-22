@@ -4,6 +4,9 @@ package rom
 // bank $16, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to almost all chests, and exclusively to chests.
 func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
+	if _, ok := agesTreasures[treasure]; !ok {
+		panic("treasure " + treasure + " does not exist")
+	}
 	mode := agesTreasures[treasure].mode
 	return BasicSlot(treasure, 0x16, addr, addr+1, group, room, mode, 0)
 }
@@ -130,7 +133,59 @@ var agesSlots = map[string]*MutableSlot{
 	"tokay crystal cave":    agesChest("gasha seed", 0x5323, 0x05, 0xca),
 	"tokay pot cave":        agesChest("power ring L-2", 0x532f, 0x05, 0xf7),
 
-	// dungeons TODO
+	// dungeons
+	"d1 button chest":          agesChest("gasha seed", 0x517e, 0x04, 0x15),
+	"d1 crystal room":          agesChest("power ring L-1", 0x518a, 0x04, 0x1c),
+	"d1 crossroads":            agesChest("compass", 0x518e, 0x04, 0x1d),
+	"d1 west terrace":          agesChest("discovery ring", 0x5192, 0x04, 0x1f),
+	"d1 pot chest":             agesChest("d1 boss key", 0x5196, 0x04, 0x23),
+	"d1 east terrace":          agesChest("dungeon map", 0x519a, 0x04, 0x25),
+	"d1 basement":              agesScriptItem("bracelet", 0x4bbb, 0x06, 0x10),
+	"d2 color room":            agesChest("d2 boss key", 0x51a2, 0x04, 0x3e),
+	"d2 bombed terrace":        agesChest("dungeon map", 0x51a6, 0x04, 0x40),
+	"d2 moblin platform":       agesChest("gasha seed", 0x51aa, 0x04, 0x41),
+	"d2 rope room":             agesChest("compass", 0x51ae, 0x04, 0x45),
+	"d2 thwomp shelf":          agesScriptItem("rupees, 30", 0x4c0f, 0x06, 0x27),
+	"d2 thwomp tunnel":         agesScriptItem("feather", 0x4c0a, 0x06, 0x28),
+	"d3 bridge chest":          agesChest("rupees, 20", 0x51b6, 0x04, 0x4e),
+	"d3 boss key chest":        agesChest("d3 boss key", 0x51ba, 0x04, 0x50),
+	"d3 torch chest":           agesChest("gasha seed", 0x51be, 0x04, 0x55),
+	"d3 compass chest":         agesChest("compass", 0x51c2, 0x04, 0x56),
+	"d3 shooter chest":         agesChest("seed shooter", 0x51c6, 0x04, 0x58),
+	"d3 hall of bushes":        agesChest("rupees, 30", 0x51ca, 0x04, 0x5c),
+	"d3 crossroads":            agesChest("gasha seed", 0x51ce, 0x04, 0x60),
+	"d3 pols voice chest":      agesChest("dungeon map", 0x51d2, 0x04, 0x65),
+	"d4 lava pot chest":        agesChest("d4 boss key", 0x51de, 0x04, 0x7a),
+	"d4 small floor puzzle":    agesChest("switch hook", 0x51e2, 0x04, 0x87),
+	"d4 first chest":           agesChest("compass", 0x51e6, 0x04, 0x8b),
+	"d4 minecart chest":        agesChest("dungeon map", 0x51ea, 0x04, 0x8f),
+	"d5 red peg chest":         agesChest("rupees, 50", 0x51f6, 0x04, 0x99),
+	"d5 owl puzzle":            agesChest("d5 boss key", 0x51fa, 0x04, 0x9b),
+	"d5 six-statue puzzle":     agesChest("cane", 0x520a, 0x04, 0xa5),
+	"d5 diamond chest":         agesChest("compass", 0x520e, 0x04, 0xad),
+	"d5 blue peg chest":        agesChest("dungeon map", 0x521a, 0x04, 0xbe),
+	"d6 past vire chest":       agesChest("mermaid suit", 0x524f, 0x05, 0x13),
+	"d6 past RNG chest":        agesChest("d6 boss key", 0x525b, 0x05, 0x1c), // TODO
+	"d6 present diamond chest": agesChest("dungeon map", 0x525f, 0x05, 0x1d),
+	"d6 present beamos chest":  agesChest("rupees, 10", 0x5263, 0x05, 0x1f),
+	"d6 present channel chest": agesChest("compass", 0x526b, 0x05, 0x25),
+	"d6 past spear chest":      agesChest("rupees, 30", 0x5273, 0x05, 0x2e),
+	"d6 past color room":       agesChest("compass", 0x527f, 0x05, 0x3f),
+	"d6 past pool chest":       agesChest("dungeon map", 0x5283, 0x05, 0x41),
+	"d6 past wizzrobe chest":   agesChest("gasha seed", 0x5287, 0x05, 0x45),
+	"d7 pot island chest":      agesChest("like-like ring", 0x528b, 0x05, 0x4c),
+	"d7 stairway chest":        agesChest("gasha seed", 0x528f, 0x05, 0x4d),
+	"d7 miniboss chest":        agesChest("long hook", 0x5293, 0x05, 0x4e),
+	"d7 crab chest":            agesChest("compass", 0x529b, 0x05, 0x54),
+	"d7 spike chest":           agesChest("dungeon map", 0x52a7, 0x05, 0x65),
+	"d7 hallway chest":         agesChest("gasha seed", 0x52ab, 0x05, 0x6a),
+	"d7 post-hallway chest":    agesChest("d7 boss key", 0x52af, 0x05, 0x6c),
+	"d8 B3F chest":             agesChest("d8 boss key", 0x52bb, 0x05, 0x79),
+	"d8 isolated chest":        agesChest("dungeon map", 0x52cb, 0x05, 0x85),
+	"d8 sarcophagus chest":     agesChest("gasha seed", 0x52db, 0x05, 0x9f),
+	"d8 blue peg chest":        agesChest("compass", 0x52e3, 0x05, 0xa4),
+	"d8 floor puzzle":          agesChest("power glove", 0x52eb, 0x05, 0xa6),
+	"d8 tile room":             agesChest("gasha seed", 0x52ef, 0x05, 0x91),
 
 	// seed trees work differently in ages; the seed type is determined by the
 	// high nybble of the tree sub ID, and the low nybble is used to identify it

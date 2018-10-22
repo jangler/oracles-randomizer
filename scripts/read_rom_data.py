@@ -253,6 +253,7 @@ TREASURES = {
     0x03: ("bombs", {
         0x00: "10 count",
     }),
+    0x04: ("cane of somaria", {}),
     0x05: ("sword", {
         0x00: "L-1",
     }),
@@ -260,6 +261,10 @@ TREASURES = {
         0x01: "L-2",
     }),
     0x08: ("magnet gloves", {}),
+    0x0a: ("switch hook", {
+        0x01: "long hook",
+    }),
+    0x0f: ("seed shooter", {}),
     0x13: ("slingshot", {
         0x00: "L-1",
         0x01: "L-2",
@@ -296,6 +301,8 @@ TREASURES = {
     0x32: ("compass", {}),
     0x33: ("dungeon map", {}),
     0x34: ("gasha seed", {}),
+    0x4a: ("mermaid suit", {}),
+    0x4b: ("slate", {}),
     0x4f: ("x-shaped jewel", {}),
     0x50: ("red ore", {}),
     0x51: ("blue ore", {}),
