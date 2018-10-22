@@ -44,6 +44,11 @@ var agesFixedMutables = map[string]Mutable{
 	// skip ralph cutscene entering palace
 	"skip ralph at palace": MutableString(Addr{0x08, 0x6e61},
 		"\xcb\x6f", "\xe6\x00"),
+
+	// remove special interaction from caves in sea of storms so that the
+	// chests can be normal chests
+	"normalize sea of storms chests": MutableStrings(
+		[]Addr{{0x12, 0x6417}, {0x12, 0x6421}}, "\xf1", "\xff"),
 }
 
 var agesVarMutables = map[string]Mutable{

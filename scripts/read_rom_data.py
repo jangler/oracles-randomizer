@@ -232,6 +232,8 @@ DV_INTERACTIONS = {
         0x01: "doorway warp?",
         0x02: "chimney warp?",
         0x07: "piece of heart",
+        0x15: "sea of storms present chest",
+        0x16: "sea of storms past chest",
     }),
     0xe1: ("time portal", {
         0x00: "dormant",
@@ -239,7 +241,6 @@ DV_INTERACTIONS = {
         0x02: "south of maku tree",
     }),
     # 0xa5 0x09 used on screen where link falls in the intro
-    # 0xdc 0x01 and 0x02 outside hero's cave. entrance ??
     0xe2: ("statue eyes", {}),
 }
 
