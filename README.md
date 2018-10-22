@@ -59,7 +59,7 @@ The following items are **not** randomized:
 - Non-essential items given by NPCs
 - Subrosian hide and seek items
 - Gasha nut contents
-- Fixed drops
+- Fixed drops from bushes, pots, etc.
 - Maple drops
 
 
