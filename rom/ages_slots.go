@@ -164,8 +164,8 @@ var agesSlots = map[string]*MutableSlot{
 	"d5 six-statue puzzle":     agesChest("cane", 0x520a, 0x04, 0xa5),
 	"d5 diamond chest":         agesChest("compass", 0x520e, 0x04, 0xad),
 	"d5 blue peg chest":        agesChest("dungeon map", 0x521a, 0x04, 0xbe),
-	"d6 past vire chest":       agesChest("mermaid suit", 0x524f, 0x05, 0x13),
-	"d6 past RNG chest":        agesChest("d6 boss key", 0x525b, 0x05, 0x1c), // TODO
+	"d6 present vire chest":    agesChest("mermaid suit", 0x524f, 0x05, 0x13),
+	"d6 present RNG chest":     agesChest("d6 boss key", 0x525b, 0x05, 0x1c),
 	"d6 present diamond chest": agesChest("dungeon map", 0x525f, 0x05, 0x1d),
 	"d6 present beamos chest":  agesChest("rupees, 10", 0x5263, 0x05, 0x1f),
 	"d6 present channel chest": agesChest("compass", 0x526b, 0x05, 0x25),

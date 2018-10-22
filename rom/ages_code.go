@@ -110,14 +110,21 @@ func initAgesEOB() {
 	// set treasure ID 08 (magnet gloves) when getting item from south shore
 	// dirt pile.
 	digSetFakeID := r.appendToBank(0x09, "dirt set fake ID",
-		"\x5f\xfa\x2d\xcc\xb7\x20\x0e\xfa\x30\xcc\xfe\x98\x20\x07"+
-			"\xe5\x21\x9b\xc6\xcb\xc6\xe1\x7b\xc3\x1c\x17")
-	r.replace(0x09, 0x4c4e, "call dirt set fake ID",
-		"\xcd\x1c\x17", "\xcd"+digSetFakeID)
+		"\xfa\x2d\xcc\xb7\xc0\xfa\x30\xcc\xfe\x98\xc0\xe5\x21\x9b\xc6\xcb\xc6"+
+			"\xe1\xc9")
+	// set flag for d6 past boss key whether you get it in past or present.
+	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
+		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\xc0\xe5\x21\x83\xc6\xcb\xe6\xe1"+
+			"\xc9")
+	// this function checks all the above conditions when collecting an item.
+	handleGetItem := r.appendToBank(0x09, "handle get item",
+		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\x7b\xc3\x1c\x17")
+	r.replace(0x09, 0x4c4e, "call handle get item",
+		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
 	// bank 0a
 
-	// set sub ID for south short dig item.
+	// set sub ID for south shore dig item.
 	dirtSpawnItem := r.appendToBank(0x0a, "dirt spawn item",
 		"\xcd\xd4\x27\xc0\xcd\x42\x22\xaf\xc9")
 	r.replace(0x0a, 0x5e3e, "call dirt spawn item",

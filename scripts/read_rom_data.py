@@ -232,6 +232,7 @@ DV_INTERACTIONS = {
         0x01: "doorway warp?",
         0x02: "chimney warp?",
         0x07: "piece of heart",
+        0x11: "mermaid's cave boss key",
         0x15: "sea of storms present chest",
         0x16: "sea of storms past chest",
     }),

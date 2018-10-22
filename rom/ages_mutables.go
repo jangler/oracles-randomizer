@@ -41,6 +41,10 @@ var agesFixedMutables = map[string]Mutable{
 	"target carts prize table": MutableString(Addr{0x15, 0x66e5},
 		"\x04\x04\x04", "\x03\x03\x03"),
 
+	// stop d6 boss key chest from setting past boss key flag
+	"stop d6 boss key chest": MutableString(Addr{0x10, 0x793c},
+		"\xc3\x0e\x02", "\xc9\x00\x00"),
+
 	// skip ralph cutscene entering palace
 	"skip ralph at palace": MutableString(Addr{0x08, 0x6e61},
 		"\xcb\x6f", "\xe6\x00"),
