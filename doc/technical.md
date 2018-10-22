@@ -122,9 +122,10 @@ to be ridden; i think the others are specific to each animal.
 - 16 = defeated great moblin
 - 1b = got island chart from tingle?
 - 1c = set after getting bomb capacity upgrade from fairy
-- 1d = needed for flute to appear in shop
+- 1d = needed for flute to appear in shop and shooting gallery
 - 20 = set when talking to cursed queen fairy; needed to receive fairy powder
 - 21 = landed in the world at start of game
+- 22 = talked to bridge-building foreman; needed for animal companion event
 - 27 = cured king zora
 - 2a = entered symmetry city brother's house
 - 2e = listened to symmetry city wife's problem

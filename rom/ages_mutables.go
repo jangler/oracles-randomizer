@@ -28,11 +28,19 @@ var agesFixedMutables = map[string]Mutable{
 	"south shore fake ID": MutableStrings([]Addr{{0x04, 0x6b7d},
 		{0x0a, 0x5e35}}, "\x48", "\x08"),
 
-	// sell flute from lynna city shop from the start
+	// sell 150 rupee item from lynna city shop from the start
 	"shop flute flag check": MutableString(Addr{0x09, 0x4333},
 		"\x28\x04", "\x00\x00"),
 	// check for fake treasure ID 07 (rod) so that non-unique items can be sold
 	"shop fake ID": MutableByte(Addr{0x09, 0x4328}, 0x0e, 0x07),
+
+	// remove flute item from shooting gallery prizes
+	"shooting gallery script": MutableString(Addr{0x15, 0x51d8},
+		"\xdf\x0e", "\xdf\x02"),
+	// prevent bridge-building foreman from setting flag 22 so that
+	// animal/flute event doesn't happen in fairies' woods
+	"bridge foreman script": MutableString(Addr{0x15, 0x75bf},
+		"\xb6\x22", "\xb6\xa2"),
 
 	// skip normal boomerang check in target carts, since EOB code handles it
 	"skip target carts boomerang check": MutableString(Addr{0x15, 0x66ae},
