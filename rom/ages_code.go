@@ -160,6 +160,13 @@ func initAgesEOB() {
 
 	// bank 15
 
+	// don't equip sword for shooting galleries if player don't have it
+	// (doesn't work anyway).
+	shootingGalleryEquip := r.appendToBank(0x15, "shooting gallery equip",
+		"\x3e\x05\xcd\x48\x17\x3e\x00\x22\xd0\x2b\x3e\x05\x22\xc9")
+	r.replace(0x15, 0x50ae, "call shooting gallery equip",
+		"\x3e\x05\x22", "\xcd"+shootingGalleryEquip)
+
 	// always make "boomerang" second prize for target carts, checking room
 	// flag 6 to track it.
 	targetCartsItem := r.appendToBank(0x15, "target carts item",
