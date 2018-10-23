@@ -117,12 +117,14 @@ to be ridden; i think the others are specific to each animal.
 
 ### ages flags
 
+- 0c = maku tree vanished
 - 12 = past maku tree opened gate
+- 13 = finished talking to maku tree after getting maku seed
 - 15 = gave rafton rope; spawns ricky in forest of time
 - 16 = defeated great moblin
 - 1b = talked to tingle
 - 1c = set after getting bomb capacity upgrade from fairy
-- 1d = needed for flute to appear in shop and shooting gallery
+- 1d = set after d3 essence, needed for flute in shop and shooting gallery
 - 20 = set when talking to cursed queen fairy; needed to receive fairy powder
 - 21 = landed in the world at start of game
 - 22 = talked to bridge-building foreman; needed for animal companion event
@@ -135,10 +137,13 @@ to be ridden; i think the others are specific to each animal.
 - 31 = got permission from king zora to enter jabu-jabu
 - 32 = saw ralph cutscene outside ambi's palace
 - 34 = got eyeball from captain; checked every frame on every screen
+- 35 = finished twinrova cutscene after getting maku seed
 - 36 = traded mystery seeds for feather
 - 37 = traded scent seeds for bracelet
 - 3d = entered world after intro cutscene
+- 3e = maku tree told you to go to yoll graveyard
 - 3f = past maku tree opened gate (2)
+- 40 = ralph goes back in time
 - 41 = surprised guy dialogue when entering past done
 - 43 = talked to cheval; triggers ralph cutscene outside
 

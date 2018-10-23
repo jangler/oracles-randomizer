@@ -34,6 +34,17 @@ func initAgesEOB() {
 	r.replace(0x00, 0x0c9a, "no music call",
 		"\x67\xf0\xb7", "\x67\xf0\xb7") // modified only by SetNoMusic()
 
+	// only increment the maku tree's state if on the maku tree screen, or if
+	// all essences are obtained, set it to the value it would normally have at
+	// that point in the game. this allows getting the maku tree's item as long
+	// as you haven't collected all essences.
+	makuStateCheck := r.appendToBank(0x00, "maku state check",
+		"\xfa\x2d\xcc\xfe\x02\x30\x0e\xfa\x30\xcc\xfe\x38\x20\x07"+
+			"\xfa\xe8\xc6\x3c\xfe\x11\xc9\xfa\xbf\xc6\x3c\x37\x20\x03"+
+			"\x3e\x0e\xc9\xfa\xe8\xc6\xc9")
+	r.replace(0x00, 0x3e56, "call maku state check",
+		"\x3c\xfe\x11", "\xcd"+makuStateCheck)
+
 	// bank 02
 
 	// warp to ember tree if holding start when closing the map screen.
