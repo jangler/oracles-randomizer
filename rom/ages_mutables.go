@@ -28,6 +28,16 @@ var agesFixedMutables = map[string]Mutable{
 	"south shore fake ID": MutableStrings([]Addr{{0x04, 0x6b7d},
 		{0x0a, 0x5e35}}, "\x48", "\x08"),
 
+	// remove storm event that washes link up on crescent island without raft,
+	// and the event where tokays steal link's items
+	"remove storm event": MutableByte(Addr{0x0b, 0x52e3}, 0xc2, 0xc3),
+	"remove tokay event": MutableStrings([]Addr{{0x09, 0x5756}, {0x09, 0x5731},
+		{0x0a, 0x4fe1}}, "\xc2", "\xc3"),
+	"remove tokay items": MutableString(Addr{0x09, 0x57a5},
+		"\xcb\x77", "\x3c\x3c"),
+	"tokay trading hut": MutableStrings([]Addr{{0x0a, 0x623a}, {0x0a, 0x62d7}},
+		"\xcd\xf3\x31", "\xb7\xb7\xb7"),
+
 	// sell 150 rupee item from lynna city shop from the start
 	"shop flute flag check": MutableString(Addr{0x09, 0x4333},
 		"\x28\x04", "\x00\x00"),

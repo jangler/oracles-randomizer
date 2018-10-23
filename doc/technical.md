@@ -126,6 +126,7 @@ to be ridden; i think the others are specific to each animal.
 - 20 = set when talking to cursed queen fairy; needed to receive fairy powder
 - 21 = landed in the world at start of game
 - 22 = talked to bridge-building foreman; needed for animal companion event
+- 26 = rafton completed raft
 - 27 = cured king zora
 - 2a = entered symmetry city brother's house
 - 2e = listened to symmetry city wife's problem
@@ -134,6 +135,8 @@ to be ridden; i think the others are specific to each animal.
 - 31 = got permission from king zora to enter jabu-jabu
 - 32 = saw ralph cutscene outside ambi's palace
 - 34 = got eyeball from captain; checked every frame on every screen
+- 36 = traded mystery seeds for feather
+- 37 = traded scent seeds for bracelet
 - 3d = entered world after intro cutscene
 - 3f = past maku tree opened gate (2)
 - 41 = surprised guy dialogue when entering past done
