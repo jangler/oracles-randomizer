@@ -120,7 +120,7 @@ to be ridden; i think the others are specific to each animal.
 - 12 = past maku tree opened gate
 - 15 = gave rafton rope; spawns ricky in forest of time
 - 16 = defeated great moblin
-- 1b = got island chart from tingle?
+- 1b = talked to tingle
 - 1c = set after getting bomb capacity upgrade from fairy
 - 1d = needed for flute to appear in shop and shooting gallery
 - 20 = set when talking to cursed queen fairy; needed to receive fairy powder

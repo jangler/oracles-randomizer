@@ -135,17 +135,6 @@ func initAgesEOB() {
 	r.replace(0x0a, 0x5e3e, "call dirt spawn item",
 		"\xcd\xc5\x24", "\xcd"+dirtSpawnItem)
 
-	// bank 0c
-
-	// if ricky isn't on tingle's screen or you have ricky's flute, end the
-	// script after getting the chart.
-	endTingleScript := r.appendToBank(0x0c, "end tingle script",
-		"\xc7\x00\xd1\xff"+addrString(r.endOfBank[0x0c]+9)+"\xbe\x7d\xfe"+
-			"\xcb\xb5\xc6\x01"+addrString(r.endOfBank[0x0c]+6)+
-			"\x91\x03\xd1\x02\xc1")
-	r.replace(0x0c, 0x7e2a, "call end tingle script",
-		"\x91\x03\xd1\x02", "\xc0"+endTingleScript+"\xba")
-
 	// bank 15
 
 	// don't equip sword for shooting galleries if player don't have it

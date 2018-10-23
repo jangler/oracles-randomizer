@@ -19,6 +19,13 @@ var agesFixedMutables = map[string]Mutable{
 	// initializing.
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
+
+	// ricky appears without giving rafton rope
+	"ricky flag check": MutableString(Addr{0x0a, 0x4bb8},
+		"\xcd\xf3\x31", "\xb7\xb7\xb7"),
+	// and doesn't leave after talking to tingle
+	"end tingle script": MutableString(Addr{0x0c, 0x7e2a},
+		"\x91\x03\xd1\x02", "\xbe\x7d\xfe\xba"),
 	// dig up item on south shore regardless of ricky state
 	"south shore ricky check 1": MutableByte(Addr{0x04, 0x6b77}, 0x0a, 0x00),
 	"south shore ricky check 2": MutableByte(Addr{0x04, 0x6b7b}, 0x06, 0x00),
