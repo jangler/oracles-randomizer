@@ -91,10 +91,8 @@ var agesSlots = map[string]*MutableSlot{
 	},
 	"shooting gallery":       agesBufferItem("lava juice", 0x5285, 0x03, 0xe7),
 	"trade lava juice":       agesScriptItem("goron letter", 0x6ee9, 0x03, 0x1f),
-	"goron dancing past":     agesScriptItem("mermaid key", 0x699f, 0x02, 0xef),
 	"king zora":              agesScriptItem("library key", 0x7ae4, 0x05, 0xab),
 	"library present":        agesBufferItem("book of seals", 0x5db9, 0x05, 0xc8),
-	"library past":           agesBufferItem("fairy powder", 0x5dd8, 0x05, 0xe4),
 	"zora's reward":          agesScriptItem("zora scale", 0x7c48, 0x02, 0xa0),
 	"piratian captain":       agesBufferItem("tokay eyeball", 0x7969, 0x05, 0xf8),
 	"old zora":               agesBufferItem("broken sword", 0x61ad, 0x02, 0xf5),
@@ -120,6 +118,8 @@ var agesSlots = map[string]*MutableSlot{
 
 	// overworld past
 	"black tower worker":    agesScriptItem("shovel", 0x65e3, 0x04, 0xe1),
+	"goron dancing past":    agesScriptItem("mermaid key", 0x699f, 0x02, 0xef),
+	"library past":          agesBufferItem("fairy powder", 0x5dd8, 0x05, 0xe4),
 	"sea of no return":      agesChest("blue ring", 0x5137, 0x01, 0x6d),
 	"bomb goron head":       agesChest("rupees, 100", 0x5148, 0x02, 0xfc),
 	"tokay cave past":       agesChest("gasha seed", 0x514c, 0x02, 0xce),
