@@ -117,6 +117,7 @@ to be ridden; i think the others are specific to each animal.
 
 ### ages flags
 
+- 0a = set at very beginning
 - 0c = maku tree vanished
 - 12 = past maku tree opened gate
 - 13 = finished talking to maku tree after getting maku seed
@@ -146,6 +147,7 @@ to be ridden; i think the others are specific to each animal.
 - 40 = ralph goes back in time
 - 41 = surprised guy dialogue when entering past done
 - 43 = talked to cheval; triggers ralph cutscene outside
+- 46 = got satchel upgrade from tingle
 
 
 ## treasures

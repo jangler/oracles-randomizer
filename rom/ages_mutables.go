@@ -50,6 +50,10 @@ var agesFixedMutables = map[string]Mutable{
 	"south shore fake ID": MutableStrings([]Addr{{0x04, 0x6b7d},
 		{0x0a, 0x5e35}}, "\x48", "\x08"),
 
+	// don't refill seeds when getting item from tingle
+	"tingle seed refill": MutableString(Addr{0x0c, 0x7e7d},
+		"\xe0\x0c\x18", "\xc4\x80\x7e"),
+
 	// remove storm event that washes link up on crescent island without raft,
 	// and the event where tokays steal link's items
 	"remove storm event": MutableByte(Addr{0x0b, 0x52e3}, 0xc2, 0xc3),

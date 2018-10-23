@@ -132,9 +132,13 @@ func initAgesEOB() {
 	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
 		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\xc0\xe5\x21\x83\xc6\xcb\xe6\xe1"+
 			"\xc9")
+	// refill all seeds when picking up a seed satchel.
+	refillSeedSatchel := r.appendToBank(0x09, "refill seed satchel",
+		"\x7b\xfe\x19\xca\x0c\x18\xc9")
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
-		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\x7b\xc3\x1c\x17")
+		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
+			"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
