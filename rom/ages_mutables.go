@@ -20,6 +20,21 @@ var agesFixedMutables = map[string]Mutable{
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
 
+	// skip essence checks for the following events:
+	"rafton essence check":    MutableByte(Addr{0x0a, 0x4d7a}, 0x20, 0x18),
+	"dimitri essence check 1": MutableByte(Addr{0x09, 0x5816}, 0x13, 0x00),
+	"dimitri essence check 2": MutableByte(Addr{0x0a, 0x4bb3}, 0xc8, 0x00),
+	"open palace": MutableString(Addr{0x09, 0x51f8},
+		"\x3e\x40", "\xaf\xc9"),
+
+	// moosh should always appear in the graveyard
+	"moosh essence checks": MutableStrings([]Addr{{0x0a, 0x5dd5},
+		{0x0a, 0x5943}, {0x0a, 0x4b85}}, "\xcb\x4f", "\xf6\x01"),
+	"moosh rope checks": MutableStrings([]Addr{{0x05, 0x78b8}, {0x0a, 0x4ba3}},
+		"\xcd\x48\x17", "\x3f\x3f\x3f"),
+	"moosh cheval checks": MutableStrings([]Addr{{0x0a, 0x5ddc},
+		{0x0a, 0x594b}, {0x0a, 0x4b8c}}, "\xcb\x77", "\xf6\x01"),
+
 	// ricky appears without giving rafton rope
 	"ricky flag check": MutableString(Addr{0x0a, 0x4bb8},
 		"\xcd\xf3\x31", "\xb7\xb7\xb7"),
