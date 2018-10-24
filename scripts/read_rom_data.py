@@ -134,6 +134,7 @@ INTERACTION_MODES = {
     0xf7: "specific entity",
     0xf8: "part",
     0xf9: "object with param",
+    0xfa: "item drop",
 }
 
 NV_INTERACTIONS = {}
@@ -317,6 +318,14 @@ PARAM_OBJECTS = {
     0x40: ("palace guard", {}),
 }
 
+ITEM_DROPS = {
+    0x05: "ember seeds",
+    0x06: "scent seeds",
+    0x07: "pegasus seeds",
+    0x08: "gale seeds",
+    0x09: "mystery seeds",
+}
+
 
 def lookup_entry(table, entry_id, param):
     if entry_id in table:
@@ -386,7 +395,7 @@ def read_interaction(buf, bank, addr, name=True):
     # read interaction type
     mode, addr = read_byte(buf, bank, addr, 1)
 
-    if mode in (0xf0, 0xfa):
+    if mode == 0xf0:
         print("skipped interaction type", hex(mode), "@", hex(addr - 1),
                 file=sys.stderr)
         # TODO
@@ -519,6 +528,26 @@ def read_interaction(buf, bank, addr, name=True):
                 "param": param,
                 "variety": kind,
                 "coords": [y, x],
+            })
+    elif mode == 0xfa:
+        # don't know what this byte is
+        param, addr = read_byte(buf, bank, addr, 1)
+
+        while read_byte(buf, bank, addr) < 0xf0:
+            kind, addr = read_byte(buf, bank, addr, 1)
+            if name and kind in ITEM_DROPS:
+                kind = [kind, ITEM_DROPS[kind]]
+            else:
+                kind = [kind]
+
+            yx, addr = read_byte(buf, bank, addr, 1)
+            objects.append({
+                "address": [bank, addr - 2],
+                "mode": "item drop" if name else mode,
+                "param": param,
+                "variety": kind,
+                "coords": [((yx >> 4) & 0x0f) * 0x10 + 0x08,
+                           (yx & 0x0f) * 0x10 + 0x08],
             })
     elif mode == 0xfe:
         # end data at pointer
@@ -659,6 +688,9 @@ def name_objects(objects):
                     *obj["variety"]))
         elif obj["mode"] == "part":
             obj["variety"] = list(lookup_entry(PARTS, *obj["variety"]))
+        elif obj["mode"] == "item drop":
+            if obj["variety"][0] in ITEM_DROPS:
+                obj["variety"].append(ITEM_DROPS[obj["variety"][0]])
 
 
 SEASONS, AGES = 0, 1
