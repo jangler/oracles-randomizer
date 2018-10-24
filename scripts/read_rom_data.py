@@ -133,6 +133,7 @@ INTERACTION_MODES = {
     0xf6: "random entities",
     0xf7: "specific entity",
     0xf8: "part",
+    0xf9: "object with param",
 }
 
 NV_INTERACTIONS = {}
@@ -211,6 +212,7 @@ DV_INTERACTIONS = {
     # 0x44 0x09 is in impa's house
     0x46: ("shopkeeper", {}),
     0x47: ("shop item", {}),
+    0x4b: ("palace guard(s)", {}),
     0x6b: ("placed item", {
         0x0a: "piece of heart",
         0x0c: "flippers",
@@ -310,6 +312,10 @@ TREASURES = {
     0x54: ("master's plaque", {}),
 }
 
+PARAM_OBJECTS = {
+    0x40: ("palace guard", {}),
+}
+
 
 def lookup_entry(table, entry_id, param):
     if entry_id in table:
@@ -379,7 +385,7 @@ def read_interaction(buf, bank, addr, name=True):
     # read interaction type
     mode, addr = read_byte(buf, bank, addr, 1)
 
-    if mode == 0xf0:
+    if mode in (0xf0, 0xfa):
         print("skipped interaction type", hex(mode), "@", hex(addr - 1),
                 file=sys.stderr)
         # TODO
@@ -416,14 +422,14 @@ def read_interaction(buf, bank, addr, name=True):
                         read_byte(buf, bank, addr+1)]
             addr += 2
 
-            x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
+            x, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
                 "address": [bank, addr - 4],
                 "mode": "DV interaction" if name else mode,
                 "variety": kind,
-                "coords": [x, y],
+                "coords": [y, x],
             })
     elif mode in (0xf3, 0xf4, 0xf5):
         # pointer to other interaction
@@ -465,15 +471,15 @@ def read_interaction(buf, bank, addr, name=True):
                         read_byte(buf, bank, addr+1)]
             addr += 2
 
-            x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
+            x, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
                 "address": [bank, addr - 4],
                 "mode": "specific entity" if name else mode,
                 "param": param,
                 "variety": kind,
-                "coords": [x, y]
+                "coords": [y, x]
             })
     elif mode == 0xf8:
         while read_byte(buf, bank, addr) < 0xf0:
@@ -485,21 +491,34 @@ def read_interaction(buf, bank, addr, name=True):
                 kind = [read_byte(buf, bank, addr),
                         read_byte(buf, bank, addr+1)]
             addr += 2
-            xy, addr = read_byte(buf, bank, addr, 1)
+            yx, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
                 "address": [bank, addr - 3],
                 "mode": "part" if name else mode,
                 "variety": kind,
-                "coords": [(xy & 0x0f) * 0x10 + 0x08,
-                           ((xy >> 4) & 0x0f)* 0x10 + 0x08]
+                "coords": [((yx >> 4) & 0x0f) * 0x10 + 0x08,
+                           (yx & 0x0f) * 0x10 + 0x08],
             })
-    elif mode in (0xf9, 0xfa):
-        # TODO
-        print("skipped interaction type", hex(mode), "@", hex(addr - 1),
-                file=sys.stderr)
+    elif mode == 0xf9:
         while read_byte(buf, bank, addr) < 0xf0:
-            addr += 1
+            param, addr = read_byte(buf, bank, addr, 1)
+
+            kind = [read_byte(buf, bank, addr),
+                    read_byte(buf, bank, addr+1),
+                    read_byte(buf, bank, addr+2)]
+            addr += 3
+
+            y, addr = read_byte(buf, bank, addr, 1)
+            x, addr = read_byte(buf, bank, addr, 1)
+
+            objects.append({
+                "address": [bank, addr - 6],
+                "mode": "object with param" if name else mode,
+                "param": param,
+                "variety": kind,
+                "coords": [y, x],
+            })
     elif mode == 0xfe:
         # end data at pointer
         addr += 1
