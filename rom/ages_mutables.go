@@ -10,6 +10,12 @@ var agesFixedMutables = map[string]Mutable{
 	// allow access to nayru's house check from start
 	"move impa": MutableByte(Addr{0x09, 0x6567}, 0xd0, 0x00),
 
+	// prevent stairs disappearing in event where maku tree is attacked by
+	// moblins, preventing softlock if player gets there with seed satchel and
+	// no sword or something stupid
+	"maku tree stairs": MutableString(Addr{0x15, 0x6bf3},
+		"\x84\x05\x00", "\xc4\x15\xc3"),
+
 	// change harp interaction to allow sub ID
 	"create harp with sub ID": MutableString(Addr{0x0b, 0x6825},
 		"\xcd\xef\x3a\xc0\x36\x60\x2c\x36\x11",
