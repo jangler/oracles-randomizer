@@ -220,8 +220,8 @@ func initAgesEOB() {
 	// make the deku forest soldier that gives the item red instead of blue.
 	soldierSprite := r.appendToBank(0x3f, "soldier sprite", "\x4d\x00\x22")
 	loadCustomSprite := r.appendToBank(0x3f, "load custom sprite",
-		"\x1e\x41\x1a\xfe\x40\x20\x09\x13\x1a\xb7\x20\x04"+
-			"\x21"+soldierSprite+"\x23\xdc\x1d\x41\xc9")
+		"\xf5\x1e\x41\x1a\xfe\x40\x20\x09\x13\x1a\xb7\x20\x04"+
+			"\x21"+soldierSprite+"\x23\xf1\xdc\x1d\x41\xc9")
 	r.replace(0x3f, 0x440b, "call load custom sprite",
 		"\xdc\x1d\x41", "\xcd"+loadCustomSprite)
 }
