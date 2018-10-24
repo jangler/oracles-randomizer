@@ -16,6 +16,12 @@ var agesFixedMutables = map[string]Mutable{
 	"maku tree stairs": MutableString(Addr{0x15, 0x6bf3},
 		"\x84\x05\x00", "\xc4\x15\xc3"),
 
+	// set seed capacity by level to 20/20/50/cb instead of c9/20/50/99 so that
+	// level zero (shooter only) can still carry 20 seeds.
+	"seed capacity pointer": MutableByte(Addr{0x3f, 0x4608}, 0x10, 0x11),
+	"seed capacity table": MutableString(Addr{0x3f, 0x4611},
+		"\x20\x50\x99", "\x20\x20\x50"),
+
 	// change harp interaction to allow sub ID
 	"create harp with sub ID": MutableString(Addr{0x0b, 0x6825},
 		"\xcd\xef\x3a\xc0\x36\x60\x2c\x36\x11",

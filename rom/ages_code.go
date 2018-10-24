@@ -16,6 +16,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x0b] = 0x7fa8
 	r.endOfBank[0x0c] = 0x7f94
 	r.endOfBank[0x10] = 0x7ef4
+	r.endOfBank[0x11] = 0x7f73
 	r.endOfBank[0x12] = 0x7e8f
 	r.endOfBank[0x15] = 0x7bfb
 	r.endOfBank[0x3f] = 0x7d0a
@@ -152,10 +153,13 @@ func initAgesEOB() {
 	// refill all seeds when picking up a seed satchel.
 	refillSeedSatchel := r.appendToBank(0x09, "refill seed satchel",
 		"\x7b\xfe\x19\xca\x0c\x18\xc9")
+	// give 20 seeds when picking up the seed shooter.
+	fillSeedShooter := r.appendToBank(0x09, "fill seed shooter",
+		"\x7b\xfe\x0f\xc0\xc5\x3e\x20\x0e\x20\xcd\x1c\x17\xc1\xc9")
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
-			"\x7b\xc3\x1c\x17")
+			"\xcd"+fillSeedShooter+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
@@ -181,6 +185,14 @@ func initAgesEOB() {
 	soldierScript := r.appendToBank(0x0c, "soldier script",
 		"\xb0\x20"+soldierScriptAfter+"\xdf\x24"+soldierScriptCheck+"\x5d\xee")
 	r.replace(0x09, 0x5207, "soldier script pointer", "\xee\x5d", soldierScript)
+
+	// bank 11
+
+	// allow collection of seeds with only shooter and no satchel
+	checkSeedHarvest := r.appendToBank(0x11, "check seed harvest",
+		"\xcd\x48\x17\xd8\x3e\x0f\xc3\x48\x17")
+	r.replace(0x11, 0x4aba, "call check seed harvest",
+		"\xcd\x48\x17", "\xcd"+checkSeedHarvest)
 
 	// bank 15
 
