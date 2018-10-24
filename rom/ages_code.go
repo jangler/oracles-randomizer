@@ -46,6 +46,10 @@ func initAgesEOB() {
 	r.replace(0x00, 0x3e56, "call maku state check",
 		"\x3c\xfe\x11", "\xcd"+makuStateCheck)
 
+	// return z iff the current group and room match c and b.
+	compareRoom := r.appendToBank(0x00, "compare room",
+		"\xfa\x2d\xcc\xb9\xc0\xfa\x30\xcc\xb8\xc9")
+
 	// bank 02
 
 	// warp to ember tree if holding start when closing the map screen.
@@ -89,6 +93,8 @@ func initAgesEOB() {
 		"\x01\x48\x00\x45\xd7"+ // portal south of past maku tree
 			"\x00\x39\x00\x63\xf0"+ // open chest on intro screen
 			"\x00\x39\x20\x63\xf1"+ // closed chest on intro screen
+			"\x00\x6b\x00\x42\x3a"+ // removed tree in yoll graveyard
+			"\x00\x6b\x02\x42\xce"+ // not removed tree in yoll graveyard
 			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
 			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\xff")
@@ -114,6 +120,16 @@ func initAgesEOB() {
 			"\xf1\xc3\x1f\x1e") // jp to normal lookup
 	r.replace(0x05, 0x6083, "call cliff lookup",
 		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
+
+	// bank 06
+
+	// burning the first tree in yoll graveyard should set room flag 1 so that
+	// it can be gone for good.
+	removeYollTree := r.appendToBank(0x06, "remove yoll tree",
+		"\xf5\x01\x00\x6b\xcd"+compareRoom+"\x20\x05\x21\x6b\xc7\xcb\xce\xf1"+
+			"\xc3\xeb\x16")
+	r.replace(0x06, 0x483e, "call remove yoll tree",
+		"\xcd\xeb\x16", "\xcd"+removeYollTree)
 
 	// bank 09
 
