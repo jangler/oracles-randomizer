@@ -171,6 +171,10 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setAgesGfx("library past", 0x80)
 
 		// explicitly set these addresses and IDs after their functions
+		mut := codeMutables["soldier script give item"].(*MutableRange)
+		slot := ItemSlots["deku forest soldier"]
+		slot.IDAddrs[0].Offset = mut.Addrs[0].Offset + 13
+		slot.SubIDAddrs[0].Offset = mut.Addrs[0].Offset + 14
 		codeAddr := codeMutables["target carts flag"].(*MutableRange).Addrs[0]
 		ItemSlots["target carts 2"].IDAddrs[1].Offset = codeAddr.Offset + 1
 		ItemSlots["target carts 2"].SubIDAddrs[1].Offset = codeAddr.Offset + 2
@@ -196,6 +200,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setCompassData(b)
 	} else {
 		ItemSlots["nayru's house"].Mutate(b)
+		ItemSlots["deku forest soldier"].Mutate(b)
 		ItemSlots["target carts 2"].Mutate(b)
 	}
 
@@ -232,7 +237,8 @@ func Verify(b []byte, game int) []error {
 		// ages misc.
 		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
 			"target carts 1", "target carts 2", "big bang game", "tokay hut",
-			"sea of storms present", "sea of storms past", "starting chest":
+			"sea of storms present", "sea of storms past", "starting chest",
+			"deku forest soldier":
 		// ages, script item using collect mode other than 0a
 		case "trade lava juice", "goron dancing past", "goron elder",
 			"tingle's upgrade", "king zora", "d2 thwomp shelf":

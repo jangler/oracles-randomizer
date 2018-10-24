@@ -226,6 +226,7 @@ DV_INTERACTIONS = {
     0x7f: ("essence", {}),
     0x9d: ("impa", {}),
     0xb3: ("harp of ages", {}),
+    0xce: ("deku scrub", {}),
     0xc6: ("wooden sword", {}),
     0xc7: (0xc7, {
         0x04: "renewable bush",

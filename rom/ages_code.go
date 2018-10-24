@@ -18,6 +18,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x10] = 0x7ef4
 	r.endOfBank[0x12] = 0x7e8f
 	r.endOfBank[0x15] = 0x7bfb
+	r.endOfBank[0x3f] = 0x7d0a
 
 	return &r
 }
@@ -150,6 +151,21 @@ func initAgesEOB() {
 	r.replace(0x0a, 0x5e3e, "call dirt spawn item",
 		"\xcd\xc5\x24", "\xcd"+dirtSpawnItem)
 
+	// bank 0c
+
+	// use custom script for soldier in deku forest with sub ID 0; they should
+	// give an item in exchange for mystery seeds.
+	soldierScriptAfter := r.appendToBank(0x0c, "soldier script after item",
+		"\x97\x59\x08\x00")
+	soldierScriptGive := r.appendToBank(0x0c, "soldier script give item",
+		"\xeb\x9e\x98\x59\x0b\xb4\xbd\x00\x92\xe9\xcb\x02\xde\x00\x00\xb1\x20"+
+			"\xc4"+soldierScriptAfter)
+	soldierScriptCheck := r.appendToBank(0x0c, "soldier script check count",
+		"\xb3\xbd\xff"+soldierScriptGive+"\x5d\xee")
+	soldierScript := r.appendToBank(0x0c, "soldier script",
+		"\xb0\x20"+soldierScriptAfter+"\xdf\x24"+soldierScriptCheck+"\x5d\xee")
+	r.replace(0x09, 0x5207, "soldier script pointer", "\xee\x5d", soldierScript)
+
 	// bank 15
 
 	// don't equip sword for shooting galleries if player don't have it
@@ -170,4 +186,14 @@ func initAgesEOB() {
 		"\xde\x06\x02\xb1\x40\xc1")
 	r.replace(0x0c, 0x6e6e, "jump target carts flag",
 		"\x88\x6e", targetCartsFlag)
+
+	// bank 3f
+
+	// make the deku forest soldier that gives the item red instead of blue.
+	soldierSprite := r.appendToBank(0x3f, "soldier sprite", "\x4d\x00\x22")
+	loadCustomSprite := r.appendToBank(0x3f, "load custom sprite",
+		"\x1e\x41\x1a\xfe\x40\x20\x09\x13\x1a\xb7\x20\x04"+
+			"\x21"+soldierSprite+"\x23\xdc\x1d\x41\xc9")
+	r.replace(0x3f, 0x440b, "call load custom sprite",
+		"\xdc\x1d\x41", "\xcd"+loadCustomSprite)
 }

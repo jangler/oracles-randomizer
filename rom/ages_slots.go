@@ -117,7 +117,9 @@ var agesSlots = map[string]*MutableSlot{
 	"zora palace chest":      agesChest("rupees, 200", 0x532b, 0x05, 0xac),
 
 	// overworld past
-	"black tower worker":    agesScriptItem("shovel", 0x65e3, 0x04, 0xe1),
+	"black tower worker": agesScriptItem("shovel", 0x65e3, 0x04, 0xe1),
+	"deku forest soldier": agesScriptItem(
+		"bombs, 10", 0x0000, 0x01, 0x72), // addr set dynamically at EOB
 	"goron dancing past":    agesScriptItem("mermaid key", 0x699f, 0x02, 0xef),
 	"library past":          agesBufferItem("fairy powder", 0x5dd8, 0x05, 0xe4),
 	"sea of no return":      agesChest("blue ring", 0x5137, 0x01, 0x6d),

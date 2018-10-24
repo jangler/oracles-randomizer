@@ -16,9 +16,17 @@ var agesFixedMutables = map[string]Mutable{
 		"\xc5\x01\x00\x11\xcd\xd4\x27\xc1\xc0"),
 
 	// delete cutscene interaction in nayru's basement after it's done
-	// initializing.
+	// initializing
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
+
+	// cut off the end of deku forest soldier's text so it makes sense when
+	// giving item
+	"soldier text end": MutableByte(Addr{0x23, 0x6656}, 0x01, 0x00),
+	// and position the "you may go now" text correctly on screen
+	"soldier text position": MutableByte(Addr{0x23, 0x65d8}, 0x22, 0x00),
+	// and remove the usual soldier event (taken to palace etc)
+	"remove soldier event": MutableByte(Addr{0x12, 0x58f5}, 0xcd, 0xc9),
 
 	// skip essence checks for the following events:
 	"rafton essence check":    MutableByte(Addr{0x0a, 0x4d7a}, 0x20, 0x18),
