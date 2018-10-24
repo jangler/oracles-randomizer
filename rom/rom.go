@@ -164,7 +164,6 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	} else {
 		setAgesGfx("cheval's test", 0x6b)
 		setAgesGfx("cheval's invention", 0x6b)
-		setAgesGfx("tokay hut", 0x6b)
 		setAgesGfx("wild tokay game", 0x63)
 		setAgesGfx("shop, 150 rupees", 0x47)
 		setAgesGfx("library present", 0x80)
@@ -236,7 +235,7 @@ func Verify(b []byte, game int) []error {
 			"d5 boss key spot":
 		// ages misc.
 		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
-			"target carts 1", "target carts 2", "big bang game", "tokay hut",
+			"target carts 1", "target carts 2", "big bang game",
 			"sea of storms present", "sea of storms past", "starting chest",
 			"deku forest soldier":
 		// ages, script item using collect mode other than 0a

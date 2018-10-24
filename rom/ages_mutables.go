@@ -71,6 +71,9 @@ var agesFixedMutables = map[string]Mutable{
 		"\xcb\x77", "\x3c\x3c"),
 	"tokay trading hut": MutableStrings([]Addr{{0x0a, 0x623a}, {0x0a, 0x62d7}},
 		"\xcd\xf3\x31", "\xb7\xb7\xb7"),
+	// don't have an item in the chicken hut
+	"tokay bomb hut": MutableString(Addr{0x12, 0x638f},
+		"\xf2\x6b\x0a\x28", "\xf3\x57\x41\xff"),
 
 	// sell 150 rupee item from lynna city shop from the start
 	"shop flute flag check": MutableString(Addr{0x09, 0x4333},
@@ -148,8 +151,6 @@ var agesVarMutables = map[string]Mutable{
 		"\x79\x04\x52", "\x79\x04\x52"),
 	"cheval's invention gfx": MutableString(Addr{0x3f, 0x6a53},
 		"\x81\x10\x32", "\x81\x10\x32"),
-	"tokay hut gfx": MutableString(Addr{0x3f, 0x6a50},
-		"\x78\x10\x41", "\x78\x10\x41"),
 	"wild tokay game gfx": MutableString(Addr{0x3f, 0x6795},
 		"\x83\x00\x03", "\x83\x00\x03"),
 	"shop, 150 rupees gfx": MutableString(Addr{0x3f, 0x69c6},

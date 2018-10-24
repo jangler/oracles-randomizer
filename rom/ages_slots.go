@@ -46,7 +46,6 @@ var agesSlots = map[string]*MutableSlot{
 		0x00, 0x98, collectDigPile, 0x98),
 	"tingle's gift":    agesScriptItem("island chart", 0x7e20, 0x00, 0x79),
 	"tingle's upgrade": agesScriptItem("satchel 2", 0x7e7a, 0x00, 0x79),
-	"tokay hut":        agesScriptItem("bombs, 10", 0x722d, 0x02, 0xe3),
 	"wild tokay game":  agesBufferItem("scent seedling", 0x5bbb, 0x02, 0xde),
 	"shop, 150 rupees": &MutableSlot{
 		treasureName: "strange flute",
