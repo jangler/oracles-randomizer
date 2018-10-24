@@ -144,7 +144,7 @@ func initAgesEOB() {
 	// set treasure ID 08 (magnet gloves) when getting item from south shore
 	// dirt pile.
 	digSetFakeID := r.appendToBank(0x09, "dirt set fake ID",
-		"\xfa\x2d\xcc\xb7\xc0\xfa\x30\xcc\xfe\x98\xc0\xe5\x21\x9b\xc6\xcb\xc6"+
+		"\xc5\x01\x00\x98\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9b\xc6\xcb\xc6"+
 			"\xe1\xc9")
 	// set flag for d6 past boss key whether you get it in past or present.
 	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
