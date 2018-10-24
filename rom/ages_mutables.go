@@ -42,6 +42,15 @@ var agesFixedMutables = map[string]Mutable{
 		"\xcd\x48\x17", "\x3f\x3f\x3f"),
 	"moosh cheval checks": MutableStrings([]Addr{{0x0a, 0x5ddc},
 		{0x0a, 0x594b}, {0x0a, 0x4b8c}}, "\xcb\x77", "\xf6\x01"),
+	// allow exiting moosh/ghost cutscene screen without killing ghosts
+	"transition from moosh cutscene": MutableString(Addr{0x0a, 0x595a},
+		"\xea\x91\xcc", "\x00\x00\x00"),
+	// vanilla bug: moosh is leaves forever if you enter the screen south of
+	// cheval's grave if you dismount, transition, and come back
+	"vanilla moosh disappear bug": MutableByte(Addr{0x05, 0x78bb}, 0x30, 0x38),
+	// another: moosh appears on the screen south of cheval's grave after
+	// visiting the cheval's grave screen, whether you've obtained him or not
+	"vanilla moosh appear bug": MutableByte(Addr{0x12, 0x5c5d}, 0xf1, 0xff),
 
 	// ricky appears without giving rafton rope
 	"ricky flag check": MutableString(Addr{0x0a, 0x4bb8},
