@@ -153,7 +153,7 @@ func initAgesEOB() {
 			"\xc9")
 	// refill all seeds when picking up a seed satchel.
 	refillSeedSatchel := r.appendToBank(0x09, "refill seed satchel",
-		"\x7b\xfe\x19\xca\x0c\x18\xc9")
+		"\x7b\xfe\x19\xd5\xcc\x0c\x18\xd1\xc9")
 	// give 20 seeds when picking up the seed shooter.
 	fillSeedShooter := r.appendToBank(0x09, "fill seed shooter",
 		"\x7b\xfe\x0f\xc0\xc5\x3e\x20\x0e\x20\xcd\x1c\x17\xc1\xc9")
