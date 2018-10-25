@@ -34,7 +34,7 @@ var agesSlots = map[string]*MutableSlot{
 	// overworld present
 	"starting chest": BasicSlot("sword 1", 0x00, 0x10f8, 0x10f7,
 		0x00, 0x39, collectChest, 0x39),
-	"nayru's house": BasicSlot("harp", 0x0b, 0x6828, 0x6827,
+	"nayru's house": BasicSlot("tune of echoes", 0x0b, 0x6828, 0x6827,
 		0x03, 0xae, collectFind2, 0x3a),
 	"maku tree": &MutableSlot{
 		treasureName: "satchel 1",

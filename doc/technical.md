@@ -313,7 +313,8 @@ sprite uses, although only 8 exist.
 text in the game is encoded using ascii values for letters and some punctuation
 from 20 (space) to 7a (lower case z). a value of 01 is a newline, and 00 ends
 the text. 02 to 05 are prefixes for dictionaries 00 to 03. for example, 03 1f
-would "evaluate" to entry 1f in dictionary 01.
+would "evaluate" to entry 1f in dictionary 01. 09 is the prefix for a color
+change, with 00 being the default white.
 
 0c seems to be the start token for a text entry, and the following character
 determines the position of the text box on the screen. 00 positions it

@@ -133,6 +133,27 @@ var agesFixedMutables = map[string]Mutable{
 	// chests can be normal chests
 	"normalize sea of storms chests": MutableStrings(
 		[]Addr{{0x12, 0x6417}, {0x12, 0x6421}}, "\xf1", "\xff"),
+
+	// fix pickup text for harp tunes
+	"tune of echoes text": MutableString(Addr{0x1e, 0x4c3e}, "\x49",
+		"\x02\x06"+ // You got the
+			"\x09\x01Tune\x04\xceE\x05\x0d\x04\x91"+ // Tune of Echoes!
+			"Play\x04\x0f\x01"+ // Play it to
+			"awaken \x04\xa8\x04\x5a"+ // awaken sleeping
+			"\x09\x03Time Portals\x09\x00!\x00"), // Time Portals!
+	"tune of currents text": MutableString(Addr{0x1d, 0x7e48}, "\x59",
+		"\x02\x06"+ // You got the
+			"\x09\x01Tune\x04\xce\x01"+ // Tune of
+			"Currents\x05\x95Play\x01"+ // Currents! Play
+			"it\x04\x57\x05\x5b\x03\x50"+ // it to move from
+			"\x02\x81 \x02\x64\x01"+ // the past to the
+			"\x03\x2e!\x00"), // the present!
+	"tune of ages text": MutableString(Addr{0x1d, 0x7e8e}, "\x59",
+		"\x02\x06"+ // You got the
+			"\x09\x01Tune \x03\x31\x04\x91"+ // Tune of Ages!
+			"Play\x04\x0f\x04\xdf"+ // Play it to move
+			"freely \x02\x77\x01"+ // freely through
+			"\x04\xdd!\x00"), // time!
 }
 
 var agesVarMutables = map[string]Mutable{
