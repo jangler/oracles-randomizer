@@ -218,6 +218,26 @@ func initAgesEOB() {
 
 	// bank 16
 
+	// upgraded item data (one byte for old ID, one for new ID two for address):
+	progItemAddrs := r.appendToBank(0x16, "progressive item addrs",
+		"\x05\x05\xea\x54"+ // noble sword
+			"\x0a\x0a\x12\x55"+ // long switch
+			"\x16\x16\x52\x55"+ // power glove
+			"\x19\x19\x76\x55"+ // satchel upgrade
+			"\x25\x26\xca\x53"+ // tune of currents
+			"\x26\x27\xce\x53"+ // tune of ages
+			"\x2e\x4a\x5a\x54"+ // mermaid suit
+			"\xff")
+	// given a treasure ID in dx42, return hl = the start of the treasure data
+	// + 1, accounting for progressive upgrades. also writes the new treasure
+	// ID to d070, which is used to set the treasure obtained flag.
+	upgradeTreasure := r.appendToBank(0x16, "upgrade treasure",
+		"\x1e\x42\x1a\x47\xcd\x48\x17\x78\xd0"+ // check obtained
+			"\xfe\x25\x20\x09\x3e\x26\x5f\xcd\x48\x17\x30\x01\x43"+ // harp
+			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x15"+ // search
+			"\xb8\x20\x08\x2a\xea\x70\xd0\x2a\x46\x18\x05\x23\x23\x23\x18\xeb"+
+			"\xe1\x60\x6f\x23\xc9\xe1\xc9") // done
+
 	// return collection mode in a and e, based on current room. call is in
 	// bank 16, func is in bank 00, body is in bank 06.
 	collectModeTable := r.appendToBank(0x06, "collect mode table",
@@ -241,10 +261,12 @@ func initAgesEOB() {
 	collectModeLookup := r.appendToBank(0x00, "collect mode lookup",
 		"\xc5\xd5\xe5\x1e\x06\x21"+collectModeLookupBody+"\xcd\x8a\x00\x7b"+
 			"\xe1\xd1\xc1\xc9")
-	wrapCollectModeLookup := r.appendToBank(0x16, "wrap collect mode lookup",
-		"\xcd"+collectModeLookup+"\x47\xcb\x37\xc9")
-	r.replace(0x16, 0x4539, "call collect mode lookup",
-		"\x47\xcb\x37", "\xcd"+wrapCollectModeLookup)
+	// return treasure data address and collect mode modified as necessary,
+	// given a treasure ID in dx42.
+	modifyTreasure := r.appendToBank(0x16, "modify treasure",
+		"\xcd"+upgradeTreasure+"\xcd"+collectModeLookup+"\x47\xcb\x37\xc9")
+	r.replace(0x16, 0x4539, "call modify treasure",
+		"\x47\xcb\x37", "\xcd"+modifyTreasure)
 
 	// bank 3f
 
