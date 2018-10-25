@@ -61,7 +61,8 @@ func (r *romBanks) replaceMultiple(addrs []Addr, name, old, new string) {
 }
 
 // returns a byte table of (group, room, collect mode) entries for randomized
-// items.
+// items. in ages, a mode >7f means to use &7f as an index to a jump table for
+// special cases.
 func makeCollectModeTable() string {
 	b := new(strings.Builder)
 

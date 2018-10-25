@@ -222,10 +222,22 @@ func initAgesEOB() {
 	// bank 16, func is in bank 00, body is in bank 06.
 	collectModeTable := r.appendToBank(0x06, "collect mode table",
 		makeCollectModeTable())
+	// make tree item falls or exists on floor depending on script position.
+	collectMakuTreeFunc := r.appendToBank(0x06, "collect maku tree",
+		"\xfa\x58\xd2\xfe\x84\x1e\x29\xc8\x1e\x0a\xc9")
+	// target carts items appear with a poof if they're in the enclosure.
+	collectTargetCartsFunc := r.appendToBank(0x06, "collect target carts",
+		"\x1e\x4d\x1a\xfe\x78\x1e\x19\xc8\x1e\x0a\xc9")
+	// big bang game items appear with a poof if they're above the goron.
+	collectBigBangFunc := r.appendToBank(0x06, "collect big bang game",
+		"\x1e\x4b\x1a\xfe\x38\x1e\x19\xc8\x1e\x0a\xc9")
+	collectModeJumpTable := r.appendToBank(0x06, "collect mode jump table",
+		collectMakuTreeFunc+collectTargetCartsFunc+collectBigBangFunc)
 	collectModeLookupBody := r.appendToBank(0x06, "collect mode lookup body",
 		"\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\xc8\xb8\x20\x07\x2a\xb9\x20\x04"+
-			"\x7e\x5f\xc9\x23\x23\x18\xee")
+			"\x2a\xfe\xff\xc8\xb8\x20\x14\x2a\xb9\x20\x11\x7e\x5f"+
+			"\xfe\x80\xd8\x21"+collectModeJumpTable+"\xe6\x7f"+
+			"\x87\xd7\x2a\x66\x6f\xe9\x23\x23\x18\xe1")
 	collectModeLookup := r.appendToBank(0x00, "collect mode lookup",
 		"\xc5\xd5\xe5\x1e\x06\x21"+collectModeLookupBody+"\xcd\x8a\x00\x7b"+
 			"\xe1\xd1\xc1\xc9")

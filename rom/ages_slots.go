@@ -1,5 +1,11 @@
 package rom
 
+const (
+	collectMakuTree    = 0x80
+	collectTargetCarts = 0x81
+	collectBigBang     = 0x82
+)
+
 // agesChest constructs a MutableSlot from a treasure name and an address in
 // bank $16, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to almost all chests, and exclusively to chests.
@@ -36,7 +42,7 @@ var agesSlots = map[string]*MutableSlot{
 		SubIDAddrs:   []Addr{{0x15, 0x70e3}, {0x15, 0x7118}},
 		group:        0x00,
 		room:         0x38,
-		collectMode:  collectFall,
+		collectMode:  collectMakuTree,
 	},
 	"grave under tree": BasicSlot("graveyard key", 0x10, 0x750d, 0x750c,
 		0x05, 0xed, collectFall, 0x8d),
@@ -59,34 +65,31 @@ var agesSlots = map[string]*MutableSlot{
 	"defeat great moblin":   agesScriptItem("bomb flower", 0x757d, 0x00, 0x09),
 	"goron elder":           agesBufferItem("crown key", 0x7386, 0x05, 0xc3),
 	"target carts 1": &MutableSlot{
-		// TODO the first one needs to have an "appear" collection mode
 		treasureName: "rock brisket",
 		IDAddrs:      []Addr{{0x15, 0x66e8}, {0x0c, 0x6e71}},
 		SubIDAddrs:   []Addr{{0x15, 0x66e9}, {0x0c, 0x6e72}},
 		group:        0x05,
 		room:         0xd8,
-		collectMode:  collectFind2,
+		collectMode:  collectTargetCarts,
 	},
 	"target carts 2": &MutableSlot{ // second addrs set dynamically at EOB
-		// TODO the first one needs to have an "appear" collection mode
 		treasureName: "boomerang",
 		IDAddrs:      []Addr{{0x15, 0x66f0}, {0x0c, 0x0000}},
 		SubIDAddrs:   []Addr{{0x15, 0x66f1}, {0x0c, 0x0000}},
 		group:        0x05,
 		room:         0xd8,
-		collectMode:  collectFind2,
+		collectMode:  collectTargetCarts,
 	},
 	"goron dancing":      agesScriptItem("brother emblem", 0x698c, 0x02, 0xed),
 	"trade rock brisket": agesBufferItem("goron vase", 0x6b2c, 0x02, 0xfd),
 	"trade goron vase":   agesBufferItem("goronade", 0x6b23, 0x02, 0xff),
 	"big bang game": &MutableSlot{
-		// TODO the first one needs to have an "appear" collection mode
 		treasureName: "old mermaid key",
 		IDAddrs:      []Addr{{0x15, 0x6742}, {0x0c, 0x707a}},
 		SubIDAddrs:   []Addr{{0x15, 0x6743}, {0x0c, 0x707b}},
 		group:        0x03,
 		room:         0x3e,
-		collectMode:  collectFind1,
+		collectMode:  collectBigBang,
 	},
 	"shooting gallery":       agesBufferItem("lava juice", 0x5285, 0x03, 0xe7),
 	"trade lava juice":       agesScriptItem("goron letter", 0x6ee9, 0x03, 0x1f),
