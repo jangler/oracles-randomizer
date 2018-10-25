@@ -19,6 +19,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x11] = 0x7f73
 	r.endOfBank[0x12] = 0x7e8f
 	r.endOfBank[0x15] = 0x7bfb
+	r.endOfBank[0x16] = 0x7e03
 	r.endOfBank[0x3f] = 0x7d0a
 
 	return &r
@@ -214,6 +215,24 @@ func initAgesEOB() {
 		"\xde\x06\x02\xb1\x40\xc1")
 	r.replace(0x0c, 0x6e6e, "jump target carts flag",
 		"\x88\x6e", targetCartsFlag)
+
+	// bank 16
+
+	// return collection mode in a and e, based on current room. call is in
+	// bank 16, func is in bank 00, body is in bank 06.
+	collectModeTable := r.appendToBank(0x06, "collect mode table",
+		makeCollectModeTable())
+	collectModeLookupBody := r.appendToBank(0x06, "collect mode lookup body",
+		"\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x21"+collectModeTable+
+			"\x2a\xfe\xff\xc8\xb8\x20\x07\x2a\xb9\x20\x04"+
+			"\x7e\x5f\xc9\x23\x23\x18\xee")
+	collectModeLookup := r.appendToBank(0x00, "collect mode lookup",
+		"\xc5\xd5\xe5\x1e\x06\x21"+collectModeLookupBody+"\xcd\x8a\x00\x7b"+
+			"\xe1\xd1\xc1\xc9")
+	wrapCollectModeLookup := r.appendToBank(0x16, "wrap collect mode lookup",
+		"\xcd"+collectModeLookup+"\x47\xcb\x37\xc9")
+	r.replace(0x16, 0x4539, "call collect mode lookup",
+		"\x47\xcb\x37", "\xcd"+wrapCollectModeLookup)
 
 	// bank 3f
 

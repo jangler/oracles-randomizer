@@ -2,6 +2,7 @@ package rom
 
 import (
 	"fmt"
+	"strings"
 )
 
 // this file is for mutables that go at the end of banks. each should be a
@@ -57,4 +58,25 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 // replaceMultiple acts as replace, but operates on multiple addresses.
 func (r *romBanks) replaceMultiple(addrs []Addr, name, old, new string) {
 	codeMutables[name] = MutableStrings(addrs, old, new)
+}
+
+// returns a byte table of (group, room, collect mode) entries for randomized
+// items.
+func makeCollectModeTable() string {
+	b := new(strings.Builder)
+
+	for _, slot := range ItemSlots {
+		// trees and slots where it doesn't matter (shops, rod)
+		if slot.collectMode == 0 {
+			continue
+		}
+
+		_, err := b.Write([]byte{slot.group, slot.room, slot.collectMode})
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	b.Write([]byte{0xff})
+	return b.String()
 }

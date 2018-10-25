@@ -468,7 +468,7 @@ func initSeasonsEOB() {
 	// entry, (group, room, collect mode). ff ends the table. rooms that
 	// contain more than one item are special cases.
 	collectModeTable := r.appendToBank(0x15, "collection mode table",
-		makeCollectModeTable())
+		makeSeasonsCollectModeTable())
 	// cp link's position if in diver room, set mode to 02 if on right side,
 	// ret z if set
 	collectModeDiver := r.appendToBank(0x15, "diver collect mode",
@@ -567,22 +567,11 @@ func initSeasonsEOB() {
 	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
 }
 
-// returns a byte table of (group, room, collect mode) entries for randomized
-// items.
-func makeCollectModeTable() string {
+// makes seasons-specific additions to the collection mode table.
+func makeSeasonsCollectModeTable() string {
 	b := new(strings.Builder)
-
-	for _, slot := range ItemSlots {
-		// trees and slots where it doesn't matter (shops, rod)
-		if slot.collectMode == 0 {
-			continue
-		}
-
-		_, err := b.Write([]byte{slot.group, slot.room, slot.collectMode})
-		if err != nil {
-			panic(err)
-		}
-	}
+	table := makeCollectModeTable()
+	b.WriteString(table[:len(table)-1]) // strip final ff
 
 	// add other three star ore screens
 	for _, room := range starOreRooms[1:] {
