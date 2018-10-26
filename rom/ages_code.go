@@ -252,8 +252,8 @@ func initAgesEOB() {
 	// load the address of a treasure's 4-byte data entry + 1 into hl, using b
 	// as the ID and c as sub ID, accounting for progressive upgrades.
 	getTreasureDataBody := r.appendToBank(0x16, "get treasure data body",
-		"\x21\x32\x53\x78\x87\x87\xd7\xcb\x7e\x28\x04\x23\x2a\x66\x6f"+
-			"\x79\x87\x87\xd7\x23\xc3"+getUpgradedTreasure)
+		"\x21\x32\x53\x78\x87\xd7\x78\x87\xd7\xcb\x7e\x28\x04"+
+			"\x23\x2a\x66\x6f\x79\x87\x87\xd7\x23\xc3"+getUpgradedTreasure)
 	// just get item bc's sprite index in e.
 	getItemSpriteIndexBody := r.appendToBank(0x16, "get item sprite index body",
 		"\xcd"+getTreasureDataBody+"\x23\x23\x7e\x5f\xc9")
@@ -293,23 +293,55 @@ func initAgesEOB() {
 	// bank 3f
 
 	// set hl to the address of the item sprite with ID a.
-	getItemSpriteAddr := r.appendToBank(0x3f, "get item sprite addr",
+	calcItemSpriteAddr := r.appendToBank(0x3f, "get item sprite addr",
 		"\x21\xdb\x66\x5f\x87\xd7\x7b\xd7\xc9")
+	// set hl to the address of the item sprite for the item at hl in bank e.
+	lookupItemSpriteAddr := r.appendToBank(0x3f, "look up item sprite addr",
+		"\xc5\xcd"+readWord+"\xcd"+getItemSpriteIndex+
+			"\x7b\xcd"+calcItemSpriteAddr+"\xc1\xc9")
 
-	// this should be jumped to at the end of every custom sprite function.
-	endCustomSprite := r.appendToBank(0x3f, "end custom sprite",
-		"\xf1\xc9")
+	// copy three bytes at hl to a temporary ram address, and set hl to the
+	// address of the last byte, with a as the value.
+	copySpriteData := r.appendToBank(0x3f, "copy sprite data",
+		"\xd5\x11\xf0\xcf\x2a\x12\x13\x2a\x12\x13\x7e\x12"+
+			"\x62\x6b\xd1\xc9")
+
 	// make the deku forest soldier that gives the item red instead of blue.
 	soldierSprite := r.appendToBank(0x3f, "soldier sprite", "\x4d\x00\x22")
 	setSoldierSprite := r.appendToBank(0x3f, "set soldier sprite",
-		"\x21"+soldierSprite+"\xc3"+endCustomSprite)
+		"\x21"+soldierSprite+"\xf1\xc9")
+	// item in horon village shop, uses same animation w/e as regular items
 	setShopItemSprite := r.appendToBank(0x3f, "set shop item sprite",
-		"\x1e\x09\x21\x11\x45\xc5\xcd"+readWord+"\xcd"+getItemSpriteIndex+
-			"\x7b\xcd"+getItemSpriteAddr+"\xc1\xc3"+endCustomSprite)
+		"\x1e\x09\x21\x11\x45\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
+	// same with wild tokay challenge item
+	setWildTokaySprite := r.appendToBank(0x3f, "set wild tokay sprite",
+		"\x1e\x15\x21\xbb\x5b\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
+	// interaction 6b, can't handle bomb flower and needs different flags
+	set6BSprite := r.appendToBank(0x3f, "set interaction 6b sprite",
+		"\xcd"+lookupItemSpriteAddr+"\xcd"+copySpriteData+
+			"\xcb\x46\x20\x03\x34\x18\x01\x35\x2b\x2b\xf1\xc9")
+	setInventionSprite := r.appendToBank(0x3f, "set invention sprite",
+		"\x1e\x0c\x21\x32\x72\xc3"+set6BSprite)
+	setChevalTestSprite := r.appendToBank(0x3f, "set cheval's test sprite",
+		"\x1e\x0c\x21\x3b\x72\xc3"+set6BSprite)
+	// interaction 80, can't handle bomb flower and needs different flags
+	set80Sprite := r.appendToBank(0x3f, "set interaction 80 sprite",
+		"\xcd"+lookupItemSpriteAddr+"\xcd"+copySpriteData+
+			"\x5f\xe6\x0f\x20\x05\x7b\xc6\x03\x18\x06"+
+			"\xfe\x02\x7b\x28\x01\x3c\x77\x2b\x2b\xf1\xc9")
+	setLibraryPastSprite := r.appendToBank(0x3f, "set library past sprite",
+		"\x1e\x15\x21\xd8\x5d\xc3"+set80Sprite)
+	setLibrarySprite := r.appendToBank(0x3f, "set library sprite",
+		"\x1e\x15\x21\xb9\x5d\xc3"+set80Sprite)
 	// table of ID, sub ID, jump address
 	customSpriteTable := r.appendToBank(0x3f, "custom sprite table",
 		"\x40\x00"+setSoldierSprite+
-			"\x47\x0d"+setShopItemSprite+
+			"\x47\x0d"+setShopItemSprite+ // 150 rupees only
+			"\x63\x3e"+setWildTokaySprite+ // wild tokay game prize
+			"\x6b\x0b"+setInventionSprite+ // cheval's invention
+			"\x6b\x0c"+setChevalTestSprite+
+			"\x80\x07"+setLibraryPastSprite+
+			"\x80\x08"+setLibrarySprite+
 			"\xff")
 	// override the sprites loaded for certain ID / sub ID pairs.
 	loadCustomSprite := r.appendToBank(0x3f, "load custom sprite",
@@ -317,7 +349,7 @@ func initAgesEOB() {
 			"\xf5\xc5\xe5\x1e\x41\x1a\x47\x1c\x1a\x4f\x21"+customSpriteTable+
 			"\x2a\xfe\xff\x28\x14\xb8\x20\x0c\x2a\xb9\x20\x09"+
 			"\x2a\x47\x7e\xe1\x67\x68\xc1\xe9"+
-			"\x23\x23\x23\x18\xe7\xe1\xc1\xc3"+endCustomSprite)
+			"\x23\x23\x23\x18\xe7\xe1\xc1\xf1\xc9")
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
 }

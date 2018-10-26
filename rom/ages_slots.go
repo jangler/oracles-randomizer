@@ -52,7 +52,6 @@ var agesSlots = map[string]*MutableSlot{
 		0x00, 0x98, collectDigPile, 0x98),
 	"tingle's gift":    agesScriptItem("island chart", 0x7e20, 0x00, 0x79),
 	"tingle's upgrade": agesScriptItem("satchel 2", 0x7e7a, 0x00, 0x79),
-	"wild tokay game":  agesBufferItem("scent seedling", 0x5bbb, 0x02, 0xde),
 	"shop, 150 rupees": BasicSlot("dimitri's flute", 0x09, 0x4511, 0x4512,
 		0x02, 0x5e, collectFind2, 0x68),
 	"symmetry city brother": agesBufferItem("tuni nut", 0x7929, 0x03, 0x6f),
@@ -116,6 +115,7 @@ var agesSlots = map[string]*MutableSlot{
 	"black tower worker": agesScriptItem("shovel", 0x65e3, 0x04, 0xe1),
 	"deku forest soldier": agesScriptItem(
 		"bombs, 10", 0x0000, 0x01, 0x72), // addr set dynamically at EOB
+	"wild tokay game":       agesBufferItem("scent seedling", 0x5bbb, 0x02, 0xde),
 	"goron dancing past":    agesScriptItem("mermaid key", 0x699f, 0x02, 0xef),
 	"library past":          agesBufferItem("fairy powder", 0x5dd8, 0x05, 0xe4),
 	"sea of no return":      agesChest("blue ring", 0x5137, 0x01, 0x6d),

@@ -161,12 +161,6 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
 		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
 	} else {
-		setAgesGfx("cheval's test", 0x6b)
-		setAgesGfx("cheval's invention", 0x6b)
-		setAgesGfx("wild tokay game", 0x63)
-		setAgesGfx("library present", 0x80)
-		setAgesGfx("library past", 0x80)
-
 		// explicitly set these addresses and IDs after their functions
 		mut := codeMutables["soldier script give item"].(*MutableRange)
 		slot := ItemSlots["deku forest soldier"]
@@ -380,37 +374,4 @@ func getDungeonPropertiesAddr(group, room byte) *Addr {
 		offset += 0x100
 	}
 	return &Addr{0x01, offset}
-}
-
-// some item-related interactions need explicit graphics changes, including
-// interaction 6b (not needed in seasons).
-func setAgesGfx(name string, interactionID byte) {
-	mut := varMutables[name+" gfx"].(*MutableRange)
-	treasureName := FindTreasureName(ItemSlots[name].Treasure)
-	gfx := itemGfx[treasureName]
-	if gfx == 0 {
-		panic("no item graphics for " + treasureName)
-	}
-	mut.New = []byte{byte(gfx >> 16), byte(gfx >> 8), byte(gfx)}
-
-	switch interactionID {
-	case 0x6b:
-		switch gfx & 0x0f {
-		case 0x00, 0x02:
-			mut.New[2]++
-		case 0x03:
-			mut.New[2]--
-		default:
-			panic(treasureName + " item gfx are incompatible with " + name)
-		}
-	case 0x80:
-		switch gfx & 0x0f {
-		case 0x00, 0x03:
-			mut.New[2] = byte(gfx&0xf0) | 0x04
-		case 0x02:
-			break
-		default:
-			panic(treasureName + " item gfx are incompatible with " + name)
-		}
-	}
 }

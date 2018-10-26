@@ -192,18 +192,6 @@ var agesVarMutables = map[string]Mutable{
 	"deku forest tree map icon": MutableByte(
 		Addr{0x02, 0x6d2c}, 0x19, 0x19),
 
-	// item graphics
-	"cheval's test gfx": MutableString(Addr{0x3f, 0x6a56},
-		"\x79\x04\x52", "\x79\x04\x52"),
-	"cheval's invention gfx": MutableString(Addr{0x3f, 0x6a53},
-		"\x81\x10\x32", "\x81\x10\x32"),
-	"wild tokay game gfx": MutableString(Addr{0x3f, 0x6795},
-		"\x83\x00\x03", "\x83\x00\x03"),
-	"library present gfx": MutableString(Addr{0x3f, 0x6894},
-		"\x7a\x16\x04", "\x7a\x16\x04"),
-	"library past gfx": MutableString(Addr{0x3f, 0x6891},
-		"\x82\x12\x32", "\x82\x12\x32"),
-
 	// flute graphics, change palette based on which animal is in the seed
 	"flute gfx": MutableString(Addr{0x3f, 0x6744},
 		"\x7c\x16\x03", "\x7c\x16\x03"),
