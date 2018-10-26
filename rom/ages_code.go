@@ -154,10 +154,11 @@ func initAgesEOB() {
 	// burning the first tree in yoll graveyard should set room flag 1 so that
 	// it can be gone for good.
 	removeYollTree := r.appendToBank(0x06, "remove yoll tree",
-		"\xf5\x01\x00\x6b\xcd"+compareRoom+"\x20\x05\x21\x6b\xc7\xcb\xce\xf1"+
-			"\xc3\xeb\x16")
-	r.replace(0x06, 0x483e, "call remove yoll tree",
-		"\xcd\xeb\x16", "\xcd"+removeYollTree)
+		"\xf5\xf0\x8f\xfe\x0c\x20\x0f"+
+			"\xc5\x01\x00\x6b\xcd"+compareRoom+"\x20\x05"+
+			"\x21\x6b\xc7\xcb\xce\xc1\xf1\x21\x26\xc6\xc9")
+	r.replace(0x06, 0x47aa, "call remove yoll tree",
+		"\x21\x26\xc6", "\xcd"+removeYollTree)
 
 	// bank 16 (pt. 1)
 
