@@ -155,6 +155,7 @@ func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 	}
 
 	if game == rom.GameAges {
+		ri.Companion = dimitri
 		return ri
 	}
 

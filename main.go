@@ -363,13 +363,14 @@ func randomize(romData []byte, game int, seedFlag string,
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 	}
 
-	// set rom seasons and animal data
+	// set season data
 	if game == rom.GameSeasons {
 		for area, id := range ri.Seasons {
 			rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
 		}
-		rom.SetAnimal(ri.Companion)
 	}
+
+	rom.SetAnimal(ri.Companion)
 
 	// do it! (but don't write anything)
 	checksum, err := rom.Mutate(romData, game)

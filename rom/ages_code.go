@@ -198,21 +198,26 @@ func initAgesEOB() {
 			"\xc9")
 	// refill all seeds when picking up a seed satchel.
 	refillSeedSatchel := r.appendToBank(0x09, "refill seed satchel",
-		"\x7b\xfe\x19\xc0\xd5\xe5\x21\xb4\xc6\x34\xcd\x0c\x18\x35\xe1\xd1\xc9")
+		"\x7b\xfe\x19\xc0"+
+			"\xc5\xd5\xe5\x21\xb4\xc6\x34\xcd\x0c\x18\x35\xe1\xd1\xc1\xc9")
 	// give 20 seeds when picking up the seed shooter.
 	fillSeedShooter := r.appendToBank(0x09, "fill seed shooter",
 		"\x7b\xfe\x0f\xc0\xc5\x3e\x20\x0e\x20\xcd\x1c\x17\xc1\xc9")
+	// give flute the correct icon and make it functional from the start.
+	activateFlute := r.appendToBank(0x09, "activate flute",
+		"\x7b\xfe\x0e\xc0"+
+			"\x79\xd6\x0a\xea\xb5\xc6\xe5\x26\xc6\xc6\x45\x6f\xcb\xfe\xe1\xc9")
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
-			"\xcd"+fillSeedShooter+"\x7b\xc3\x1c\x17")
+			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
 	// give correct ID and param for shop item.
 	shopGiveTreasure := r.appendToBank(0x09, "shop give treasure",
 		"\x47\x1a\xfe\x0d\x78\x20\x04\xcd"+getTreasureData+
-			"\x78\xc3\x1c\x17")
+			"\x78\xc3"+handleGetItem)
 	r.replace(0x09, 0x4425, "call shop give treasure",
 		"\xcd\x1c\x17", "\xcd"+shopGiveTreasure)
 	// and display correct text.

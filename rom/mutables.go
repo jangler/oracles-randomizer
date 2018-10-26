@@ -96,6 +96,12 @@ func SetNoMusic() {
 func SetAnimal(companion int) {
 	varMutables["animal region"].(*MutableRange).New =
 		[]byte{byte(companion + 0x0a)}
+
+	// ages
+	if varMutables["flute palette"] != nil {
+		mut := varMutables["flute palette"].(*MutableRange)
+		mut.New[0] = byte(0x10*(4-companion) + 3)
+	}
 }
 
 // these mutables have fixed addresses and don't reference other mutables. try
