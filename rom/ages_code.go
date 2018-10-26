@@ -52,6 +52,12 @@ func initAgesEOB() {
 	compareRoom := r.appendToBank(0x00, "compare room",
 		"\xfa\x2d\xcc\xb9\xc0\xfa\x30\xcc\xb8\xc9")
 
+	// read 2 bytes from bank e at hl into bc.
+	readWord := r.appendToBank(0x00, "read word",
+		"\xfa\x97\xff\xf5\x7b\xea\x97\xff\xea\x22\x22"+ // switch bank
+			"\x2a\x47\x7e\x4f"+ // read
+			"\xf1\xea\x97\xff\xea\x22\x22\xc9") // switch back
+
 	// bank 02
 
 	// warp to ember tree if holding start when closing the map screen.
@@ -228,15 +234,31 @@ func initAgesEOB() {
 			"\x26\x27\xce\x53"+ // tune of ages
 			"\x2e\x4a\x5a\x54"+ // mermaid suit
 			"\xff")
+	// given a treasure ID in b, make hl = the start of the upgraded treasure
+	// data + 1, if the treasure needs to be upgraded, and returns the new
+	// treasure ID in b.
+	getUpgradedTreasure := r.appendToBank(0x16, "get upgraded treasure",
+		"\x78\xcd\x48\x17\x78\xd0"+ // check obtained
+			"\xfe\x25\x20\x09\x3e\x26\x5f\xcd\x48\x17\x30\x01\x43"+ // harp
+			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x13"+ // search
+			"\xb8\x20\x06\x2a\x47\x2a\x5e\x18\x05\x23\x23\x23\x18\xed"+
+			"\xe1\x63\x6f\x23\xc9\xe1\xc9") // done
 	// given a treasure ID in dx42, return hl = the start of the treasure data
 	// + 1, accounting for progressive upgrades. also writes the new treasure
 	// ID to d070, which is used to set the treasure obtained flag.
 	upgradeTreasure := r.appendToBank(0x16, "upgrade treasure",
-		"\x1e\x42\x1a\x47\xcd\x48\x17\x78\xd0"+ // check obtained
-			"\xfe\x25\x20\x09\x3e\x26\x5f\xcd\x48\x17\x30\x01\x43"+ // harp
-			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x15"+ // search
-			"\xb8\x20\x08\x2a\x1e\x70\x12\x2a\x46\x18\x05\x23\x23\x23\x18\xeb"+
-			"\xe1\x60\x6f\x23\xc9\xe1\xc9") // done
+		"\x1e\x42\x1a\x47\xcd"+getUpgradedTreasure+"\x1e\x70\x78\x12\xc9")
+
+	// load the address of a treasure's 4-byte data entry + 1 into hl, using b
+	// as the ID and c as sub ID, accounting for progressive upgrades.
+	getTreasureDataBody := r.appendToBank(0x16, "get treasure data body",
+		"\x21\x32\x53\x78\x87\x87\xd7\xcb\x7e\x28\x04\x23\x2a\x66\x6f"+
+			"\x79\x87\x87\xd7\x23\xc3"+getUpgradedTreasure)
+	// just get item bc's sprite index in e.
+	getItemSpriteIndexBody := r.appendToBank(0x16, "get item sprite index body",
+		"\xcd"+getTreasureDataBody+"\x23\x23\x7e\x5f\xc9")
+	getItemSpriteIndex := r.appendToBank(0x00, "get item sprite index",
+		"\x1e\x16\x21"+getItemSpriteIndexBody+"\xc3\x8a\x00")
 
 	// return collection mode in a and e, based on current room. call is in
 	// bank 16, func is in bank 00, body is in bank 06.
@@ -270,11 +292,32 @@ func initAgesEOB() {
 
 	// bank 3f
 
+	// set hl to the address of the item sprite with ID a.
+	getItemSpriteAddr := r.appendToBank(0x3f, "get item sprite addr",
+		"\x21\xdb\x66\x5f\x87\xd7\x7b\xd7\xc9")
+
+	// this should be jumped to at the end of every custom sprite function.
+	endCustomSprite := r.appendToBank(0x3f, "end custom sprite",
+		"\xf1\xc9")
 	// make the deku forest soldier that gives the item red instead of blue.
 	soldierSprite := r.appendToBank(0x3f, "soldier sprite", "\x4d\x00\x22")
+	setSoldierSprite := r.appendToBank(0x3f, "set soldier sprite",
+		"\x21"+soldierSprite+"\xc3"+endCustomSprite)
+	setShopItemSprite := r.appendToBank(0x3f, "set shop item sprite",
+		"\x1e\x09\x21\x11\x45\xc5\xcd"+readWord+"\xcd"+getItemSpriteIndex+
+			"\x7b\xcd"+getItemSpriteAddr+"\xc1\xc3"+endCustomSprite)
+	// table of ID, sub ID, jump address
+	customSpriteTable := r.appendToBank(0x3f, "custom sprite table",
+		"\x40\x00"+setSoldierSprite+
+			"\x47\x0d"+setShopItemSprite+
+			"\xff")
+	// override the sprites loaded for certain ID / sub ID pairs.
 	loadCustomSprite := r.appendToBank(0x3f, "load custom sprite",
-		"\xf5\x1e\x41\x1a\xfe\x40\x20\x09\x13\x1a\xb7\x20\x04"+
-			"\x21"+soldierSprite+"\x23\xf1\xdc\x1d\x41\xc9")
-	r.replace(0x3f, 0x440b, "call load custom sprite",
-		"\xdc\x1d\x41", "\xcd"+loadCustomSprite)
+		"\xcd\x37\x44"+
+			"\xf5\xc5\xe5\x1e\x41\x1a\x47\x1c\x1a\x4f\x21"+customSpriteTable+
+			"\x2a\xfe\xff\x28\x14\xb8\x20\x0c\x2a\xb9\x20\x09"+
+			"\x2a\x47\x7e\xe1\x67\x68\xc1\xe9"+
+			"\x23\x23\x23\x18\xe7\xe1\xc1\xc3"+endCustomSprite)
+	r.replace(0x3f, 0x4356, "call load custom sprite",
+		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
 }

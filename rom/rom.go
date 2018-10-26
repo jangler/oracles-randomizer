@@ -55,7 +55,7 @@ func Init(game int) {
 		}
 	}
 
-	// use these graphics as default for progressive items
+	// use these graphics as default for progressive items (seasons)
 	itemGfx["sword 1"] = itemGfx["sword L-1"]
 	itemGfx["sword 2"] = itemGfx["sword L-1"]
 	itemGfx["boomerang 1"] = itemGfx["boomerang L-1"]
@@ -64,6 +64,18 @@ func Init(game int) {
 	itemGfx["slingshot 2"] = itemGfx["slingshot L-1"]
 	itemGfx["feather 1"] = itemGfx["feather L-1"]
 	itemGfx["feather 2"] = itemGfx["feather L-1"]
+
+	// (ages)
+	itemGfx["sword 1"] = itemGfx["sword L-1"]
+	itemGfx["switch hook 1"] = itemGfx["switch hook"]
+	itemGfx["switch hook 2"] = itemGfx["long hook"]
+	itemGfx["bracelet 1"] = itemGfx["bracelet"]
+	itemGfx["bracelet 2"] = itemGfx["power glove"]
+	itemGfx["harp 1"] = itemGfx["tune of echoes"]
+	itemGfx["harp 2"] = itemGfx["tune of currents"]
+	itemGfx["harp 3"] = itemGfx["tune of ages"]
+	itemGfx["flippers 1"] = itemGfx["flippers"]
+	itemGfx["flippers 2"] = itemGfx["mermaid suit"]
 
 	// get set of unique items (to determine which can be slotted freely)
 	treasureCounts := make(map[string]int)
@@ -152,7 +164,6 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setAgesGfx("cheval's test", 0x6b)
 		setAgesGfx("cheval's invention", 0x6b)
 		setAgesGfx("wild tokay game", 0x63)
-		setAgesGfx("shop, 150 rupees", 0x47)
 		setAgesGfx("library present", 0x80)
 		setAgesGfx("library past", 0x80)
 
@@ -224,10 +235,12 @@ func Verify(b []byte, game int) []error {
 		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
 			"target carts 1", "target carts 2", "big bang game",
 			"sea of storms present", "sea of storms past", "starting chest",
-			"deku forest soldier":
+			"deku forest soldier", "shop, 150 rupees":
 		// ages, script item using collect mode other than 0a
 		case "trade lava juice", "goron dancing past", "goron elder",
 			"tingle's upgrade", "king zora", "d2 thwomp shelf":
+		// ages, progressive item slots not covered elsewhere
+		case "d6 present vire chest", "d7 miniboss chest", "d8 floor puzzle":
 			break
 		default:
 			if err := m.Check(b); err != nil {

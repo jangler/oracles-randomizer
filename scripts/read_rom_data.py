@@ -161,6 +161,7 @@ ENTITIES = {
     0x35: ("floormaster", {}),
     0x38: ("great fairy", {}),
     0x39: ("fire keese", {}),
+    0x3e: ("peahat", {}),
     0x43: ("gel", {}),
     0x53: ("dragonfly", {}),
     0x59: ("fixed drop", {
@@ -229,7 +230,7 @@ DV_INTERACTIONS = {
     0xb3: ("harp of ages", {}),
     0xce: ("deku scrub", {}),
     0xc6: ("wooden sword", {}),
-    0xc7: (0xc7, {
+    0xc7: ("various", {
         0x04: "renewable bush",
     }),
     0xdc: ("various", {
