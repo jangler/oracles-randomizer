@@ -58,6 +58,13 @@ func initAgesEOB() {
 			"\x2a\x47\x7e\x4f"+ // read
 			"\xf1\xea\x97\xff\xea\x22\x22\xc9") // switch back
 
+	// searches for a value in a table starting at hl, with an entry matching
+	// keys b and subkey c, and values e bytes long. sets c if found. a key of
+	// ff ends the table.
+	searchDoubleKey := r.appendToBank(0x00, "search by double key",
+		"\x2a\xfe\xff\xc8\xb8\x20\x06\x2a\xb9\x20\x03\x37\xc9"+
+			"\x23\x7b\xd7\x18\xee")
+
 	// bank 02
 
 	// warp to ember tree if holding start when closing the map screen.
@@ -276,13 +283,12 @@ func initAgesEOB() {
 	collectModeJumpTable := r.appendToBank(0x06, "collect mode jump table",
 		collectMakuTreeFunc+collectTargetCartsFunc+collectBigBangFunc)
 	collectModeLookupBody := r.appendToBank(0x06, "collect mode lookup body",
-		"\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\xc8\xb8\x20\x14\x2a\xb9\x20\x11\x7e\x5f"+
-			"\xfe\x80\xd8\x21"+collectModeJumpTable+"\xe6\x7f"+
-			"\x87\xd7\x2a\x66\x6f\xe9\x23\x23\x18\xe1")
+		"\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x1e\x01\x21"+collectModeTable+
+			"\xcd"+searchDoubleKey+"\xd0\x7e\x5f\xfe\x80\xd8"+
+			"\x21"+collectModeJumpTable+"\xe6\x7f\x87\xd7\x2a\x66\x6f\xe9")
 	collectModeLookup := r.appendToBank(0x00, "collect mode lookup",
 		"\xc5\xd5\xe5\x1e\x06\x21"+collectModeLookupBody+"\xcd\x8a\x00\x7b"+
-			"\xe1\xd1\xc1\xc9")
+			"\xe1\xfe\xff\x20\x02\x2b\x2a\xd1\xc1\xc9")
 	// return treasure data address and collect mode modified as necessary,
 	// given a treasure ID in dx42.
 	modifyTreasure := r.appendToBank(0x16, "modify treasure",
@@ -345,11 +351,9 @@ func initAgesEOB() {
 			"\xff")
 	// override the sprites loaded for certain ID / sub ID pairs.
 	loadCustomSprite := r.appendToBank(0x3f, "load custom sprite",
-		"\xcd\x37\x44"+
-			"\xf5\xc5\xe5\x1e\x41\x1a\x47\x1c\x1a\x4f\x21"+customSpriteTable+
-			"\x2a\xfe\xff\x28\x14\xb8\x20\x0c\x2a\xb9\x20\x09"+
-			"\x2a\x47\x7e\xe1\x67\x68\xc1\xe9"+
-			"\x23\x23\x23\x18\xe7\xe1\xc1\xf1\xc9")
+		"\xcd\x37\x44\xf5\xc5\xe5\x1e\x41\x1a\x47\x1c\x1a\x4f"+
+			"\x1e\x02\x21"+customSpriteTable+"\xcd"+searchDoubleKey+
+			"\x30\x08\x2a\x47\x7e\xe1\x67\x68\xc1\xe9\xe1\xc1\xf1\xc9")
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
 }
