@@ -193,6 +193,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["nayru's house"].Mutate(b)
 		ItemSlots["deku forest soldier"].Mutate(b)
 		ItemSlots["target carts 2"].Mutate(b)
+		ItemSlots["hidden tokay cave"].Mutate(b)
 	}
 
 	outSum := sha1.Sum(b)
@@ -229,7 +230,7 @@ func Verify(b []byte, game int) []error {
 		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
 			"target carts 1", "target carts 2", "big bang game",
 			"sea of storms present", "sea of storms past", "starting chest",
-			"deku forest soldier", "shop, 150 rupees":
+			"deku forest soldier", "shop, 150 rupees", "hidden tokay cave":
 		// ages, script item using collect mode other than 0a
 		case "trade lava juice", "goron dancing past", "goron elder",
 			"tingle's upgrade", "king zora", "d2 thwomp shelf":

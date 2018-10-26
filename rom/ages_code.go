@@ -337,10 +337,11 @@ func initAgesEOB() {
 	soldierSprite := r.appendToBank(0x3f, "soldier sprite", "\x4d\x00\x22")
 	setSoldierSprite := r.appendToBank(0x3f, "set soldier sprite",
 		"\x21"+soldierSprite+"\xf1\xc9")
-	// item in horon village shop, uses same animation w/e as regular items
+	// these interactions use the same flags as regular items
 	setShopItemSprite := r.appendToBank(0x3f, "set shop item sprite",
 		"\x1e\x09\x21\x11\x45\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
-	// same with wild tokay challenge item
+	setHiddenTokaySprite := r.appendToBank(0x3f, "set hidden tokay sprite",
+		"\x1e\x15\x21\x36\x5b\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
 	setWildTokaySprite := r.appendToBank(0x3f, "set wild tokay sprite",
 		"\x1e\x15\x21\xbb\x5b\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
 	// interaction 6b, can't handle bomb flower and needs different flags
@@ -364,6 +365,7 @@ func initAgesEOB() {
 	customSpriteTable := r.appendToBank(0x3f, "custom sprite table",
 		"\x40\x00"+setSoldierSprite+
 			"\x47\x0d"+setShopItemSprite+ // 150 rupees only
+			"\x63\x14"+setHiddenTokaySprite+ // iron shield
 			"\x63\x3e"+setWildTokaySprite+ // wild tokay game prize
 			"\x6b\x0b"+setInventionSprite+ // cheval's invention
 			"\x6b\x0c"+setChevalTestSprite+

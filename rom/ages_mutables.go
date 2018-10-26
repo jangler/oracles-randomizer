@@ -154,6 +154,12 @@ var agesFixedMutables = map[string]Mutable{
 			"Play\x04\x0f\x04\xdf"+ // Play it to move
 			"freely \x02\x77\x01"+ // freely through
 			"\x04\xdd!\x00"), // time!
+
+	// make tokay who gives iron shield always give the same item, and in a
+	// format compatible with lookupItemSpriteAddr.
+	"give hidden tokay item": MutableString(Addr{0x15, 0x5b35},
+		"\x06\x01\x0e\x01\xfa\xaf\xc6\xfe\x02",
+		"\x01\x01\x01\x78\x41\x4f\x37\x00\x00"),
 }
 
 var agesVarMutables = map[string]Mutable{

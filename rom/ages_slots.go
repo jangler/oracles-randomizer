@@ -115,7 +115,9 @@ var agesSlots = map[string]*MutableSlot{
 	"black tower worker": agesScriptItem("shovel", 0x65e3, 0x04, 0xe1),
 	"deku forest soldier": agesScriptItem(
 		"bombs, 10", 0x0000, 0x01, 0x72), // addr set dynamically at EOB
-	"wild tokay game":       agesBufferItem("scent seedling", 0x5bbb, 0x02, 0xde),
+	"wild tokay game": agesBufferItem(
+		"scent seedling", 0x5bbb, 0x02, 0xde), // not actually a script
+	"hidden tokay cave":     agesBufferItem("iron shield", 0x5b36, 0x05, 0xe9),
 	"goron dancing past":    agesScriptItem("mermaid key", 0x699f, 0x02, 0xef),
 	"library past":          agesBufferItem("fairy powder", 0x5dd8, 0x05, 0xe4),
 	"sea of no return":      agesChest("blue ring", 0x5137, 0x01, 0x6d),
