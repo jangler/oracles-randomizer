@@ -83,6 +83,19 @@ func initAgesEOB() {
 			"\xea\x47\xcc\xfa\xb6\xcb\xea\x48\xcc\x3e\x03\xcd\xad\x0c\xc9")
 	r.replace(0x02, 0x5fcc, "dev ring warp call", "\xad\x0c", devWarp)
 
+	// allow warping to south lynna tree even if it hasn't been visited (warp
+	// menu locks otherwise).
+	checkTreeVisited := r.appendToBank(0x02, "check tree visited",
+		"\xfe\x78\xc2\x39\x66\xb7\xc9")
+	r.replace(0x02, 0x5ff9, "call check tree visited 1",
+		"\xcd\x39\x66", "\xcd"+checkTreeVisited)
+	r.replace(0x02, 0x66a9, "call check tree visited 2",
+		"\xcd\x39\x66", "\xcd"+checkTreeVisited)
+	checkCursorVisited := r.appendToBank(0x02, "check cursor visited",
+		"\xfa\xb6\xcb\xfe\x78\xc2\x39\x66\xb7\xc9")
+	r.replace(0x02, 0x619d, "call check cursor visited",
+		"\xcd\x36\x66", "\xcd"+checkCursorVisited)
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
