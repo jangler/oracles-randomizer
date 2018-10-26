@@ -64,10 +64,7 @@ var agesFixedMutables = map[string]Mutable{
 	// visiting the cheval's grave screen, whether you've obtained him or not
 	"vanilla moosh appear bug": MutableByte(Addr{0x12, 0x5c5d}, 0xf1, 0xff),
 
-	// ricky appears without giving rafton rope
-	"ricky flag check": MutableString(Addr{0x0a, 0x4bb8},
-		"\xcd\xf3\x31", "\xb7\xb7\xb7"),
-	// and doesn't leave after talking to tingle
+	// ricky shouldn't leave after talking to tingle
 	"end tingle script": MutableString(Addr{0x0c, 0x7e2a},
 		"\x91\x03\xd1\x02", "\xbe\x7d\xfe\xba"),
 	// dig up item on south shore regardless of ricky state

@@ -226,10 +226,14 @@ func initAgesEOB() {
 	activateFlute := r.appendToBank(0x09, "activate flute",
 		"\x7b\xfe\x0e\xc0"+
 			"\x79\xd6\x0a\xea\xb5\xc6\xe5\x26\xc6\xc6\x45\x6f\xcb\xfe\xe1\xc9")
+	// set global flag 15 to make ricky appear which getting his gloves.
+	summonRicky := r.appendToBank(0x09, "make ricky appear",
+		"\x7b\xfe\x48\xc0\x3e\x15\xcd\xf9\x31\xc9")
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
-			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\x7b\xc3\x1c\x17")
+			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+
+			"\xcd"+summonRicky+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
