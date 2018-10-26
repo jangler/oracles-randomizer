@@ -310,6 +310,17 @@ func setSeedData(game int) {
 		setTreeNybble(varMutables["zora village past tree sub ID"],
 			ItemSlots["zora village tree"])
 
+		// satchel and shooter come with south lynna tree seeds
+		mut := varMutables["satchel initial seeds"].(*MutableRange)
+		mut.New[0] = 0x20 + seedType
+		mut = codeMutables["fill seed shooter"].(*MutableRange)
+		mut.New[6] = 0x20 + seedType
+		for _, name := range []string{"satchel initial selection",
+			"shooter initial selection"} {
+			mut := varMutables[name].(*MutableRange)
+			mut.New[1] = seedType
+		}
+
 		// set map icons
 		for _, name := range []string{"crescent island tree",
 			"symmetry city tree", "south lynna tree", "zora village tree",

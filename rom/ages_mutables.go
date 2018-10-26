@@ -180,6 +180,14 @@ var agesVarMutables = map[string]Mutable{
 	"zora village past tree sub ID": MutableByte(Addr{0x12, 0x5e6f},
 		0x3e, 0x3e),
 
+	// first satchel should give the seeds on the south lynna tree.
+	"satchel initial seeds": MutableByte(Addr{0x3f, 0x453b}, 0x20, 0x20),
+
+	// set default satchel and shooter selection based on south lynna tree.
+	// overwrites unimportant bytes in file initialization.
+	"satchel initial selection": MutableWord(Addr{0x07, 0x418e}, 0x0700, 0xc400),
+	"shooter initial selection": MutableWord(Addr{0x07, 0x4190}, 0x0e00, 0xc500),
+
 	// map pop-up icons for seed trees
 	"crescent island tree map icon": MutableByte(
 		Addr{0x02, 0x6d05}, 0x16, 0x16),
