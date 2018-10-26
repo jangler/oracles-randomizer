@@ -146,6 +146,38 @@ func initAgesEOB() {
 	r.replace(0x06, 0x483e, "call remove yoll tree",
 		"\xcd\xeb\x16", "\xcd"+removeYollTree)
 
+	// bank 16 (pt. 1)
+
+	// upgraded item data (one byte for old ID, one for new ID two for address):
+	progItemAddrs := r.appendToBank(0x16, "progressive item addrs",
+		"\x05\x05\xea\x54"+ // noble sword
+			"\x0a\x0a\x12\x55"+ // long switch
+			"\x16\x16\x52\x55"+ // power glove
+			"\x19\x19\x76\x55"+ // satchel upgrade
+			"\x25\x26\xca\x53"+ // tune of currents
+			"\x26\x27\xce\x53"+ // tune of ages
+			"\x2e\x4a\x5a\x54"+ // mermaid suit
+			"\xff")
+	// given a treasure ID in b, make hl = the start of the upgraded treasure
+	// data + 1, if the treasure needs to be upgraded, and returns the new
+	// treasure ID in b.
+	getUpgradedTreasure := r.appendToBank(0x16, "get upgraded treasure",
+		"\x78\xcd\x48\x17\x78\xd0"+ // check obtained
+			"\xfe\x25\x20\x09\x3e\x26\x5f\xcd\x48\x17\x30\x01\x43"+ // harp
+			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x13"+ // search
+			"\xb8\x20\x06\x2a\x47\x2a\x5e\x18\x05\x23\x23\x23\x18\xed"+
+			"\xe1\x63\x6f\x23\xc9\xe1\xc9") // done
+	// load the address of a treasure's 4-byte data entry + 1 into hl, using b
+	// as the ID and c as sub ID, accounting for progressive upgrades.
+	getTreasureDataBody := r.appendToBank(0x16, "get treasure data body",
+		"\x21\x32\x53\x78\x87\xd7\x78\x87\xd7\xcb\x7e\x28\x04"+
+			"\x23\x2a\x66\x6f\x79\x87\x87\xd7\x23\xc3"+getUpgradedTreasure)
+	// do the above and put the ID, param, and text in b, c, and e.
+	getTreasureDataBCE := r.appendToBank(0x16, "get treasure data bc",
+		"\xcd"+getTreasureDataBody+"\x4e\x23\x5e\xc9")
+	getTreasureData := r.appendToBank(0x00, "get treasure data",
+		"\x1e\x16\x21"+getTreasureDataBCE+"\xc3\x8a\x00")
+
 	// bank 09
 
 	// set treasure ID 07 (rod of seasons) when buying the 150 rupee shop item,
@@ -176,6 +208,19 @@ func initAgesEOB() {
 			"\xcd"+fillSeedShooter+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
+
+	// give correct ID and param for shop item.
+	shopGiveTreasure := r.appendToBank(0x09, "shop give treasure",
+		"\x47\x1a\xfe\x0d\x78\x20\x04\xcd"+getTreasureData+
+			"\x78\xc3\x1c\x17")
+	r.replace(0x09, 0x4425, "call shop give treasure",
+		"\xcd\x1c\x17", "\xcd"+shopGiveTreasure)
+	// and display correct text.
+	shopShowText := r.appendToBank(0x09, "shop show text",
+		"\x1a\xfe\x0d\x79\x20\x0c\x21\x11\x45\x46\x23\x4e\xcd"+getTreasureData+
+			"\x06\x00\x4b\xc3\x72\x18")
+	r.replace(0x09, 0x4443, "call shop show text",
+		"\xc2\x72\x18", "\xc2"+shopShowText)
 
 	// bank 0a
 
@@ -231,36 +276,12 @@ func initAgesEOB() {
 
 	// bank 16
 
-	// upgraded item data (one byte for old ID, one for new ID two for address):
-	progItemAddrs := r.appendToBank(0x16, "progressive item addrs",
-		"\x05\x05\xea\x54"+ // noble sword
-			"\x0a\x0a\x12\x55"+ // long switch
-			"\x16\x16\x52\x55"+ // power glove
-			"\x19\x19\x76\x55"+ // satchel upgrade
-			"\x25\x26\xca\x53"+ // tune of currents
-			"\x26\x27\xce\x53"+ // tune of ages
-			"\x2e\x4a\x5a\x54"+ // mermaid suit
-			"\xff")
-	// given a treasure ID in b, make hl = the start of the upgraded treasure
-	// data + 1, if the treasure needs to be upgraded, and returns the new
-	// treasure ID in b.
-	getUpgradedTreasure := r.appendToBank(0x16, "get upgraded treasure",
-		"\x78\xcd\x48\x17\x78\xd0"+ // check obtained
-			"\xfe\x25\x20\x09\x3e\x26\x5f\xcd\x48\x17\x30\x01\x43"+ // harp
-			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x13"+ // search
-			"\xb8\x20\x06\x2a\x47\x2a\x5e\x18\x05\x23\x23\x23\x18\xed"+
-			"\xe1\x63\x6f\x23\xc9\xe1\xc9") // done
 	// given a treasure ID in dx42, return hl = the start of the treasure data
 	// + 1, accounting for progressive upgrades. also writes the new treasure
 	// ID to d070, which is used to set the treasure obtained flag.
 	upgradeTreasure := r.appendToBank(0x16, "upgrade treasure",
 		"\x1e\x42\x1a\x47\xcd"+getUpgradedTreasure+"\x1e\x70\x78\x12\xc9")
 
-	// load the address of a treasure's 4-byte data entry + 1 into hl, using b
-	// as the ID and c as sub ID, accounting for progressive upgrades.
-	getTreasureDataBody := r.appendToBank(0x16, "get treasure data body",
-		"\x21\x32\x53\x78\x87\xd7\x78\x87\xd7\xcb\x7e\x28\x04"+
-			"\x23\x2a\x66\x6f\x79\x87\x87\xd7\x23\xc3"+getUpgradedTreasure)
 	// just get item bc's sprite index in e.
 	getItemSpriteIndexBody := r.appendToBank(0x16, "get item sprite index body",
 		"\xcd"+getTreasureDataBody+"\x23\x23\x7e\x5f\xc9")
