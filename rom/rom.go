@@ -187,14 +187,14 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["star ore spot"].Mutate(b)
 		ItemSlots["hard ore slot"].Mutate(b)
 		ItemSlots["diver gift"].Mutate(b)
-
-		setCompassData(b)
 	} else {
 		ItemSlots["nayru's house"].Mutate(b)
 		ItemSlots["deku forest soldier"].Mutate(b)
 		ItemSlots["target carts 2"].Mutate(b)
 		ItemSlots["hidden tokay cave"].Mutate(b)
 	}
+
+	setCompassData(b, game)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
@@ -337,11 +337,20 @@ func setTreasureMapData() {
 }
 
 // match the compass's beep beep beep boops to the actual boss key locations.
-func setCompassData(b []byte) {
+func setCompassData(b []byte, game int) {
+	var names []string
+	if game == GameSeasons {
+		names = []string{"d1 boss key chest", "d2 boss key chest",
+			"d3 boss key chest", "d4 boss key spot", "d5 boss key spot",
+			"d6 boss key chest", "d7 boss key chest", "d8 boss key chest"}
+	} else {
+		names = []string{"d1 pot chest", "d2 color room", "d3 boss key chest",
+			"d4 lava pot chest", "d5 owl puzzle", "d6 present RNG chest",
+			"d7 post-hallway chest", "d8 B3F chest"}
+	}
+
 	// clear original boss key flags
-	for _, name := range []string{"d1 boss key chest", "d2 boss key chest",
-		"d3 boss key chest", "d4 boss key spot", "d5 boss key spot",
-		"d6 boss key chest", "d7 boss key chest", "d8 boss key chest"} {
+	for _, name := range names {
 		slot := ItemSlots[name]
 		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
 		b[offset] = b[offset] & 0xef // reset bit 4
