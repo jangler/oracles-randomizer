@@ -32,6 +32,10 @@ var agesFixedMutables = map[string]Mutable{
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
 
+	// remove essence check for fairies' hide and seek game
+	"fairies' essence check": MutableString(Addr{0x0a, 0x52b4},
+		"\xcd\x48\x17", "\x37\x37\x37"),
+
 	// cut off the end of deku forest soldier's text so it makes sense when
 	// giving item
 	"soldier text end": MutableByte(Addr{0x23, 0x6656}, 0x01, 0x00),

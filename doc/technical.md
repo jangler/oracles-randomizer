@@ -117,8 +117,9 @@ to be ridden; i think the others are specific to each animal.
 
 ### ages flags
 
-- 0a = set at very beginning
+- 0a = finished intro (can open menu?)
 - 0c = maku tree vanished
+- 0e = fairies put the forest back in order
 - 12 = past maku tree opened gate
 - 13 = finished talking to maku tree after getting maku seed
 - 15 = gave rafton rope; spawns ricky in forest of time
@@ -129,9 +130,12 @@ to be ridden; i think the others are specific to each animal.
 - 20 = set when talking to cursed queen fairy; needed to receive fairy powder
 - 21 = landed in the world at start of game
 - 22 = talked to bridge-building foreman; needed for animal companion event
+- 24 = checked in fairies' woods?
 - 26 = rafton completed raft
 - 27 = cured king zora
+- 29 = checked in fairies' woods?
 - 2a = entered symmetry city brother's house
+- 2b = fairies put the forest back in order
 - 2e = listened to symmetry city wife's problem
 - 2f = got crown key from goron elder
 - 30 = cleansed the zora seas
@@ -141,11 +145,12 @@ to be ridden; i think the others are specific to each animal.
 - 35 = finished twinrova cutscene after getting maku seed
 - 36 = traded mystery seeds for feather
 - 37 = traded scent seeds for bracelet
-- 3d = entered world after intro cutscene
+- 3d = set at start
 - 3e = maku tree told you to go to yoll graveyard
 - 3f = past maku tree opened gate (2)
 - 40 = ralph goes back in time
-- 41 = surprised guy dialogue when entering past done
+- 41 = surprised guy runs away when entering past
+- 42 = checked in fairies' woods?
 - 43 = talked to cheval; triggers ralph cutscene outside
 - 46 = got satchel upgrade from tingle
 
