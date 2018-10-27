@@ -235,7 +235,8 @@ func Verify(b []byte, game int) []error {
 		case "trade lava juice", "goron dancing past", "goron elder",
 			"tingle's upgrade", "king zora", "d2 thwomp shelf":
 		// ages, progressive item slots not covered elsewhere
-		case "d6 present vire chest", "d7 miniboss chest", "d8 floor puzzle":
+		case "d6 present vire chest", "d7 miniboss chest", "d8 floor puzzle",
+			"tokkey's composition", "rescue nayru":
 			break
 		default:
 			if err := m.Check(b); err != nil {
