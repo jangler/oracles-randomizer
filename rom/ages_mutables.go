@@ -36,6 +36,10 @@ var agesFixedMutables = map[string]Mutable{
 	"fairies' essence check": MutableString(Addr{0x0a, 0x52b4},
 		"\xcd\x48\x17", "\x37\x37\x37"),
 
+	// make guy in front of d2 go away if you have bombs
+	"d2 guy flag check": MutableString(Addr{0x09, 0x5242},
+		"\x3e\x0b\xcd\xf3\x31\xc2", "\x3e\x03\xcd\x48\x17\xda"),
+
 	// cut off the end of deku forest soldier's text so it makes sense when
 	// giving item
 	"soldier text end": MutableByte(Addr{0x23, 0x6656}, 0x01, 0x00),

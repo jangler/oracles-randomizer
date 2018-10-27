@@ -123,6 +123,7 @@ func initAgesEOB() {
 			"\x00\x39\x20\x63\xf1"+ // closed chest on intro screen
 			"\x00\x6b\x00\x42\x3a"+ // removed tree in yoll graveyard
 			"\x00\x6b\x02\x42\xce"+ // not removed tree in yoll graveyard
+			"\x00\x83\x00\x43\xa4"+ // rock outside D2
 			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
 			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\xff")
@@ -135,6 +136,21 @@ func initAgesEOB() {
 			"\x23\x23\x23\x23\x18\xe0\xd1\xc1\xcd\xef\x5f\xc9")
 	r.replace(0x00, 0x38c0, "tile replace call",
 		"\xcd\xef\x5f", "\xcd"+tileReplaceFunc)
+
+	// treat the d2 present entrance like the d2 past entrance.
+	replaceWarpEnter := r.appendToBank(0x04, "replace warp enter",
+		"\xc5\x01\x00\x83\xcd"+compareRoom+"\xc1\xfa\x2d\xcc\xc0\x3c\xc9")
+	r.replace(0x04, 0x4630, "call replace warp enter",
+		"\xfa\x2d\xcc", "\xcd"+replaceWarpEnter)
+	// and exit into the present if there's a portal in the present entrance.
+	replaceWarpExit := r.appendToBank(0x00, "replace warp exit",
+		"\xea\x48\xcc\xfe\x83\xc0\xfa\x2d\xcc\xfe\x04\xc0"+
+			"\xfa\x3e\xc6\xb7\xc0\xfa\x3f\xc6\xfe\x83\xc0"+
+			"\xfa\x47\xcc\xe6\xf0\xea\x47\xcc\xc9")
+	r.replace(0x04, 0x45e8, "call replace warp exit normal",
+		"\xea\x48\xcc", "\xcd"+replaceWarpExit)
+	r.replace(0x0a, 0x4738, "call replace warp exit essence",
+		"\xea\x48\xcc", "\xcd"+replaceWarpExit)
 
 	// bank 05
 
