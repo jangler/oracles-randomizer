@@ -129,6 +129,8 @@ var agesFixedMutables = map[string]Mutable{
 	// skip ralph cutscene entering palace
 	"skip ralph at palace": MutableString(Addr{0x08, 0x6e61},
 		"\xcb\x6f", "\xe6\x00"),
+	// and get rid of the intangible guard standing outside
+	"remove intangible guard": MutableByte(Addr{0x09, 0x5152}, 0xc2, 0xc3),
 
 	// don't require talking to queen fairy before getting book of seals
 	"skip library flag check": MutableString(Addr{0x15, 0x5da6},
