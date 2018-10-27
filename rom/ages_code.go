@@ -111,6 +111,14 @@ func initAgesEOB() {
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
 
+	// automatically save maku tree when saving nayru.
+	saveMakuTreeWithNayru := r.appendToBank(0x03, "save maku tree with nayru",
+		"\x3e\x02\xea\xe8\xc6"+
+			"\x3e\x0c\xcd\x49\x31\x3e\x12\xcd\xf9\x31\x3e\x3f\xcd\xf9\x31"+
+			"\xe5\x21\x38\xc7\xcb\x86\x24\xcb\xfe\x2e\x48\xcb\xc6\xe1\xc9")
+	r.replace(0x03, 0x67f6, "call save maku tree with nayru",
+		"\xcd\x53\x3e", "\xcd"+saveMakuTreeWithNayru)
+
 	// bank 04
 
 	// look up tiles in custom replacement table after loading a room. the
@@ -336,7 +344,7 @@ func initAgesEOB() {
 	// bank 16, func is in bank 00, body is in bank 06.
 	collectModeTable := r.appendToBank(0x06, "collect mode table",
 		makeCollectModeTable())
-	// make tree item falls or exists on floor depending on script position.
+	// maku tree item falls or exists on floor depending on script position.
 	collectMakuTreeFunc := r.appendToBank(0x06, "collect maku tree",
 		"\xfa\x58\xd2\xfe\x84\x1e\x29\xc8\x1e\x0a\xc9")
 	// target carts items appear with a poof if they're in the enclosure.

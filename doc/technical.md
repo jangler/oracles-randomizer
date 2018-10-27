@@ -120,13 +120,16 @@ to be ridden; i think the others are specific to each animal.
 - 0a = finished intro (can open menu?)
 - 0c = maku tree vanished
 - 0e = fairies put the forest back in order
+- 11 = maku tree tells you where the seventh essence is
 - 12 = past maku tree opened gate
 - 13 = finished talking to maku tree after getting maku seed
 - 15 = gave rafton rope; spawns ricky in forest of time
 - 16 = defeated great moblin
+- 18 = set when entering nayru/veran fight
+- 19 = set when escaping nayru/veran fight
 - 1b = talked to tingle
 - 1c = set after getting bomb capacity upgrade from fairy
-- 1d = set after d3 essence, needed for flute in shop and shooting gallery
+- 1d = set after d3 essence, needed for flute, unset when entering nuun
 - 20 = set when talking to cursed queen fairy; needed to receive fairy powder
 - 21 = landed in the world at start of game
 - 22 = talked to bridge-building foreman; needed for animal companion event
