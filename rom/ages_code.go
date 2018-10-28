@@ -134,6 +134,7 @@ func initAgesEOB() {
 			"\x00\x83\x00\x43\xa4"+ // rock outside D2
 			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
 			"\x04\x1b\x01\x03\x78"+ // key door in D1
+			"\x01\x13\x00\x61\xd7"+ // portal in symmetry city past
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
@@ -304,6 +305,15 @@ func initAgesEOB() {
 		"\xcd\x48\x17\xd8\x3e\x0f\xc3\x48\x17")
 	r.replace(0x11, 0x4aba, "call check seed harvest",
 		"\xcd\x48\x17", "\xcd"+checkSeedHarvest)
+
+	// bank 12
+
+	// add time portal interaction in symmetry city past, to avoid softlock if
+	// player only has echoes.
+	symmetryPastPortal := r.appendToBank(0x12, "symmetry past portal",
+		"\xf1\xdc\x05\xf2\xe1\x00\x68\x18\xfe")
+	r.replace(0x12, 0x5e91, "symmetry past portal pointer",
+		"\xf1\xdc\x05", "\xf3"+symmetryPastPortal)
 
 	// bank 15
 
