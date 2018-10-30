@@ -367,7 +367,7 @@ func initAgesEOB() {
 		collectMakuTreeFunc+collectTargetCartsFunc+collectBigBangFunc)
 	collectModeLookupBody := r.appendToBank(0x06, "collect mode lookup body",
 		"\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x1e\x01\x21"+collectModeTable+
-			"\xcd"+searchDoubleKey+"\xd0\x7e\x5f\xfe\x80\xd8"+
+			"\xcd"+searchDoubleKey+"\x5f\xd0\x7e\x5f\xfe\x80\xd8"+
 			"\x21"+collectModeJumpTable+"\xe6\x7f\x87\xd7\x2a\x66\x6f\xe9")
 	collectModeLookup := r.appendToBank(0x00, "collect mode lookup",
 		"\xc5\xd5\xe5\x1e\x06\x21"+collectModeLookupBody+"\xcd\x8a\x00\x7b"+
