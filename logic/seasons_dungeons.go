@@ -7,7 +7,7 @@ package logic
 // ideally "enter <dungeon>" is the only overworld item the dungeon nodes
 // reference (and that node should not be defined here).
 
-var d0Nodes = map[string]*Node{
+var seasonsD0Nodes = map[string]*Node{
 	"d0 key chest":   And("enter d0"),
 	"d0 sword chest": AndSlot("enter d0", "d0 small key"),
 	"d0 rupee chest": OrSlot("remove bush safe", "flute"),
@@ -15,7 +15,7 @@ var d0Nodes = map[string]*Node{
 	"d0 small key": And("d0 key chest"),
 }
 
-var d1Nodes = map[string]*Node{
+var seasonsD1Nodes = map[string]*Node{
 	"d1 key fall":       And("enter d1", "kill stalfos"),
 	"d1 map chest":      AndSlot("d1 key A", "kill stalfos"),
 	"d1 compass chest":  AndSlot("d1 map chest"),
@@ -35,7 +35,7 @@ var d1Nodes = map[string]*Node{
 	"d1 key B": And("d1 key chest"),
 }
 
-var d2Nodes = map[string]*Node{
+var seasonsD2Nodes = map[string]*Node{
 	"d2 5-rupee chest": AndSlot("d2 torch room"),
 	"d2 rope room":     And("d2 torch room", "kill rope"),
 	"d2 arrow room": Or("enter d2 B",
@@ -66,7 +66,7 @@ var d2Nodes = map[string]*Node{
 	"d2 bomb wall":  And("d2 blade chest"), // alias for external reference
 }
 
-var d3Nodes = map[string]*Node{
+var seasonsD3Nodes = map[string]*Node{
 	// first floor
 	"d3 center":       And("enter d3", "kill spiked beetle"),
 	"d3 mimic stairs": Or("d3 rupee chest", And("d3 center", "bracelet")),
@@ -93,7 +93,7 @@ var d3Nodes = map[string]*Node{
 	"d3 2 keys": And("d3 key A", "d3 key B"),
 }
 
-var d4Nodes = map[string]*Node{
+var seasonsD4Nodes = map[string]*Node{
 	// left branch from entrance
 	"d4 bomb chest": AndSlot("enter d4", Or("flippers", "jump 4")),
 	"d4 pot room":   And("d4 bomb chest", "bombs", "bracelet"),
@@ -140,7 +140,7 @@ var d4Nodes = map[string]*Node{
 
 // the keys in this dungeon suck, so i'm not even going to bother with "hard"
 // logic for them.
-var d5Nodes = map[string]*Node{
+var seasonsD5Nodes = map[string]*Node{
 	// 1F (it's the only F)
 	"d5 cart bay":   And("enter d5", Or("flippers", "bomb jump 2")),
 	"d5 cart chest": And("d5 cart bay", "hit lever"),
@@ -176,7 +176,7 @@ var d5Nodes = map[string]*Node{
 
 // all the rupee chests in this dungeon are trivial, so i'm ignoring which is
 // which and just labeling them by letter.
-var d6Nodes = map[string]*Node{
+var seasonsD6Nodes = map[string]*Node{
 	// 1F
 	"d6 rupee chest A": AndSlot("enter d6"),
 	"d6 rupee room":    And("enter d6", "bombs"),
@@ -213,7 +213,7 @@ var d6Nodes = map[string]*Node{
 }
 
 // this does *not* account for poe skip.
-var d7Nodes = map[string]*Node{
+var seasonsD7Nodes = map[string]*Node{
 	// 1F
 	"d7 wizzrobe chest": And("enter d7", "kill wizzrobe"),
 	"d7 ring chest":     AndSlot("enter d7", "d7 key A"),
@@ -260,7 +260,7 @@ var d7Nodes = map[string]*Node{
 //
 // possible but not in logic: hitting the sets of three eye statues quickly
 // enough to make the chest/stairs appear, without HSS
-var d8Nodes = map[string]*Node{
+var seasonsD8Nodes = map[string]*Node{
 	// 1F
 	"d8 eye room": And("enter d8", "remove pot", Or("any slingshot",
 		HardAnd("jump 2",
@@ -309,7 +309,8 @@ var d8Nodes = map[string]*Node{
 }
 
 // onox's castle
-var d9Nodes = map[string]*Node{
-	"enter onox": And("enter d9", "kill wizzrobe", "kill floormaster", "kill darknut", "kill facade"),
-	"done":       AndStep("enter onox", "kill onox"),
+var seasonsD9Nodes = map[string]*Node{
+	"enter onox": And("enter d9", "kill wizzrobe", "kill floormaster",
+		"kill darknut", "kill facade"),
+	"done": AndStep("enter onox", "kill onox"),
 }

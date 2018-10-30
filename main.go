@@ -360,6 +360,9 @@ func randomize(romData []byte, game int, seedFlag string,
 			ri.UsedSlots.Remove(ri.UsedSlots.Front()).(*graph.Node).Name
 		treasureName :=
 			ri.UsedItems.Remove(ri.UsedItems.Front()).(*graph.Node).Name
+		if verbose {
+			fmt.Printf("%s <- %s\n", slotName, treasureName)
+		}
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 	}
 
@@ -407,6 +410,11 @@ func randomize(romData []byte, game int, seedFlag string,
 		summary <- ""
 		summary <- fmt.Sprintf("natzu region <- %s", []string{
 			"", "natzu prairie", "natzu river", "natzu wasteland",
+		}[ri.Companion])
+	} else {
+		summary <- ""
+		summary <- fmt.Sprintf("animal companion <- %s", []string{
+			"", "ricky", "dimitri", "moosh",
 		}[ri.Companion])
 	}
 

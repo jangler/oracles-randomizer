@@ -31,7 +31,7 @@ package logic
 //   - NOT magnet ball; it kills anything pittable
 //   - fool's ore
 
-var killNodes = map[string]*Node{
+var seasonsKillNodes = map[string]*Node{
 	"satchel kill normal": And("satchel",
 		Or("ember seeds", HardOr("scent seeds", "gale seeds"))),
 	"slingshot kill normal": And("slingshot",

@@ -9,6 +9,8 @@ var Rupees = map[string]int{
 	"member's shop 3": -200,
 	"blaino gift":     -10,
 
+	"shop, 150 rupees": -150, // ages
+
 	// appraising rings
 	"expert's ring":  -20,
 	"toss ring":      -20,
@@ -39,4 +41,5 @@ var Rupees = map[string]int{
 	"rupees, 30":  30,
 	"rupees, 50":  50,
 	"rupees, 100": 100,
+	"rupees, 200": 200,
 }

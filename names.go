@@ -26,9 +26,16 @@ var niceNames = map[string]string{
 	"autumn":          "rod of autumn",
 	"winter":          "rod of winter",
 	"magnet gloves":   "magnetic gloves",
+	"harp 1":          "tune of echoes/currents/ages",
+	"harp 2":          "tune of echoes/currents/ages",
+	"harp 3":          "tune of echoes/currents/ages",
+	"switch hook 1":   "switch/long hook",
+	"switch hook 2":   "switch/long hook",
 	"slingshot 1":     "(hyper) slingshot",
 	"slingshot 2":     "(hyper) slingshot",
 	"bracelet":        "power bracelet",
+	"bracelet 1":      "power bracelet/glove",
+	"bracelet 2":      "power bracelet/glove",
 	"feather 1":       "roc's feather/cape",
 	"feather 2":       "roc's feather/cape",
 	"satchel 1":       "seed satchel",
@@ -36,6 +43,8 @@ var niceNames = map[string]string{
 
 	// collection items
 	"flippers":         "zora's flippers",
+	"flippers 1":       "zora's flippers / mermaid suit",
+	"flippers 2":       "zora's flippers / mermaid suit",
 	"star ore":         "star-shaped ore",
 	"rare peach stone": "piece of heart",
 

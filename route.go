@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -35,10 +36,15 @@ type Route struct {
 // NewRoute returns an initialized route with all nodes, and those nodes with
 // the names in start functioning as givens (always satisfied). If no names are
 // given, only the normal start node functions as a given.
-func NewRoute(start ...string) *Route {
+func NewRoute(game int, start ...string) *Route {
 	g := graph.New()
 
-	totalPrenodes := logic.GetAll()
+	var totalPrenodes map[string]*logic.Node
+	if game == rom.GameSeasons {
+		totalPrenodes = logic.GetSeasons()
+	} else {
+		totalPrenodes = logic.GetAges()
+	}
 	addDefaultItemNodes(totalPrenodes)
 
 	// make start nodes given
@@ -154,11 +160,6 @@ func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 		ExtraSlots:    list.New(),
 	}
 
-	if game == rom.GameAges {
-		ri.Companion = dimitri
-		return ri
-	}
-
 	// try to find the route, retrying if needed
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
@@ -169,14 +170,16 @@ func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 		default:
 		}
 
-		r := NewRoute()
-		ri.Companion = rollAnimalCompanion(src, r)
-		itemList, slotList = initRouteInfo(src, r, ri.Companion)
+		r := NewRoute(game)
+		ri.Companion = rollAnimalCompanion(src, r, game)
+		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
 		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
 
 		// slot initial nodes before algorithm slots progression items
-		ri.Seasons = rollSeasons(src, r)
-		placeDungeonItems(src, r,
+		if game == rom.GameSeasons {
+			ri.Seasons = rollSeasons(src, r)
+		}
+		placeDungeonItems(src, r, game,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
 		slotRecord := 0
@@ -265,17 +268,21 @@ func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 			}
 		}
 
-		if slotList.Len() == 0 {
+		if success && slotList.Len() == 0 {
 			arrangeListsForLog(r, ri, hard, verbose)
 
 			// rotate dungeon items to the back of the lists
 			items, slots := ri.ProgressItems, ri.ProgressSlots
+			numDungeons := 8
+			if game == rom.GameAges {
+				numDungeons = 9
+			}
 			for i := 0; i < 8; i++ {
 				items.PushBack(items.Remove(items.Front()))
 				slots.PushBack(slots.Remove(slots.Front()))
 			}
 			items, slots = ri.ExtraItems, ri.ExtraSlots
-			for i := 0; i < 16; i++ {
+			for i := 0; i < numDungeons*2; i++ {
 				items.PushBack(items.Remove(items.Front()))
 				slots.PushBack(slots.Remove(slots.Front()))
 			}
@@ -335,20 +342,35 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 }
 
 // randomly determines animal companion and returns its ID (1 to 3)
-func rollAnimalCompanion(src *rand.Rand, r *Route) int {
+func rollAnimalCompanion(src *rand.Rand, r *Route, game int) int {
 	companion := src.Intn(3) + 1
 
-	r.ClearParents("natzu prairie")
-	r.ClearParents("natzu river")
-	r.ClearParents("natzu wasteland")
+	if game == rom.GameSeasons {
+		r.ClearParents("natzu prairie")
+		r.ClearParents("natzu river")
+		r.ClearParents("natzu wasteland")
 
-	switch companion {
-	case ricky:
-		r.AddParent("natzu prairie", "start")
-	case dimitri:
-		r.AddParent("natzu river", "start")
-	case moosh:
-		r.AddParent("natzu wasteland", "start")
+		switch companion {
+		case ricky:
+			r.AddParent("natzu prairie", "start")
+		case dimitri:
+			r.AddParent("natzu river", "start")
+		case moosh:
+			r.AddParent("natzu wasteland", "start")
+		}
+	} else {
+		r.ClearParents("ricky nuun")
+		r.ClearParents("dimitri nuun")
+		r.ClearParents("moosh nuun")
+
+		switch companion {
+		case ricky:
+			r.AddParent("ricky nuun", "start")
+		case dimitri:
+			r.AddParent("dimitri nuun", "start")
+		case moosh:
+			r.AddParent("moosh nuun", "start")
+		}
 	}
 
 	return companion
@@ -367,7 +389,7 @@ func dungeonIndex(node *graph.Node) int {
 
 // place maps, compasses, and boss keys in chests in dungeons (before
 // attempting to slot the other ones).
-func placeDungeonItems(src *rand.Rand, r *Route,
+func placeDungeonItems(src *rand.Rand, r *Route, game int,
 	itemList, usedItems, slotList, usedSlots *list.List) {
 
 	// place boss keys first
@@ -394,11 +416,19 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 		}
 	}
 
+	prefixes := []string{"d1", "d2", "d3", "d4", "d5"}
+	if game == rom.GameSeasons {
+		prefixes = append(prefixes, "d6")
+	} else {
+		prefixes = append(prefixes, "d6 present", "d6 past")
+	}
+	prefixes = append(prefixes, "d7", "d8")
+
 	// then place maps and compasses
-	for i := 1; i < 9; i++ {
+	for _, prefix := range prefixes {
 		for _, itemName := range []string{"dungeon map", "compass"} {
 			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem(i, itemName, slotList, itemList)
+				getDungeonItem(prefix, itemName, slotList, itemList)
 
 			usedSlots.PushBack(slotNode)
 			slotList.Remove(slotElem)
@@ -410,11 +440,11 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 	}
 }
 
-func getDungeonItem(index int, itemName string, slotList,
+func getDungeonItem(prefix, itemName string, slotList,
 	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
-		if dungeonIndex(slot) != index {
+		if !strings.HasPrefix(slot.Name, prefix) {
 			continue
 		}
 
@@ -452,18 +482,31 @@ var seedNames = []string{"ember tree seeds", "scent tree seeds",
 
 // return shuffled lists of item and slot nodes
 func initRouteInfo(src *rand.Rand, r *Route,
-	companion int) (itemList, slotList *list.List) {
+	game, companion int) (itemList, slotList *list.List) {
 	// get slices of names
-	itemNames := make([]string, 0,
-		len(rom.ItemSlots)+len(logic.ExtraItems()))
+	var itemNames []string
+	if game == rom.GameSeasons {
+		itemNames = make([]string, 0,
+			len(rom.ItemSlots)+len(logic.SeasonsExtraItems()))
+	} else {
+		itemNames = make([]string, 0, len(rom.ItemSlots))
+	}
 	slotNames := make([]string, 0, len(r.Slots))
+	thisSeedNames := make([]string, len(seedNames))
+	copy(thisSeedNames, seedNames)
 	for key, slot := range rom.ItemSlots {
 		switch key {
 		case "rod gift": // don't slot vanilla, seasonless rod
 			break
-		case "tarm gale tree": // use random duplicate seed type
-			treasureName := seedNames[rand.Intn(len(seedNames))]
+		case "tarm gale tree", "ambi's palace tree",
+			"rolling ridge east tree", "zora village tree":
+			// use random duplicate seed types, but only duplicate a seed type
+			// once
+			index := rand.Intn(len(thisSeedNames))
+			treasureName := thisSeedNames[index]
 			itemNames = append(itemNames, treasureName)
+			thisSeedNames = append(thisSeedNames[:index],
+				thisSeedNames[index+1:]...)
 		default:
 			// substitute identified flute for strange flute
 			treasureName := rom.FindTreasureName(slot.Treasure)
@@ -481,8 +524,10 @@ func initRouteInfo(src *rand.Rand, r *Route,
 			itemNames = append(itemNames, treasureName)
 		}
 	}
-	for key := range logic.ExtraItems() {
-		itemNames = append(itemNames, key)
+	if game == rom.GameSeasons {
+		for key := range logic.SeasonsExtraItems() {
+			itemNames = append(itemNames, key)
+		}
 	}
 	for key := range r.Slots {
 		slotNames = append(slotNames, key)
