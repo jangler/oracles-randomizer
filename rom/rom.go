@@ -232,7 +232,7 @@ func Verify(b []byte, game int) []error {
 			"sea of storms present", "sea of storms past", "starting chest",
 			"deku forest soldier", "shop, 150 rupees", "hidden tokay cave":
 		// ages, script item using collect mode other than 0a
-		case "trade lava juice", "goron dancing past", "goron elder",
+		case "trade lava juice", "goron dance past", "goron elder",
 			"tingle's upgrade", "king zora", "d2 thwomp shelf":
 		// ages, progressive item slots not covered elsewhere
 		case "d6 present vire chest", "d7 miniboss chest", "d8 floor puzzle",
