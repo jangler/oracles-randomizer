@@ -40,6 +40,9 @@ var agesFixedMutables = map[string]Mutable{
 	"d2 guy flag check": MutableString(Addr{0x09, 0x5242},
 		"\x3e\x0b\xcd\xf3\x31\xc2", "\x3e\x03\xcd\x48\x17\xda"),
 
+	// clear rubble from rolling ridge base present without d4 essence
+	"clear rubble": MutableByte(Addr{0x04, 0x6a44}, 0xc8, 0x00),
+
 	// cut off the end of deku forest soldier's text so it makes sense when
 	// giving item
 	"soldier text end": MutableByte(Addr{0x23, 0x6656}, 0x01, 0x00),
