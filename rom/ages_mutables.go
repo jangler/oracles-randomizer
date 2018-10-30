@@ -125,6 +125,10 @@ var agesFixedMutables = map[string]Mutable{
 	"target carts prize table": MutableString(Addr{0x15, 0x66e5},
 		"\x04\x04\x04", "\x03\x03\x03"),
 
+	// trade lava juice without mermaid key
+	"trade lava juice without key": MutableString(Addr{0x15, 0x6879},
+		"\x30\x07", "\x30\x00"),
+
 	// stop d6 boss key chest from setting past boss key flag
 	"stop d6 boss key chest": MutableString(Addr{0x10, 0x793c},
 		"\xc3\x0e\x02", "\xc9\x00\x00"),
