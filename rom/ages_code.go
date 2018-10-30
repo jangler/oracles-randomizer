@@ -135,6 +135,8 @@ func initAgesEOB() {
 			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
 			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\x01\x13\x00\x61\xd7"+ // portal in symmetry city past
+			"\x04\xbd\x00\x50\xa0"+ // remove key door in D5
+			"\x04\xa6\x80\x58\x1e"+ // add key block in room below
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
