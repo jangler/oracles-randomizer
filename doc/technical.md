@@ -124,9 +124,10 @@ to be ridden; i think the others are specific to each animal.
 - 12 = past maku tree opened gate
 - 13 = finished talking to maku tree after getting maku seed
 - 15 = gave rafton rope; spawns ricky in forest of time
-- 16 = defeated great moblin
+- 16 = defeated great moblin… then unset right afterward?
 - 18 = set when entering nayru/veran fight
 - 19 = set when escaping nayru/veran fight
+- 1a = defeated great moblin? or unset when defeating great moblin
 - 1b = talked to tingle
 - 1c = set after getting bomb capacity upgrade from fairy
 - 1d = set after d3 essence, needed for flute, unset when entering nuun
@@ -155,6 +156,7 @@ to be ridden; i think the others are specific to each animal.
 - 41 = surprised guy runs away when entering past
 - 42 = checked in fairies' woods?
 - 43 = talked to cheval; triggers ralph cutscene outside
+- 44 = hit maple
 - 46 = got satchel upgrade from tingle
 
 
