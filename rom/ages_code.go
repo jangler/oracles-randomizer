@@ -298,6 +298,15 @@ func initAgesEOB() {
 		"\xb0\x20"+soldierScriptAfter+"\xdf\x24"+soldierScriptCheck+"\x5d\xee")
 	r.replace(0x09, 0x5207, "soldier script pointer", "\xee\x5d", soldierScript)
 
+	// bank 10
+
+	// keep black tower in initial state until the player got the item from the
+	// worker.
+	blackTowerCheck := r.appendToBank(0x10, "black tower check",
+		"\x21\x27\x79\xc8\xfa\xe1\xc9\xe6\x20\xc9")
+	r.replace(0x10, 0x7914, "call black tower check",
+		"\x21\x27\x79", "\xcd"+blackTowerCheck)
+
 	// bank 11
 
 	// allow collection of seeds with only shooter and no satchel
