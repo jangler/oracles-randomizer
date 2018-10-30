@@ -40,7 +40,7 @@ var labrynnaNodes = map[string]*Node{
 	"ambi's palace tree": AndSlot("lynna village", "sword", "seed item"),
 	"ambi's palace chest": AndSlot("lynna village", Or(
 		HardAnd("satchel", "scent seeds", "pegasus seeds"),
-		And("break bush", "mermaid suit"))),
+		And("break bush safe", "mermaid suit"))),
 	"rescue nayru": AndSlot("ambi's palace chest", "mystery seeds",
 		"switch hook"),
 	"mayor plen's house": AndSlot("long hook"),
@@ -109,7 +109,6 @@ var labrynnaNodes = map[string]*Node{
 		And("lynna city", "ages",
 			Or("bracelet", "flippers", "dimitri's flute")),
 		And("symmetry past", "currents", "bracelet", "flippers")),
-	// TODO do gale seeds work for the ceremony?
 	"patch": And(Or("sword", "shield", "boomerang", "switch hook",
 		HardOr("scent seeds", "cane")), "restoration wall"),
 	"talus peaks chest": OrSlot("restoration wall",
@@ -120,7 +119,7 @@ var labrynnaNodes = map[string]*Node{
 	"goron elder": AndSlot("bomb flower", "switch hook",
 		Or("feather", "ages")),
 	"ridge west past": Or("goron elder",
-		And("ridge west present", "bracelet", "echoes")),
+		And("ridge west present", Or("ages", And("bracelet", "echoes")))),
 	"ridge west present": Or("ridge upper present",
 		And("switch hook", "currents", Or("feather", "ages")),
 		And("currents", Or("ridge west past", "ridge base past"))),

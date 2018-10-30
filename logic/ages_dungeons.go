@@ -16,11 +16,11 @@ var agesD1Nodes = map[string]*Node{
 	"d1 platform key chest": And("d1 ghini key"),
 	"d1 button chest":       AndSlot("d1 ghini key"),
 	"d1 U-room": Or("d1 west terrace", And("d1 free key chest",
-		"d1 platform key chest", "break bush", "kill giant ghini")),
+		"d1 platform key chest", "break bush safe", "kill giant ghini")),
 	"d1 basement":     AndSlot("d1 U-room", "ember seeds"),
 	"d1 west terrace": AndSlot("enter d1", Or("break pot", "d1 U-room")),
 	"d1 pot chest":    And("enter d1", "break pot"),
-	"d1 essence": AndStep("d1 free key chest", "break bush", "d1 boss key",
+	"d1 essence": AndStep("d1 free key chest", "break bush safe", "d1 boss key",
 		"kill pumpkin head"),
 }
 
@@ -71,7 +71,8 @@ var agesD3Nodes = map[string]*Node{
 	"d3 compass chest": AndSlot("d3 statue key"),
 	"d3 bridge chest": AndSlot("d3 statue key",
 		Or("any seed shooter", And("feather", "pegasus satchel"))),
-	"d3 torch chest":    AndSlot("d3 B1F spinner", "ember shooter"),
+	"d3 torch chest": AndSlot("d3 B1F spinner",
+		Or("ember shooter", Hard("mystery shooter"))),
 	"d3 boss key chest": AndSlot("d3 B1F spinner", "any seed shooter"),
 	"kill subterror": And("shovel",
 		Or("sword", "bomb weapon", "scent seeds")),
@@ -121,15 +122,12 @@ var agesD5Nodes = map[string]*Node{
 	"d5 essence": AndStep("d5 switch A", "d5 boss key", "cane", "sword"),
 
 	// require 1 small key minimum, 2 maximum.
-	// keys A (dark chest) and E (4-statue chest) are always available by now.
+	// keys A (dark chest) and E (3-statue chest) are always available by now.
 	"d5 crossroads":    And("d5 switch A", "feather", "bracelet", "cane"),
 	"d5 diamond chest": AndSlot("d5 crossroads", "switch hook"),
 
 	// require 1 small key minimum, 5 maximum.
-	// it's possible to blow four keys on the other route and therefore be
-	// unable to reach the key here, so XXX replace the key door outside the
-	// 4-statue room with a key block in the room below?
-	"d5 4-statue chest":    And("d5 switch A", "cane"),
+	"d5 3-statue chest":    And("d5 switch A", "cane"),
 	"d5 six-statue puzzle": AndSlot("d5 all keys", "ember shooter", "feather"),
 
 	// require 4 small keys minimum, 5 maximum.
@@ -141,7 +139,7 @@ var agesD5Nodes = map[string]*Node{
 	"d5 key B": And("d5 boxed chest"),
 	"d5 key C": And("d5 eyes chest"),
 	"d5 key D": And("d5 2-statue chest"),
-	"d5 key E": And("d5 4-statue chest"),
+	"d5 key E": And("d5 3-statue chest"),
 	"d5 all keys": And("d5 key A", "d5 key B", "d5 key C", "d5 key D",
 		"d5 key E"),
 }

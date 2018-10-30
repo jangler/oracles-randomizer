@@ -2,12 +2,10 @@ package logic
 
 // remember to test:
 // - sword
-// - bombs (*usually* don't require except with the bomb bag)
 // - from satchel, then seed shooter if satchel doesn't work:
 //   - ember seeds
 //   - scent seeds
 //   - gale seeds
-//   - mystery seeds (don't require except with the satchel upgrade)
 // - cane
 // - switch hook
 // - thrown objects, if applicable
@@ -15,8 +13,6 @@ package logic
 // - boomerang
 // - flute
 // - shovel
-
-// TODO some of this should be in hard logic, like scent seeds from satchel
 
 var agesKillNodes = map[string]*Node{
 	"break crystal": Or("sword", "bombs", "bracelet"),
@@ -30,20 +26,20 @@ var agesKillNodes = map[string]*Node{
 	"hit switch ranged": Or("bombs", "any seed shooter", "switch hook", "boomerang"),
 
 	// flute isn't included here since it's only available in some places.
-	"break bush": Or("sword", "switch hook", "bracelet",
-		HardOr("bombs", "ember seeds", "gale shooter")),
+	"break bush safe": Or("sword", "switch hook", "bracelet",
+		"bombs", "ember seeds", "gale shooter"),
+	"break bush": Or("sword", "switch hook", "bracelet"),
 
-	"bomb weapon": Hard("bombs"),
 	"satchel weapon": And("satchel",
 		Or("ember seeds", HardOr("scent seeds", "gale seeds"))),
 	"shooter weapon": And("seed shooter",
 		Or("ember seeds", "scent seeds", "gale seeds")),
 
 	// most enemies are vulnerable to these items
-	"kill normal": Or("sword", "bomb weapon", "satchel weapon",
-		"shooter weapon", "cane"),
-	"kill normal ranged": Or("bomb weapon", "shooter weapon",
-		And("cane", "bracelet")),
+	"kill normal": Or("sword", "satchel weapon", "shooter weapon", "cane",
+		Hard("bombs")),
+	"kill normal ranged": Or("shooter weapon", And("cane", "bracelet"),
+		Hard("bombs")),
 	"kill underwater": Or("sword", "shooter weapon"),
 	"pit normal":      Or("shield", And("boomerang", "shovel")),
 
@@ -51,20 +47,20 @@ var agesKillNodes = map[string]*Node{
 	"kill stalfos": Or("kill normal"),
 	"kill zol":     Or("kill normal", "switch hook"),
 	"kill ghini":   Or("kill normal", "switch hook"),
-	"kill giant ghini": Or("sword", "bomb weapon", "scent shooter",
-		HardOr("scent satchel", "mystery seeds"), "switch hook"),
-	"kill pumpkin head": And("bracelet", Or("sword", "bomb weapon",
-		"ember seeds", "scent seeds")),
+	"kill giant ghini": Or("sword", "scent shooter", "switch hook",
+		HardOr("bombs", "scent satchel")),
+	"kill pumpkin head": And("bracelet",
+		Or("sword", "ember seeds", "scent shooter",
+			HardOr("bombs", "scent satchel"))),
 
 	"kill spiked beetle": Or("gale shooter", Hard("gale satchel"),
 		And(Or("shield", "shovel"), Or("kill normal", "switch hook"))),
-	"kill swoop": Or("sword", "bomb weapon", "scent seeds", "switch hook",
-		Hard("mystery seeds")),
+	"kill swoop": Or("sword", "scent shooter", "switch hook",
+		HardOr("bombs", "scent satchel")),
 
-	"kill moldorm": Or("sword", "bomb weapon", "scent seeds", "cane",
-		"switch hook", Hard("mystery seeds")),
-	"kill armos": Or("bomb weapon", "scent seeds", "cane",
-		Hard("mystery seeds")),
+	"kill moldorm": Or("sword", "scent shooter", "cane", "switch hook",
+		HardOr("bombs", "scent satchel")),
+	"kill armos": Or("scent shooter", "cane", HardOr("bombs", "scent satchel")),
 
 	"kill wizzrobe": Or("kill normal"),
 }
