@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+  <head>
+    <title>seasons randomizer html item tracker</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <script src="common.js"></script>
+  <script>
+function seasonsInit() {
+  init();
+
+  let boomerang = document.getElementById("boomerang");
+  states.set(boomerang, ["img/rang1.gif", "img/rang2.gif"]);
+
+  let feather = document.getElementById("feather");
+  states.set(feather, ["img/feather1.gif", "img/feather2.gif"]);
+
+  let slingshot = document.getElementById("slingshot");
+  states.set(slingshot, ["img/slingshot1.gif", "img/slingshot2.gif"]);
+
+  let bell = document.getElementById("bell");
+  states.set(bell, ["img/bell1.gif", "img/bell2.gif"]);
+}
+  </script>
+  <body onload="seasonsInit();">
+    <div class="itemrow">
+      <img class="item unit" id="sword" src="img/sword1.gif"/>
+      <img class="item unit" id="boomerang" src="img/rang1.gif"/>
+      <img class="item unit" id="shovel" src="img/shovel.gif"/>
+      <img class="item unit" id="bracelet" src="img/bracelet.gif"/>
+      <img class="item unit" id="flute" src="img/flutestrange.gif"/>
+      <img class="item unit" id="feather" src="img/feather1.gif"/>
+      <img class="item unit" id="foolsore" src="img/foolsore.gif"/>
+      <img class="item unit" id="magnetgloves" src="img/magnetgloves.gif"/>
+    </div>
+    <div class="itemrow">
+      <img class="item unit" id="bombs" src="img/bombs.gif"/>
+      <img class="item unit" id="satchel" src="img/satchel.gif"/>
+      <img class="item unit" id="slingshot" src="img/slingshot1.gif"/>
+      <img class="item unit" id="ember" src="img/ember.gif"/>
+      <img class="item unit" id="mystery" src="img/mystery.gif"/>
+      <img class="item unit" id="scent" src="img/scent.gif"/>
+      <img class="item unit" id="pegasus" src="img/pegasus.gif"/>
+      <img class="item unit" id="gale" src="img/gale.gif"/>
+    </div>
+    <div class="itemrow">
+      <img class="item unit" id="rod" src="img/rod.gif"/>
+      <span class="unit" style="padding-top: 4px;">
+        <img class="item" id="summer" src="img/summer.gif"/>
+        <img class="item" id="autumn" src="img/autumn.gif"/>
+        <br>
+        <img class="item" id="spring" src="img/spring.gif"/>
+        <img class="item" id="winter" src="img/winter.gif"/>
+      </span>
+      <img class="item unit" id="gnarled" src="img/gnarled.gif"/>
+      <img class="item unit" id="floodgate" src="img/floodgate.gif"/>
+      <img class="item unit" id="dragon" src="img/dragon.gif"/>
+      <span class="unit">
+        <img class="item" id="round" src="img/round.gif"/>
+        <img class="item" id="pyramid" src="img/pyramid.gif"/>
+        <br>
+        <img class="item" id="square" src="img/square.gif"/>
+        <img class="item" id="xshaped" src="img/xshaped.gif"/>
+      </span>
+      <img class="item unit" id="bell" src="img/bell1.gif"/>
+      <img class="item unit" id="shield" src="img/shield1.gif"/>
+    </div>
+    <div class="itemrow">
+      <img class="item unit" id="card" src="img/card.gif"/>
+      <img class="item unit" id="starore" src="img/starore.gif"/>
+      <img class="item unit" id="ribbon" src="img/ribbon.gif"/>
+      <img class="item unit" id="flippers" src="img/flippers.gif"/>
+      <img class="item unit" id="plaque" src="img/plaque.gif"/>
+      <img class="item unit" id="banana" src="img/banana.gif"/>
+      <span class="unit">
+        <img class="item" id="redore" src="img/redore.gif"/>
+        <img class="item" id="blueore" src="img/blueore.gif"/>
+      </span>
+      <img class="item unit" id="hardore" src="img/hardore.gif"/>
+    </div>
+    <div class="itemrow">
+      <img class="item unit" id="essence1" src="img/nature1.gif"/>
+      <img class="item unit" id="essence2" src="img/nature2.gif"/>
+      <img class="item unit" id="essence3" src="img/nature3.gif"/>
+      <img class="item unit" id="essence4" src="img/nature4.gif"/>
+      <img class="item unit" id="essence5" src="img/nature5.gif"/>
+      <img class="item unit" id="essence6" src="img/nature6.gif"/>
+      <img class="item unit" id="essence7" src="img/nature7.gif"/>
+      <img class="item unit" id="essence8" src="img/nature8.gif"/>
+    </div>
+  </body>
+</html>
