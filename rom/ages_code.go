@@ -374,8 +374,12 @@ func initAgesEOB() {
 	// big bang game items appear with a poof if they're above the goron.
 	collectBigBangFunc := r.appendToBank(0x06, "collect big bang game",
 		"\x1e\x4b\x1a\xfe\x38\x1e\x19\xc8\x1e\x0a\xc9")
+	// lava juice trading goron also has a chest in the room.
+	collectLavaJuiceFunc := r.appendToBank(0x06, "collect lava juice room",
+		"\x1e\x4d\x1a\xfe\x68\x1e\x0a\xd8\x1e\x38\xc9")
 	collectModeJumpTable := r.appendToBank(0x06, "collect mode jump table",
-		collectMakuTreeFunc+collectTargetCartsFunc+collectBigBangFunc)
+		collectMakuTreeFunc+collectTargetCartsFunc+collectBigBangFunc+
+			collectLavaJuiceFunc)
 	collectModeLookupBody := r.appendToBank(0x06, "collect mode lookup body",
 		"\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x1e\x01\x21"+collectModeTable+
 			"\xcd"+searchDoubleKey+"\x5f\xd0\x7e\x5f\xfe\x80\xd8"+

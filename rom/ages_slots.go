@@ -4,6 +4,7 @@ const (
 	collectMakuTree    = 0x80
 	collectTargetCarts = 0x81
 	collectBigBang     = 0x82
+	collectLavaJuice   = 0x83
 )
 
 // agesChest constructs a MutableSlot from a treasure name and an address in
@@ -83,8 +84,9 @@ var agesSlots = map[string]*MutableSlot{
 		room:         0x3e,
 		collectMode:  collectBigBang,
 	},
-	"shooting gallery":       agesBufferItem("lava juice", 0x5285, 0x03, 0xe7),
-	"trade lava juice":       agesScriptItem("goron letter", 0x6ee9, 0x03, 0x1f),
+	"shooting gallery": agesBufferItem("lava juice", 0x5285, 0x03, 0xe7),
+	"trade lava juice": BasicSlot("goron letter", 0x0c, 0x6ee9, 0x6eea,
+		0x03, 0x1f, collectLavaJuice, 0x1c),
 	"rescue nayru":           agesBufferItem("harp 3", 0x54f1, 0x00, 0x38),
 	"king zora":              agesScriptItem("library key", 0x7ae4, 0x05, 0xab),
 	"library present":        agesBufferItem("book of seals", 0x5db9, 0x05, 0xc8),
@@ -126,7 +128,8 @@ var agesSlots = map[string]*MutableSlot{
 	"bomb goron head":       agesChest("rupees, 100", 0x5148, 0x02, 0xfc),
 	"tokay bomb cave":       agesChest("gasha seed", 0x514c, 0x02, 0xce),
 	"zora cave past":        agesChest("red holy ring", 0x5158, 0x02, 0x4f),
-	"ridge bush cave":       agesChest("rupees, 100", 0x5165, 0x03, 0x1f),
+	"ridge bush cave": BasicSlot("rupees, 100", 0x16, 0x5165, 0x5166,
+		0x03, 0x1f, collectLavaJuice, 0x1c),
 	"sea of storms past":    agesChest("pegasus ring", 0x516d, 0x03, 0xff),
 	"deku forest cave west": agesChest("rupees, 30", 0x52f3, 0x05, 0xb5),
 	"ridge diamonds past":   agesChest("rupees, 50", 0x530f, 0x05, 0xe1),
