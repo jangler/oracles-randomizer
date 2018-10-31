@@ -19,7 +19,7 @@ var agesD1Nodes = map[string]*Node{
 		"d1 platform key chest", "break bush safe", "kill giant ghini")),
 	"d1 basement":     AndSlot("d1 U-room", "ember seeds"),
 	"d1 west terrace": AndSlot("enter d1", Or("break pot", "d1 U-room")),
-	"d1 pot chest":    And("enter d1", "break pot"),
+	"d1 pot chest":    AndSlot("enter d1", "break pot"),
 	"d1 essence": AndStep("d1 free key chest", "break bush safe", "d1 boss key",
 		"kill pumpkin head"),
 }
