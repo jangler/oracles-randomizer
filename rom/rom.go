@@ -365,7 +365,8 @@ func setCompassData(b []byte, game int) {
 	// clear original boss key flags
 	for _, name := range names {
 		slot := ItemSlots[name]
-		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
+		offset :=
+			getDungeonPropertiesAddr(game, slot.group, slot.room).FullOffset()
 		b[offset] = b[offset] & 0xef // reset bit 4
 	}
 
@@ -373,7 +374,8 @@ func setCompassData(b []byte, game int) {
 	for i := 1; i <= 8; i++ {
 		name := fmt.Sprintf("d%d boss key", i)
 		slot := lookupItemSlot(name)
-		offset := getDungeonPropertiesAddr(slot.group, slot.room).FullOffset()
+		offset :=
+			getDungeonPropertiesAddr(game, slot.group, slot.room).FullOffset()
 		b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
 	}
 }
@@ -391,8 +393,13 @@ func lookupItemSlot(itemName string) *MutableSlot {
 }
 
 // get the location of the dungeon properties byte for a specific room.
-func getDungeonPropertiesAddr(group, room byte) *Addr {
-	offset := 0x4d41 + uint16(room)
+func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
+	offset := uint16(room)
+	if game == GameSeasons {
+		offset += 0x4d41
+	} else {
+		offset += 0x4dce
+	}
 	if group%2 != 0 {
 		offset += 0x100
 	}
