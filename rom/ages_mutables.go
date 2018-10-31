@@ -186,6 +186,10 @@ var agesFixedMutables = map[string]Mutable{
 		"\x01\x27", "\x27\xc8"),
 	"syrup screen fix 2": MutableByte(Addr{0x23, 0x7ead}, 0x27, 0x22),
 
+	// skip some of the maku tree's intro text (after saving her in the past)
+	"abbreviate maku tree text": MutableString(Addr{0x15, 0x7230},
+		"\x98\x48\xf6", "\xc4\x76\xc3"),
+
 	// skip cutscene when talking to worker outside black tower
 	"skip first black tower cutscene": MutableString(Addr{0x15, 0x601f},
 		"\xe0\xa9\x5f", "\xc4\x22\xc3"),
