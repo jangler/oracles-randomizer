@@ -242,5 +242,5 @@ var agesVarMutables = map[string]Mutable{
 	// 33 for ricky, 23 for dimitri, 13 for moosh
 	"flute palette": MutableByte(Addr{0x3f, 0x6746}, 0x03, 0x03),
 	// 0b for ricky, 0c for dimitri, 0d for moosh
-	"animal region": MutableByte(Addr{0xa, 0x5ac6}, 0x0d, 0x0d),
+	"animal region": MutableByte(Addr{0x03, 0x7fff}, 0x00, 0x0d),
 }
