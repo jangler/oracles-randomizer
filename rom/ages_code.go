@@ -238,6 +238,10 @@ func initAgesEOB() {
 	digSetFakeID := r.appendToBank(0x09, "dirt set fake ID",
 		"\xc5\x01\x00\x98\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9b\xc6\xcb\xc6"+
 			"\xe1\xc9")
+	// set treasure ID 13 (slingshot) when getting first item from tingle.
+	tingleSetFakeID := r.appendToBank(0x09, "tingle set fake ID",
+		"\xc5\x01\x00\x79\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9c\xc6\xcb\xde"+
+			"\xe1\xc9")
 	// set flag for d6 past boss key whether you get it in past or present.
 	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
 		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\xc0\xe5\x21\x83\xc6\xcb\xe6\xe1"+
@@ -260,7 +264,7 @@ func initAgesEOB() {
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
 			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+
-			"\xcd"+summonRicky+"\x7b\xc3\x1c\x17")
+			"\xcd"+summonRicky+"\xcd"+tingleSetFakeID+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
