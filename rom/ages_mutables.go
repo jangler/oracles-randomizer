@@ -185,6 +185,10 @@ var agesFixedMutables = map[string]Mutable{
 	"syrup screen fix 1": MutableString(Addr{0x23, 0x7ea0},
 		"\x01\x27", "\x27\xc8"),
 	"syrup screen fix 2": MutableByte(Addr{0x23, 0x7ead}, 0x27, 0x22),
+
+	// skip cutscene when talking to worker outside black tower
+	"skip first black tower cutscene": MutableString(Addr{0x15, 0x601f},
+		"\xe0\xa9\x5f", "\xc4\x22\xc3"),
 }
 
 var agesVarMutables = map[string]Mutable{
