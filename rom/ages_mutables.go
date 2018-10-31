@@ -174,6 +174,9 @@ var agesFixedMutables = map[string]Mutable{
 	"give hidden tokay item": MutableString(Addr{0x15, 0x5b35},
 		"\x06\x01\x0e\x01\xfa\xaf\xc6\xfe\x02",
 		"\x01\x01\x01\x78\x41\x4f\x37\x00\x00"),
+
+	// game has zora scale palette in item gfx wrong for some reason
+	"fix zora scale palette": MutableByte(Addr{0x3f, 0x67d0}, 0x13, 0x43),
 }
 
 var agesVarMutables = map[string]Mutable{

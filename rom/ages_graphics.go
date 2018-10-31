@@ -57,7 +57,7 @@ var agesItemGfx = map[string]int{
 	"tune of echoes":   0x7e0603,
 	"tune of currents": 0x7e0e33,
 	"tune of ages":     0x7e1613,
-	"zora scale":       0x810c13,
+	"zora scale":       0x810c13, // game has it wrong; should be 810c43
 	"cheval rope":      0x811033,
 	"ricky's gloves":   0x811c53,
 	"island chart":     0x811443,
