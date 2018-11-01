@@ -18,6 +18,10 @@ var agesKillNodes = map[string]*Node{
 	"break crystal": Or("sword", "bombs", "bracelet"),
 	"break pot":     Or("bracelet", "switch hook", "noble sword"),
 
+	// obviously this only works on standard enemies
+	"push enemy": Or("shield",
+		And("shovel", Or("boomerang", "pegasus shooter"))),
+
 	// in seasons, shovel hits levers. not in ages, apparently.
 	"hit lever": Or("sword", "ember seeds", "scent seeds", "mystery seeds",
 		"any seed shooter", "switch hook", "boomerang"),
@@ -41,7 +45,6 @@ var agesKillNodes = map[string]*Node{
 	"kill normal ranged": Or("shooter weapon", And("cane", "bracelet"),
 		Hard("bombs")),
 	"kill underwater": Or("sword", "shooter weapon"),
-	"pit normal":      Or("shield", And("boomerang", "shovel")),
 
 	"kill gel":     Or("kill normal", "switch hook", "boomerang", "shovel"),
 	"kill stalfos": Or("kill normal"),

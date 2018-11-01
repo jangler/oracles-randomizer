@@ -48,9 +48,11 @@ var agesItemNodes = map[string]*Node{
 	"gale satchel":    And("gale seeds", "satchel"),
 	"mystery satchel": And("mystery seeds", "satchel"),
 
-	"ember shooter": And("ember seeds", "seed shooter"),
-	"scent shooter": And("scent seeds", "seed shooter"),
-	"gale shooter":  And("gale seeds", "seed shooter"),
+	"ember shooter":   And("ember seeds", "seed shooter"),
+	"scent shooter":   And("scent seeds", "seed shooter"),
+	"pegasus shooter": And("pegasus seeds", "seed shooter"),
+	"gale shooter":    And("gale seeds", "seed shooter"),
+	"mystery shooter": And("mystery seeds", "seed shooter"),
 	"any seed shooter": And("seed shooter", Or("ember seeds", "scent seeds",
 		"pegasus seeds", "gale seeds", "mystery seeds")),
 }
