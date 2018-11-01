@@ -203,9 +203,4 @@ var labrynnaNodes = map[string]*Node{
 	"enter d8": And("crescent past", "tokay eyeball", "kill normal", "break pot",
 		"bombs", Or("cane", Hard()), "mermaid suit", "feather"),
 	"sea of no return": AndSlot("enter d8", "power glove"),
-
-	// trading sequence
-	"old zora": AndSlot("yoll graveyard", "graveyard key", "bracelet",
-		"crescent present east", "symmetry past",
-		Or("switch hook", "mermaid suit")),
 }

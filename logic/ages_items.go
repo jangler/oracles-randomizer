@@ -3,6 +3,9 @@ package logic
 var agesItemNodes = map[string]*Node{
 	"shield": And("iron shield"), // whatever
 
+	"broken sword": And("yoll graveyard", "graveyard key", "bracelet",
+		"crescent present east", "symmetry past",
+		Or("switch hook", "mermaid suit")),
 	"sword":       Or("sword 1", And("broken sword", "patch")),
 	"noble sword": And("sword 1", "broken sword", "patch"),
 

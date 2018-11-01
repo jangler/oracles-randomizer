@@ -93,7 +93,6 @@ var agesSlots = map[string]*MutableSlot{
 	"library present":        agesBufferItem("book of seals", 0x5db9, 0x05, 0xc8),
 	"zora's reward":          agesScriptItem("zora scale", 0x7c48, 0x02, 0xa0),
 	"piratian captain":       agesBufferItem("tokay eyeball", 0x7969, 0x05, 0xf8),
-	"old zora":               agesBufferItem("broken sword", 0x61ad, 0x02, 0xf5),
 	"lynna city chest":       agesChest("rupees, 30", 0x511e, 0x00, 0x49),
 	"fairies' woods chest":   agesChest("rupees, 50", 0x5122, 0x00, 0x84),
 	"fairies' coast chest":   agesChest("green holy ring", 0x5126, 0x00, 0x91),
