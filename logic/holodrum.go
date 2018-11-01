@@ -102,8 +102,8 @@ var holodrumNodes = map[string]*Node{
 		And("sunken city", Or(
 			And("natzu prairie", "flute"),
 			And("natzu river", "jump 2", Or("flippers", "flute")),
-			And("natzu wasteland", Or("flute",
-				And("remove bush", Or("jump 4", Hard("jump 3"))))))),
+			And("natzu wasteland",
+				Or("flute", And("remove bush", "bomb jump 3"))))),
 		And("north horon stump", Or("bracelet",
 			And(Or("remove bush", "flute"),
 				Or("flippers", "dimitri's flute")))),
@@ -185,8 +185,8 @@ var holodrumNodes = map[string]*Node{
 		"bracelet", Or(
 			And("natzu prairie", "sunken city"),
 			And("natzu river", "blaino's gym", "dimitri's flute"),
-			And("natzu wasteland", "sunken city", Or("flute",
-				And("remove bush", "bomb jump 3"))))),
+			And("natzu wasteland", "blaino's gym",
+				Or("flute", And("remove bush", "jump 3"))))),
 	"platform chest": OrSlot(
 		And("blaino's gym", Or("flippers", "dimitri's flute")),
 		And("sunken city", "natzu river", "jump 6")),
@@ -200,9 +200,8 @@ var holodrumNodes = map[string]*Node{
 			And("natzu prairie", "flute"),
 			And("natzu river", And(Or("flippers", "flute"), "jump 2"),
 				And("flute", "flippers", "gale satchel")),
-			And("natzu wasteland", Or("flute", And(
-				Or("boomerang L-2", Hard("remove bush")),
-				Or("jump 4", Hard("jump 3")))))))),
+			And("natzu wasteland", Or("flute", And("remove bush",
+				Or("bomb jump 3", And("jump 3", "flippers")))))))),
 	"sunken gale tree": AndSlot("sunken city", "seed item", "harvest tree",
 		Or("jump 2", "flippers", "dimitri's flute",
 			"sunken city default winter")),
