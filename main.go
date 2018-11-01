@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -67,8 +68,33 @@ func runRandomizer() {
 	defer ui.Done()
 
 	switch flag.NArg() {
-	case 0: // no specified files, invalid
-		fatal(fmt.Errorf("no input ROM specified"))
+	case 0: // no specified files, search in executable's directory
+		dir, seasons, ages, err := findVanillaROMs()
+		if err != nil {
+			fatal(err)
+			break
+		}
+
+		if seasons != "" {
+			ui.PrintPath("found vanilla US seasons ROM: ", seasons, "")
+		} else {
+			ui.Printf("no vanilla US seasons ROM found.")
+		}
+
+		if ages != "" {
+			ui.PrintPath("found vanilla US ages ROM: ", ages, "")
+		} else {
+			ui.Printf("no vanilla US ages ROM found.")
+		}
+
+		if seasons == "" && ages == "" {
+			ui.Printf("no ROMs found in program's directory, " +
+				"and no ROMs specified.")
+			break
+		}
+
+		_ = dir // TODO
+		ui.Printf("...but choosing a ROM this way is NYI.")
 	case 1: // specified input file only, assume not using command line
 		b, game, err := readGivenROM(flag.Arg(0))
 		if err != nil {
@@ -132,22 +158,25 @@ func writeROM(b []byte, filename, logFilename string, seed uint32,
 	return nil
 }
 
-// search for a vanilla US seasons rom in the current directory, and return it
-// as a byte slice if possible.
-func findVanillaROM() ([]byte, error) {
-	// read slice of file info from working dir
-	dirName, err := os.Getwd()
+// search for a vanilla US seasons and ages ROMs in the executable's directory,
+// and return their filenames.
+func findVanillaROMs() (dirName, seasons, ages string, err error) {
+	// read slice of file info from executable's dir
+	exe, err := os.Executable()
 	if err != nil {
-		return nil, err
+		return
 	}
+
+	dirName = filepath.Dir(exe)
+	ui.PrintPath("searching ", dirName, " for ROMs.")
 	dir, err := os.Open(dirName)
 	if err != nil {
-		return nil, err
+		return
 	}
 	defer dir.Close()
 	files, err := dir.Readdir(-1)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	for _, info := range files {
@@ -157,24 +186,33 @@ func findVanillaROM() ([]byte, error) {
 		}
 
 		// read file
-		f, err := os.Open(info.Name())
+		var f *os.File
+		f, err = os.Open(filepath.Join(dirName, info.Name()))
 		if err != nil {
-			return nil, err
+			return
 		}
 		defer f.Close()
-		b, err := ioutil.ReadAll(f)
+		var b []byte
+		b, err = ioutil.ReadAll(f)
 		if err != nil {
-			return nil, err
+			return
 		}
 
 		// check file data
-		if rom.IsSeasons(b) && rom.IsUS(b) && rom.IsVanilla(b) {
-			ui.Printf("found vanilla ROM: %s\n", info.Name())
-			return b, nil
+		if rom.IsUS(b) && rom.IsVanilla(b) {
+			if rom.IsAges(b) {
+				ages = info.Name()
+			} else {
+				seasons = info.Name()
+			}
+		}
+
+		if ages != "" && seasons != "" {
+			break
 		}
 	}
 
-	return nil, fmt.Errorf("no vanilla ROM found in working directory")
+	return
 }
 
 // read the specified file into a slice of bytes, returning an error if the

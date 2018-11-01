@@ -184,6 +184,7 @@ func PrintPath(pre, path, post string) {
 }
 
 func Done() {
-	write <- []segment{{text: "press any key to exit."}}
+	write <- []segment{{text: "press any key to exit.",
+		fg: colorDefault | bold}}
 	change <- modeDone
 }
