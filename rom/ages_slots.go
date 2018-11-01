@@ -110,7 +110,6 @@ var agesSlots = map[string]*MutableSlot{
 	},
 	"zora village present":   agesChest("gasha seed", 0x515c, 0x02, 0xc0),
 	"pool in d6 entrance":    agesChest("toss ring", 0x5161, 0x03, 0x0e),
-	"sea of storms present":  agesChest("gasha seed", 0x5169, 0x03, 0xe8),
 	"mayor plen's house":     agesChest("green luck ring", 0x5171, 0x03, 0xf9),
 	"crescent seafloor cave": agesChest("piece of heart", 0x5175, 0x03, 0xfd),
 	"goron's hiding place":   agesChest("gold joy ring", 0x52f7, 0x05, 0xbd),

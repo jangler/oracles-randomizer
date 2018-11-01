@@ -198,8 +198,6 @@ var labrynnaNodes = map[string]*Node{
 	// sea of storms / sea of no return
 	"piratian captain":   AndSlot("lynna city", "mermaid suit", "zora scale"),
 	"sea of storms past": AndSlot("lynna city", "mermaid suit", "zora scale"),
-	"sea of storms present": AndSlot("lynna city", "mermaid suit",
-		"zora scale", "currents"),
 	"enter d8": And("crescent past", "tokay eyeball", "kill normal", "break pot",
 		"bombs", Or("cane", Hard()), "mermaid suit", "feather"),
 	"sea of no return": AndSlot("enter d8", "power glove"),
