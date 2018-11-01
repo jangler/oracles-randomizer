@@ -6,8 +6,11 @@ import sys
 # create an HTML checklist (doc/checklist.html) from the logic. this must be
 # run from the repository's root folder.
 
-
-files = 'logic/holodrum.go', 'logic/subrosia.go', 'logic/dungeons.go'
+files = {
+    'seasons': ('logic/holodrum.go', 'logic/subrosia.go',
+        'logic/seasons_dungeons.go'),
+    'ages': ('logic/labrynna.go', 'logic/ages_dungeons.go'),
+}
 
 version_regexp = re.compile('const version = "(.+?)"')
 slot_regexp = re.compile('"(.+?)": +(And|Or)Slot')
@@ -20,10 +23,10 @@ h1 { font-size: x-large; }
 h2 { font-size: large; }
 </style>
 <head>
-<title>oos-randomizer %s checklist</title>
+<title>oracles randomizer %s %s checklist</title>
 </head>
 <body>
-<h1>oos-randomizer %s checklist</h1>
+<h1>oracles randomizer %s %s checklist</h1>
 %s
 </body>
 </html>
@@ -47,10 +50,10 @@ with open('names.go') as f:
         if match:
             names[match.group(1)] = match.group(2)
 
-with open('doc/checklist.html', 'w') as outfile:
+def make_checklist(game, infiles, outfile):
     sections = []
 
-    for filename in files:
+    for filename in infiles:
         slots = []
 
         with open(filename) as infile:
@@ -72,6 +75,12 @@ with open('doc/checklist.html', 'w') as outfile:
                 for name in slots]
 
         sections.append(section_template %
-                (filename[6:-3], '<br>\n'.join(elements)))
+                (filename[6:-3].replace(game+'_', ''), '<br>\n'.join(elements)))
 
-    outfile.write(doc_template % (version, version, '\n'.join(sections)))
+    outfile.write(doc_template %
+        (version, game, version, game, '\n'.join(sections)))
+
+
+for game, infiles in files.items():
+    with open('doc/%s_checklist.html' % game, 'w') as outfile:
+        make_checklist(game, infiles, outfile)
