@@ -140,9 +140,9 @@ to be ridden; i think the others are specific to each animal.
 - 26 = rafton completed raft
 - 27 = cured king zora
 - 29 = checked in fairies' woods?
-- 2a = entered symmetry city brother's house
+- 2a = entered symmetry city brother's house (either one)
 - 2b = fairies put the forest back in order
-- 2e = listened to symmetry city wife's problem
+- 2e = listened to symmetry city wife's problem (either one)
 - 2f = got crown key from goron elder
 - 30 = cleansed the zora seas
 - 31 = got permission from king zora to enter jabu-jabu

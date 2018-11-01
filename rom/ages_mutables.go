@@ -193,6 +193,10 @@ var agesFixedMutables = map[string]Mutable{
 	// skip cutscene when talking to worker outside black tower
 	"skip first black tower cutscene": MutableString(Addr{0x15, 0x601f},
 		"\xe0\xa9\x5f", "\xc4\x22\xc3"),
+
+	// check fake ID 1e (fool's ore) for symmetry city brother's item
+	"brother fake ID": MutableStrings([]Addr{{0x15, 0x77f0}, {0x15, 0x78f6}},
+		"\x4c", "\x1e"),
 }
 
 var agesVarMutables = map[string]Mutable{

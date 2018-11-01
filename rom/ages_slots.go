@@ -120,7 +120,7 @@ var agesSlots = map[string]*MutableSlot{
 	"wild tokay game": agesBufferItem(
 		"scent seedling", 0x5bbb, 0x02, 0xde), // not actually a script
 	"hidden tokay cave":     agesBufferItem("iron shield", 0x5b36, 0x05, 0xe9),
-	"symmetry city brother": agesBufferItem("tuni nut", 0x7929, 0x03, 0x6f),
+	"symmetry city brother": agesBufferItem("tuni nut", 0x7929, 0x03, 0x6e),
 	"tokkey's composition":  agesBufferItem("harp 2", 0x76cf, 0x03, 0x8f),
 	"goron dance past":      agesScriptItem("mermaid key", 0x699f, 0x02, 0xef),
 	"library past":          agesBufferItem("fairy powder", 0x5dd8, 0x05, 0xe4),

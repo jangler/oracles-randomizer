@@ -1,5 +1,9 @@
 package rom
 
+import (
+	"strings"
+)
+
 func newAgesRomBanks() *romBanks {
 	r := romBanks{
 		endOfBank: make([]uint16, 0x40),
@@ -245,6 +249,10 @@ func initAgesEOB() {
 	tingleSetFakeID := r.appendToBank(0x09, "tingle set fake ID",
 		"\xc5\x01\x00\x79\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9c\xc6\xcb\xde"+
 			"\xe1\xc9")
+	// set treasure ID 1e (fool's ore) when for symmetry city brother.
+	brotherSetFakeID := r.appendToBank(0x09, "brother set fake ID",
+		"\xc5\x01\x03\x6e\xcd"+compareRoom+"\x28\x04\x04\xcd"+compareRoom+
+			"\xc1\xc0\xe5\x21\x9d\xc6\xcb\xf6\xe1\xc9")
 	// set flag for d6 past boss key whether you get it in past or present.
 	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
 		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\xc0\xe5\x21\x83\xc6\xcb\xe6\xe1"+
@@ -266,8 +274,8 @@ func initAgesEOB() {
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
-			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+
-			"\xcd"+summonRicky+"\xcd"+tingleSetFakeID+"\x7b\xc3\x1c\x17")
+			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\xcd"+summonRicky+
+			"\xcd"+tingleSetFakeID+"\xcd"+brotherSetFakeID+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
@@ -371,7 +379,7 @@ func initAgesEOB() {
 	// return collection mode in a and e, based on current room. call is in
 	// bank 16, func is in bank 00, body is in bank 06.
 	collectModeTable := r.appendToBank(0x06, "collect mode table",
-		makeCollectModeTable())
+		makeAgesCollectModeTable())
 	// maku tree item falls or exists on floor depending on script position.
 	collectMakuTreeFunc := r.appendToBank(0x06, "collect maku tree",
 		"\xfa\x58\xd2\xfe\x84\x1e\x29\xc8\x1e\x0a\xc9")
@@ -463,4 +471,17 @@ func initAgesEOB() {
 			"\x30\x08\x2a\x47\x7e\xe1\x67\x68\xc1\xe9\xe1\xc1\xf1\xc9")
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
+}
+
+// makes ages-specific additions to the collection mode table.
+func makeAgesCollectModeTable() string {
+	b := new(strings.Builder)
+	table := makeCollectModeTable()
+	b.WriteString(table[:len(table)-1]) // strip final ff
+
+	// add eatern symmetry city brother
+	b.Write([]byte{0x03, 0x6f, collectFind2})
+
+	b.Write([]byte{0xff})
+	return b.String()
 }
