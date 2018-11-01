@@ -286,6 +286,12 @@ func initAgesEOB() {
 
 	// bank 0a
 
+	// require giving rafton rope, even if you have the island chart.
+	checkRaftonRope := r.appendToBank(0x0a, "check rafton rope",
+		"\xcd\x48\x17\xd0\x3e\x15\xcd\xf3\x31\xc8\x37\xc9")
+	r.replace(0x0a, 0x4d5f, "call check rafton rope",
+		"\xcd\x48\x17", "\xcd"+checkRaftonRope)
+
 	// set sub ID for south shore dig item.
 	dirtSpawnItem := r.appendToBank(0x0a, "dirt spawn item",
 		"\xcd\xd4\x27\xc0\xcd\x42\x22\xaf\xc9")
