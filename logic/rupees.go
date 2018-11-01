@@ -9,7 +9,10 @@ var Rupees = map[string]int{
 	"member's shop 3": -200,
 	"blaino gift":     -10,
 
-	"shop, 150 rupees": -150, // ages
+	// ages. the randomizer doesn't have 450 rupees to play with, so the player
+	// is going to have to come up with a third of each cost.
+	"shop, 150 rupees": -100,
+	"king zora":        -200,
 
 	// appraising rings
 	"expert's ring":  -20,
