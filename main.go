@@ -8,13 +8,13 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
-	"runtime/pprof"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
+	"github.com/jangler/oos-randomizer/ui"
 )
 
 func gameName(game int) string {
@@ -34,81 +34,76 @@ func usage() {
 	flag.PrintDefaults()
 }
 
-// fatal prints the given error to stderr, waits for user input if `wait` is
-// true, then exits with status 1.
-func fatal(err error, wait bool) {
-	fmt.Fprintf(os.Stderr, "fatal: %v.\n", err)
-	if wait {
-		fmt.Fprint(os.Stderr, "press enter to continue.")
-		os.Stdin.Read(make([]byte, 1))
-	}
-	os.Exit(1)
+// fatal prints an error to the UI.
+func fatal(err error) {
+	ui.Printf("fatal: %v.", err)
 }
+
+var (
+	flagHard, flagNoMusic, flagVerbose bool
+
+	flagSeed string
+)
 
 func main() {
 	// init flags
 	flag.Usage = usage
-	flagHard := flag.Bool(
-		"hard", false, "require some plays outside normal logic")
-	flagNoMusic := flag.Bool(
-		"nomusic", false, "don't play any music in the modified ROM")
-	flagProfile := flag.String(
-		"profile", "", "write CPU profile to given filename")
-	flagSeed := flag.String("seed", "",
+	flag.BoolVar(&flagHard, "hard", false,
+		"require some plays outside normal logic")
+	flag.BoolVar(&flagNoMusic, "nomusic", false,
+		"don't play any music in the modified ROM")
+	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
-	flagVerbose := flag.Bool(
-		"verbose", false, "print more detailed output to terminal")
+	flag.BoolVar(&flagVerbose, "verbose", false,
+		"print more detailed output to terminal")
 	flag.Parse()
 
-	// turn profiling on if specified
-	if *flagProfile != "" {
-		profFile, err := os.Create(*flagProfile)
-		if err != nil {
-			fatal(err, false)
-		}
-		if err := pprof.StartCPUProfile(profFile); err != nil {
-			fatal(err, false)
-		}
-		defer profFile.Close()
-		defer pprof.StopCPUProfile()
-	}
+	ui.Init("oracles randomizer " + version)
+	go runRandomizer()
+	ui.Run()
+}
+
+func runRandomizer() {
+	defer ui.Done()
 
 	switch flag.NArg() {
 	case 0: // no specified files, invalid
-		fatal(fmt.Errorf("no input ROM specified"), true)
+		fatal(fmt.Errorf("no input ROM specified"))
 	case 1: // specified input file only, assume not using command line
 		b, game, err := readGivenROM(flag.Arg(0))
 		if err != nil {
-			fatal(err, true)
+			fatal(err)
+			break
 		}
 
-		if err := handleFile(b, game, flag.Arg(0), *flagSeed, *flagNoMusic,
-			*flagHard, *flagVerbose); err != nil {
-			fatal(err, true)
+		if err := handleFile(b, game, flag.Arg(0), flagSeed, flagNoMusic,
+			flagHard, flagVerbose); err != nil {
+			fatal(err)
+			break
 		}
-
-		fmt.Fprint(os.Stderr, "press enter to continue.")
-		os.Stdin.Read(make([]byte, 1))
 	case 2: // specified input and output file, so using command line
 		b, game, err := readGivenROM(flag.Arg(0))
 		if err != nil {
-			fatal(err, false)
+			fatal(err)
+			break
 		}
 
 		// operate on file
 		var sum []byte
 		var seed uint32
 		var logFilename string
-		fmt.Printf("randomizing %s\n", flag.Arg(0))
-		seed, sum, logFilename, err = randomize(b, game, *flagSeed,
-			*flagNoMusic, *flagHard, *flagVerbose)
+		ui.Printf("randomizing %s\n", flag.Arg(0))
+		seed, sum, logFilename, err = randomize(b, game, flagSeed,
+			flagNoMusic, flagHard, flagVerbose)
 		if err != nil {
-			fatal(err, false)
+			fatal(err)
+			break
 		}
 
 		// write file
 		if err := writeROM(b, flag.Arg(1), logFilename, seed, sum); err != nil {
-			fatal(err, false)
+			fatal(err)
+			break
 		}
 	default:
 		flag.Usage()
@@ -129,10 +124,10 @@ func writeROM(b []byte, filename, logFilename string, seed uint32,
 	}
 
 	// print summary
-	fmt.Printf("seed: %08x\n", seed)
-	fmt.Printf("sha-1 sum: %x\n", string(sum))
-	fmt.Printf("wrote new rom to %s\n", filename)
-	fmt.Printf("wrote log file to %s\n", logFilename)
+	ui.Printf("seed: %08x\n", seed)
+	ui.Printf("sha-1 sum: %x\n", string(sum))
+	ui.Printf("wrote new rom to %s\n", filename)
+	ui.Printf("wrote log file to %s\n", logFilename)
 
 	return nil
 }
@@ -174,7 +169,7 @@ func findVanillaROM() ([]byte, error) {
 
 		// check file data
 		if rom.IsSeasons(b) && rom.IsUS(b) && rom.IsVanilla(b) {
-			fmt.Printf("found vanilla ROM: %s\n", info.Name())
+			ui.Printf("found vanilla ROM: %s\n", info.Name())
 			return b, nil
 		}
 	}
@@ -227,7 +222,7 @@ func handleFile(romData []byte, game int, filename, seedFlag string,
 	var outName, logFilename string
 
 	// operate on rom data
-	fmt.Printf("randomizing %s\n", flag.Arg(0))
+	ui.Printf("randomizing %s\n", flag.Arg(0))
 	seed, sum, logFilename, err =
 		randomize(romData, game, seedFlag, noMusic, hard, verbose)
 	if err != nil {
@@ -246,19 +241,19 @@ func handleFile(romData []byte, game int, filename, seedFlag string,
 
 // sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or
 // else the current time, and returns that seed.
-func setRandomSeed(hexString string) uint32 {
+func setRandomSeed(hexString string) (uint32, error) {
 	seed := uint32(time.Now().UnixNano())
 	if hexString != "" {
 		v, err := strconv.ParseUint(
 			strings.Replace(hexString, "0x", "", 1), 16, 32)
 		if err != nil {
-			fatal(fmt.Errorf(`fatal: invalid seed "%s"`, hexString), false)
+			return 0, fmt.Errorf(`invalid seed "%s"`, hexString)
 		}
 		seed = uint32(v)
 	}
 	rand.Seed(int64(seed))
 
-	return seed
+	return seed, nil
 }
 
 // return the contents of the names file as a slice of bytes
@@ -284,7 +279,10 @@ func randomize(romData []byte, game int, seedFlag string,
 		rom.SetNoMusic()
 	}
 
-	seed := setRandomSeed(seedFlag)
+	seed, err := setRandomSeed(seedFlag)
+	if err != nil {
+		return 0, nil, "", err
+	}
 	if seedFlag == "" {
 		seed = 0 // none specified, not an actual zero seed
 	}
@@ -296,7 +294,7 @@ func randomize(romData []byte, game int, seedFlag string,
 	if !verbose && seed == 0 {
 		numThreads = runtime.NumCPU()
 	}
-	fmt.Printf("using %d thread(s)\n", numThreads)
+	ui.Printf("using %d thread(s)\n", numThreads)
 	sources := make([]rand.Source, numThreads)
 	seeds := make([]uint32, numThreads)
 	for i := 0; i < numThreads; i++ {
@@ -325,7 +323,7 @@ func randomize(romData []byte, game int, seedFlag string,
 		for {
 			select {
 			case msg := <-logChan:
-				fmt.Println(msg)
+				ui.Printf(msg)
 			case <-stopLogChan:
 				return
 			}
@@ -361,7 +359,7 @@ func randomize(romData []byte, game int, seedFlag string,
 		treasureName :=
 			ri.UsedItems.Remove(ri.UsedItems.Front()).(*graph.Node).Name
 		if verbose {
-			fmt.Printf("%s <- %s\n", slotName, treasureName)
+			ui.Printf("%s <- %s\n", slotName, treasureName)
 		}
 		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
 	}
