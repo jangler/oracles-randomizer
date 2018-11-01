@@ -135,7 +135,7 @@ var labrynnaNodes = map[string]*Node{
 	"ridge base present": Or("ridge upper present",
 		And("currents", Or("ridge base past east", "ridge base past west"))),
 	"enter d6 present":    And("mermaid key", "ridge base present"),
-	"pool in d6 entrance": And("ridge base present", "mermaid suit"),
+	"pool in d6 entrance": AndSlot("ridge base present", "mermaid suit"),
 	"goron dance present": AndSlot("ridge base present"),
 	"goron dance past":    AndSlot("ridge base past", "goron letter"),
 	"ridge mid past": Or("ridge base past west",
