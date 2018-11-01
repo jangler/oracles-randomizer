@@ -112,24 +112,75 @@ func draw() {
 }
 
 func drawLine(w, y int, ln line) {
+	// figure out whether the line needs to be shortened
+	var truncLen int
+	truncIndex := -1
 	lineWidth := 0
 	for _, seg := range ln {
 		lineWidth += len(seg.text)
 	}
-
-	if lineWidth < w-1 {
-		x := 0
-		for _, seg := range ln {
-			for _, ch := range seg.text {
-				termbox.SetCell(x, y, ch, seg.fg, seg.bg)
-				x++
+	if lineWidth > w-2 {
+		// figure out which segment to shorten
+		truncIndex = len(ln) - 1
+		for i, seg := range ln {
+			if seg.el != ellipsisNone {
+				truncIndex = i
+				break
 			}
+		}
+
+		// figure out by how much to shorten it
+		truncLen = len(ln[truncIndex].text) - (lineWidth - (w - 2) + 3)
+		if truncLen < 0 {
+			truncLen = 0
+		}
+	}
+
+	// draw characters
+	x := 0
+	for i, seg := range ln {
+		text := seg.text
+
+		// ...text
+		if i == truncIndex {
+			if seg.el == ellipsisLeft {
+				x = drawEllipsis(x, y, seg.fg, seg.bg)
+				text = text[len(text)-truncLen:]
+			} else {
+				text = text[:truncLen]
+			}
+		}
+
+		for _, ch := range text {
+			termbox.SetCell(x, y, ch, seg.fg, seg.bg)
+			x++
+		}
+
+		// text...
+		if i == truncIndex && seg.el != ellipsisLeft {
+			x = drawEllipsis(x, y, seg.fg, seg.bg)
 		}
 	}
 }
 
+func drawEllipsis(x, y int, fg, bg termbox.Attribute) int {
+	for i := 0; i < 3; i++ {
+		termbox.SetCell(x, y, '.', fg, bg)
+		x++
+	}
+	return x
+}
+
 func Printf(format string, a ...interface{}) {
 	write <- []segment{{text: fmt.Sprintf(format, a...)}}
+}
+
+func PrintPath(pre, path, post string) {
+	write <- []segment{
+		{text: pre},
+		{text: path, el: ellipsisLeft},
+		{text: post},
+	}
 }
 
 func Done() {
