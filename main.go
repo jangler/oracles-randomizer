@@ -333,15 +333,12 @@ func randomize(romData []byte, game int, seedFlag string,
 		numThreads = runtime.NumCPU()
 	}
 	ui.Printf("using %d thread(s)\n", numThreads)
-	sources := make([]rand.Source, numThreads)
 	seeds := make([]uint32, numThreads)
 	for i := 0; i < numThreads; i++ {
 		if seed == 0 {
 			randSeed := uint32(rand.Int63())
-			sources[i] = rand.NewSource(int64(randSeed))
 			seeds[i] = randSeed
 		} else {
-			sources[i] = rand.NewSource(int64(seed))
 			seeds[i] = seed
 		}
 	}
@@ -352,7 +349,7 @@ func randomize(romData []byte, game int, seedFlag string,
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
 	for i := 0; i < numThreads; i++ {
-		go searchAsync(rand.New(sources[i]), game, seeds[i], hard, verbose,
+		go searchAsync(game, seeds[i], hard, verbose,
 			logChan, routeChan, doneChan)
 	}
 
@@ -461,10 +458,10 @@ func randomize(romData []byte, game int, seedFlag string,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, game int, seed uint32, hard, verbose bool,
+func searchAsync(game int, seed uint32, hard, verbose bool,
 	logChan chan string, retChan chan *RouteInfo, doneChan chan int) {
 	// find a viable random route
-	retChan <- findRoute(src, game, seed, hard, verbose, logChan, doneChan)
+	retChan <- findRoute(game, seed, hard, verbose, logChan, doneChan)
 }
 
 // send lines of item/slot info to a summary channel. this is a destructive

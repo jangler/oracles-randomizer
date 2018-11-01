@@ -143,7 +143,7 @@ const (
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
+func findRoute(game int, seed uint32, hard, verbose bool,
 	logChan chan string, doneChan chan int) *RouteInfo {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
@@ -161,6 +161,7 @@ func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 	}
 
 	// try to find the route, retrying if needed
+	var src *rand.Rand
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
 		// abort if route was already found on another thread
@@ -170,10 +171,12 @@ func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 		default:
 		}
 
+		src = rand.New(rand.NewSource(int64(ri.Seed)))
+		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
+
 		r := NewRoute(game)
 		ri.Companion = rollAnimalCompanion(src, r, game)
 		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
-		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
 
 		// slot initial nodes before algorithm slots progression items
 		if game == rom.GameSeasons {
@@ -299,7 +302,6 @@ func findRoute(src *rand.Rand, game int, seed uint32, hard, verbose bool,
 
 		// get a new seed for the next iteration
 		ri.Seed = uint32(src.Int31())
-		src = rand.New(rand.NewSource(int64(ri.Seed)))
 	}
 
 	if tries >= maxTries {
@@ -502,7 +504,7 @@ func initRouteInfo(src *rand.Rand, r *Route,
 			"rolling ridge east tree", "zora village tree":
 			// use random duplicate seed types, but only duplicate a seed type
 			// once
-			index := rand.Intn(len(thisSeedNames))
+			index := src.Intn(len(thisSeedNames))
 			treasureName := thisSeedNames[index]
 			itemNames = append(itemNames, treasureName)
 			thisSeedNames = append(thisSeedNames[:index],
