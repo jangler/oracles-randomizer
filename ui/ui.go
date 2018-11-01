@@ -5,7 +5,10 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-const colorDefault = termbox.ColorDefault // going to be typing this a lot
+const (
+	colorDefault = termbox.ColorDefault // going to be typing this a lot
+	bold         = termbox.AttrBold
+)
 
 type line []segment
 
@@ -36,6 +39,7 @@ const (
 
 var (
 	lines  []line
+	bottom = []segment{{text: "(q)", fg: colorDefault | bold}, {text: "uit"}}
 	write  = make(chan line, 1)
 	input  = make(chan rune)
 	resize = make(chan interface{}, 1)
@@ -76,8 +80,7 @@ func Run() {
 			lines = append(lines, ln)
 			draw()
 		case ch := <-input:
-			_ = ch
-			if mode == modeDone {
+			if ch == 'q' || mode == modeDone {
 				termbox.Close()
 				loop = false
 			}
@@ -92,7 +95,7 @@ func Run() {
 func draw() {
 	termbox.Clear(colorDefault, colorDefault)
 
-	w, _ := termbox.Size()
+	w, h := termbox.Size()
 	drawLine(w, 0, lines[0])
 	for x := 0; x < w; x++ {
 		termbox.SetCell(x, 1, '─', colorDefault, colorDefault)
@@ -100,6 +103,10 @@ func draw() {
 	for i, ln := range lines[1:] {
 		drawLine(w, i+2, ln)
 	}
+	for x := 0; x < w; x++ {
+		termbox.SetCell(x, h-2, '─', colorDefault, colorDefault)
+	}
+	drawLine(w, h-1, bottom)
 
 	termbox.Flush()
 }
