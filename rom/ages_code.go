@@ -118,14 +118,6 @@ func initAgesEOB() {
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
 
-	// automatically save maku tree when saving nayru.
-	saveMakuTreeWithNayru := r.appendToBank(0x03, "save maku tree with nayru",
-		"\x3e\x02\xea\xe8\xc6"+
-			"\x3e\x0c\xcd\x49\x31\x3e\x12\xcd\xf9\x31\x3e\x3f\xcd\xf9\x31"+
-			"\xe5\x21\x38\xc7\xcb\x86\x24\xcb\xfe\x2e\x48\xcb\xc6\xe1\xc9")
-	r.replace(0x03, 0x67f6, "call save maku tree with nayru",
-		"\xcd\x53\x3e", "\xcd"+saveMakuTreeWithNayru)
-
 	// bank 04
 
 	// look up tiles in custom replacement table after loading a room. the
@@ -299,6 +291,14 @@ func initAgesEOB() {
 		"\xcd\xd4\x27\xc0\xcd\x42\x22\xaf\xc9")
 	r.replace(0x0a, 0x5e3e, "call dirt spawn item",
 		"\xcd\xc5\x24", "\xcd"+dirtSpawnItem)
+
+	// automatically save maku tree when saving nayru.
+	saveMakuTreeWithNayru := r.appendToBank(0x0a, "save maku tree with nayru",
+		"\xcd\xf9\x31\x3e\x02\xea\xe8\xc6"+
+			"\x3e\x0c\xcd\xf9\x31\x3e\x12\xcd\xf9\x31\x3e\x3f\xcd\xf9\x31"+
+			"\xe5\x21\x38\xc7\xcb\x86\x24\xcb\xfe\x2e\x48\xcb\xc6\xe1\xc9")
+	r.replace(0x0a, 0x5541, "call save maku tree with nayru",
+		"\xcd\xf9\x31", "\xcd"+saveMakuTreeWithNayru)
 
 	// bank 0c
 
