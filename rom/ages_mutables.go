@@ -110,7 +110,8 @@ var agesFixedMutables = map[string]Mutable{
 	"shop flute flag check": MutableString(Addr{0x09, 0x4333},
 		"\x28\x04", "\x00\x00"),
 	// check for fake treasure ID 07 (rod) so that non-unique items can be sold
-	"shop fake ID": MutableByte(Addr{0x09, 0x4328}, 0x0e, 0x07),
+	"shop fake ID": MutableStrings([]Addr{{0x09, 0x4328}, {0x09, 0x42a5}},
+		"\x0e", "\x07"),
 
 	// remove flute item from shooting gallery prizes
 	"shooting gallery script": MutableString(Addr{0x15, 0x51d8},
