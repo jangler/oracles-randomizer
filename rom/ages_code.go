@@ -107,10 +107,11 @@ func initAgesEOB() {
 		"\xe5\xfa\xb3\xcb\xfe\x94\x30\x03\xcd\x86\x08\xe1\xcd\x37\x02\xc9")
 	r.replace(0x03, 0x4d6c, "skip capcom call", "\x37\x02", skipCapcom)
 
-	// set intro flags to skip opening, open goron tunnel, and abbreviate poe
-	// clock sequence.
+	// set flags to skip opening, open goron tunnel, abbreviate poe clock
+	// sequence, and set fairies' woods in order.
 	skipOpening := r.appendToBank(0x03, "skip opening",
 		"\xcd\xf9\x31\x3e\x0a\xcd\xf9\x31\x3e\x23\xcd\xf9\x31"+ // global flags
+			"\x3e\x2b\xcd\xf9\x31"+ // more
 			"\xfa\xff\x7f\xea\x10\xc6"+ // set animal region
 			"\xe5\x21\x7a\xc7\xcb\xf6\x2e\x6a\xcb\xf6"+ // set room flags
 			"\x2e\x59\xcb\xf6\x2e\x39\x36\xc8\x2e\x0a\xcb\xf6"+ // more
