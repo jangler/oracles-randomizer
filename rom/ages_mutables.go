@@ -178,6 +178,10 @@ var agesFixedMutables = map[string]Mutable{
 		"\x06\x01\x0e\x01\xfa\xaf\xc6\xfe\x02",
 		"\x01\x01\x01\x78\x41\x4f\x37\x00\x00"),
 
+	// buy tokay trader's shield if you have scent seeds but not satchel
+	"tokay trader satchel check": MutableString(Addr{0x0a, 0x629c},
+		"\x30\x16", "\x30\x00"),
+
 	// game has zora scale palette in item gfx wrong for some reason
 	"fix zora scale palette": MutableByte(Addr{0x3f, 0x67d0}, 0x13, 0x43),
 
