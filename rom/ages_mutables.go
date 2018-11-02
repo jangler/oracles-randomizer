@@ -61,19 +61,19 @@ var agesFixedMutables = map[string]Mutable{
 	// moosh should always appear in the graveyard
 	"moosh essence checks": MutableStrings([]Addr{{0x0a, 0x5dd5},
 		{0x0a, 0x5943}, {0x0a, 0x4b85}}, "\xcb\x4f", "\xf6\x01"),
-	"moosh rope checks": MutableStrings([]Addr{{0x05, 0x78b8}, {0x0a, 0x4ba3}},
-		"\xcd\x48\x17", "\x3f\x3f\x3f"),
+	"moosh rope checks": MutableStrings([]Addr{{0x05, 0x78b8}, {0x0a, 0x4b92},
+		{0x0a, 0x4ba3}}, "\xcd\x48\x17", "\xaf\xaf\xaf"),
 	"moosh cheval checks": MutableStrings([]Addr{{0x0a, 0x5ddc},
 		{0x0a, 0x594b}, {0x0a, 0x4b8c}}, "\xcb\x77", "\xf6\x01"),
 	// allow exiting moosh/ghost cutscene screen without killing ghosts
 	"transition from moosh cutscene": MutableString(Addr{0x0a, 0x595a},
 		"\xea\x91\xcc", "\x00\x00\x00"),
-	// vanilla bug: moosh is leaves forever if you enter the screen south of
-	// cheval's grave if you dismount, transition, and come back
-	"vanilla moosh disappear bug": MutableByte(Addr{0x05, 0x78bb}, 0x30, 0x38),
-	// another: moosh appears on the screen south of cheval's grave after
-	// visiting the cheval's grave screen, whether you've obtained him or not
-	"vanilla moosh appear bug": MutableByte(Addr{0x12, 0x5c5d}, 0xf1, 0xff),
+	// don't delete moosh when picking up cheval's invention
+	"don't delete moosh": MutableString(Addr{0x0c, 0x7234},
+		"\x91\x24\xcc\x00", "\x92\x24\xcc\x00"),
+	// bug : moosh appears on the screen south of cheval's grave after visiting
+	// the cheval's grave screen, whether you've obtained him or not
+	"moosh appear bug": MutableByte(Addr{0x12, 0x5c5d}, 0xf1, 0xff),
 
 	// ricky shouldn't leave after talking to tingle
 	"end tingle script": MutableString(Addr{0x0c, 0x7e2a},
