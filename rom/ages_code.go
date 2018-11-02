@@ -272,6 +272,14 @@ func initAgesEOB() {
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
+	// don't set room's item flag if it's nayru's item on the maku tree screen,
+	// since link still might not have taken the maku tree's item.
+	makuTreeItemFlag := r.appendToBank(0x09, "maku tree item flag",
+		"\xcd\x7d\x19\xc5\x01\x38\xc7\xcd\xd6\x01\xc1\x20\x06\xfa\x0d\xd0"+
+			"\xfe\x50\xc8\xcb\xee\xc9")
+	r.replace(0x09, 0x4c82, "call maku tree item flag",
+		"\xcd\x7d\x19", "\xc3"+makuTreeItemFlag)
+
 	// give correct ID and param for shop item.
 	shopGiveTreasure := r.appendToBank(0x09, "shop give treasure",
 		"\x47\x1a\xfe\x0d\x78\x20\x04\xcd"+getTreasureData+
@@ -301,7 +309,7 @@ func initAgesEOB() {
 
 	// automatically save maku tree when saving nayru.
 	saveMakuTreeWithNayru := r.appendToBank(0x0a, "save maku tree with nayru",
-		"\xcd\xf9\x31\x3e\x02\xea\xe8\xc6"+
+		"\xcd\xf9\x31\x3e\x01\xea\xe8\xc6"+
 			"\x3e\x0c\xcd\xf9\x31\x3e\x12\xcd\xf9\x31\x3e\x3f\xcd\xf9\x31"+
 			"\xe5\x21\x38\xc7\xcb\x86\x24\xcb\xfe\x2e\x48\xcb\xc6\xe1\xc9")
 	r.replace(0x0a, 0x5541, "call save maku tree with nayru",
