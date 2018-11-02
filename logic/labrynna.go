@@ -20,7 +20,7 @@ var labrynnaNodes = map[string]*Node{
 	"shore present": Or("flute", "ricky's gloves",
 		And("break bush", "feather"), And("lynna city", "bracelet"),
 		And("currents", Or("feather", "flippers", "raft"))),
-	"south shore dirt": AndSlot("shore present", "shovel"),
+	"south shore dirt": AndSlot("shore present", Or("shovel", "flute")),
 	"tingle": And("feather", Or("sword", "boomerang"),
 		Or("currents", And(Or("break bush", "shore present"),
 			Or("any seed shooter", "ricky's gloves", "ricky's flute")))),
@@ -61,7 +61,8 @@ var labrynnaNodes = map[string]*Node{
 	// western woods
 	"fairies' woods chest": AndSlot("lynna city", Or(
 		And(Or("bracelet", "flippers", "dimitri's flute"),
-			Or("feather", "ricky's flute", "moosh's flute", "ages")),
+			Or("feather", "ricky's flute", "moosh's flute", "ages",
+				"switch hook")),
 		And("bracelet", "currents"))),
 	"deku forest": And("lynna city", Or("bracelet",
 		And(Or("flippers", "dimitri's flute"), "ages"))),
