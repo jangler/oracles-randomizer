@@ -260,15 +260,12 @@ func initAgesEOB() {
 	// give flute the correct icon and make it functional from the start.
 	activateFlute := r.appendToBank(0x09, "activate flute",
 		"\x7b\xfe\x0e\xc0"+
-			"\x79\xd6\x0a\xea\xb5\xc6\xe5\x26\xc6\xc6\x45\x6f\xcb\xfe\xe1\xc9")
-	// set global flag 15 to make ricky appear which getting his gloves.
-	summonRicky := r.appendToBank(0x09, "make ricky appear",
-		"\x7b\xfe\x48\xc0\x3e\x15\xcd\xf9\x31\xc9")
+			"\x79\xd6\x0a\xea\xb5\xc6\xe5\x26\xc6\xc6\x45\x6f\x36\xc3\xe1\xc9")
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
-			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\xcd"+summonRicky+
-			"\xcd"+tingleSetFakeID+"\xcd"+brotherSetFakeID+"\x7b\xc3\x1c\x17")
+			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\xcd"+tingleSetFakeID+
+			"\xcd"+brotherSetFakeID+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
@@ -294,6 +291,12 @@ func initAgesEOB() {
 		"\xc2\x72\x18", "\xc2"+shopShowText)
 
 	// bank 0a
+
+	// make ricky appear if you have his gloves, without giving rafton rope.
+	checkRickyAppear := r.appendToBank(0x0a, "check ricky appear",
+		"\xcd\xf3\x31\xc0\xfa\xa3\xc6\xcb\x47\xc9")
+	r.replace(0x0a, 0x4bb8, "call check ricky appear",
+		"\xcd\xf3\x31", "\xcd"+checkRickyAppear)
 
 	// require giving rafton rope, even if you have the island chart.
 	checkRaftonRope := r.appendToBank(0x0a, "check rafton rope",
