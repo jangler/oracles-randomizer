@@ -3,6 +3,7 @@ package ui
 import (
 	"fmt"
 	"github.com/nsf/termbox-go"
+	"strings"
 )
 
 const (
@@ -34,6 +35,7 @@ type modeType int
 
 const (
 	modeWorking modeType = iota
+	modePrompt
 	modeDone
 )
 
@@ -42,6 +44,7 @@ var (
 	bottom = []segment{{text: "(q)", fg: colorDefault | bold}, {text: "uit"}}
 	write  = make(chan line, 1)
 	input  = make(chan rune)
+	prompt = make(chan rune)
 	resize = make(chan interface{}, 1)
 	change = make(chan modeType, 1)
 )
@@ -51,12 +54,11 @@ func Init(title string) {
 	if err != nil {
 		panic(err)
 	}
-	termbox.HideCursor()
 
 	lines = []line{
 		[]segment{{text: title}},
 	}
-	draw()
+	draw(modeWorking)
 }
 
 func Run() {
@@ -78,40 +80,50 @@ func Run() {
 		select {
 		case ln := <-write:
 			lines = append(lines, ln)
-			draw()
+			draw(mode)
 		case ch := <-input:
 			if ch == 'q' || mode == modeDone {
 				termbox.Close()
 				loop = false
+			} else if mode == modePrompt {
+				prompt <- ch
 			}
 		case <-resize:
-			draw()
+			draw(mode)
 		case m := <-change:
 			mode = m
+			draw(mode)
 		}
 	}
 }
 
-func draw() {
+func draw(mode modeType) {
 	termbox.Clear(colorDefault, colorDefault)
 
 	w, h := termbox.Size()
 	drawLine(w, 0, lines[0])
+	var x int
 	for x := 0; x < w; x++ {
 		termbox.SetCell(x, 1, '─', colorDefault, colorDefault)
 	}
 	for i, ln := range lines[1:] {
-		drawLine(w, i+2, ln)
+		x = drawLine(w, i+2, ln)
 	}
 	for x := 0; x < w; x++ {
 		termbox.SetCell(x, h-2, '─', colorDefault, colorDefault)
 	}
 	drawLine(w, h-1, bottom)
 
+	if mode == modePrompt {
+		termbox.SetCursor(x+1, len(lines))
+	} else {
+		termbox.HideCursor()
+	}
+
 	termbox.Flush()
 }
 
-func drawLine(w, y int, ln line) {
+func drawLine(w, y int, ln line) int {
 	// figure out whether the line needs to be shortened
 	var truncLen int
 	truncIndex := -1
@@ -161,6 +173,8 @@ func drawLine(w, y int, ln line) {
 			x = drawEllipsis(x, y, seg.fg, seg.bg)
 		}
 	}
+
+	return x
 }
 
 func drawEllipsis(x, y int, fg, bg termbox.Attribute) int {
@@ -183,7 +197,51 @@ func PrintPath(pre, path, post string) {
 	}
 }
 
+// Prompt prints the given string and blocks until the user inputs one of the
+// alphanumeric characters shown in parentheses. For example, a prompt
+// containing "(y/n)" would accept either 'y' or 'n' as input. Multiple
+// parentheticals can be included.
+func Prompt(s string) rune {
+	acceptedRunes := ""
+
+	// show parentheticals in bold
+	line := make([]segment, 0)
+	pos := 0
+	for pos < len(s) {
+		open := strings.IndexRune(s[pos:], '(')
+		if open == -1 {
+			line = append(line, segment{text: s[pos:]})
+			break
+		} else {
+			close := strings.IndexRune(s[pos+open:], ')')
+			if close == -1 {
+				line = append(line, segment{text: s[pos:]})
+				break
+			} else {
+				line = append(line, segment{text: s[pos : pos+open]})
+				line = append(line, segment{
+					text: s[pos+open : pos+open+close+1],
+					fg:   colorDefault | bold,
+				})
+				acceptedRunes += s[pos+open+1 : pos+open+close]
+				pos += open + close + 1
+			}
+		}
+	}
+
+	write <- line
+	change <- modePrompt
+	for {
+		ch := <-prompt
+		if strings.ContainsRune(acceptedRunes, ch) {
+			change <- modeWorking
+			return ch
+		}
+	}
+}
+
 func Done() {
+	write <- []segment{{}}
 	write <- []segment{{text: "press any key to exit.",
 		fg: colorDefault | bold}}
 	change <- modeDone

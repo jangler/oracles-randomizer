@@ -67,6 +67,9 @@ func main() {
 func runRandomizer() {
 	defer ui.Done()
 
+	// if rom is to be randomized, infile must be non-empty after switch
+	var infile, outfile string
+
 	switch flag.NArg() {
 	case 0: // no specified files, search in executable's directory
 		dir, seasons, ages, err := findVanillaROMs()
@@ -75,65 +78,92 @@ func runRandomizer() {
 			break
 		}
 
+		// print which files, if any, are found.
 		if seasons != "" {
 			ui.PrintPath("found vanilla US seasons ROM: ", seasons, "")
 		} else {
 			ui.Printf("no vanilla US seasons ROM found.")
 		}
-
 		if ages != "" {
 			ui.PrintPath("found vanilla US ages ROM: ", ages, "")
 		} else {
 			ui.Printf("no vanilla US ages ROM found.")
 		}
+		ui.Printf("")
 
+		// determine which filename to use based on what roms are found, and on
+		// user input.
 		if seasons == "" && ages == "" {
 			ui.Printf("no ROMs found in program's directory, " +
 				"and no ROMs specified.")
-			break
+		} else if seasons != "" && ages != "" {
+			which := ui.Prompt("randomize (s)easons or (a)ges?")
+			if which == 's' {
+				infile = seasons
+			} else {
+				infile = ages
+			}
+		} else if seasons != "" {
+			infile = seasons
+		} else {
+			infile = ages
 		}
 
-		_ = dir // TODO
-		ui.Printf("...but choosing a ROM this way is NYI.")
-	case 1: // specified input file only, assume not using command line
-		b, game, err := readGivenROM(flag.Arg(0))
-		if err != nil {
-			fatal(err)
-			break
-		}
-
-		if err := handleFile(b, game, flag.Arg(0), flagSeed, flagNoMusic,
-			flagHard, flagVerbose); err != nil {
-			fatal(err)
-			break
-		}
-	case 2: // specified input and output file, so using command line
-		b, game, err := readGivenROM(flag.Arg(0))
-		if err != nil {
-			fatal(err)
-			break
-		}
-
-		// operate on file
-		var sum []byte
-		var seed uint32
-		var logFilename string
-		ui.Printf("randomizing %s\n", flag.Arg(0))
-		seed, sum, logFilename, err = randomize(b, game, flagSeed,
-			flagNoMusic, flagHard, flagVerbose)
-		if err != nil {
-			fatal(err)
-			break
-		}
-
-		// write file
-		if err := writeROM(b, flag.Arg(1), logFilename, seed, sum); err != nil {
-			fatal(err)
-			break
-		}
+		seasons = filepath.Join(dir, seasons)
+		ages = filepath.Join(dir, ages)
+	case 1: // specified input file only
+		infile = flag.Arg(0)
+	case 2: // specified input and output file
+		infile, outfile = flag.Arg(0), flag.Arg(1)
 	default:
 		flag.Usage()
 	}
+
+	if infile != "" {
+		ui.Printf("randomizing %s.", infile)
+
+		// prompt for options if it wasn't necessarily a CLI invocation
+
+		if flag.NArg() != 2 {
+			difficulty := ui.Prompt("difficulty: (n)ormal or (h)ard?")
+			flagHard = difficulty == 'h'
+		}
+		if flagHard {
+			ui.Printf("using hard difficulty.")
+		} else {
+			ui.Printf("using normal difficulty.")
+		}
+
+		if flag.NArg() != 2 {
+			music := ui.Prompt("(m)usic or (n)o music?")
+			flagNoMusic = music == 'n'
+		}
+		if flagNoMusic {
+			ui.Printf("music off.")
+		} else {
+			ui.Printf("music on.")
+		}
+
+		ui.Printf("")
+
+		if err := randomizeFile(infile, outfile); err != nil {
+			fatal(err)
+		}
+	}
+}
+
+func randomizeFile(infile, outfile string) error {
+	b, game, err := readGivenROM(infile)
+	if err != nil {
+		return err
+	}
+
+	if err := handleFile(b, game, infile, flagSeed, flagNoMusic,
+		flagHard, flagVerbose); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // attempt to write rom data to a file and print summary info.
@@ -260,7 +290,6 @@ func handleFile(romData []byte, game int, filename, seedFlag string,
 	var outName, logFilename string
 
 	// operate on rom data
-	ui.Printf("randomizing %s\n", flag.Arg(0))
 	seed, sum, logFilename, err =
 		randomize(romData, game, seedFlag, noMusic, hard, verbose)
 	if err != nil {
@@ -332,7 +361,7 @@ func randomize(romData []byte, game int, seedFlag string,
 	if !verbose && seed == 0 {
 		numThreads = runtime.NumCPU()
 	}
-	ui.Printf("using %d thread(s)\n", numThreads)
+	ui.Printf("using %d thread(s).", numThreads)
 	seeds := make([]uint32, numThreads)
 	for i := 0; i < numThreads; i++ {
 		if seed == 0 {
