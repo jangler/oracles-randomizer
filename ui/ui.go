@@ -106,16 +106,22 @@ func draw(mode modeType) {
 	for x := 0; x < w; x++ {
 		termbox.SetCell(x, 1, '─', colorDefault, colorDefault)
 	}
-	for i, ln := range lines[1:] {
+
+	scroll := 0
+	if len(lines) > h-3 {
+		scroll = len(lines) - (h - 3)
+	}
+	for i, ln := range lines[scroll+1:] {
 		x = drawLine(w, i+2, ln)
 	}
+
 	for x := 0; x < w; x++ {
 		termbox.SetCell(x, h-2, '─', colorDefault, colorDefault)
 	}
 	drawLine(w, h-1, bottom)
 
 	if mode == modePrompt {
-		termbox.SetCursor(x+1, len(lines))
+		termbox.SetCursor(x+1, len(lines)-scroll)
 	} else {
 		termbox.HideCursor()
 	}
