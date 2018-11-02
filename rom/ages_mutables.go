@@ -80,6 +80,8 @@ var agesFixedMutables = map[string]Mutable{
 		"\x91\x03\xd1\x02", "\xbe\x7d\xfe\xba"),
 	// and check fake treasure ID 13 (slingshot) instead of island chart
 	"tingle fake ID": MutableByte(Addr{0x0c, 0x7e00}, 0x54, 0x13),
+	// ignore satchel level when talking to tingle for second item
+	"tingle satchel check": MutableByte(Addr{0x0b, 0x75c5}, 0x3d, 0xaf),
 	// dig up item on south shore regardless of ricky state
 	"south shore ricky check 1": MutableByte(Addr{0x04, 0x6b77}, 0x0a, 0x00),
 	"south shore ricky check 2": MutableByte(Addr{0x04, 0x6b7b}, 0x06, 0x00),
