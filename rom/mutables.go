@@ -83,12 +83,20 @@ func (mr *MutableRange) Check(b []byte) error {
 	return nil
 }
 
-// SetNoMusic sets music off in the modified ROM.
-func SetNoMusic() {
-	mut := codeMutables["no music func"].(*MutableRange)
-	funcAddr := addrString(mut.Addrs[0].Offset)
-	codeMutables["no music call"].(*MutableRange).New =
-		[]byte("\xcd" + funcAddr)
+// SetMusic sets music on or off in the modified ROM.
+func SetMusic(music bool) {
+	if music {
+		mut := codeMutables["no music call"].(*MutableRange)
+		mut.New = mut.Old
+	}
+}
+
+// SetTreewarp sets treewarp on or off in the modified ROM.
+func SetTreewarp(treewarp bool) {
+	if !treewarp {
+		mut := codeMutables["tree warp jump"].(*MutableRange)
+		mut.New = mut.Old
+	}
 }
 
 // SetAnimal sets the flute type and Natzu region type based on a companion

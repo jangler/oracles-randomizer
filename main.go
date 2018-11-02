@@ -41,7 +41,7 @@ func fatal(err error) {
 }
 
 var (
-	flagHard, flagNoMusic, flagVerbose bool
+	flagHard, flagNoMusic, flagTreewarp, flagVerbose bool
 
 	flagSeed string
 )
@@ -55,6 +55,8 @@ func main() {
 		"don't play any music in the modified ROM")
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
+	flag.BoolVar(&flagTreewarp, "treewarp", false,
+		"warp to ember tree by pressing start+B on map screen")
 	flag.BoolVar(&flagVerbose, "verbose", false,
 		"print more detailed output to terminal")
 	flag.Parse()
@@ -120,6 +122,12 @@ func runRandomizer() {
 	}
 
 	if infile != "" {
+		if _, game, err := readGivenROM(infile); err != nil {
+			fatal(err)
+			return
+		} else {
+			rom.Init(game)
+		}
 		ui.Printf("randomizing %s.", infile)
 
 		// prompt for options if it wasn't necessarily a CLI invocation
@@ -144,7 +152,20 @@ func runRandomizer() {
 			ui.Printf("music on.")
 		}
 
+		if flag.NArg() != 2 {
+			treewarp := ui.Prompt("enable tree warp? (y/n)")
+			flagTreewarp = treewarp == 'y'
+		}
+		if flagTreewarp {
+			ui.Printf("tree warp on.")
+		} else {
+			ui.Printf("tree warp off.")
+		}
+
 		ui.Printf("")
+
+		rom.SetMusic(!flagNoMusic)
+		rom.SetTreewarp(flagTreewarp)
 
 		if err := randomizeFile(infile, outfile); err != nil {
 			fatal(err)
@@ -158,7 +179,7 @@ func randomizeFile(infile, outfile string) error {
 		return err
 	}
 
-	if err := handleFile(b, game, infile, flagSeed, flagNoMusic,
+	if err := handleFile(b, game, infile, flagSeed,
 		flagHard, flagVerbose); err != nil {
 		return err
 	}
@@ -181,8 +202,8 @@ func writeROM(b []byte, filename, logFilename string, seed uint32,
 
 	// print summary
 	ui.Printf("seed: %08x\n", seed)
-	ui.Printf("sha-1 sum: %x\n", string(sum))
-	ui.Printf("wrote new rom to %s\n", filename)
+	ui.Printf("SHA-1 sum: %x\n", string(sum))
+	ui.Printf("wrote new ROM to %s\n", filename)
 	ui.Printf("wrote log file to %s\n", logFilename)
 
 	return nil
@@ -263,7 +284,7 @@ func readGivenROM(filename string) ([]byte, int, error) {
 	// check file data
 	if !rom.IsAges(b) && !rom.IsSeasons(b) {
 		return nil, rom.GameNil,
-			fmt.Errorf("%s is not an Oracles ROM", filename)
+			fmt.Errorf("%s is not an oracles ROM", filename)
 	}
 	if !rom.IsUS(b) {
 		return nil, rom.GameNil,
@@ -271,7 +292,7 @@ func readGivenROM(filename string) ([]byte, int, error) {
 	}
 	if !rom.IsVanilla(b) {
 		return nil, rom.GameNil,
-			fmt.Errorf("%s is an unrecognized Oracles ROM", filename)
+			fmt.Errorf("%s is an unrecognized oracles ROM", filename)
 	}
 
 	game := rom.GameAges
@@ -283,7 +304,7 @@ func readGivenROM(filename string) ([]byte, int, error) {
 
 // decide whether to randomize or update the file
 func handleFile(romData []byte, game int, filename, seedFlag string,
-	noMusic, hard, verbose bool) error {
+	hard, verbose bool) error {
 	var seed uint32
 	var sum []byte
 	var err error
@@ -291,7 +312,7 @@ func handleFile(romData []byte, game int, filename, seedFlag string,
 
 	// operate on rom data
 	seed, sum, logFilename, err =
-		randomize(romData, game, seedFlag, noMusic, hard, verbose)
+		randomize(romData, game, seedFlag, hard, verbose)
 	if err != nil {
 		return err
 	}
@@ -333,19 +354,9 @@ func readFileBytes(filename string) ([]byte, error) {
 	return ioutil.ReadAll(f)
 }
 
-// messes up rom data and writes it to a file. this also calls rom.Verify().
+// messes up rom data and writes it to a file.
 func randomize(romData []byte, game int, seedFlag string,
-	noMusic, hard, verbose bool) (uint32, []byte, string, error) {
-	// make sure rom data is a match first
-	rom.Init(game)
-	if errs := rom.Verify(romData, game); errs != nil {
-		return 0, nil, "", errs[0]
-	}
-
-	if noMusic {
-		rom.SetNoMusic()
-	}
-
+	hard, verbose bool) (uint32, []byte, string, error) {
 	seed, err := setRandomSeed(seedFlag)
 	if err != nil {
 		return 0, nil, "", err
