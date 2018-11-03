@@ -42,6 +42,8 @@ var agesFixedMutables = map[string]Mutable{
 
 	// clear rubble from rolling ridge base present without d4 essence
 	"clear rubble": MutableByte(Addr{0x04, 0x6a44}, 0xc8, 0x00),
+	// open rolling ridge present tunnel without completing d5
+	"open tunnel": MutableByte(Addr{0x04, 0x6a33}, 0xc8, 0x00),
 
 	// cut off the end of deku forest soldier's text so it makes sense when
 	// giving item
