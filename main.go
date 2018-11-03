@@ -179,7 +179,7 @@ func randomizeFile(infile, outfile string) error {
 		return err
 	}
 
-	if err := handleFile(b, game, infile, flagSeed,
+	if err := handleFile(b, game, outfile, flagSeed,
 		flagHard, flagVerbose); err != nil {
 		return err
 	}
@@ -303,16 +303,19 @@ func readGivenROM(filename string) ([]byte, int, error) {
 }
 
 // decide whether to randomize or update the file
-func handleFile(romData []byte, game int, filename, seedFlag string,
+func handleFile(romData []byte, game int, outfile, seedFlag string,
 	hard, verbose bool) error {
 	var seed uint32
 	var sum []byte
 	var err error
-	var outName, logFilename string
+	var logFilename string
 
 	// operate on rom data
+	if outfile != "" {
+		logFilename = outfile[:len(outfile)-4] + "_log.txt"
+	}
 	seed, sum, logFilename, err =
-		randomize(romData, game, seedFlag, hard, verbose)
+		randomize(romData, game, logFilename, seedFlag, hard, verbose)
 	if err != nil {
 		return err
 	}
@@ -320,11 +323,13 @@ func handleFile(romData []byte, game int, filename, seedFlag string,
 	if hard {
 		hardString = "_hard"
 	}
-	outName = fmt.Sprintf("%srando_%s_%08x%s.gbc",
-		gameName(game), version, seed, hardString)
+	if outfile == "" {
+		outfile = fmt.Sprintf("%srando_%s_%08x%s.gbc",
+			gameName(game), version, seed, hardString)
+	}
 
 	// write to file
-	return writeROM(romData, outName, logFilename, seed, sum)
+	return writeROM(romData, outfile, logFilename, seed, sum)
 }
 
 // sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or
@@ -355,7 +360,7 @@ func readFileBytes(filename string) ([]byte, error) {
 }
 
 // messes up rom data and writes it to a file.
-func randomize(romData []byte, game int, seedFlag string,
+func randomize(romData []byte, game int, logFilename, seedFlag string,
 	hard, verbose bool) (uint32, []byte, string, error) {
 	seed, err := setRandomSeed(seedFlag)
 	if err != nil {
@@ -458,8 +463,10 @@ func randomize(romData []byte, game int, seedFlag string,
 	if hard {
 		hardString = "hard_"
 	}
-	logFilename := fmt.Sprintf("%srando_%s_%08x_%slog.txt",
-		gameName(game), version, ri.Seed, hardString)
+	if logFilename == "" {
+		logFilename = fmt.Sprintf("%srando_%s_%08x_%slog.txt",
+			gameName(game), version, ri.Seed, hardString)
+	}
 	summary, summaryDone := getSummaryChannel(logFilename)
 
 	// write info to summary file
