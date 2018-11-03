@@ -17,6 +17,7 @@ var niceNames = map[string]string{
 	// equip items
 	"shop shield L-1": "wooden shield",
 	"shield L-2":      "iron shield",
+	"cane":            "cane of somaria",
 	"sword 1":         "wooden/noble sword",
 	"sword 2":         "wooden/noble sword",
 	"boomerang 1":     "(magic) boomerang",
@@ -47,6 +48,7 @@ var niceNames = map[string]string{
 	"flippers 2":       "zora's flippers / mermaid suit",
 	"star ore":         "star-shaped ore",
 	"rare peach stone": "piece of heart",
+	"goron letter":     "letter of introduction",
 
 	// north horon / holodrum plain / eyeglass lake slots
 	"scent tree":          "north horon seed tree",
@@ -131,7 +133,7 @@ var niceNames = map[string]string{
 	"hard ore slot":        "great furnace",
 	"iron shield gift":     "subrosian smithy",
 
-	// dungeons
+	// seasons dungeon slots
 	"d0 sword chest":         "hero's cave sword chest",
 	"d0 rupee chest":         "hero's cave rupee chest",
 	"d1 satchel spot":        "D1 seed satchel spot",
@@ -141,6 +143,15 @@ var niceNames = map[string]string{
 	"d6 boomerang chest":     "D6 magic boomerang chest",
 	"d7 cape chest":          "D7 roc's cape chest",
 	"d8 HSS chest":           "D8 hyper slingshot chest",
+
+	// labrynna slots
+	"crescent seafloor cave": "under crescent island",
+	"ridge base chest":       "ridge base east present",
+	"goron diamond chest":    "ridge hook cave present",
+	"ridge west cave":        "ridge base west present",
+	"ridge bush cave":        "ridge past bush cave",
+	"ridge base past":        "ridge base west past",
+	"zora cave past":         "fisher's island cave",
 }
 
 // get a user-friendly equivalent of the given internal item or slot name.
