@@ -241,10 +241,14 @@ func initAgesEOB() {
 	tingleSetFakeID := r.appendToBank(0x09, "tingle set fake ID",
 		"\xc5\x01\x00\x79\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9c\xc6\xcb\xde"+
 			"\xe1\xc9")
-	// set treasure ID 1e (fool's ore) when for symmetry city brother.
+	// set treasure ID 1e (fool's ore) for symmetry city brother.
 	brotherSetFakeID := r.appendToBank(0x09, "brother set fake ID",
 		"\xc5\x01\x03\x6e\xcd"+compareRoom+"\x28\x04\x04\xcd"+compareRoom+
 			"\xc1\xc0\xe5\x21\x9d\xc6\xcb\xf6\xe1\xc9")
+	// set treasure ID 10 (nothing) for king zora.
+	kingZoraSetFakeID := r.appendToBank(0x09, "king zora set fake ID",
+		"\xc5\x01\x05\xab\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9c\xc6\xcb\xc6"+
+			"\xe1\xc9")
 	// set flag for d6 past boss key whether you get it in past or present.
 	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
 		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\xc0\xe5\x21\x83\xc6\xcb\xe6\xe1"+
@@ -264,7 +268,7 @@ func initAgesEOB() {
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
 			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\xcd"+tingleSetFakeID+
-			"\xcd"+brotherSetFakeID+"\x7b\xc3\x1c\x17")
+			"\xcd"+brotherSetFakeID+"\xcd"+kingZoraSetFakeID+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
@@ -316,6 +320,14 @@ func initAgesEOB() {
 			"\xe5\x21\x38\xc7\xcb\x86\x24\xcb\xfe\x2e\x48\xcb\xc6\xe1\xc9")
 	r.replace(0x0a, 0x5541, "call save maku tree with nayru",
 		"\xcd\xf9\x31", "\xcd"+saveMakuTreeWithNayru)
+
+	// bank 0b
+
+	// always get item from king zora before permission to enter jabu-jabu.
+	kingZoraCheck := r.appendToBank(0x0b, "king zora check",
+		"\xcd\xf3\x31\xc8\x3e\x10\xcd\x48\x17\x3e\x00\xd0\x3c\xc9")
+	r.replace(0x0b, 0x5464, "call king zora check",
+		"\xcd\xf3\x31", "\xcd"+kingZoraCheck)
 
 	// bank 0c
 

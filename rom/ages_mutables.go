@@ -206,6 +206,9 @@ var agesFixedMutables = map[string]Mutable{
 	// check fake ID 1e (fool's ore) for symmetry city brother's item
 	"brother fake ID": MutableStrings([]Addr{{0x15, 0x77f0}, {0x15, 0x78f6}},
 		"\x4c", "\x1e"),
+
+	// check fake ID 10 (nothing) for king zora's item
+	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x4a, 0x10),
 }
 
 var agesVarMutables = map[string]Mutable{
