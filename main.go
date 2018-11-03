@@ -133,8 +133,8 @@ func runRandomizer() {
 		// prompt for options if it wasn't necessarily a CLI invocation
 
 		if flag.NArg() != 2 {
-			difficulty := ui.Prompt("difficulty: (n)ormal or (h)ard?")
-			flagHard = difficulty == 'h'
+			hard := ui.Prompt("enable hard difficulty? (y/n)")
+			flagHard = hard == 'y'
 		}
 		if flagHard {
 			ui.Printf("using hard difficulty.")
@@ -143,8 +143,8 @@ func runRandomizer() {
 		}
 
 		if flag.NArg() != 2 {
-			music := ui.Prompt("(m)usic or (n)o music?")
-			flagNoMusic = music == 'n'
+			noMusic := ui.Prompt("disable music? (y/n)")
+			flagNoMusic = noMusic == 'y'
 		}
 		if flagNoMusic {
 			ui.Printf("music off.")
