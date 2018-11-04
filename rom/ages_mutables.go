@@ -32,9 +32,9 @@ var agesFixedMutables = map[string]Mutable{
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
 
-	// remove essence check for fairies' hide and seek game
-	"fairies' essence check": MutableString(Addr{0x0a, 0x52b4},
-		"\xcd\x48\x17", "\x37\x37\x37"),
+	// never spawn hide and seek event in fairies' woods. apparently you're
+	// frozen if you enter on an animal?
+	"don't spawn fairies": MutableByte(Addr{0x0a, 0x52bf}, 0xc2, 0xc3),
 
 	// make guy in front of d2 go away if you have bombs
 	"d2 guy flag check": MutableString(Addr{0x09, 0x5242},
