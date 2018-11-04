@@ -202,10 +202,12 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 				countSteps, ri.UsedSlots.Len(), hard, false)
 
 			if eItem != nil {
-				ri.UsedItems.PushBack(itemList.Remove(eItem))
+				item := itemList.Remove(eItem).(*graph.Node)
+				ri.UsedItems.PushBack(item)
 				slot := slotList.Remove(eSlot).(*graph.Node)
 				ri.UsedSlots.PushBack(slot)
-				r.Costs += logic.Rupees[slot.Name]
+				r.Costs += logic.RupeeValues[item.Name]
+				r.Costs += logic.NodeCosts[slot.Name]
 
 				if ri.UsedSlots.Len() > slotRecord {
 					slotRecord = ri.UsedSlots.Len()
@@ -244,10 +246,12 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 					countSteps, ri.UsedSlots.Len(), hard, true)
 
 				if eItem != nil {
-					ri.UsedItems.PushBack(itemList.Remove(eItem))
+					item := itemList.Remove(eItem).(*graph.Node)
+					ri.UsedItems.PushBack(item)
 					slot := slotList.Remove(eSlot).(*graph.Node)
 					ri.UsedSlots.PushBack(slot)
-					r.Costs += logic.Rupees[slot.Name]
+					r.Costs += logic.RupeeValues[item.Name]
+					r.Costs += logic.NodeCosts[slot.Name]
 
 					if ri.UsedSlots.Len() > slotRecord {
 						slotRecord = ri.UsedSlots.Len()

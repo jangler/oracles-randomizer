@@ -1,6 +1,6 @@
 package logic
 
-var Rupees = map[string]int{
+var NodeCosts = map[string]int{
 	"village shop 1":  -20,
 	"village shop 2":  -30,
 	"village shop 3":  -150,
@@ -9,10 +9,8 @@ var Rupees = map[string]int{
 	"member's shop 3": -200,
 	"blaino gift":     -10,
 
-	// ages. the randomizer doesn't have 450 rupees to play with, so the player
-	// is going to have to come up with a third of each cost.
-	"shop, 150 rupees": -100,
-	"king zora":        -200,
+	"shop, 150 rupees": -150,
+	"king zora":        -300,
 
 	// appraising rings
 	"expert's ring":  -20,
@@ -36,7 +34,9 @@ var Rupees = map[string]int{
 	// rng seems involved ??
 	"d2 rupee room": 200,
 	"d6 rupee room": 150,
+}
 
+var RupeeValues = map[string]int{
 	"rupees, 1":   1,
 	"rupees, 5":   5,
 	"rupees, 10":  10,

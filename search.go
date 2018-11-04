@@ -157,7 +157,7 @@ func slotIsSeedTree(name string) bool {
 
 func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	// if it doesn't cost anything, of course it's affordable
-	balance := logic.Rupees[slot.Name]
+	balance := logic.NodeCosts[slot.Name]
 	if balance >= 0 {
 		return true
 	}
@@ -165,7 +165,7 @@ func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	// otherwise, count the net rupees available to the player
 	balance += r.Costs
 	for _, node := range r.Graph {
-		value := logic.Rupees[node.Name]
+		value := logic.NodeCosts[node.Name]
 		if value > 0 && node.GetMark(node, hard) == graph.MarkTrue {
 			balance += value
 		}
