@@ -42,7 +42,7 @@ var labrynnaNodes = map[string]*Node{
 		HardAnd("satchel", "scent seeds", "pegasus seeds"),
 		And("break bush safe", "mermaid suit"))),
 	"rescue nayru": AndSlot("ambi's palace chest", "mystery seeds",
-		"switch hook"),
+		"switch hook", "sword"), // fight is scripted; only sword ends it
 	"mayor plen's house": AndSlot("long hook"),
 	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence",
 		"d5 essence", "d6 essence", "d7 essence", "d8 essence"),
@@ -60,12 +60,14 @@ var labrynnaNodes = map[string]*Node{
 
 	// western woods
 	"fairies' woods chest": AndSlot("lynna city", Or(
-		And(Or("bracelet", "flippers", "dimitri's flute"),
+		And(Or("bracelet", "flippers", "dimitri's flute",
+			And("currents", Or("hit lever", "ricky's flute"))),
 			Or("feather", "ricky's flute", "moosh's flute", "ages",
 				"switch hook")),
 		And("bracelet", "currents"))),
 	"deku forest": And("lynna city", Or("bracelet",
-		And(Or("flippers", "dimitri's flute"), "ages"))),
+		And("ages",
+			Or("flippers", "dimitri's flute", "hit lever", "ricky's flute")))),
 	"deku forest cave east": AndSlot("deku forest",
 		Or("feather", "bracelet", "ages")),
 	"deku forest cave west": AndSlot("deku forest", "bracelet",
@@ -103,7 +105,7 @@ var labrynnaNodes = map[string]*Node{
 	"symmetry present": And("nuun", Or("ages", "flute", And("currents",
 		Or("dimitri nuun", "moosh nuun", And("ricky nuun", "break bush"))))),
 	"symmetry city tree":    AndSlot("sword", "seed item", "symmetry present"),
-	"symmetry past":         And("symmetry present", "echoes"),
+	"symmetry past":         And("symmetry present", "break bush safe", "echoes"),
 	"symmetry city brother": AndSlot("symmetry past"),
 	"tokkey's composition":  AndSlot("symmetry past", "flippers"),
 	"restoration wall": Or(

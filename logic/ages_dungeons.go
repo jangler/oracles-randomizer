@@ -42,11 +42,12 @@ var agesD2Nodes = map[string]*Node{
 	"d2 essence": AndStep("d2 statue room", "d2 boss key",
 		"d2 color key", "d2 basement key", "d2 statue key"),
 
-	"d2 key 1":        And("enter d2", "kill spiked beetle"),
-	"d2 key 2":        And("enter d2", "d2 key 1", "bombs"),
-	"d2 color key":    And("d2 basement", "feather"),
-	"d2 basement key": And("d2 basement", "feather"),
-	"d2 statue key":   And("d2 statue room", "feather"),
+	"d2 key 1":     And("enter d2", "kill spiked beetle", "kill normal"),
+	"d2 key 2":     And("enter d2", "d2 key 1", "bombs"),
+	"d2 color key": And("d2 basement", "feather"),
+	"d2 basement key": And("d2 basement", "feather", "bombs",
+		"hit lever from minecart"),
+	"d2 statue key": And("d2 statue room", "feather"),
 }
 
 var agesD3Nodes = map[string]*Node{
@@ -60,7 +61,7 @@ var agesD3Nodes = map[string]*Node{
 	"d3 hall of bushes": AndSlot("d3 armos key", "d3 compass key",
 		"d3 block key"), // technically only need two maximum, one minimum
 	"d3 W crystal":   And("d3 statue key"),
-	"d3 compass key": And("d3 compass chest"),
+	"d3 compass key": And("d3 statue key"),
 	"d3 shooter chest": AndSlot("d3 armos key", "d3 compass key",
 		"d3 block key"),
 
@@ -70,7 +71,7 @@ var agesD3Nodes = map[string]*Node{
 	"d3 B1F spinner": And("d3 S crystal", "d3 E crystal", "d3 N crystal",
 		"d3 W crystal", "break crystal switch"),
 	"d3 crossroads":    AndSlot("d3 B1F spinner"),
-	"d3 compass chest": AndSlot("d3 statue key"),
+	"d3 compass chest": AndSlot("d3 statue key", "kill armos"),
 	"d3 bridge chest": AndSlot("d3 statue key",
 		Or("any seed shooter", And("feather", "pegasus satchel"))),
 	"d3 torch chest": AndSlot("d3 B1F spinner",
@@ -81,7 +82,8 @@ var agesD3Nodes = map[string]*Node{
 		"any seed shooter"),
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
 	"d3 essence": AndStep("d3 boss key", "d3 armos key", "d3 compass key",
-		"d3 block key", Or("ember shooter", "scent shooter")),
+		"d3 block key", Or("ember seeds", "scent seeds"),
+		Or("seed shooter", Hard("satchel"))),
 }
 
 var agesD4Nodes = map[string]*Node{
@@ -116,18 +118,19 @@ var agesD4Nodes = map[string]*Node{
 var agesD5Nodes = map[string]*Node{
 	"d5 switch A":       And("enter d5", "kill normal", "hit switch"),
 	"d5 blue peg chest": AndSlot("d5 switch A"),
-	"d5 dark chest":     And("d5 switch A"),
+	"d5 dark chest":     And("d5 switch A", Or("cane", Hard())),
 	"d5 boxed chest": And("d5 switch A",
 		Or("switch hook", And("feather", "cane"))),
 	"d5 eyes chest": And("d5 switch A", "hit switch ranged",
 		"any seed shooter"),
 	"d5 2-statue chest": And("d5 switch A", "break pot", "cane", "feather",
-		Or("any seed shooter", "boomerang")),
+		Or("any seed shooter", "boomerang", HardAnd("jump 3", "sword"))),
 	"d5 essence": AndStep("d5 switch A", "d5 boss key", "cane", "sword"),
 
 	// require 1 small key minimum, 2 maximum.
 	// keys A (dark chest) and E (3-statue chest) are always available by now.
-	"d5 crossroads":    And("d5 switch A", "feather", "bracelet", "cane"),
+	"d5 crossroads": And("d5 switch A", "feather", "bracelet",
+		Or("cane", Hard("jump 3"))),
 	"d5 diamond chest": AndSlot("d5 crossroads", "switch hook"),
 
 	// require 1 small key minimum, 5 maximum.
