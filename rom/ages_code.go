@@ -299,7 +299,7 @@ func initAgesEOB() {
 
 	// make ricky appear if you have his gloves, without giving rafton rope.
 	checkRickyAppear := r.appendToBank(0x0a, "check ricky appear",
-		"\xcd\xf3\x31\xc0\xfa\xa3\xc6\xcb\x47\xc9")
+		"\xcd\xf3\x31\xc0\xfa\xa3\xc6\xcb\x47\xc0\xfa\x46\xc6\xb7\xc9")
 	r.replace(0x0a, 0x4bb8, "call check ricky appear",
 		"\xcd\xf3\x31", "\xcd"+checkRickyAppear)
 
