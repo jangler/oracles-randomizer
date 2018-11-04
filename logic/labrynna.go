@@ -61,13 +61,12 @@ var labrynnaNodes = map[string]*Node{
 	// western woods
 	"fairies' woods chest": AndSlot("lynna city", Or(
 		And(Or("bracelet", "flippers", "dimitri's flute",
-			And("currents", Or("hit lever", "ricky's flute"))),
+			And("currents", Or("hit lever", "ricky's flute", "moosh's flute"))),
 			Or("feather", "ricky's flute", "moosh's flute", "ages",
 				"switch hook")),
 		And("bracelet", "currents"))),
 	"deku forest": And("lynna city", Or("bracelet",
-		And("ages",
-			Or("flippers", "dimitri's flute", "hit lever", "ricky's flute")))),
+		And("ages", Or("flippers", "hit lever", "flute")))),
 	"deku forest cave east": AndSlot("deku forest",
 		Or("feather", "bracelet", "ages")),
 	"deku forest cave west": AndSlot("deku forest", "bracelet",
