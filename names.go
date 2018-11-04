@@ -152,6 +152,8 @@ var niceNames = map[string]string{
 	"ridge bush cave":        "ridge past bush cave",
 	"ridge base past":        "ridge base west past",
 	"zora cave past":         "fisher's island cave",
+	"goron dance past":       "goron dance, with letter",
+	"shooting gallery":       "goron shooting gallery",
 }
 
 // get a user-friendly equivalent of the given internal item or slot name.

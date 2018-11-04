@@ -9,8 +9,13 @@ var NodeCosts = map[string]int{
 	"member's shop 3": -200,
 	"blaino gift":     -10,
 
-	"shop, 150 rupees": -150,
-	"king zora":        -300,
+	"shop, 150 rupees":    -150,
+	"king zora":           -300,
+	"goron dance past":    -20,
+	"goron dance present": -10,
+	"target carts 1":      -10,
+	"target carts 2":      -10,
+	"shooting gallery":    -20,
 
 	// appraising rings
 	"expert's ring":  -20,
