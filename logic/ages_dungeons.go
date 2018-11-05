@@ -18,7 +18,7 @@ var agesD1Nodes = map[string]*Node{
 	"d1 U-room": Or("d1 west terrace", And("d1 free key chest",
 		"d1 platform key chest", "break bush safe", "kill giant ghini")),
 	"d1 basement":     AndSlot("d1 U-room", "ember seeds"),
-	"d1 west terrace": AndSlot("enter d1", Or("break pot", "d1 U-room")),
+	"d1 west terrace": AndSlot("enter d1", "break pot"),
 	"d1 pot chest":    AndSlot("enter d1", "break pot"),
 	"d1 essence": AndStep("d1 free key chest", "break bush safe", "d1 boss key",
 		"kill pumpkin head"),
@@ -31,7 +31,8 @@ var agesD2Nodes = map[string]*Node{
 		And("d2 rope room", "d2 key 2")),
 	"d2 basement":      And("enter swoop", "kill swoop"),
 	"d2 thwomp tunnel": AndSlot("d2 basement"),
-	"d2 thwomp shelf":  AndSlot("d2 basement", "feather"),
+	"d2 thwomp shelf": AndSlot("d2 basement",
+		Or("feather", And("cane", "pegasus satchel"))),
 	"d2 moblin platform": AndSlot("d2 basement",
 		Or("d2 color key", "d2 basement key")),
 	// push moblin into doorway, stand on button, use switch hook
@@ -56,8 +57,10 @@ var agesD3Nodes = map[string]*Node{
 	"d3 S crystal":        And("d3 1F spinner"),
 	"d3 E crystal":        And("d3 1F spinner", "bombs"),
 	"d3 statue key":       And("d3 E crystal"),
-	"d3 N crystal":        And("d3 statue key", Or("any seed shooter", "boomerang")),
-	"d3 armos key":        And("d3 statue key", "kill armos"),
+	// you can clip into the blocks enough to hit this crystal with switch hook
+	"d3 N crystal": And("d3 statue key",
+		Or("any seed shooter", "boomerang", Hard("switch hook"))),
+	"d3 armos key": And("d3 statue key", "kill armos"),
 	"d3 hall of bushes": AndSlot("d3 armos key", "d3 compass key",
 		"d3 block key"), // technically only need two maximum, one minimum
 	"d3 W crystal":   And("d3 statue key"),
@@ -77,7 +80,7 @@ var agesD3Nodes = map[string]*Node{
 	"d3 torch chest": AndSlot("d3 B1F spinner",
 		Or("ember shooter", Hard("mystery shooter"))),
 	"kill subterror": And("shovel",
-		Or("sword", "scent seeds", Hard("bombs"))),
+		Or("sword", "switch hook", "scent seeds", Hard("bombs"))),
 	"d3 boss key chest": AndSlot("d3 B1F spinner", "kill subterror",
 		"any seed shooter"),
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
@@ -121,8 +124,7 @@ var agesD5Nodes = map[string]*Node{
 	"d5 dark chest":     And("d5 switch A", Or("cane", Hard())),
 	"d5 boxed chest": And("d5 switch A",
 		Or("switch hook", And("feather", "cane"))),
-	"d5 eyes chest": And("d5 switch A", "hit switch ranged",
-		"any seed shooter"),
+	"d5 eyes chest": And("d5 switch A", "any seed shooter"),
 	"d5 2-statue chest": And("d5 switch A", "break pot", "cane", "feather",
 		Or("any seed shooter", "boomerang", HardAnd("jump 3", "sword"))),
 	"d5 essence": AndStep("d5 switch A", "d5 boss key", "cane", "sword"),
@@ -153,7 +155,7 @@ var agesD5Nodes = map[string]*Node{
 
 var agesD6Nodes = map[string]*Node{
 	// past, 0 keys
-	"d6 past color room": AndSlot("enter d6 past", "kill gel"),
+	"d6 past color room": AndSlot("enter d6 past", "feather", "kill gel"),
 	"d6 past wizzrobe chest": AndSlot("enter d6 past", "bombs",
 		"kill wizzrobe"),
 	"d6 past pool chest": AndSlot("enter d6 past", "bombs", "ember seeds",
@@ -198,7 +200,7 @@ var agesD6Nodes = map[string]*Node{
 	"d6 present channel chest": AndSlot("enter d6 present", "d6 open wall",
 		"d6 present all keys", "switch hook"),
 	"d6 present vire chest": AndSlot("d6 present spinner chest",
-		"d6 present all keys", Or("sword", Hard("bombs")), "switch hook"),
+		"d6 present all keys", Or("sword", Hard()), "switch hook"),
 
 	"d6 present key A": And("d6 present rope chest"),
 	"d6 present key B": And("d6 present color room"),
