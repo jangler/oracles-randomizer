@@ -272,10 +272,11 @@ func initAgesEOB() {
 			"\xc5\x01\x02\xef\xcd"+compareRoom+"\xc1\xc0"+ // past
 			"\x3e\x59\xcd\x48\x17\x3e\x10\x38\x02\x3e\x04"+
 			"\xe5\x21\x9c\xc6\xb6\x77\xe1\xc9")
-	// set flag for d6 past boss key whether you get it in past or present.
+	// set flag for d6 past and present boss keys whether you get the key in
+	// past or present.
 	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
-		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\xc0\xe5\x21\x83\xc6\xcb\xe6\xe1"+
-			"\xc9")
+		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\x28\x03\xfe\x0c\xc0"+
+			"\xe5\x21\x82\xc6\xcb\xf6\x23\xcb\xe6\xe1\xc9")
 	// refill all seeds when picking up a seed satchel.
 	refillSeedSatchel := r.appendToBank(0x09, "refill seed satchel",
 		"\x7b\xfe\x19\xc0"+
