@@ -209,6 +209,13 @@ var agesFixedMutables = map[string]Mutable{
 
 	// check fake ID 10 (nothing) for king zora's item
 	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x4a, 0x10),
+
+	// check fake ID 12 (nothing) for first goron dance
+	"check dance 1 fake ID": MutableStrings([]Addr{{0x0c, 0x67e0},
+		{0x0c, 0x685a}, {0x0c, 0x6983}}, "\x5b", "\x12"),
+	// check fake ID 14 (nothing) for goron dance with letter of introduction
+	"check dance 2 fake ID": MutableStrings([]Addr{{0x0c, 0x67d8},
+		{0x0c, 0x6852}, {0x0c, 0x697b}}, "\x44", "\x14"),
 }
 
 var agesVarMutables = map[string]Mutable{

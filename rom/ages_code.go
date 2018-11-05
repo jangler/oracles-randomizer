@@ -251,6 +251,14 @@ func initAgesEOB() {
 	kingZoraSetFakeID := r.appendToBank(0x09, "king zora set fake ID",
 		"\xc5\x01\x05\xab\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9c\xc6\xcb\xc6"+
 			"\xe1\xc9")
+	// set treasure ID 12 (nothing) for first goron dance, and 14 (nothing) for
+	// the second. if you're in the present, it's always 12. if you're in the
+	// past, it's 12 iff you don't have letter of introduction.
+	goronDanceSetFakeID := r.appendToBank(0x09, "dance 1 set fake ID",
+		"\xc5\x01\x02\xed\xcd"+compareRoom+"\xc1\x28\x12"+ // present
+			"\xc5\x01\x02\xef\xcd"+compareRoom+"\xc1\xc0"+ // past
+			"\x3e\x59\xcd\x48\x17\x3e\x10\x38\x02\x3e\x04"+
+			"\xe5\x21\x9c\xc6\xb6\x77\xe1\xc9")
 	// set flag for d6 past boss key whether you get it in past or present.
 	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
 		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\xc0\xe5\x21\x83\xc6\xcb\xe6\xe1"+
@@ -270,7 +278,8 @@ func initAgesEOB() {
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
 			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\xcd"+tingleSetFakeID+
-			"\xcd"+brotherSetFakeID+"\xcd"+kingZoraSetFakeID+"\x7b\xc3\x1c\x17")
+			"\xcd"+brotherSetFakeID+"\xcd"+kingZoraSetFakeID+
+			"\xcd"+goronDanceSetFakeID+"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
