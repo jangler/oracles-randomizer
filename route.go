@@ -276,7 +276,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		}
 
 		if success && slotList.Len() == 0 {
-			arrangeListsForLog(r, ri, hard, verbose)
+			arrangeListsForLog(r, ri, hard, verbose, logChan)
 
 			// rotate dungeon items to the back of the lists
 			items, slots := ri.ProgressItems, ri.ProgressSlots
@@ -579,7 +579,8 @@ func countSteps(r *Route, hard bool) int {
 
 // break down the used items into required and optional items, so that the log
 // makes sense.
-func arrangeListsForLog(r *Route, ri *RouteInfo, hard, verbose bool) {
+func arrangeListsForLog(r *Route, ri *RouteInfo, hard, verbose bool,
+	logChan chan string) {
 	done := r.Graph["done"]
 
 	// figure out which items aren't necessary
@@ -597,7 +598,8 @@ func arrangeListsForLog(r *Route, ri *RouteInfo, hard, verbose bool) {
 		if slot.Name != "d0 sword chest" &&
 			done.GetMark(done, hard) == graph.MarkTrue {
 			if verbose {
-				fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
+				logChan <- fmt.Sprintf("%s (in %s) is extra\n",
+					item.Name, slot.Name)
 			}
 			ri.ExtraItems.PushBack(item)
 			ri.ExtraSlots.PushBack(slot)
