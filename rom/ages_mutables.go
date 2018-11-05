@@ -43,7 +43,7 @@ var agesFixedMutables = map[string]Mutable{
 	// clear rubble from rolling ridge base present without d4 essence
 	"clear rubble": MutableByte(Addr{0x04, 0x6a44}, 0xc8, 0x00),
 	// open rolling ridge present tunnel without completing d5
-	"open tunnel": MutableByte(Addr{0x04, 0x6a33}, 0xc8, 0x00),
+	"open tunnel": MutableByte(Addr{0x04, 0x6a35}, 0xc8, 0x00),
 
 	// cut off the end of deku forest soldier's text so it makes sense when
 	// giving item
@@ -208,7 +208,7 @@ var agesFixedMutables = map[string]Mutable{
 		"\x4c", "\x1e"),
 
 	// check fake ID 10 (nothing) for king zora's item
-	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x4a, 0x10),
+	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x46, 0x10),
 
 	// check fake ID 12 (nothing) for first goron dance
 	"check dance 1 fake ID": MutableStrings([]Addr{{0x0c, 0x67e0},

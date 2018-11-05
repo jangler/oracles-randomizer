@@ -362,6 +362,16 @@ func readFileBytes(filename string) ([]byte, error) {
 // messes up rom data and writes it to a file.
 func randomize(romData []byte, game int, logFilename, seedFlag string,
 	hard, verbose bool) (uint32, []byte, string, error) {
+	// sanity check beforehand
+	if errs := rom.Verify(romData, game); errs != nil {
+		if verbose {
+			for _, err := range errs {
+				ui.Printf(err.Error())
+			}
+		}
+		return 0, nil, "", errs[0]
+	}
+
 	seed, err := setRandomSeed(seedFlag)
 	if err != nil {
 		return 0, nil, "", err

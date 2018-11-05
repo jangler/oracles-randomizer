@@ -235,9 +235,9 @@ func Verify(b []byte, game int) []error {
 		// ages, script item using collect mode other than 0a
 		case "trade lava juice", "goron dance past", "goron elder",
 			"tingle's upgrade", "king zora", "d2 thwomp shelf":
-		// ages, progressive item slots not covered elsewhere
+		// ages, progressive items/slots not covered elsewhere
 		case "d6 present vire chest", "d7 miniboss chest", "d8 floor puzzle",
-			"tokkey's composition", "rescue nayru":
+			"tokkey's composition", "rescue nayru", "bracelet 2", "flippers 2":
 			break
 		default:
 			if err := m.Check(b); err != nil {
