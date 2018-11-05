@@ -10,6 +10,7 @@ func newAgesRomBanks() *romBanks {
 	}
 
 	r.endOfBank[0x00] = 0x3ef8
+	r.endOfBank[0x01] = 0x7fc3
 	r.endOfBank[0x02] = 0x7e93
 	r.endOfBank[0x03] = 0x7ebd
 	r.endOfBank[0x04] = 0x7edb
@@ -67,6 +68,18 @@ func initAgesEOB() {
 	searchDoubleKey := r.appendToBank(0x00, "search by double key",
 		"\x2a\xfe\xff\xc8\xb8\x20\x06\x2a\xb9\x20\x03\x37\xc9"+
 			"\x23\x7b\xd7\x18\xee")
+
+	// bank 01
+
+	// use a different invalid tile table for time warping if link doesn't have
+	// flippers.
+	noFlippersTable := r.appendToBank(0x01, "no flippers table",
+		"\xf3\x00\xfe\x00\xff\x00\xe4\x00\xe5\x00\xe6\x00\xe7\x00\xe8\x00"+
+			"\xe9\x00\xfc\x01\xfa\x00\xe0\x00\xe1\x00\xe2\x00\xe3\x00\x00")
+	dontDrownLink := r.appendToBank(0x01, "don't drown link",
+		"\x21\x17\x63\xfa\x9f\xc6\xe6\x40\xc0\x21"+noFlippersTable+"\xc9")
+	r.replace(0x01, 0x6301, "call don't drown link",
+		"\x21\x17\x63", "\xcd"+dontDrownLink)
 
 	// bank 02
 
