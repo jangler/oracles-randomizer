@@ -512,6 +512,7 @@ func initAgesEOB() {
 		"\x40\x00"+setSoldierSprite+
 			"\x47\x0d"+setShopItemSprite+ // 150 rupees only
 			"\x63\x14"+setHiddenTokaySprite+ // iron shield
+			"\x63\x15"+setHiddenTokaySprite+ // mirror shield
 			"\x63\x3e"+setWildTokaySprite+ // wild tokay game prize
 			"\x6b\x0b"+setInventionSprite+ // cheval's invention
 			"\x6b\x0c"+setChevalTestSprite+
