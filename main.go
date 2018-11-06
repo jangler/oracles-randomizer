@@ -41,7 +41,7 @@ func fatal(err error, logf func(string, ...interface{})) {
 }
 
 var (
-	flagHard, flagNoMusic, flagTreewarp, flagVerbose bool
+	flagHard, flagNoMusic, flagTreewarp, flagVerbose, flagNoUI bool
 
 	flagSeed string
 )
@@ -53,6 +53,8 @@ func main() {
 		"require some plays outside normal logic")
 	flag.BoolVar(&flagNoMusic, "nomusic", false,
 		"don't play any music in the modified ROM")
+	flag.BoolVar(&flagNoUI, "noui", false,
+		"use command line output without option prompts")
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flag.BoolVar(&flagTreewarp, "treewarp", false,
