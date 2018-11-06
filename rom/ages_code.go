@@ -148,7 +148,7 @@ func initAgesEOB() {
 			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\x01\x13\x00\x61\xd7"+ // portal in symmetry city past
 			"\x04\xbd\x00\x50\xa0"+ // remove key door in D5
-			"\x04\xa6\x80\x58\x1e"+ // add key block in room below
+			"\x04\xa6\x80\x54\x1e"+ // add key block in room below
 			"\x05\x6e\x00\x50\xa0"+ // remove blue button key door in D7
 			"\x05\x5a\x80\x66\x1e"+ // add key block on floor below
 			"\xff")
