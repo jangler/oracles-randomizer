@@ -148,6 +148,14 @@ func runRandomizer(logf func(string, ...interface{})) {
 		// prompt for options if it wasn't necessarily a CLI invocation
 
 		if useTUI {
+			specificSeed := ui.Prompt("use specific seed? (y/n)")
+			if specificSeed == 'y' {
+				flagSeed = ui.PromptSeed("enter seed: (8-digit hex number)")
+				logf("using seed %s.", flagSeed)
+			}
+		}
+
+		if useTUI {
 			hard := ui.Prompt("enable hard difficulty? (y/n)")
 			flagHard = hard == 'y'
 		}

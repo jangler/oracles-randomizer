@@ -40,13 +40,14 @@ const (
 )
 
 var (
-	lines  []line
-	bottom = []segment{{text: "(q)", fg: colorDefault | bold}, {text: "uit"}}
-	write  = make(chan line, 1)
-	input  = make(chan rune)
-	prompt = make(chan rune)
-	resize = make(chan interface{}, 1)
-	change = make(chan modeType, 1)
+	lines   []line
+	bottom  = []segment{{text: "(q)", fg: colorDefault | bold}, {text: "uit"}}
+	write   = make(chan line, 1)
+	rewrite = make(chan line)
+	input   = make(chan rune)
+	prompt  = make(chan rune)
+	resize  = make(chan interface{}, 1)
+	change  = make(chan modeType, 1)
 )
 
 func Init(title string) {
@@ -67,7 +68,12 @@ func Run() {
 			evt := termbox.PollEvent()
 			switch evt.Type {
 			case termbox.EventKey:
-				input <- evt.Ch
+				switch evt.Key {
+				case termbox.KeyCtrlC, '\x7f': // 7f == backspace
+					input <- rune(evt.Key)
+				default:
+					input <- evt.Ch
+				}
 			case termbox.EventResize:
 				resize <- 1
 			}
@@ -81,8 +87,11 @@ func Run() {
 		case ln := <-write:
 			lines = append(lines, ln)
 			draw(mode)
+		case ln := <-rewrite:
+			lines[len(lines)-1] = ln
+			draw(mode)
 		case ch := <-input:
-			if ch == 'q' || mode == modeDone {
+			if ch == 'q' || ch == '\x03' || mode == modeDone {
 				termbox.Close()
 				loop = false
 			} else if mode == modePrompt {
@@ -121,7 +130,7 @@ func draw(mode modeType) {
 	drawLine(w, h-1, bottom)
 
 	if mode == modePrompt {
-		termbox.SetCursor(x+1, len(lines)-scroll)
+		termbox.SetCursor(x, len(lines)-scroll)
 	} else {
 		termbox.HideCursor()
 	}
@@ -235,6 +244,9 @@ func Prompt(s string) rune {
 		}
 	}
 
+	// add space before cursor
+	line = append(line, segment{text: " "})
+
 	write <- line
 	change <- modePrompt
 	for {
@@ -242,6 +254,30 @@ func Prompt(s string) rune {
 		if strings.ContainsRune(acceptedRunes, ch) {
 			change <- modeWorking
 			return ch
+		}
+	}
+}
+
+// PromptSeed waits for the user to input 8 hex digits, then returns the
+// string.
+func PromptSeed(s string) string {
+	acceptedRunes := "0123456789abcdef"
+	line := []segment{{text: s + " "}, {text: ""}}
+
+	write <- line
+	change <- modePrompt
+	for {
+		ch := <-prompt
+		if strings.ContainsRune(acceptedRunes, ch) {
+			line[1].text += string(ch)
+		} else if ch == '\x7f' && len(line[1].text) > 0 {
+			line[1].text = line[1].text[:len(line[1].text)-1]
+		}
+		rewrite <- line
+
+		if len(line[1].text) == 8 {
+			change <- modeWorking
+			return line[1].text
 		}
 	}
 }
