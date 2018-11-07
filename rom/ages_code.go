@@ -156,6 +156,10 @@ func initAgesEOB() {
 			"\x05\xda\x01\xa4\xb2"+ // tunnel to moblin keep
 			"\x05\xda\x01\xa5\xb2"+ // cont.
 			"\x05\xda\x01\xa6\xb2"+ // cont.
+			"\x00\x24\x02\x49\x63"+ // other side of symmetry city bridge
+			"\x00\x24\x02\x59\x63"+ // cont.
+			"\x00\x24\x02\x69\x63"+ // cont.
+			"\x00\x24\x02\x79\x73"+ // cont.
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
@@ -401,6 +405,14 @@ func initAgesEOB() {
 	soldierScript := r.appendToBank(0x0c, "soldier script",
 		"\xb0\x20"+soldierScriptAfter+"\xdf\x24"+soldierScriptCheck+"\x5d\xee")
 	r.replace(0x09, 0x5207, "soldier script pointer", "\xee\x5d", soldierScript)
+
+	// set room flags for other side of symmetry city bridge at end of building
+	// cutscene.
+	setBridgeFlag := r.appendToBank(0x15, "set bridge flag",
+		"\xe5\xaf\xea\x8a\xcc\x3e\x25\xcd\xf9\x31"+
+			"\x21\x24\xc7\xcb\xce\xe1\xc9")
+	r.replace(0x0c, 0x7a6f, "call set bridge flag",
+		"\xb9\xb6\x25", "\xe0"+setBridgeFlag)
 
 	// bank 0f
 
