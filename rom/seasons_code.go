@@ -117,7 +117,7 @@ func initSeasonsEOB() {
 	// warp to ember tree if holding start when closing the map screen.
 	treeWarp := r.appendToBank(0x02, "tree warp",
 		"\xfa\x81\xc4\xe6\x08\x28\x16"+ // close as normal if start not held
-			"\xfa\x49\xcc\xfe\x02\x38\x06"+ // check if indoors
+			"\xfa\x50\xcc\xe6\x01\x20\x06"+ // check if indoors
 			"\x3e\x5a\xcd\x74\x0c\xc9"+ // play error sound and ret
 			"\x21\xb7\xcb\x36\x05\xaf\xcd\x7b\x5e\xc3\x7b\x4f") // close + warp
 	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "tree warp jump",

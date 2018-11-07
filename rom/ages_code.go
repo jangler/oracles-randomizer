@@ -86,7 +86,7 @@ func initAgesEOB() {
 	// warp to ember tree if holding start when closing the map screen.
 	treeWarp := r.appendToBank(0x02, "tree warp",
 		"\xfa\x81\xc4\xe6\x08\x28\x1b"+ // close as normal if start not held
-			"\xfa\x2d\xcc\xfe\x02\x38\x06"+ // check if indoors
+			"\xfa\x34\xcc\xe6\x01\x20\x06"+ // check if indoors
 			"\x3e\x5a\xcd\x98\x0c\xc9"+ // play error sound and ret
 			"\x21\x47\xcc\x36\x80\x23\x36\x78\x2e\x4a\x36\x55"+ // set dest
 			"\xcd\xbf\x5f\xc3\xba\x4f") // close + warp
