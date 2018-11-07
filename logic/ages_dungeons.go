@@ -122,7 +122,8 @@ var agesD4Nodes = map[string]*Node{
 var agesD5Nodes = map[string]*Node{
 	"d5 switch A":       And("enter d5", "kill normal", "hit switch"),
 	"d5 blue peg chest": AndSlot("d5 switch A"),
-	"d5 dark chest":     And("d5 switch A", Or("cane", Hard())),
+	"d5 dark chest": And("d5 switch A",
+		Or("cane", "switch hook", HardOr("kill normal", "push enemy"))),
 	"d5 boxed chest": And("d5 switch A",
 		Or("switch hook", And("feather", "cane"))),
 	"d5 eyes chest": And("d5 switch A", "any seed shooter"),

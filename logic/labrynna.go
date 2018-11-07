@@ -118,7 +118,7 @@ var labrynnaNodes = map[string]*Node{
 		And("ridge west present", Or("ages", And("bracelet", "echoes")))),
 	"ridge west present": Or("ridge upper present",
 		And("switch hook", "currents", Or("feather", "ages")),
-		And("currents", Or("ridge west past", "ridge base past"))),
+		And("currents", "ridge west past")),
 	"ridge west cave":         AndSlot("ridge west present"),
 	"rolling ridge west tree": AndSlot("sword", "seed item", "ridge west past"),
 	"under moblin keep": AndSlot("ridge west present", "feather",
