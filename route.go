@@ -178,6 +178,11 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		ri.Companion = rollAnimalCompanion(src, r, game)
 		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
 
+		// if ages, assume player will buy shield from shop if necessary
+		if game == rom.GameAges {
+			r.Costs -= 30
+		}
+
 		// slot initial nodes before algorithm slots progression items
 		if game == rom.GameSeasons {
 			ri.Seasons = rollSeasons(src, r)
