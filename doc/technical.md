@@ -347,3 +347,12 @@ text IDs less than 2c00 and the second for those greater or equal.
 function is probably the easiest way to determine where particular text data is
 in the rom. watching 3f:4fa4 lets you determine the location of text *address*
 data (stored in hl).
+
+
+## simulated input
+
+byte triplets:
+
+1. duration in frames
+2. ?
+3. input bitmask? 10 = right, 20 = left, 40 = up, 80 = down

@@ -347,6 +347,18 @@ func initAgesEOB() {
 	r.replace(0x0a, 0x5541, "call save maku tree with nayru",
 		"\xcd\xf9\x31", "\xcd"+saveMakuTreeWithNayru)
 
+	// set link's simulated input differently if entering the first maku treen
+	// cutscene from the right. this prevents him from being forced to move
+	// offscreen, where the script never restores player control.
+	makuTreeInput := r.appendToBank(0x0a, "maku tree input",
+		"\x2d\x00\x00\x10\x00\x20\x04\x00\x00\x20\x00\x80\x04\x00\x00"+
+			"\x30\x00\x20\x04\x00\x00\x04\x00\x40\x2d\x00\x00\xff\xff")
+	setMakuTreeInput := r.appendToBank(0x0a, "set maku tree input",
+		"\x5f\xfa\x02\xcd\xfe\x03\x7b\x20\x03\x21"+makuTreeInput+
+			"\xcd\x1d\x2a\xc9")
+	r.replace(0x0a, 0x66e0, "call set maku tree input",
+		"\xcd\x1d\x2a", "\xcd"+setMakuTreeInput)
+
 	// bank 0b
 
 	// always get item from king zora before permission to enter jabu-jabu.
