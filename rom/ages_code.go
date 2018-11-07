@@ -22,7 +22,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x0c] = 0x7f94
 	r.endOfBank[0x10] = 0x7ef4
 	r.endOfBank[0x11] = 0x7f73
-	r.endOfBank[0x12] = 0x7f00
+	r.endOfBank[0x12] = 0x7e8f
 	r.endOfBank[0x15] = 0x7bfb
 	r.endOfBank[0x16] = 0x7e03
 	r.endOfBank[0x3f] = 0x7d0a
@@ -151,6 +151,7 @@ func initAgesEOB() {
 			"\x04\xa6\x80\x54\x1e"+ // add key block in room below
 			"\x05\x6e\x00\x50\xa0"+ // remove blue button key door in D7
 			"\x05\x5a\x80\x66\x1e"+ // add key block on floor below
+			"\x00\x25\x00\x37\xd7"+ // portal in nuun highlands
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
@@ -394,6 +395,12 @@ func initAgesEOB() {
 		"\xf1\xdc\x05\xf2\xe1\x00\x68\x18\xfe")
 	r.replace(0x12, 0x5e91, "symmetry past portal pointer",
 		"\xf1\xdc\x05", "\xf3"+symmetryPastPortal)
+	// add one to nuun highlands too.
+	nuunPortalOtherObjects := r.appendToBank(0x12, "nuun portal other objects",
+		"\xf2\x9a\x00\x68\x48\x9a\x01\x58\x58\x9a\x02\x58\x68\x9a\x03\x48\x58"+
+			"\x9a\x04\x38\x58\xfe")
+	r.replace(0x12, 0x5a7b, "nuun portal", "\xf2\x9a\x00",
+		"\xf2\xe1\x00\x38\x78\xf3"+nuunPortalOtherObjects+"\xff")
 
 	// bank 15
 
