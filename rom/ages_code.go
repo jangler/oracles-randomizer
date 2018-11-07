@@ -20,6 +20,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x0a] = 0x7e09
 	r.endOfBank[0x0b] = 0x7fa8
 	r.endOfBank[0x0c] = 0x7f94
+	r.endOfBank[0x0f] = 0x7f90
 	r.endOfBank[0x10] = 0x7ef4
 	r.endOfBank[0x11] = 0x7f73
 	r.endOfBank[0x12] = 0x7e8f
@@ -152,6 +153,9 @@ func initAgesEOB() {
 			"\x05\x6e\x00\x50\xa0"+ // remove blue button key door in D7
 			"\x05\x5a\x80\x66\x1e"+ // add key block on floor below
 			"\x00\x25\x00\x37\xd7"+ // portal in nuun highlands
+			"\x05\xda\x01\xa4\xb2"+ // tunnel to moblin keep
+			"\x05\xda\x01\xa5\xb2"+ // cont.
+			"\x05\xda\x01\xa6\xb2"+ // cont.
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
@@ -397,6 +401,14 @@ func initAgesEOB() {
 	soldierScript := r.appendToBank(0x0c, "soldier script",
 		"\xb0\x20"+soldierScriptAfter+"\xdf\x24"+soldierScriptCheck+"\x5d\xee")
 	r.replace(0x09, 0x5207, "soldier script pointer", "\xee\x5d", soldierScript)
+
+	// bank 0f
+
+	// set room flag for tunnel behind keep when defeating great moblin.
+	setTunnelFlag := r.appendToBank(0x0f, "set tunnel flag",
+		"\x21\x09\xc7\xcb\xc6\x21\xda\xca\xc9")
+	r.replace(0x0f, 0x7f3e, "call set tunnel flag",
+		"\x21\x09\xc7", "\xcd"+setTunnelFlag)
 
 	// bank 10
 
