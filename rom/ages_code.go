@@ -196,6 +196,13 @@ func initAgesEOB() {
 	r.replace(0x05, 0x6083, "call cliff lookup",
 		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
 
+	// prevent link from surfacing from underwater without mermaid suit. this
+	// is probably only relevant for the sea of no return.
+	preventSurface := r.appendToBank(0x05, "prevent surface",
+		"\xfa\x91\xcc\xb7\xc0\xfa\xa3\xc6\xe6\x04\xfe\x04\xc9")
+	r.replace(0x05, 0x516c, "call prevent surface",
+		"\xfa\x91\xcc\xb7", "\xcd"+preventSurface+"\x00")
+
 	// bank 06
 
 	// burning the first tree in yoll graveyard should set room flag 1 so that
