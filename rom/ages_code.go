@@ -214,6 +214,15 @@ func initAgesEOB() {
 	r.replace(0x06, 0x47aa, "call remove yoll tree",
 		"\x21\x26\xc6", "\xcd"+removeYollTree)
 
+	// reenter a warp tile that link is standing on when playing the tune of
+	// currents (useful if you warp into a patch of bushes).
+	reenterCurrentsWarp := r.appendToBank(0x06, "reenter currents warp",
+		"\xfa\x34\xcc\xf5\xd5\x11\x41\xd2\x1a\xfe\xde\x20\x08"+
+			"\x1e\x44\x3e\x02\x12\xd1\xf1\xc9"+
+			"\x14\x7a\xfe\xe0\x38\xed\xd1\xf1\xc9")
+	r.replace(0x06, 0x4e34, "call reenter currents warp",
+		"\xfa\x34\xcc", "\xcd"+reenterCurrentsWarp)
+
 	// bank 16 (pt. 1)
 
 	// upgraded item data (one byte for old ID, one for new ID two for address):
