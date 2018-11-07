@@ -216,6 +216,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 			} else {
 				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
 				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+				r.Costs -= logic.RupeeValues[item.Name]
+				r.Costs -= logic.NodeCosts[slot.Name]
 				itemList.PushBack(item)
 				slotList.PushBack(slot)
 				item.RemoveParent(slot)
