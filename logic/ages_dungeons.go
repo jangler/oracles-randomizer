@@ -26,22 +26,21 @@ var agesD1Nodes = map[string]*Node{
 
 var agesD2Nodes = map[string]*Node{
 	"d2 bombed terrace": AndSlot("enter d2", "kill spiked beetle", "bombs"),
-	"d2 rope room":      AndSlot("enter d2", "d2 key 1"),
+	"d2 rope room": AndSlot("enter d2", "d2 key 1", "d2 color key",
+		"d2 basement key", "d2 statue key"),
 	"enter swoop": Or(And("enter d2", "kill spiked beetle", "feather"),
 		And("d2 rope room", "d2 key 2")),
 	"d2 basement":      And("enter swoop", "kill swoop"),
 	"d2 thwomp tunnel": AndSlot("d2 basement"),
 	"d2 thwomp shelf": AndSlot("d2 basement",
 		Or("feather", And("cane", "pegasus satchel"))),
-	"d2 moblin platform": AndSlot("d2 basement",
-		Or("d2 color key", "d2 basement key")),
+	"d2 moblin platform": AndSlot("d2 key 1", "d2 key 2", "d2 color key",
+		"d2 basement key"),
 	// push moblin into doorway, stand on button, use switch hook
 	"d2 statue room": And("d2 moblin platform", Or("bracelet", "cane",
 		HardAnd("switch hook", "push enemy"))),
-	"d2 color room": AndSlot("d2 statue room", "d2 color key",
-		"d2 basement key", "d2 statue key"),
-	"d2 essence": AndStep("d2 statue room", "d2 boss key",
-		"d2 color key", "d2 basement key", "d2 statue key"),
+	"d2 color room": AndSlot("d2 all keys"),
+	"d2 essence":    AndStep("d2 all keys", "d2 boss key"),
 
 	"d2 key 1":     And("enter d2", "kill spiked beetle", "kill normal"),
 	"d2 key 2":     And("enter d2", "d2 key 1", "bombs"),
@@ -49,6 +48,8 @@ var agesD2Nodes = map[string]*Node{
 	"d2 basement key": And("d2 basement", "feather", "bombs",
 		"hit lever from minecart"),
 	"d2 statue key": And("d2 statue room", "feather"),
+	"d2 all keys": And("d2 key 1", "d2 key 2", "d2 color key",
+		"d2 basement key", "d2 statue key"),
 }
 
 var agesD3Nodes = map[string]*Node{
