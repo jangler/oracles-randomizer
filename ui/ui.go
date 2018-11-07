@@ -252,6 +252,7 @@ func Prompt(s string) rune {
 	for {
 		ch := <-prompt
 		if strings.ContainsRune(acceptedRunes, ch) {
+			rewrite <- append(line, segment{text: string(ch)})
 			change <- modeWorking
 			return ch
 		}
