@@ -216,6 +216,11 @@ var agesFixedMutables = map[string]Mutable{
 	// check fake ID 14 (nothing) for goron dance with letter of introduction
 	"check dance 2 fake ID": MutableStrings([]Addr{{0x0c, 0x67d8},
 		{0x0c, 0x6852}, {0x0c, 0x697b}}, "\x44", "\x14"),
+
+	// skip essence checks for goron elder event
+	"skip goron elder essence checks": MutableStrings(
+		[]Addr{{0x0c, 0x6b1d}, {0x0c, 0x6b83}, {0x15, 0x735d}},
+		"\xc7\xdb\xcd\x80", "\xc7\xdb\xcd\x00"),
 }
 
 var agesVarMutables = map[string]Mutable{
