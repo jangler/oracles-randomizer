@@ -139,7 +139,7 @@ to be ridden; i think the others are specific to each animal.
 - 25 = bridge built
 - 26 = rafton completed raft
 - 27 = cured king zora
-- 29 = checked in fairies' woods?
+- 29 = placed tuni nut
 - 2a = entered symmetry city brother's house (either one)
 - 2b = fairies put the forest back in order
 - 2e = listened to symmetry city wife's problem (either one)

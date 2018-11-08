@@ -206,6 +206,9 @@ var agesFixedMutables = map[string]Mutable{
 	// check fake ID 1e (fool's ore) for symmetry city brother's item
 	"brother fake ID": MutableStrings([]Addr{{0x15, 0x77f0}, {0x15, 0x78f6}},
 		"\x4c", "\x1e"),
+	// and don't change the brothers' state if the tuni nut has been placed
+	"brother ignore flag": MutableString(Addr{0x15, 0x78e5},
+		"\xb5\x29", "\xb0\x02"),
 
 	// check fake ID 10 (nothing) for king zora's item
 	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x46, 0x10),
