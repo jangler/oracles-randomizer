@@ -330,16 +330,16 @@ func initAgesEOB() {
 	r.replace(0x09, 0x4c82, "call maku tree item flag",
 		"\xcd\x7d\x19", "\xc3"+makuTreeItemFlag)
 
-	// give correct ID and param for shop item.
+	// give correct ID and param for shop item, play sound, and load correct
+	// text index into temp wram address.
 	shopGiveTreasure := r.appendToBank(0x09, "shop give treasure",
-		"\x47\x1a\xfe\x0d\x78\x20\x04\xcd"+getTreasureData+
-			"\x78\xc3"+handleGetItem)
+		"\x47\x1a\xfe\x0d\x78\x20\x08\xcd"+getTreasureData+"\x7b\xea\x0d\xcf"+
+			"\x78\xcd"+handleGetItem+"\xc2\x98\x0c\x3e\x4c\xc3\x98\x0c")
 	r.replace(0x09, 0x4425, "call shop give treasure",
 		"\xcd\x1c\x17", "\xcd"+shopGiveTreasure)
-	// and display correct text.
+	// display text based on above temp wram address.
 	shopShowText := r.appendToBank(0x09, "shop show text",
-		"\x1a\xfe\x0d\x79\x20\x0c\x21\x11\x45\x46\x23\x4e\xcd"+getTreasureData+
-			"\x06\x00\x4b\xc3\x72\x18")
+		"\x1a\xfe\x0d\xc2\x72\x18\xfa\x0d\xcf\x06\x00\x4f\xc3\x72\x18")
 	r.replace(0x09, 0x4443, "call shop show text",
 		"\xc2\x72\x18", "\xc2"+shopShowText)
 
