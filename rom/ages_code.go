@@ -160,6 +160,9 @@ func initAgesEOB() {
 			"\x00\x24\x02\x59\x63"+ // cont.
 			"\x00\x24\x02\x69\x63"+ // cont.
 			"\x00\x24\x02\x79\x73"+ // cont.
+			"\x01\x2c\x00\x70\x69"+ // ledge in rolling ridge east past
+			"\x01\x2c\x00\x71\x06"+ // cont.
+			"\x01\x2c\x00\x72\x67"+ // cont.
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
