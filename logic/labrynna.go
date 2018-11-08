@@ -59,8 +59,8 @@ var labrynnaNodes = map[string]*Node{
 	"enter d1":           And("yoll graveyard", "graveyard key"),
 
 	// western woods
-	"fairies' woods chest": AndSlot("lynna city", Or(
-		And(Or("bracelet", "flippers", "dimitri's flute", "ages",
+	"fairies' woods chest": AndSlot("lynna city", Or("ages",
+		And(Or("bracelet", "flippers", "dimitri's flute",
 			And("currents", Or("hit lever", "ricky's flute", "moosh's flute"))),
 			Or("feather", "ricky's flute", "moosh's flute", "switch hook")),
 		And("bracelet", "currents"))),
@@ -153,8 +153,9 @@ var labrynnaNodes = map[string]*Node{
 		And("ridge mid past", "feather", "brother emblem"),
 		And("ridge mid present", "ages"),
 		And("ridge base past west", Or("flippers", Hard("jump 3")))),
-	"ridge base past west": And("ridge base past east",
-		Or("flippers", Hard("jump 3"))),
+	"ridge base past west": Or(
+		And("ridge base present", "echoes"),
+		And("ridge base past east", Or("flippers", Hard("jump 3")))),
 	"ridge base past":     AndSlot("ridge base past west", "bombs"),
 	"enter d6 past":       And("mermaid key", "ridge base past west"),
 	"ridge diamonds past": AndSlot("ridge base past west", "switch hook"),

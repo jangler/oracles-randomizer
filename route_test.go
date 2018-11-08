@@ -134,21 +134,21 @@ func testAgesGraph(t *testing.T) {
 	}, "enter d5", false, true)
 
 	checkReach(t, g, map[string]string{
-		"harp 1":          "starting chest",
-		"harp 2":          "nayru's house",
-		"flippers 1":      "black tower worker",
-		"flippers 2":      "fairies' woods chest",
-		"feather":         "lynna city chest",
-		"old mermaid key": "hidden tokay cave",
-	}, "enter d6 past", false, true)
-
-	checkReach(t, g, map[string]string{
 		"harp 1":      "starting chest",
 		"harp 2":      "nayru's house",
 		"flippers 1":  "black tower worker",
 		"flippers 2":  "fairies' woods chest",
 		"feather":     "lynna city chest",
 		"mermaid key": "hidden tokay cave",
+	}, "enter d6 past", false, true)
+
+	checkReach(t, g, map[string]string{
+		"harp 1":          "starting chest",
+		"harp 2":          "nayru's house",
+		"flippers 1":      "black tower worker",
+		"flippers 2":      "fairies' woods chest",
+		"feather":         "lynna city chest",
+		"old mermaid key": "hidden tokay cave",
 	}, "enter d6 present", false, true)
 
 	checkReach(t, g, map[string]string{
@@ -190,14 +190,14 @@ func testAgesGraph(t *testing.T) {
 			"harp 1":             "nayru's house",
 			"mystery tree seeds": "deku forest tree",
 			"bombs, 10":          "deku forest soldier",
-			"feather":            "d2 thwomp tunnel",
+			"feather":            "d2 bombed terrace", // vanilla unsafe
 			"flippers 1":         "cheval's test",
 			"cheval rope":        "cheval's invention",
 			"ricky's gloves":     "south shore dirt",
 			"island chart":       "tingle's gift",
 			"scent seedling":     "wild tokay game",
 			"scent tree seeds":   "crescent island tree",
-			"seed shooter":       "d3 compass chest", // vanilla unsafe
+			"seed shooter":       "d3 pols voice chest", // vanilla unsafe
 			"moosh's flute":      "shop, 150 rupees",
 			"tuni nut":           "symmetry city brother",
 			"harp 2":             "tokkey's composition",
@@ -298,8 +298,7 @@ func TestFindRoute(t *testing.T) {
 	for i := 0; i < totalRoutes; i++ {
 		println(fmt.Sprintf("finding route %d/%d", i, totalRoutes))
 		seed := uint32(rand.Int())
-		src := rand.New(rand.NewSource(int64(seed)))
-		totalAttempts += findRoute(src, 1, seed, false, false,
+		totalAttempts += findRoute(1, seed, false, false,
 			logChan, doneChan).AttemptCount
 	}
 
