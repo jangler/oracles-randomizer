@@ -76,7 +76,7 @@ var labrynnaNodes = map[string]*Node{
 
 	// crescent island
 	"crescent past": Or("raft", And("lynna city", "mermaid suit"),
-		And("crescent present west", "echoes")),
+		And("crescent present west", "currents")),
 	"tokay crystal cave": AndSlot("crescent past", "break bush",
 		Or("shovel", "break crystal"), "feather"),
 	"tokay bomb cave":       AndSlot("crescent past", "bracelet", "bombs"),

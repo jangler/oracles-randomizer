@@ -70,6 +70,12 @@ func initAgesEOB() {
 		"\x2a\xfe\xff\xc8\xb8\x20\x06\x2a\xb9\x20\x03\x37\xc9"+
 			"\x23\x7b\xd7\x18\xee")
 
+	// searches for an interaction with ID a and returns the ID address in de,
+	// and z flag if found.
+	findObjectWithID := r.appendToBank(0x00, "find object with ID",
+		"\xc5\x47\x11\x41\xd0\x1a\xb8\x20\x02\xc1\xc9"+
+			"\x14\x7a\xfe\xe0\x38\xf4\xc1\xb7\xc9")
+
 	// bank 01
 
 	// use a different invalid tile table for time warping if link doesn't have
@@ -163,6 +169,7 @@ func initAgesEOB() {
 			"\x01\x2c\x00\x70\x69"+ // ledge in rolling ridge east past
 			"\x01\x2c\x00\x71\x06"+ // cont.
 			"\x01\x2c\x00\x72\x67"+ // cont.
+			"\x00\xa9\x00\x67\xf2"+ // portal sign on crescent island
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
@@ -226,13 +233,22 @@ func initAgesEOB() {
 		"\x21\x26\xc6", "\xcd"+removeYollTree)
 
 	// reenter a warp tile that link is standing on when playing the tune of
-	// currents (useful if you warp into a patch of bushes).
-	reenterCurrentsWarp := r.appendToBank(0x06, "reenter currents warp",
-		"\xfa\x34\xcc\xf5\xd5\x11\x41\xd2\x1a\xfe\xde\x20\x08"+
-			"\x1e\x44\x3e\x02\x12\xd1\xf1\xc9"+
-			"\x14\x7a\xfe\xe0\x38\xed\xd1\xf1\xc9")
-	r.replace(0x06, 0x4e34, "call reenter currents warp",
-		"\xfa\x34\xcc", "\xcd"+reenterCurrentsWarp)
+	// currents (useful if you warp into a patch of bushes). also activate the
+	// west present crescent island portal.
+	reenterCurrentsWarp := r.appendToBank(0x06, "special currents actions",
+		"\xc5\x01\x00\xa9\xcd"+compareRoom+"\xc1\x20\x11"+ // island portal
+			"\xd5\x3e\xe1\xcd"+findObjectWithID+"\x20\x05"+ // cont.
+			"\x1e\x44\x3e\x02\x12\xd1\xc3\x08\x4e"+ // cont.
+			"\xfa\x34\xcc\xf5\xd5\x3e\xde\xcd"+findObjectWithID+ // reenter
+			"\x20\x05\x1e\x44\x3e\x02\x12\xd1\xf1\xc3\x37\x4e") // cont.
+	r.replace(0x06, 0x4e34, "call special currents actions",
+		"\xfa\x34\xcc", "\xc3"+reenterCurrentsWarp)
+
+	// set text index for portal sign on crescent island.
+	setPortalSignText := r.appendToBank(0x06, "set portal sign text",
+		"\x01\x00\xa9\xcd"+compareRoom+"\x01\x01\x09\xc0\x01\x01\x56\xc9")
+	r.replace(0x06, 0x40e7, "call set portal sign text",
+		"\x01\x01\x09", "\xcd"+setPortalSignText)
 
 	// bank 16 (pt. 1)
 
@@ -433,6 +449,12 @@ func initAgesEOB() {
 		"\x21\x27\x79\xc8\xfa\xe1\xc9\xe6\x20\xc9")
 	r.replace(0x10, 0x7914, "call black tower check",
 		"\x21\x27\x79", "\xcd"+blackTowerCheck)
+
+	// don't let echoes activate the special crescent island portal.
+	echoesPortalCheck := r.appendToBank(0x10, "echoes portal check",
+		"\xc5\x01\x00\xa9\xcd"+compareRoom+"\xc1\xfa\x8d\xcc\xc0\x3d\xc9")
+	r.replace(0x10, 0x7d88, "call echoes portal check",
+		"\xfa\x8d\xcc", "\xcd"+echoesPortalCheck)
 
 	// bank 11
 
