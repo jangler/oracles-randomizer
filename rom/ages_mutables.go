@@ -221,6 +221,12 @@ var agesFixedMutables = map[string]Mutable{
 	"skip goron elder essence checks": MutableStrings(
 		[]Addr{{0x0c, 0x6b1d}, {0x0c, 0x6b83}, {0x15, 0x735d}},
 		"\xc7\xdb\xcd\x80", "\xc7\xdb\xcd\x00"),
+
+	// add railing to ricky nuun screen and move worker off the "roof"
+	"ricky nuun railing": MutableString(Addr{0x23, 0x718e},
+		"\x69\x07\x07\x6a", "\x72\x50\x50\x73"),
+	"move nuun worker": MutableString(Addr{0x12, 0x5a9e},
+		"\x28\x50", "\x68\x40"),
 }
 
 var agesVarMutables = map[string]Mutable{

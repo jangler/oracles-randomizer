@@ -297,7 +297,7 @@ of rooms are compressed, meaning that groups of the same tile (which need not
 be consecutive) are represented by one instance of the tile ID. the
 compression is determined periodically by some non-tile bytes.
 
-compression "mode 1" uses one byte as a bitmask of locations in the next 8
+compression "mode 2" uses one byte as a bitmask of locations in the next 8
 tiles where the tile at the next byte appears. following those two bytes, there
 is one byte for each unset bit in the bitmask to determine the non-compressed
 tiles. the cycle repeats.
