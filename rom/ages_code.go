@@ -127,11 +127,12 @@ func initAgesEOB() {
 	r.replace(0x03, 0x4d6c, "skip capcom call", "\x37\x02", skipCapcom)
 
 	// set flags to skip opening, abbreviate poe clock sequence, set
-	// fairies' woods in order, and open the other half of the key door in d7.
+	// fairies' woods in order, open the other half of the key door in d7,
+	// and make dimitri available without giving the tokays ember seeds.
 	skipOpening := r.appendToBank(0x03, "skip opening",
 		"\xcd\xf9\x31\x3e\x0a\xcd\xf9\x31\x3e\x23\xcd\xf9\x31"+ // global flags
 			"\x3e\x2b\xcd\xf9\x31"+ // more
-			"\xfa\xff\x7f\xea\x10\xc6"+ // set animal region
+			"\xfa\xff\x7f\xea\x10\xc6\x3e\x03\xea\x47\xc6"+ // set animal stuff
 			"\xe5\x21\x7a\xc7\xcb\xf6\x2e\x6a\xcb\xf6"+ // set room flags
 			"\x2e\x59\xcb\xf6\x2e\x39\x36\xc8\x2e\x7c\xcb\xf6"+ // more
 			"\x2e\x2e\xcb\xf6\x21\x6d\xca\x36\x02\xe1\xc9") // more
