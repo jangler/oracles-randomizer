@@ -357,7 +357,7 @@ func setCompassData(b []byte, game int) {
 			"d3 boss key chest", "d4 boss key spot", "d5 boss key spot",
 			"d6 boss key chest", "d7 boss key chest", "d8 boss key chest"}
 	} else {
-		names = []string{"d1 pot chest", "d2 color room", "d3 boss key chest",
+		names = []string{"d1 pot chest", "d2 color room", "d3 B1F east",
 			"d4 lava pot chest", "d5 owl puzzle", "d6 present RNG chest",
 			"d7 post-hallway chest", "d8 B3F chest"}
 	}
