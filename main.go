@@ -41,9 +41,13 @@ func fatal(err error, logf func(string, ...interface{})) {
 }
 
 var (
-	flagHard, flagNoMusic, flagTreewarp, flagVerbose, flagNoUI bool
-
-	flagSeed string
+	flagHard     bool
+	flagNoMusic  bool
+	flagNoUI     bool
+	flagSeed     string
+	flagStats    string
+	flagTreewarp bool
+	flagVerbose  bool
 )
 
 func main() {
@@ -57,13 +61,32 @@ func main() {
 		"use command line output without option prompts")
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
+	flag.StringVar(&flagStats, "stats", "",
+		"test routes and print stats for 'seasons' or 'ages'")
 	flag.BoolVar(&flagTreewarp, "treewarp", false,
 		"warp to ember tree by pressing start+B on map screen")
 	flag.BoolVar(&flagVerbose, "verbose", false,
 		"print more detailed output to terminal")
 	flag.Parse()
 
-	if flag.NArg()+flag.NFlag() > 1 { // CLI used
+	if flagStats != "" {
+		var game int
+
+		if flagStats == "seasons" {
+			game = rom.GameSeasons
+		} else if flagStats == "ages" {
+			game = rom.GameAges
+		} else {
+			fmt.Printf("'%s' is invalid. try 'seasons' or 'ages'.\n", flagStats)
+			return
+		}
+
+		rom.Init(game)
+		logStats(game, flagHard, func(s string, a ...interface{}) {
+			fmt.Printf(s, a...)
+			fmt.Println()
+		})
+	} else if flag.NArg()+flag.NFlag() > 1 { // CLI used
 		runRandomizer(func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
