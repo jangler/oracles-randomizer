@@ -38,7 +38,7 @@ var labrynnaNodes = map[string]*Node{
 	"raft":               And("lynna village", "cheval rope", "island chart"),
 	"shop, 150 rupees":   AndSlot("lynna city"),
 	"ambi's palace tree": AndSlot("lynna village", "sword", "seed item"),
-	"ambi's palace chest": AndSlot("lynna village", Or(
+	"ambi's palace chest": AndSlot("lynna village", Or("ages",
 		HardAnd("satchel", "scent seeds", "pegasus seeds"),
 		And("break bush safe", "mermaid suit"))),
 	"rescue nayru": AndSlot("ambi's palace chest", "mystery seeds",

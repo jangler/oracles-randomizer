@@ -85,11 +85,13 @@ var seasonsKillNodes = map[string]*Node{
 	"hit very far lever": Or("boomerang L-2", "any slingshot"),
 	"hit far lever": Or("boomerang", "any slingshot",
 		HardAnd("jump 2", Or("sword", "rod", "fool's ore"))),
-	"kill gohma":         Or("scent seeds", "ember seeds"),
-	"remove mushroom":    Or("boomerang L-2", "bracelet"),
-	"kill moldorm":       Or("scent kill normal"),
-	"kill iron mask":     Or("kill normal"),
-	"kill armos":         Or("scent kill normal", "boomerang L-2"),
+	"kill gohma":      Or("scent seeds", "ember seeds"),
+	"remove mushroom": Or("boomerang L-2", "bracelet"),
+	"kill moldorm":    Or("scent kill normal"),
+	"kill iron mask":  Or("kill normal"),
+	// armos are an exception to the "bombs are hard logic" rule, since you're
+	// intended to kill them with bombs in ages.
+	"kill armos":         Or("scent kill normal", "boomerang L-2", "bombs"),
 	"kill gibdo":         Or("kill normal", "boomerang L-2", "rod"),
 	"kill darknut":       Or("scent kill normal"),
 	"kill darknut (pit)": Or("kill darknut", "shield"),

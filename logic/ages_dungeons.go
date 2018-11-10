@@ -52,6 +52,8 @@ var agesD2Nodes = map[string]*Node{
 		"d2 basement key", "d2 statue key"),
 }
 
+// killing armos is an exception to the "bombs are hard logic" rule, and since
+// you need bombs to do anything in d3, they're not even relevant to logic.
 var agesD3Nodes = map[string]*Node{
 	"d3 pols voice chest": AndSlot("enter d3", "bombs"),
 	"d3 1F spinner":       And("enter d3", Or("kill moldorm", "bracelet")),
@@ -61,7 +63,7 @@ var agesD3Nodes = map[string]*Node{
 	// you can clip into the blocks enough to hit this crystal with switch hook
 	"d3 N crystal": And("d3 statue key",
 		Or("any seed shooter", "boomerang", Hard("switch hook"))),
-	"d3 armos key": And("d3 statue key", "kill armos"),
+	"d3 armos key": And("d3 statue key"),
 	"d3 bush beetle room": AndSlot("d3 armos key", "d3 compass key",
 		"d3 block key"), // technically only need two maximum, one minimum
 	"d3 W crystal":   And("d3 statue key"),
@@ -75,7 +77,7 @@ var agesD3Nodes = map[string]*Node{
 	"d3 B1F spinner": And("d3 S crystal", "d3 E crystal", "d3 N crystal",
 		"d3 W crystal", "break crystal switch"),
 	"d3 crossroads":         AndSlot("d3 B1F spinner"),
-	"d3 conveyor belt room": AndSlot("d3 statue key", "kill armos"),
+	"d3 conveyor belt room": AndSlot("d3 statue key"),
 	"d3 bridge chest": AndSlot("d3 statue key",
 		Or("any seed shooter", And("feather", "pegasus satchel"))),
 	"d3 torch chest": AndSlot("d3 B1F spinner",
@@ -102,11 +104,13 @@ var agesD4Nodes = map[string]*Node{
 		"kill stalfos"),
 	"d4 key chest C": And("d4 minecart B",
 		Or("any seed shooter", HardAnd("jump 3", "boomerang"))),
-	"d4 minecart C":         And("d4 minecart B", "d4 key C"),
-	"d4 minecart D":         And("d4 minecart C", "d4 key D"),
-	"d4 small floor puzzle": AndSlot("d4 minecart D", "bombs"),
-	"d4 key chest E":        And("d4 minecart D", "switch hook"),
-	"d4 lava pot chest":     AndSlot("d4 key chest E", "d4 key E"),
+	"d4 minecart C": And("d4 minecart B", "d4 key C"),
+	"d4 minecart D": And("d4 minecart C", "d4 key D"),
+	"d4 small floor puzzle": AndSlot("d4 minecart D", "bombs",
+		Or("sword", "switch hook", "scent shooter",
+			HardOr("scent satchel", "bombs"))),
+	"d4 key chest E":    And("d4 minecart D", "switch hook"),
+	"d4 lava pot chest": AndSlot("d4 key chest E", "d4 key E"),
 	"d4 essence": AndStep("d4 key chest E", "d4 boss key",
 		Or("sword", "boomerang")),
 
