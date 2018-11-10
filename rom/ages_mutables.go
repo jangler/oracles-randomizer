@@ -235,6 +235,15 @@ var agesFixedMutables = map[string]Mutable{
 	"portal sign text": MutableString(Addr{0x23, 0x583f}, "\x0c\x20\x02\x18",
 		"\x0c\x00C\x04\x23s only.\x01"+ // Currents only.
 			" -\x04\x56Management\x00"), // -The Management
+
+	// skip essence check for comedian
+	"comedian essence check": MutableString(Addr{0x15, 0x6261},
+		"\x38\x02", "\x38\x00"),
+
+	// change conditions for rafton 2's script based on whether the player has
+	// the magic oar, not on essences.
+	"rafton script check": MutableString(Addr{0x15, 0x6b42},
+		"\xc7\xdb\xcd\x80", "\xcb\xc0\xc6\x09"),
 }
 
 var agesVarMutables = map[string]Mutable{

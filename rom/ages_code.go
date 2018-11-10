@@ -407,6 +407,15 @@ func initAgesEOB() {
 	r.replace(0x0a, 0x66e0, "call set maku tree input",
 		"\xcd\x1d\x2a", "\xcd"+setMakuTreeInput)
 
+	// on left side of house, swap rafton 00 (builds raft) with rafton 01 (does
+	// trade sequence) if the player enters with the magic oar *and* global
+	// flag 26 (rafton has built raft) is not set.
+	setRaftonSubID := r.appendToBank(0x0a, "set rafton sub ID",
+		"\xcd\xf3\x31\xc2\x05\x3b\xfa\xc0\xc6\xfe\x09\xc2\x5b\x4d"+
+			"\x3e\x01\x12\xc3\xac\x4d")
+	r.replace(0x0a, 0x4d55, "jump set rafton sub ID",
+		"\xcd\xf3\x31", "\xc3"+setRaftonSubID)
+
 	// bank 0b
 
 	// always get item from king zora before permission to enter jabu-jabu.
