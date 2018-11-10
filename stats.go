@@ -50,13 +50,27 @@ func generateSeeds(n, game int, hard bool) []*RouteInfo {
 
 // generate a bunch of seeds and print information about how often items are
 // required, and what spheres they're normally in.
-func logStats(game int, hard bool, logf func(string, ...interface{})) {
-	routes := generateSeeds(1000, game, hard)
+func logStats(game, trials int, hard bool, logf func(string, ...interface{})) {
+	routes := generateSeeds(trials, game, hard)
 
 	// aggregate data on required items
 	requiredCounts := make(map[string]int)
-	for _, route := range routes {
-		for e := route.ProgressItems.Front(); e != nil; e = e.Next() {
+	meanSpheres := make(map[string]float64)
+	for _, ri := range routes {
+		// total spheres
+		checks := getChecks(ri)
+		spheres := getSpheres(ri.Route.Graph, checks, hard)
+		for i, sphere := range spheres {
+			for _, node := range sphere {
+				if meanSpheres[node.Name] == 0 {
+					meanSpheres[node.Name] = 0
+				}
+				meanSpheres[node.Name] += float64(i)
+			}
+		}
+
+		// total required counts
+		for e := ri.ProgressItems.Front(); e != nil; e = e.Next() {
 			itemName := e.Value.(*graph.Node).Name
 			if itemName == "satchel 1" || itemName == "satchel 2" {
 				itemName = "seed satchel"
@@ -69,7 +83,8 @@ func logStats(game int, hard bool, logf func(string, ...interface{})) {
 	}
 
 	for item, count := range requiredCounts {
-		logf("%5.1f%% - %s", 100*float64(count)/float64(len(routes)),
+		logf("%5.1f%% (s%4.1f) - %s", 100*float64(count)/float64(len(routes)),
+			float64(meanSpheres[item])/float64(len(routes)),
 			getNiceName(item))
 	}
 }

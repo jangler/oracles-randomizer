@@ -42,6 +42,7 @@ func fatal(err error, logf func(string, ...interface{})) {
 
 var (
 	flagHard     bool
+	flagN        int
 	flagNoMusic  bool
 	flagNoUI     bool
 	flagSeed     string
@@ -55,6 +56,8 @@ func main() {
 	flag.Usage = usage
 	flag.BoolVar(&flagHard, "hard", false,
 		"require some plays outside normal logic")
+	flag.IntVar(&flagN, "n", 100,
+		"number of trials for stats")
 	flag.BoolVar(&flagNoMusic, "nomusic", false,
 		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
@@ -82,7 +85,8 @@ func main() {
 		}
 
 		rom.Init(game)
-		logStats(game, flagHard, func(s string, a ...interface{}) {
+		rand.Seed(time.Now().UnixNano())
+		logStats(game, flagN, flagHard, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
