@@ -40,7 +40,7 @@ var agesItemNodes = map[string]*Node{
 	"seed item": Or("satchel", "seed shooter"),
 
 	"ember seeds":   And("ember tree seeds"),
-	"scent seeds":   Or("scent tree seeds", And("enter d3", "sword", "bombs")),
+	"scent seeds":   Or("scent tree seeds", "d3 E crystal"),
 	"pegasus seeds": And("pegasus tree seeds"),
 	"gale seeds":    And("gale tree seeds"),
 	"mystery seeds": And("mystery tree seeds"),

@@ -64,7 +64,6 @@ var agesKillNodes = map[string]*Node{
 
 	"kill moldorm": Or("sword", "scent shooter", "cane", "switch hook",
 		HardOr("bombs", "scent satchel")),
-	"kill armos": Or("scent shooter", "cane", HardOr("bombs", "scent satchel")),
 
 	"kill wizzrobe": Or("kill normal"),
 }

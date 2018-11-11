@@ -162,6 +162,7 @@ func testAgesGraph(t *testing.T) {
 		"satchel 1":        "zora palace chest",
 		"ember tree seeds": "zora village tree",
 		"fairy powder":     "grave under tree",
+		"graveyard key":    "crescent seafloor cave",
 	}, "enter d7", false, true)
 
 	checkReach(t, g, map[string]string{

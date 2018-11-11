@@ -55,8 +55,9 @@ var labrynnaNodes = map[string]*Node{
 		Or("feather", "flippers")),
 	"cheval's invention": AndSlot("cheval's grave", "flippers"),
 	"grave under tree":   AndSlot("yoll graveyard"),
-	"syrup":              And("yoll graveyard", Or("flippers", "bomb jump 2")),
-	"enter d1":           And("yoll graveyard", "graveyard key"),
+	"syrup": And("yoll graveyard", "graveyard key",
+		Or("flippers", "bomb jump 2", "long hook")),
+	"enter d1": And("yoll graveyard", "graveyard key"),
 
 	// western woods
 	"fairies' woods chest": AndSlot("lynna city", Or("ages",
