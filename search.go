@@ -162,6 +162,14 @@ func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 		return true
 	}
 
+	// in hard mode, 100 rupee manips with shovel are in logic
+	if hard {
+		shovel := r.Graph["shovel"]
+		if shovel.GetMark(shovel, hard) == graph.MarkTrue {
+			return true
+		}
+	}
+
 	// otherwise, count the net rupees available to the player
 	balance += r.Costs
 	for _, node := range r.Graph {

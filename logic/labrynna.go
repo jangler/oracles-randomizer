@@ -185,8 +185,9 @@ var labrynnaNodes = map[string]*Node{
 	"zora palace chest":    AndSlot("zora village"),
 	"zora NW cave":         AndSlot("zora village", "bombs", "power glove"),
 	"fairies' coast chest": AndSlot("zora village"),
-	"king zora":            AndSlot("zora village", "syrup"),
-	"library present":      AndSlot("zora village", "library key"),
+	// in hard logic, farm kills and get a potion off maple
+	"king zora":       AndSlot("zora village", Or("syrup", Hard())),
+	"library present": AndSlot("zora village", "library key"),
 	"library past": AndSlot("zora village", "library key",
 		"book of seals"),
 	"clean seas":      And("zora village", "fairy powder"),
