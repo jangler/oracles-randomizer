@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -29,7 +30,11 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 	reached := make(map[*graph.Node]bool)
 	spheres := make([][]*graph.Node, 0)
 
+	// need to track unreached items so that unreached dungeon items etc can
+	// have their parents restored even if they're not reachable yet.
+	unreached := make(map[*graph.Node]*graph.Node)
 	for slot, item := range checks {
+		unreached[slot] = item
 		item.RemoveParent(slot)
 	}
 
@@ -41,24 +46,30 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 		// get the set of newly reachable nodes
 		for _, node := range g {
 			if !reached[node] && node.GetMark(node, hard) == graph.MarkTrue {
-				cost := logic.NodeCosts[node.Name]
-				if checks[node] != nil && cost < 0 && cost+rupees < 0 {
-					continue
+				if logic.NodeValues[node.Name] > 0 {
+					rupees += logic.NodeValues[node.Name]
 				}
-				rupees += cost
-
 				sphere = append(sphere, node)
-				reached[node] = true
 			}
 		}
 
-		// add reached item checks into the next iteration
+		// remove the most expensive nodes that can't be afforded
+		sphere, rupees = filterUnaffordableNodes(sphere, rupees)
+
+		// mark nodes as reached and add item checks into the next iteration
 		for _, node := range sphere {
+			reached[node] = true
+			delete(unreached, node)
 			if item := checks[node]; item != nil {
 				item.AddParents(node)
 				sphere = append(sphere, item)
 				reached[item] = true
 				rupees += logic.RupeeValues[item.Name]
+
+				// shovel is worth infinite rupees in hard difficulty
+				if hard && item.Name == "shovel" {
+					rupees += 2000
+				}
 			}
 		}
 
@@ -66,6 +77,10 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 			break
 		}
 		spheres = append(spheres, sphere)
+	}
+
+	for slot, item := range unreached {
+		item.AddParents(slot)
 	}
 
 	return spheres
@@ -101,4 +116,33 @@ func logSpheres(summary chan string, checks map[*graph.Node]*graph.Node,
 			summary <- ""
 		}
 	}
+}
+
+// filterUnaffordableNodes removes nodes that the player can't currently afford
+// from the slice, starting with the most expensive ones. it also sorts the
+// slice from least to most expensive.
+func filterUnaffordableNodes(
+	sphere []*graph.Node, rupees int) ([]*graph.Node, int) {
+	// sort first by cost, then by name to break ties
+	sort.Slice(sphere, func(i, j int) bool {
+		return logic.NodeValues[sphere[i].Name] >
+			logic.NodeValues[sphere[j].Name]
+	})
+	sort.Slice(sphere, func(i, j int) bool {
+		return sphere[i].Name < sphere[j].Name
+	})
+
+	for i := 0; i < len(sphere); i++ {
+		value := logic.NodeValues[sphere[i].Name]
+		if value < 0 {
+			rupees += value
+			if rupees < 0 {
+				rupees -= value
+				sphere = sphere[:i]
+				break
+			}
+		}
+	}
+
+	return sphere, rupees
 }

@@ -1,6 +1,6 @@
 package logic
 
-var NodeCosts = map[string]int{
+var NodeValues = map[string]int{
 	"village shop 1":  -20,
 	"village shop 2":  -30,
 	"village shop 3":  -150,
