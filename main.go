@@ -1,7 +1,6 @@
 package main
 
 import (
-	"container/list"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -13,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
 	"github.com/jangler/oos-randomizer/ui"
 )
@@ -489,15 +487,12 @@ func randomize(romData []byte, game int, logFilename, seedFlag string,
 	}
 
 	// place selected treasures in slots
-	for ri.UsedSlots.Len() > 0 {
-		slotName :=
-			ri.UsedSlots.Remove(ri.UsedSlots.Front()).(*graph.Node).Name
-		treasureName :=
-			ri.UsedItems.Remove(ri.UsedItems.Front()).(*graph.Node).Name
+	checks := getChecks(ri)
+	for slot, item := range checks {
 		if verbose {
-			logf("%s <- %s\n", slotName, treasureName)
+			logf("%s <- %s", slot.Name, item.Name)
 		}
-		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
+		rom.ItemSlots[slot.Name].Treasure = rom.Treasures[item.Name]
 	}
 
 	// set season data
@@ -533,8 +528,17 @@ func randomize(romData []byte, game int, logFilename, seedFlag string,
 	} else {
 		summary <- fmt.Sprintf("difficulty: normal")
 	}
-	logItems(summary, "required items", ri.ProgressItems, ri.ProgressSlots)
-	logItems(summary, "optional items", ri.ExtraItems, ri.ExtraSlots)
+	summary <- ""
+	summary <- ""
+	spheres := getSpheres(ri.Route.Graph, checks, hard)
+	summary <- "-- progression items --"
+	summary <- ""
+	logSpheres(summary, checks, spheres,
+		func(name string) bool { return !itemIsJunk(name) })
+	summary <- ""
+	summary <- "-- other items --"
+	summary <- ""
+	logSpheres(summary, checks, spheres, itemIsJunk)
 	if game == rom.GameSeasons {
 		summary <- ""
 		summary <- "default seasons:"
@@ -567,17 +571,13 @@ func searchAsync(game int, seed uint32, hard, verbose bool,
 	retChan <- findRoute(game, seed, hard, verbose, logChan, doneChan)
 }
 
-// send lines of item/slot info to a summary channel. this is a destructive
-// operation on the lists.
-func logItems(summary chan string, title string, items, slots *list.List) {
-	summary <- ""
-	summary <- title + ":"
-	summary <- ""
-
-	for slots.Len() > 0 {
-		slotName := slots.Remove(slots.Front()).(*graph.Node).Name
-		itemName := items.Remove(items.Front()).(*graph.Node).Name
-		summary <- fmt.Sprintf("%-28s <- %s",
-			getNiceName(slotName), getNiceName(itemName))
+// itemIsJunk returns true iff the item with the given name can never be
+// progression, regardless of context.
+func itemIsJunk(name string) bool {
+	switch rom.Treasures[name].ID() {
+	// heart refill, PoH, HC, ring, compass, dungeon map, gasha seed
+	case 0x29, 0x2a, 0x2b, 0x2d, 0x32, 0x33, 0x34:
+		return true
 	}
+	return false
 }

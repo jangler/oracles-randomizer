@@ -36,7 +36,12 @@ type Treasure struct {
 	sprite byte
 }
 
-// SubID returns item sub ID of the treasure.
+// ID returns the item ID of the treasure.
+func (t Treasure) ID() byte {
+	return t.id
+}
+
+// SubID returns the item sub ID of the treasure.
 func (t Treasure) SubID() byte {
 	return t.subID
 }
