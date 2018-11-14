@@ -42,7 +42,7 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 		for _, node := range g {
 			if !reached[node] && node.GetMark(node, hard) == graph.MarkTrue {
 				cost := logic.NodeCosts[node.Name]
-				if checks[node] != nil && cost+rupees < 0 {
+				if checks[node] != nil && cost < 0 && cost+rupees < 0 {
 					continue
 				}
 				rupees += cost
