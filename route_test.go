@@ -1,11 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"math/rand"
-	// "strings"
 	"testing"
-	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -113,9 +109,9 @@ func testAgesGraph(t *testing.T) {
 		"harp 2":     "nayru's house",
 		"harp 3":     "black tower worker",
 		"flippers 1": "lynna city chest",
-		"tuni nut":   "fairies' woods chest",
-		"sword 1":    "tokkey's composition",
-	}, "enter d4", false, true)
+		"sword 1":    "fairies' woods chest",
+		"tuni nut":   "tokkey's composition",
+	}, "symmetry past", false, true)
 
 	checkReach(t, g, map[string]string{
 		"sword 1":            "starting chest",
@@ -274,35 +270,4 @@ func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
 			t.Errorf("expected not to reach %s, but could", target)
 		}
 	}
-}
-
-func TestFindRoute(t *testing.T) {
-	if testing.Short() {
-		t.Skip()
-	}
-
-	totalRoutes, totalAttempts := 10, 0
-	rand.Seed(time.Now().UnixNano())
-
-	logChan, doneChan := make(chan string), make(chan int)
-	go func() {
-		for {
-			select {
-			case <-logChan:
-			case <-doneChan:
-				println("received")
-				break
-			}
-		}
-	}()
-
-	for i := 0; i < totalRoutes; i++ {
-		println(fmt.Sprintf("finding route %d/%d", i, totalRoutes))
-		seed := uint32(rand.Int())
-		totalAttempts += findRoute(1, seed, false, false,
-			logChan, doneChan).AttemptCount
-	}
-
-	println(fmt.Sprintf("average %d attempts per route",
-		totalAttempts/totalRoutes))
 }
