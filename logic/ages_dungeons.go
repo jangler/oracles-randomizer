@@ -89,7 +89,7 @@ var agesD3Nodes = map[string]*Node{
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
 	"d3 essence": AndStep("d3 boss key", "d3 armos key", "d3 compass key",
 		"d3 block key", Or("ember seeds", "scent seeds"),
-		Or("seed shooter", Hard("satchel"))),
+		Or("seed shooter", HardAnd("feather", "boomerang", "satchel"))),
 }
 
 var agesD4Nodes = map[string]*Node{
@@ -235,14 +235,15 @@ var agesD7Nodes = map[string]*Node{
 	// and those requirements are also enough to drain the dungeon
 	"drain d7": And("refill d7"),
 	// and get these chests
-	"d7 spike chest":      AndSlot("refill d7"),
-	"d7 stairway chest":   AndSlot("refill d7"),
-	"d7 pot island chest": AndSlot("refill d7"),
+	"d7 spike chest":    AndSlot("refill d7"),
+	"d7 stairway chest": AndSlot("refill d7"),
+	// but cane is needed here, since long hook can skip it initially.
+	"d7 pot island chest": AndSlot("refill d7", "cane"),
 
 	// this chest requires feather to reach its key block, and one of the small
 	// keys in the dungeon also requires feather. so it's always possible to
 	// reach the other chests without feather?
-	"d7 miniboss chest": AndSlot("refill d7", "feather",
+	"d7 miniboss chest": AndSlot("refill d7", "feather", "cane",
 		Or("sword", "boomerang", "scent shooter")),
 
 	// long hook is required to flood the dungeon (1F and 2F submerged)

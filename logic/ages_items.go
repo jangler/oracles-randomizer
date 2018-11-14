@@ -1,7 +1,7 @@
 package logic
 
 var agesItemNodes = map[string]*Node{
-	"shield": Or("iron shield", "lynna city"),
+	"shield": Or("iron shield", "shop, 30 rupees"),
 
 	"broken sword": And("yoll graveyard", "graveyard key", "bracelet",
 		"crescent present east", "symmetry past",

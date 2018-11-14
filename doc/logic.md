@@ -26,8 +26,9 @@ Out of logic:
 - Getting a new type of mystical seed from anything other than a seed tree
 - Getting initial bombs from regenerating plants
 - Lighting torches using mystery seeds
-- Using only bombs or mystery seeds as a weapon
+- Using only mystery seeds as a weapon
 - Using only scent or gale seeds from the seed satchel as a weapon
+- Using only bombs as a weapon, except versus armos
 - Lighting the second Poe sister's torches without either pegasus seeds or
   hyper slingshot
 - Fighting Frypolar without slingshot
@@ -41,7 +42,7 @@ Passing the `-hard` flag to the randomizer on the command line enables the
 things that are out of normal logic, with the exception of:
 
 - Warnings
-- Farming rupees
+- Farming rupees, except for shovel RNG manips
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
 - Magic rings
