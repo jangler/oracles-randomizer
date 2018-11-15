@@ -123,13 +123,13 @@ func logSpheres(summary chan string, checks map[*graph.Node]*graph.Node,
 // slice from least to most expensive.
 func filterUnaffordableNodes(
 	sphere []*graph.Node, rupees int) ([]*graph.Node, int) {
-	// sort first by cost, then by name to break ties
+	// sort first by name (to break ties), then by cost
+	sort.Slice(sphere, func(i, j int) bool {
+		return sphere[i].Name < sphere[j].Name
+	})
 	sort.Slice(sphere, func(i, j int) bool {
 		return logic.NodeValues[sphere[i].Name] >
 			logic.NodeValues[sphere[j].Name]
-	})
-	sort.Slice(sphere, func(i, j int) bool {
-		return sphere[i].Name < sphere[j].Name
 	})
 
 	for i := 0; i < len(sphere); i++ {
