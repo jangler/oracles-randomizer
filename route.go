@@ -125,14 +125,12 @@ func addNodeParents(prenodes map[string]*logic.Node, gs ...graph.Graph) {
 }
 
 type RouteInfo struct {
-	Route                        *Route
-	Seed                         uint32
-	Seasons                      map[string]byte
-	Companion                    int // 1 to 3
-	UsedItems, UsedSlots         *list.List
-	ProgressItems, ProgressSlots *list.List
-	ExtraItems, ExtraSlots       *list.List
-	AttemptCount                 int
+	Route                *Route
+	Seed                 uint32
+	Seasons              map[string]byte
+	Companion            int // 1 to 3
+	UsedItems, UsedSlots *list.List
+	AttemptCount         int
 }
 
 const (
@@ -151,13 +149,9 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
 	ri := &RouteInfo{
-		Seed:          seed,
-		UsedItems:     list.New(),
-		UsedSlots:     list.New(),
-		ProgressItems: list.New(),
-		ProgressSlots: list.New(),
-		ExtraItems:    list.New(),
-		ExtraSlots:    list.New(),
+		Seed:      seed,
+		UsedItems: list.New(),
+		UsedSlots: list.New(),
 	}
 
 	// try to find the route, retrying if needed
@@ -283,24 +277,6 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		}
 
 		if success && slotList.Len() == 0 {
-			arrangeListsForLog(r, ri, hard, verbose, logChan)
-
-			// rotate dungeon items to the back of the lists
-			items, slots := ri.ProgressItems, ri.ProgressSlots
-			numDungeons := 8
-			if game == rom.GameAges {
-				numDungeons = 9
-			}
-			for i := 0; i < 8; i++ {
-				items.PushBack(items.Remove(items.Front()))
-				slots.PushBack(slots.Remove(slots.Front()))
-			}
-			items, slots = ri.ExtraItems, ri.ExtraSlots
-			for i := 0; i < numDungeons*2; i++ {
-				items.PushBack(items.Remove(items.Front()))
-				slots.PushBack(slots.Remove(slots.Front()))
-			}
-
 			// and we're done
 			ri.Route = r
 			ri.AttemptCount = tries + 1
@@ -308,8 +284,6 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		}
 
 		ri.UsedItems, ri.UsedSlots = list.New(), list.New()
-		ri.ProgressItems, ri.ProgressSlots = list.New(), list.New()
-		ri.ExtraItems, ri.ExtraSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
 		ri.Seed = uint32(src.Int31())
@@ -582,48 +556,4 @@ func countSteps(r *Route, hard bool) int {
 		}
 	}
 	return count
-}
-
-// break down the used items into required and optional items, so that the log
-// makes sense.
-func arrangeListsForLog(r *Route, ri *RouteInfo, hard, verbose bool,
-	logChan chan string) {
-	done := r.Graph["done"]
-
-	// figure out which items aren't necessary
-	ei, es := ri.UsedItems.Front(), ri.UsedSlots.Front()
-	for i := 0; i < ri.UsedItems.Len(); i++ {
-		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
-
-		// remove parent provisionally
-		item.RemoveParent(slot)
-
-		// ask if anyone misses it. first item is a special case: it's always
-		// required, but it might only be required for rupees, which aren't
-		// counted here.
-		r.Graph.ClearMarks()
-		if slot.Name != "d0 sword chest" &&
-			done.GetMark(done, hard) == graph.MarkTrue {
-			if verbose {
-				logChan <- fmt.Sprintf("%s (in %s) is extra\n",
-					item.Name, slot.Name)
-			}
-			ri.ExtraItems.PushBack(item)
-			ri.ExtraSlots.PushBack(slot)
-		} else {
-			item.AddParents(slot)
-			ri.ProgressItems.PushBack(item)
-			ri.ProgressSlots.PushBack(slot)
-		}
-
-		ei, es = ei.Next(), es.Next()
-	}
-
-	// attach removed parents back to optional items
-	ei, es = ri.ExtraItems.Front(), ri.ExtraSlots.Front()
-	for i := 0; i < ri.ExtraItems.Len(); i++ {
-		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
-		item.AddParents(slot)
-		ei, es = ei.Next(), es.Next()
-	}
 }

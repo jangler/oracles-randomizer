@@ -5,8 +5,6 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
-
-	"github.com/jangler/oos-randomizer/graph"
 )
 
 // generate a bunch of seeds.
@@ -54,7 +52,6 @@ func logStats(game, trials int, hard bool, logf func(string, ...interface{})) {
 	routes := generateSeeds(trials, game, hard)
 
 	// aggregate data on required items
-	requiredCounts := make(map[string]int)
 	meanSpheres := make(map[string]float64)
 	for _, ri := range routes {
 		// total spheres
@@ -62,29 +59,19 @@ func logStats(game, trials int, hard bool, logf func(string, ...interface{})) {
 		spheres := getSpheres(ri.Route.Graph, checks, hard)
 		for i, sphere := range spheres {
 			for _, node := range sphere {
+				if !node.IsStep {
+					continue
+				}
 				if meanSpheres[node.Name] == 0 {
 					meanSpheres[node.Name] = 0
 				}
 				meanSpheres[node.Name] += float64(i)
 			}
 		}
-
-		// total required counts
-		for e := ri.ProgressItems.Front(); e != nil; e = e.Next() {
-			itemName := e.Value.(*graph.Node).Name
-			if itemName == "satchel 1" || itemName == "satchel 2" {
-				itemName = "seed satchel"
-			}
-			if requiredCounts[itemName] == 0 {
-				requiredCounts[itemName] = 0
-			}
-			requiredCounts[itemName]++
-		}
 	}
 
-	for item, count := range requiredCounts {
-		logf("%5.1f%% (s%4.1f) - %s", 100*float64(count)/float64(len(routes)),
-			float64(meanSpheres[item])/float64(len(routes)),
-			getNiceName(item))
+	for item, totalSpheres := range meanSpheres {
+		logf("%s - %4.1f", getNiceName(item),
+			float64(totalSpheres)/float64(len(routes)))
 	}
 }
