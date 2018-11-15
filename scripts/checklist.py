@@ -82,5 +82,5 @@ def make_checklist(game, infiles, outfile):
 
 
 for game, infiles in files.items():
-    with open('doc/%s_checklist.html' % game, 'w') as outfile:
+    with open('checklist/%s.html' % game, 'w') as outfile:
         make_checklist(game, infiles, outfile)
