@@ -131,6 +131,9 @@ var agesFixedMutables = map[string]Mutable{
 	// and remove "boomerang" from random prizes
 	"target carts prize table": MutableString(Addr{0x15, 0x66e5},
 		"\x04\x04\x04", "\x03\x03\x03"),
+	// and don't give boomerang as a shooting gallery prize
+	"no goron gallery boomerang": MutableString(Addr{0x15, 0x52b6},
+		"\xdf\x06\xc3\x52", "\xc4\xc3\x52\x00"),
 
 	// trade lava juice without mermaid key
 	"trade lava juice without key": MutableString(Addr{0x15, 0x6879},
