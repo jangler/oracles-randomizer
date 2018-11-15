@@ -134,15 +134,8 @@ var niceNames = map[string]string{
 	"iron shield gift":     "subrosian smithy",
 
 	// seasons dungeon slots
-	"d0 sword chest":         "hero's cave sword chest",
-	"d0 rupee chest":         "hero's cave rupee chest",
-	"d1 satchel spot":        "D1 seed satchel spot",
-	"d2 bracelet chest":      "D2 power bracelet chest",
-	"d3 feather chest":       "D3 roc's feather chest",
-	"d5 magnet gloves chest": "D5 magnetic gloves chest",
-	"d6 boomerang chest":     "D6 magic boomerang chest",
-	"d7 cape chest":          "D7 roc's cape chest",
-	"d8 HSS chest":           "D8 hyper slingshot chest",
+	"d0 sword chest": "hero's cave sword chest",
+	"d0 rupee chest": "hero's cave rupee chest",
 
 	// labrynna slots
 	"crescent seafloor cave": "under crescent island",

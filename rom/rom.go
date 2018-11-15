@@ -225,7 +225,7 @@ func Verify(b []byte, game int) []error {
 		case "maku tree gift", "fool's ore", "member's card", "treasure map",
 			"rod gift", "rare peach stone", "ribbon", "blaino gift",
 			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
-			"d5 boss key spot":
+			"d5 basement":
 		// ages misc.
 		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
 			"target carts 1", "target carts 2", "big bang game", "harp 1",
@@ -353,9 +353,9 @@ func setTreasureMapData() {
 func setCompassData(b []byte, game int) {
 	var names []string
 	if game == GameSeasons {
-		names = []string{"d1 boss key chest", "d2 boss key chest",
-			"d3 boss key chest", "d4 boss key spot", "d5 boss key spot",
-			"d6 boss key chest", "d7 boss key chest", "d8 boss key chest"}
+		names = []string{"d1 goriya chest", "d2 terrace chest",
+			"d3 giant blade room", "d4 dive spot", "d5 basement",
+			"d6 escape room", "d7 stalfos chest", "d8 pols voice chest"}
 	} else {
 		names = []string{"d1 pot chest", "d2 color room", "d3 B1F east",
 			"d4 lava pot chest", "d5 owl puzzle", "d6 present RNG chest",

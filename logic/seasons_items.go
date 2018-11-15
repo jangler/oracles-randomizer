@@ -40,7 +40,7 @@ var seasonsItemNodes = map[string]*Node{
 		HardAnd("harvest bush", Or("enter agunima", "enter d7")))),
 	"harvest mystery seeds": And("seed item", Or(
 		And("mystery tree seeds", "harvest tree"),
-		HardAnd("d8 HSS chest", "harvest bush"))),
+		HardAnd("d8 armos chest", "harvest bush"))),
 	"harvest scent seeds": And("scent tree seeds",
 		"seed item", "harvest tree"),
 	"harvest pegasus seeds": And("seed item", Or(

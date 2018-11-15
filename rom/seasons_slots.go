@@ -277,119 +277,119 @@ var seasonsSlots = map[string]*MutableSlot{
 		"rupees, 30", 0x4fb5, 0x04, 0x05, collectChest, 0xd4),
 
 	// d1
-	"d1 satchel spot": MutableFind(
+	"d1 basement": MutableFind(
 		"satchel 1", 0x66b1, 0x06, 0x09, collectFind2, 0x96),
-	"d1 gasha chest": seasonsChest(
+	"d1 block-pushing room": seasonsChest(
 		"gasha seed", 0x4fbd, 0x04, 0x0d, collectChest, 0x96),
-	"d1 bomb chest": seasonsChest(
+	"d1 railway chest": seasonsChest(
 		"bombs, 10", 0x4fc5, 0x04, 0x10, collectChest, 0x96),
-	"d1 ring chest": seasonsChest(
+	"d1 floormaster room": seasonsChest(
 		"discovery ring", 0x4fd1, 0x04, 0x17, collectChest, 0x96),
-	"d1 compass chest": seasonsChest(
+	"d1 lever room": seasonsChest(
 		"compass", 0x4fc1, 0x04, 0x0f, collectChest2, 0x96),
-	"d1 map chest": seasonsChest(
+	"d1 stalfos chest": seasonsChest(
 		"dungeon map", 0x4fd5, 0x04, 0x19, collectChest2, 0x96),
-	"d1 boss key chest": seasonsChest(
+	"d1 goriya chest": seasonsChest(
 		"d1 boss key", 0x4fcd, 0x04, 0x14, collectChest, 0x96),
 
 	// d2
-	"d2 bracelet chest": seasonsChest(
+	"d2 moblin chest": seasonsChest(
 		"bracelet", 0x4fe1, 0x04, 0x2a, collectChest, 0x8d),
-	"d2 10-rupee chest": seasonsChest(
+	"d2 roller chest": seasonsChest(
 		"rupees, 10", 0x4fd9, 0x04, 0x1f, collectChest, 0x8d),
-	"d2 5-rupee chest": seasonsChest(
+	"d2 left from entrance": seasonsChest(
 		"rupees, 5", 0x4ff5, 0x04, 0x38, collectChest, 0x8d),
-	"d2 map chest": seasonsChest(
+	"d2 pot chest": seasonsChest(
 		"dungeon map", 0x4fe5, 0x04, 0x2b, collectChest2, 0x8d),
-	"d2 compass chest": seasonsChest(
+	"d2 rope chest": seasonsChest(
 		"compass", 0x4ff1, 0x04, 0x36, collectChest2, 0x8d),
-	"d2 boss key chest": seasonsChest(
+	"d2 terrace chest": seasonsChest(
 		"d2 boss key", 0x4fdd, 0x04, 0x24, collectChest, 0x8d),
 
 	// d3
-	"d3 feather chest": seasonsChest(
+	"d3 mimic chest": seasonsChest(
 		"feather 1", 0x5015, 0x04, 0x50, collectChest, 0x60),
-	"d3 rupee chest": seasonsChest(
+	"d3 water room": seasonsChest(
 		"rupees, 30", 0x4ff9, 0x04, 0x41, collectChest, 0x60),
-	"d3 gasha chest": seasonsChest(
+	"d3 quicksand terrace": seasonsChest(
 		"gasha seed", 0x5001, 0x04, 0x44, collectChest, 0x60),
-	"d3 bomb chest": seasonsChest(
+	"d3 moldorm chest": seasonsChest(
 		"bombs, 10", 0x5019, 0x04, 0x54, collectChest, 0x60),
-	"d3 compass chest": seasonsChest(
+	"d3 trampoline chest": seasonsChest(
 		"compass", 0x5009, 0x04, 0x4d, collectChest2, 0x60),
-	"d3 map chest": seasonsChest(
+	"d3 bombed wall chest": seasonsChest(
 		"dungeon map", 0x5011, 0x04, 0x51, collectChest2, 0x60),
-	"d3 boss key chest": seasonsChest(
+	"d3 giant blade room": seasonsChest(
 		"d3 boss key", 0x4ffd, 0x04, 0x46, collectChest, 0x60),
 
 	// d4
-	"d4 slingshot chest": seasonsChest(
+	"d4 cracked floor room": seasonsChest(
 		"slingshot 1", 0x502d, 0x04, 0x73, collectChest, 0x1d),
-	"d4 bomb chest": seasonsChest(
+	"d4 north of entrance": seasonsChest(
 		"bombs, 10", 0x5031, 0x04, 0x7f, collectChest, 0x1d),
-	"d4 map chest": seasonsChest(
+	"d4 maze chest": seasonsChest(
 		"dungeon map", 0x5025, 0x04, 0x69, collectChest2, 0x1d),
-	"d4 compass chest": seasonsChest(
+	"d4 water ring room": seasonsChest(
 		"compass", 0x5035, 0x04, 0x83, collectChest2, 0x1d),
-	"d4 boss key spot": MutableScriptItem(
+	"d4 dive spot": MutableScriptItem(
 		"d4 boss key", 0x4c0b, 0x04, 0x6c, collectDive, 0x1d),
 
 	// d5
-	"d5 magnet gloves chest": seasonsChest(
+	"d5 magnet ball chest": seasonsChest(
 		"magnet gloves", 0x503d, 0x04, 0x89, collectChest, 0x89),
-	"d5 rupee chest": seasonsChest(
+	"d5 terrace chest": seasonsChest(
 		"rupees, 100", 0x5041, 0x04, 0x97, collectChest, 0x8a),
-	"d5 map chest": seasonsChest(
+	"d5 gibdo/zol chest": seasonsChest(
 		"dungeon map", 0x5039, 0x04, 0x8f, collectChest2, 0x8f),
-	"d5 compass chest": seasonsChest(
+	"d5 spiral chest": seasonsChest(
 		"compass", 0x5049, 0x04, 0x9d, collectChest2, 0x8a),
-	"d5 boss key spot": MutableScriptItem(
+	"d5 basement": MutableScriptItem(
 		"d5 boss key", 0x4c22, 0x06, 0x8b, collectFind2, 0x8a),
 
 	// d6
-	"d6 boomerang chest": seasonsChest(
+	"d6 armos hall": seasonsChest(
 		"boomerang 2", 0x507d, 0x04, 0xd0, collectChest, 0x00),
-	"d6 rupee chest A": seasonsChest(
+	"d6 1F east": seasonsChest(
 		"rupees, 10", 0x505d, 0x04, 0xaf, collectChest, 0x00),
-	"d6 rupee chest B": seasonsChest(
+	"d6 2F armos chest": seasonsChest(
 		"rupees, 5", 0x5065, 0x04, 0xb3, collectChest, 0x00),
-	"d6 bomb chest": seasonsChest(
+	"d6 2F gibdo chest": seasonsChest(
 		"bombs, 10", 0x5069, 0x04, 0xbf, collectChest, 0x00),
-	"d6 rupee chest C": seasonsChest(
+	"d6 crystal trap room": seasonsChest(
 		"rupees, 5", 0x5075, 0x04, 0xc3, collectChest, 0x00),
-	"d6 compass chest": seasonsChest(
+	"d6 beamos room": seasonsChest(
 		"compass", 0x5059, 0x04, 0xad, collectChest2, 0x00),
-	"d6 map chest": seasonsChest(
+	"d6 1F terrace": seasonsChest(
 		"dungeon map", 0x5061, 0x04, 0xb0, collectChest2, 0x00),
-	"d6 boss key chest": seasonsChest(
+	"d6 escape room": seasonsChest(
 		"d6 boss key", 0x5079, 0x04, 0xc4, collectChest, 0x00),
 
 	// d7
-	"d7 cape chest": seasonsChest(
+	"d7 spike chest": seasonsChest(
 		"feather 2", 0x509e, 0x05, 0x44, collectChest, 0xd0),
-	"d7 rupee chest": seasonsChest(
+	"d7 maze chest": seasonsChest(
 		"rupees, 1", 0x509a, 0x05, 0x43, collectChest, 0xd0),
-	"d7 ring chest": seasonsChest(
+	"d7 right of entrance": seasonsChest(
 		"power ring L-1", 0x50b6, 0x05, 0x5a, collectChest, 0xd0),
-	"d7 compass chest": seasonsChest(
+	"d7 bombed wall chest": seasonsChest(
 		"compass", 0x50aa, 0x05, 0x52, collectChest2, 0xd0),
-	"d7 map chest": seasonsChest(
+	"d7 quicksand chest": seasonsChest(
 		"dungeon map", 0x50b2, 0x05, 0x58, collectChest2, 0xd0),
-	"d7 boss key chest": seasonsChest(
+	"d7 stalfos chest": seasonsChest(
 		"d7 boss key", 0x50a6, 0x05, 0x48, collectChest, 0xd0),
 
 	// d8
-	"d8 HSS chest": seasonsChest(
+	"d8 armos chest": seasonsChest(
 		"slingshot 2", 0x50da, 0x05, 0x8d, collectChest, 0x04),
 	"d8 SW lava chest": seasonsChest(
 		"bombs, 10", 0x50ba, 0x05, 0x6a, collectChest, 0x04),
-	"d8 ring chest": seasonsChest(
+	"d8 three eyes chest": seasonsChest(
 		"steadfast ring", 0x50c6, 0x05, 0x7d, collectChest, 0x04),
-	"d8 compass chest": seasonsChest(
+	"d8 spike room": seasonsChest(
 		"compass", 0x50d2, 0x05, 0x8b, collectChest2, 0x04),
-	"d8 map chest": seasonsChest(
+	"d8 magnet ball room": seasonsChest(
 		"dungeon map", 0x50de, 0x05, 0x8e, collectChest2, 0x04),
-	"d8 boss key chest": seasonsChest(
+	"d8 pols voice chest": seasonsChest(
 		"d8 boss key", 0x50ca, 0x05, 0x80, collectChest, 0x04),
 
 	// don't use this slot; no one knows about it and it's not required for
