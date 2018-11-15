@@ -6,50 +6,61 @@ import (
 	"strings"
 )
 
+// short names for termbox constants
 const (
 	colorDefault = termbox.ColorDefault // going to be typing this a lot
 	bold         = termbox.AttrBold
 )
 
+// a line is just an array of segments.
 type line []segment
 
+// a segment is a text string with formatting information.
 type segment struct {
 	fg, bg termbox.Attribute
 	text   string
 	el     ellipsis
 }
 
-// defines whether a segment will opt in to being truncated at the left or
-// right to fit onscreen. by default, lines are truncated at the right, but if
-// (for example) a segment in the line has ellipsisLeft, that segment will be
-// truncated at the left in order to make the line fit.
+// an ellipsis defines whether a segment will opt in to being truncated at the
+// left or right to fit onscreen. by default, lines are truncated at the right,
+// but if (for example) a segment in the line has ellipsisLeft, that segment
+// will be truncated at the left in order to make the line fit.
 type ellipsis int
 
+// ellipsis constants
 const (
 	ellipsisNone ellipsis = iota
 	ellipsisLeft
 	ellipsisRight
 )
 
+// a modeType defines the way the UI currently handles input and displays
+// information.
 type modeType int
 
+// modeType constants
 const (
 	modeWorking modeType = iota
 	modePrompt
 	modeDone
 )
 
+// global (yes) variables, mostly for communication
 var (
+	// this one's actually used as a constant, but can't be declared as one
+	bottom = []segment{{text: "(q)", fg: colorDefault | bold}, {text: "uit"}}
+
 	lines   []line
-	bottom  = []segment{{text: "(q)", fg: colorDefault | bold}, {text: "uit"}}
-	write   = make(chan line, 1)
-	rewrite = make(chan line)
-	input   = make(chan rune)
-	prompt  = make(chan rune)
-	resize  = make(chan interface{}, 1)
-	change  = make(chan modeType, 1)
+	write   = make(chan line, 1)        // add a line
+	rewrite = make(chan line)           // rewrite the last line
+	input   = make(chan rune)           // key input to main loop
+	prompt  = make(chan rune)           // key input passed from main to prompt
+	resize  = make(chan interface{}, 1) // send to update window size
+	change  = make(chan modeType, 1)    // change modeType
 )
 
+// Init creates and displays a blank TUI.
 func Init(title string) {
 	err := termbox.Init()
 	if err != nil {
@@ -62,7 +73,10 @@ func Init(title string) {
 	draw(modeWorking)
 }
 
+// Run runs the TUI, waiting for input from other functions and displaying
+// updated information as needed.
 func Run() {
+	// run event processing in a different goroutine
 	go func() {
 		for {
 			evt := termbox.PollEvent()
@@ -80,6 +94,7 @@ func Run() {
 		}
 	}()
 
+	// continuously select from various channels
 	mode := modeWorking
 	loop := true
 	for loop {
@@ -106,9 +121,11 @@ func Run() {
 	}
 }
 
+// draw (re)draws the entire display.
 func draw(mode modeType) {
 	termbox.Clear(colorDefault, colorDefault)
 
+	// draw title bar
 	w, h := termbox.Size()
 	drawLine(w, 0, lines[0])
 	var x int
@@ -116,6 +133,7 @@ func draw(mode modeType) {
 		termbox.SetCell(x, 1, '─', colorDefault, colorDefault)
 	}
 
+	// draw content lines
 	scroll := 0
 	if len(lines) > h-3 {
 		scroll = len(lines) - (h - 3)
@@ -124,11 +142,13 @@ func draw(mode modeType) {
 		x = drawLine(w, i+2, ln)
 	}
 
+	// draw bottom bar
 	for x := 0; x < w; x++ {
 		termbox.SetCell(x, h-2, '─', colorDefault, colorDefault)
 	}
 	drawLine(w, h-1, bottom)
 
+	// draw cursor if applicable
 	if mode == modePrompt {
 		termbox.SetCursor(x, len(lines)-scroll)
 	} else {
@@ -138,6 +158,8 @@ func draw(mode modeType) {
 	termbox.Flush()
 }
 
+// drawLine draws a line of text on the display, truncating it as needed (not
+// wrapping it).
 func drawLine(w, y int, ln line) int {
 	// figure out whether the line needs to be shortened
 	var truncLen int
@@ -192,6 +214,7 @@ func drawLine(w, y int, ln line) int {
 	return x
 }
 
+// drawEllipsis draws "..." at the given coords and returns the new x position.
 func drawEllipsis(x, y int, fg, bg termbox.Attribute) int {
 	for i := 0; i < 3; i++ {
 		termbox.SetCell(x, y, '.', fg, bg)
@@ -200,10 +223,13 @@ func drawEllipsis(x, y int, fg, bg termbox.Attribute) int {
 	return x
 }
 
+// Printf adds a line to the display, formatted by fmt.Sprintf.
 func Printf(format string, a ...interface{}) {
 	write <- []segment{{text: fmt.Sprintf(format, a...)}}
 }
 
+// PrintPath adds a line to the display, with a middle path segment that is
+// truncated at the left rather than the right.
 func PrintPath(pre, path, post string) {
 	write <- []segment{
 		{text: pre},
@@ -247,6 +273,7 @@ func Prompt(s string) rune {
 	// add space before cursor
 	line = append(line, segment{text: " "})
 
+	// wait for and return a valid rune
 	write <- line
 	change <- modePrompt
 	for {
@@ -283,6 +310,8 @@ func PromptSeed(s string) string {
 	}
 }
 
+// Done changes the mode to one where no action is taken, and any input closes
+// the program.
 func Done() {
 	write <- []segment{{}}
 	write <- []segment{{text: "press any key to exit.",
