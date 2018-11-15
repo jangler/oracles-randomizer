@@ -119,6 +119,14 @@ func initAgesEOB() {
 	r.replace(0x02, 0x619d, "call check cursor visited",
 		"\xcd\x36\x66", "\xcd"+checkCursorVisited)
 
+	// display portal popup map icons for bridge builders' screen present and
+	// symmetry city past.
+	displayPortalPopup := r.appendToBank(0x02, "display portal popup",
+		"\xfa\xb3\xcb\xa7\xfa\xb6\xcb\x20\x08\xfe\x25\x20\x0d\x3e\xaa\x18\x06"+
+			"\xfe\x13\x20\x05\x3e\xa3\xc3\x55\x62\xc3\x48\x62")
+	r.replace(0x02, 0x6245, "jump display portal popup",
+		"\xfa\xb6\xcb", "\xc3"+displayPortalPopup)
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
@@ -136,7 +144,8 @@ func initAgesEOB() {
 			"\xfa\xff\x7f\xea\x10\xc6\x3e\x03\xea\x47\xc6"+ // set animal stuff
 			"\x21\x7a\xc7\xcb\xf6\x2e\x6a\xcb\xf6"+ // set room flags
 			"\x2e\x59\xcb\xf6\x2e\x39\x36\xc8\x2e\x7c\xcb\xf6"+ // more
-			"\x2e\x2e\xcb\xf6\x21\x6d\xca\x36\x02\xe1\xc9") // more
+			"\x2e\x2e\xcb\xf6\x2e\x25\xcb\xde\x21\x13\xc8\xcb\xde"+ // more
+			"\x21\x6d\xca\x36\x02\xe1\xc9") // more
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
 
