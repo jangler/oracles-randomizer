@@ -16,6 +16,7 @@ import (
 	"github.com/jangler/oos-randomizer/ui"
 )
 
+// gameName returns the short name associated with a game number.
 func gameName(game int) string {
 	switch game {
 	case rom.GameAges:
@@ -27,17 +28,20 @@ func gameName(game int) string {
 	}
 }
 
+// usage is called when an invalid CLI invocation is used, or if the -h flag is
+// passed.
 func usage() {
 	fmt.Fprintf(flag.CommandLine.Output(),
 		"Usage: %s [<original file> [<new file>]]\n", os.Args[0])
 	flag.PrintDefaults()
 }
 
-// fatal prints an error to the UI.
+// fatal prints an error to whichever UI is used.
 func fatal(err error, logf func(string, ...interface{})) {
 	logf("fatal: %v.", err)
 }
 
+// options specified on the command line or via the TUI
 var (
 	flagHard     bool
 	flagN        int
@@ -49,8 +53,8 @@ var (
 	flagVerbose  bool
 )
 
-func main() {
-	// init flags
+// initFlags initializes the CLI/TUI option values and variables.
+func initFlags() {
 	flag.Usage = usage
 	flag.BoolVar(&flagHard, "hard", false,
 		"require some plays outside normal logic")
@@ -69,8 +73,14 @@ func main() {
 	flag.BoolVar(&flagVerbose, "verbose", false,
 		"print more detailed output to terminal")
 	flag.Parse()
+}
+
+// main is the program's entry point.
+func main() {
+	initFlags()
 
 	if flagStats != "" {
+		// do stats instead of randomizing
 		var game int
 
 		if flagStats == "seasons" {
@@ -89,22 +99,25 @@ func main() {
 			fmt.Println()
 		})
 	} else if flag.NArg()+flag.NFlag() > 1 { // CLI used
-		runRandomizer(func(s string, a ...interface{}) {
+		// run randomizer on main goroutine
+		runRandomizer(false, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
 	} else { // CLI maybe not used
+		// run TUI on main goroutine and randomizer on alternate goroutine
 		ui.Init("oracles randomizer " + version)
-		go runRandomizer(func(s string, a ...interface{}) {
+		go runRandomizer(true, func(s string, a ...interface{}) {
 			ui.Printf(s, a...)
 		})
 		ui.Run()
 	}
 }
 
-func runRandomizer(logf func(string, ...interface{})) {
-	useTUI := flag.NArg()+flag.NFlag() < 2
-
+// run the main randomizer routine, printing messages via logf, which should
+// act analogously to fmt.Printf with added newline.
+func runRandomizer(useTUI bool, logf func(string, ...interface{})) {
+	// close TUI after randomizer is done
 	defer func() {
 		if useTUI {
 			ui.Done()
@@ -113,10 +126,9 @@ func runRandomizer(logf func(string, ...interface{})) {
 
 	// if rom is to be randomized, infile must be non-empty after switch
 	var infile, outfile string
-
 	switch flag.NArg() {
 	case 0: // no specified files, search in executable's directory
-		dir, seasons, ages, err := findVanillaROMs()
+		seasons, ages, err := findVanillaROMs()
 		if err != nil {
 			fatal(err, logf)
 			break
@@ -152,9 +164,6 @@ func runRandomizer(logf func(string, ...interface{})) {
 		} else {
 			infile = ages
 		}
-
-		seasons = filepath.Join(dir, seasons)
-		ages = filepath.Join(dir, ages)
 	case 1: // specified input file only
 		infile = flag.Arg(0)
 	case 2: // specified input and output file
@@ -172,45 +181,7 @@ func runRandomizer(logf func(string, ...interface{})) {
 		}
 		logf("randomizing %s.", infile)
 
-		// prompt for options if it wasn't necessarily a CLI invocation
-
-		if useTUI {
-			specificSeed := ui.Prompt("use specific seed? (y/n)")
-			if specificSeed == 'y' {
-				flagSeed = ui.PromptSeed("enter seed: (8-digit hex number)")
-				logf("using seed %s.", flagSeed)
-			}
-		}
-
-		if useTUI {
-			hard := ui.Prompt("enable hard difficulty? (y/n)")
-			flagHard = hard == 'y'
-		}
-		if flagHard {
-			logf("using hard difficulty.")
-		} else {
-			logf("using normal difficulty.")
-		}
-
-		if useTUI {
-			noMusic := ui.Prompt("disable music? (y/n)")
-			flagNoMusic = noMusic == 'y'
-		}
-		if flagNoMusic {
-			logf("music off.")
-		} else {
-			logf("music on.")
-		}
-
-		if useTUI {
-			treewarp := ui.Prompt("enable tree warp? (y/n)")
-			flagTreewarp = treewarp == 'y'
-		}
-		if flagTreewarp {
-			logf("tree warp on.")
-		} else {
-			logf("tree warp off.")
-		}
+		getAndLogOptions(useTUI, logf)
 
 		if useTUI {
 			logf("")
@@ -219,25 +190,56 @@ func runRandomizer(logf func(string, ...interface{})) {
 		rom.SetMusic(!flagNoMusic)
 		rom.SetTreewarp(flagTreewarp)
 
-		if err := randomizeFile(infile, outfile, logf); err != nil {
+		b, game, err := readGivenROM(infile)
+		if err != nil {
 			fatal(err, logf)
+			return
+		}
+
+		if err := randomizeFile(b, game, outfile, flagSeed,
+			flagHard, flagVerbose, logf); err != nil {
+			fatal(err, logf)
+			return
 		}
 	}
 }
 
-func randomizeFile(infile, outfile string,
-	logf func(string, ...interface{})) error {
-	b, game, err := readGivenROM(infile)
-	if err != nil {
-		return err
+// getAndLogOptions logs values of selected options, prompting for them first
+// if the TUI is used.
+func getAndLogOptions(useTUI bool, logf func(string, ...interface{})) {
+	if useTUI {
+		if ui.Prompt("use specific seed? (y/n)") == 'y' {
+			flagSeed = ui.PromptSeed("enter seed: (8-digit hex number)")
+			logf("using seed %s.", flagSeed)
+		}
 	}
 
-	if err := handleFile(b, game, outfile, flagSeed,
-		flagHard, flagVerbose, logf); err != nil {
-		return err
+	if useTUI {
+		flagHard = ui.Prompt("enable hard difficulty? (y/n)") == 'y'
+	}
+	if flagHard {
+		logf("using hard difficulty.")
+	} else {
+		logf("using normal difficulty.")
 	}
 
-	return nil
+	if useTUI {
+		flagNoMusic = ui.Prompt("disable music? (y/n)") == 'y'
+	}
+	if flagNoMusic {
+		logf("music off.")
+	} else {
+		logf("music on.")
+	}
+
+	if useTUI {
+		flagTreewarp = ui.Prompt("enable tree warp? (y/n)") == 'y'
+	}
+	if flagTreewarp {
+		logf("tree warp on.")
+	} else {
+		logf("tree warp off.")
+	}
 }
 
 // attempt to write rom data to a file and print summary info.
@@ -264,14 +266,14 @@ func writeROM(b []byte, filename, logFilename string, seed uint32,
 
 // search for a vanilla US seasons and ages ROMs in the executable's directory,
 // and return their filenames.
-func findVanillaROMs() (dirName, seasons, ages string, err error) {
+func findVanillaROMs() (seasons, ages string, err error) {
 	// read slice of file info from executable's dir
 	exe, err := os.Executable()
 	if err != nil {
 		return
 	}
 
-	dirName = filepath.Dir(exe)
+	dirName := filepath.Dir(exe)
 	ui.PrintPath("searching ", dirName, " for ROMs.")
 	dir, err := os.Open(dirName)
 	if err != nil {
@@ -355,8 +357,7 @@ func readGivenROM(filename string) ([]byte, int, error) {
 	return b, game, nil
 }
 
-// decide whether to randomize or update the file
-func handleFile(romData []byte, game int, outfile, seedFlag string,
+func randomizeFile(romData []byte, game int, outfile, seedFlag string,
 	hard, verbose bool, logf func(string, ...interface{})) error {
 	var seed uint32
 	var sum []byte
@@ -385,8 +386,8 @@ func handleFile(romData []byte, game int, outfile, seedFlag string,
 	return writeROM(romData, outfile, logFilename, seed, sum, logf)
 }
 
-// sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or
-// else the current time, and returns that seed.
+// setRandomSeed sets a 32-bit unsigned random seed based on a hexstring, if
+// non-empty, or else the current time, and returns that seed.
 func setRandomSeed(hexString string) (uint32, error) {
 	seed := uint32(time.Now().UnixNano())
 	if hexString != "" {
@@ -486,26 +487,7 @@ func randomize(romData []byte, game int, logFilename, seedFlag string,
 		return 0, nil, "", fmt.Errorf("no route found")
 	}
 
-	// place selected treasures in slots
-	checks := getChecks(ri)
-	for slot, item := range checks {
-		if verbose {
-			logf("%s <- %s", slot.Name, item.Name)
-		}
-		rom.ItemSlots[slot.Name].Treasure = rom.Treasures[item.Name]
-	}
-
-	// set season data
-	if game == rom.GameSeasons {
-		for area, id := range ri.Seasons {
-			rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
-		}
-	}
-
-	rom.SetAnimal(ri.Companion)
-
-	// do it! (but don't write anything)
-	checksum, err := rom.Mutate(romData, game)
+	checksum, err := setROMData(romData, game, ri, logf, verbose)
 	if err != nil {
 		return 0, nil, "", err
 	}
@@ -530,6 +512,7 @@ func randomize(romData []byte, game int, logFilename, seedFlag string,
 	}
 	summary <- ""
 	summary <- ""
+	checks := getChecks(ri)
 	spheres := getSpheres(ri.Route.Graph, checks, hard)
 	summary <- "-- progression items --"
 	summary <- ""
@@ -580,4 +563,29 @@ func itemIsJunk(name string) bool {
 		return true
 	}
 	return false
+}
+
+// setROMData mutates the ROM data in-place based on the given route.
+func setROMData(romData []byte, game int, ri *RouteInfo,
+	logf func(string, ...interface{}), verbose bool) ([]byte, error) {
+	// place selected treasures in slots
+	checks := getChecks(ri)
+	for slot, item := range checks {
+		if verbose {
+			logf("%s <- %s", slot.Name, item.Name)
+		}
+		rom.ItemSlots[slot.Name].Treasure = rom.Treasures[item.Name]
+	}
+
+	// set season data
+	if game == rom.GameSeasons {
+		for area, id := range ri.Seasons {
+			rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
+		}
+	}
+
+	rom.SetAnimal(ri.Companion)
+
+	// do it! (but don't write anything)
+	return rom.Mutate(romData, game)
 }
