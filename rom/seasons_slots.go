@@ -5,7 +5,23 @@ package rom
 // This applies to almost all chests, and exclusively to chests.
 func seasonsChest(treasure string, addr uint16,
 	group, room, mode, coords byte) *MutableSlot {
-	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, mode, coords)
+	return basicSlot(treasure, 0x15, addr, addr+1, group, room, mode, coords)
+}
+
+// seasonsScriptItem constructs a MutableSlot from a treasure name and an
+// address in bank $0b, where the ID and sub-ID are two consecutive bytes at
+// that address. This applies to most items given by NPCs.
+func seasonsScriptItem(treasure string, addr uint16,
+	group, room, mode, coords byte) *MutableSlot {
+	return basicSlot(treasure, 0x0b, addr, addr+1, group, room, mode, coords)
+}
+
+// seasonsFoundItem constructs a MutableSlot from a treasure name and an address in
+// bank $09, where the sub-ID and ID (in that order) are two consecutive bytes
+// at that address. This applies to most items that are found lying around.
+func seasonsFoundItem(treasure string, addr uint16,
+	group, room, mode, coords byte) *MutableSlot {
+	return basicSlot(treasure, 0x09, addr+1, addr, group, room, mode, coords)
 }
 
 var seasonsSlots = map[string]*MutableSlot{
@@ -14,8 +30,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"gasha seed", 0x4f92, 0x00, 0xb8, collectChest, 0xb8),
 	"maku tree gift": &MutableSlot{
 		treasureName: "gnarled key",
-		IDAddrs:      []Addr{{0x15, 0x613a}, {0x09, 0x7e16}},
-		SubIDAddrs:   []Addr{{0x15, 0x613d}, {0x09, 0x7e19}},
+		idAddrs:      []Addr{{0x15, 0x613a}, {0x09, 0x7e16}},
+		subIDAddrs:   []Addr{{0x15, 0x613d}, {0x09, 0x7e19}},
 		group:        0x02,
 		room:         0x0b,
 		collectMode:  collectFall,
@@ -25,18 +41,18 @@ var seasonsSlots = map[string]*MutableSlot{
 		"rupees, 20", 0x4f7e, 0x00, 0xf5, collectChest, 0xf5),
 	"village SE chest": seasonsChest(
 		"rupees, 20", 0x4f82, 0x00, 0xf9, collectChest, 0xf9),
-	"shovel gift": MutableScriptItem(
+	"shovel gift": seasonsScriptItem(
 		"shovel", 0x6a6c, 0x03, 0xa3, collectFind2, 0x7f),
 	"outdoor d2 chest": seasonsChest(
 		"gasha seed", 0x4f86, 0x00, 0x8e, collectChest, 0x8e),
-	"blaino gift": MutableScriptItem(
+	"blaino gift": seasonsScriptItem(
 		"gasha seed", 0x64cc, 0x03, 0xb4, collectFind1, 0x78),
-	"floodgate key spot": MutableFind(
+	"floodgate key spot": seasonsFoundItem(
 		"floodgate key", 0x6281, 0x03, 0xb5, collectFind1, 0x62),
 	"square jewel chest": &MutableSlot{
 		treasureName: "square jewel",
-		IDAddrs:      []Addr{{0x0b, 0x7395}},
-		SubIDAddrs:   []Addr{{0x0b, 0x7399}},
+		idAddrs:      []Addr{{0x0b, 0x7395}},
+		subIDAddrs:   []Addr{{0x0b, 0x7399}},
 		group:        0x04,
 		room:         0xfa,
 		collectMode:  collectChest,
@@ -46,22 +62,22 @@ var seasonsSlots = map[string]*MutableSlot{
 		"piece of heart", 0x4f8e, 0x00, 0x5b, collectChest, 0x5b),
 	"master's plaque chest": seasonsChest(
 		"master's plaque", 0x510a, 0x05, 0xbc, collectChest, 0x2e),
-	"diver gift": MutableScriptItem( // addr set at EOB
+	"diver gift": seasonsScriptItem( // addr set at EOB
 		"flippers", 0x0000, 0x05, 0xbd, collectNil, 0x2e), // special case
-	"spring banana tree": MutableFind(
+	"spring banana tree": seasonsFoundItem(
 		"spring banana", 0x66c6, 0x00, 0x0f, collectFind2, 0x0f),
-	"dragon key spot": MutableFind(
+	"dragon key spot": seasonsFoundItem(
 		"dragon key", 0x62a3, 0x00, 0x1a, collectFind1, 0x1a),
-	"pyramid jewel spot": MutableScriptItem(
+	"pyramid jewel spot": seasonsScriptItem(
 		"pyramid jewel", 0x734e, 0x07, 0xe5, collectUnderwater, 0x1d),
 	"x-shaped jewel chest": seasonsChest(
 		"x-shaped jewel", 0x4f8a, 0x00, 0xf4, collectChest, 0xf4),
-	"round jewel gift": MutableScriptItem(
+	"round jewel gift": seasonsScriptItem(
 		"round jewel", 0x7332, 0x03, 0x94, collectFind2, 0xb5),
 	"noble sword spot": &MutableSlot{
 		treasureName: "sword 2",
-		IDAddrs:      []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
-		SubIDAddrs:   []Addr{{0x0b, 0x6419}, {0x0b, 0x6420}},
+		idAddrs:      []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
+		subIDAddrs:   []Addr{{0x0b, 0x6419}, {0x0b, 0x6420}},
 		group:        0x00,
 		room:         0xc9,
 		collectMode:  collectFind1,
@@ -69,8 +85,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"desert pit": &MutableSlot{
 		treasureName: "rusty bell",
-		IDAddrs:      []Addr{{0x09, 0x648d}, {0x0b, 0x60b1}},
-		SubIDAddrs:   []Addr{{0x09, 0x648c}},
+		idAddrs:      []Addr{{0x09, 0x648d}, {0x0b, 0x60b1}},
+		subIDAddrs:   []Addr{{0x09, 0x648c}},
 		group:        0x05,
 		room:         0xd2,
 		collectMode:  collectFind2,
@@ -108,8 +124,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"gasha seed", 0x5089, 0x04, 0xf7, collectChest, 0xcc),
 	"dry lake west chest": &MutableSlot{
 		treasureName: "rupees, 100",
-		IDAddrs:      []Addr{{0x0b, 0x73a1}},
-		SubIDAddrs:   []Addr{{0x0b, 0x73a5}},
+		idAddrs:      []Addr{{0x0b, 0x73a1}},
+		subIDAddrs:   []Addr{{0x0b, 0x73a5}},
 		group:        0x04,
 		room:         0xfb,
 		collectMode:  collectChest,
@@ -117,8 +133,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"linked dive chest": &MutableSlot{
 		treasureName: "gasha seed",
-		IDAddrs:      []Addr{{0x0a, 0x5003}},
-		SubIDAddrs:   []Addr{{0x0a, 0x5008}},
+		idAddrs:      []Addr{{0x0a, 0x5003}},
+		subIDAddrs:   []Addr{{0x0a, 0x5008}},
 		group:        0x05,
 		room:         0x12,
 		collectMode:  collectChest,
@@ -143,8 +159,8 @@ var seasonsSlots = map[string]*MutableSlot{
 
 	"village shop 3": &MutableSlot{
 		treasureName: "strange flute",
-		IDAddrs:      []Addr{{0x08, 0x4ce8}},
-		SubIDAddrs:   []Addr{{0x08, 0x4ce9}},
+		idAddrs:      []Addr{{0x08, 0x4ce8}},
+		subIDAddrs:   []Addr{{0x08, 0x4ce9}},
 		group:        0x03,
 		room:         0xa6,
 		collectMode:  collectNil,
@@ -152,8 +168,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"member's shop 1": &MutableSlot{
 		treasureName: "satchel 2",
-		IDAddrs:      []Addr{{0x08, 0x4cce}},
-		SubIDAddrs:   []Addr{{0x08, 0x4ccf}},
+		idAddrs:      []Addr{{0x08, 0x4cce}},
+		subIDAddrs:   []Addr{{0x08, 0x4ccf}},
 		group:        0x03,
 		room:         0xb0,
 		collectMode:  collectNil,
@@ -161,8 +177,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"member's shop 2": &MutableSlot{
 		treasureName: "gasha seed",
-		IDAddrs:      []Addr{{0x08, 0x4cd2}},
-		SubIDAddrs:   []Addr{{0x08, 0x4cd3}},
+		idAddrs:      []Addr{{0x08, 0x4cd2}},
+		subIDAddrs:   []Addr{{0x08, 0x4cd3}},
 		group:        0x03,
 		room:         0xb0,
 		collectMode:  collectNil,
@@ -170,8 +186,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"member's shop 3": &MutableSlot{
 		treasureName: "treasure map",
-		IDAddrs:      []Addr{{0x08, 0x4cd8}},
-		SubIDAddrs:   []Addr{{0x08, 0x4cd9}},
+		idAddrs:      []Addr{{0x08, 0x4cd8}},
+		subIDAddrs:   []Addr{{0x08, 0x4cd9}},
 		group:        0x03,
 		room:         0xb0,
 		collectMode:  collectNil,
@@ -179,20 +195,20 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 
 	// subrosia
-	"winter tower": MutableScriptItem(
+	"winter tower": seasonsScriptItem(
 		"winter", 0x4fc5, 0x05, 0xf2, collectFind1, 0x9a),
-	"summer tower": MutableScriptItem(
+	"summer tower": seasonsScriptItem(
 		"summer", 0x4fb9, 0x05, 0xf8, collectFind1, 0xb0),
-	"spring tower": MutableScriptItem(
+	"spring tower": seasonsScriptItem(
 		"spring", 0x4fb5, 0x05, 0xf5, collectFind1, 0x1e),
-	"autumn tower": MutableScriptItem(
+	"autumn tower": seasonsScriptItem(
 		"autumn", 0x4fc1, 0x05, 0xfb, collectFind1, 0xb9),
-	"dance hall prize": MutableScriptItem(
+	"dance hall prize": seasonsScriptItem(
 		"boomerang 1", 0x6646, 0x03, 0x95, collectFind2, 0x9a),
 	"rod gift": &MutableSlot{
 		treasureName: "rod",
-		IDAddrs:      []Addr{{0x15, 0x70ce}},
-		SubIDAddrs:   []Addr{{0x15, 0x70cc}},
+		idAddrs:      []Addr{{0x15, 0x70ce}},
+		subIDAddrs:   []Addr{{0x15, 0x70cc}},
 		group:        0x03,
 		room:         0xac,
 		collectMode:  collectNil,
@@ -200,8 +216,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"star ore spot": &MutableSlot{ // addrs set dynamically at EOB
 		treasureName: "star ore",
-		IDAddrs:      []Addr{{0x08, 0x0000}},
-		SubIDAddrs:   []Addr{{0x08, 0x0000}},
+		idAddrs:      []Addr{{0x08, 0x0000}},
+		subIDAddrs:   []Addr{{0x08, 0x0000}},
 		group:        0x01,
 		room:         0x66,
 		collectMode:  collectDig,
@@ -217,8 +233,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"gasha seed", 0x5116, 0x05, 0xc6, collectChest, 0xb0),
 	"subrosian market 1": &MutableSlot{
 		treasureName: "ribbon",
-		IDAddrs:      []Addr{{0x09, 0x77da}},
-		SubIDAddrs:   []Addr{{0x09, 0x77db}},
+		idAddrs:      []Addr{{0x09, 0x77da}},
+		subIDAddrs:   []Addr{{0x09, 0x77db}},
 		group:        0x03,
 		room:         0xa0,
 		collectMode:  collectNil,
@@ -226,8 +242,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"subrosian market 2": &MutableSlot{
 		treasureName: "rare peach stone",
-		IDAddrs:      []Addr{{0x09, 0x77e2}},
-		SubIDAddrs:   []Addr{{0x09, 0x77e3}},
+		idAddrs:      []Addr{{0x09, 0x77e2}},
+		subIDAddrs:   []Addr{{0x09, 0x77e3}},
 		group:        0x03,
 		room:         0xa0,
 		collectMode:  collectNil,
@@ -235,8 +251,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"subrosian market 5": &MutableSlot{
 		treasureName: "member's card",
-		IDAddrs:      []Addr{{0x09, 0x77f4}},
-		SubIDAddrs:   []Addr{{0x09, 0x77f5}},
+		idAddrs:      []Addr{{0x09, 0x77f4}},
+		subIDAddrs:   []Addr{{0x09, 0x77f5}},
 		group:        0x03,
 		room:         0xa0,
 		collectMode:  collectNil,
@@ -244,8 +260,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"hard ore slot": &MutableSlot{ // addrs set dynamically at EOB
 		treasureName: "hard ore",
-		IDAddrs:      []Addr{{0x15, 0x0000}, {0x09, 0x66eb}},
-		SubIDAddrs:   []Addr{{0x15, 0x0000}, {0x09, 0x66ea}},
+		idAddrs:      []Addr{{0x15, 0x0000}, {0x09, 0x66eb}},
+		subIDAddrs:   []Addr{{0x15, 0x0000}, {0x09, 0x66ea}},
 		group:        0x03,
 		room:         0x8e,
 		collectMode:  collectFind2,
@@ -253,8 +269,8 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 	"iron shield gift": &MutableSlot{
 		treasureName: "shield L-2",
-		IDAddrs:      []Addr{{0x15, 0x62be}},
-		SubIDAddrs:   []Addr{{0x15, 0x62b4}},
+		idAddrs:      []Addr{{0x15, 0x62be}},
+		subIDAddrs:   []Addr{{0x15, 0x62b4}},
 		group:        0x03,
 		room:         0x97,
 		collectMode:  collectFind2,
@@ -264,10 +280,10 @@ var seasonsSlots = map[string]*MutableSlot{
 	// hero's cave
 	"d0 sword chest": &MutableSlot{
 		treasureName: "sword 1",
-		IDAddrs:      []Addr{{0x0a, 0x7b90}},
-		ParamAddrs:   []Addr{{0x0a, 0x7b92}},
-		TextAddrs:    []Addr{{0x0a, 0x7b9c}},
-		GfxAddrs:     []Addr{{0x3f, 0x6676}},
+		idAddrs:      []Addr{{0x0a, 0x7b90}},
+		paramAddrs:   []Addr{{0x0a, 0x7b92}},
+		textAddrs:    []Addr{{0x0a, 0x7b9c}},
+		gfxAddrs:     []Addr{{0x3f, 0x6676}},
 		group:        0x04,
 		room:         0x06,
 		collectMode:  collectNil,
@@ -277,7 +293,7 @@ var seasonsSlots = map[string]*MutableSlot{
 		"rupees, 30", 0x4fb5, 0x04, 0x05, collectChest, 0xd4),
 
 	// d1
-	"d1 basement": MutableFind(
+	"d1 basement": seasonsFoundItem(
 		"satchel 1", 0x66b1, 0x06, 0x09, collectFind2, 0x96),
 	"d1 block-pushing room": seasonsChest(
 		"gasha seed", 0x4fbd, 0x04, 0x0d, collectChest, 0x96),
@@ -331,7 +347,7 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x5025, 0x04, 0x69, collectChest2, 0x1d),
 	"d4 water ring room": seasonsChest(
 		"compass", 0x5035, 0x04, 0x83, collectChest2, 0x1d),
-	"d4 dive spot": MutableScriptItem(
+	"d4 dive spot": seasonsScriptItem(
 		"d4 boss key", 0x4c0b, 0x04, 0x6c, collectDive, 0x1d),
 
 	// d5
@@ -343,7 +359,7 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x5039, 0x04, 0x8f, collectChest2, 0x8f),
 	"d5 spiral chest": seasonsChest(
 		"compass", 0x5049, 0x04, 0x9d, collectChest2, 0x8a),
-	"d5 basement": MutableScriptItem(
+	"d5 basement": seasonsScriptItem(
 		"d5 boss key", 0x4c22, 0x06, 0x8b, collectFind2, 0x8a),
 
 	// d6
@@ -394,31 +410,31 @@ var seasonsSlots = map[string]*MutableSlot{
 
 	// don't use this slot; no one knows about it and it's not required for
 	// anything in a normal playthrough
-	// "ring box L-2 gift": MutableScriptItem("ring box L-2", 0x5c18),
+	// "ring box L-2 gift": seasonsScriptItem("ring box L-2", 0x5c18),
 
 	// these are "fake" item slots in that they don't slot real treasures
 	"ember tree": &MutableSlot{
 		treasureName: "ember tree seeds",
-		IDAddrs:      []Addr{{0x0d, 0x68fb}},
+		idAddrs:      []Addr{{0x0d, 0x68fb}},
 	},
 	"mystery tree": &MutableSlot{
 		treasureName: "mystery tree seeds",
-		IDAddrs:      []Addr{{0x0d, 0x68fe}},
+		idAddrs:      []Addr{{0x0d, 0x68fe}},
 	},
 	"scent tree": &MutableSlot{
 		treasureName: "scent tree seeds",
-		IDAddrs:      []Addr{{0x0d, 0x6901}},
+		idAddrs:      []Addr{{0x0d, 0x6901}},
 	},
 	"pegasus tree": &MutableSlot{
 		treasureName: "pegasus tree seeds",
-		IDAddrs:      []Addr{{0x0d, 0x6904}},
+		idAddrs:      []Addr{{0x0d, 0x6904}},
 	},
 	"sunken gale tree": &MutableSlot{
 		treasureName: "gale tree seeds",
-		IDAddrs:      []Addr{{0x0d, 0x6907}},
+		idAddrs:      []Addr{{0x0d, 0x6907}},
 	},
 	"tarm gale tree": &MutableSlot{
 		treasureName: "gale tree seeds",
-		IDAddrs:      []Addr{{0x0d, 0x690a}},
+		idAddrs:      []Addr{{0x0d, 0x690a}},
 	},
 }

@@ -61,7 +61,7 @@ func MutableStrings(addrs []Addr, old, new string) *MutableRange {
 // Mutate replaces bytes in its range.
 func (mr *MutableRange) Mutate(b []byte) error {
 	for _, addr := range mr.Addrs {
-		offset := addr.FullOffset()
+		offset := addr.fullOffset()
 		for i, value := range mr.New {
 			b[offset+i] = value
 		}
@@ -72,7 +72,7 @@ func (mr *MutableRange) Mutate(b []byte) error {
 // Check verifies that the range matches the given ROM data.
 func (mr *MutableRange) Check(b []byte) error {
 	for _, addr := range mr.Addrs {
-		offset := addr.FullOffset()
+		offset := addr.fullOffset()
 		for i, value := range mr.Old {
 			if b[offset+i] != value {
 				return fmt.Errorf("expected %x at %x; found %x",
@@ -130,7 +130,7 @@ func getAllMutables() map[string]Mutable {
 		if v.Treasure == nil {
 			log.Fatalf("treasure named %s for %s is nil", v.treasureName, k)
 		}
-		if v.Treasure.addr.Offset != 0 {
+		if v.Treasure.addr.offset != 0 {
 			treasureMutables[FindTreasureName(v.Treasure)] = v.Treasure
 		}
 		slotMutables[k] = v

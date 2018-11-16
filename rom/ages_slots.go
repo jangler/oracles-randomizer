@@ -1,5 +1,7 @@
 package rom
 
+// special collection modes that jump to custom code, for when there are
+// multiple modes required in the same room.
 const (
 	collectMakuTree    = 0x80
 	collectTargetCarts = 0x81
@@ -15,68 +17,68 @@ func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
 		panic("treasure " + treasure + " does not exist")
 	}
 	mode := agesTreasures[treasure].mode
-	return BasicSlot(treasure, 0x16, addr, addr+1, group, room, mode, 0)
+	return basicSlot(treasure, 0x16, addr, addr+1, group, room, mode, 0)
 }
 
 // for items given by script command de.
 func agesScriptItem(treasure string, addr uint16,
 	group, room byte) *MutableSlot {
-	return BasicSlot(treasure, 0x0c, addr, addr+1, group, room, collectFind2, 0)
+	return basicSlot(treasure, 0x0c, addr, addr+1, group, room, collectFind2, 0)
 }
 
 // same as agesScriptItem, but for scripts in bank 15 that are copied to the
 // c3xx buffer. some non-scripted items in bank 15 also use this format.
 func agesBufferItem(treasure string, addr uint16,
 	group, room byte) *MutableSlot {
-	return BasicSlot(treasure, 0x15, addr, addr+1, group, room, collectFind2, 0)
+	return basicSlot(treasure, 0x15, addr, addr+1, group, room, collectFind2, 0)
 }
 
 var agesSlots = map[string]*MutableSlot{
 	// overworld present
-	"starting chest": BasicSlot("sword 1", 0x00, 0x10f8, 0x10f7,
+	"starting chest": basicSlot("sword 1", 0x00, 0x10f8, 0x10f7,
 		0x00, 0x39, collectChest, 0x39),
-	"nayru's house": BasicSlot("harp 1", 0x0b, 0x6828, 0x6827,
+	"nayru's house": basicSlot("harp 1", 0x0b, 0x6828, 0x6827,
 		0x03, 0xae, collectFind2, 0x3a),
 	"maku tree": &MutableSlot{
 		treasureName: "satchel 1",
-		IDAddrs:      []Addr{{0x15, 0x70e0}, {0x15, 0x7115}},
-		SubIDAddrs:   []Addr{{0x15, 0x70e3}, {0x15, 0x7118}},
+		idAddrs:      []Addr{{0x15, 0x70e0}, {0x15, 0x7115}},
+		subIDAddrs:   []Addr{{0x15, 0x70e3}, {0x15, 0x7118}},
 		group:        0x00,
 		room:         0x38,
 		collectMode:  collectMakuTree,
 	},
-	"grave under tree": BasicSlot("graveyard key", 0x10, 0x750d, 0x750c,
+	"grave under tree": basicSlot("graveyard key", 0x10, 0x750d, 0x750c,
 		0x05, 0xed, collectFall, 0x8d),
 	"graveyard poe": &MutableSlot{
 		treasureName: "sword 2",
-		IDAddrs:      []Addr{{0x15, 0x6188}},
-		SubIDAddrs:   []Addr{{0x15, 0x6189}},
+		idAddrs:      []Addr{{0x15, 0x6188}},
+		subIDAddrs:   []Addr{{0x15, 0x6189}},
 		group:        0x00,
 		room:         0x7c,
 		collectMode:  collectFind2,
 	},
 	"cheval's test":      agesScriptItem("flippers 1", 0x723b, 0x05, 0xbf),
 	"cheval's invention": agesScriptItem("cheval rope", 0x7232, 0x05, 0xb6),
-	"south shore dirt": BasicSlot("ricky's gloves", 0x0a, 0x5e3d, 0x5e3c,
+	"south shore dirt": basicSlot("ricky's gloves", 0x0a, 0x5e3d, 0x5e3c,
 		0x00, 0x98, collectDigPile, 0x98),
 	"tingle's gift":    agesScriptItem("island chart", 0x7e20, 0x00, 0x79),
 	"tingle's upgrade": agesScriptItem("satchel 2", 0x7e7a, 0x00, 0x79),
-	"shop, 150 rupees": BasicSlot("strange flute", 0x09, 0x4511, 0x4512,
+	"shop, 150 rupees": basicSlot("strange flute", 0x09, 0x4511, 0x4512,
 		0x02, 0x5e, collectFind2, 0x68),
 	"defeat great moblin": agesScriptItem("bomb flower", 0x757d, 0x00, 0x09),
 	"goron elder":         agesBufferItem("crown key", 0x7386, 0x05, 0xc3),
 	"target carts 1": &MutableSlot{
 		treasureName: "rock brisket",
-		IDAddrs:      []Addr{{0x15, 0x66e8}, {0x0c, 0x6e71}},
-		SubIDAddrs:   []Addr{{0x15, 0x66e9}, {0x0c, 0x6e72}},
+		idAddrs:      []Addr{{0x15, 0x66e8}, {0x0c, 0x6e71}},
+		subIDAddrs:   []Addr{{0x15, 0x66e9}, {0x0c, 0x6e72}},
 		group:        0x05,
 		room:         0xd8,
 		collectMode:  collectTargetCarts,
 	},
 	"target carts 2": &MutableSlot{ // second addrs set dynamically at EOB
 		treasureName: "boomerang",
-		IDAddrs:      []Addr{{0x15, 0x66f0}, {0x0c, 0x0000}},
-		SubIDAddrs:   []Addr{{0x15, 0x66f1}, {0x0c, 0x0000}},
+		idAddrs:      []Addr{{0x15, 0x66f0}, {0x0c, 0x0000}},
+		subIDAddrs:   []Addr{{0x15, 0x66f1}, {0x0c, 0x0000}},
 		group:        0x05,
 		room:         0xd8,
 		collectMode:  collectTargetCarts,
@@ -86,16 +88,16 @@ var agesSlots = map[string]*MutableSlot{
 	"trade goron vase":    agesBufferItem("goronade", 0x6b23, 0x02, 0xff),
 	"big bang game": &MutableSlot{
 		treasureName: "old mermaid key",
-		IDAddrs:      []Addr{{0x15, 0x6742}, {0x0c, 0x707a}},
-		SubIDAddrs:   []Addr{{0x15, 0x6743}, {0x0c, 0x707b}},
+		idAddrs:      []Addr{{0x15, 0x6742}, {0x0c, 0x707a}},
+		subIDAddrs:   []Addr{{0x15, 0x6743}, {0x0c, 0x707b}},
 		group:        0x03,
 		room:         0x3e,
 		collectMode:  collectBigBang,
 	},
 	"shooting gallery": agesBufferItem("lava juice", 0x5285, 0x03, 0xe7),
-	"trade lava juice": BasicSlot("goron letter", 0x0c, 0x6ee9, 0x6eea,
+	"trade lava juice": basicSlot("goron letter", 0x0c, 0x6ee9, 0x6eea,
 		0x03, 0x1f, collectLavaJuice, 0x1c),
-	"rescue nayru": BasicSlot("harp 3", 0x15, 0x54f1, 0x54f2,
+	"rescue nayru": basicSlot("harp 3", 0x15, 0x54f1, 0x54f2,
 		0x00, 0x38, collectMakuTree, 0x38),
 	"king zora":            agesScriptItem("library key", 0x7ae4, 0x05, 0xab),
 	"library present":      agesBufferItem("book of seals", 0x5db9, 0x05, 0xc8),
@@ -110,8 +112,8 @@ var agesSlots = map[string]*MutableSlot{
 	"nuun highlands cave": &MutableSlot{
 		// has three different rooms depending on animal
 		treasureName: "light ring L-1",
-		IDAddrs:      []Addr{{0x16, 0x5150}, {0x16, 0x5154}, {0x16, 0x5327}},
-		SubIDAddrs:   []Addr{{0x16, 0x5151}, {0x16, 0x5155}, {0x16, 0x5328}},
+		idAddrs:      []Addr{{0x16, 0x5150}, {0x16, 0x5154}, {0x16, 0x5327}},
+		subIDAddrs:   []Addr{{0x16, 0x5151}, {0x16, 0x5155}, {0x16, 0x5328}},
 		group:        0x02,
 		room:         0xf4,
 		collectMode:  collectChest,
@@ -143,7 +145,7 @@ var agesSlots = map[string]*MutableSlot{
 	"bomb goron head":       agesChest("rupees, 100", 0x5148, 0x02, 0xfc),
 	"tokay bomb cave":       agesChest("gasha seed", 0x514c, 0x02, 0xce),
 	"zora cave past":        agesChest("red holy ring", 0x5158, 0x02, 0x4f),
-	"ridge bush cave": BasicSlot("rupees, 100", 0x16, 0x5165, 0x5166,
+	"ridge bush cave": basicSlot("rupees, 100", 0x16, 0x5165, 0x5166,
 		0x03, 0x1f, collectLavaJuice, 0x1c),
 	"sea of storms past":    agesChest("pegasus ring", 0x516d, 0x03, 0xff),
 	"deku forest cave west": agesChest("rupees, 30", 0x52f3, 0x05, 0xb5),

@@ -22,7 +22,7 @@ func TestMutableOverlap(t *testing.T) {
 		switch v := v.(type) {
 		case *MutableRange:
 			for _, addr := range v.Addrs {
-				offset := addr.FullOffset()
+				offset := addr.fullOffset()
 				for i := offset; i < offset+len(v.New); i++ {
 					if hitBytes[i] != nil {
 						t.Errorf("%s collides with %s at %d",

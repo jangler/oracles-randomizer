@@ -55,11 +55,11 @@ func (t Treasure) Bytes() []byte {
 // Mutate replaces the associated treasure in the given ROM data with this one.
 func (t Treasure) Mutate(b []byte) error {
 	// fake treasure
-	if t.addr.Offset == 0 {
+	if t.addr.offset == 0 {
 		return nil
 	}
 
-	addr, data := t.addr.FullOffset(), t.Bytes()
+	addr, data := t.addr.fullOffset(), t.Bytes()
 	for i := 0; i < 4; i++ {
 		b[addr+i] = data[i]
 	}
@@ -68,7 +68,7 @@ func (t Treasure) Mutate(b []byte) error {
 
 // Check verifies that the treasure's data matches the given ROM data.
 func (t Treasure) Check(b []byte) error {
-	addr, data := t.addr.FullOffset(), t.Bytes()
+	addr, data := t.addr.fullOffset(), t.Bytes()
 	if bytes.Compare(b[addr:addr+4], data) != 0 {
 		return fmt.Errorf("expected %x at %x; found %x",
 			data, addr, b[addr:addr+4])

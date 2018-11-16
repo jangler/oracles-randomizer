@@ -91,18 +91,18 @@ func Init(game int) {
 
 // Addr is a fully-specified memory address.
 type Addr struct {
-	Bank   uint8
-	Offset uint16
+	bank   uint8
+	offset uint16
 }
 
-// FullOffset returns the actual offset of the address in the ROM, based on
+// fullOffset returns the actual offset of the address in the ROM, based on
 // bank number and relative address.
-func (a *Addr) FullOffset() int {
+func (a *Addr) fullOffset() int {
 	var bankOffset int
-	if a.Bank >= 2 {
-		bankOffset = bankSize * (int(a.Bank) - 1)
+	if a.bank >= 2 {
+		bankOffset = bankSize * (int(a.bank) - 1)
 	}
-	return bankOffset + int(a.Offset)
+	return bankOffset + int(a.offset)
 }
 
 func IsAges(b []byte) bool {
@@ -152,23 +152,23 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 		// explicitly set these addresses and IDs after their functions
 		codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
-		ItemSlots["star ore spot"].IDAddrs[0].Offset = codeAddr.Offset + 2
-		ItemSlots["star ore spot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+		ItemSlots["star ore spot"].idAddrs[0].offset = codeAddr.offset + 2
+		ItemSlots["star ore spot"].subIDAddrs[0].offset = codeAddr.offset + 5
 		codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
-		ItemSlots["hard ore slot"].IDAddrs[0].Offset = codeAddr.Offset + 2
-		ItemSlots["hard ore slot"].SubIDAddrs[0].Offset = codeAddr.Offset + 5
+		ItemSlots["hard ore slot"].idAddrs[0].offset = codeAddr.offset + 2
+		ItemSlots["hard ore slot"].subIDAddrs[0].offset = codeAddr.offset + 5
 		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
-		ItemSlots["diver gift"].IDAddrs[0].Offset = codeAddr.Offset + 1
-		ItemSlots["diver gift"].SubIDAddrs[0].Offset = codeAddr.Offset + 2
+		ItemSlots["diver gift"].idAddrs[0].offset = codeAddr.offset + 1
+		ItemSlots["diver gift"].subIDAddrs[0].offset = codeAddr.offset + 2
 	} else {
 		// explicitly set these addresses and IDs after their functions
 		mut := codeMutables["soldier script give item"].(*MutableRange)
 		slot := ItemSlots["deku forest soldier"]
-		slot.IDAddrs[0].Offset = mut.Addrs[0].Offset + 13
-		slot.SubIDAddrs[0].Offset = mut.Addrs[0].Offset + 14
+		slot.idAddrs[0].offset = mut.Addrs[0].offset + 13
+		slot.subIDAddrs[0].offset = mut.Addrs[0].offset + 14
 		codeAddr := codeMutables["target carts flag"].(*MutableRange).Addrs[0]
-		ItemSlots["target carts 2"].IDAddrs[1].Offset = codeAddr.Offset + 1
-		ItemSlots["target carts 2"].SubIDAddrs[1].Offset = codeAddr.Offset + 2
+		ItemSlots["target carts 2"].idAddrs[1].offset = codeAddr.offset + 1
+		ItemSlots["target carts 2"].subIDAddrs[1].offset = codeAddr.offset + 2
 	}
 
 	setSeedData(game)
@@ -366,7 +366,7 @@ func setCompassData(b []byte, game int) {
 	for _, name := range names {
 		slot := ItemSlots[name]
 		offset :=
-			getDungeonPropertiesAddr(game, slot.group, slot.room).FullOffset()
+			getDungeonPropertiesAddr(game, slot.group, slot.room).fullOffset()
 		b[offset] = b[offset] & 0xef // reset bit 4
 	}
 
@@ -375,7 +375,7 @@ func setCompassData(b []byte, game int) {
 		name := fmt.Sprintf("d%d boss key", i)
 		slot := lookupItemSlot(name)
 		offset :=
-			getDungeonPropertiesAddr(game, slot.group, slot.room).FullOffset()
+			getDungeonPropertiesAddr(game, slot.group, slot.room).fullOffset()
 		b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
 	}
 }
