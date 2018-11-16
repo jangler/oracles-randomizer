@@ -91,8 +91,10 @@ logic, or to prevent softlocks. The most notable are:
 
 **Q: Is [thing] in logic?**
 
-A: See
-[logic.md](https://github.com/jangler/oos-randomizer/blob/master/doc/logic.md).
+A: See [seasons_logic.md]
+(https://github.com/jangler/oos-randomizer/blob/master/doc/seasons_logic.md)
+and [ages_logic.md]
+(https://github.com/jangler/oos-randomizer/blob/master/doc/ages_logic.md).
 
 **Q: I'm softlocked. Now what do I do?**
 
