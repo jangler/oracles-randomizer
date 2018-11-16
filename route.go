@@ -28,9 +28,9 @@ func addDefaultItemNodes(nodes map[string]*logic.Node) {
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph graph.Graph
-	Slots map[string]*graph.Node
-	Costs int
+	Graph  graph.Graph
+	Slots  map[string]*graph.Node
+	Rupees int
 }
 
 // NewRoute returns an initialized route with all nodes, and those nodes with
@@ -172,11 +172,6 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		ri.Companion = rollAnimalCompanion(src, r, game)
 		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
 
-		// if ages, assume player will buy shield from shop if necessary
-		if game == rom.GameAges {
-			r.Costs -= 30
-		}
-
 		// slot initial nodes before algorithm slots progression items
 		if game == rom.GameSeasons {
 			ri.Seasons = rollSeasons(src, r)
@@ -205,8 +200,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 				ri.UsedItems.PushBack(item)
 				slot := slotList.Remove(eSlot).(*graph.Node)
 				ri.UsedSlots.PushBack(slot)
-				r.Costs += logic.RupeeValues[item.Name]
-				r.Costs += logic.NodeValues[slot.Name]
+				r.Rupees += logic.RupeeValues[item.Name]
 
 				if ri.UsedSlots.Len() > slotRecord {
 					slotRecord = ri.UsedSlots.Len()
@@ -215,8 +209,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 			} else {
 				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
 				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
-				r.Costs -= logic.RupeeValues[item.Name]
-				r.Costs -= logic.NodeValues[slot.Name]
+				r.Rupees -= logic.RupeeValues[item.Name]
 				itemList.PushBack(item)
 				slotList.PushBack(slot)
 				item.RemoveParent(slot)
@@ -251,8 +244,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 					ri.UsedItems.PushBack(item)
 					slot := slotList.Remove(eSlot).(*graph.Node)
 					ri.UsedSlots.PushBack(slot)
-					r.Costs += logic.RupeeValues[item.Name]
-					r.Costs += logic.NodeValues[slot.Name]
+					r.Rupees += logic.RupeeValues[item.Name]
 
 					if ri.UsedSlots.Len() > slotRecord {
 						slotRecord = ri.UsedSlots.Len()
@@ -261,6 +253,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 				} else {
 					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
 					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+					r.Rupees -= logic.RupeeValues[item.Name]
 					itemList.PushBack(item)
 					slotList.PushBack(slot)
 					item.RemoveParent(slot)

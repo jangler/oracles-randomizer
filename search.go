@@ -171,10 +171,11 @@ func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	}
 
 	// otherwise, count the net rupees available to the player
-	balance += r.Costs
+	balance += r.Rupees
 	for _, node := range r.Graph {
 		value := logic.NodeValues[node.Name]
-		if value > 0 && node.GetMark(node, hard) == graph.MarkTrue {
+		if value != 0 && node != slot &&
+			node.GetMark(node, hard) == graph.MarkTrue {
 			balance += value
 		}
 	}
