@@ -10,6 +10,9 @@ These notes apply specifically to Seasons, alongside the game-neutral ones in
   that have only one season anyway.
 - The rod of seasons is broken into four items (one for each season). Obtaining
   a season gives you the rod as well.
+- Fool's ore is randomized, since it's actually the most powerful weapon in the
+  game. The Strange Brothers trade you nothing for your feather (or cape), and
+  shovel is not required to retrieve the stolen item.
 
 The following items are **not** randomized:
 
@@ -26,9 +29,6 @@ The following items are **not** randomized:
   at the start of the game instead.
 - Mystical seeds grow in all seasons.
 - Rosa doesn't appear in the overworld, and her portal is activated by default.
-- Fool's ore is randomized, since it's actually the most powerful weapon in the
-  game. The Strange Brothers trade you nothing for your feather (or cape), and
-  shovel is not required to retrieve the stolen item.
 - In some situations, the game will give you a warning about what you're doing
   or about to do. **If you receive one, what you're doing is out of logic and
   could potentially lead to a softlock**—but in some cases you can also be fine

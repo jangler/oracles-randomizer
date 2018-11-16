@@ -6,22 +6,22 @@ These notes apply specifically to Ages, alongside the game-neutral ones in
 
 ## Randomization
 
-- The intro sequence is removed. A chest replaces Impa on the screen where she
-  normally gives the sword.
 - The harp is progressive, starting with the Tune of Echoes, then Currents,
   then Ages.
 - The trading sequence is removed. The second sword is in the item pool, and
   the Poe in Yoll Graveyard gives a randomized item.
-- The first **and** second prizes for Target Carts are randomized.
-- Only the first item for each other minigame is randomized, with the exception
-  of the Lynna Village Shooting Gallery, since its normal prize is a strange
-  flute.
+- The first **and** second prizes for Target Carts are randomized. Only the
+  first item for each other minigame is randomized, with the exception of the
+  Lynna Village Shooting Gallery, which has no randomized prize since its
+  normal prize is a strange flute.
 - Past and present versions of the same mystical seed tree grow the same type
   of seed.
 
 
 ## Other notable changes
 
+- The intro sequence is removed. A chest replaces Impa on the screen where she
+  normally gives the sword.
 - The time portals on the screens adjacent to the Maku Tree are active
   permanently.
 - The Tokays on Crescent Island do not steal your items, and the raft does not
@@ -29,8 +29,8 @@ These notes apply specifically to Ages, alongside the game-neutral ones in
 - Dormant time portals are added to Nuun Highlands and Symmetry Village past in
   order to prevent softlocks.
 - The dormant portal on the west side of Crescent Island present only responds
-  to Currents, not Echoes, in order to softlocks. The sign says so.
-- Playing the tune of currents triggers reentry into a return portal Link is
+  to Currents, not Echoes, in order to prevent softlocks. The sign says so.
+- Playing the Tune of Currents triggers reentry into a return portal Link is
   standing on. This is useful if you warp into a patch of bushes without a
   bush-breaking item.
 
