@@ -22,11 +22,11 @@ var labrynnaNodes = map[string]*Node{
 		And("break bush", "feather"), And("lynna city", "bracelet"),
 		And("currents", Or("feather", "flippers", "raft"))),
 	"south shore dirt": AndSlot("shore present", Or("shovel", "flute")),
-	"tingle": And("feather", Or("sword", "boomerang"),
+	"balloon guy": And("feather", Or("sword", "boomerang"),
 		Or("currents", And(Or("break bush", "shore present"),
 			Or("any seed shooter", "ricky's gloves", "ricky's flute")))),
-	"tingle's gift": AndSlot("tingle"),
-	"tingle's upgrade": AndSlot("tingle", Or( // 3 types of seeds
+	"balloon guy's gift": AndSlot("balloon guy"),
+	"balloon guy's upgrade": AndSlot("balloon guy", Or( // 3 types of seeds
 		And("ember seeds", Or(
 			And("scent seeds",
 				Or("pegasus seeds", "gale seeds", "mystery seeds")),

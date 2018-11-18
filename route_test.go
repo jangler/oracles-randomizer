@@ -191,7 +191,7 @@ func testAgesGraph(t *testing.T) {
 			"flippers 1":         "cheval's test",
 			"cheval rope":        "cheval's invention",
 			"ricky's gloves":     "south shore dirt",
-			"island chart":       "tingle's gift",
+			"island chart":       "balloon guy's gift",
 			"scent seedling":     "wild tokay game",
 			"scent tree seeds":   "crescent island tree",
 			"seed shooter":       "d3 pols voice chest", // vanilla unsafe
