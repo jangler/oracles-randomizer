@@ -125,10 +125,12 @@ func runRandomizer(useTUI bool, logf func(string, ...interface{})) {
 	}()
 
 	// if rom is to be randomized, infile must be non-empty after switch
-	var infile, outfile string
+	var dirName, infile, outfile string
 	switch flag.NArg() {
 	case 0: // no specified files, search in executable's directory
-		seasons, ages, err := findVanillaROMs()
+		var seasons, ages string
+		var err error
+		dirName, seasons, ages, err = findVanillaROMs()
 		if err != nil {
 			fatal(err, logf)
 			break
@@ -173,7 +175,8 @@ func runRandomizer(useTUI bool, logf func(string, ...interface{})) {
 	}
 
 	if infile != "" {
-		if _, game, err := readGivenROM(infile); err != nil {
+		b, game, err := readGivenROM(filepath.Join(dirName, infile))
+		if err != nil {
 			fatal(err, logf)
 			return
 		} else {
@@ -190,13 +193,7 @@ func runRandomizer(useTUI bool, logf func(string, ...interface{})) {
 		rom.SetMusic(!flagNoMusic)
 		rom.SetTreewarp(flagTreewarp)
 
-		b, game, err := readGivenROM(infile)
-		if err != nil {
-			fatal(err, logf)
-			return
-		}
-
-		if err := randomizeFile(b, game, outfile, flagSeed,
+		if err := randomizeFile(b, game, dirName, outfile, flagSeed,
 			flagHard, flagVerbose, logf); err != nil {
 			fatal(err, logf)
 			return
@@ -243,10 +240,10 @@ func getAndLogOptions(useTUI bool, logf func(string, ...interface{})) {
 }
 
 // attempt to write rom data to a file and print summary info.
-func writeROM(b []byte, filename, logFilename string, seed uint32,
+func writeROM(b []byte, dirName, filename, logFilename string, seed uint32,
 	sum []byte, logf func(string, ...interface{})) error {
 	// write file
-	f, err := os.Create(filename)
+	f, err := os.Create(filepath.Join(dirName, filename))
 	if err != nil {
 		return err
 	}
@@ -266,14 +263,14 @@ func writeROM(b []byte, filename, logFilename string, seed uint32,
 
 // search for a vanilla US seasons and ages ROMs in the executable's directory,
 // and return their filenames.
-func findVanillaROMs() (seasons, ages string, err error) {
+func findVanillaROMs() (dirName, seasons, ages string, err error) {
 	// read slice of file info from executable's dir
 	exe, err := os.Executable()
 	if err != nil {
 		return
 	}
 
-	dirName := filepath.Dir(exe)
+	dirName = filepath.Dir(exe)
 	ui.PrintPath("searching ", dirName, " for ROMs.")
 	dir, err := os.Open(dirName)
 	if err != nil {
@@ -357,7 +354,7 @@ func readGivenROM(filename string) ([]byte, int, error) {
 	return b, game, nil
 }
 
-func randomizeFile(romData []byte, game int, outfile, seedFlag string,
+func randomizeFile(romData []byte, game int, dirName, outfile, seedFlag string,
 	hard, verbose bool, logf func(string, ...interface{})) error {
 	var seed uint32
 	var sum []byte
@@ -368,8 +365,8 @@ func randomizeFile(romData []byte, game int, outfile, seedFlag string,
 	if outfile != "" {
 		logFilename = outfile[:len(outfile)-4] + "_log.txt"
 	}
-	seed, sum, logFilename, err =
-		randomize(romData, game, logFilename, seedFlag, hard, verbose, logf)
+	seed, sum, logFilename, err = randomize(
+		romData, game, dirName, logFilename, seedFlag, hard, verbose, logf)
 	if err != nil {
 		return err
 	}
@@ -383,7 +380,7 @@ func randomizeFile(romData []byte, game int, outfile, seedFlag string,
 	}
 
 	// write to file
-	return writeROM(romData, outfile, logFilename, seed, sum, logf)
+	return writeROM(romData, dirName, outfile, logFilename, seed, sum, logf)
 }
 
 // setRandomSeed sets a 32-bit unsigned random seed based on a hexstring, if
@@ -404,7 +401,7 @@ func setRandomSeed(hexString string) (uint32, error) {
 }
 
 // messes up rom data and writes it to a file.
-func randomize(romData []byte, game int, logFilename, seedFlag string,
+func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	hard, verbose bool,
 	logf func(string, ...interface{})) (uint32, []byte, string, error) {
 	// sanity check beforehand
@@ -500,7 +497,8 @@ func randomize(romData []byte, game int, logFilename, seedFlag string,
 		logFilename = fmt.Sprintf("%srando_%s_%08x_%slog.txt",
 			gameName(game), version, ri.Seed, hardString)
 	}
-	summary, summaryDone := getSummaryChannel(logFilename)
+	summary, summaryDone := getSummaryChannel(
+		filepath.Join(dirName, logFilename))
 
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", ri.Seed)
