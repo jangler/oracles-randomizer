@@ -187,7 +187,7 @@ func testAgesGraph(t *testing.T) {
 			"harp 1":             "nayru's house",
 			"mystery tree seeds": "deku forest tree",
 			"bombs, 10":          "deku forest soldier",
-			"feather":            "d2 bombed terrace", // vanilla unsafe
+			"feather":            "d2 thwomp tunnel",
 			"flippers 1":         "cheval's test",
 			"cheval rope":        "cheval's invention",
 			"ricky's gloves":     "south shore dirt",
