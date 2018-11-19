@@ -1,131 +1,250 @@
 package main
 
 import (
-	"container/list"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"runtime"
-	"runtime/pprof"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/rom"
+	"github.com/jangler/oos-randomizer/ui"
 )
 
+// gameName returns the short name associated with a game number.
+func gameName(game int) string {
+	switch game {
+	case rom.GameAges:
+		return "ooa"
+	case rom.GameSeasons:
+		return "oos"
+	default:
+		return "UNKNOWN"
+	}
+}
+
+// usage is called when an invalid CLI invocation is used, or if the -h flag is
+// passed.
 func usage() {
 	fmt.Fprintf(flag.CommandLine.Output(),
 		"Usage: %s [<original file> [<new file>]]\n", os.Args[0])
 	flag.PrintDefaults()
 }
 
-// fatal prints the given error to stderr, waits for user input if `wait` is
-// true, then exits with status 1.
-func fatal(err error, wait bool) {
-	fmt.Fprintf(os.Stderr, "fatal: %v.\n", err)
-	if wait {
-		fmt.Fprint(os.Stderr, "press enter to continue.")
-		os.Stdin.Read(make([]byte, 1))
-	}
-	os.Exit(1)
+// fatal prints an error to whichever UI is used.
+func fatal(err error, logf func(string, ...interface{})) {
+	logf("fatal: %v.", err)
 }
 
-func main() {
-	// init flags
+// options specified on the command line or via the TUI
+var (
+	flagHard     bool
+	flagN        int
+	flagNoMusic  bool
+	flagNoUI     bool
+	flagSeed     string
+	flagStats    string
+	flagTreewarp bool
+	flagVerbose  bool
+)
+
+// initFlags initializes the CLI/TUI option values and variables.
+func initFlags() {
 	flag.Usage = usage
-	flagFreewarp := flag.Bool(
-		"freewarp", false, "allow unlimited tree warp (no cooldown)")
-	flagHard := flag.Bool(
-		"hard", false, "require some plays outside normal logic")
-	flagNoMusic := flag.Bool(
-		"nomusic", false, "don't play any music in the modified ROM")
-	flagProfile := flag.String(
-		"profile", "", "write CPU profile to given filename")
-	flagSeed := flag.String("seed", "",
+	flag.BoolVar(&flagHard, "hard", false,
+		"require some plays outside normal logic")
+	flag.IntVar(&flagN, "n", 100,
+		"number of trials for stats")
+	flag.BoolVar(&flagNoMusic, "nomusic", false,
+		"don't play any music in the modified ROM")
+	flag.BoolVar(&flagNoUI, "noui", false,
+		"use command line output without option prompts")
+	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
-	flagVerbose := flag.Bool(
-		"verbose", false, "print more detailed output to terminal")
+	flag.StringVar(&flagStats, "stats", "",
+		"test routes and print stats for 'seasons' or 'ages'")
+	flag.BoolVar(&flagTreewarp, "treewarp", false,
+		"warp to ember tree by pressing start+B on map screen")
+	flag.BoolVar(&flagVerbose, "verbose", false,
+		"print more detailed output to terminal")
 	flag.Parse()
+}
 
-	// turn profiling on if specified
-	if *flagProfile != "" {
-		profFile, err := os.Create(*flagProfile)
-		if err != nil {
-			fatal(err, false)
+// main is the program's entry point.
+func main() {
+	initFlags()
+
+	if flagStats != "" {
+		// do stats instead of randomizing
+		var game int
+
+		if flagStats == "seasons" {
+			game = rom.GameSeasons
+		} else if flagStats == "ages" {
+			game = rom.GameAges
+		} else {
+			fmt.Printf("'%s' is invalid. try 'seasons' or 'ages'.\n", flagStats)
+			return
 		}
-		if err := pprof.StartCPUProfile(profFile); err != nil {
-			fatal(err, false)
+
+		rom.Init(game)
+		rand.Seed(time.Now().UnixNano())
+		logStats(game, flagN, flagHard, func(s string, a ...interface{}) {
+			fmt.Printf(s, a...)
+			fmt.Println()
+		})
+	} else if flag.NArg()+flag.NFlag() > 1 { // CLI used
+		// run randomizer on main goroutine
+		runRandomizer(false, func(s string, a ...interface{}) {
+			fmt.Printf(s, a...)
+			fmt.Println()
+		})
+	} else { // CLI maybe not used
+		// run TUI on main goroutine and randomizer on alternate goroutine
+		ui.Init("oracles randomizer " + version)
+		go runRandomizer(true, func(s string, a ...interface{}) {
+			ui.Printf(s, a...)
+		})
+		ui.Run()
+	}
+}
+
+// run the main randomizer routine, printing messages via logf, which should
+// act analogously to fmt.Printf with added newline.
+func runRandomizer(useTUI bool, logf func(string, ...interface{})) {
+	// close TUI after randomizer is done
+	defer func() {
+		if useTUI {
+			ui.Done()
 		}
-		defer profFile.Close()
-		defer pprof.StopCPUProfile()
-	}
+	}()
 
-	rom.SetFreewarp(*flagFreewarp)
-	if *flagNoMusic {
-		rom.SetNoMusic()
-	}
-
+	// if rom is to be randomized, infile must be non-empty after switch
+	var infile, outfile string
 	switch flag.NArg() {
-	case 0: // no specified files, assume not using command line
-		// search for valid rom in working directory
-		romData, err := findVanillaROM()
+	case 0: // no specified files, search in executable's directory
+		seasons, ages, err := findVanillaROMs()
 		if err != nil {
-			fatal(err, true)
+			fatal(err, logf)
+			break
 		}
 
-		if err := handleFile(romData, flag.Arg(0), *flagSeed, *flagHard,
-			*flagVerbose); err != nil {
-			fatal(err, true)
+		// print which files, if any, are found.
+		if seasons != "" {
+			ui.PrintPath("found vanilla US seasons ROM: ", seasons, "")
+		} else {
+			ui.Printf("no vanilla US seasons ROM found.")
 		}
+		if ages != "" {
+			ui.PrintPath("found vanilla US ages ROM: ", ages, "")
+		} else {
+			ui.Printf("no vanilla US ages ROM found.")
+		}
+		ui.Printf("")
 
-		fmt.Fprint(os.Stderr, "press enter to continue.")
-		os.Stdin.Read(make([]byte, 1))
-	case 1: // specified input file only, assume not using command line
-		b, err := readGivenROM(flag.Arg(0))
-		if err != nil {
-			fatal(err, true)
+		// determine which filename to use based on what roms are found, and on
+		// user input.
+		if seasons == "" && ages == "" {
+			ui.Printf("no ROMs found in program's directory, " +
+				"and no ROMs specified.")
+		} else if seasons != "" && ages != "" {
+			which := ui.Prompt("randomize (s)easons or (a)ges?")
+			if which == 's' {
+				infile = seasons
+			} else {
+				infile = ages
+			}
+		} else if seasons != "" {
+			infile = seasons
+		} else {
+			infile = ages
 		}
-
-		if err := handleFile(b, flag.Arg(0), *flagSeed, *flagHard,
-			*flagVerbose); err != nil {
-			fatal(err, true)
-		}
-
-		fmt.Fprint(os.Stderr, "press enter to continue.")
-		os.Stdin.Read(make([]byte, 1))
-	case 2: // specified input and output file, so using command line
-		b, err := readGivenROM(flag.Arg(0))
-		if err != nil {
-			fatal(err, false)
-		}
-
-		// operate on file
-		var sum []byte
-		var seed uint32
-		var logFilename string
-		fmt.Printf("randomizing %s\n", flag.Arg(0))
-		seed, sum, logFilename, err = randomize(b, *flagSeed, *flagHard,
-			*flagVerbose)
-		if err != nil {
-			fatal(err, false)
-		}
-
-		// write file
-		if err := writeROM(b, flag.Arg(1), logFilename, seed, sum); err != nil {
-			fatal(err, false)
-		}
+	case 1: // specified input file only
+		infile = flag.Arg(0)
+	case 2: // specified input and output file
+		infile, outfile = flag.Arg(0), flag.Arg(1)
 	default:
 		flag.Usage()
+	}
+
+	if infile != "" {
+		if _, game, err := readGivenROM(infile); err != nil {
+			fatal(err, logf)
+			return
+		} else {
+			rom.Init(game)
+		}
+		logf("randomizing %s.", infile)
+
+		getAndLogOptions(useTUI, logf)
+
+		if useTUI {
+			logf("")
+		}
+
+		rom.SetMusic(!flagNoMusic)
+		rom.SetTreewarp(flagTreewarp)
+
+		b, game, err := readGivenROM(infile)
+		if err != nil {
+			fatal(err, logf)
+			return
+		}
+
+		if err := randomizeFile(b, game, outfile, flagSeed,
+			flagHard, flagVerbose, logf); err != nil {
+			fatal(err, logf)
+			return
+		}
+	}
+}
+
+// getAndLogOptions logs values of selected options, prompting for them first
+// if the TUI is used.
+func getAndLogOptions(useTUI bool, logf func(string, ...interface{})) {
+	if useTUI {
+		if ui.Prompt("use specific seed? (y/n)") == 'y' {
+			flagSeed = ui.PromptSeed("enter seed: (8-digit hex number)")
+			logf("using seed %s.", flagSeed)
+		}
+	}
+
+	if useTUI {
+		flagHard = ui.Prompt("enable hard difficulty? (y/n)") == 'y'
+	}
+	if flagHard {
+		logf("using hard difficulty.")
+	} else {
+		logf("using normal difficulty.")
+	}
+
+	if useTUI {
+		flagNoMusic = ui.Prompt("disable music? (y/n)") == 'y'
+	}
+	if flagNoMusic {
+		logf("music off.")
+	} else {
+		logf("music on.")
+	}
+
+	if useTUI {
+		flagTreewarp = ui.Prompt("enable tree warp? (y/n)") == 'y'
+	}
+	if flagTreewarp {
+		logf("tree warp on.")
+	} else {
+		logf("tree warp off.")
 	}
 }
 
 // attempt to write rom data to a file and print summary info.
 func writeROM(b []byte, filename, logFilename string, seed uint32,
-	sum []byte) error {
+	sum []byte, logf func(string, ...interface{})) error {
 	// write file
 	f, err := os.Create(filename)
 	if err != nil {
@@ -137,30 +256,33 @@ func writeROM(b []byte, filename, logFilename string, seed uint32,
 	}
 
 	// print summary
-	fmt.Printf("seed: %08x\n", seed)
-	fmt.Printf("sha-1 sum: %x\n", string(sum))
-	fmt.Printf("wrote new rom to %s\n", filename)
-	fmt.Printf("wrote log file to %s\n", logFilename)
+	logf("seed: %08x", seed)
+	logf("SHA-1 sum: %x", string(sum))
+	logf("wrote new ROM to %s", filename)
+	logf("wrote log file to %s", logFilename)
 
 	return nil
 }
 
-// search for a vanilla US seasons rom in the current directory, and return it
-// as a byte slice if possible.
-func findVanillaROM() ([]byte, error) {
-	// read slice of file info from working dir
-	dirName, err := os.Getwd()
+// search for a vanilla US seasons and ages ROMs in the executable's directory,
+// and return their filenames.
+func findVanillaROMs() (seasons, ages string, err error) {
+	// read slice of file info from executable's dir
+	exe, err := os.Executable()
 	if err != nil {
-		return nil, err
+		return
 	}
+
+	dirName := filepath.Dir(exe)
+	ui.PrintPath("searching ", dirName, " for ROMs.")
 	dir, err := os.Open(dirName)
 	if err != nil {
-		return nil, err
+		return
 	}
 	defer dir.Close()
 	files, err := dir.Readdir(-1)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	for _, info := range files {
@@ -170,66 +292,84 @@ func findVanillaROM() ([]byte, error) {
 		}
 
 		// read file
-		f, err := os.Open(info.Name())
+		var f *os.File
+		f, err = os.Open(filepath.Join(dirName, info.Name()))
 		if err != nil {
-			return nil, err
+			return
 		}
 		defer f.Close()
-		b, err := ioutil.ReadAll(f)
+		var b []byte
+		b, err = ioutil.ReadAll(f)
 		if err != nil {
-			return nil, err
+			return
 		}
 
 		// check file data
-		if rom.IsSeasons(b) && rom.IsUS(b) && rom.IsVanilla(b) {
-			fmt.Printf("found vanilla ROM: %s\n", info.Name())
-			return b, nil
+		if rom.IsUS(b) && rom.IsVanilla(b) {
+			if rom.IsAges(b) {
+				ages = info.Name()
+			} else {
+				seasons = info.Name()
+			}
+		}
+
+		if ages != "" && seasons != "" {
+			break
 		}
 	}
 
-	return nil, fmt.Errorf("no vanilla ROM found in working directory")
+	return
 }
 
 // read the specified file into a slice of bytes, returning an error if the
-// read fails or if the file is an invalid rom.
-func readGivenROM(filename string) ([]byte, error) {
+// read fails or if the file is an invalid rom. also returns the game as an
+// int.
+func readGivenROM(filename string) ([]byte, int, error) {
 	// read file
 	f, err := os.Open(filename)
 	if err != nil {
-		return nil, err
+		return nil, rom.GameNil, err
 	}
 	defer f.Close()
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		return nil, err
+		return nil, rom.GameNil, err
 	}
 
 	// check file data
-	if !rom.IsSeasons(b) {
-		return nil, fmt.Errorf("%s is not an OoS ROM", filename)
+	if !rom.IsAges(b) && !rom.IsSeasons(b) {
+		return nil, rom.GameNil,
+			fmt.Errorf("%s is not an oracles ROM", filename)
 	}
 	if !rom.IsUS(b) {
-		return nil, fmt.Errorf("%s is a JP ROM; only US is supported",
-			filename)
+		return nil, rom.GameNil,
+			fmt.Errorf("%s is a JP ROM; only US is supported", filename)
 	}
 	if !rom.IsVanilla(b) {
-		return nil, fmt.Errorf("%s is an unrecognized OoS ROM", filename)
+		return nil, rom.GameNil,
+			fmt.Errorf("%s is an unrecognized oracles ROM", filename)
 	}
 
-	return b, nil
+	game := rom.GameAges
+	if rom.IsSeasons(b) {
+		game = rom.GameSeasons
+	}
+	return b, game, nil
 }
 
-// decide whether to randomize or update the file
-func handleFile(romData []byte, filename, seedFlag string,
-	hard, verbose bool) error {
+func randomizeFile(romData []byte, game int, outfile, seedFlag string,
+	hard, verbose bool, logf func(string, ...interface{})) error {
 	var seed uint32
 	var sum []byte
 	var err error
-	var outName, logFilename string
+	var logFilename string
 
 	// operate on rom data
-	fmt.Printf("randomizing %s\n", flag.Arg(0))
-	seed, sum, logFilename, err = randomize(romData, seedFlag, hard, verbose)
+	if outfile != "" {
+		logFilename = outfile[:len(outfile)-4] + "_log.txt"
+	}
+	seed, sum, logFilename, err =
+		randomize(romData, game, logFilename, seedFlag, hard, verbose, logf)
 	if err != nil {
 		return err
 	}
@@ -237,48 +377,50 @@ func handleFile(romData []byte, filename, seedFlag string,
 	if hard {
 		hardString = "_hard"
 	}
-	outName = fmt.Sprintf("oosrando_%s_%08x%s.gbc", version, seed, hardString)
+	if outfile == "" {
+		outfile = fmt.Sprintf("%srando_%s_%08x%s.gbc",
+			gameName(game), version, seed, hardString)
+	}
 
 	// write to file
-	return writeROM(romData, outName, logFilename, seed, sum)
+	return writeROM(romData, outfile, logFilename, seed, sum, logf)
 }
 
-// sets a 32-bit unsigned random seed based on a hexstring, if non-empty, or
-// else the current time, and returns that seed.
-func setRandomSeed(hexString string) uint32 {
+// setRandomSeed sets a 32-bit unsigned random seed based on a hexstring, if
+// non-empty, or else the current time, and returns that seed.
+func setRandomSeed(hexString string) (uint32, error) {
 	seed := uint32(time.Now().UnixNano())
 	if hexString != "" {
 		v, err := strconv.ParseUint(
 			strings.Replace(hexString, "0x", "", 1), 16, 32)
 		if err != nil {
-			fatal(fmt.Errorf(`fatal: invalid seed "%s"`, hexString), false)
+			return 0, fmt.Errorf(`invalid seed "%s"`, hexString)
 		}
 		seed = uint32(v)
 	}
 	rand.Seed(int64(seed))
 
-	return seed
+	return seed, nil
 }
 
-// return the contents of the names file as a slice of bytes
-func readFileBytes(filename string) ([]byte, error) {
-	f, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-	return ioutil.ReadAll(f)
-}
-
-// messes up rom data and writes it to a file. this also calls rom.Verify().
-func randomize(romData []byte, seedFlag string,
-	hard, verbose bool) (uint32, []byte, string, error) {
-	// make sure rom data is a match first
-	if errs := rom.Verify(romData); errs != nil {
+// messes up rom data and writes it to a file.
+func randomize(romData []byte, game int, logFilename, seedFlag string,
+	hard, verbose bool,
+	logf func(string, ...interface{})) (uint32, []byte, string, error) {
+	// sanity check beforehand
+	if errs := rom.Verify(romData, game); errs != nil {
+		if verbose {
+			for _, err := range errs {
+				logf(err.Error())
+			}
+		}
 		return 0, nil, "", errs[0]
 	}
 
-	seed := setRandomSeed(seedFlag)
+	seed, err := setRandomSeed(seedFlag)
+	if err != nil {
+		return 0, nil, "", err
+	}
 	if seedFlag == "" {
 		seed = 0 // none specified, not an actual zero seed
 	}
@@ -290,16 +432,13 @@ func randomize(romData []byte, seedFlag string,
 	if !verbose && seed == 0 {
 		numThreads = runtime.NumCPU()
 	}
-	fmt.Printf("using %d thread(s)\n", numThreads)
-	sources := make([]rand.Source, numThreads)
+	logf("using %d thread(s).", numThreads)
 	seeds := make([]uint32, numThreads)
 	for i := 0; i < numThreads; i++ {
 		if seed == 0 {
 			randSeed := uint32(rand.Int63())
-			sources[i] = rand.NewSource(int64(randSeed))
 			seeds[i] = randSeed
 		} else {
-			sources[i] = rand.NewSource(int64(seed))
 			seeds[i] = seed
 		}
 	}
@@ -310,8 +449,8 @@ func randomize(romData []byte, seedFlag string,
 	stopLogChan := make(chan int)
 	doneChan := make(chan int)
 	for i := 0; i < numThreads; i++ {
-		go searchAsync(rand.New(sources[i]), seeds[i], hard, verbose, logChan,
-			routeChan, doneChan)
+		go searchAsync(game, seeds[i], hard, verbose,
+			logChan, routeChan, doneChan)
 	}
 
 	// log messages from all threads
@@ -319,7 +458,7 @@ func randomize(romData []byte, seedFlag string,
 		for {
 			select {
 			case msg := <-logChan:
-				fmt.Println(msg)
+				logf(msg)
 			case <-stopLogChan:
 				return
 			}
@@ -348,23 +487,7 @@ func randomize(romData []byte, seedFlag string,
 		return 0, nil, "", fmt.Errorf("no route found")
 	}
 
-	// place selected treasures in slots
-	for ri.UsedSlots.Len() > 0 {
-		slotName :=
-			ri.UsedSlots.Remove(ri.UsedSlots.Front()).(*graph.Node).Name
-		treasureName :=
-			ri.UsedItems.Remove(ri.UsedItems.Front()).(*graph.Node).Name
-		rom.ItemSlots[slotName].Treasure = rom.Treasures[treasureName]
-	}
-
-	// set rom seasons and animal data
-	for area, id := range ri.Seasons {
-		rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
-	}
-	rom.SetAnimal(ri.Companion)
-
-	// do it! (but don't write anything)
-	checksum, err := rom.Mutate(romData)
+	checksum, err := setROMData(romData, game, ri, logf, verbose)
 	if err != nil {
 		return 0, nil, "", err
 	}
@@ -373,8 +496,10 @@ func randomize(romData []byte, seedFlag string,
 	if hard {
 		hardString = "hard_"
 	}
-	logFilename := fmt.Sprintf("oosrando_%s_%08x_%slog.txt",
-		version, ri.Seed, hardString)
+	if logFilename == "" {
+		logFilename = fmt.Sprintf("%srando_%s_%08x_%slog.txt",
+			gameName(game), version, ri.Seed, hardString)
+	}
 	summary, summaryDone := getSummaryChannel(logFilename)
 
 	// write info to summary file
@@ -385,19 +510,36 @@ func randomize(romData []byte, seedFlag string,
 	} else {
 		summary <- fmt.Sprintf("difficulty: normal")
 	}
-	logItems(summary, "required items", ri.ProgressItems, ri.ProgressSlots)
-	logItems(summary, "optional items", ri.ExtraItems, ri.ExtraSlots)
 	summary <- ""
-	summary <- "default seasons:"
 	summary <- ""
-	for name, area := range rom.Seasons {
-		summary <- fmt.Sprintf("%-15s <- %s",
-			name[:len(name)-7], seasonsByID[int(area.New[0])])
+	checks := getChecks(ri)
+	spheres := getSpheres(ri.Route.Graph, checks, hard)
+	summary <- "-- progression items --"
+	summary <- ""
+	logSpheres(summary, checks, spheres,
+		func(name string) bool { return !itemIsJunk(name) })
+	summary <- ""
+	summary <- "-- other items --"
+	summary <- ""
+	logSpheres(summary, checks, spheres, itemIsJunk)
+	if game == rom.GameSeasons {
+		summary <- ""
+		summary <- "default seasons:"
+		summary <- ""
+		for name, area := range rom.Seasons {
+			summary <- fmt.Sprintf("%-15s <- %s",
+				name[:len(name)-7], seasonsByID[int(area.New[0])])
+		}
+		summary <- ""
+		summary <- fmt.Sprintf("natzu region <- %s", []string{
+			"", "natzu prairie", "natzu river", "natzu wasteland",
+		}[ri.Companion])
+	} else {
+		summary <- ""
+		summary <- fmt.Sprintf("animal companion <- %s", []string{
+			"", "ricky", "dimitri", "moosh",
+		}[ri.Companion])
 	}
-	summary <- ""
-	summary <- fmt.Sprintf("natzu region <- %s", []string{
-		"", "natzu prairie", "natzu river", "natzu wasteland",
-	}[ri.Companion])
 
 	close(summary)
 	<-summaryDone
@@ -406,23 +548,44 @@ func randomize(romData []byte, seedFlag string,
 }
 
 // searches for a route and logs and returns a route on the given channels.
-func searchAsync(src *rand.Rand, seed uint32, hard, verbose bool,
+func searchAsync(game int, seed uint32, hard, verbose bool,
 	logChan chan string, retChan chan *RouteInfo, doneChan chan int) {
 	// find a viable random route
-	retChan <- findRoute(src, seed, hard, verbose, logChan, doneChan)
+	retChan <- findRoute(game, seed, hard, verbose, logChan, doneChan)
 }
 
-// send lines of item/slot info to a summary channel. this is a destructive
-// operation on the lists.
-func logItems(summary chan string, title string, items, slots *list.List) {
-	summary <- ""
-	summary <- title + ":"
-	summary <- ""
-
-	for slots.Len() > 0 {
-		slotName := slots.Remove(slots.Front()).(*graph.Node).Name
-		itemName := items.Remove(items.Front()).(*graph.Node).Name
-		summary <- fmt.Sprintf("%-28s <- %s",
-			getNiceName(slotName), getNiceName(itemName))
+// itemIsJunk returns true iff the item with the given name can never be
+// progression, regardless of context.
+func itemIsJunk(name string) bool {
+	switch rom.Treasures[name].ID() {
+	// heart refill, PoH, HC, ring, compass, dungeon map, gasha seed
+	case 0x29, 0x2a, 0x2b, 0x2d, 0x32, 0x33, 0x34:
+		return true
 	}
+	return false
+}
+
+// setROMData mutates the ROM data in-place based on the given route.
+func setROMData(romData []byte, game int, ri *RouteInfo,
+	logf func(string, ...interface{}), verbose bool) ([]byte, error) {
+	// place selected treasures in slots
+	checks := getChecks(ri)
+	for slot, item := range checks {
+		if verbose {
+			logf("%s <- %s", slot.Name, item.Name)
+		}
+		rom.ItemSlots[slot.Name].Treasure = rom.Treasures[item.Name]
+	}
+
+	// set season data
+	if game == rom.GameSeasons {
+		for area, id := range ri.Seasons {
+			rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
+		}
+	}
+
+	rom.SetAnimal(ri.Companion)
+
+	// do it! (but don't write anything)
+	return rom.Mutate(romData, game)
 }

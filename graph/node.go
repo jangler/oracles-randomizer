@@ -83,7 +83,8 @@ func getAndMark(n *Node, hard bool) Mark {
 		n.Mark = MarkPending
 		for _, parent := range n.parents {
 			if !hard && parent.IsHard {
-				continue
+				n.Mark = MarkFalse
+				return n.Mark
 			}
 
 			switch parent.GetMark(parent, hard) {

@@ -1,22 +1,25 @@
 package logic
 
-var Rupees = map[string]int{
+var NodeValues = map[string]int{
 	"village shop 1":  -20,
 	"village shop 2":  -30,
 	"village shop 3":  -150,
 	"member's shop 1": -300,
 	"member's shop 2": -300,
 	"member's shop 3": -200,
-	"blaino gift":     -10,
 
-	// appraising rings
-	"expert's ring":  -20,
-	"toss ring":      -20,
-	"heart ring L-2": -20,
-	"light ring L-1": -20,
-	"light ring L-2": -20,
-	"energy ring":    -20,
-	"fist ring":      -20,
+	"shop, 30 rupees":  -30,
+	"shop, 150 rupees": -150,
+	"wild tokay game":  -10,
+
+	"blaino gift": -10,
+
+	"king zora":           -300,
+	"goron dance past":    -20,
+	"goron dance present": -10,
+	"target carts 1":      -10,
+	"target carts 2":      -10,
+	"shooting gallery":    -20,
 
 	"goron mountain old man":      300,
 	"western coast old man":       300,
@@ -28,10 +31,12 @@ var Rupees = map[string]int{
 	"woods of winter old man":     -50,
 	"holodrum plain west old man": -100,
 
-	// rng seems involved ??
+	// rng is involved; each rupee is either worth 1, 5, or 10
 	"d2 rupee room": 200,
 	"d6 rupee room": 150,
+}
 
+var RupeeValues = map[string]int{
 	"rupees, 1":   1,
 	"rupees, 5":   5,
 	"rupees, 10":  10,
@@ -39,4 +44,5 @@ var Rupees = map[string]int{
 	"rupees, 30":  30,
 	"rupees, 50":  50,
 	"rupees, 100": 100,
+	"rupees, 200": 200,
 }

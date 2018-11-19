@@ -1,18 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"math/rand"
 	"testing"
-	"time"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
+	"github.com/jangler/oos-randomizer/rom"
 )
 
-// check that graph logic is working as expected
 func TestGraph(t *testing.T) {
-	r := NewRoute()
+	// testSeasonsGraph(t)
+	testAgesGraph(t)
+}
+
+// check that graph logic is working as expected
+func testSeasonsGraph(t *testing.T) {
+	rom.Init(rom.GameSeasons)
+	r := NewRoute(rom.GameSeasons)
 	g := r.Graph
 
 	checkReach(t, g,
@@ -76,13 +80,158 @@ func TestGraph(t *testing.T) {
 		}, "village portal", true, true)
 }
 
+// check that graph logic is working as expected
+func testAgesGraph(t *testing.T) {
+	rom.Init(rom.GameAges)
+	r := NewRoute(rom.GameAges)
+	g := r.Graph
+
+	checkReach(t, g, map[string]string{
+		"sword 1":          "starting chest",
+		"shovel":           "black tower worker",
+		"satchel 1":        "maku tree",
+		"ember tree seeds": "south lynna tree",
+		"graveyard key":    "grave under tree",
+	}, "enter d1", false, true)
+
+	checkReach(t, g, map[string]string{
+		"harp 1":     "starting chest",
+		"harp 2":     "nayru's house",
+		"bracelet 1": "black tower worker",
+	}, "enter d2", false, true)
+
+	checkReach(t, g, map[string]string{
+		"dimitri's flute": "starting chest",
+	}, "enter d3", false, true)
+
+	checkReach(t, g, map[string]string{
+		"harp 1":     "starting chest",
+		"harp 2":     "nayru's house",
+		"harp 3":     "black tower worker",
+		"flippers 1": "lynna city chest",
+		"sword 1":    "fairies' woods chest",
+		"tuni nut":   "tokkey's composition",
+	}, "symmetry past", false, true)
+
+	checkReach(t, g, map[string]string{
+		"sword 1":            "starting chest",
+		"satchel 1":          "black tower worker",
+		"ember tree seeds":   "south lynna tree",
+		"graveyard key":      "grave under tree",
+		"switch hook 1":      "lynna city chest",
+		"feather":            "nayru's house",
+		"bomb flower":        "d1 east terrace",
+		"bracelet 1":         "d1 crystal room",
+		"flippers 1":         "d1 west terrace",
+		"harp 1":             "d1 pot chest",
+		"harp 2":             "d1 crossroads",
+		"pegasus tree seeds": "rolling ridge west tree",
+		"crown key":          "under moblin keep",
+	}, "enter d5", false, true)
+
+	checkReach(t, g, map[string]string{
+		"harp 1":      "starting chest",
+		"harp 2":      "nayru's house",
+		"flippers 1":  "black tower worker",
+		"flippers 2":  "fairies' woods chest",
+		"feather":     "lynna city chest",
+		"mermaid key": "hidden tokay cave",
+	}, "enter d6 past", false, true)
+
+	checkReach(t, g, map[string]string{
+		"harp 1":          "starting chest",
+		"harp 2":          "nayru's house",
+		"flippers 1":      "black tower worker",
+		"flippers 2":      "fairies' woods chest",
+		"feather":         "lynna city chest",
+		"old mermaid key": "hidden tokay cave",
+	}, "enter d6 present", false, true)
+
+	checkReach(t, g, map[string]string{
+		"harp 1":           "starting chest",
+		"harp 2":           "nayru's house",
+		"harp 3":           "black tower worker",
+		"flippers 1":       "fairies' woods chest",
+		"flippers 2":       "lynna city chest",
+		"switch hook 1":    "hidden tokay cave",
+		"sword 1":          "zora village present",
+		"satchel 1":        "zora palace chest",
+		"ember tree seeds": "zora village tree",
+		"fairy powder":     "grave under tree",
+		"graveyard key":    "crescent seafloor cave",
+	}, "enter d7", false, true)
+
+	checkReach(t, g, map[string]string{
+		"sword 1":       "starting chest",
+		"flippers 1":    "nayru's house",
+		"flippers 2":    "black tower worker",
+		"tokay eyeball": "hidden tokay cave",
+		"feather":       "crescent seafloor cave",
+		"bombs, 10":     "tokay crystal cave",
+		"bracelet 1":    "ambi's palace chest",
+		"cane":          "tokay bomb cave",
+	}, "enter d8", false, true)
+
+	// make sure that all slots in the game are reachable, given vanilla
+	// progression.
+	for slotName, _ := range rom.ItemSlots {
+		r := NewRoute(rom.GameAges)
+		g := r.Graph
+		checkReach(t, g, map[string]string{
+			"sword 1":            "starting chest",
+			"shovel":             "black tower worker",
+			"satchel 1":          "maku tree",
+			"ember tree seeds":   "south lynna tree",
+			"graveyard key":      "grave under tree",
+			"bracelet 1":         "d1 basement",
+			"harp 1":             "nayru's house",
+			"mystery tree seeds": "deku forest tree",
+			"bombs, 10":          "deku forest soldier",
+			"feather":            "d2 thwomp tunnel",
+			"flippers 1":         "cheval's test",
+			"cheval rope":        "cheval's invention",
+			"ricky's gloves":     "south shore dirt",
+			"island chart":       "balloon guy's gift",
+			"scent seedling":     "wild tokay game",
+			"scent tree seeds":   "crescent island tree",
+			"seed shooter":       "d3 pols voice chest", // vanilla unsafe
+			"moosh's flute":      "shop, 150 rupees",
+			"tuni nut":           "symmetry city brother",
+			"harp 2":             "tokkey's composition",
+			"switch hook 1":      "d4 small floor puzzle",
+			"pegasus tree seeds": "rolling ridge west tree",
+			"bomb flower":        "defeat great moblin",
+			"crown key":          "goron elder",
+			"cane":               "d5 blue peg chest", // vanilla unsafe
+			"brother emblem":     "goron dance present",
+			"rock brisket":       "target carts 1",
+			"goron vase":         "trade rock brisket",
+			"goronade":           "trade goron vase",
+			"old mermaid key":    "big bang game",
+			"lava juice":         "shooting gallery",
+			"goron letter":       "trade lava juice",
+			"mermaid key":        "goron dance past",
+			"flippers 2":         "d6 present vire chest",
+			"harp 3":             "rescue nayru",
+			"library key":        "king zora",
+			"book of seals":      "library present",
+			"fairy powder":       "library past",
+			"switch hook 2":      "d7 miniboss chest",
+			"d7 boss key":        "d7 post-hallway chest",
+			"zora scale":         "zora's reward",
+			"tokay eyeball":      "piratian captain",
+			"bracelet 2":         "d8 floor puzzle",
+		}, slotName, false, true)
+	}
+}
+
 func BenchmarkGraphExplore(b *testing.B) {
 	// init graph
-	r := NewRoute()
+	r := NewRoute(rom.GameSeasons)
 	b.ResetTimer()
 
 	// explore all items from the d0 sword chest
-	for name := range logic.ExtraItems() {
+	for name := range logic.SeasonsExtraItems() {
 		r.Graph.Explore(make(map[*graph.Node]bool), false, r.Graph[name])
 	}
 }
@@ -121,36 +270,4 @@ func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
 			t.Errorf("expected not to reach %s, but could", target)
 		}
 	}
-}
-
-func TestFindRoute(t *testing.T) {
-	if testing.Short() {
-		t.Skip()
-	}
-
-	totalRoutes, totalAttempts := 10, 0
-	rand.Seed(time.Now().UnixNano())
-
-	logChan, doneChan := make(chan string), make(chan int)
-	go func() {
-		for {
-			select {
-			case <-logChan:
-			case <-doneChan:
-				println("received")
-				break
-			}
-		}
-	}()
-
-	for i := 0; i < totalRoutes; i++ {
-		println(fmt.Sprintf("finding route %d/%d", i, totalRoutes))
-		seed := uint32(rand.Int())
-		src := rand.New(rand.NewSource(int64(seed)))
-		totalAttempts += findRoute(src, seed, false, false,
-			logChan, doneChan).AttemptCount
-	}
-
-	println(fmt.Sprintf("average %d attempts per route",
-		totalAttempts/totalRoutes))
 }

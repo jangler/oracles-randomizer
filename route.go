@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"sort"
 	"strconv"
+	"strings"
 
 	"github.com/jangler/oos-randomizer/graph"
 	"github.com/jangler/oos-randomizer/logic"
@@ -27,18 +28,23 @@ func addDefaultItemNodes(nodes map[string]*logic.Node) {
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph graph.Graph
-	Slots map[string]*graph.Node
-	Costs int
+	Graph  graph.Graph
+	Slots  map[string]*graph.Node
+	Rupees int
 }
 
 // NewRoute returns an initialized route with all nodes, and those nodes with
 // the names in start functioning as givens (always satisfied). If no names are
 // given, only the normal start node functions as a given.
-func NewRoute(start ...string) *Route {
+func NewRoute(game int, start ...string) *Route {
 	g := graph.New()
 
-	totalPrenodes := logic.GetAll()
+	var totalPrenodes map[string]*logic.Node
+	if game == rom.GameSeasons {
+		totalPrenodes = logic.GetSeasons()
+	} else {
+		totalPrenodes = logic.GetAges()
+	}
 	addDefaultItemNodes(totalPrenodes)
 
 	// make start nodes given
@@ -119,14 +125,12 @@ func addNodeParents(prenodes map[string]*logic.Node, gs ...graph.Graph) {
 }
 
 type RouteInfo struct {
-	Route                        *Route
-	Seed                         uint32
-	Seasons                      map[string]byte
-	Companion                    int // 1 to 3
-	UsedItems, UsedSlots         *list.List
-	ProgressItems, ProgressSlots *list.List
-	ExtraItems, ExtraSlots       *list.List
-	AttemptCount                 int
+	Route                *Route
+	Seed                 uint32
+	Seasons              map[string]byte
+	Companion            int // 1 to 3
+	UsedItems, UsedSlots *list.List
+	AttemptCount         int
 }
 
 const (
@@ -137,7 +141,7 @@ const (
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
+func findRoute(game int, seed uint32, hard, verbose bool,
 	logChan chan string, doneChan chan int) *RouteInfo {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
@@ -145,16 +149,13 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
 	ri := &RouteInfo{
-		Seed:          seed,
-		UsedItems:     list.New(),
-		UsedSlots:     list.New(),
-		ProgressItems: list.New(),
-		ProgressSlots: list.New(),
-		ExtraItems:    list.New(),
-		ExtraSlots:    list.New(),
+		Seed:      seed,
+		UsedItems: list.New(),
+		UsedSlots: list.New(),
 	}
 
 	// try to find the route, retrying if needed
+	var src *rand.Rand
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
 		// abort if route was already found on another thread
@@ -164,14 +165,18 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 		default:
 		}
 
-		r := NewRoute()
-		ri.Companion = rollAnimalCompanion(src, r)
-		itemList, slotList = initRouteInfo(src, r, ri.Companion)
+		src = rand.New(rand.NewSource(int64(ri.Seed)))
 		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
 
+		r := NewRoute(game)
+		ri.Companion = rollAnimalCompanion(src, r, game)
+		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
+
 		// slot initial nodes before algorithm slots progression items
-		ri.Seasons = rollSeasons(src, r)
-		placeDungeonItems(src, r,
+		if game == rom.GameSeasons {
+			ri.Seasons = rollSeasons(src, r)
+		}
+		placeDungeonItems(src, r, game,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
 		slotRecord := 0
@@ -191,10 +196,11 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 				countSteps, ri.UsedSlots.Len(), hard, false)
 
 			if eItem != nil {
-				ri.UsedItems.PushBack(itemList.Remove(eItem))
+				item := itemList.Remove(eItem).(*graph.Node)
+				ri.UsedItems.PushBack(item)
 				slot := slotList.Remove(eSlot).(*graph.Node)
 				ri.UsedSlots.PushBack(slot)
-				r.Costs += logic.Rupees[slot.Name]
+				r.Rupees += logic.RupeeValues[item.Name]
 
 				if ri.UsedSlots.Len() > slotRecord {
 					slotRecord = ri.UsedSlots.Len()
@@ -203,6 +209,7 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 			} else {
 				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
 				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+				r.Rupees -= logic.RupeeValues[item.Name]
 				itemList.PushBack(item)
 				slotList.PushBack(slot)
 				item.RemoveParent(slot)
@@ -233,10 +240,11 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 					countSteps, ri.UsedSlots.Len(), hard, true)
 
 				if eItem != nil {
-					ri.UsedItems.PushBack(itemList.Remove(eItem))
+					item := itemList.Remove(eItem).(*graph.Node)
+					ri.UsedItems.PushBack(item)
 					slot := slotList.Remove(eSlot).(*graph.Node)
 					ri.UsedSlots.PushBack(slot)
-					r.Costs += logic.Rupees[slot.Name]
+					r.Rupees += logic.RupeeValues[item.Name]
 
 					if ri.UsedSlots.Len() > slotRecord {
 						slotRecord = ri.UsedSlots.Len()
@@ -245,6 +253,7 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 				} else {
 					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
 					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
+					r.Rupees -= logic.RupeeValues[item.Name]
 					itemList.PushBack(item)
 					slotList.PushBack(slot)
 					item.RemoveParent(slot)
@@ -260,21 +269,7 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 			}
 		}
 
-		if slotList.Len() == 0 {
-			arrangeListsForLog(r, ri, hard, verbose)
-
-			// rotate dungeon items to the back of the lists
-			items, slots := ri.ProgressItems, ri.ProgressSlots
-			for i := 0; i < 8; i++ {
-				items.PushBack(items.Remove(items.Front()))
-				slots.PushBack(slots.Remove(slots.Front()))
-			}
-			items, slots = ri.ExtraItems, ri.ExtraSlots
-			for i := 0; i < 16; i++ {
-				items.PushBack(items.Remove(items.Front()))
-				slots.PushBack(slots.Remove(slots.Front()))
-			}
-
+		if success && slotList.Len() == 0 {
 			// and we're done
 			ri.Route = r
 			ri.AttemptCount = tries + 1
@@ -282,12 +277,9 @@ func findRoute(src *rand.Rand, seed uint32, hard, verbose bool,
 		}
 
 		ri.UsedItems, ri.UsedSlots = list.New(), list.New()
-		ri.ProgressItems, ri.ProgressSlots = list.New(), list.New()
-		ri.ExtraItems, ri.ExtraSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
 		ri.Seed = uint32(src.Int31())
-		src = rand.New(rand.NewSource(int64(ri.Seed)))
 	}
 
 	if tries >= maxTries {
@@ -330,20 +322,35 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 }
 
 // randomly determines animal companion and returns its ID (1 to 3)
-func rollAnimalCompanion(src *rand.Rand, r *Route) int {
+func rollAnimalCompanion(src *rand.Rand, r *Route, game int) int {
 	companion := src.Intn(3) + 1
 
-	r.ClearParents("natzu prairie")
-	r.ClearParents("natzu river")
-	r.ClearParents("natzu wasteland")
+	if game == rom.GameSeasons {
+		r.ClearParents("natzu prairie")
+		r.ClearParents("natzu river")
+		r.ClearParents("natzu wasteland")
 
-	switch companion {
-	case ricky:
-		r.AddParent("natzu prairie", "start")
-	case dimitri:
-		r.AddParent("natzu river", "start")
-	case moosh:
-		r.AddParent("natzu wasteland", "start")
+		switch companion {
+		case ricky:
+			r.AddParent("natzu prairie", "start")
+		case dimitri:
+			r.AddParent("natzu river", "start")
+		case moosh:
+			r.AddParent("natzu wasteland", "start")
+		}
+	} else {
+		r.ClearParents("ricky nuun")
+		r.ClearParents("dimitri nuun")
+		r.ClearParents("moosh nuun")
+
+		switch companion {
+		case ricky:
+			r.AddParent("ricky nuun", "start")
+		case dimitri:
+			r.AddParent("dimitri nuun", "start")
+		case moosh:
+			r.AddParent("moosh nuun", "start")
+		}
 	}
 
 	return companion
@@ -362,7 +369,7 @@ func dungeonIndex(node *graph.Node) int {
 
 // place maps, compasses, and boss keys in chests in dungeons (before
 // attempting to slot the other ones).
-func placeDungeonItems(src *rand.Rand, r *Route,
+func placeDungeonItems(src *rand.Rand, r *Route, game int,
 	itemList, usedItems, slotList, usedSlots *list.List) {
 
 	// place boss keys first
@@ -389,11 +396,19 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 		}
 	}
 
+	prefixes := []string{"d1", "d2", "d3", "d4", "d5"}
+	if game == rom.GameSeasons {
+		prefixes = append(prefixes, "d6")
+	} else {
+		prefixes = append(prefixes, "d6 present", "d6 past")
+	}
+	prefixes = append(prefixes, "d7", "d8")
+
 	// then place maps and compasses
-	for i := 1; i < 9; i++ {
+	for _, prefix := range prefixes {
 		for _, itemName := range []string{"dungeon map", "compass"} {
 			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem(i, itemName, slotList, itemList)
+				getDungeonItem(prefix, itemName, slotList, itemList)
 
 			usedSlots.PushBack(slotNode)
 			slotList.Remove(slotElem)
@@ -405,11 +420,11 @@ func placeDungeonItems(src *rand.Rand, r *Route,
 	}
 }
 
-func getDungeonItem(index int, itemName string, slotList,
+func getDungeonItem(prefix, itemName string, slotList,
 	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
-		if dungeonIndex(slot) != index {
+		if !strings.HasPrefix(slot.Name, prefix) {
 			continue
 		}
 
@@ -447,18 +462,31 @@ var seedNames = []string{"ember tree seeds", "scent tree seeds",
 
 // return shuffled lists of item and slot nodes
 func initRouteInfo(src *rand.Rand, r *Route,
-	companion int) (itemList, slotList *list.List) {
+	game, companion int) (itemList, slotList *list.List) {
 	// get slices of names
-	itemNames := make([]string, 0,
-		len(rom.ItemSlots)+len(logic.ExtraItems()))
+	var itemNames []string
+	if game == rom.GameSeasons {
+		itemNames = make([]string, 0,
+			len(rom.ItemSlots)+len(logic.SeasonsExtraItems()))
+	} else {
+		itemNames = make([]string, 0, len(rom.ItemSlots))
+	}
 	slotNames := make([]string, 0, len(r.Slots))
+	thisSeedNames := make([]string, len(seedNames))
+	copy(thisSeedNames, seedNames)
 	for key, slot := range rom.ItemSlots {
 		switch key {
 		case "rod gift": // don't slot vanilla, seasonless rod
 			break
-		case "tarm gale tree": // use random duplicate seed type
-			treasureName := seedNames[rand.Intn(len(seedNames))]
+		case "tarm gale tree", "ambi's palace tree",
+			"rolling ridge east tree", "zora village tree":
+			// use random duplicate seed types, but only duplicate a seed type
+			// once
+			index := src.Intn(len(thisSeedNames))
+			treasureName := thisSeedNames[index]
 			itemNames = append(itemNames, treasureName)
+			thisSeedNames = append(thisSeedNames[:index],
+				thisSeedNames[index+1:]...)
 		default:
 			// substitute identified flute for strange flute
 			treasureName := rom.FindTreasureName(slot.Treasure)
@@ -476,8 +504,10 @@ func initRouteInfo(src *rand.Rand, r *Route,
 			itemNames = append(itemNames, treasureName)
 		}
 	}
-	for key := range logic.ExtraItems() {
-		itemNames = append(itemNames, key)
+	if game == rom.GameSeasons {
+		for key := range logic.SeasonsExtraItems() {
+			itemNames = append(itemNames, key)
+		}
 	}
 	for key := range r.Slots {
 		slotNames = append(slotNames, key)
@@ -519,46 +549,4 @@ func countSteps(r *Route, hard bool) int {
 		}
 	}
 	return count
-}
-
-// break down the used items into required and optional items, so that the log
-// makes sense.
-func arrangeListsForLog(r *Route, ri *RouteInfo, hard, verbose bool) {
-	done := r.Graph["done"]
-
-	// figure out which items aren't necessary
-	ei, es := ri.UsedItems.Front(), ri.UsedSlots.Front()
-	for i := 0; i < ri.UsedItems.Len(); i++ {
-		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
-
-		// remove parent provisionally
-		item.RemoveParent(slot)
-
-		// ask if anyone misses it. first item is a special case: it's always
-		// required, but it might only be required for rupees, which aren't
-		// counted here.
-		r.Graph.ClearMarks()
-		if slot.Name != "d0 sword chest" &&
-			done.GetMark(done, hard) == graph.MarkTrue {
-			if verbose {
-				fmt.Printf("%s (in %s) is extra\n", item.Name, slot.Name)
-			}
-			ri.ExtraItems.PushBack(item)
-			ri.ExtraSlots.PushBack(slot)
-		} else {
-			item.AddParents(slot)
-			ri.ProgressItems.PushBack(item)
-			ri.ProgressSlots.PushBack(slot)
-		}
-
-		ei, es = ei.Next(), es.Next()
-	}
-
-	// attach removed parents back to optional items
-	ei, es = ri.ExtraItems.Front(), ri.ExtraSlots.Front()
-	for i := 0; i < ri.ExtraItems.Len(); i++ {
-		item, slot := ei.Value.(*graph.Node), es.Value.(*graph.Node)
-		item.AddParents(slot)
-		ei, es = ei.Next(), es.Next()
-	}
 }

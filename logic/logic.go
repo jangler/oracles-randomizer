@@ -9,10 +9,6 @@ import (
 // relationships can't be made until the nodes are added first (and it's nice
 // not to clutter the other packages with all these definitions).
 
-// XXX need to be careful about rings. i can't imagine a situation where you'd
-//     need both energy ring and fist ring, but if you did, then you'd need to
-//     have the L-2 ring box to do so without danger of soft locking.
-
 // A Type identifies whether a node is an And, Or, or Root node, whether it is
 // an item slot, and whether it is a non-item slot milestone.
 type Type int
@@ -70,16 +66,24 @@ var (
 	HardOr  = CreateFunc(HardOrType)
 )
 
-var allNodes map[string]*Node
+var seasonsNodes, agesNodes map[string]*Node
 
 func init() {
-	allNodes = make(map[string]*Node)
-	appendNodes(allNodes,
-		itemNodes, baseItemNodes, killNodes,
+	seasonsNodes = make(map[string]*Node)
+	appendNodes(seasonsNodes,
+		seasonsItemNodes, seasonsBaseItemNodes, seasonsKillNodes,
 		holodrumNodes, subrosiaNodes, portalNodes, seasonNodes,
-		d0Nodes, d1Nodes, d2Nodes, d3Nodes, d4Nodes,
-		d5Nodes, d6Nodes, d7Nodes, d8Nodes, d9Nodes)
-	flattenNestedNodes(allNodes)
+		seasonsD0Nodes, seasonsD1Nodes, seasonsD2Nodes, seasonsD3Nodes,
+		seasonsD4Nodes, seasonsD5Nodes, seasonsD6Nodes, seasonsD7Nodes,
+		seasonsD8Nodes, seasonsD9Nodes)
+	flattenNestedNodes(seasonsNodes)
+
+	agesNodes = make(map[string]*Node)
+	appendNodes(agesNodes,
+		agesItemNodes, agesKillNodes, labrynnaNodes,
+		agesD1Nodes, agesD2Nodes, agesD3Nodes, agesD4Nodes,
+		agesD5Nodes, agesD6Nodes, agesD7Nodes, agesD8Nodes, agesD9Nodes)
+	flattenNestedNodes(agesNodes)
 }
 
 // add nested nodes to the map and turn their references into strings
@@ -106,15 +110,20 @@ func flattenNestedNodes(nodes map[string]*Node) {
 	}
 }
 
-// ExtraItems returns a map of item nodes that may be assigned to slots, in
-// addition to the ones that are generated from default slot contents.
-func ExtraItems() map[string]*Node {
-	return copyMap(baseItemNodes)
+// SeasonsExtraItems returns a map of item nodes that may be assigned to slots,
+// in addition to the ones that are generated from default slot contents.
+func SeasonsExtraItems() map[string]*Node {
+	return copyMap(seasonsBaseItemNodes)
 }
 
-// GetAll returns a copy of all nodes.
-func GetAll() map[string]*Node {
-	return copyMap(allNodes)
+// GetSeasons returns a copy of all seasons nodes.
+func GetSeasons() map[string]*Node {
+	return copyMap(seasonsNodes)
+}
+
+// GetAges returns a copy of all ages nodes.
+func GetAges() map[string]*Node {
+	return copyMap(agesNodes)
 }
 
 // merge the given maps into the first argument
