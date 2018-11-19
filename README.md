@@ -95,5 +95,5 @@ A: Not yet. Probably in a future version.
 
 - Drenn for [ages-disasm](https://github.com/Drenn1/ages-disasm).
 - Herreteman, dragonc0, Phoenomenom714, and jaysee87 for help with logic,
-  playtesting, design, and "community management".
-- Everyone who helped playtest alpha versions and release candidates.
+  playtesting, design, and "customer support".
+- Everyone who helped playtest prerelease versions of the randomizer.
