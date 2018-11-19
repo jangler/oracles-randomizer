@@ -18,7 +18,10 @@ func isParent(p1Name string, p2 *Node) bool {
 }
 
 func TestLinks(t *testing.T) {
-	nodes := GetAll()
+	// need to be changed manually for now
+	nodes := GetAges()
+	rom.Init(rom.GameAges)
+
 	for key, slot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(slot.Treasure)
 		if node, ok := nodes[treasureName]; ok {
@@ -47,6 +50,8 @@ func TestLinks(t *testing.T) {
 			continue
 		case "pegasus seeds", "any satchel":
 			// defined for consistency but unused
+			continue
+		case "ricky nuun", "dimitri nuun", "moosh nuun":
 			continue
 		}
 		if strings.Contains(name, "rupee") ||

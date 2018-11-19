@@ -17,6 +17,7 @@ var niceNames = map[string]string{
 	// equip items
 	"shop shield L-1": "wooden shield",
 	"shield L-2":      "iron shield",
+	"cane":            "cane of somaria",
 	"sword 1":         "wooden/noble sword",
 	"sword 2":         "wooden/noble sword",
 	"boomerang 1":     "(magic) boomerang",
@@ -26,9 +27,16 @@ var niceNames = map[string]string{
 	"autumn":          "rod of autumn",
 	"winter":          "rod of winter",
 	"magnet gloves":   "magnetic gloves",
+	"harp 1":          "tune of echoes/currents/ages",
+	"harp 2":          "tune of echoes/currents/ages",
+	"harp 3":          "tune of echoes/currents/ages",
+	"switch hook 1":   "switch/long hook",
+	"switch hook 2":   "switch/long hook",
 	"slingshot 1":     "(hyper) slingshot",
 	"slingshot 2":     "(hyper) slingshot",
 	"bracelet":        "power bracelet",
+	"bracelet 1":      "power bracelet/glove",
+	"bracelet 2":      "power bracelet/glove",
 	"feather 1":       "roc's feather/cape",
 	"feather 2":       "roc's feather/cape",
 	"satchel 1":       "seed satchel",
@@ -36,8 +44,11 @@ var niceNames = map[string]string{
 
 	// collection items
 	"flippers":         "zora's flippers",
+	"flippers 1":       "zora's flippers / mermaid suit",
+	"flippers 2":       "zora's flippers / mermaid suit",
 	"star ore":         "star-shaped ore",
 	"rare peach stone": "piece of heart",
+	"goron letter":     "letter of introduction",
 
 	// north horon / holodrum plain / eyeglass lake slots
 	"scent tree":          "north horon seed tree",
@@ -122,16 +133,20 @@ var niceNames = map[string]string{
 	"hard ore slot":        "great furnace",
 	"iron shield gift":     "subrosian smithy",
 
-	// dungeons
-	"d0 sword chest":         "hero's cave sword chest",
-	"d0 rupee chest":         "hero's cave rupee chest",
-	"d1 satchel spot":        "D1 seed satchel spot",
-	"d2 bracelet chest":      "D2 power bracelet chest",
-	"d3 feather chest":       "D3 roc's feather chest",
-	"d5 magnet gloves chest": "D5 magnetic gloves chest",
-	"d6 boomerang chest":     "D6 magic boomerang chest",
-	"d7 cape chest":          "D7 roc's cape chest",
-	"d8 HSS chest":           "D8 hyper slingshot chest",
+	// seasons dungeon slots
+	"d0 sword chest": "hero's cave sword chest",
+	"d0 rupee chest": "hero's cave rupee chest",
+
+	// labrynna slots
+	"crescent seafloor cave": "under crescent island",
+	"ridge base chest":       "ridge base east present",
+	"goron diamond chest":    "ridge hook cave present",
+	"ridge west cave":        "ridge base west present",
+	"ridge bush cave":        "ridge past bush cave",
+	"ridge base past":        "ridge base west past",
+	"zora cave past":         "fisher's island cave",
+	"goron dance past":       "goron dance, with letter",
+	"shooting gallery":       "goron shooting gallery",
 }
 
 // get a user-friendly equivalent of the given internal item or slot name.

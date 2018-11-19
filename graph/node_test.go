@@ -149,3 +149,37 @@ func TestNodeGetMark(t *testing.T) {
 		t.Fatalf("want %d, got %d", MarkFalse, mark)
 	}
 }
+
+func TestHardNodes(t *testing.T) {
+	hard1 := NewNode("hard1", AndType, false, false, true)
+	if mark := hard1.GetMark(hard1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(hard1)
+	if mark := hard1.GetMark(hard1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(hard1)
+
+	and1 := NewNode("and1", AndType, false, false, false)
+	and1.AddParents(hard1)
+	if mark := and1.GetMark(and1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(and1, hard1)
+	if mark := and1.GetMark(and1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(and1, hard1)
+
+	or1 := NewNode("or1", OrType, false, false, false)
+	or1.AddParents(hard1)
+	if mark := or1.GetMark(or1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(or1, hard1)
+	if mark := or1.GetMark(or1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(or1, hard1)
+}

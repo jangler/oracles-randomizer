@@ -122,40 +122,60 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
+	// bomb flower has special graphics something
+	if itemNode.Name == "bomb flower" {
+		switch slotNode.Name {
+		case "cheval's test", "cheval's invention", "wild tokay game",
+			"hidden tokay cave", "library present", "library past":
+			return false
+		}
+	}
+
 	// and only seeds can be slotted in seed trees, of course
 	switch itemNode.Name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
 		"pegasus tree seeds", "gale tree seeds":
-		switch slotNode.Name {
-		case "ember tree", "mystery tree", "scent tree",
-			"pegasus tree", "sunken gale tree", "tarm gale tree":
-			break
-		default:
-			return false
-		}
+		return slotIsSeedTree(slotNode.Name)
 	default:
-		switch slotNode.Name {
-		case "ember tree", "mystery tree", "scent tree",
-			"pegasus tree", "sunken gale tree", "tarm gale tree":
-			return false
-		}
+		return !slotIsSeedTree(slotNode.Name)
 	}
 
 	return true
 }
 
+func slotIsSeedTree(name string) bool {
+	switch name {
+	case "ember tree", "mystery tree", "scent tree",
+		"pegasus tree", "sunken gale tree", "tarm gale tree",
+		"south lynna tree", "deku forest tree", "crescent island tree",
+		"symmetry city tree", "rolling ridge west tree",
+		"rolling ridge east tree", "ambi's palace tree", "zora village tree":
+		return true
+	}
+	return false
+}
+
 func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	// if it doesn't cost anything, of course it's affordable
-	balance := logic.Rupees[slot.Name]
+	balance := logic.NodeValues[slot.Name]
 	if balance >= 0 {
 		return true
 	}
 
+	// in hard mode, 100 rupee manips with shovel are in logic
+	if hard {
+		shovel := r.Graph["shovel"]
+		if shovel.GetMark(shovel, hard) == graph.MarkTrue {
+			return true
+		}
+	}
+
 	// otherwise, count the net rupees available to the player
-	balance += r.Costs
+	balance += r.Rupees
 	for _, node := range r.Graph {
-		value := logic.Rupees[node.Name]
-		if value > 0 && node.GetMark(node, hard) == graph.MarkTrue {
+		value := logic.NodeValues[node.Name]
+		if value != 0 && node != slot &&
+			node.GetMark(node, hard) == graph.MarkTrue {
 			balance += value
 		}
 	}

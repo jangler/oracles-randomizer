@@ -9,7 +9,7 @@ import sys
 import yaml
 
 
-parser = argparse.ArgumentParser(description="read data from an oos rom.",
+parser = argparse.ArgumentParser(description="read data from an oracles rom.",
         epilog="""
 if action is "getroom", two additional hex integer parameters must be
 privided for the group ID and room ID of a specific room to get data
@@ -53,33 +53,47 @@ def full_addr(bank_num, offset):
     return offset
 
 
-MUSIC_PTR_TABLE = 0x04, 0x483c
-OBJECT_PTR_TABLE = 0x11, 0x5b3b
-CHEST_PTR_TABLE = 0x15, 0x4f6c
-TREASURE_PTR_TABLE = 0x15, 0x5129
+MUSIC_PTR_TABLE = (0x04, 0x04), (0x483c, 0x495c)
+OBJECT_PTR_TABLE = (0x11, 0x15), (0x5b3b, 0x432b)
+CHEST_PTR_TABLE = (0x15, 0x16), (0x4f6c, 0x5108)
+TREASURE_PTR_TABLE = (0x15, 0x16), (0x5129, 0x5332)
+SPRITE_PTR_TABLE = (0x3f, 0x3f), (0x6425, 0x6427)
+
+
+def get_table(table, game):
+    return table[0][game], table[1][game]
+
 
 MUSIC = { # and sound effects
     0x03: "overworld",
-    0x04: "temple remains",
-    0x05: "tarm ruins",
-    0x0a: "horon village",
+    0x04: "temple remains / overworld past",
+    0x05: "tarm ruins / crescent island",
+    0x07: "ambi's palace",
+    0x0a: "horon village / lynna city",
+    0x0b: "lynna village",
+    0x0c: "zora village",
     0x0d: "essence room",
     0x0e: "house",
     0x0f: "fairy fountain",
     0x12: "hero's cave",
-    0x13: "gnarled root dungeon",
-    0x14: "snake's remains",
-    0x15: "poison moth's lair",
-    0x16: "dancing dragon dungeon",
-    0x17: "unicorn's cave",
-    0x18: "ancient ruins",
-    0x19: "explorer's crypt",
-    0x1a: "sword and shield maze",
+    0x13: "D1",
+    0x14: "D2",
+    0x15: "D3",
+    0x16: "D4",
+    0x17: "D5",
+    0x18: "D6",
+    0x19: "D7",
+    0x1a: "D8",
     0x1b: "onox's castle",
+    0x20: "sea of no return",
+    0x24: "symmetry city present",
+    0x25: "symmetry city past",
     0x28: "subrosia",
+    0x30: "fairies' woods",
     0x35: "samasa desert",
     0x36: "cave",
-    0x3e: "goron mountain",
+    0x3e: "goron mountain / rolling ridge",
+    0x46: "northern peak / black tower",
     0x4c: "got item",
     0x4d: "puzzle solved (short)",
     0x4e: "damage enemy",
@@ -119,6 +133,8 @@ INTERACTION_MODES = {
     0xf6: "random entities",
     0xf7: "specific entity",
     0xf8: "part",
+    0xf9: "object with param",
+    0xfa: "item drop",
 }
 
 NV_INTERACTIONS = {}
@@ -145,6 +161,7 @@ ENTITIES = {
     0x35: ("floormaster", {}),
     0x38: ("great fairy", {}),
     0x39: ("fire keese", {}),
+    0x3e: ("peahat", {}),
     0x43: ("gel", {}),
     0x53: ("dragonfly", {}),
     0x59: ("fixed drop", {
@@ -186,20 +203,21 @@ DV_INTERACTIONS = {
         0x14: "N opens for torches",
         0x15: "W opens for torches",
     }),
-    # 0x20 0x01 used for button -> small key chest in d0
-    # 0x20 0x02 used for button -> small key chest in d1
-    # 0x20 0x03 used for boss room in d1
+    0x20: ("dungeon script", {}),
     0x21: ("gnarled keyhole", {}),
-    # 0x22 are outside the d1 entrance
+    # 0x22 is outside the d1 entrance
     # 0x25 0x00 and 0x01 are on the cat-stuck-in-tree screen
     # 0x26 0x00 and 0x01 are also on the cat-stuck-in-tree screen
+    0x31: ("subrosia portal", {}),
     # 0x37 0x82 is on the ember tree screen
     0x38: ("d1 old man", {}),
     # 0x44 0x09 is in impa's house
     0x46: ("shopkeeper", {}),
     0x47: ("shop item", {}),
+    0x4b: ("palace guard(s)", {}),
     0x6b: ("placed item", {
         0x0a: "piece of heart",
+        0x0c: "flippers",
         # 0x17 is the bridge in the horon subrosia portal cave?
         0x91: "gasha seed",
         0x1f: "gasha seed", # both gasha seeds? maybe set different room flags
@@ -209,17 +227,26 @@ DV_INTERACTIONS = {
     0x7e: ("miniboss portal", {}),
     0x7f: ("essence", {}),
     0x9d: ("impa", {}),
+    0xb3: ("harp of ages", {}),
+    0xce: ("deku scrub", {}),
     0xc6: ("wooden sword", {}),
-    0xc7: (0xc7, {
+    0xc7: ("various", {
         0x04: "renewable bush",
     }),
-    0xdc: ("warp", {
-        0x01: "doorway",
-        0x02: "chimney",
+    0xdc: ("various", {
+        0x01: "doorway warp?",
+        0x02: "chimney warp?",
+        0x07: "piece of heart",
+        0x11: "mermaid's cave boss key",
+        0x15: "sea of storms present chest",
+        0x16: "sea of storms past chest",
     }),
-    0x31: ("subrosia portal", {}),
+    0xe1: ("time portal", {
+        0x00: "dormant",
+        0x01: "east of maku tree",
+        0x02: "south of maku tree",
+    }),
     # 0xa5 0x09 used on screen where link falls in the intro
-    # 0xdc 0x01 and 0x02 outside hero's cave. entrance ??
     0xe2: ("statue eyes", {}),
 }
 
@@ -232,6 +259,7 @@ TREASURES = {
     0x03: ("bombs", {
         0x00: "10 count",
     }),
+    0x04: ("cane of somaria", {}),
     0x05: ("sword", {
         0x00: "L-1",
     }),
@@ -239,6 +267,10 @@ TREASURES = {
         0x01: "L-2",
     }),
     0x08: ("magnet gloves", {}),
+    0x0a: ("switch hook", {
+        0x01: "long hook",
+    }),
+    0x0f: ("seed shooter", {}),
     0x13: ("slingshot", {
         0x00: "L-1",
         0x01: "L-2",
@@ -275,10 +307,24 @@ TREASURES = {
     0x32: ("compass", {}),
     0x33: ("dungeon map", {}),
     0x34: ("gasha seed", {}),
+    0x4a: ("mermaid suit", {}),
+    0x4b: ("slate", {}),
     0x4f: ("x-shaped jewel", {}),
     0x50: ("red ore", {}),
     0x51: ("blue ore", {}),
     0x54: ("master's plaque", {}),
+}
+
+PARAM_OBJECTS = {
+    0x40: ("palace guard", {}),
+}
+
+ITEM_DROPS = {
+    0x05: "ember seeds",
+    0x06: "scent seeds",
+    0x07: "pegasus seeds",
+    0x08: "gale seeds",
+    0x09: "mystery seeds",
 }
 
 
@@ -305,25 +351,27 @@ def read_ptr(buf, bank, addr):
     return struct.unpack_from('<H', buf, offset=full_addr(bank, addr))[0]
 
 
-def read_music(buf, group, room, name=True):
-    bank, addr = MUSIC_PTR_TABLE
+def read_music(buf, game, group, room, name=True):
+    bank, addr = get_table(MUSIC_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2) + room
 
     value = read_byte(buf, bank, addr)
     if name:
         if value in MUSIC:
-            return MUSIC[value]
+            return [value, MUSIC[value]]
 
     return value
 
 
-def read_objects(buf, group, room, name=True):
+def read_objects(buf, game, group, room, name=True):
     # read initial pointer
-    bank, addr = OBJECT_PTR_TABLE
+    bank, addr = get_table(OBJECT_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2) + room * 2
     addr = read_ptr(buf, bank, addr)
 
     # read objects (recursively if more pointers are involved)
+    if game == AGES:
+        bank = 0x12
     objects = []
     while read_byte(buf, bank, addr) != 0xff:
         new_objects, addr = read_interaction(buf, bank, addr, name)
@@ -385,14 +433,14 @@ def read_interaction(buf, bank, addr, name=True):
                         read_byte(buf, bank, addr+1)]
             addr += 2
 
-            x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
+            x, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
                 "address": [bank, addr - 4],
                 "mode": "DV interaction" if name else mode,
                 "variety": kind,
-                "coords": [x, y],
+                "coords": [y, x],
             })
     elif mode in (0xf3, 0xf4, 0xf5):
         # pointer to other interaction
@@ -434,15 +482,15 @@ def read_interaction(buf, bank, addr, name=True):
                         read_byte(buf, bank, addr+1)]
             addr += 2
 
-            x, addr = read_byte(buf, bank, addr, 1)
             y, addr = read_byte(buf, bank, addr, 1)
+            x, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
                 "address": [bank, addr - 4],
                 "mode": "specific entity" if name else mode,
                 "param": param,
                 "variety": kind,
-                "coords": [x, y]
+                "coords": [y, x]
             })
     elif mode == 0xf8:
         while read_byte(buf, bank, addr) < 0xf0:
@@ -454,21 +502,54 @@ def read_interaction(buf, bank, addr, name=True):
                 kind = [read_byte(buf, bank, addr),
                         read_byte(buf, bank, addr+1)]
             addr += 2
-            xy, addr = read_byte(buf, bank, addr, 1)
+            yx, addr = read_byte(buf, bank, addr, 1)
 
             objects.append({
                 "address": [bank, addr - 3],
                 "mode": "part" if name else mode,
                 "variety": kind,
-                "coords": [(xy & 0x0f) * 0x10 + 0x08,
-                           ((xy >> 4) & 0x0f)* 0x10 + 0x08]
+                "coords": [((yx >> 4) & 0x0f) * 0x10 + 0x08,
+                           (yx & 0x0f) * 0x10 + 0x08],
             })
-    elif mode in (0xf9, 0xfa):
-        # TODO
-        print("skipped interaction type", hex(mode), "@", hex(addr - 1),
-                file=sys.stderr)
+    elif mode == 0xf9:
         while read_byte(buf, bank, addr) < 0xf0:
-            addr += 1
+            param, addr = read_byte(buf, bank, addr, 1)
+
+            kind = [read_byte(buf, bank, addr),
+                    read_byte(buf, bank, addr+1),
+                    read_byte(buf, bank, addr+2)]
+            addr += 3
+
+            y, addr = read_byte(buf, bank, addr, 1)
+            x, addr = read_byte(buf, bank, addr, 1)
+
+            objects.append({
+                "address": [bank, addr - 6],
+                "mode": "object with param" if name else mode,
+                "param": param,
+                "variety": kind,
+                "coords": [y, x],
+            })
+    elif mode == 0xfa:
+        # don't know what this byte is
+        param, addr = read_byte(buf, bank, addr, 1)
+
+        while read_byte(buf, bank, addr) < 0xf0:
+            kind, addr = read_byte(buf, bank, addr, 1)
+            if name and kind in ITEM_DROPS:
+                kind = [kind, ITEM_DROPS[kind]]
+            else:
+                kind = [kind]
+
+            yx, addr = read_byte(buf, bank, addr, 1)
+            objects.append({
+                "address": [bank, addr - 2],
+                "mode": "item drop" if name else mode,
+                "param": param,
+                "variety": kind,
+                "coords": [((yx >> 4) & 0x0f) * 0x10 + 0x08,
+                           (yx & 0x0f) * 0x10 + 0x08],
+            })
     elif mode == 0xfe:
         # end data at pointer
         addr += 1
@@ -482,9 +563,9 @@ def read_interaction(buf, bank, addr, name=True):
     return objects, addr
 
 
-def read_chest(buf, group, room):
+def read_chest(buf, game, group, room):
     # read initial pointer
-    bank, addr = CHEST_PTR_TABLE
+    bank, addr = get_table(CHEST_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2)
 
     # loop through group chests until marker 0xff is reached.
@@ -507,8 +588,8 @@ def read_chest(buf, group, room):
     return None
 
 
-def get_chests(buf, group):
-    bank, addr = CHEST_PTR_TABLE
+def get_chests(buf, game, group):
+    bank, addr = get_table(CHEST_PTR_TABLE, game)
     addr = read_ptr(buf, bank, addr + group * 2)
 
     # loop through group chests until marker 0xff is reached
@@ -522,7 +603,7 @@ def get_chests(buf, group):
         chests.append({
             "address": [bank, addr+2],
             "location": [group, room],
-            "music": read_music(rom, group, room, name=False),
+            "music": read_music(rom, game, group, room, name=False),
             "treasure": list(lookup_entry(TREASURES,
                     treasure_id, treasure_subid))
         })
@@ -532,18 +613,22 @@ def get_chests(buf, group):
     return chests
 
 
-def search_objects(rom, mode, obj_id=None, obj_subid=None):
+def search_objects(rom, game, mode, obj_id=None, obj_subid=None):
     # read all interactions in all rooms in all groups, and collate the
     # accumulated objects that match the given ID.
     objects = []
     for group in range(6):
-        bank, addr = OBJECT_PTR_TABLE
+        bank, addr = get_table(OBJECT_PTR_TABLE, game)
         addr = read_ptr(rom, bank, addr + group * 2)
 
         # loop through rooms until the high byte is fxxx, which means that the
         # interaction pointers have ended and the interaction data has started
         for room in range(0x100):
+            if game == AGES:
+                bank = OBJECT_PTR_TABLE[0][AGES]
             room_addr = read_ptr(rom, bank, addr + room * 2)
+            if game == AGES:
+                bank = 0x12
 
             # read objects (recursively if more pointers are involved)
             room_objects = []
@@ -558,7 +643,7 @@ def search_objects(rom, mode, obj_id=None, obj_subid=None):
                         if obj_subid is None or obj["variety"][1] == obj_subid:
                             full_obj = {
                                 "location": [group, room],
-                                "music": read_music(rom, group, room),
+                                "music": read_music(rom, game, group, room),
                             }
                             full_obj.update(obj)
                             objects.append(full_obj)
@@ -568,14 +653,27 @@ def search_objects(rom, mode, obj_id=None, obj_subid=None):
     return objects
 
 
-def get_treasure(rom, treasure_id, treasure_subid):
-    bank, addr = TREASURE_PTR_TABLE
+def get_sprite(rom, game, sprite_id):
+    bank, addr = get_table(SPRITE_PTR_TABLE, game)
+    addr += 0x60 * 3
+    offset = full_addr(bank, addr)
+    addr = rom[offset+1] * 0x100 + rom[offset-1]
+    addr += sprite_id * 3
+    offset = full_addr(bank, addr)
+    return [addr] + list(rom[offset:offset+3])
+
+
+def get_treasure(rom, game, treasure_id, treasure_subid):
+    bank, addr = get_table(TREASURE_PTR_TABLE, game)
     addr += treasure_id * 4
     if rom[full_addr(bank, addr)] & 0x80:
         addr = read_ptr(rom, bank, addr + 1)
     addr += treasure_subid * 4
     offset = full_addr(bank, addr)
-    return [addr] + list(rom[offset:offset+4])
+    return {
+        "data": [addr] + list(rom[offset:offset+4]),
+        "gfx": get_sprite(rom, game, rom[offset+3]),
+    }
 
 
 def name_objects(objects):
@@ -591,10 +689,22 @@ def name_objects(objects):
                     *obj["variety"]))
         elif obj["mode"] == "part":
             obj["variety"] = list(lookup_entry(PARTS, *obj["variety"]))
+        elif obj["mode"] == "item drop":
+            if obj["variety"][0] in ITEM_DROPS:
+                obj["variety"].append(ITEM_DROPS[obj["variety"][0]])
 
+
+SEASONS, AGES = 0, 1
 
 with open(args.romfile, "rb") as f:
     rom = f.read()
+    if rom[0x134:0x13d].decode('ascii') == "ZELDA DIN":
+        game = SEASONS
+    elif rom[0x134:0x13f].decode('ascii') == "ZELDA NAYRU":
+        game = AGES
+    else:
+        fatal("unknown ROM: " + rom[0x134:0x143].decode('ascii'))
+
 
 if args.action == "getroom":
     if len(args.args) != 2:
@@ -606,9 +716,9 @@ if args.action == "getroom":
     room_data = {
         "group": group,
         "room": room,
-        "music": read_music(rom, group, room),
-        "objects": read_objects(rom, group, room),
-        "chest": read_chest(rom, group, room),
+        "music": read_music(rom, game, group, room),
+        "objects": read_objects(rom, game, group, room),
+        "chest": read_chest(rom, game, group, room),
     }
 
     yaml.dump(room_data, sys.stdout)
@@ -616,15 +726,15 @@ elif args.action == "searchchests":
     if len(args.args) == 0: # all groups
         chests = []
         for group in range(8):
-            chests += get_chests(rom, group)
+            chests += get_chests(rom, game, group)
     elif len(args.args) == 1: # specific group
         group = int(args.args[0], 16)
-        chests = get_chests(rom, group)
+        chests = get_chests(rom, game, group)
     elif len(args.args) == 2: # specific group and music
         group = int(args.args[0], 16)
         music = int(args.args[1], 16)
 
-        chests = get_chests(rom, group)
+        chests = get_chests(rom, game, group)
 
         # filter by music
         chests = [chest for chest in chests if chest["music"] == music]
@@ -645,7 +755,7 @@ elif args.action == "searchobjects":
     obj_id = int(args.args[1], 16)
     obj_subid = int(args.args[2], 16) if len(args.args) > 2 else None
 
-    objects = search_objects(rom, mode, obj_id, obj_subid)
+    objects = search_objects(rom, game, mode, obj_id, obj_subid)
     name_objects(objects)
 
     yaml.dump(objects, sys.stdout)
@@ -656,19 +766,19 @@ elif args.action == "treasure":
     treasure_id = int(args.args[0], 16)
     treasure_subid = int(args.args[1], 16)
 
-    treasure = get_treasure(rom, treasure_id, treasure_subid)
+    treasure = get_treasure(rom, game, treasure_id, treasure_subid)
 
     yaml.dump(treasure, sys.stdout)
 elif args.action == "keesanity":
     if len(args.args) != 1:
         fatal("keesanity expects 1 arg, got", len(args.args))
 
-    rand_enemies = search_objects(rom, 0xf6)
+    rand_enemies = search_objects(rom, game, 0xf6)
     for enemy in rand_enemies:
         addr = full_addr(*enemy["address"])
         rom = rom[:addr] + bytes([0xe0, 0x32, 0x00]) + rom[addr+3:]
 
-    specific_enemies = search_objects(rom, 0xf7)
+    specific_enemies = search_objects(rom, game, 0xf7)
     for enemy in specific_enemies:
         addr = full_addr(*enemy["address"])
         rom = rom[:addr] + bytes([0x32, 0x00]) + rom[addr+2:]
