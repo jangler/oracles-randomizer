@@ -16,6 +16,7 @@ These notes apply specifically to Ages, alongside the game-neutral ones in
   normal prize is a strange flute.
 - Past and present versions of the same mystical seed tree grow the same type
   of seed.
+- The secret shop items are not randomized.
 
 
 ## Other notable changes
