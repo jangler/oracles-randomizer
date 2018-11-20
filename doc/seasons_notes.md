@@ -66,6 +66,7 @@ Out of logic:
 - Using only mystery seeds as a weapon
 - Using only scent or gale seeds from the seed satchel as a weapon
 - Using only bombs as a weapon, except versus armos
+- Poe skip
 - Lighting the second Poe sister's torches without either pegasus seeds or
   hyper slingshot
 - Fighting Frypolar without slingshot
