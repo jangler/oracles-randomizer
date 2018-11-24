@@ -36,6 +36,7 @@ These notes apply specifically to Ages, alongside the game-neutral ones in
 - Playing the Tune of Currents triggers reentry into a return portal Link is
   standing on. This is useful if you warp into a patch of bushes without a
   bush-breaking item.
+- Ambi's palace courtyard is open from the beginning.
 
 
 ## Logic
