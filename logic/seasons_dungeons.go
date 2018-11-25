@@ -119,7 +119,8 @@ var seasonsD4Nodes = map[string]*Node{
 
 	// B1F
 	"enter gohma": And("d4 basement stairs", "d4 boss key",
-		Or("ember slingshot", Hard("mystery slingshot"), "jump 3")),
+		Or("ember slingshot", Hard("mystery slingshot"), "jump 3",
+			HardAnd("jump 2", Or("ember seeds", "mystery seeds")))),
 	"d4 essence": AndStep("enter gohma", "kill gohma"),
 
 	// fixed items
@@ -150,8 +151,9 @@ var seasonsD5Nodes = map[string]*Node{
 		Or("flippers", "jump 6", Hard("jump 4")), "d5 5 keys"),
 	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 terrace chest": AndSlot("enter d5", Or("magnet gloves",
-		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel")), "bombs"))),
-	"d5 spiral chest": AndSlot("enter d5", "kill moldorm", "kill iron mask"),
+		And("d5 cart bay", "jump 2", "bombs"))),
+	"d5 spiral chest": AndSlot("enter d5", Or("shield",
+		And("kill moldorm", "kill iron mask"))),
 	"d5 armos chest": And("d5 terrace chest", "kill moldorm", "kill iron mask",
 		"kill armos"),
 	"d5 spinner chest": And("d5 cart bay", Or("magnet gloves", "jump 6")),
@@ -191,8 +193,7 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 skipped chest":  And("enter d6", "magnet gloves", "break crystal"),
 	"d6 2F gibdo chest": AndSlot("d6 beamos room"),
 	"d6 2F armos chest": AndSlot("d6 2F gibdo chest", "bombs"),
-	"d6 escape room": AndSlot("d6 torch stairs",
-		"pegasus satchel", "jump 2"),
+	"d6 escape room":    AndSlot("d6 torch stairs", "jump 2"),
 
 	// 3F
 	"d6 armos hall": AndSlot("d6 2F armos chest"),

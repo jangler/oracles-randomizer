@@ -91,9 +91,13 @@ var agesD3Nodes = map[string]*Node{
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
 		"any seed shooter"),
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
-	"d3 essence": AndStep("d3 boss key", "d3 armos key", "d3 compass key",
-		"d3 block key", Or("ember seeds", "scent seeds"),
-		Or("seed shooter", HardAnd("feather", "boomerang", "satchel"))),
+	"d3 all keys": And("d3 boss key", "d3 armos key", "d3 compass key",
+		"d3 block key"),
+	"d3 essence": AndStep(
+		Or("d3 all keys", And("d3 block key", Or("jump 3", Hard("feather")))),
+		Or("ember seeds", "scent seeds"),
+		Or("seed shooter", And("boomerang", Or("ember seeds", Hard()),
+			Or("jump 3", Hard("feather"))))),
 }
 
 var agesD4Nodes = map[string]*Node{
@@ -110,9 +114,9 @@ var agesD4Nodes = map[string]*Node{
 		Or("any seed shooter", HardAnd("jump 3", "boomerang"))),
 	"d4 minecart C": And("d4 minecart B", "d4 key C"),
 	"d4 minecart D": And("d4 minecart C", "d4 key D"),
+	// these weapons are for the miniboss, not the moldorms
 	"d4 small floor puzzle": AndSlot("d4 minecart D", "bombs",
-		Or("sword", "switch hook", "scent shooter",
-			HardOr("scent satchel", "bombs"))),
+		Or("sword", "switch hook", "scent shooter", Hard())),
 	"d4 key chest E":    And("d4 minecart D", "switch hook"),
 	"d4 lava pot chest": AndSlot("d4 key chest E", "d4 key E"),
 	"d4 essence": AndStep("d4 key chest E", "d4 boss key",
