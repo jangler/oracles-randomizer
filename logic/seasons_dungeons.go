@@ -175,8 +175,6 @@ var seasonsD5Nodes = map[string]*Node{
 		"d5 key E"),
 }
 
-// all the rupee chests in this dungeon are trivial, so i'm ignoring which is
-// which and just labeling them by letter.
 var seasonsD6Nodes = map[string]*Node{
 	// 1F
 	"d6 1F east":    AndSlot("enter d6"),
