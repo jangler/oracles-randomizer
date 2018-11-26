@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/jangler/oos-randomizer/graph"
-	"github.com/jangler/oos-randomizer/logic"
+	"github.com/jangler/oracles-randomizer/graph"
+	"github.com/jangler/oracles-randomizer/logic"
 )
 
 // getChecks converts a route info into a slice of checks.
