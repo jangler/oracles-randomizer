@@ -64,13 +64,11 @@ var holodrumNodes = map[string]*Node{
 	"shovel gift": AndSlot("moblin road",
 		Or("woods of winter default winter", "winter")),
 	"central woods of winter": And("fairy fountain", Or(
-		"shovel", "jump 2", "flute", "spring", "summer", "autumn", And(
-			Or("flippers", "jump 2", "ricky's flute", "dimitri's flute",
-				And("sunken city", Or("eastern suburbs default spring",
-					"spring", "gale satchel")), Or(
-					"eastern suburbs default spring",
-					"eastern suburbs default summer",
-					"eastern suburbs default autumn"))))),
+		"shovel", "jump 2", "flute", "spring", "summer", "autumn",
+		And("flippers", Or(
+			"eastern suburbs default spring",
+			"eastern suburbs default summer",
+			"eastern suburbs default autumn")))),
 	"mystery tree": AndSlot("central woods of winter",
 		"seed item", Or("harvest tree", "dimitri's flute")),
 	"enter d2 A": And("central woods of winter", Or("remove bush", "flute")),

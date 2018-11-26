@@ -194,7 +194,7 @@ func testAgesGraph(t *testing.T) {
 			"island chart":       "balloon guy's gift",
 			"scent seedling":     "wild tokay game",
 			"scent tree seeds":   "crescent island tree",
-			"seed shooter":       "d3 pols voice chest", // vanilla unsafe
+			"seed shooter":       "d3 pols voice chest",
 			"moosh's flute":      "shop, 150 rupees",
 			"tuni nut":           "symmetry city brother",
 			"harp 2":             "tokkey's composition",

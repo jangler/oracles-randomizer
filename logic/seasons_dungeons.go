@@ -183,7 +183,7 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 rupee room": And("enter d6", "bombs"),
 	"d6 magkey room": And("enter d6",
 		Or(And("magnet gloves", "jump 2"), "jump 4")),
-	"d6 beamos room":       AndSlot("enter d6", "d6 3 keys"), // min. 1 key
+	"d6 beamos room":       AndSlot("enter d6", "d6 key A", "d6 key C"),
 	"d6 1F terrace":        AndSlot("enter d6"),
 	"d6 crystal trap room": AndSlot("enter d6"),
 	"d6 U-room":            And("enter d6", "break crystal", "boomerang L-2"),

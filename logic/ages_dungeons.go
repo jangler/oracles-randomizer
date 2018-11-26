@@ -67,13 +67,11 @@ var agesD3Nodes = map[string]*Node{
 	// you can clip into the blocks enough to hit this crystal with switch hook
 	"d3 N crystal": And("d3 statue key",
 		Or("any seed shooter", "boomerang", Hard("switch hook"))),
-	"d3 armos key": And("d3 statue key"),
-	"d3 bush beetle room": AndSlot("d3 armos key", "d3 compass key",
-		"d3 block key"), // technically only need two maximum, one minimum
-	"d3 W crystal":   And("d3 statue key"),
-	"d3 compass key": And("d3 statue key"),
-	"d3 mimic room": AndSlot("d3 armos key", "d3 compass key",
-		"d3 block key"),
+	"d3 armos key":        And("d3 statue key"),
+	"d3 bush beetle room": AndSlot("d3 armos key"),
+	"d3 W crystal":        And("d3 statue key"),
+	"d3 compass key":      And("d3 statue key"),
+	"d3 mimic room":       AndSlot("d3 armos key", "d3 compass key"),
 
 	"break crystal switch": Or("sword", "switch hook", "boomerang",
 		"ember satchel", "scent satchel", "mystery satchel",
@@ -91,13 +89,13 @@ var agesD3Nodes = map[string]*Node{
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
 		"any seed shooter"),
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
-	"d3 all keys": And("d3 boss key", "d3 armos key", "d3 compass key",
-		"d3 block key"),
-	"d3 essence": AndStep(
-		Or("d3 all keys", And("d3 block key", Or("jump 3", Hard("feather")))),
+	"d3 all keys":  And("d3 armos key", "d3 compass key", "d3 block key"),
+	"d3 essence": AndStep("d3 boss key", "d3 all keys",
 		Or("ember seeds", "scent seeds"),
-		Or("seed shooter", And("boomerang", Or("ember seeds", Hard()),
-			Or("jump 3", Hard("feather"))))),
+		Or("seed shooter", And(
+			Or("ember seeds", Hard()),
+			Or("boomerang", Hard("jump 3"),
+				HardAnd("feather", "sword", "switch hook"))))),
 }
 
 var agesD4Nodes = map[string]*Node{
@@ -107,9 +105,9 @@ var agesD4Nodes = map[string]*Node{
 	"d4 minecart A":  And("enter d4", "feather", "d4 key A"),
 	"d4 key chest B": And("d4 minecart A",
 		Or("any seed shooter", Hard("boomerang"))),
-	"d4 minecart chest": AndSlot("d4 minecart A", "hit lever"),
-	"d4 minecart B": And("d4 minecart A", "hit lever", "d4 key B", "bracelet",
-		"kill stalfos"),
+	"d4 minecart chest": AndSlot("d4 minecart A", Or("hit lever", "shovel")),
+	"d4 minecart B": And("d4 minecart A", Or("hit lever", "shovel"),
+		"d4 key B", "bracelet", "kill stalfos"),
 	"d4 key chest C": And("d4 minecart B",
 		Or("any seed shooter", HardAnd("jump 3", "boomerang"))),
 	"d4 minecart C": And("d4 minecart B", "d4 key C"),
