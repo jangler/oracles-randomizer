@@ -137,7 +137,7 @@ func initAgesEOB() {
 	// set flags to skip opening and a bunch of other things. see
 	// doc/technical.md for a dictionary of the flags.
 	initialGlobalFlags := r.appendToBank(0x03, "initial global flags",
-		"\x3d\x0a\x23\x2b\x40\x41\x43\xff")
+		"\x3d\x0a\x20\x23\x2b\x40\x41\x43\xff")
 	skipOpening := r.appendToBank(0x03, "skip opening",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xf9\x31\xe1\x18\xf4"+ // init global flags

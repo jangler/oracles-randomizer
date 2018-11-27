@@ -149,10 +149,6 @@ var agesFixedMutables = map[string]Mutable{
 	// and get rid of the intangible guard standing outside
 	"remove intangible guard": MutableByte(Addr{0x09, 0x5152}, 0xc2, 0xc3),
 
-	// don't require talking to queen fairy before getting book of seals
-	"skip library flag check": MutableString(Addr{0x15, 0x5da6},
-		"\xb5\x20\xac\x5d", "\xc4\xac\x5d\x00"),
-
 	// remove special interaction from caves in sea of storms so that the
 	// chests can be normal chests
 	"normalize sea of storms chests": MutableStrings(
