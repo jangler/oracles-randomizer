@@ -71,7 +71,7 @@ var labrynnaNodes = map[string]*Node{
 	"deku forest":           Or("bracelet", "ages"),
 	"deku forest cave east": AndSlot("deku forest"),
 	"deku forest cave west": AndSlot("deku forest", "bracelet",
-		Or("feather", "switch hook", "ember seeds", "ages")),
+		Or("feather", "switch hook", "ember seeds", "ages", "gale satchel")),
 	"deku forest tree": AndSlot("deku forest", "sword", "seed item",
 		Or("ember seeds", "ages", "switch hook", "gale satchel",
 			Hard("feather"))),
