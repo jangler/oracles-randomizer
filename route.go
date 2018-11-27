@@ -142,7 +142,7 @@ const (
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
 func findRoute(game int, seed uint32, hard, verbose bool,
-	logChan chan string, doneChan chan int) *RouteInfo {
+	logf logFunc) *RouteInfo {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
@@ -158,15 +158,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 	var src *rand.Rand
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
-		// abort if route was already found on another thread
-		select {
-		case <-doneChan:
-			return nil
-		default:
-		}
-
 		src = rand.New(rand.NewSource(int64(ri.Seed)))
-		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
+		logf("trying seed %08x", ri.Seed)
 
 		r := NewRoute(game)
 		ri.Companion = rollAnimalCompanion(src, r, game)
@@ -187,9 +180,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		success := true
 		for done.GetMark(done, hard) != graph.MarkTrue {
 			if verbose {
-				logChan <- fmt.Sprintf("searching; have %d more slots",
-					slotList.Len())
-				logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
+				logf("searching; have %d more slots", slotList.Len())
+				logf("%d/%d iterations", i, maxIterations)
 			}
 
 			eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
@@ -221,7 +213,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 			if i > maxIterations {
 				success = false
 				if verbose {
-					logChan <- "maximum iterations reached"
+					logf("maximum iterations reached")
 				}
 				break
 			}
@@ -231,9 +223,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 			// fill unused slots
 			for slotList.Len() > 0 {
 				if verbose {
-					logChan <- fmt.Sprintf("done; filling %d more slots",
-						slotList.Len())
-					logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
+					logf("done; filling %d more slots", slotList.Len())
+					logf("%d/%d iterations", i, maxIterations)
 				}
 
 				eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
@@ -262,7 +253,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 				i++
 				if i > maxIterations {
 					if verbose {
-						logChan <- "maximum iterations reached"
+						logf("maximum iterations reached")
 					}
 					break
 				}
@@ -283,8 +274,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 	}
 
 	if tries >= maxTries {
-		logChan <- fmt.Sprintf("abort; could not find route after %d tries",
-			maxTries)
+		logf("abort; could not find route after %d tries", maxTries)
 		return nil
 	}
 

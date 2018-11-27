@@ -10,19 +10,7 @@ import (
 // generate a bunch of seeds.
 func generateSeeds(n, game int, hard bool) []*RouteInfo {
 	threads := runtime.NumCPU()
-
-	// ignore messages from route searches
-	logChan := make(chan string)
-	doneChan := make(chan int)
-	go func() {
-		for {
-			select {
-			case <-logChan:
-			case <-doneChan:
-				break
-			}
-		}
-	}()
+	dummyLogf := func(string, ...interface{}) {}
 
 	// search for routes
 	routeChan := make(chan *RouteInfo)
@@ -30,8 +18,7 @@ func generateSeeds(n, game int, hard bool) []*RouteInfo {
 		go func() {
 			for i := 0; i < n/threads; i++ {
 				seed := uint32(rand.Int())
-				routeChan <- findRoute(game, seed, hard, false,
-					logChan, doneChan)
+				routeChan <- findRoute(game, seed, hard, false, dummyLogf)
 			}
 		}()
 	}
@@ -48,7 +35,7 @@ func generateSeeds(n, game int, hard bool) []*RouteInfo {
 
 // generate a bunch of seeds and print information about how often items are
 // required, and what spheres they're normally in.
-func logStats(game, trials int, hard bool, logf func(string, ...interface{})) {
+func logStats(game, trials int, hard bool, logf logFunc) {
 	routes := generateSeeds(trials, game, hard)
 
 	// aggregate data on required items

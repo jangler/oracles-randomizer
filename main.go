@@ -7,7 +7,6 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -15,6 +14,8 @@ import (
 	"github.com/jangler/oracles-randomizer/rom"
 	"github.com/jangler/oracles-randomizer/ui"
 )
+
+type logFunc func(string, ...interface{})
 
 // gameName returns the short name associated with a game number.
 func gameName(game int) string {
@@ -37,7 +38,7 @@ func usage() {
 }
 
 // fatal prints an error to whichever UI is used.
-func fatal(err error, logf func(string, ...interface{})) {
+func fatal(err error, logf logFunc) {
 	logf("fatal: %v.", err)
 }
 
@@ -116,7 +117,7 @@ func main() {
 
 // run the main randomizer routine, printing messages via logf, which should
 // act analogously to fmt.Printf with added newline.
-func runRandomizer(useTUI bool, logf func(string, ...interface{})) {
+func runRandomizer(useTUI bool, logf logFunc) {
 	// close TUI after randomizer is done
 	defer func() {
 		if useTUI {
@@ -203,7 +204,7 @@ func runRandomizer(useTUI bool, logf func(string, ...interface{})) {
 
 // getAndLogOptions logs values of selected options, prompting for them first
 // if the TUI is used.
-func getAndLogOptions(useTUI bool, logf func(string, ...interface{})) {
+func getAndLogOptions(useTUI bool, logf logFunc) {
 	if useTUI {
 		if ui.Prompt("use specific seed? (y/n)") == 'y' {
 			flagSeed = ui.PromptSeed("enter seed: (8-digit hex number)")
@@ -241,7 +242,7 @@ func getAndLogOptions(useTUI bool, logf func(string, ...interface{})) {
 
 // attempt to write rom data to a file and print summary info.
 func writeROM(b []byte, dirName, filename, logFilename string, seed uint32,
-	sum []byte, logf func(string, ...interface{})) error {
+	sum []byte, logf logFunc) error {
 	// write file
 	f, err := os.Create(filepath.Join(dirName, filename))
 	if err != nil {
@@ -355,7 +356,7 @@ func readGivenROM(filename string) ([]byte, int, error) {
 }
 
 func randomizeFile(romData []byte, game int, dirName, outfile, seedFlag string,
-	hard, verbose bool, logf func(string, ...interface{})) error {
+	hard, verbose bool, logf logFunc) error {
 	var seed uint32
 	var sum []byte
 	var err error
@@ -402,8 +403,7 @@ func setRandomSeed(hexString string) (uint32, error) {
 
 // messes up rom data and writes it to a file.
 func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
-	hard, verbose bool,
-	logf func(string, ...interface{})) (uint32, []byte, string, error) {
+	hard, verbose bool, logf logFunc) (uint32, []byte, string, error) {
 	// sanity check beforehand
 	if errs := rom.Verify(romData, game); errs != nil {
 		if verbose {
@@ -418,68 +418,9 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	if err != nil {
 		return 0, nil, "", err
 	}
-	if seedFlag == "" {
-		seed = 0 // none specified, not an actual zero seed
-	}
 
-	// give each routine its own random source, so that they can return the
-	// seeds that they used. if a specific seed was specified, only use one
-	// thread.
-	numThreads := 1
-	if !verbose && seed == 0 {
-		numThreads = runtime.NumCPU()
-	}
-	logf("using %d thread(s).", numThreads)
-	seeds := make([]uint32, numThreads)
-	for i := 0; i < numThreads; i++ {
-		if seed == 0 {
-			randSeed := uint32(rand.Int63())
-			seeds[i] = randSeed
-		} else {
-			seeds[i] = seed
-		}
-	}
-
-	// search for route, parallelized
-	routeChan := make(chan *RouteInfo)
-	logChan := make(chan string)
-	stopLogChan := make(chan int)
-	doneChan := make(chan int)
-	for i := 0; i < numThreads; i++ {
-		go searchAsync(game, seeds[i], hard, verbose,
-			logChan, routeChan, doneChan)
-	}
-
-	// log messages from all threads
-	go func() {
-		for {
-			select {
-			case msg := <-logChan:
-				logf(msg)
-			case <-stopLogChan:
-				return
-			}
-		}
-	}()
-
-	// get return values
-	var ri *RouteInfo
-	for i := 0; i < numThreads; i++ {
-		ri = <-routeChan
-		if ri != nil {
-			break
-		}
-	}
-
-	// tell all the other routines to stop
-	stopLogChan <- 1
-	go func() {
-		for {
-			doneChan <- 1
-		}
-	}()
-
-	// didn't find any route
+	// search for route
+	ri := findRoute(game, seed, hard, verbose, logf)
 	if ri == nil {
 		return 0, nil, "", fmt.Errorf("no route found")
 	}
@@ -545,13 +486,6 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	return ri.Seed, checksum, logFilename, nil
 }
 
-// searches for a route and logs and returns a route on the given channels.
-func searchAsync(game int, seed uint32, hard, verbose bool,
-	logChan chan string, retChan chan *RouteInfo, doneChan chan int) {
-	// find a viable random route
-	retChan <- findRoute(game, seed, hard, verbose, logChan, doneChan)
-}
-
 // itemIsJunk returns true iff the item with the given name can never be
 // progression, regardless of context.
 func itemIsJunk(name string) bool {
@@ -564,8 +498,8 @@ func itemIsJunk(name string) bool {
 }
 
 // setROMData mutates the ROM data in-place based on the given route.
-func setROMData(romData []byte, game int, ri *RouteInfo,
-	logf func(string, ...interface{}), verbose bool) ([]byte, error) {
+func setROMData(romData []byte, game int, ri *RouteInfo, logf logFunc,
+	verbose bool) ([]byte, error) {
 	// place selected treasures in slots
 	checks := getChecks(ri)
 	for slot, item := range checks {
