@@ -361,21 +361,6 @@ func initSeasonsEOB() {
 	r.replaceMultiple([]Addr{{0x09, 0x4d9a}, {0x09, 0x4dad}},
 		"flute collision calls", "\xcd\xd9\x4e", "\xcd"+fluteCollisionFunc)
 
-	// if wearing dev ring, warp to animal companion if it's already in the
-	// same room when playing the flute. commented out because it's buggy and
-	// takes up precious space in bank 09.
-	/*
-		devFluteWarp := r.appendToBank(0x09, "dev ring flute func",
-			"\xd5\xfa\xc5\xc6\xfe\x40\x20\x07"+ // check dev ring
-				"\xfa\x04\xd1\xfe\x01\x28\x04"+ // check animal companion
-				"\xd1\xc3\xd9\x3a"+ // done
-				"\xcd\xc6\x3a\x20\x0c\x36\x05"+ // create poof
-				"\x11\x0a\xd0\x2e\x4a\x06\x04\xcd\x5b\x04"+ // move poof
-				"\x11\x0a\xd1\x21\x0a\xd0\x06\x04\xcd\x5b\x04"+ // move animal
-				"\x18\xde") // jump to done
-		r.replace(0x09, 0x4e2c, "dev ring flute call", "\xd9\x3a", devFluteWarp)
-	*/
-
 	// remove star ore from inventory when buying the first subrosian market
 	// item. this can't go in the gain/lose items table, since the given item
 	// doesn't necessarily have a unique ID.
