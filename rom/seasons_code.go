@@ -394,16 +394,20 @@ func initSeasonsEOB() {
 
 	// bank 0a
 
-	// set global flags and room flags that would be set during the intro.
+	// set global flags and room flags that would be set during the intro, as
+	// well as some other flags to skip cutscenes, etc.
+	initialGlobalFlags := r.appendToBank(0x0a, "initial global flags",
+		"\x0a\x1c\xff")
 	setStartingFlags := r.appendToBank(0x0a, "set starting flags",
-		"\xe5\x3e\x0a\xcd\xcd\x30"+ // global flag(s)
+		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
+			"\xe5\xcd\xcd\x30\xe1\x18\xf4\xe1"+ // init global flags
 			"\x3e\x50\xea\xa7\xc7"+ // bits 4 + 6
 			"\x3e\x60\xea\x9a\xc7"+ // bits 5 + 6
 			"\x3e\xc0\xea\x98\xc7\xea\xcb\xc7"+ // bits 6 + 7
 			"\x3e\x40\xea\xb6\xc7\xea\x2a\xc8\xea\x00\xc8"+ // bit 6
 			"\xea\x00\xc7\xea\x96\xc7\xea\x8d\xc7\xea\x60\xc7\xea\xd0\xc7"+
-			"\xea\x1d\xc7\xea\x8a\xc7"+
-			"\xe1\xc9")
+			"\xea\x1d\xc7\xea\x8a\xc7\xea\xe9\xc7\xea\x9b\xc7"+
+			"\xc9")
 	r.replace(0x0a, 0x66ed, "call set starting flags",
 		"\x1e\x78\x1a", "\xc3"+setStartingFlags)
 

@@ -149,6 +149,9 @@ var agesFixedMutables = map[string]Mutable{
 	// and get rid of the intangible guard standing outside
 	"remove intangible guard": MutableByte(Addr{0x09, 0x5152}, 0xc2, 0xc3),
 
+	// remove ralph/veran cutscene outside veran fight
+	"skip ralph at veran": MutableByte(Addr{0x12, 0x6668}, 0xf2, 0xff),
+
 	// remove special interaction from caves in sea of storms so that the
 	// chests can be normal chests
 	"normalize sea of storms chests": MutableStrings(
