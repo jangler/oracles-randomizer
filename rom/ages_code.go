@@ -137,16 +137,19 @@ func initAgesEOB() {
 	// set flags to skip opening and a bunch of other things. see
 	// doc/technical.md for a dictionary of the flags.
 	initialGlobalFlags := r.appendToBank(0x03, "initial global flags",
-		"\x3d\x0a\x20\x23\x2b\x40\x41\x43\xff")
+		"\x0a\x1d\x20\x23\x2b\x3d\x40\x41\x43\xff")
 	skipOpening := r.appendToBank(0x03, "skip opening",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xf9\x31\xe1\x18\xf4"+ // init global flags
 			"\xfa\xff\x7f\xea\x10\xc6\x3e\x03\xea\x47\xc6"+ // set animal stuff
 			"\x3e\x40\xea\x7a\xc7\xea\x6a\xc7\xea\x59\xc7"+ // room flag 6
-			"\xea\x7c\xc7\xea\x2e\xc7\xea\x97\xc8"+
+			"\xea\x7c\xc7\xea\x2e\xc7\xea\x97\xc8\xea\x3a\xc7\xea\xba\xc7"+
+			"\xea\x8d\xc7\xea\x0a\xc7\xea\xf6\xc9\xea\x5c\xc8\xea\x83\xc8"+
+			"\xea\x0f\xc8\xea\x03\xc7\xea\x90\xc7"+
 			"\x3e\x08\xea\x25\xc7\xea\x13\xc8\xea\xbd\xc9"+ // room flag 3
 			"\xea\x6e\xca"+
-			"\x3e\xc8\xea\x39\xc7\x3e\x02\xea\x6d\xca\xe1\xc9") // other rooms
+			"\x3e\xc8\xea\x39\xc7\x3e\x02\xea\x6d\xca"+ // other rooms
+			"\x3e\x01\xea\x76\xc8\xe1\xc9")
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
 
@@ -403,6 +406,13 @@ func initAgesEOB() {
 			"\xe5\x21\x38\xc7\xcb\x86\x24\xcb\xfe\x2e\x48\xcb\xc6\xe1\xc9")
 	r.replace(0x0a, 0x5541, "call save maku tree with nayru",
 		"\xcd\xf9\x31", "\xcd"+saveMakuTreeWithNayru)
+
+	// use a non-cutscene screen transition for exiting a dungeon via essence,
+	// so that overworld music plays, and set maku tree state.
+	essenceWarp := r.appendToBank(0x0a, "essence warp",
+		"\x3e\x81\xea\x4b\xcc\xc3\x53\x3e")
+	r.replace(0x0a, 0x4745, "call essence warp",
+		"\xea\x4b\xcc", "\xcd"+essenceWarp)
 
 	// set link's simulated input differently if entering the first maku treen
 	// cutscene from the right. this prevents him from being forced to move

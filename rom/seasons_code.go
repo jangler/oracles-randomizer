@@ -19,6 +19,7 @@ func newSeasonsRomBanks() *romBanks {
 	r.endOfBank[0x07] = 0x78f0
 	r.endOfBank[0x08] = 0x7fc0
 	r.endOfBank[0x09] = 0x7f4e
+	r.endOfBank[0x0a] = 0x7bea
 	r.endOfBank[0x0b] = 0x7f6d
 	r.endOfBank[0x11] = 0x7eb0
 	r.endOfBank[0x15] = 0x792d
@@ -182,14 +183,6 @@ func initSeasonsEOB() {
 			"\x79\xd1\xc1\xc9") // done
 	r.replace(0x04, 0x461e, "animal save point call",
 		"\xfa\x64\xcc", "\xcd"+animalSaveFunc)
-
-	// set room flags so that rosa never appears in the overworld, and her
-	// portal is activated by default.
-	setPortalFlags := r.appendToBank(0x04, "set portal flag func",
-		"\xe5\x21\x9a\xc7\x7e\xf6\x60\x77\x2e\xcb\x7e\xf6\xc0\x77"+ // set flags
-			"\xe1\xfa\x64\xcc\xc9") // do what the address normally does
-	r.replace(0x04, 0x45f5, "set portal flag call",
-		"\xfa\x64\xcc", "\xcd"+setPortalFlags)
 
 	// bank 05
 
@@ -391,6 +384,28 @@ func initSeasonsEOB() {
 		"\xcd\x17\x17\xfa\xbb\xc6\xc9")
 	r.replace(0x09, 0x7d93, "maku tree check item call",
 		"\x3e\x40\xcd\x17\x17", "\x3e\x0a\xcd"+makuTreeCheckItem)
+
+	// use a non-cutscene screen transition for exiting a dungeon via essence,
+	// so that overworld music plays, and set maku tree state.
+	essenceWarp := r.appendToBank(0x09, "essence warp",
+		"\x3e\x81\xea\x67\xcc\xfa\xbb\xc6\xcd\x76\x01\xea\xdf\xc6\xc9")
+	r.replace(0x09, 0x4b4f, "call essence warp",
+		"\xea\x67\xcc", "\xcd"+essenceWarp)
+
+	// bank 0a
+
+	// set global flags and room flags that would be set during the intro.
+	setStartingFlags := r.appendToBank(0x0a, "set starting flags",
+		"\xe5\x3e\x0a\xcd\xcd\x30"+ // global flag(s)
+			"\x3e\x50\xea\xa7\xc7"+ // bits 4 + 6
+			"\x3e\x60\xea\x9a\xc7"+ // bits 5 + 6
+			"\x3e\xc0\xea\x98\xc7\xea\xcb\xc7"+ // bits 6 + 7
+			"\x3e\x40\xea\xb6\xc7\xea\x2a\xc8\xea\x00\xc8"+ // bit 6
+			"\xea\x00\xc7\xea\x96\xc7\xea\x8d\xc7\xea\x60\xc7\xea\xd0\xc7"+
+			"\xea\x1d\xc7\xea\x8a\xc7"+
+			"\xe1\xc9")
+	r.replace(0x0a, 0x66ed, "call set starting flags",
+		"\x1e\x78\x1a", "\xc3"+setStartingFlags)
 
 	// bank 0b
 

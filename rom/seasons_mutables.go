@@ -6,13 +6,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// make link actionable as soon as he drops into the world.
 	"link immediately actionable": MutableString(Addr{0x05, 0x4d98},
 		"\x3e\x08\xcd\x16", "\xcd\x16\x2a\xc9"),
-	// set global flags and room flags that would be set during the intro,
-	// overwriting the initial din interaction.
-	"set intro flags": MutableString(Addr{0x0a, 0x66ed},
-		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb8\x25\xcd\xb8\x25\xcd"+
-			"\x0c\x25\xd0",
-		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6"+
-			"\x36\x40\xc9"),
 
 	// this all has to do with animals and flutes:
 	// this edits ricky's script so that he never gives his flute.

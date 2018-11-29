@@ -68,7 +68,7 @@ both games.
 - c6a5-c6a6, c6a7-c6a8 = rupees, ore chunks
 - c6b0 = obtained seasons
 - c6b5-c6b9 = seed count (ember, scent, pegasus, gale, mystery)
-- c6bb = obtained essence flags
+- c6bf/c6bb = obtained essence flags
 - c6c0-c6c4, c6cb/c6c5 = rings in box, active ring
 
 - cbb6/ = index of room under cursor in map menu
