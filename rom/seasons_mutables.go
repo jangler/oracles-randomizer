@@ -199,6 +199,11 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// bank 14
 
+	// skip the great furnace dance. for some reason command c4 (jumpalways)
+	// doesn't work here, so a jump based on c6xx is used instead.
+	"skip furnace dance": MutableString(Addr{0x14, 0x4b15},
+		"\xe4\x31\xd7\x7d\x80", "\xb3\x92\xff\x3f\xc3"),
+
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
 	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),

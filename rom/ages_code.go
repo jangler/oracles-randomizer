@@ -443,6 +443,14 @@ func initAgesEOB() {
 	r.replace(0x0b, 0x5464, "call king zora check",
 		"\xcd\xf3\x31", "\xcd"+kingZoraCheck)
 
+	// fairy queen cutscene: just fade back in after the fairy leaves the
+	// screen, and play the long "puzzle solved" sound.
+	fairyQueenFunc := r.appendToBank(0x0b, "fairy queen func",
+		"\xcd\x99\x32\xaf\xea\x02\xcc\xea\x8a\xcc\x3e\x5b\xcd\x98\x0c"+
+			"\x3e\x30\xcd\xf9\x31\xc9")
+	r.replace(0x0b, 0x7954, "call fairy queen func",
+		"\xea\x04\xcc", "\xcd"+fairyQueenFunc)
+
 	// bank 0c
 
 	// use custom script for soldier in deku forest with sub ID 0; they should

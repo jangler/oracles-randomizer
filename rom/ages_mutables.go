@@ -32,6 +32,12 @@ var agesFixedMutables = map[string]Mutable{
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
 
+	// remove tokkey cutscene
+	"skip tokkey's dance": MutableString(Addr{0x15, 0x7674},
+		"\xe4\xf0\x8b", "\xc4\x60\xc3"),
+	"skip tokkey's reinit": MutableString(Addr{0x15, 0x76d5},
+		"\xe4\xff\x8d", "\xc4\x6e\xc3"),
+
 	// never spawn hide and seek event in fairies' woods. apparently you're
 	// frozen if you enter on an animal?
 	"don't spawn fairies": MutableByte(Addr{0x0a, 0x52bf}, 0xc2, 0xc3),
@@ -200,6 +206,10 @@ var agesFixedMutables = map[string]Mutable{
 	// skip some of the maku tree's intro text (after saving her in the past)
 	"abbreviate maku tree text": MutableString(Addr{0x15, 0x7230},
 		"\x98\x48\xf6", "\xc4\x76\xc3"),
+
+	// remove maku tree cutscene after moblin keep / bomb flower cutscene
+	"remove moblin keep maku tree": MutableString(Addr{0x0c, 0x77dc},
+		"\xbd\x91\xae\xcb", "\xb1\x40\xbe\x00"),
 
 	// skip cutscene when talking to worker outside black tower
 	"skip first black tower cutscene": MutableString(Addr{0x15, 0x601f},
