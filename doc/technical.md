@@ -34,6 +34,7 @@ both games.
 	- bit 4 = has key / boss key (for compass beep)
 	- bit 5 = has chest (for map display)
 	- bit 6 = ?? if this is set, no compass beep
+- 0:326c/3144 = fadeoutToWhite
 - 0:393e = loadSmallRoomLayout
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 	- 0:3979, 0:3987 = decompressLayoutMode2, decompressLayoutMode2Helper
