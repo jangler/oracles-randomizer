@@ -347,7 +347,7 @@ func initAgesEOB() {
 			"\x79\xd6\x0a\xea\xb5\xc6\xe5\x26\xc6\xc6\x45\x6f\x36\xc3\xe1\xc9")
 	// reset maku tree to state 02 after getting the maku seed.
 	makuSeedResetState := r.appendToBank(0x09, "maku seed reset state",
-		"\x7b\xfe\x36\xc0\x3e\x01\xea\xe8\xc6\xc9")
+		"\x7b\xfe\x36\xc0\x3e\x02\xea\xe8\xc6\xc9")
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
