@@ -55,6 +55,7 @@ In logic:
   (subtract 1 tile if the jump is over water or lava instead of a pit)
 - Using only ember seeds from the seed satchel as a weapon
 - Using only ember, scent, or gale seeds from the seed shooter as a weapon
+- Using thrown objects (bushes, pots) as weapons
 - Flipping spiked beetles using the shovel
 
 Out of logic:
