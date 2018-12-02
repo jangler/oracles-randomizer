@@ -71,7 +71,8 @@ var agesD3Nodes = map[string]*Node{
 	"d3 bush beetle room": AndSlot("d3 armos key"),
 	"d3 W crystal":        And("d3 statue key"),
 	"d3 compass key":      And("d3 statue key"),
-	"d3 mimic room":       AndSlot("d3 armos key", "d3 compass key"),
+	"d3 mimic room": AndSlot("d3 armos key", "d3 compass key",
+		"kill moldorm"),
 
 	"break crystal switch": Or("sword", "switch hook", "boomerang",
 		"ember satchel", "scent satchel", "mystery satchel",
