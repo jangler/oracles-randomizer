@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jangler/oos-randomizer/rom"
+	"github.com/jangler/oracles-randomizer/rom"
 )
 
 // returns true iff p1 is a parent of p2.

@@ -119,7 +119,8 @@ var seasonsD4Nodes = map[string]*Node{
 
 	// B1F
 	"enter gohma": And("d4 basement stairs", "d4 boss key",
-		Or("ember slingshot", Hard("mystery slingshot"), "jump 3")),
+		Or("ember slingshot", Hard("mystery slingshot"), "jump 3",
+			HardAnd("jump 2", Or("ember seeds", "mystery seeds")))),
 	"d4 essence": AndStep("enter gohma", "kill gohma"),
 
 	// fixed items
@@ -150,8 +151,9 @@ var seasonsD5Nodes = map[string]*Node{
 		Or("flippers", "jump 6", Hard("jump 4")), "d5 5 keys"),
 	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 terrace chest": AndSlot("enter d5", Or("magnet gloves",
-		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel")), "bombs"))),
-	"d5 spiral chest": AndSlot("enter d5", "kill moldorm", "kill iron mask"),
+		And("d5 cart bay", "jump 2", "bombs"))),
+	"d5 spiral chest": AndSlot("enter d5", Or("shield",
+		And("kill moldorm", "kill iron mask"))),
 	"d5 armos chest": And("d5 terrace chest", "kill moldorm", "kill iron mask",
 		"kill armos"),
 	"d5 spinner chest": And("d5 cart bay", Or("magnet gloves", "jump 6")),
@@ -173,15 +175,13 @@ var seasonsD5Nodes = map[string]*Node{
 		"d5 key E"),
 }
 
-// all the rupee chests in this dungeon are trivial, so i'm ignoring which is
-// which and just labeling them by letter.
 var seasonsD6Nodes = map[string]*Node{
 	// 1F
 	"d6 1F east":    AndSlot("enter d6"),
 	"d6 rupee room": And("enter d6", "bombs"),
 	"d6 magkey room": And("enter d6",
 		Or(And("magnet gloves", "jump 2"), "jump 4")),
-	"d6 beamos room":       AndSlot("enter d6", "d6 3 keys"), // min. 1 key
+	"d6 beamos room":       AndSlot("enter d6", "d6 key A", "d6 key C"),
 	"d6 1F terrace":        AndSlot("enter d6"),
 	"d6 crystal trap room": AndSlot("enter d6"),
 	"d6 U-room":            And("enter d6", "break crystal", "boomerang L-2"),
@@ -191,8 +191,7 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 skipped chest":  And("enter d6", "magnet gloves", "break crystal"),
 	"d6 2F gibdo chest": AndSlot("d6 beamos room"),
 	"d6 2F armos chest": AndSlot("d6 2F gibdo chest", "bombs"),
-	"d6 escape room": AndSlot("d6 torch stairs",
-		"pegasus satchel", "jump 2"),
+	"d6 escape room":    AndSlot("d6 torch stairs", "jump 2"),
 
 	// 3F
 	"d6 armos hall": AndSlot("d6 2F armos chest"),

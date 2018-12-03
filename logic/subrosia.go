@@ -53,8 +53,9 @@ var subrosiaNodes = map[string]*Node{
 	"autumn tower":     AndSlot("temple", "jump 2", "bomb flower"),
 	"blue ore chest": AndSlot("hide and seek",
 		Or("jump 4", "magnet gloves")),
-	"red ore chest": AndSlot("furnace", "jump 2",
-		Or("jump 4", "magnet gloves")),
+	"red ore chest": OrSlot(
+		And("beach", "magnet gloves"),
+		And("furnace", "jump 2", Or("jump 4", "magnet gloves"))),
 	"non-rosa gasha chest": AndSlot("bridge"),
 	"rosa gasha chest":     AndSlot("beach", "ribbon", "jump 2"),
 	"subrosian market 1":   AndSlot("beach", "star ore"),

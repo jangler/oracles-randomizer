@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jangler/oos-randomizer/graph"
-	"github.com/jangler/oos-randomizer/logic"
-	"github.com/jangler/oos-randomizer/rom"
+	"github.com/jangler/oracles-randomizer/graph"
+	"github.com/jangler/oracles-randomizer/logic"
+	"github.com/jangler/oracles-randomizer/rom"
 )
 
 // give up completely if routing fails too many times

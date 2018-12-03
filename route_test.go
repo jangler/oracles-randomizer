@@ -3,14 +3,14 @@ package main
 import (
 	"testing"
 
-	"github.com/jangler/oos-randomizer/graph"
-	"github.com/jangler/oos-randomizer/logic"
-	"github.com/jangler/oos-randomizer/rom"
+	"github.com/jangler/oracles-randomizer/graph"
+	"github.com/jangler/oracles-randomizer/logic"
+	"github.com/jangler/oracles-randomizer/rom"
 )
 
 func TestGraph(t *testing.T) {
-	// testSeasonsGraph(t)
-	testAgesGraph(t)
+	testSeasonsGraph(t)
+	// testAgesGraph(t)
 }
 
 // check that graph logic is working as expected
@@ -78,6 +78,54 @@ func testSeasonsGraph(t *testing.T) {
 			"north horon default winter": "",
 			"north horon default summer": "start",
 		}, "village portal", true, true)
+
+	// make sure that all slots in the game are reachable, given vanilla
+	// progression.
+	for slotName, _ := range rom.ItemSlots {
+		r := NewRoute(rom.GameSeasons)
+		g := r.Graph
+		checkReach(t, g, map[string]string{
+			"sword 1":            "d0 sword chest",
+			"gnarled key":        "maku tree gift",
+			"bombs, 10":          "d1 railway chest",
+			"satchel 1":          "d1 basement",
+			"ember tree seeds":   "ember tree",
+			"boomerang 1":        "dance hall prize",
+			"winter":             "winter tower",
+			"shovel":             "shovel gift",
+			"mystery tree seeds": "mystery tree",
+			"bracelet":           "d2 moblin chest",
+			"ricky's flute":      "village shop 3",
+			"pegasus tree seeds": "pegasus tree",
+			"floodgate key":      "floodgate key spot",
+			"square jewel":       "square jewel chest",
+			"star ore":           "star ore spot",
+			"ribbon":             "subrosian market 1",
+			"summer":             "summer tower",
+			"feather 1":          "d3 moldorm chest", // vanilla unsafe
+			"master's plaque":    "master's plaque chest",
+			"flippers":           "diver gift",
+			"spring":             "spring tower",
+			"spring banana":      "spring banana tree",
+			"dragon key":         "dragon key spot",
+			"pyramid jewel":      "pyramid jewel spot",
+			"slingshot 1":        "d4 north of entrance", // vanilla unsafe
+			"autumn":             "autumn tower",
+			"magnet gloves":      "d5 spiral chest", // vanilla unsafe
+			"round jewel":        "round jewel gift",
+			"x-shaped jewel":     "x-shaped jewel chest",
+			"boomerang 2":        "d6 armos hall",
+			"rusty bell":         "desert pit",
+			"feather 2":          "d7 spike chest",
+			"slingshot 2":        "d8 armos chest",
+
+			// vanilla non-required
+			"member's card": "subrosian market 5",
+			"red ore":       "red ore chest",
+			"blue ore":      "blue ore chest",
+			"hard ore":      "hard ore slot",
+		}, slotName, false, true)
+	}
 }
 
 // check that graph logic is working as expected
@@ -194,7 +242,7 @@ func testAgesGraph(t *testing.T) {
 			"island chart":       "balloon guy's gift",
 			"scent seedling":     "wild tokay game",
 			"scent tree seeds":   "crescent island tree",
-			"seed shooter":       "d3 pols voice chest", // vanilla unsafe
+			"seed shooter":       "d3 pols voice chest",
 			"moosh's flute":      "shop, 150 rupees",
 			"tuni nut":           "symmetry city brother",
 			"harp 2":             "tokkey's composition",

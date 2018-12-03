@@ -22,7 +22,7 @@ var agesKillNodes = map[string]*Node{
 	"push enemy": Or("shield",
 		And("shovel", Or("boomerang", "pegasus shooter"))),
 
-	// in seasons, shovel hits levers. not in ages, apparently.
+	// unlike in seasons, shovel doesn't hit levers.
 	"hit lever": Or("sword", "ember seeds", "scent seeds", "mystery seeds",
 		"any seed shooter", "switch hook", "boomerang"),
 	"hit lever from minecart": Or("sword", "any seed shooter", "boomerang"),

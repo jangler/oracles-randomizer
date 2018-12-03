@@ -16,7 +16,7 @@ var labrynnaNodes = map[string]*Node{
 	"maku tree": OrSlot("rescue nayru",
 		And("lynna village", "shovel", "kill normal")),
 	"south lynna tree": AndSlot("lynna city", "seed item",
-		Or("sword", Hard("break bush"))),
+		Or("sword", "dimitri's flute", Hard("break bush"))),
 	"lynna city chest": OrSlot("ember seeds", "currents"),
 	"shore present": Or("flute", "ricky's gloves",
 		And("break bush", "feather"), And("lynna city", "bracelet"),
@@ -71,7 +71,7 @@ var labrynnaNodes = map[string]*Node{
 	"deku forest":           Or("bracelet", "ages"),
 	"deku forest cave east": AndSlot("deku forest"),
 	"deku forest cave west": AndSlot("deku forest", "bracelet",
-		Or("feather", "switch hook", "ember seeds", "ages")),
+		Or("feather", "switch hook", "ember seeds", "ages", "gale satchel")),
 	"deku forest tree": AndSlot("deku forest", "sword", "seed item",
 		Or("ember seeds", "ages", "switch hook", "gale satchel",
 			Hard("feather"))),
@@ -111,8 +111,10 @@ var labrynnaNodes = map[string]*Node{
 	"tokkey's composition":  AndSlot("symmetry past", "flippers"),
 	"restoration wall": Or("ages",
 		And("symmetry past", "currents", "bracelet", "flippers")),
+	// placing a block on the button allows infinite time to pit the beetles
 	"patch": And("restoration wall", Or("sword",
-		HardOr("shield", "boomerang", "switch hook", "scent seeds", "cane"))),
+		And("cane", Or("shield", "boomerang", "switch hook", "scent seeds")),
+		HardOr("shield", "boomerang", "switch hook", "scent seeds"))),
 	"talus peaks chest": OrSlot("restoration wall"),
 	"enter d4":          And("symmetry present", "tuni nut", "patch"),
 
@@ -182,8 +184,9 @@ var labrynnaNodes = map[string]*Node{
 
 	// zora village / zora seas. only accessible with tune of ages, so no
 	// distinctions between past and present are necessary.
-	"zora village":         And("mermaid suit", "ages", "switch hook"),
-	"zora village tree":    AndSlot("zora village", "sword", "seed item"),
+	"zora village": And("mermaid suit", "ages", "switch hook"),
+	"zora village tree": AndSlot("zora village", "seed item",
+		Or("sword", And("dimitri's flute", "clean seas"))),
 	"zora village present": AndSlot("zora village"),
 	"zora palace chest":    AndSlot("zora village"),
 	"zora NW cave":         AndSlot("zora village", "bombs", "power glove"),

@@ -45,11 +45,11 @@ var agesD2Nodes = map[string]*Node{
 	"d2 key 2":     And("enter d2", "d2 key 1", "bombs"),
 	"d2 color key": And("d2 basement", "feather"),
 	"d2 basement key": And("d2 basement", "feather", "bombs",
-		"hit lever from minecart"),
+		"hit lever from minecart", "kill normal"),
 	"d2 3 keys": Or(
 		And("d2 key 1",
-			Or(And("d2 key 2", Or("d2 color key", "d2 basement key"),
-				And("d2 color key", "d2 basement key")))),
+			Or(And("d2 key 2", Or("d2 color key", "d2 basement key")),
+				And("d2 color key", "d2 basement key"))),
 		And("d2 key 2", "d2 color key", "d2 basement key")),
 	"d2 statue key": And("d2 statue room", "feather"),
 	"d2 all keys": And("d2 key 1", "d2 key 2", "d2 color key",
@@ -67,13 +67,12 @@ var agesD3Nodes = map[string]*Node{
 	// you can clip into the blocks enough to hit this crystal with switch hook
 	"d3 N crystal": And("d3 statue key",
 		Or("any seed shooter", "boomerang", Hard("switch hook"))),
-	"d3 armos key": And("d3 statue key"),
-	"d3 bush beetle room": AndSlot("d3 armos key", "d3 compass key",
-		"d3 block key"), // technically only need two maximum, one minimum
-	"d3 W crystal":   And("d3 statue key"),
-	"d3 compass key": And("d3 statue key"),
+	"d3 armos key":        And("d3 statue key"),
+	"d3 bush beetle room": AndSlot("d3 armos key"),
+	"d3 W crystal":        And("d3 statue key"),
+	"d3 compass key":      And("d3 statue key"),
 	"d3 mimic room": AndSlot("d3 armos key", "d3 compass key",
-		"d3 block key"),
+		"kill moldorm"),
 
 	"break crystal switch": Or("sword", "switch hook", "boomerang",
 		"ember satchel", "scent satchel", "mystery satchel",
@@ -91,9 +90,13 @@ var agesD3Nodes = map[string]*Node{
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
 		"any seed shooter"),
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
-	"d3 essence": AndStep("d3 boss key", "d3 armos key", "d3 compass key",
-		"d3 block key", Or("ember seeds", "scent seeds"),
-		Or("seed shooter", HardAnd("feather", "boomerang", "satchel"))),
+	"d3 all keys":  And("d3 armos key", "d3 compass key", "d3 block key"),
+	"d3 essence": AndStep("d3 boss key", "d3 all keys",
+		Or("ember seeds", "scent seeds"),
+		Or("seed shooter", And(
+			Or("ember seeds", Hard()),
+			Or("boomerang", Hard("jump 3"),
+				HardAnd("feather", "sword", "switch hook"))))),
 }
 
 var agesD4Nodes = map[string]*Node{
@@ -104,15 +107,15 @@ var agesD4Nodes = map[string]*Node{
 	"d4 key chest B": And("d4 minecart A",
 		Or("any seed shooter", Hard("boomerang"))),
 	"d4 minecart chest": AndSlot("d4 minecart A", "hit lever"),
-	"d4 minecart B": And("d4 minecart A", "hit lever", "d4 key B", "bracelet",
-		"kill stalfos"),
+	"d4 minecart B": And("d4 minecart A", "hit lever",
+		"d4 key B", "bracelet", "kill stalfos"),
 	"d4 key chest C": And("d4 minecart B",
 		Or("any seed shooter", HardAnd("jump 3", "boomerang"))),
 	"d4 minecart C": And("d4 minecart B", "d4 key C"),
 	"d4 minecart D": And("d4 minecart C", "d4 key D"),
+	// these weapons are for the miniboss, not the moldorms
 	"d4 small floor puzzle": AndSlot("d4 minecart D", "bombs",
-		Or("sword", "switch hook", "scent shooter",
-			HardOr("scent satchel", "bombs"))),
+		Or("sword", "switch hook", "scent shooter", Hard())),
 	"d4 key chest E":    And("d4 minecart D", "switch hook"),
 	"d4 lava pot chest": AndSlot("d4 key chest E", "d4 key E"),
 	"d4 essence": AndStep("d4 key chest E", "d4 boss key",
@@ -260,15 +263,13 @@ var agesD7Nodes = map[string]*Node{
 	"d7 essence": AndStep("d7 boss key", "flood d7"),
 }
 
-// from jaysee87
-//
 // small keys aren't randomized, so the items alone here are enough to get the
 // required keys.
 var agesD8Nodes = map[string]*Node{
 	"d8 group A": And("enter d8", "bombs"), // only has small key
 
 	"d8 group B": And("d8 group A", "switch hook", "cane",
-		"any seed shooter", "ember seeds"), // +1 small key
+		"seed shooter", Or("ember seeds", Hard("mystery seeds"))), // +1 key
 	"d8 isolated chest": AndSlot("d8 group B"),
 
 	"d8 group C":           And("d8 group B"), // +1 small key
@@ -279,7 +280,7 @@ var agesD8Nodes = map[string]*Node{
 	"d8 group D":  And("d8 group C", "sword"), // post-miniboss
 	"d8 NW slate": And("d8 group D"),
 	"d8 SW slate": And("d8 group D", "bracelet"), // +1 small key
-	"d8 NE slate": And("d8 group D", "feather", "flippers"),
+	"d8 NE slate": And("d8 group D", "feather", "flippers", "ember seeds"),
 
 	"d8 group G":   And("d8 group D", "power glove"),
 	"d8 B3F chest": AndSlot("d8 group G"),

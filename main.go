@@ -12,8 +12,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jangler/oos-randomizer/rom"
-	"github.com/jangler/oos-randomizer/ui"
+	"github.com/jangler/oracles-randomizer/rom"
+	"github.com/jangler/oracles-randomizer/ui"
 )
 
 // gameName returns the short name associated with a game number.
