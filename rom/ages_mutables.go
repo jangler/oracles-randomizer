@@ -239,6 +239,10 @@ var agesFixedMutables = map[string]Mutable{
 	"brother ignore flag": MutableString(Addr{0x15, 0x78e5},
 		"\xb5\x29", "\xb0\x02"),
 
+	// skip a text box in the symmetry city brothers' script
+	"skip brother text": MutableString(Addr{0x15, 0x7910},
+		"\x98\x02\xbd\xf6", "\x98\x04\x79\x1c"),
+
 	// check fake ID 10 (nothing) for king zora's item
 	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x46, 0x10),
 
