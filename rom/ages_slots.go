@@ -222,4 +222,10 @@ var agesSlots = map[string]*MutableSlot{
 	"ambi's palace tree":      &MutableSlot{treasureName: "scent tree seeds"},
 	"rolling ridge east tree": &MutableSlot{treasureName: "mystery tree seeds"},
 	"deku forest tree":        &MutableSlot{treasureName: "mystery tree seeds"},
+
+	// this one's just a dummy; it'll always be shield
+	"shop, 30 rupees": &MutableSlot{
+		treasureName: "wooden shield",
+		collectMode:  collectFind2,
+	},
 }
