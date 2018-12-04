@@ -96,6 +96,14 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
+	// TODO give ages and seasons shops/shields the same names
+	if slotNode.Name == "shop, 30 rupees" && itemNode.Name != "wooden shield" {
+		return false
+	}
+	if itemNode.Name == "wooden shield" && slotNode.Name != "shop, 30 rupees" {
+		return false
+	}
+
 	// give proportionally reduced chances of roughly equivalent items
 	// appearing in the d0 sword chest.
 	if src != nil {
