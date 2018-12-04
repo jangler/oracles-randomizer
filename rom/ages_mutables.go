@@ -32,6 +32,18 @@ var agesFixedMutables = map[string]Mutable{
 	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
 		"\xc3\xe0\x23", "\xc3\xe0\x21"),
 
+	// edit out most of nayru cutscene on maku tree scene
+	"remove ralph from maku screen": MutableString(Addr{0x12, 0x7738},
+		"\x37\x04\x56\x38\x36", "\x36\x02\x48\x50\xff"),
+	"nayru cut 1":         MutableWord(Addr{0x0c, 0x56e3}, 0x91d0, 0x56e8),
+	"nayru cut 2":         MutableWord(Addr{0x0c, 0x56ea}, 0xce54, 0xf054),
+	"nayru cut 3":         MutableWord(Addr{0x15, 0x54f8}, 0x91d0, 0x5706),
+	"nayru cut 4":         MutableWord(Addr{0x0c, 0x771a}, 0x8f01, 0x773a),
+	"nayru cut 5":         MutableWord(Addr{0x0c, 0x773e}, 0xd750, 0x7762),
+	"nayru walk distance": MutableByte(Addr{0x0c, 0x5710}, 0x4c, 0x5c),
+	"nayru disable objs": MutableString(Addr{0x15, 0x54f3},
+		"\x8f\x02\xf6\xba", "\xba\x8f\x02\xf6"),
+
 	// remove tokkey cutscene
 	"skip tokkey's dance": MutableString(Addr{0x15, 0x7674},
 		"\xe4\xf0\x8b", "\xc4\x60\xc3"),
