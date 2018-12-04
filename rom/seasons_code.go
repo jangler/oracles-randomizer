@@ -324,6 +324,16 @@ func initSeasonsEOB() {
 	r.replace(0x08, 0x62f2, "star ore id call",
 		"\x2c\x36\x45", "\xcd"+starOreIDFunc)
 
+	// remove volcano cutscene.
+	rmVolcano := r.appendToBank(0x02, "remove volcano scene",
+		"\xcd\x56\x19\xcb\xf6\x11\x44\xd2\x3e\x02\x12\x21\x14\x63\xcd\xfe\x24"+
+			"\x3e\x15\xc3\xcd\x30")
+	r.replace(0x08, 0x7d07, "call remove volcano scene",
+		"\xfa\x18\xcd\xb7\xc0\xcd\x56\x19\xcb\xf6\x3e\x0b\xea\x04\xcc\xcd",
+		"\xfa\x44\xd2\xfe\x01\xc0\xcd\xd9\x3a\x21"+rmVolcano+"\xc3"+callBank2)
+	r.replace(0x08, 0x7cf5, "enable volcano exit",
+		"\xea\xab\xcc", "\x00\x00\x00")
+
 	// bank 09
 
 	// shared by maku tree and star-shaped ore.
