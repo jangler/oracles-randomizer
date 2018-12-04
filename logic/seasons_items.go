@@ -77,7 +77,7 @@ var seasonsItemNodes = map[string]*Node{
 
 	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
-	"shield L-1": Or("shop shield L-1", And("beach", "ore chunks")),
+	"shield L-1": Or("wooden shield", And("beach", "ore chunks")),
 	"shield L-2": And("shield L-1", "red ore", "blue ore"),
 
 	"sword":     Or("sword L-1", "sword L-2"),

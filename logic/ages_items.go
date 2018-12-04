@@ -7,7 +7,7 @@ var agesItemNodes = map[string]*Node{
 	"noble sword": And("sword 1", "sword 2"),
 
 	"bombs": Or(And("bombs, 10", Or("break bush", "flute", "shovel")),
-		Hard("shooting gallery")),
+		Hard("goron shooting gallery")),
 
 	"switch hook": Or("switch hook 1", "switch hook 2"),
 	"long hook":   And("switch hook 1", "switch hook 2"),

@@ -20,7 +20,7 @@ const maxTries = 50
 // adds nodes to the map based on default contents of item slots.
 func addDefaultItemNodes(nodes map[string]*logic.Node) {
 	for key, slot := range rom.ItemSlots {
-		if key != "rod gift" { // real rod is an Or, not a Root
+		if key != "temple of seasons" { // real rod is an Or, not a Root
 			nodes[rom.FindTreasureName(slot.Treasure)] = logic.Root()
 		}
 	}
@@ -466,9 +466,9 @@ func initRouteInfo(src *rand.Rand, r *Route,
 	copy(thisSeedNames, seedNames)
 	for key, slot := range rom.ItemSlots {
 		switch key {
-		case "rod gift": // don't slot vanilla, seasonless rod
+		case "temple of seasons": // don't slot vanilla, seasonless rod
 			break
-		case "tarm gale tree", "ambi's palace tree",
+		case "tarm ruins seed tree", "ambi's palace tree",
 			"rolling ridge east tree", "zora village tree":
 			// use random duplicate seed types, but only duplicate a seed type
 			// once
@@ -533,8 +533,7 @@ func countSteps(r *Route, hard bool) int {
 	reached := r.Graph.ExploreFromStart(hard)
 	count := 0
 	for node := range reached {
-		if node.IsStep && node.Name != "village shop 1" &&
-			node.Name != "village shop 2" && canAffordSlot(r, node, hard) {
+		if node.IsStep && canAffordSlot(r, node, hard) {
 			count++
 		}
 	}

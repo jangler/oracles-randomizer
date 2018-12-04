@@ -1,25 +1,22 @@
 package logic
 
 var NodeValues = map[string]int{
-	"village shop 1":  -20,
-	"village shop 2":  -30,
-	"village shop 3":  -150,
-	"member's shop 1": -300,
-	"member's shop 2": -300,
-	"member's shop 3": -200,
-
+	"shop, 20 rupees":  -20,
 	"shop, 30 rupees":  -30,
 	"shop, 150 rupees": -150,
-	"wild tokay game":  -10,
+	"member's shop 1":  -300,
+	"member's shop 2":  -300,
+	"member's shop 3":  -200,
 
-	"blaino gift": -10,
+	"blaino prize": -10,
 
-	"king zora":           -300,
-	"goron dance past":    -20,
-	"goron dance present": -10,
-	"target carts 1":      -10,
-	"target carts 2":      -10,
-	"shooting gallery":    -20,
+	"king zora":                -300,
+	"wild tokay game":          -10,
+	"goron dance, with letter": -20,
+	"goron dance present":      -10,
+	"target carts 1":           -10,
+	"target carts 2":           -10,
+	"goron shooting gallery":   -20,
 
 	"goron mountain old man":      300,
 	"western coast old man":       300,

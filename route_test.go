@@ -22,47 +22,47 @@ func testSeasonsGraph(t *testing.T) {
 	checkReach(t, g,
 		map[string]string{
 			"feather 1": "d0 sword chest",
-		}, "maku tree gift", false, false)
+		}, "maku tree", false, false)
 
 	checkReach(t, g,
 		map[string]string{
 			"sword 1": "d0 sword chest",
-		}, "maku tree gift", false, true)
+		}, "maku tree", false, true)
 
 	checkReach(t, g,
 		map[string]string{
 			"sword 1":          "d0 sword chest",
-			"ember tree seeds": "ember tree",
-			"satchel 1":        "maku tree gift",
+			"ember tree seeds": "horon village seed tree",
+			"satchel 1":        "maku tree",
 			"member's card":    "d0 rupee chest",
 		}, "member's shop 1", false, true)
 
 	checkReach(t, g,
 		map[string]string{
 			"sword 1":  "d0 sword chest",
-			"bracelet": "maku tree gift",
-		}, "floodgate key spot", false, false)
+			"bracelet": "maku tree",
+		}, "floodgate keeper's house", false, false)
 
 	checkReach(t, g,
 		map[string]string{
 			"bracelet":         "d0 sword chest",
-			"spring":           "village SW chest",
-			"flippers":         "maku tree gift",
-			"satchel 1":        "platform chest",
-			"ember tree seeds": "ember tree",
+			"spring":           "horon village SW chest",
+			"flippers":         "maku tree",
+			"satchel 1":        "natzu region, across water",
+			"ember tree seeds": "horon village seed tree",
 
 			"woods of winter default summer": "",
 			"woods of winter default winter": "start",
-		}, "shovel gift", false, false)
+		}, "holly's house", false, false)
 
 	// check normal vs hard
 	checkReach(t, g,
 		map[string]string{
 			"sword 1":            "d0 sword chest",
 			"satchel 1":          "d0 rupee chest",
-			"feather 1":          "maku tree gift",
-			"feather 2":          "village shop 3",
-			"pegasus tree seeds": "ember tree",
+			"feather 1":          "maku tree",
+			"feather 2":          "shop, 150 rupees",
+			"pegasus tree seeds": "horon village seed tree",
 
 			"north horon default winter": "",
 			"north horon default summer": "start",
@@ -71,9 +71,9 @@ func testSeasonsGraph(t *testing.T) {
 		map[string]string{
 			"sword 1":            "d0 sword chest",
 			"satchel 1":          "d0 rupee chest",
-			"feather 1":          "maku tree gift",
-			"feather 2":          "village shop 3",
-			"pegasus tree seeds": "ember tree",
+			"feather 1":          "maku tree",
+			"feather 2":          "shop, 150 rupees",
+			"pegasus tree seeds": "horon village seed tree",
 
 			"north horon default winter": "",
 			"north horon default summer": "start",
@@ -86,44 +86,44 @@ func testSeasonsGraph(t *testing.T) {
 		g := r.Graph
 		checkReach(t, g, map[string]string{
 			"sword 1":            "d0 sword chest",
-			"gnarled key":        "maku tree gift",
+			"gnarled key":        "maku tree",
 			"bombs, 10":          "d1 railway chest",
 			"satchel 1":          "d1 basement",
-			"ember tree seeds":   "ember tree",
-			"boomerang 1":        "dance hall prize",
-			"winter":             "winter tower",
-			"shovel":             "shovel gift",
-			"mystery tree seeds": "mystery tree",
+			"ember tree seeds":   "horon village seed tree",
+			"boomerang 1":        "subrosian dance hall",
+			"winter":             "tower of winter",
+			"shovel":             "holly's house",
+			"mystery tree seeds": "woods of winter seed tree",
 			"bracelet":           "d2 moblin chest",
-			"ricky's flute":      "village shop 3",
-			"pegasus tree seeds": "pegasus tree",
-			"floodgate key":      "floodgate key spot",
-			"square jewel":       "square jewel chest",
-			"star ore":           "star ore spot",
-			"ribbon":             "subrosian market 1",
-			"summer":             "summer tower",
+			"ricky's flute":      "shop, 150 rupees",
+			"pegasus tree seeds": "spool swamp seed tree",
+			"floodgate key":      "floodgate keeper's house",
+			"square jewel":       "spool swamp cave",
+			"star ore":           "subrosia seaside",
+			"ribbon":             "subrosia market, 1st item",
+			"summer":             "tower of summer",
 			"feather 1":          "d3 moldorm chest", // vanilla unsafe
-			"master's plaque":    "master's plaque chest",
-			"flippers":           "diver gift",
-			"spring":             "spring tower",
+			"master's plaque":    "master diver's challenge",
+			"flippers":           "master diver's reward",
+			"spring":             "tower of spring",
 			"spring banana":      "spring banana tree",
-			"dragon key":         "dragon key spot",
-			"pyramid jewel":      "pyramid jewel spot",
+			"dragon key":         "goron mountain, across pits",
+			"pyramid jewel":      "diving spot outside D4",
 			"slingshot 1":        "d4 north of entrance", // vanilla unsafe
-			"autumn":             "autumn tower",
+			"autumn":             "tower of autumn",
 			"magnet gloves":      "d5 spiral chest", // vanilla unsafe
-			"round jewel":        "round jewel gift",
-			"x-shaped jewel":     "x-shaped jewel chest",
+			"round jewel":        "old man in treehouse",
+			"x-shaped jewel":     "black beast's chest",
 			"boomerang 2":        "d6 armos hall",
-			"rusty bell":         "desert pit",
+			"rusty bell":         "samasa desert pit",
 			"feather 2":          "d7 spike chest",
 			"slingshot 2":        "d8 armos chest",
 
 			// vanilla non-required
-			"member's card": "subrosian market 5",
-			"red ore":       "red ore chest",
-			"blue ore":      "blue ore chest",
-			"hard ore":      "hard ore slot",
+			"member's card": "subrosia market, 5th item",
+			"red ore":       "subrosia village chest",
+			"blue ore":      "subrosian wilds chest",
+			"hard ore":      "great furnace",
 		}, slotName, false, true)
 	}
 }
@@ -206,7 +206,7 @@ func testAgesGraph(t *testing.T) {
 		"satchel 1":        "zora palace chest",
 		"ember tree seeds": "zora village tree",
 		"fairy powder":     "grave under tree",
-		"graveyard key":    "crescent seafloor cave",
+		"graveyard key":    "under crescent island",
 	}, "enter d7", false, true)
 
 	checkReach(t, g, map[string]string{
@@ -214,7 +214,7 @@ func testAgesGraph(t *testing.T) {
 		"flippers 1":    "nayru's house",
 		"flippers 2":    "black tower worker",
 		"tokay eyeball": "hidden tokay cave",
-		"feather":       "crescent seafloor cave",
+		"feather":       "under crescent island",
 		"bombs, 10":     "tokay crystal cave",
 		"bracelet 1":    "ambi's palace chest",
 		"cane":          "tokay bomb cave",
@@ -256,9 +256,9 @@ func testAgesGraph(t *testing.T) {
 			"goron vase":         "trade rock brisket",
 			"goronade":           "trade goron vase",
 			"old mermaid key":    "big bang game",
-			"lava juice":         "shooting gallery",
+			"lava juice":         "goron shooting gallery",
 			"goron letter":       "trade lava juice",
-			"mermaid key":        "goron dance past",
+			"mermaid key":        "goron dance, with letter",
 			"flippers 2":         "d6 present vire chest",
 			"harp 3":             "rescue nayru",
 			"library key":        "king zora",

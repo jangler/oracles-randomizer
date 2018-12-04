@@ -356,12 +356,12 @@ var seasonsVarMutables = map[string]Mutable{
 	"initial season": MutableWord(Addr{0x07, 0x4188}, 0x0e00, 0x2d00),
 
 	// map pop-up icons for seed trees
-	"tarm gale tree map icon":   MutableByte(Addr{0x02, 0x6c51}, 0x18, 0x18),
-	"sunken gale tree map icon": MutableByte(Addr{0x02, 0x6c54}, 0x18, 0x18),
-	"scent tree map icon":       MutableByte(Addr{0x02, 0x6c57}, 0x16, 0x16),
-	"pegasus tree map icon":     MutableByte(Addr{0x02, 0x6c5a}, 0x17, 0x17),
-	"mystery tree map icon":     MutableByte(Addr{0x02, 0x6c5d}, 0x19, 0x19),
-	"ember tree map icon":       MutableByte(Addr{0x02, 0x6c60}, 0x15, 0x15),
+	"tarm ruins seed tree map icon":      MutableByte(Addr{0x02, 0x6c51}, 0x18, 0x18),
+	"sunken city seed tree map icon":     MutableByte(Addr{0x02, 0x6c54}, 0x18, 0x18),
+	"north horon seed tree map icon":     MutableByte(Addr{0x02, 0x6c57}, 0x16, 0x16),
+	"spool swamp seed tree map icon":     MutableByte(Addr{0x02, 0x6c5a}, 0x17, 0x17),
+	"woods of winter seed tree map icon": MutableByte(Addr{0x02, 0x6c5d}, 0x19, 0x19),
+	"horon village seed tree map icon":   MutableByte(Addr{0x02, 0x6c60}, 0x15, 0x15),
 
 	// locations of sparkles on treasure map
 	"round jewel coords":    MutableByte(Addr{0x02, 0x6663}, 0xb5, 0xb5),

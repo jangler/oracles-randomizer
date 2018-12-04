@@ -31,7 +31,7 @@ var seasonsItemGfx = map[string]int{
 	"sword L-1":        0x600000,
 	"sword L-2":        0x600250,
 	"sword L-3":        0x600440,
-	"shop shield L-1":  0x600600,
+	"wooden shield":    0x600600,
 	"shield L-2":       0x600850,
 	"shield L-3":       0x600a40,
 	"feather L-1":      0x600c40,

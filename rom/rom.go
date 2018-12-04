@@ -152,14 +152,14 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 		// explicitly set these addresses and IDs after their functions
 		codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
-		ItemSlots["star ore spot"].idAddrs[0].offset = codeAddr.offset + 2
-		ItemSlots["star ore spot"].subIDAddrs[0].offset = codeAddr.offset + 5
+		ItemSlots["subrosia seaside"].idAddrs[0].offset = codeAddr.offset + 2
+		ItemSlots["subrosia seaside"].subIDAddrs[0].offset = codeAddr.offset + 5
 		codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
-		ItemSlots["hard ore slot"].idAddrs[0].offset = codeAddr.offset + 2
-		ItemSlots["hard ore slot"].subIDAddrs[0].offset = codeAddr.offset + 5
+		ItemSlots["great furnace"].idAddrs[0].offset = codeAddr.offset + 2
+		ItemSlots["great furnace"].subIDAddrs[0].offset = codeAddr.offset + 5
 		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
-		ItemSlots["diver gift"].idAddrs[0].offset = codeAddr.offset + 1
-		ItemSlots["diver gift"].subIDAddrs[0].offset = codeAddr.offset + 2
+		ItemSlots["master diver's reward"].idAddrs[0].offset = codeAddr.offset + 1
+		ItemSlots["master diver's reward"].subIDAddrs[0].offset = codeAddr.offset + 2
 	} else {
 		// explicitly set these addresses and IDs after their functions
 		mut := codeMutables["soldier script give item"].(*MutableRange)
@@ -184,9 +184,9 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 	// explicitly set these IDs after their functions are written
 	if game == GameSeasons {
-		ItemSlots["star ore spot"].Mutate(b)
-		ItemSlots["hard ore slot"].Mutate(b)
-		ItemSlots["diver gift"].Mutate(b)
+		ItemSlots["subrosia seaside"].Mutate(b)
+		ItemSlots["great furnace"].Mutate(b)
+		ItemSlots["master diver's reward"].Mutate(b)
 	} else {
 		ItemSlots["nayru's house"].Mutate(b)
 		ItemSlots["deku forest soldier"].Mutate(b)
@@ -214,26 +214,27 @@ func Verify(b []byte, game int) []error {
 		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
 			"pegasus tree seeds", "gale tree seeds":
 		// progressive items
-		case "noble sword spot", "d6 boomerang chest", "d8 HSS chest",
+		case "lost woods", "d6 boomerang chest", "d8 HSS chest",
 			"d7 cape chest", "member's shop 1", "sword 2", "boomerang 2",
 			"slingshot 2", "feather 2", "satchel 2":
 		// shop items (use sub ID instead of param, no text)
-		case "village shop 1", "village shop 2", "village shop 3",
-			"member's shop 2", "member's shop 3", "subrosian market 1",
-			"subrosian market 2", "subrosian market 5", "zero shop text":
+		case "shop, 20 rupees", "shop, 30 rupees", "shop, 150 rupees",
+			"member's shop 2", "member's shop 3", "subrosia market, 1st item",
+			"subrosia market, 2nd item", "subrosia market, 5th item",
+			"zero shop text":
 		// seasons misc.
-		case "maku tree gift", "fool's ore", "member's card", "treasure map",
-			"rod gift", "rare peach stone", "ribbon", "blaino gift",
-			"star ore spot", "hard ore slot", "iron shield gift", "diver gift",
-			"d5 basement":
+		case "maku tree", "fool's ore", "member's card", "treasure map",
+			"temple of seasons", "rare peach stone", "ribbon", "blaino prize",
+			"subrosia seaside", "great furnace", "subrosian smithy",
+			"master diver's reward", "d5 basement":
 		// ages misc.
-		case "sword 1", "nayru's house", "maku tree", "south shore dirt",
-			"target carts 1", "target carts 2", "big bang game", "harp 1",
-			"harp 2", "harp 3", "sea of storms present", "sea of storms past",
-			"starting chest", "deku forest soldier", "shop, 150 rupees",
-			"hidden tokay cave", "ridge bush cave", "graveyard poe":
+		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
+			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",
+			"sea of storms present", "sea of storms past", "starting chest",
+			"deku forest soldier", "hidden tokay cave", "ridge bush cave",
+			"graveyard poe":
 		// ages, script item using collect mode other than 0a
-		case "trade lava juice", "goron dance past", "goron elder",
+		case "trade lava juice", "goron dance, with letter", "goron elder",
 			"balloon guy's upgrade", "king zora", "d2 thwomp shelf":
 		// ages, progressive items/slots not covered elsewhere
 		case "d6 present vire chest", "d7 miniboss chest", "d8 floor puzzle",
@@ -258,7 +259,7 @@ func Verify(b []byte, game int) []error {
 func setSeedData(game int) {
 	var seedType byte
 	if game == GameSeasons {
-		seedType = ItemSlots["ember tree"].Treasure.id
+		seedType = ItemSlots["horon village seed tree"].Treasure.id
 	} else {
 		seedType = ItemSlots["south lynna tree"].Treasure.id
 	}
@@ -280,10 +281,14 @@ func setSeedData(game int) {
 			mut.New[1] = seedType
 		}
 
-		for _, name := range []string{"ember tree map icon",
-			"scent tree map icon", "mystery tree map icon",
-			"pegasus tree map icon", "sunken gale tree map icon",
-			"tarm gale tree map icon"} {
+		for _, name := range []string{
+			"horon village seed tree map icon",
+			"north horon seed tree map icon",
+			"woods of winter seed tree map icon",
+			"spool swamp seed tree map icon",
+			"sunken city seed tree map icon",
+			"tarm ruins seed tree map icon",
+		} {
 			mut := varMutables[name].(*MutableRange)
 			slotName := strings.Replace(name, " map icon", "", 1)
 			id := ItemSlots[slotName].Treasure.id
