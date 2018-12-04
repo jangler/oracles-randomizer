@@ -185,6 +185,9 @@ func initAgesEOB() {
 			"\x01\x2c\x00\x71\x06"+ // cont.
 			"\x01\x2c\x00\x72\x67"+ // cont.
 			"\x00\xa9\x00\x67\xf2"+ // portal sign on crescent island
+			"\x01\xa5\x00\x35\x48"+ // ledge by library past
+			"\x01\xa5\x00\x45\x0b"+ // cont.
+			"\x01\xa5\x00\x55\x6c"+ // cont.
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+

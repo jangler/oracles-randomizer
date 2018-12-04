@@ -263,15 +263,13 @@ var agesD7Nodes = map[string]*Node{
 	"d7 essence": AndStep("d7 boss key", "flood d7"),
 }
 
-// from jaysee87
-//
 // small keys aren't randomized, so the items alone here are enough to get the
 // required keys.
 var agesD8Nodes = map[string]*Node{
 	"d8 group A": And("enter d8", "bombs"), // only has small key
 
 	"d8 group B": And("d8 group A", "switch hook", "cane",
-		"any seed shooter", "ember seeds"), // +1 small key
+		"seed shooter", Or("ember seeds", Hard("mystery seeds"))), // +1 key
 	"d8 isolated chest": AndSlot("d8 group B"),
 
 	"d8 group C":           And("d8 group B"), // +1 small key
@@ -282,7 +280,7 @@ var agesD8Nodes = map[string]*Node{
 	"d8 group D":  And("d8 group C", "sword"), // post-miniboss
 	"d8 NW slate": And("d8 group D"),
 	"d8 SW slate": And("d8 group D", "bracelet"), // +1 small key
-	"d8 NE slate": And("d8 group D", "feather", "flippers"),
+	"d8 NE slate": And("d8 group D", "feather", "flippers", "ember seeds"),
 
 	"d8 group G":   And("d8 group D", "power glove"),
 	"d8 B3F chest": AndSlot("d8 group G"),
