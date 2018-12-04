@@ -137,19 +137,21 @@ func initAgesEOB() {
 	// set flags to skip opening and a bunch of other things. see
 	// doc/technical.md for a dictionary of the flags.
 	initialGlobalFlags := r.appendToBank(0x03, "initial global flags",
-		"\x0a\x1d\x20\x23\x2b\x33\x3d\x40\x41\x43\x45\xff")
+		"\x0a\x0c\x1d\x20\x23\x2b\x33\x3d\x40\x41\x43\x45\xff")
 	skipOpening := r.appendToBank(0x03, "skip opening",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xf9\x31\xe1\x18\xf4"+ // init global flags
 			"\xfa\xff\x7f\xea\x10\xc6\x3e\x03\xea\x47\xc6"+ // set animal stuff
+			"\x3e\x01\xea\xe8\xc6"+ // make maku tree vanish
 			"\x3e\x40\xea\x7a\xc7\xea\x6a\xc7\xea\x59\xc7"+ // room flag 6
 			"\xea\x7c\xc7\xea\x2e\xc7\xea\x97\xc8\xea\x3a\xc7\xea\xba\xc7"+
 			"\xea\x8d\xc7\xea\x0a\xc7\xea\xf6\xc9\xea\x5c\xc8\xea\x83\xc8"+
 			"\xea\x0f\xc8\xea\x03\xc7\xea\x90\xc7\xea\x7b\xc7"+
 			"\x3e\x08\xea\x25\xc7\xea\x13\xc8\xea\xbd\xc9"+ // room flag 3
 			"\xea\x6e\xca"+
+			"\x3e\x01\xea\x76\xc8\xea\x38\xc7"+ // room flag 1
 			"\x3e\xc8\xea\x39\xc7\x3e\x02\xea\x6d\xca"+ // other rooms
-			"\x3e\x01\xea\x76\xc8\xe1\xc9")
+			"\xe1\xc9")
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
 
@@ -413,18 +415,6 @@ func initAgesEOB() {
 		"\x3e\x81\xea\x4b\xcc\xc3\x53\x3e")
 	r.replace(0x0a, 0x4745, "call essence warp",
 		"\xea\x4b\xcc", "\xcd"+essenceWarp)
-
-	// set link's simulated input differently if entering the first maku treen
-	// cutscene from the right. this prevents him from being forced to move
-	// offscreen, where the script never restores player control.
-	makuTreeInput := r.appendToBank(0x0a, "maku tree input",
-		"\x2d\x00\x00\x10\x00\x20\x04\x00\x00\x20\x00\x80\x04\x00\x00"+
-			"\x30\x00\x20\x04\x00\x00\x04\x00\x40\x2d\x00\x00\xff\xff")
-	setMakuTreeInput := r.appendToBank(0x0a, "set maku tree input",
-		"\x5f\xfa\x02\xcd\xfe\x03\x7b\x20\x03\x21"+makuTreeInput+
-			"\xcd\x1d\x2a\xc9")
-	r.replace(0x0a, 0x66e0, "call set maku tree input",
-		"\xcd\x1d\x2a", "\xcd"+setMakuTreeInput)
 
 	// on left side of house, swap rafton 00 (builds raft) with rafton 01 (does
 	// trade sequence) if the player enters with the magic oar *and* global

@@ -119,6 +119,7 @@ to be ridden; i think the others are specific to each animal.
 ### seasons flags
 
 - 0a = finished intro (can open menu?)
+- 15 = volcano under temple ruins bombed
 - 1b = makes pirate skull appear in desert
 - 1c = saw twinrova cutscene outside d6
 
