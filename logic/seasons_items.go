@@ -72,13 +72,11 @@ var seasonsItemNodes = map[string]*Node{
 	"pegasus seeds": And("harvest pegasus seeds", "seed item"),
 	"gale seeds":    And("harvest gale seeds", "seed item"),
 
-	"ribbon":      And("star ore", "beach"),
 	"bomb flower": And("furnace", "jump 2", "bracelet"),
 
 	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
 	"shield L-1": Or("wooden shield", And("beach", "ore chunks")),
-	"shield L-2": And("shield L-1", "red ore", "blue ore"),
 
 	"sword":     Or("sword L-1", "sword L-2"),
 	"shield":    Or("shield L-1", "shield L-2"),
