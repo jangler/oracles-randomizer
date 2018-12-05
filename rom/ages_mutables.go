@@ -58,6 +58,8 @@ var agesFixedMutables = map[string]Mutable{
 	// make guy in front of d2 go away if you have bombs
 	"d2 guy flag check": MutableString(Addr{0x09, 0x5242},
 		"\x3e\x0b\xcd\xf3\x31\xc2", "\x3e\x03\xcd\x48\x17\xda"),
+	// and center him on a tile so you can't get stuck in a currents loop
+	"d2 guy position": MutableByte(Addr{0x12, 0x611c}, 0x4e, 0x48),
 
 	// clear rubble from rolling ridge base present without d4 essence
 	"clear rubble": MutableByte(Addr{0x04, 0x6a44}, 0xc8, 0x00),
