@@ -34,6 +34,7 @@ both games.
 	- bit 4 = has key / boss key (for compass beep)
 	- bit 5 = has chest (for map display)
 	- bit 6 = ?? if this is set, no compass beep
+- 0:326c/3144 = fadeoutToWhite
 - 0:393e = loadSmallRoomLayout
 	- 0:3958, 0:39ea, 0:39f9 = points for loading room tilemap address
 	- 0:3979, 0:3987 = decompressLayoutMode2, decompressLayoutMode2Helper
@@ -68,7 +69,7 @@ both games.
 - c6a5-c6a6, c6a7-c6a8 = rupees, ore chunks
 - c6b0 = obtained seasons
 - c6b5-c6b9 = seed count (ember, scent, pegasus, gale, mystery)
-- c6bb = obtained essence flags
+- c6bf/c6bb = obtained essence flags
 - c6c0-c6c4, c6cb/c6c5 = rings in box, active ring
 
 - cbb6/ = index of room under cursor in map menu
@@ -115,6 +116,13 @@ animal companion flags go from c646-c649/c643-c646, with the bytes being for
 ricky, dimitri, moosh, then misc. bit 7 determines whether the animal is ready
 to be ridden; i think the others are specific to each animal.
 
+### seasons flags
+
+- 0a = finished intro (can open menu?)
+- 15 = volcano under temple ruins bombed
+- 1b = makes pirate skull appear in desert
+- 1c = saw twinrova cutscene outside d6
+
 ### ages flags
 
 - 0a = finished intro (can open menu?)
@@ -147,6 +155,7 @@ to be ridden; i think the others are specific to each animal.
 - 30 = cleansed the zora seas
 - 31 = got permission from king zora to enter jabu-jabu
 - 32 = saw ralph cutscene outside ambi's palace
+- 33 = talked to nayru and impa outside black tower
 - 34 = got eyeball from captain; checked every frame on every screen
 - 35 = finished twinrova cutscene after getting maku seed
 - 36 = traded mystery seeds for feather
@@ -159,6 +168,7 @@ to be ridden; i think the others are specific to each animal.
 - 42 = checked in fairies' woods?
 - 43 = talked to cheval; triggers ralph cutscene outside
 - 44 = hit maple
+- 45 = talked to ralph outside black tower
 - 46 = got satchel upgrade from tingle
 
 

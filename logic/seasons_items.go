@@ -35,19 +35,24 @@ var seasonsItemNodes = map[string]*Node{
 	"feather L-2":   And("feather 1", "feather 2"),
 	"satchel":       Or("satchel 1", "satchel 2"),
 
+	// this of course doesn't apply to all trees, but trees won't have any
+	// seeds attached to them unless they can be harvested. so it works out.
+	"refill seeds": Or("harvest tree", "dimitri's flute", "dimitri",
+		Hard("remove bush")),
+
 	"harvest ember seeds": And("seed item", Or(
-		And("ember tree seeds", "harvest tree"), Hard("d5 armos chest"),
+		And("ember tree seeds", "refill seeds"), Hard("d5 armos chest"),
 		HardAnd("harvest bush", Or("enter agunima", "enter d7")))),
 	"harvest mystery seeds": And("seed item", Or(
-		And("mystery tree seeds", "harvest tree"),
+		And("mystery tree seeds", "refill seeds"),
 		HardAnd("d8 armos chest", "harvest bush"))),
 	"harvest scent seeds": And("scent tree seeds",
-		"seed item", "harvest tree"),
+		"seed item", "refill seeds"),
 	"harvest pegasus seeds": And("seed item", Or(
-		And("pegasus tree seeds", "harvest tree"),
+		And("pegasus tree seeds", "refill seeds"),
 		HardAnd("beach", "shield", "ore chunks", "seed item"))), // market
 	"harvest gale seeds": And("gale tree seeds",
-		"seed item", "harvest tree"),
+		"seed item", "refill seeds"),
 
 	"ember satchel":   And("harvest ember seeds", "satchel"),
 	"mystery satchel": And("harvest mystery seeds", "satchel"),
@@ -72,13 +77,11 @@ var seasonsItemNodes = map[string]*Node{
 	"pegasus seeds": And("harvest pegasus seeds", "seed item"),
 	"gale seeds":    And("harvest gale seeds", "seed item"),
 
-	"ribbon":      And("star ore", "beach"),
 	"bomb flower": And("furnace", "jump 2", "bracelet"),
 
 	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
-	"shield L-1": Or("shop shield L-1", And("beach", "ore chunks")),
-	"shield L-2": And("shield L-1", "red ore", "blue ore"),
+	"shield L-1": Or("wooden shield", And("beach", "ore chunks")),
 
 	"sword":     Or("sword L-1", "sword L-2"),
 	"shield":    Or("shield L-1", "shield L-2"),

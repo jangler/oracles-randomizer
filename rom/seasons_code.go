@@ -19,6 +19,7 @@ func newSeasonsRomBanks() *romBanks {
 	r.endOfBank[0x07] = 0x78f0
 	r.endOfBank[0x08] = 0x7fc0
 	r.endOfBank[0x09] = 0x7f4e
+	r.endOfBank[0x0a] = 0x7bea
 	r.endOfBank[0x0b] = 0x7f6d
 	r.endOfBank[0x11] = 0x7eb0
 	r.endOfBank[0x15] = 0x792d
@@ -183,14 +184,6 @@ func initSeasonsEOB() {
 	r.replace(0x04, 0x461e, "animal save point call",
 		"\xfa\x64\xcc", "\xcd"+animalSaveFunc)
 
-	// set room flags so that rosa never appears in the overworld, and her
-	// portal is activated by default.
-	setPortalFlags := r.appendToBank(0x04, "set portal flag func",
-		"\xe5\x21\x9a\xc7\x7e\xf6\x60\x77\x2e\xcb\x7e\xf6\xc0\x77"+ // set flags
-			"\xe1\xfa\x64\xcc\xc9") // do what the address normally does
-	r.replace(0x04, 0x45f5, "set portal flag call",
-		"\xfa\x64\xcc", "\xcd"+setPortalFlags)
-
 	// bank 05
 
 	// do this so that animals don't immediately stop walking on screen when
@@ -331,6 +324,16 @@ func initSeasonsEOB() {
 	r.replace(0x08, 0x62f2, "star ore id call",
 		"\x2c\x36\x45", "\xcd"+starOreIDFunc)
 
+	// remove volcano cutscene.
+	rmVolcano := r.appendToBank(0x02, "remove volcano scene",
+		"\xcd\x56\x19\xcb\xf6\x11\x44\xd2\x3e\x02\x12\x21\x14\x63\xcd\xfe\x24"+
+			"\x3e\x15\xc3\xcd\x30")
+	r.replace(0x08, 0x7d07, "call remove volcano scene",
+		"\xfa\x18\xcd\xb7\xc0\xcd\x56\x19\xcb\xf6\x3e\x0b\xea\x04\xcc\xcd",
+		"\xfa\x44\xd2\xfe\x01\xc0\xcd\xd9\x3a\x21"+rmVolcano+"\xc3"+callBank2)
+	r.replace(0x08, 0x7cf5, "enable volcano exit",
+		"\xea\xab\xcc", "\x00\x00\x00")
+
 	// bank 09
 
 	// shared by maku tree and star-shaped ore.
@@ -360,21 +363,6 @@ func initSeasonsEOB() {
 			"\x7d\xc0\xcd\x89\x20\xaf\xc9") // vanilla stuff
 	r.replaceMultiple([]Addr{{0x09, 0x4d9a}, {0x09, 0x4dad}},
 		"flute collision calls", "\xcd\xd9\x4e", "\xcd"+fluteCollisionFunc)
-
-	// if wearing dev ring, warp to animal companion if it's already in the
-	// same room when playing the flute. commented out because it's buggy and
-	// takes up precious space in bank 09.
-	/*
-		devFluteWarp := r.appendToBank(0x09, "dev ring flute func",
-			"\xd5\xfa\xc5\xc6\xfe\x40\x20\x07"+ // check dev ring
-				"\xfa\x04\xd1\xfe\x01\x28\x04"+ // check animal companion
-				"\xd1\xc3\xd9\x3a"+ // done
-				"\xcd\xc6\x3a\x20\x0c\x36\x05"+ // create poof
-				"\x11\x0a\xd0\x2e\x4a\x06\x04\xcd\x5b\x04"+ // move poof
-				"\x11\x0a\xd1\x21\x0a\xd0\x06\x04\xcd\x5b\x04"+ // move animal
-				"\x18\xde") // jump to done
-		r.replace(0x09, 0x4e2c, "dev ring flute call", "\xd9\x3a", devFluteWarp)
-	*/
 
 	// remove star ore from inventory when buying the first subrosian market
 	// item. this can't go in the gain/lose items table, since the given item
@@ -406,6 +394,33 @@ func initSeasonsEOB() {
 		"\xcd\x17\x17\xfa\xbb\xc6\xc9")
 	r.replace(0x09, 0x7d93, "maku tree check item call",
 		"\x3e\x40\xcd\x17\x17", "\x3e\x0a\xcd"+makuTreeCheckItem)
+
+	// use a non-cutscene screen transition for exiting a dungeon via essence,
+	// so that overworld music plays, and set maku tree state.
+	essenceWarp := r.appendToBank(0x09, "essence warp",
+		"\x3e\x81\xea\x67\xcc\xfa\xbb\xc6\xcd\x76\x01\xea\xdf\xc6\xc9")
+	r.replace(0x09, 0x4b4f, "call essence warp",
+		"\xea\x67\xcc", "\xcd"+essenceWarp)
+
+	// bank 0a
+
+	// set global flags and room flags that would be set during the intro, as
+	// well as some other flags to skip cutscenes, etc.
+	initialGlobalFlags := r.appendToBank(0x0a, "initial global flags",
+		"\x0a\x1c\xff")
+	setStartingFlags := r.appendToBank(0x0a, "set starting flags",
+		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
+			"\xe5\xcd\xcd\x30\xe1\x18\xf4\xe1"+ // init global flags
+			"\x3e\xff\xea\x46\xc6"+ // mark animal text as shown
+			"\x3e\x50\xea\xa7\xc7"+ // bits 4 + 6
+			"\x3e\x60\xea\x9a\xc7"+ // bits 5 + 6
+			"\x3e\xc0\xea\x98\xc7\xea\xcb\xc7"+ // bits 6 + 7
+			"\x3e\x40\xea\xb6\xc7\xea\x2a\xc8\xea\x00\xc8"+ // bit 6
+			"\xea\x00\xc7\xea\x96\xc7\xea\x8d\xc7\xea\x60\xc7\xea\xd0\xc7"+
+			"\xea\x1d\xc7\xea\x8a\xc7\xea\xe9\xc7\xea\x9b\xc7\xea\x29\xc8"+
+			"\xc9")
+	r.replace(0x0a, 0x66ed, "call set starting flags",
+		"\x1e\x78\x1a", "\xc3"+setStartingFlags)
 
 	// bank 0b
 

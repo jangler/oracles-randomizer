@@ -137,15 +137,22 @@ func initAgesEOB() {
 	// set flags to skip opening and a bunch of other things. see
 	// doc/technical.md for a dictionary of the flags.
 	initialGlobalFlags := r.appendToBank(0x03, "initial global flags",
-		"\x3d\x0a\x23\x2b\x40\x41\x43\xff")
+		"\x0a\x0c\x1d\x20\x23\x2b\x33\x3d\x40\x41\x43\x45\xff")
 	skipOpening := r.appendToBank(0x03, "skip opening",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xf9\x31\xe1\x18\xf4"+ // init global flags
 			"\xfa\xff\x7f\xea\x10\xc6\x3e\x03\xea\x47\xc6"+ // set animal stuff
-			"\x21\x7a\xc7\xcb\xf6\x2e\x6a\xcb\xf6"+ // set room flags
-			"\x2e\x59\xcb\xf6\x2e\x39\x36\xc8\x2e\x7c\xcb\xf6"+ // more
-			"\x2e\x2e\xcb\xf6\x2e\x25\xcb\xde\x21\x13\xc8\xcb\xde"+ // more
-			"\x21\x6d\xca\x36\x02\xe1\xc9") // more
+			"\x3e\xff\xea\x49\xc6"+
+			"\x3e\x01\xea\xe8\xc6"+ // make maku tree vanish
+			"\x3e\x40\xea\x7a\xc7\xea\x6a\xc7\xea\x59\xc7"+ // room flag 6
+			"\xea\x7c\xc7\xea\x2e\xc7\xea\x97\xc8\xea\x3a\xc7\xea\xba\xc7"+
+			"\xea\x8d\xc7\xea\x0a\xc7\xea\xf6\xc9\xea\x5c\xc8\xea\x83\xc8"+
+			"\xea\x0f\xc8\xea\x03\xc7\xea\x90\xc7\xea\x7b\xc7"+
+			"\x3e\x08\xea\x25\xc7\xea\x13\xc8\xea\xbd\xc9"+ // room flag 3
+			"\xea\x6e\xca"+
+			"\x3e\x01\xea\x76\xc8\xea\x38\xc7"+ // room flag 1
+			"\x3e\xc8\xea\x39\xc7\x3e\x02\xea\x6d\xca"+ // other rooms
+			"\xe1\xc9")
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
 
@@ -165,10 +172,8 @@ func initAgesEOB() {
 			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
 			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\x01\x13\x00\x61\xd7"+ // portal in symmetry city past
-			"\x04\xbd\x00\x50\xa0"+ // remove key door in D5
-			"\x04\xa6\x80\x54\x1e"+ // add key block in room below
-			"\x05\x6e\x00\x50\xa0"+ // remove blue button key door in D7
-			"\x05\x5a\x80\x66\x1e"+ // add key block on floor below
+			"\x04\xa6\x80\x54\x1e"+ // add key block after removed D5 key door
+			"\x05\x5a\x80\x66\x1e"+ // add key block before removed D7 key door
 			"\x00\x25\x00\x37\xd7"+ // portal in nuun highlands
 			"\x05\xda\x01\xa4\xb2"+ // tunnel to moblin keep
 			"\x05\xda\x01\xa5\xb2"+ // cont.
@@ -348,7 +353,7 @@ func initAgesEOB() {
 			"\x79\xd6\x0a\xea\xb5\xc6\xe5\x26\xc6\xc6\x45\x6f\x36\xc3\xe1\xc9")
 	// reset maku tree to state 02 after getting the maku seed.
 	makuSeedResetState := r.appendToBank(0x09, "maku seed reset state",
-		"\x7b\xfe\x36\xc0\x3e\x01\xea\xe8\xc6\xc9")
+		"\x7b\xfe\x36\xc0\x3e\x02\xea\xe8\xc6\xc9")
 	// this function checks all the above conditions when collecting an item.
 	handleGetItem := r.appendToBank(0x09, "handle get item",
 		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
@@ -408,17 +413,12 @@ func initAgesEOB() {
 	r.replace(0x0a, 0x5541, "call save maku tree with nayru",
 		"\xcd\xf9\x31", "\xcd"+saveMakuTreeWithNayru)
 
-	// set link's simulated input differently if entering the first maku treen
-	// cutscene from the right. this prevents him from being forced to move
-	// offscreen, where the script never restores player control.
-	makuTreeInput := r.appendToBank(0x0a, "maku tree input",
-		"\x2d\x00\x00\x10\x00\x20\x04\x00\x00\x20\x00\x80\x04\x00\x00"+
-			"\x30\x00\x20\x04\x00\x00\x04\x00\x40\x2d\x00\x00\xff\xff")
-	setMakuTreeInput := r.appendToBank(0x0a, "set maku tree input",
-		"\x5f\xfa\x02\xcd\xfe\x03\x7b\x20\x03\x21"+makuTreeInput+
-			"\xcd\x1d\x2a\xc9")
-	r.replace(0x0a, 0x66e0, "call set maku tree input",
-		"\xcd\x1d\x2a", "\xcd"+setMakuTreeInput)
+	// use a non-cutscene screen transition for exiting a dungeon via essence,
+	// so that overworld music plays, and set maku tree state.
+	essenceWarp := r.appendToBank(0x0a, "essence warp",
+		"\x3e\x81\xea\x4b\xcc\xc3\x53\x3e")
+	r.replace(0x0a, 0x4745, "call essence warp",
+		"\xea\x4b\xcc", "\xcd"+essenceWarp)
 
 	// on left side of house, swap rafton 00 (builds raft) with rafton 01 (does
 	// trade sequence) if the player enters with the magic oar *and* global
@@ -436,6 +436,14 @@ func initAgesEOB() {
 		"\xcd\xf3\x31\xc8\x3e\x10\xcd\x48\x17\x3e\x00\xd0\x3c\xc9")
 	r.replace(0x0b, 0x5464, "call king zora check",
 		"\xcd\xf3\x31", "\xcd"+kingZoraCheck)
+
+	// fairy queen cutscene: just fade back in after the fairy leaves the
+	// screen, and play the long "puzzle solved" sound.
+	fairyQueenFunc := r.appendToBank(0x0b, "fairy queen func",
+		"\xcd\x99\x32\xaf\xea\x02\xcc\xea\x8a\xcc\x3e\x5b\xcd\x98\x0c"+
+			"\x3e\x30\xcd\xf9\x31\xc9")
+	r.replace(0x0b, 0x7954, "call fairy queen func",
+		"\xea\x04\xcc", "\xcd"+fairyQueenFunc)
 
 	// bank 0c
 

@@ -20,7 +20,7 @@ const maxTries = 50
 // adds nodes to the map based on default contents of item slots.
 func addDefaultItemNodes(nodes map[string]*logic.Node) {
 	for key, slot := range rom.ItemSlots {
-		if key != "rod gift" { // real rod is an Or, not a Root
+		if key != "temple of seasons" { // real rod is an Or, not a Root
 			nodes[rom.FindTreasureName(slot.Treasure)] = logic.Root()
 		}
 	}
@@ -142,7 +142,7 @@ const (
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
 func findRoute(game int, seed uint32, hard, verbose bool,
-	logChan chan string, doneChan chan int) *RouteInfo {
+	logf logFunc) *RouteInfo {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
@@ -158,15 +158,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 	var src *rand.Rand
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
-		// abort if route was already found on another thread
-		select {
-		case <-doneChan:
-			return nil
-		default:
-		}
-
 		src = rand.New(rand.NewSource(int64(ri.Seed)))
-		logChan <- fmt.Sprintf("trying seed %08x", ri.Seed)
+		logf("trying seed %08x", ri.Seed)
 
 		r := NewRoute(game)
 		ri.Companion = rollAnimalCompanion(src, r, game)
@@ -187,9 +180,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		success := true
 		for done.GetMark(done, hard) != graph.MarkTrue {
 			if verbose {
-				logChan <- fmt.Sprintf("searching; have %d more slots",
-					slotList.Len())
-				logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
+				logf("searching; have %d more slots", slotList.Len())
+				logf("%d/%d iterations", i, maxIterations)
 			}
 
 			eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
@@ -221,7 +213,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 			if i > maxIterations {
 				success = false
 				if verbose {
-					logChan <- "maximum iterations reached"
+					logf("maximum iterations reached")
 				}
 				break
 			}
@@ -231,9 +223,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 			// fill unused slots
 			for slotList.Len() > 0 {
 				if verbose {
-					logChan <- fmt.Sprintf("done; filling %d more slots",
-						slotList.Len())
-					logChan <- fmt.Sprintf("%d/%d iterations", i, maxIterations)
+					logf("done; filling %d more slots", slotList.Len())
+					logf("%d/%d iterations", i, maxIterations)
 				}
 
 				eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
@@ -262,7 +253,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 				i++
 				if i > maxIterations {
 					if verbose {
-						logChan <- "maximum iterations reached"
+						logf("maximum iterations reached")
 					}
 					break
 				}
@@ -283,8 +274,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 	}
 
 	if tries >= maxTries {
-		logChan <- fmt.Sprintf("abort; could not find route after %d tries",
-			maxTries)
+		logf("abort; could not find route after %d tries", maxTries)
 		return nil
 	}
 
@@ -476,9 +466,9 @@ func initRouteInfo(src *rand.Rand, r *Route,
 	copy(thisSeedNames, seedNames)
 	for key, slot := range rom.ItemSlots {
 		switch key {
-		case "rod gift": // don't slot vanilla, seasonless rod
+		case "temple of seasons": // don't slot vanilla, seasonless rod
 			break
-		case "tarm gale tree", "ambi's palace tree",
+		case "tarm ruins seed tree", "ambi's palace tree",
 			"rolling ridge east tree", "zora village tree":
 			// use random duplicate seed types, but only duplicate a seed type
 			// once
@@ -543,8 +533,7 @@ func countSteps(r *Route, hard bool) int {
 	reached := r.Graph.ExploreFromStart(hard)
 	count := 0
 	for node := range reached {
-		if node.IsStep && node.Name != "village shop 1" &&
-			node.Name != "village shop 2" && canAffordSlot(r, node, hard) {
+		if node.IsStep && canAffordSlot(r, node, hard) {
 			count++
 		}
 	}

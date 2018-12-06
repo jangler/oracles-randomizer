@@ -86,13 +86,13 @@ func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
 // for softlocks or the availability of the slot and item.
 func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// dummy shop slots 1 and 2 can only hold their vanilla items.
-	if slotNode.Name == "village shop 1" && itemNode.Name != "bombs, 10" {
+	if slotNode.Name == "shop, 20 rupees" && itemNode.Name != "bombs, 10" {
 		return false
 	}
-	if slotNode.Name == "village shop 2" && itemNode.Name != "shop shield L-1" {
+	if slotNode.Name == "shop, 30 rupees" && itemNode.Name != "wooden shield" {
 		return false
 	}
-	if itemNode.Name == "shop shield L-1" && slotNode.Name != "village shop 2" {
+	if itemNode.Name == "wooden shield" && slotNode.Name != "shop, 30 rupees" {
 		return false
 	}
 
@@ -118,7 +118,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	}
 
 	// rod of seasons has special graphics something
-	if slotNode.Name == "rod gift" && !rom.CanSlotAsRod(itemNode.Name) {
+	if slotNode.Name == "temple of seasons" &&
+		!rom.CanSlotAsRod(itemNode.Name) {
 		return false
 	}
 
@@ -145,11 +146,12 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 
 func slotIsSeedTree(name string) bool {
 	switch name {
-	case "ember tree", "mystery tree", "scent tree",
-		"pegasus tree", "sunken gale tree", "tarm gale tree",
-		"south lynna tree", "deku forest tree", "crescent island tree",
-		"symmetry city tree", "rolling ridge west tree",
-		"rolling ridge east tree", "ambi's palace tree", "zora village tree":
+	case "horon village seed tree", "woods of winter seed tree",
+		"north horon seed tree", "spool swamp seed tree",
+		"sunken city seed tree", "tarm ruins seed tree", "south lynna tree",
+		"deku forest tree", "crescent island tree", "symmetry city tree",
+		"rolling ridge west tree", "rolling ridge east tree",
+		"ambi's palace tree", "zora village tree":
 		return true
 	}
 	return false

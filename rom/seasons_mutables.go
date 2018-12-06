@@ -6,13 +6,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// make link actionable as soon as he drops into the world.
 	"link immediately actionable": MutableString(Addr{0x05, 0x4d98},
 		"\x3e\x08\xcd\x16", "\xcd\x16\x2a\xc9"),
-	// set global flags and room flags that would be set during the intro,
-	// overwriting the initial din interaction.
-	"set intro flags": MutableString(Addr{0x0a, 0x66ed},
-		"\x1e\x78\x1a\xcb\x7f\x20\x08\xe6\x7f\xc4\xb8\x25\xcd\xb8\x25\xcd"+
-			"\x0c\x25\xd0",
-		"\x3e\x0a\xcd\xcd\x30\x21\x98\xc7\x36\xc0\x2e\xa7\x36\x50\x2e\xb6"+
-			"\x36\x40\xc9"),
 
 	// this all has to do with animals and flutes:
 	// this edits ricky's script so that he never gives his flute.
@@ -206,6 +199,11 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// bank 14
 
+	// skip the great furnace dance. for some reason command c4 (jumpalways)
+	// doesn't work here, so a jump based on c6xx is used instead.
+	"skip furnace dance": MutableString(Addr{0x14, 0x4b15},
+		"\xe4\x31\xd7\x7d\x80", "\xb3\x92\xff\x3f\xc3"),
+
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
 	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),
@@ -358,12 +356,12 @@ var seasonsVarMutables = map[string]Mutable{
 	"initial season": MutableWord(Addr{0x07, 0x4188}, 0x0e00, 0x2d00),
 
 	// map pop-up icons for seed trees
-	"tarm gale tree map icon":   MutableByte(Addr{0x02, 0x6c51}, 0x18, 0x18),
-	"sunken gale tree map icon": MutableByte(Addr{0x02, 0x6c54}, 0x18, 0x18),
-	"scent tree map icon":       MutableByte(Addr{0x02, 0x6c57}, 0x16, 0x16),
-	"pegasus tree map icon":     MutableByte(Addr{0x02, 0x6c5a}, 0x17, 0x17),
-	"mystery tree map icon":     MutableByte(Addr{0x02, 0x6c5d}, 0x19, 0x19),
-	"ember tree map icon":       MutableByte(Addr{0x02, 0x6c60}, 0x15, 0x15),
+	"tarm ruins seed tree map icon":      MutableByte(Addr{0x02, 0x6c51}, 0x18, 0x18),
+	"sunken city seed tree map icon":     MutableByte(Addr{0x02, 0x6c54}, 0x18, 0x18),
+	"north horon seed tree map icon":     MutableByte(Addr{0x02, 0x6c57}, 0x16, 0x16),
+	"spool swamp seed tree map icon":     MutableByte(Addr{0x02, 0x6c5a}, 0x17, 0x17),
+	"woods of winter seed tree map icon": MutableByte(Addr{0x02, 0x6c5d}, 0x19, 0x19),
+	"horon village seed tree map icon":   MutableByte(Addr{0x02, 0x6c60}, 0x15, 0x15),
 
 	// locations of sparkles on treasure map
 	"round jewel coords":    MutableByte(Addr{0x02, 0x6663}, 0xb5, 0xb5),
