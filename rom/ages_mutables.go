@@ -221,6 +221,8 @@ var agesFixedMutables = map[string]Mutable{
 	// skip some of the maku tree's intro text (after saving her in the past)
 	"abbreviate maku tree text": MutableString(Addr{0x15, 0x7230},
 		"\x98\x48\xf6", "\xc4\x76\xc3"),
+	"remove maku tree post-item text": MutableString(Addr{0x15, 0x7273},
+		"\x98\x61\xf6\xbe", "\xbe\xbe\xbe\xbe"),
 
 	// skip twinrova cutscene and additional dialouge after getting maku seed
 	"skip twinrova cutscene": MutableString(Addr{0x15, 0x7298},
