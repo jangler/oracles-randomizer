@@ -517,6 +517,7 @@ func setROMData(romData []byte, game int, ri *RouteInfo, logf logFunc,
 	}
 
 	rom.SetAnimal(ri.Companion)
+	rom.SetTunicColor(ri.TunicColor)
 
 	// do it! (but don't write anything)
 	return rom.Mutate(romData, game)

@@ -129,6 +129,7 @@ type RouteInfo struct {
 	Seed                 uint32
 	Seasons              map[string]byte
 	Companion            int // 1 to 3
+	TunicColor           int // 0 to 3
 	UsedItems, UsedSlots *list.List
 	AttemptCount         int
 }
@@ -163,6 +164,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 
 		r := NewRoute(game)
 		ri.Companion = rollAnimalCompanion(src, r, game)
+		ri.TunicColor = src.Intn(4)
 		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
 
 		// slot initial nodes before algorithm slots progression items

@@ -112,6 +112,18 @@ func SetAnimal(companion int) {
 	}
 }
 
+// SetTunicColor sets Link's tunic color (green, blue, red, or gold; value from 0-3)
+func SetTunicColor(color int) {
+	for i := 0; i <= 9; i++ { // Object palettes
+		var mut = varMutables["object tunic color " + fmt.Sprint(i)].(*MutableRange)
+		mut.New[0] = mut.Old[0] | byte(color)
+	}
+	for i := 0; i <= 21; i++ { // File select sprites
+		var mut = varMutables["file tunic color " + fmt.Sprint(i)].(*MutableRange)
+		mut.New[0] = mut.Old[0] | byte(color)
+	}
+}
+
 // these mutables have fixed addresses and don't reference other mutables. try
 // to generally order them by address, unless a grouping between mutables in
 // different banks makes more sense.
