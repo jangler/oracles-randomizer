@@ -111,9 +111,7 @@ var labrynnaNodes = map[string]*Node{
 	"tokkey's composition":  AndSlot("symmetry past", "flippers"),
 	"restoration wall": Or("ages",
 		And("symmetry past", "currents", "bracelet", "flippers")),
-	// placing a block on the button allows infinite time to pit the beetles
 	"patch": And("restoration wall", Or("sword",
-		And("cane", Or("shield", "boomerang", "switch hook", "scent seeds")),
 		HardOr("shield", "boomerang", "switch hook", "scent seeds"))),
 	"talus peaks chest": OrSlot("restoration wall"),
 	"enter d4":          And("symmetry present", "tuni nut", "patch"),

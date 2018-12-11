@@ -64,7 +64,7 @@ Out of logic:
 - Using only mystery seeds as a weapon
 - Using only scent or gale seeds from the seed satchel as a weapon
 - Using only bombs as a weapon, except versus armos
-- Doing Patch's restoration ceremony without sword or cane
+- Doing Patch's restoration ceremony without sword
 - Getting a potion for King Zora from Maple
 - Guard skip
 - Various stupid tricks in D2, D3, D4, and D5
