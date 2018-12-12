@@ -109,7 +109,7 @@ var labrynnaNodes = map[string]*Node{
 	"symmetry present":      And("nuun", Or("currents", "flute")),
 	"symmetry city tree":    AndSlot("sword", "seed item", "symmetry present"),
 	"symmetry past":         And("symmetry present",
-		Or("ages", And("break bush safe", "echoes")),
+		Or("ages", And("break bush safe", "echoes"))),
 	"symmetry city brother": AndSlot("symmetry past"),
 	"tokkey's composition":  AndSlot("symmetry past", "flippers"),
 	"restoration wall": Or("ages",
