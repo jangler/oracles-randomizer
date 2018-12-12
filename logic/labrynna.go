@@ -137,10 +137,10 @@ var labrynnaNodes = map[string]*Node{
 	"defeat great moblin": AndSlot("ridge west present", "pegasus satchel",
 		"bracelet"),
 	"ridge upper present": Or(And("ridge base present", "switch hook"),
-		And("defeat great moblin", "feather"),
-		And("ridge base past west", "switch hook", "currents")),
+		And("defeat great moblin", "feather")),
 	"enter d5": And("crown key", "ridge upper present"),
 	"ridge base present": Or("ridge upper present",
+		"ridge mid present",
 		And("currents", Or("ridge base past east", "ridge base past west"))),
 	"enter d6 present":         And("old mermaid key", "ridge base present"),
 	"pool in d6 entrance":      AndSlot("ridge base present", "mermaid suit"),
@@ -148,6 +148,7 @@ var labrynnaNodes = map[string]*Node{
 	"goron dance, with letter": AndSlot("ridge base past", "goron letter"),
 	"ridge mid past": Or(And("ridge base past west", "switch hook"),
 		And("ridge upper present", "ages"),
+		And("ridge mid present", "ages"),
 		And("ridge base past east", "brother emblem", "feather")),
 	"ridge mid present": Or(
 		And("ridge mid past", "currents"),
@@ -167,12 +168,12 @@ var labrynnaNodes = map[string]*Node{
 		And("ridge base present", "ages"),
 		And("ridge base past west", Or("flippers", Hard("jump 3")))),
 	"ridge base past west": Or(
-		And("ridge base present", "echoes"),
-		And("ridge base past east", Or("flippers", "bomb jump 2"))),
+		And("ridge base present", Or("ages", And("break bush safe", "echoes"))),
+		And("ridge base past east", Or("flippers", Hard("bomb jump 2"))),
+		"ridge mid past"), // Ledge added to prevent softlocks
 	"ridge base past":     AndSlot("ridge base past west", "bombs"),
-	"enter d6 past":       And("mermaid key", Or(
-		And("ridge base past west", Or("flippers", "feather", "ages")),
-		And("ridge base past east", "bomb jump 2"))),
+	"enter d6 past":       And("mermaid key", "ridge base past west",
+		Or("flippers", "ages", Hard("bomb jump 2"))),
 	"ridge diamonds past": AndSlot("ridge base past west", "switch hook"),
 	"bomb goron head": AndSlot("bombs", Or(
 		And("ridge base past west", "switch hook"),
