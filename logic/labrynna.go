@@ -171,7 +171,7 @@ var labrynnaNodes = map[string]*Node{
 		"ridge mid past"), // Ledge added to prevent softlocks
 	"ridge base past":     AndSlot("ridge base past west", "bombs"),
 	"enter d6 past":       And("mermaid key", "ridge base past west",
-		Or("flippers", "ages", Hard("bomb jump 2"))),
+		Or("flippers", And("ages", "feather"), Hard("bomb jump 2"))),
 	"ridge diamonds past": AndSlot("ridge base past west", "switch hook"),
 	"bomb goron head": AndSlot("bombs", Or(
 		And("ridge base past west", "switch hook"),
