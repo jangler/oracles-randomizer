@@ -89,7 +89,7 @@ var labrynnaNodes = map[string]*Node{
 	"wild tokay game":       AndSlot("crescent past", "bombs", "bracelet"),
 	"crescent present east": And("crescent past", "echoes"),
 	"crescent island tree":  AndSlot("crescent present east", "scent seedling",
-		"sword", "seed item"),
+		"sword", "seed item", Or("bracelet", "ages")),
 	"crescent present west": Or("dimitri's flute",
 		And("lynna city", "mermaid suit"),
 		And("crescent past", Or("currents", And("shovel", "echoes")))),
