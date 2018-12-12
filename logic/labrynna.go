@@ -21,6 +21,7 @@ var labrynnaNodes = map[string]*Node{
 	"shore present": Or("flute", "ricky's gloves",
 		And("break bush", "feather"), And("lynna city", "bracelet"),
 		And("currents", Or("feather", "flippers", "raft")),
+		And("ages", "break bush"),
 		And("lynna city", "mermaid suit")),
 	"south shore dirt": AndSlot("shore present", Or("shovel", "flute")),
 	"balloon guy": And("feather", Or("sword", "boomerang"),
