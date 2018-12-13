@@ -64,7 +64,8 @@ var labrynnaNodes = map[string]*Node{
 	"enter d1":      And("yoll graveyard", "graveyard key"),
 
 	// western woods
-	"fairies' woods": Or("bracelet", "flippers", "dimitri's flute", "ages",
+	"fairies' woods": Or("bracelet", "dimitri's flute", "ages",
+		And("lynna city", "flippers"),
 		And("currents", Or("hit lever", "ricky's flute", "moosh's flute"))),
 	"fairies' woods chest": OrSlot(And("deku forest", "currents"),
 		And("fairies' woods",
