@@ -365,13 +365,13 @@ var seasonsSlots = map[string]*MutableSlot{
 	// d6
 	"d6 armos hall": seasonsChest(
 		"boomerang 2", 0x507d, 0x04, 0xd0, collectChest, 0x00),
-	"d6 1F east": seasonsChest(
+	"d6 crystal trap room": seasonsChest(
 		"rupees, 10", 0x505d, 0x04, 0xaf, collectChest, 0x00),
-	"d6 2F armos chest": seasonsChest(
+	"d6 1F east": seasonsChest(
 		"rupees, 5", 0x5065, 0x04, 0xb3, collectChest, 0x00),
 	"d6 2F gibdo chest": seasonsChest(
 		"bombs, 10", 0x5069, 0x04, 0xbf, collectChest, 0x00),
-	"d6 crystal trap room": seasonsChest(
+	"d6 2F armos chest": seasonsChest(
 		"rupees, 5", 0x5075, 0x04, 0xc3, collectChest, 0x00),
 	"d6 beamos room": seasonsChest(
 		"compass", 0x5059, 0x04, 0xad, collectChest2, 0x00),
