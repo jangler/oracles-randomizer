@@ -9,8 +9,8 @@ import (
 )
 
 func TestGraph(t *testing.T) {
-	testSeasonsGraph(t)
-	// testAgesGraph(t)
+	// testSeasonsGraph(t)
+	testAgesGraph(t)
 }
 
 // check that graph logic is working as expected

@@ -53,8 +53,7 @@ var labrynnaNodes = map[string]*Node{
 
 	// yoll graveyard
 	"yoll graveyard": And("ember seeds"),
-	"yoll moosh":     And("yoll graveyard", Or("moosh's flute", "kill ghini")),
-	"cheval's grave": Or("yoll moosh", "bomb jump 3"),
+	"cheval's grave": And("yoll graveyard", Or("kill ghini", "bomb jump 3")),
 	"cheval's test": AndSlot("cheval's grave", "bracelet",
 		Or("feather", "flippers")),
 	"cheval's invention": AndSlot("cheval's grave", "flippers"),
@@ -88,7 +87,7 @@ var labrynnaNodes = map[string]*Node{
 	"tokay bomb cave":       AndSlot("crescent past", "bracelet", "bombs"),
 	"wild tokay game":       AndSlot("crescent past", "bombs", "bracelet"),
 	"crescent present east": And("crescent past", "echoes"),
-	"crescent island tree":  AndSlot("crescent present east", "scent seedling",
+	"crescent island tree": AndSlot("crescent present east", "scent seedling",
 		"sword", "seed item", Or("bracelet", "ages")),
 	"crescent present west": Or("dimitri's flute",
 		And("lynna city", "mermaid suit"),
@@ -106,10 +105,10 @@ var labrynnaNodes = map[string]*Node{
 		And("fairies' woods", "ember shooter"))),
 	"nuun highlands cave": AndSlot("nuun", Or("dimitri's flute",
 		And(Or("ricky nuun", "moosh nuun"), Or("flute", "currents")))),
-	"symmetry present":      And("nuun", Or("currents", "flute")),
-	"symmetry city tree":    AndSlot(Or("sword", And("dimitri's flute", "enter d4")),
+	"symmetry present": And("nuun", Or("currents", "flute")),
+	"symmetry city tree": AndSlot(Or("sword", And("dimitri's flute", "enter d4")),
 		"seed item", "symmetry present"),
-	"symmetry past":         And("symmetry present",
+	"symmetry past": And("symmetry present",
 		Or("ages", And("break bush safe", "echoes"))),
 	"symmetry city brother": AndSlot("symmetry past"),
 	"tokkey's composition":  AndSlot("symmetry past", "flippers"),
@@ -169,8 +168,8 @@ var labrynnaNodes = map[string]*Node{
 		And("ridge base present", Or("ages", And("break bush safe", "echoes"))),
 		And("ridge base past east", Or("flippers", Hard("bomb jump 2"))),
 		"ridge mid past"), // Ledge added to prevent softlocks
-	"ridge base past":     AndSlot("ridge base past west", "bombs"),
-	"enter d6 past":       And("mermaid key", "ridge base past west",
+	"ridge base past": AndSlot("ridge base past west", "bombs"),
+	"enter d6 past": And("mermaid key", "ridge base past west",
 		Or("flippers", And("ages", "feather"), Hard("bomb jump 2"))),
 	"ridge diamonds past": AndSlot("ridge base past west", "switch hook"),
 	"bomb goron head": AndSlot("bombs", Or(
