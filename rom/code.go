@@ -2,6 +2,7 @@ package rom
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -66,7 +67,16 @@ func (r *romBanks) replaceMultiple(addrs []Addr, name, old, new string) {
 func makeCollectModeTable() string {
 	b := new(strings.Builder)
 
-	for _, slot := range ItemSlots {
+	// use ordered keys so that identical seeds produce identical checksums
+	keys := make([]string, 0, len(ItemSlots))
+	for k := range ItemSlots {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		slot := ItemSlots[key]
+
 		// trees and slots where it doesn't matter (shops, rod)
 		if slot.collectMode == 0 {
 			continue
