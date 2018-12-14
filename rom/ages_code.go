@@ -189,6 +189,7 @@ func initAgesEOB() {
 			"\x01\xa5\x00\x35\x48"+ // ledge by library past
 			"\x01\xa5\x00\x45\x0b"+ // cont.
 			"\x01\xa5\x00\x55\x6c"+ // cont.
+			"\x00\x83\x00\x44\xd7"+ // portal outside D2 present
 			"\xff")
 	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
 		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
@@ -205,11 +206,10 @@ func initAgesEOB() {
 		"\xc5\x01\x00\x83\xcd"+compareRoom+"\xc1\xfa\x2d\xcc\xc0\x3c\xc9")
 	r.replace(0x04, 0x4630, "call replace warp enter",
 		"\xfa\x2d\xcc", "\xcd"+replaceWarpEnter)
-	// and exit into the present if there's a portal in the present entrance.
+	// and exit into the present if the past entrance is closed.
 	replaceWarpExit := r.appendToBank(0x00, "replace warp exit",
-		"\xea\x48\xcc\xfe\x83\xc0\xfa\x2d\xcc\xfe\x04\xc0"+
-			"\xfa\x3e\xc6\xb7\xc0\xfa\x3f\xc6\xfe\x83\xc0"+
-			"\xfa\x47\xcc\xe6\xf0\xea\x47\xcc\xc9")
+		"\xea\x48\xcc\xfe\x83\xc0\xfa\x83\xc8\xe6\x80\xc0"+
+			"\xfa\x47\xcc\xfe\x01\xc0\xaf\xea\x47\xcc\xc9")
 	r.replace(0x04, 0x45e8, "call replace warp exit normal",
 		"\xea\x48\xcc", "\xcd"+replaceWarpExit)
 	r.replace(0x0a, 0x4738, "call replace warp exit essence",
@@ -513,6 +513,11 @@ func initAgesEOB() {
 			"\x9a\x04\x38\x58\xfe")
 	r.replace(0x12, 0x5a7b, "nuun portal", "\xf2\x9a\x00",
 		"\xf2\xe1\x00\x38\x78\xf3"+nuunPortalOtherObjects+"\xff")
+	// and outside D2 present.
+	d2PresentPortal := r.appendToBank(0x12, "d2 present portal",
+		"\xf2\xdc\x02\x48\x38\xe1\x00\x48\x48\xfe")
+	r.replace(0x12, 0x5d42, "d2 present portal pointer",
+		"\xdc\x02\x48\x38", "\xf3"+d2PresentPortal+"\xff")
 
 	// bank 15
 
