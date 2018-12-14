@@ -15,7 +15,7 @@ package logic
 // - shovel
 
 var agesKillNodes = map[string]*Node{
-	"break crystal": Or("sword", "bombs", "bracelet"),
+	"break crystal": Or("sword", "bombs", "bracelet", "ember seeds"),
 	"break pot":     Or("bracelet", "switch hook", "noble sword"),
 
 	// obviously this only works on standard enemies
