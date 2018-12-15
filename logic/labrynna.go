@@ -81,15 +81,19 @@ var labrynnaNodes = map[string]*Node{
 	"enter d2":            And("deku forest", Or("bombs", "currents")),
 
 	// crescent island
+	// the western present portal responds to currents only, in order to
+	// prevent softlocks.
 	"crescent past": Or("raft", And("lynna city", "mermaid suit"),
 		And("crescent present west", "currents")),
 	"tokay crystal cave": AndSlot("crescent past",
 		Or("shovel", "break crystal"), "feather"),
-	"tokay bomb cave":       AndSlot("crescent past", "bracelet", "bombs"),
-	"wild tokay game":       AndSlot("crescent past", "bombs", "bracelet"),
-	"crescent present east": And("crescent past", "echoes"),
-	"crescent island tree": AndSlot("crescent present east", "scent seedling",
-		"sword", "seed item", Or("bracelet", "ages")),
+	"tokay bomb cave": AndSlot("crescent past", "bracelet", "bombs"),
+	"wild tokay game": AndSlot("crescent past", "bombs", "bracelet"),
+	// can get the warp point by swimming under crescent island, but that's
+	// pretty unintuitive.
+	"crescent island tree": AndSlot("crescent past", "scent seedling",
+		"sword", "seed item", Or("ages", And("bracelet",
+			Or("echoes", HardAnd("gale satchel", "mermaid suit"))))),
 	"crescent present west": Or("dimitri's flute",
 		And("lynna city", "mermaid suit"),
 		And("crescent past", Or("currents", And("shovel", "echoes")))),

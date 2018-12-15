@@ -38,6 +38,8 @@ var agesItemNodes = map[string]*Node{
 	"seed item": Or("satchel", "seed shooter"),
 
 	"ember seeds": And("ember tree seeds"),
+	// you can also get scent seeds from ramrock, but the requirements for
+	// those are a superset of the requirements for the D3 ones.
 	"scent seeds": Or("scent tree seeds",
 		HardAnd("d3 E crystal", "seed item")),
 	"pegasus seeds": And("pegasus tree seeds"),
