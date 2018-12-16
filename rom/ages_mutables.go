@@ -91,12 +91,17 @@ var agesFixedMutables = map[string]Mutable{
 	// allow exiting moosh/ghost cutscene screen without killing ghosts
 	"transition from moosh cutscene": MutableString(Addr{0x0a, 0x595a},
 		"\xea\x91\xcc", "\x00\x00\x00"),
-	// don't delete moosh when picking up cheval's invention
-	"don't delete moosh": MutableString(Addr{0x0c, 0x7234},
+	// don't delete companion when picking up cheval's invention
+	"don't delete companion by script": MutableString(Addr{0x0c, 0x7234},
 		"\x91\x24\xcc\x00", "\x92\x24\xcc\x00"),
 	// bug : moosh appears on the screen south of cheval's grave after visiting
 	// the cheval's grave screen, whether you've obtained him or not
 	"moosh appear bug": MutableByte(Addr{0x12, 0x5c5d}, 0xf1, 0xff),
+
+	// cheval's rope as a treasure deletes your companion by default, which
+	// isn't cool and can lead to softlocks.
+	"don't delete companion by treasure": MutableByte(Addr{0x3f, 0x6d00},
+		0x05, 0x00),
 
 	// ricky shouldn't leave after talking to tingle
 	"end tingle script": MutableString(Addr{0x0c, 0x7e2a},
