@@ -322,6 +322,13 @@ var seasonsFixedMutables = map[string]Mutable{
 	"remove d7 snow piles": MutableString(Addr{0x24, 0x7910},
 		"\xd9\xa0\xb9\xd9", "\x2b\xa0\xb9\x2b"),
 
+	// remove holes on ricky's path to the spool swamp portal in order to
+	// prevent getting stuck when exiting into default winter.
+	"remove swamp holes": MutableStrings([]Addr{
+		{0x21, 0x7a1b}, {0x21, 0x7a39}, {0x22, 0x76ab}, {0x22, 0x76c9},
+		{0x23, 0x7476}, {0x23, 0x7494}, {0x24, 0x7173}, {0x24, 0x7191}},
+		"\xf3", "\x13"),
+
 	// bank 3f
 
 	// since slingshot doesn't increment seed capacity, set the level-zero
