@@ -197,12 +197,17 @@ var seasonsFixedMutables = map[string]Mutable{
 	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
 	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
 
-	// bank 14
+	// bank 14 (scripts loaded in c3xx block)
 
 	// skip the great furnace dance. for some reason command c4 (jumpalways)
 	// doesn't work here, so a jump based on c6xx is used instead.
 	"skip furnace dance": MutableString(Addr{0x14, 0x4b15},
 		"\xe4\x31\xd7\x7d\x80", "\xb3\x92\xff\x3f\xc3"),
+
+	// allow screen transitions away from linked great moblin event, since
+	// seeds could be uncompleteable without a way to kill the moblins.
+	"allow transitions from linked moblins": MutableString(Addr{0x14, 0x5247},
+		"\x91\xab\xcc\x01", "\x91\xab\xcc\x00"),
 
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
