@@ -204,8 +204,8 @@ var holodrumNodes = map[string]*Node{
 		And("fairy fountain", Or("eastern suburbs default spring", "spring")),
 		And("blaino's gym", Or(
 			And("natzu prairie", "flute"),
-			And("natzu river", And(Or("flippers", "flute"), "jump 2"),
-				And("flute", "flippers", "gale satchel")),
+			And("natzu river", Or(And(Or("flippers", "flute"), "jump 2"),
+				And("flute", "flippers", "gale satchel"))),
 			And("natzu wasteland", Or("flute", And("remove bush",
 				Or("bomb jump 3", And("jump 3", "flippers")))))))),
 	"sunken city seed tree": AndSlot("sunken city", "seed item",
