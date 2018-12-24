@@ -314,6 +314,12 @@ var seasonsFixedMutables = map[string]Mutable{
 	// fall into the noble sword room.
 	"replace lake stairs": MutableString(Addr{0x22, 0x791b},
 		"\x36\xd0\x35", "\x40\x40\x40"),
+	// instead add a ledge to the left side of the platform, so that entering
+	// the portal without feather and resetting the season to summer isn't a
+	// softlock.
+	"add lake ledge 1": MutableByte(Addr{0x22, 0x78fd}, 0x52, 0x37),
+	"add lake ledge 2": MutableByte(Addr{0x22, 0x7905}, 0x52, 0x25),
+	"add lake ledge 3": MutableByte(Addr{0x22, 0x7910}, 0x52, 0x47),
 
 	// remove the snow piles in front of holly's house so that shovel isn't
 	// required not to softlock there.
