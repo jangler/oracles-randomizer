@@ -127,6 +127,27 @@ func initAgesEOB() {
 	r.replace(0x02, 0x6245, "jump display portal popup",
 		"\xfa\xb6\xcb", "\xc3"+displayPortalPopup)
 
+	// allow ring list to be accessed through the ring box icon
+	ringListOpener := r.appendToBank(0x02, "ring list opener",
+		"\xfa\xd1\xcb\xfe\x0f\xc0\x3e\x81\xea\xd3\xcb\x3e\x04\xcd\xb0\x1a\xe1\xc9")
+	r.replace(0x02, 0x56dd, "call ring list opener",
+		"\xfa\xd1\xcb", "\xcd"+ringListOpener)
+
+	// auto-equip selected ring from ring list
+	autoEquipRing := r.appendToBank(0x02, "auto-equip ring",
+		"\xcd\x3b\x72\xea\xcb\xc6\xc9")
+	r.replace(0x02, 0x7019, "call auto-equip ring",
+		"\xcd\x3b\x72", "\xcd"+autoEquipRing)
+
+	// don't save gfx when opening ring list from subscreen (they were already saved when
+	// opening the item menu), and clear screen scroll variables (which are saved anyway)
+	ringListGfxFix := r.appendToBank(0x02, "ring list gfx fix",
+		"\xcd\xad\x0c\xfa\xd3\xcb\xcb\x7f\xc8\xe6\x7f\xea\xd3\xcb" +
+		"\xaf\xe0\xaa\xe0\xac\x21\x08\xcd\x22\x22\xc3\xb1\x50")
+	r.replace(0x02, 0x5074, "call ring list gfx fix",
+		"\xcd\xad\x0c", "\xcd"+ringListGfxFix)
+
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
