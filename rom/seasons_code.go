@@ -354,6 +354,10 @@ func initSeasonsEOB() {
 	r.replace(0x08, 0x7cf5, "enable volcano exit",
 		"\xea\xab\xcc", "\x00\x00\x00")
 
+	// remove generic "you got a ring" text for rings from shops
+	r.replace(0x08, 0x4d55, "obtain ring text replacement (shop) 1", "\x54", "\x00")
+	r.replace(0x08, 0x4d56, "obtain ring text replacement (shop) 2", "\x54", "\x00")
+
 	// bank 09
 
 	// shared by maku tree and star-shaped ore.
@@ -441,6 +445,12 @@ func initSeasonsEOB() {
 			"\xc9")
 	r.replace(0x0a, 0x66ed, "call set starting flags",
 		"\x1e\x78\x1a", "\xc3"+setStartingFlags)
+
+	// remove generic "you got a ring" text for gasha nuts
+	gashaNutRingText := r.appendToBank(0x0a, "remove ring text from gasha nut",
+		"\x79\xfe\x04\xc2\x4b\x18\xe1\xc9")
+	r.replace(0x0a, 0x4863, "remove ring text from gasha nut caller",
+		"\xc3\x4b\x18", "\xc3"+gashaNutRingText)
 
 	// bank 0b
 
@@ -553,6 +563,12 @@ func initSeasonsEOB() {
 	r.replace(0x15, 0x70cf, "rod give item call",
 		"\xcd\xeb\x16", "\xcd"+giveItem)
 
+	// bank 1f
+
+	// replace ring appraisal text with "you got the {ring}"
+	r.replace(0x1f, 0x5d99, "obtain ring text replacement",
+		"\x03\x13\x20\x49\x04\x06", "\x02\x03\x0f\xfd\x21\x00")
+
 	// bank 3f
 
 	// have seed satchel inherently refill all seeds.
@@ -599,6 +615,12 @@ func initSeasonsEOB() {
 			"\x26\xc6\x6f\xfe\x45\x20\x04\xcb\xee\x18\x02\xcb\xfe"+
 			"\xe1\xd1\xf1\xcd\x4e\x45\xc9")
 	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
+
+	// put obtained rings directly into ring list (no need for appraisal), and tell the
+	// player what type of ring it is
+	r.replace(0x3f, 0x461a, "auto ring appraisal",
+		"\xcb\xf1\xcd\x75\x46\xfe\x64\x38",
+		"\x21\x16\xc6\x79\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x4b\x18\xc9")
 }
 
 // makes seasons-specific additions to the collection mode table.

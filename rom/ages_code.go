@@ -404,7 +404,6 @@ func initAgesEOB() {
 	r.replace(0x09, 0x4c82, "call maku tree item flag",
 		"\xcd\x7d\x19", "\xc3"+makuTreeItemFlag)
 
-
 	// give correct ID and param for shop item, play sound, and load correct
 	// text index into temp wram address.
 	shopGiveTreasure := r.appendToBank(0x09, "shop give treasure",
@@ -622,7 +621,7 @@ func initAgesEOB() {
 
 	// bank 21
 
-	// Replace ring appraisal text with "you got the {ring}"
+	// replace ring appraisal text with "you got the {ring}"
 	r.replace(0x21, 0x76a0, "obtain ring text replacement",
 		"\x04\x2c\x20\x04\x96\x21", "\x02\x06\x0f\xfd\x21\x00")
 
@@ -693,8 +692,8 @@ func initAgesEOB() {
 	// put obtained rings directly into ring list (no need for appraisal), and tell the
 	// player what type of ring it is
 	r.replace(0x3f, 0x4614, "auto ring appraisal",
-		"\xCB\xF1\xCD\x6F\x46\xFE\x64\x38",
-		"\x21\x16\xC6\x79\xCD\x0E\x02\x79\xC6\x40\xEA\xB1\xCB\x01\x1C\x30\xCD\x72\x18\xC9")
+		"\xcb\xf1\xcd\x6f\x46\xfe\x64\x38",
+		"\x21\x16\xc6\x79\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x72\x18\xc9")
 }
 
 // makes ages-specific additions to the collection mode table.
