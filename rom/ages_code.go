@@ -38,7 +38,7 @@ func initAgesEOB() {
 
 	// don't play any music if the -nomusic flag is given.
 	noMusicFunc := r.appendToBank(0x00, "no music func",
-		"\x67\xfe\x47\x30\x03\x3e\x08\xc9\xf0\xb7\xc9")
+		"\x67\xfe\x49\x30\x03\x3e\x08\xc9\xf0\xb7\xc9")
 	r.replace(0x00, 0x0c9a, "no music call",
 		"\x67\xf0\xb7", "\xcd"+noMusicFunc)
 
