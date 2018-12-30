@@ -196,6 +196,20 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 	setCompassData(b, game)
 
+	// set the text IDs for all rings to $ff (blank), since custom code deals with text
+	if game == GameSeasons {
+	} else {
+		for _, name := range []string{
+			"discovery ring", "power ring L-1", "gold joy ring", "armor ring L-1",
+			"light ring L-1", "blue luck ring", "power ring L-2", "gold luck ring",
+			"pegasus ring", "green luck ring", "green holy ring", "red holy ring",
+			"whisp ring", "whimsical ring", "toss ring", "blue ring", "like-like ring" } {
+
+			Treasures[name].text = 0xff
+			Treasures[name].Mutate(b)
+		}
+	}
+
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
 }

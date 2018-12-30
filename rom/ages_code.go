@@ -385,6 +385,17 @@ func initAgesEOB() {
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
+	// remove generic "you got a ring" text for rings from shops
+	r.replace(0x09, 0x4580, "obtain ring text replacement (shop) 1", "\x54", "\x00")
+	r.replace(0x09, 0x458a, "obtain ring text replacement (shop) 2", "\x54", "\x00")
+	r.replace(0x09, 0x458b, "obtain ring text replacement (shop) 3", "\x54", "\x00")
+
+	// remove generic "you got a ring" text for gasha nuts
+	gashaNutRingText := r.appendToBank(0x0b, "remove ring text from gasha nut",
+		"\x79\xfe\x04\xc2\x72\x18\xe1\xc9")
+	r.replace(0x0b, 0x45bb, "remove ring text from gasha nut caller",
+		"\xc3\x72\x18", "\xc3"+gashaNutRingText)
+
 	// don't set room's item flag if it's nayru's item on the maku tree screen,
 	// since link still might not have taken the maku tree's item.
 	makuTreeItemFlag := r.appendToBank(0x09, "maku tree item flag",
@@ -392,6 +403,7 @@ func initAgesEOB() {
 			"\xfe\x50\xc8\xcb\xee\xc9")
 	r.replace(0x09, 0x4c82, "call maku tree item flag",
 		"\xcd\x7d\x19", "\xc3"+makuTreeItemFlag)
+
 
 	// give correct ID and param for shop item, play sound, and load correct
 	// text index into temp wram address.
@@ -608,6 +620,12 @@ func initAgesEOB() {
 	r.replace(0x16, 0x4539, "call modify treasure",
 		"\x47\xcb\x37", "\xcd"+modifyTreasure)
 
+	// bank 21
+
+	// Replace ring appraisal text with "you got the {ring}"
+	r.replace(0x21, 0x76a0, "obtain ring text replacement",
+		"\x04\x2c\x20\x04\x96\x21", "\x02\x06\x0f\xfd\x21\x00")
+
 	// bank 3f
 
 	// set hl to the address of the item sprite with ID a.
@@ -671,6 +689,12 @@ func initAgesEOB() {
 			"\x30\x08\x2a\x47\x7e\xe1\x67\x68\xc1\xe9\xe1\xc1\xf1\xc9")
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
+
+	// put obtained rings directly into ring list (no need for appraisal), and tell the
+	// player what type of ring it is
+	r.replace(0x3f, 0x4614, "auto ring appraisal",
+		"\xCB\xF1\xCD\x6F\x46\xFE\x64\x38",
+		"\x21\x16\xC6\x79\xCD\x0E\x02\x79\xC6\x40\xEA\xB1\xCB\x01\x1C\x30\xCD\x72\x18\xC9")
 }
 
 // makes ages-specific additions to the collection mode table.
