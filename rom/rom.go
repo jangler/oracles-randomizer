@@ -76,17 +76,6 @@ func Init(game int) {
 	itemGfx["harp 3"] = itemGfx["tune of ages"]
 	itemGfx["flippers 1"] = itemGfx["flippers"]
 	itemGfx["flippers 2"] = itemGfx["mermaid suit"]
-
-	// get set of unique items (to determine which can be slotted freely)
-	treasureCounts := make(map[string]int)
-	for _, slot := range ItemSlots {
-		name := FindTreasureName(slot.Treasure)
-		if treasureCounts[name] == 0 {
-			treasureCounts[name] = 1
-		} else {
-			treasureCounts[name]++
-		}
-	}
 }
 
 // Addr is a fully-specified memory address.
