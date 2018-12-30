@@ -95,7 +95,7 @@ func initSeasonsEOB() {
 	giveItem := r.appendToBank(0x00, "give item func",
 		"\xcd"+getTreasureData+"\xcd"+progressiveItemFunc+ // get treasure data
 			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
-			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9") // show text
+			"\x06\x00\x23\x4e\x79\xfe\xff\xc8\xcd\x4b\x18\xaf\xc9") // show text
 
 	// utility function, call a function hl in bank 02, preserving af. e can't
 	// be used as a parameter to that function, but it can be returned.
