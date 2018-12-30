@@ -271,7 +271,7 @@ var agesFixedMutables = map[string]Mutable{
 	"ricky nuun railing": MutableString(Addr{0x23, 0x718e},
 		"\x69\x07\x07\x6a", "\x72\x50\x50\x73"),
 	"move nuun worker": MutableString(Addr{0x12, 0x5a9e},
-		"\x28\x50", "\x68\x40"),
+		"\x28\x50", "\x68\x48"),
 
 	// text for special crescent island present portal
 	"portal sign text": MutableString(Addr{0x23, 0x583f}, "\x0c\x20\x02\x18",
