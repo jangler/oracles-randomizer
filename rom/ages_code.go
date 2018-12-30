@@ -500,6 +500,10 @@ func initAgesEOB() {
 	r.replace(0x0c, 0x7a6f, "call set bridge flag",
 		"\xb9\xb6\x25", "\xe0"+setBridgeFlag)
 
+	// skip forced ring appraisal and ring list with vasu (prevents softlock)
+	r.replace(0x0c, 0x4a27, "skip vasu ring appraisal",
+		"\x98\x33", "\x4a\x35")
+
 	// bank 0f
 
 	// set room flag for tunnel behind keep when defeating great moblin.
@@ -693,7 +697,7 @@ func initAgesEOB() {
 	// player what type of ring it is
 	r.replace(0x3f, 0x4614, "auto ring appraisal",
 		"\xcb\xf1\xcd\x6f\x46\xfe\x64\x38",
-		"\x21\x16\xc6\x79\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x72\x18\xc9")
+		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x72\x18\xc9")
 }
 
 // makes ages-specific additions to the collection mode table.

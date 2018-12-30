@@ -472,6 +472,10 @@ func initSeasonsEOB() {
 	nobleSwordLookup := r.appendToBank(0x0b, "noble sword lookup",
 		"\x21\x18\x64\x4e\x23\x5e\xc9")
 
+	// skip forced ring appraisal and ring list with vasu (prevents softlock)
+	r.replace(0x0b, 0x4a2b, "skip vasu ring appraisal",
+		"\x98\x33", "\x4a\x39")
+
 	// bank 11
 
 	// the interaction on the mount cucco waterfall/vine screen
@@ -620,7 +624,7 @@ func initSeasonsEOB() {
 	// player what type of ring it is
 	r.replace(0x3f, 0x461a, "auto ring appraisal",
 		"\xcb\xf1\xcd\x75\x46\xfe\x64\x38",
-		"\x21\x16\xc6\x79\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x4b\x18\xc9")
+		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x4b\x18\xc9")
 }
 
 // makes seasons-specific additions to the collection mode table.
