@@ -95,7 +95,7 @@ func initSeasonsEOB() {
 	giveItem := r.appendToBank(0x00, "give item func",
 		"\xcd"+getTreasureData+"\xcd"+progressiveItemFunc+ // get treasure data
 			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
-			"\x06\x00\x23\x4e\xcd\x4b\x18\xaf\xc9") // show text
+			"\x06\x00\x23\x4e\x79\xfe\xff\xc8\xcd\x4b\x18\xaf\xc9") // show text
 
 	// utility function, call a function hl in bank 02, preserving af. e can't
 	// be used as a parameter to that function, but it can be returned.
@@ -149,6 +149,26 @@ func initSeasonsEOB() {
 			"\xf0\x8c\xc3\xe2\x39")
 	r.replace(0x00, 0x39df, "jump to winter layout",
 		"\xd5\xf0\x8c", "\xc3"+loadWinterLayout)
+
+	// allow ring list to be accessed through the ring box icon
+	ringListOpener := r.appendToBank(0x02, "ring list opener",
+		"\xfa\xd1\xcb\xfe\x0f\xc0\x3e\x81\xea\xd3\xcb\x3e\x04\xcd\x76\x1a\xe1\xc9")
+	r.replace(0x02, 0x56a1, "call ring list opener",
+		"\xfa\xd1\xcb", "\xcd"+ringListOpener)
+
+	// auto-equip selected ring from ring list
+	autoEquipRing := r.appendToBank(0x02, "auto-equip ring",
+		"\xcd\x6c\x71\xea\xc5\xc6\xc9")
+	r.replace(0x02, 0x6f4a, "call auto-equip ring",
+		"\xcd\x6c\x71", "\xcd"+autoEquipRing)
+
+	// don't save gfx when opening ring list from subscreen (they were already saved when
+	// opening the item menu), and clear screen scroll variables (which are saved anyway)
+	ringListGfxFix := r.appendToBank(0x02, "ring list gfx fix",
+		"\xcd\x89\x0c\xfa\xd3\xcb\xcb\x7f\xc8\xe6\x7f\xea\xd3\xcb" +
+		"\xaf\xe0\xa8\xe0\xaa\x21\x08\xcd\x22\x22\xc3\x72\x50")
+	r.replace(0x02, 0x5035, "call ring list gfx fix",
+		"\xcd\x89\x0c", "\xcd"+ringListGfxFix)
 
 	// bank 03
 
@@ -334,6 +354,10 @@ func initSeasonsEOB() {
 	r.replace(0x08, 0x7cf5, "enable volcano exit",
 		"\xea\xab\xcc", "\x00\x00\x00")
 
+	// remove generic "you got a ring" text for rings from shops
+	r.replace(0x08, 0x4d55, "obtain ring text replacement (shop) 1", "\x54", "\x00")
+	r.replace(0x08, 0x4d56, "obtain ring text replacement (shop) 2", "\x54", "\x00")
+
 	// bank 09
 
 	// shared by maku tree and star-shaped ore.
@@ -422,6 +446,12 @@ func initSeasonsEOB() {
 	r.replace(0x0a, 0x66ed, "call set starting flags",
 		"\x1e\x78\x1a", "\xc3"+setStartingFlags)
 
+	// remove generic "you got a ring" text for gasha nuts
+	gashaNutRingText := r.appendToBank(0x0a, "remove ring text from gasha nut",
+		"\x79\xfe\x04\xc2\x4b\x18\xe1\xc9")
+	r.replace(0x0a, 0x4863, "remove ring text from gasha nut caller",
+		"\xc3\x4b\x18", "\xc3"+gashaNutRingText)
+
 	// bank 0b
 
 	// custom script command to use on d1 entrance screen: wait until bit of
@@ -441,6 +471,10 @@ func initSeasonsEOB() {
 	// returns c,e = treasure ID,subID
 	nobleSwordLookup := r.appendToBank(0x0b, "noble sword lookup",
 		"\x21\x18\x64\x4e\x23\x5e\xc9")
+
+	// skip forced ring appraisal and ring list with vasu (prevents softlock)
+	r.replace(0x0b, 0x4a2b, "skip vasu ring appraisal",
+		"\x98\x33", "\x4a\x39")
 
 	// bank 11
 
@@ -533,6 +567,12 @@ func initSeasonsEOB() {
 	r.replace(0x15, 0x70cf, "rod give item call",
 		"\xcd\xeb\x16", "\xcd"+giveItem)
 
+	// bank 1f
+
+	// replace ring appraisal text with "you got the {ring}"
+	r.replace(0x1f, 0x5d99, "obtain ring text replacement",
+		"\x03\x13\x20\x49\x04\x06", "\x02\x03\x0f\xfd\x21\x00")
+
 	// bank 3f
 
 	// have seed satchel inherently refill all seeds.
@@ -579,6 +619,12 @@ func initSeasonsEOB() {
 			"\x26\xc6\x6f\xfe\x45\x20\x04\xcb\xee\x18\x02\xcb\xfe"+
 			"\xe1\xd1\xf1\xcd\x4e\x45\xc9")
 	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
+
+	// put obtained rings directly into ring list (no need for appraisal), and tell the
+	// player what type of ring it is
+	r.replace(0x3f, 0x461a, "auto ring appraisal",
+		"\xcb\xf1\xcd\x75\x46\xfe\x64\x38",
+		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x4b\x18\xc9")
 }
 
 // makes seasons-specific additions to the collection mode table.

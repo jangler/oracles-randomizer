@@ -127,6 +127,27 @@ func initAgesEOB() {
 	r.replace(0x02, 0x6245, "jump display portal popup",
 		"\xfa\xb6\xcb", "\xc3"+displayPortalPopup)
 
+	// allow ring list to be accessed through the ring box icon
+	ringListOpener := r.appendToBank(0x02, "ring list opener",
+		"\xfa\xd1\xcb\xfe\x0f\xc0\x3e\x81\xea\xd3\xcb\x3e\x04\xcd\xb0\x1a\xe1\xc9")
+	r.replace(0x02, 0x56dd, "call ring list opener",
+		"\xfa\xd1\xcb", "\xcd"+ringListOpener)
+
+	// auto-equip selected ring from ring list
+	autoEquipRing := r.appendToBank(0x02, "auto-equip ring",
+		"\xcd\x3b\x72\xea\xcb\xc6\xc9")
+	r.replace(0x02, 0x7019, "call auto-equip ring",
+		"\xcd\x3b\x72", "\xcd"+autoEquipRing)
+
+	// don't save gfx when opening ring list from subscreen (they were already saved when
+	// opening the item menu), and clear screen scroll variables (which are saved anyway)
+	ringListGfxFix := r.appendToBank(0x02, "ring list gfx fix",
+		"\xcd\xad\x0c\xfa\xd3\xcb\xcb\x7f\xc8\xe6\x7f\xea\xd3\xcb" +
+		"\xaf\xe0\xaa\xe0\xac\x21\x08\xcd\x22\x22\xc3\xb1\x50")
+	r.replace(0x02, 0x5074, "call ring list gfx fix",
+		"\xcd\xad\x0c", "\xcd"+ringListGfxFix)
+
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
@@ -364,6 +385,17 @@ func initAgesEOB() {
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
 
+	// remove generic "you got a ring" text for rings from shops
+	r.replace(0x09, 0x4580, "obtain ring text replacement (shop) 1", "\x54", "\x00")
+	r.replace(0x09, 0x458a, "obtain ring text replacement (shop) 2", "\x54", "\x00")
+	r.replace(0x09, 0x458b, "obtain ring text replacement (shop) 3", "\x54", "\x00")
+
+	// remove generic "you got a ring" text for gasha nuts
+	gashaNutRingText := r.appendToBank(0x0b, "remove ring text from gasha nut",
+		"\x79\xfe\x04\xc2\x72\x18\xe1\xc9")
+	r.replace(0x0b, 0x45bb, "remove ring text from gasha nut caller",
+		"\xc3\x72\x18", "\xc3"+gashaNutRingText)
+
 	// don't set room's item flag if it's nayru's item on the maku tree screen,
 	// since link still might not have taken the maku tree's item.
 	makuTreeItemFlag := r.appendToBank(0x09, "maku tree item flag",
@@ -467,6 +499,10 @@ func initAgesEOB() {
 			"\x21\x24\xc7\xcb\xce\xe1\xc9")
 	r.replace(0x0c, 0x7a6f, "call set bridge flag",
 		"\xb9\xb6\x25", "\xe0"+setBridgeFlag)
+
+	// skip forced ring appraisal and ring list with vasu (prevents softlock)
+	r.replace(0x0c, 0x4a27, "skip vasu ring appraisal",
+		"\x98\x33", "\x4a\x35")
 
 	// bank 0f
 
@@ -587,6 +623,12 @@ func initAgesEOB() {
 	r.replace(0x16, 0x4539, "call modify treasure",
 		"\x47\xcb\x37", "\xcd"+modifyTreasure)
 
+	// bank 21
+
+	// replace ring appraisal text with "you got the {ring}"
+	r.replace(0x21, 0x76a0, "obtain ring text replacement",
+		"\x04\x2c\x20\x04\x96\x21", "\x02\x06\x0f\xfd\x21\x00")
+
 	// bank 3f
 
 	// set hl to the address of the item sprite with ID a.
@@ -650,6 +692,12 @@ func initAgesEOB() {
 			"\x30\x08\x2a\x47\x7e\xe1\x67\x68\xc1\xe9\xe1\xc1\xf1\xc9")
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
+
+	// put obtained rings directly into ring list (no need for appraisal), and tell the
+	// player what type of ring it is
+	r.replace(0x3f, 0x4614, "auto ring appraisal",
+		"\xcb\xf1\xcd\x6f\x46\xfe\x64\x38",
+		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x72\x18\xc9")
 }
 
 // makes ages-specific additions to the collection mode table.
