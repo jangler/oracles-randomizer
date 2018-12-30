@@ -142,11 +142,10 @@ func initAgesEOB() {
 	// don't save gfx when opening ring list from subscreen (they were already saved when
 	// opening the item menu), and clear screen scroll variables (which are saved anyway)
 	ringListGfxFix := r.appendToBank(0x02, "ring list gfx fix",
-		"\xcd\xad\x0c\xfa\xd3\xcb\xcb\x7f\xc8\xe6\x7f\xea\xd3\xcb" +
-		"\xaf\xe0\xaa\xe0\xac\x21\x08\xcd\x22\x22\xc3\xb1\x50")
+		"\xcd\xad\x0c\xfa\xd3\xcb\xcb\x7f\xc8\xe6\x7f\xea\xd3\xcb"+
+			"\xaf\xe0\xaa\xe0\xac\x21\x08\xcd\x22\x22\xc3\xb1\x50")
 	r.replace(0x02, 0x5074, "call ring list gfx fix",
 		"\xcd\xad\x0c", "\xcd"+ringListGfxFix)
-
 
 	// bank 03
 
@@ -173,6 +172,7 @@ func initAgesEOB() {
 			"\xea\x6e\xca"+
 			"\x3e\x01\xea\x76\xc8\xea\x38\xc7"+ // room flag 1
 			"\x3e\xc8\xea\x39\xc7\x3e\x02\xea\x6d\xca"+ // other rooms
+			"\x3e\x10\xea\x9f\xc6\x3e\x03\xea\xcc\xc6"+ // give L-3 ring box
 			"\xe1\xc9")
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
