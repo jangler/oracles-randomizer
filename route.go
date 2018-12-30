@@ -130,6 +130,7 @@ type RouteInfo struct {
 	Seasons              map[string]byte
 	Companion            int // 1 to 3
 	UsedItems, UsedSlots *list.List
+	RingMap              map[string]string
 	AttemptCount         int
 }
 
@@ -163,6 +164,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 
 		r := NewRoute(game)
 		ri.Companion = rollAnimalCompanion(src, r, game)
+		ri.RingMap = rom.RandomizeRingPool(src)
 		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
 
 		// slot initial nodes before algorithm slots progression items

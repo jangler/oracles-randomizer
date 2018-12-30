@@ -441,6 +441,11 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	summary, summaryDone := getSummaryChannel(
 		filepath.Join(dirName, logFilename))
 
+	// add ring substitutions to log name map
+	for k, v := range ri.RingMap {
+		niceNames[k] = v
+	}
+
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", ri.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)

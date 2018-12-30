@@ -6,6 +6,7 @@ package rom
 import (
 	"crypto/sha1"
 	"fmt"
+	"math/rand"
 	"sort"
 	"strings"
 )
@@ -406,4 +407,40 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 		offset += 0x100
 	}
 	return &Addr{0x01, offset}
+}
+
+// RandomizeRingPool randomizes the types of rings in the item pool, returning
+// a map of vanilla ring names to the randomized ones.
+func RandomizeRingPool(src *rand.Rand) map[string]string {
+	nameMap := make(map[string]string)
+	usedRings := make([]bool, 0x40)
+
+	for _, slot := range ItemSlots {
+		if slot.Treasure.id == 0x2d {
+			oldName := rings[slot.Treasure.param]
+
+			// loop until we get a ring that's not literally useless, and which
+			// we haven't used before.
+			done := false
+			for !done {
+				param := byte(src.Intn(0x40))
+				switch rings[param] {
+				case "friendship ring", "GBA time ring", "GBA nature ring",
+					"slayer's ring", "rupee ring", "victory ring", "sign ring",
+					"100th ring":
+					break
+				default:
+					if !usedRings[param] {
+						slot.Treasure.param = param
+						usedRings[param] = true
+						done = true
+					}
+				}
+			}
+
+			nameMap[oldName] = rings[slot.Treasure.param]
+		}
+	}
+
+	return nameMap
 }
