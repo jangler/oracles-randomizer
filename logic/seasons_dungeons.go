@@ -138,8 +138,9 @@ var seasonsD4Nodes = map[string]*Node{
 	"enter agunima": And("d4 pre-mid chest"), // alias for external reference
 }
 
-// the keys in this dungeon suck, so i'm not even going to bother with "hard"
-// logic for them.
+// if you can reach the key door after the fire trap, you can necessarily reach
+// the rest of the keys in this dungeon. this means that the other doors need
+// no more than four out of five keys in logic.
 var seasonsD5Nodes = map[string]*Node{
 	// 1F (it's the only F)
 	"d5 cart bay":   And("enter d5", Or("flippers", "bomb jump 2")),
@@ -148,7 +149,7 @@ var seasonsD5Nodes = map[string]*Node{
 		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel"))))),
 	"d5 gibdo/zol chest": AndSlot("d5 pot room", "kill gibdo", "kill zol"),
 	"d5 magnet ball chest": AndSlot("d5 pot room",
-		Or("flippers", "jump 6", Hard("jump 4")), "d5 5 keys"),
+		Or("flippers", "jump 6", Hard("jump 4")), "d5 4 keys"),
 	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 terrace chest": AndSlot("enter d5", Or("magnet gloves",
 		And("d5 cart bay", "jump 2", "bombs"))),
@@ -159,11 +160,12 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 spinner chest": And("d5 cart bay", Or("magnet gloves", "jump 6")),
 	"d5 drop ball":     And("d5 cart bay", "hit lever", "kill darknut (pit)"),
 	"d5 pre-mid chest": And("d5 cart bay", Or("magnet gloves", "jump 4")),
-	"d5 post-syger":    And("d5 pre-mid chest", "kill syger"), // keys after
+	"d5 post-syger":    And("d5 pre-mid chest", "kill syger"),
+	// you always have access to enough small keys for these nodes:
 	"d5 basement": AndSlot("d5 drop ball", "d5 post-syger",
-		"magnet gloves", Or("kill magunesu", Hard("jump 2")), "d5 5 keys"),
+		"magnet gloves", Or("kill magunesu", Hard("jump 2"))),
 	"d5 essence": AndStep("d5 post-syger", "magnet gloves",
-		Or("jump 2", Hard("start")), "d5 boss key", "d5 5 keys"),
+		Or("jump 2", Hard("start")), "d5 boss key"),
 
 	// fixed items
 	"d5 key A": And("d5 cart chest"),
@@ -171,8 +173,13 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 key C": And("d5 armos chest"),
 	"d5 key D": And("d5 spinner chest"),
 	"d5 key E": And("d5 pre-mid chest"),
-	"d5 5 keys": And("d5 key A", "d5 key B", "d5 key C", "d5 key D",
-		"d5 key E"),
+	"d5 4 keys": Or(
+		And("d5 key A", Or(
+			And("d5 key B", Or(
+				And("d5 key C", Or("d5 key D", "d5 key E")),
+				And("d5 key D", "d5 key E"))),
+			And("d5 key C", "d5 key D", "d5 key E"))),
+		And("d5 key B", "d5 key C", "d5 key D", "d5 key E")),
 }
 
 var seasonsD6Nodes = map[string]*Node{
