@@ -65,6 +65,7 @@ var labrynnaNodes = map[string]*Node{
 
 	// western woods
 	"fairies' woods": Or("bracelet", "dimitri's flute", "ages",
+		HardAnd("switch hook", "scent satchel"), // switch with octorok
 		And("lynna city", "flippers"),
 		And("currents", Or("hit lever", "ricky's flute", "moosh's flute"))),
 	"fairies' woods chest": OrSlot(And("deku forest", "currents"),
