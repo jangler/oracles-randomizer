@@ -96,14 +96,16 @@ var seasonsD4Nodes = map[string]*Node{
 	// left branch from entrance
 	"d4 north of entrance": AndSlot("enter d4", Or("flippers", "jump 4")),
 	"d4 pot room":          And("d4 north of entrance", "bombs", "bracelet"),
-	"d4 maze chest":        AndSlot("d4 north of entrance", "hit lever"),
-	"d4 dark chest":        And("d4 maze chest", "jump 2"),
+	"d4 maze chest": AndSlot("d4 north of entrance",
+		"hit lever from minecart"),
+	"d4 dark chest": And("d4 maze chest", "jump 2"),
 
 	// 2F (ground floor), right branch
 	"d4 water ring room": AndSlot("enter d4", Or("flippers", "jump 4"), "bombs",
 		"d4 1 key"),
 	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 1 key"),
-	"d4 water key room":  And("d4 roller minecart", "hit lever", "kill normal"),
+	"d4 water key room": And("d4 roller minecart", "hit lever from minecart",
+		"kill normal"),
 	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
 		"kill stalfos"),
 
@@ -144,7 +146,7 @@ var seasonsD4Nodes = map[string]*Node{
 var seasonsD5Nodes = map[string]*Node{
 	// 1F (it's the only F)
 	"d5 cart bay":   And("enter d5", Or("flippers", "bomb jump 2")),
-	"d5 cart chest": And("d5 cart bay", "hit lever"),
+	"d5 cart chest": And("d5 cart bay", "hit lever from minecart"),
 	"d5 pot room": And("enter d5", Or(And("magnet gloves", "bombs", "jump 2"),
 		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel"))))),
 	"d5 gibdo/zol chest": AndSlot("d5 pot room", "kill gibdo", "kill zol"),
@@ -158,7 +160,8 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 armos chest": And("d5 terrace chest", "kill moldorm", "kill iron mask",
 		"kill armos"),
 	"d5 spinner chest": And("d5 cart bay", Or("magnet gloves", "jump 6")),
-	"d5 drop ball":     And("d5 cart bay", "hit lever", "kill darknut (pit)"),
+	"d5 drop ball": And("d5 cart bay", "hit lever from minecart",
+		"kill darknut (pit)"),
 	"d5 pre-mid chest": And("d5 cart bay", Or("magnet gloves", "jump 4")),
 	"d5 post-syger":    And("d5 pre-mid chest", "kill syger"),
 	// you always have access to enough small keys for these nodes:
