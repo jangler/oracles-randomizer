@@ -170,6 +170,19 @@ func initSeasonsEOB() {
 	r.replace(0x02, 0x5035, "call ring list gfx fix",
 		"\xcd\x89\x0c", "\xcd"+ringListGfxFix)
 
+	// allow warping to horon village tree even if it hasn't been visited (warp
+	// menu locks otherwise).
+	checkTreeVisited := r.appendToBank(0x02, "check tree visited",
+		"\xfe\xf8\xc2\x60\x65\xb7\xc9")
+	r.replace(0x02, 0x5ec8, "call check tree visited 1",
+		"\xcd\x60\x65", "\xcd"+checkTreeVisited)
+	r.replace(0x02, 0x65e1, "call check tree visited 2",
+		"\xcd\x60\x65", "\xcd"+checkTreeVisited)
+	checkCursorVisited := r.appendToBank(0x02, "check cursor visited",
+		"\xfa\xb6\xcb\xc3"+checkTreeVisited)
+	r.replace(0x02, 0x609b, "call check cursor visited",
+		"\xcd\x5d\x65", "\xcd"+checkCursorVisited)
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
@@ -242,15 +255,6 @@ func initSeasonsEOB() {
 		"\xcd\xa7\x3e", "\xcd"+galeDropWrapper)
 
 	// bank 07
-
-	// don't warp link using gale seeds if no trees have been reached (the menu
-	// gets stuck in an infinite loop)
-	galeSeedCheck := r.appendToBank(0x07, "gale seed check",
-		"\xfa\x50\xcc\x3d\xc0\xaf\x21\xf8\xc7\xb6\x21\x9e\xc7\xb6\x21\x72\xc7"+
-			"\xb6\x21\x67\xc7\xb6\x21\x5f\xc7\xb6\x21\x10\xc7\xb6\xcb\x67"+
-			"\x20\x02\x3c\xc9\xaf\xc9")
-	r.replace(0x07, 0x4f45, "call gale seed check",
-		"\xfa\x50\xcc\x3d", "\xcd"+galeSeedCheck+"\x00")
 
 	// if wearing dev ring, change season regardless of where link is standing.
 	devChangeSeason := r.appendToBank(0x07, "dev ring season func",

@@ -115,7 +115,7 @@ func initAgesEOB() {
 	r.replace(0x02, 0x66a9, "call check tree visited 2",
 		"\xcd\x39\x66", "\xcd"+checkTreeVisited)
 	checkCursorVisited := r.appendToBank(0x02, "check cursor visited",
-		"\xfa\xb6\xcb\xfe\x78\xc2\x39\x66\xb7\xc9")
+		"\xfa\xb6\xcb\xc3"+checkTreeVisited)
 	r.replace(0x02, 0x619d, "call check cursor visited",
 		"\xcd\x36\x66", "\xcd"+checkCursorVisited)
 
