@@ -17,6 +17,16 @@ var agesItemNodes = map[string]*Node{
 	"moosh's flute":   Root(),
 	"flute":           Or("ricky's flute", "dimitri's flute", "moosh's flute"),
 
+	// ring things
+	"fist ring":     Root(),
+	"expert's ring": Root(),
+	"energy ring":   Root(),
+
+	// expert's ring can do some things that fist ring can't, so this is for
+	// the lowest common denominator.
+	"punch object": Or("fist ring", "expert's ring"),
+	"punch enemy":  Or(Hard("fist ring"), "expert's ring"),
+
 	"harp":   Or("harp 1", "harp 2", "harp 3"),
 	"echoes": And("harp"),
 	"currents": Or(And("harp 1", Or("harp 2", "harp 3")),

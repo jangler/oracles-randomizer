@@ -55,6 +55,7 @@ In logic:
   (subtract 1 tile if the jump is over water or lava instead of a pit)
 - Using only ember seeds from the seed satchel as a weapon
 - Using only ember, scent, or gale seeds from the seed shooter as a weapon
+- Using expert's ring as a weapon
 - Using thrown objects (bushes, pots) as weapons
 - Flipping spiked beetles using the shovel
 
@@ -68,12 +69,13 @@ Out of logic:
 - Using only mystery seeds as a weapon
 - Using only scent or gale seeds from the seed satchel as a weapon
 - Using only bombs as a weapon, except versus armos
+- Using fist ring as a weapon
 - Doing Patch's restoration ceremony without sword
 - Getting a potion for King Zora from Maple
 - Guard skip
 - Various stupid tricks in D2, D3, D4, and D5
 - Text warps
-- Magic rings
+- Magic rings from non-randomized locations
 
 
 ### Hard logic
@@ -84,4 +86,4 @@ exception of:
 - Farming rupees, except by shovel RNG manips
 - Mystery seeds as a weapon
 - Text warps
-- Magic rings
+- Magic rings from non-randomized locations

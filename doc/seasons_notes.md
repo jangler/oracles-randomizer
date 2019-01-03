@@ -52,6 +52,7 @@ In logic:
   jump is over water or lava instead of a pit)
 - Using only ember seeds from the seed satchel as a weapon
 - Using only ember, scent, or gale seeds from the slingshot as a weapon
+- Using expert's ring as a weapon
 - Using thrown objects (bushes, pots) as weapons
 - Flipping spiked beetles using the shovel
 
@@ -67,12 +68,13 @@ Out of logic:
 - Using only mystery seeds as a weapon
 - Using only scent or gale seeds from the seed satchel as a weapon
 - Using only bombs as a weapon, except versus armos
+- Using fist ring as a weapon
 - Poe skip
 - Lighting the second Poe sister's torches without either pegasus seeds or
   hyper slingshot
 - Fighting Frypolar without slingshot
 - D8 sidescrollers without cape
-- Magic rings
+- Magic rings from non-randomized locations
 
 
 ### Hard logic
@@ -84,4 +86,4 @@ exception of:
 - Farming rupees, except by shovel RNG manips
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
-- Magic rings
+- Magic rings from non-randomized locations

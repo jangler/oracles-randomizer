@@ -190,7 +190,8 @@ var holodrumNodes = map[string]*Node{
 	"moblin keep": AndSlot(Or("flippers", "bomb jump 4"),
 		"bracelet", Or(
 			And("natzu prairie", "sunken city"),
-			And("natzu river", "blaino's gym", "dimitri's flute"),
+			And("natzu river", "blaino's gym",
+				Or("dimitri's flute", And("flippers", "swimmer's ring"))),
 			And("natzu wasteland", "blaino's gym",
 				Or("flute", And("remove bush", "jump 3"))))),
 	"natzu region, across water": OrSlot(
@@ -205,7 +206,7 @@ var holodrumNodes = map[string]*Node{
 		And("blaino's gym", Or(
 			And("natzu prairie", "flute"),
 			And("natzu river", Or(And(Or("flippers", "flute"), "jump 2"),
-				And("flute", "flippers", "gale satchel"))),
+				And(Or("flute", "swimmer's ring"), "flippers", "gale satchel"))),
 			And("natzu wasteland", Or("flute", And("remove bush",
 				Or("bomb jump 3", And("jump 3", "flippers")))))))),
 	"sunken city seed tree": AndSlot("sunken city", "seed item",
