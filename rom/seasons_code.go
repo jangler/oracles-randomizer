@@ -433,6 +433,13 @@ func initSeasonsEOB() {
 	r.replace(0x09, 0x4b4f, "call essence warp",
 		"\xea\x67\xcc", "\xcd"+essenceWarp)
 
+	// use createTreasure for mt. cucco platform cave item, not
+	// createRingTreasure.
+	createMtCuccoItem := r.appendToBank(0x09, "create mt. cucco item",
+		"\x01\x00\x00\xcd\x1b\x27\xc3\x21\x64")
+	r.replace(0x09, 0x641a, "call create mt. cucco item",
+		"\x01\x01\x27", "\xc3"+createMtCuccoItem)
+
 	// bank 0a
 
 	// set global flags and room flags that would be set during the intro, as

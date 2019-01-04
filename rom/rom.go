@@ -150,6 +150,9 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
 		ItemSlots["master diver's reward"].idAddrs[0].offset = codeAddr.offset + 1
 		ItemSlots["master diver's reward"].subIDAddrs[0].offset = codeAddr.offset + 2
+		codeAddr = codeMutables["create mt. cucco item"].(*MutableRange).Addrs[0]
+		ItemSlots["mt. cucco, platform cave"].idAddrs[0].offset = codeAddr.offset + 2
+		ItemSlots["mt. cucco, platform cave"].subIDAddrs[0].offset = codeAddr.offset + 1
 	} else {
 		// explicitly set these addresses and IDs after their functions
 		mut := codeMutables["soldier script give item"].(*MutableRange)
@@ -224,7 +227,8 @@ func Verify(b []byte, game int) []error {
 		case "maku tree", "fool's ore", "member's card", "treasure map",
 			"temple of seasons", "rare peach stone", "ribbon", "blaino prize",
 			"subrosia seaside", "great furnace", "subrosian smithy",
-			"master diver's reward", "d5 basement":
+			"master diver's reward", "d5 basement", "green joy ring",
+			"mt. cucco, platform cave":
 		// ages misc.
 		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
 			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",

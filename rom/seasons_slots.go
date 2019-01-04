@@ -68,6 +68,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"spring banana", 0x66c6, 0x00, 0x0f, collectFind2, 0x0f),
 	"goron mountain, across pits": seasonsFoundItem(
 		"dragon key", 0x62a3, 0x00, 0x1a, collectFind1, 0x1a),
+	"mt. cucco, platform cave": seasonsFoundItem( // addr set at EOB
+		"green joy ring", 0x0000, 0x05, 0xbb, collectFall, 0x1f),
 	"diving spot outside D4": seasonsScriptItem(
 		"pyramid jewel", 0x734e, 0x07, 0xe5, collectUnderwater, 0x1d),
 	"black beast's chest": seasonsChest(
