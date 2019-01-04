@@ -65,7 +65,7 @@ var seasonsKillNodes = map[string]*Node{
 	"kill goriya (pit)": Or("kill goriya", "pit kill normal"),
 	"kill aquamentus":   Or("scent kill normal"),
 	"hit far switch": Or("boomerang", "bombs", "any slingshot",
-		And("sword L-2", "energy ring")),
+		And("sword", "energy ring")),
 	"kill rope": Or("kill normal"),
 	"kill hardhat (pit)": Or("sword", "boomerang", "shield", "rod",
 		"fool's ore", Hard("bombs"), And(
@@ -113,7 +113,7 @@ var seasonsKillNodes = map[string]*Node{
 	"kill magunesu":   Or("sword", "fool's ore", "expert's ring"),
 	"kill poe sister": Or("scent kill normal", "ember seeds"),
 	"kill darknut (across pit)": Or("scent slingshot", "magnet gloves",
-		And("jump 4", "kill darknut (pit)"), And("sword L-2", "energy ring"),
+		And("jump 4", "kill darknut (pit)"), And("sword", "energy ring"),
 		HardAnd("toss ring", "bombs")),
 	"kill gleeok": Or("sword", Hard("bombs"), "fool's ore", "punch enemy"),
 	"kill frypolar": Or(And("bracelet",

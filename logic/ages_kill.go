@@ -32,7 +32,7 @@ var agesKillNodes = map[string]*Node{
 		"scent seeds", "mystery seeds", "any seed shooter", "switch hook",
 		"boomerang"),
 	"hit switch ranged": Or("bombs", "any seed shooter", "switch hook",
-		"boomerang", And("noble sword", "energy ring")),
+		"boomerang", And("sword", "energy ring")),
 
 	// flute isn't included here since it's only available in some places.
 	"break bush safe": Or("sword", "switch hook", "bracelet",
