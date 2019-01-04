@@ -44,7 +44,7 @@ var holodrumNodes = map[string]*Node{
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump
 		And("horon village", "ember seeds"),
-		And("rosa portal", Or("remove bush", "flute")),
+		And("rosa portal", "remove bush"),
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			"flippers", "jump 2", "ricky's flute", "dimitri's flute"))),
 	"fairy fountain": Or(
@@ -227,7 +227,7 @@ var holodrumNodes = map[string]*Node{
 		And("sunken city", "flippers",
 			Or("sunken city default summer", "summer")),
 		And("goron mountain", "bracelet", "shovel")),
-	"spring banana tree": AndSlot("mount cucco", "remove flower", "bracelet",
+	"spring banana tree": AndSlot("mount cucco", Or("remove flower", "moosh"), "bracelet",
 		"jump 2", Or("sunken city default spring", "spring"),
 		Or("sword", "fool's ore")),
 	"moosh": And("mount cucco", "spring banana"),
@@ -279,11 +279,12 @@ var holodrumNodes = map[string]*Node{
 	"western coast old man":  And("pirate ship", "ember seeds"),
 	"holodrum plain east old man": And("blaino's gym", "ember seeds",
 		Or("ricky's flute", "holodrum plain default summer",
-			And("ghastly stump", "summer"))),
+			And("ghastly stump", "summer",
+				Or("jump 2", "flute", And("break bush", "flippers"))))),
 	"horon village old man":       And("horon village", "ember seeds"),
 	"north horon old man":         And("north horon stump", "ember seeds"),
 	"tarm ruins old man":          And("enter d6", "ember seeds"),
-	"woods of winter old man":     And("holly's house", "ember seeds"),
+	"woods of winter old man":     And("moblin road", "ember seeds"),
 	"holodrum plain west old man": And("ghastly stump", "ember seeds"),
 }
 

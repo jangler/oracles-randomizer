@@ -22,7 +22,7 @@ var subrosiaNodes = map[string]*Node{
 
 	"beach": Or("swamp portal",
 		And("hide and seek", "jump 2", "bracelet",
-			Or("jump 3", "magnet gloves", Hard("bombs"))),
+			Or("bomb jump 2", "magnet gloves")),
 		And("furnace", "bracelet", "jump 2"),
 		And("furnace", Or("jump 4", Hard("jump 3"))),
 		And("furnace", "jump 2", "magnet gloves"),
