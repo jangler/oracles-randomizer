@@ -51,7 +51,7 @@ var seasonsKillNodes = map[string]*Node{
 	"remove bush": Or("sword", "boomerang L-2", "bracelet"),
 
 	"kill normal": Or("sword", "satchel kill normal", "slingshot kill normal",
-		"fool's ore", "punch", Hard("bombs")),
+		"fool's ore", Hard("bombs")),
 	"pit kill normal": Or("sword", "shield", "rod", "fool's ore",
 		Hard("bombs"), "scent kill normal"),
 	"kill stalfos": Or("kill normal", "rod"),
