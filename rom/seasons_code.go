@@ -254,6 +254,9 @@ func initSeasonsEOB() {
 	r.replace(0x06, 0x47f5, "gale drop call",
 		"\xcd\xa7\x3e", "\xcd"+galeDropWrapper)
 
+	// Use expert's or fist ring with only one button unequipped
+	r.replace(0x06, 0x490e, "punch with 1 button", "\xc0", "\x00")
+
 	// bank 07
 
 	// if wearing dev ring, change season regardless of where link is standing.
