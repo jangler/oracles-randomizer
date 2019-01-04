@@ -290,6 +290,9 @@ func initAgesEOB() {
 	r.replace(0x06, 0x40e7, "call set portal sign text",
 		"\x01\x01\x09", "\xcd"+setPortalSignText)
 
+	// Use expert's or fist ring with only one button unequipped
+	r.replace(0x06, 0x4969, "punch with 1 button", "\xc0", "\x00")
+
 	// bank 16 (pt. 1)
 
 	// upgraded item data (one byte for old ID, one for new ID two for address):
