@@ -44,7 +44,7 @@ var holodrumNodes = map[string]*Node{
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump
 		And("horon village", "ember seeds"),
-		And("rosa portal", Or("remove bush", "flute")),
+		And("rosa portal", "remove bush"),
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			"flippers", "jump 2", "ricky's flute", "dimitri's flute"))),
 	"fairy fountain": Or(
