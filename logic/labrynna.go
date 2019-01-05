@@ -65,8 +65,10 @@ var labrynnaNodes = map[string]*Node{
 	"enter d1":      And("yoll graveyard", "graveyard key"),
 
 	// western woods
+	// it's possible to switch hook the octorok through the boulder to enter
+	// fairies' woods (easier if you have scent seeds), but it's not in logic
+	// for the same reason that cucco clip isn't in seasons logic.
 	"fairies' woods": Or("bracelet", "dimitri's flute", "ages",
-		HardAnd("switch hook", "scent satchel"), // switch with octorok
 		And("lynna city", "flippers"),
 		And("currents", Or("hit lever", "ricky's flute", "moosh's flute"))),
 	"fairies' woods chest": OrSlot(And("deku forest", "currents"),
@@ -122,7 +124,7 @@ var labrynnaNodes = map[string]*Node{
 	"restoration wall": Or("ages",
 		And("symmetry past", "currents", "bracelet", "flippers")),
 	"patch": And("restoration wall", Or("sword",
-		HardOr("shield", "boomerang", "switch hook", "scent seeds"))),
+		HardOr("shield", "boomerang", "switch hook", "scent seeds", "shovel"))),
 	"talus peaks chest": OrSlot("restoration wall"),
 	"enter d4":          And("symmetry present", "tuni nut", "patch"),
 

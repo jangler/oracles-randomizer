@@ -88,7 +88,7 @@ var holodrumNodes = map[string]*Node{
 			"woods of winter default summer", "summer",
 			"woods of winter default autumn", "autumn")),
 	"eastern suburbs, on cliff": AndSlot("suburbs", "bracelet",
-		Or("bomb jump 2", "magnet gloves"),
+		Or("jump 4", Hard("bomb jump 2"), "magnet gloves"),
 		Or("eastern suburbs default spring", "spring")),
 	"woods of winter, 2nd cave": AndSlot("moblin road",
 		Or("flippers", "bomb jump 3")),
