@@ -245,12 +245,8 @@ func initAgesEOB() {
 			"\xfa\x88\xc6\xb7\x20\x0d"+ // check B item
 			"\xfa\x81\xc4\xe6\x02\x28\x06"+ // check input
 			"\xf1\xfa\x09\xd0\x37\xc9\xf1\xc9") // jump over ledge
-	graveJump := r.appendToBank(0x05, "grave jump",
-		"\xf5\xfe\x84\x20\x0f"+ // tile
-			"\xc5\x01\x00\x5b\xcd"+compareRoom+"\xc1\x20\x05"+ // room
-			"\xf1\x3e\x10\x37\xc9\xf1\xc9") // jump
 	cliffLookup := r.appendToBank(0x05, "cliff lookup",
-		"\xcd"+devJump+"\xd8\xcd"+graveJump+"\xd8\xc3\x1f\x1e")
+		"\xcd"+devJump+"\xd8\xc3\x1f\x1e")
 	r.replace(0x05, 0x6083, "call cliff lookup",
 		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
 
