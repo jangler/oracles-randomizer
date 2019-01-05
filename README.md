@@ -29,8 +29,7 @@ You can download executables for Windows, macOS, and Linux from the
 use the "Download ZIP" link on the main page; that only contains the source
 code. The download also contains a rudimentary location checklist and item
 tracker. If you're looking for a more detailed item and map tracker,
-[EmoTracker](http://emosaru.com/index.php/emotracker/) has a pack developed
-by Herreteman.
+[EmoTracker](https://emotracker.net/) has a pack developed by Herreteman.
 
 
 ## Randomization notes
