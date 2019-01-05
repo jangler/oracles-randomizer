@@ -272,7 +272,7 @@ var agesD8Nodes = map[string]*Node{
 
 	"d8 group B": And("d8 group A", "switch hook", "cane",
 		"seed shooter", Or("ember seeds", Hard("mystery seeds"))), // +1 key
-	"d8 isolated chest": AndSlot("d8 group B"),
+	"d8 ghini chest": AndSlot("d8 group B"),
 
 	"d8 group C":           And("d8 group B"), // +1 small key
 	"d8 blue peg chest":    AndSlot("d8 group C"),

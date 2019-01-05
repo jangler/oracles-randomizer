@@ -204,7 +204,7 @@ var agesSlots = map[string]*MutableSlot{
 	"d7 hallway chest":         agesChest("gasha seed", 0x52ab, 0x05, 0x6a),
 	"d7 post-hallway chest":    agesChest("d7 boss key", 0x52af, 0x05, 0x6c),
 	"d8 B3F chest":             agesChest("d8 boss key", 0x52bb, 0x05, 0x79),
-	"d8 isolated chest":        agesChest("dungeon map", 0x52cb, 0x05, 0x85),
+	"d8 ghini chest":           agesChest("dungeon map", 0x52cb, 0x05, 0x85),
 	"d8 sarcophagus chest":     agesChest("gasha seed", 0x52db, 0x05, 0x9f),
 	"d8 blue peg chest":        agesChest("compass", 0x52e3, 0x05, 0xa4),
 	"d8 floor puzzle":          agesChest("bracelet 2", 0x52eb, 0x05, 0xa6),
