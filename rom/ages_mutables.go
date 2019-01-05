@@ -286,6 +286,9 @@ var agesFixedMutables = map[string]Mutable{
 	// the magic oar, not on essences.
 	"rafton script check": MutableString(Addr{0x15, 0x6b42},
 		"\xc7\xdb\xcd\x80", "\xcb\xc0\xc6\x09"),
+
+	// vanilla bug: compass doesn't show D6 boss key chest.
+	"fix d6 compass": MutableByte(Addr{0x01, 0x4eea}, 0x14, 0x34),
 }
 
 var agesVarMutables = map[string]Mutable{
