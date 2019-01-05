@@ -165,7 +165,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		r := NewRoute(game)
 		ri.Companion = rollAnimalCompanion(src, r, game)
 		ri.RingMap = rom.RandomizeRingPool(src)
-		itemList, slotList = initRouteInfo(src, r, game, ri.Companion)
+		itemList, slotList = initRouteInfo(src, r, ri.RingMap, game,
+			ri.Companion)
 
 		// slot initial nodes before algorithm slots progression items
 		if game == rom.GameSeasons {
@@ -453,7 +454,7 @@ var seedNames = []string{"ember tree seeds", "scent tree seeds",
 	"pegasus tree seeds", "gale tree seeds", "mystery tree seeds"}
 
 // return shuffled lists of item and slot nodes
-func initRouteInfo(src *rand.Rand, r *Route,
+func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 	game, companion int) (itemList, slotList *list.List) {
 	// get slices of names
 	var itemNames []string
@@ -491,6 +492,11 @@ func initRouteInfo(src *rand.Rand, r *Route,
 				case moosh:
 					treasureName = "moosh's flute"
 				}
+			}
+
+			// substitute ring pool
+			if ringSub, ok := ringMap[treasureName]; ok {
+				treasureName = ringSub
 			}
 
 			itemNames = append(itemNames, treasureName)

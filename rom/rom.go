@@ -421,7 +421,7 @@ func RandomizeRingPool(src *rand.Rand) map[string]string {
 
 	for _, slot := range ItemSlots {
 		if slot.Treasure.id == 0x2d {
-			oldName := rings[slot.Treasure.param]
+			oldName := FindTreasureName(slot.Treasure)
 
 			// loop until we get a ring that's not literally useless, and which
 			// we haven't used before.

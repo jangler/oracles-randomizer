@@ -17,13 +17,6 @@ var seasonsItemNodes = map[string]*Node{
 	"dimitri's flute": Root(),
 	"moosh's flute":   Root(),
 
-	// ring things
-	"swimmer's ring": Root(),
-	"fist ring":      Root(),
-	"expert's ring":  Root(),
-	"energy ring":    Root(),
-	"toss ring":      Root(),
-
 	// expert's ring can do some things that fist ring can't, so this is for
 	// the lowest common denominator.
 	"punch object": Or("fist ring", "expert's ring"),
