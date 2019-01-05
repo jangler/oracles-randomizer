@@ -293,5 +293,6 @@ var agesD8Nodes = map[string]*Node{
 }
 
 var agesD9Nodes = map[string]*Node{
-	"done": AndStep("maku seed", "mystery seeds", "switch hook", "sword"),
+	"done": AndStep("maku seed", "mystery seeds", "switch hook",
+		Or("sword", "punch"), "bombs"), // bombs in case of spider form
 }

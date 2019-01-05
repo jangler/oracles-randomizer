@@ -47,7 +47,7 @@ var labrynnaNodes = map[string]*Node{
 		HardAnd("satchel", "scent seeds", "pegasus seeds"),
 		And("break bush safe", "mermaid suit"))),
 	"rescue nayru": AndSlot("ambi's palace chest", "mystery seeds",
-		"switch hook", "sword"), // fight is scripted; only sword ends it
+		"switch hook", Or("sword", "punch")),
 	"mayor plen's house": AndSlot("long hook"),
 	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence",
 		"d5 essence", "d6 essence", "d7 essence", "d8 essence"),
