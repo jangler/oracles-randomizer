@@ -33,7 +33,7 @@ var agesD2Nodes = map[string]*Node{
 	"d2 basement":      And("enter swoop", "kill swoop"),
 	"d2 thwomp tunnel": AndSlot("d2 basement"),
 	"d2 thwomp shelf": AndSlot("d2 basement",
-		Or("feather", And("cane", "pegasus satchel"))),
+		Or("feather", HardAnd("cane", "pegasus satchel"))),
 	"d2 moblin platform": AndSlot("d2 3 keys"),
 	// push moblin into doorway, stand on button, use switch hook
 	"d2 statue room": And("d2 moblin platform", Or("bracelet", "cane",
