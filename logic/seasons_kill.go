@@ -72,7 +72,7 @@ var seasonsKillNodes = map[string]*Node{
 			Or("slingshot", Hard("satchel")), Or("scent seeds", "gale seeds"))),
 	"kill moblin (gap)": Or("sword", "scent seeds", "slingshot kill normal",
 		"fool's ore", "jump kill normal", "jump pit normal",
-		HardOr("bombs", "punch enemy")), // need to fall into pit to punch (?)
+		HardOr("bombs", "punch enemy", "ember seeds")),
 	"kill zol":           Or("kill normal"),
 	"remove pot":         Or("sword L-2", "bracelet"),
 	"kill facade":        Or("bombs"),

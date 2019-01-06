@@ -176,7 +176,7 @@ var agesD6Nodes = map[string]*Node{
 		"flippers"),
 	"d6 open wall": And("enter d6 past", "bombs", "ember shooter"),
 	"d6 past stalfos chest": And("enter d6 past", "ember seeds",
-		Or("kill normal ranged", "scent satchel", "feather")),
+		Or("kill normal ranged", "scent satchel", "feather", Hard())),
 	"d6 past rope chest": And("d6 open wall", "mermaid suit"),
 
 	// past, 1 key
