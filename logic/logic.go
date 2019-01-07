@@ -70,7 +70,7 @@ var seasonsNodes, agesNodes map[string]*Node
 
 func init() {
 	seasonsNodes = make(map[string]*Node)
-	appendNodes(seasonsNodes,
+	appendNodes(seasonsNodes, ringNodes,
 		seasonsItemNodes, seasonsBaseItemNodes, seasonsKillNodes,
 		holodrumNodes, subrosiaNodes, portalNodes, seasonNodes,
 		seasonsD0Nodes, seasonsD1Nodes, seasonsD2Nodes, seasonsD3Nodes,
@@ -79,7 +79,7 @@ func init() {
 	flattenNestedNodes(seasonsNodes)
 
 	agesNodes = make(map[string]*Node)
-	appendNodes(agesNodes,
+	appendNodes(agesNodes, ringNodes,
 		agesItemNodes, agesKillNodes, labrynnaNodes,
 		agesD1Nodes, agesD2Nodes, agesD3Nodes, agesD4Nodes,
 		agesD5Nodes, agesD6Nodes, agesD7Nodes, agesD8Nodes, agesD9Nodes)

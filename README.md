@@ -56,6 +56,10 @@ General details common to both games:
   shop is randomized; the other two usual means of getting a strange flute
   don't give anything special. The animal companion regions (Natzu in Seasons
   and Nuun in Ages) match whatever flute is in the seed.
+- Rings are instantly appraised when you get them, and the ring list can be
+  accessed from the inventory ring box icon. For convenience, the L-3 ring box
+  is given at the start. The punch rings can be used with only one equip slot
+  empty.
 - If tree warp is enabled, holding start while closing the map screen outdoors
   warps to the seed tree in Horon Village or Lynna City. Tree warp comes with
   no warranty and is not supported as a "feature", so think carefully before
@@ -93,7 +97,8 @@ A: Not yet. Probably in a future version.
 
 ## Thanks to:
 
-- Drenn for [ages-disasm](https://github.com/Drenn1/ages-disasm).
+- Drenn for [ages-disasm](https://github.com/Drenn1/ages-disasm) and additional
+  code.
 - Herreteman, dragonc0, Phoenomenom714, and jaysee87 for help with logic,
   playtesting, design, and "customer support".
 - Everyone who helped playtest prerelease versions of the randomizer.

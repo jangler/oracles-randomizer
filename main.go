@@ -489,6 +489,17 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 // itemIsJunk returns true iff the item with the given name can never be
 // progression, regardless of context.
 func itemIsJunk(name string) bool {
+	switch name {
+	case "fist ring", "expert's ring", "energy ring", "toss ring",
+		"swimmer's ring":
+		return false
+	}
+
+	// non-default junk rings
+	if rom.Treasures[name] == nil {
+		return true
+	}
+
 	switch rom.Treasures[name].ID() {
 	// heart refill, PoH, HC, ring, compass, dungeon map, gasha seed
 	case 0x29, 0x2a, 0x2b, 0x2d, 0x32, 0x33, 0x34:
@@ -506,7 +517,12 @@ func setROMData(romData []byte, game int, ri *RouteInfo, logf logFunc,
 		if verbose {
 			logf("%s <- %s", slot.Name, item.Name)
 		}
-		rom.ItemSlots[slot.Name].Treasure = rom.Treasures[item.Name]
+
+		romItemName := item.Name
+		if ringName, ok := reverseLookup(ri.RingMap, item.Name); ok {
+			romItemName = ringName
+		}
+		rom.ItemSlots[slot.Name].Treasure = rom.Treasures[romItemName]
 	}
 
 	// set season data
@@ -520,4 +536,15 @@ func setROMData(romData []byte, game int, ri *RouteInfo, logf logFunc,
 
 	// do it! (but don't write anything)
 	return rom.Mutate(romData, game)
+}
+
+// reverseLookup looks up the key for a given map value. Note that this is only
+// "safe" if each value has only one key.
+func reverseLookup(m map[string]string, v string) (string, bool) {
+	for k, v2 := range m {
+		if v2 == v {
+			return k, true
+		}
+	}
+	return "", false
 }

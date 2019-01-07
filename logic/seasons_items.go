@@ -17,13 +17,10 @@ var seasonsItemNodes = map[string]*Node{
 	"dimitri's flute": Root(),
 	"moosh's flute":   Root(),
 
-	// not actually placed
-	"fist ring":      Root(),
-	"expert's ring":  Root(),
-	"toss ring":      Root(),
-	"energy ring":    Root(),
-	"light ring L-1": Root(),
-	"light ring L-2": Root(),
+	// expert's ring can do some things that fist ring can't, so this is for
+	// the lowest common denominator.
+	"punch object": Or("fist ring", "expert's ring"),
+	"punch enemy":  Or(Hard("fist ring"), "expert's ring"),
 
 	"sword L-1":     Or("sword 1", "sword 2"),
 	"sword L-2":     And("sword 1", "sword 2"),
@@ -106,10 +103,10 @@ var seasonsItemNodes = map[string]*Node{
 	"bomb jump 4": Or("jump 6", HardAnd("jump 4", "bombs")),
 	"jump 6":      And("feather L-2", "pegasus satchel"),
 
-	"harvest tree": Or("sword", "rod", "fool's ore"),
+	"harvest tree": Or("sword", "rod", "fool's ore", "punch object"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),
 
 	// technically the player can always get ore chunks if they can make it to
 	// subrosia, but shovel is the only way that isn't annoying.
-	"ore chunks": Or("shovel", Hard("start")),
+	"ore chunks": Or("shovel", Hard()),
 }
