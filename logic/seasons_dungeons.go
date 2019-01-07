@@ -168,7 +168,7 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 basement": AndSlot("d5 drop ball", "d5 post-syger",
 		"magnet gloves", Or("kill magunesu", Hard("jump 2"))),
 	"d5 essence": AndStep("d5 post-syger", "magnet gloves",
-		Or("jump 2", Hard("start")), "d5 boss key"),
+		Or("jump 2", Hard()), "d5 boss key"),
 
 	// fixed items
 	"d5 key A": And("d5 cart chest"),
@@ -241,7 +241,7 @@ var seasonsD7Nodes = map[string]*Node{
 	"d7 magunesu chest": And("d7 armos puzzle", "jump 3", "kill magunesu",
 		"magnet gloves"),
 	"enter poe B": And("d7 pot room", "d7 3 keys", "ember seeds",
-		Or("pegasus satchel", "slingshot L-2", Hard("start"))),
+		Or("pegasus satchel", "slingshot L-2", Hard())),
 	"d7 water stairs": And("enter poe B", "flippers"),
 	"d7 spike chest":  AndSlot("d7 water stairs", "d7 cross bridge"),
 
@@ -288,7 +288,7 @@ var seasonsD8Nodes = map[string]*Node{
 	"d8 ice puzzle room": And("d8 armos chest", "kill frypolar", "ember seeds",
 		"slingshot L-2"),
 	"d8 pols voice chest": AndSlot("d8 ice puzzle room",
-		Or("jump 6", "boomerang L-2", Hard("start"))),
+		Or("jump 6", "boomerang L-2", Hard())),
 	"d8 crystal room": And("d8 ice puzzle room", "d8 4 keys"),
 	"d8 ghost armos":  And("d8 crystal room"),
 	"d8 NW crystal":   And("d8 crystal room", "d8 7 keys"),

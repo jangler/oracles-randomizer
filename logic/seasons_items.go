@@ -108,5 +108,5 @@ var seasonsItemNodes = map[string]*Node{
 
 	// technically the player can always get ore chunks if they can make it to
 	// subrosia, but shovel is the only way that isn't annoying.
-	"ore chunks": Or("shovel", Hard("start")),
+	"ore chunks": Or("shovel", Hard()),
 }
