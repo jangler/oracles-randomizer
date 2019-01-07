@@ -44,7 +44,7 @@ var holodrumNodes = map[string]*Node{
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump
 		And("horon village", "ember seeds"),
-		And("rosa portal", Or("remove bush", "flute")),
+		And("rosa portal", "remove bush"),
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			"flippers", "jump 2", "ricky's flute", "dimitri's flute"))),
 	"fairy fountain": Or(
@@ -88,7 +88,7 @@ var holodrumNodes = map[string]*Node{
 			"woods of winter default summer", "summer",
 			"woods of winter default autumn", "autumn")),
 	"eastern suburbs, on cliff": AndSlot("suburbs", "bracelet",
-		Or("bomb jump 2", "magnet gloves"),
+		Or("jump 4", Hard("bomb jump 2"), "magnet gloves"),
 		Or("eastern suburbs default spring", "spring")),
 	"woods of winter, 2nd cave": AndSlot("moblin road",
 		Or("flippers", "bomb jump 3")),
@@ -190,9 +190,10 @@ var holodrumNodes = map[string]*Node{
 	"moblin keep": AndSlot(Or("flippers", "bomb jump 4"),
 		"bracelet", Or(
 			And("natzu prairie", "sunken city"),
-			And("natzu river", "blaino's gym", "dimitri's flute"),
+			And("natzu river", "blaino's gym",
+				Or("dimitri's flute", And("flippers", "swimmer's ring"))),
 			And("natzu wasteland", "blaino's gym",
-				Or("flute", And("remove bush", "jump 3"))))),
+				Or("flute", Hard("jump 2"), "jump 3")))),
 	"natzu region, across water": OrSlot(
 		And("blaino's gym", Or("flippers", "dimitri's flute")),
 		And("sunken city", "natzu river", "jump 6")),
@@ -205,9 +206,9 @@ var holodrumNodes = map[string]*Node{
 		And("blaino's gym", Or(
 			And("natzu prairie", "flute"),
 			And("natzu river", Or(And(Or("flippers", "flute"), "jump 2"),
-				And("flute", "flippers", "gale satchel"))),
-			And("natzu wasteland", Or("flute", And("remove bush",
-				Or("bomb jump 3", And("jump 3", "flippers")))))))),
+				And(Or("flute", "swimmer's ring"), "flippers", "gale satchel"))),
+			And("natzu wasteland",
+				Or("flute", And("remove bush", "bomb jump 3")))))),
 	"sunken city seed tree": AndSlot("sunken city", "seed item",
 		Or("harvest tree", "dimitri"),
 		Or("jump 2", "flippers", "dimitri's flute",
@@ -226,9 +227,12 @@ var holodrumNodes = map[string]*Node{
 		And("sunken city", "flippers",
 			Or("sunken city default summer", "summer")),
 		And("goron mountain", "bracelet", "shovel")),
-	"spring banana tree": AndSlot("mount cucco", "remove flower", "bracelet",
+	"spring banana tree": AndSlot("mount cucco", Or("remove flower", "moosh"), "bracelet",
 		"jump 2", Or("sunken city default spring", "spring"),
 		Or("sword", "fool's ore")),
+	"mt. cucco, platform cave": AndSlot("mount cucco", "bracelet",
+		Or("remove flower", "moosh"),
+		Or("sunken city default spring", "spring")),
 	"moosh": And("mount cucco", "spring banana"),
 	"goron mountain, across pits": AndSlot("mount cucco",
 		Or("moosh", "jump 6", Hard("jump 4"))),
@@ -278,11 +282,12 @@ var holodrumNodes = map[string]*Node{
 	"western coast old man":  And("pirate ship", "ember seeds"),
 	"holodrum plain east old man": And("blaino's gym", "ember seeds",
 		Or("ricky's flute", "holodrum plain default summer",
-			And("ghastly stump", "summer"))),
+			And("ghastly stump", "summer",
+				Or("jump 2", "flute", And("break bush", "flippers"))))),
 	"horon village old man":       And("horon village", "ember seeds"),
 	"north horon old man":         And("north horon stump", "ember seeds"),
 	"tarm ruins old man":          And("enter d6", "ember seeds"),
-	"woods of winter old man":     And("holly's house", "ember seeds"),
+	"woods of winter old man":     And("moblin road", "ember seeds"),
 	"holodrum plain west old man": And("ghastly stump", "ember seeds"),
 }
 

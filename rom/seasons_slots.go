@@ -68,6 +68,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"spring banana", 0x66c6, 0x00, 0x0f, collectFind2, 0x0f),
 	"goron mountain, across pits": seasonsFoundItem(
 		"dragon key", 0x62a3, 0x00, 0x1a, collectFind1, 0x1a),
+	"mt. cucco, platform cave": seasonsFoundItem( // addr set at EOB
+		"green joy ring", 0x0000, 0x05, 0xbb, collectFall, 0x1f),
 	"diving spot outside D4": seasonsScriptItem(
 		"pyramid jewel", 0x734e, 0x07, 0xe5, collectUnderwater, 0x1d),
 	"black beast's chest": seasonsChest(
@@ -93,9 +95,9 @@ var seasonsSlots = map[string]*MutableSlot{
 		mapCoords:    0xbf,
 	},
 	"samasa desert chest": seasonsChest(
-		"blast ring", 0x4f9a, 0x00, 0xff, collectChest, 0xff),
+		"rang ring L-1", 0x4f9a, 0x00, 0xff, collectChest, 0xff),
 	"western coast, beach chest": seasonsChest(
-		"rang ring L-1", 0x4f96, 0x00, 0xe3, collectChest, 0xe3),
+		"blast ring", 0x4f96, 0x00, 0xe3, collectChest, 0xe3),
 	"western coast, in house": seasonsChest(
 		"bombs, 10", 0x4fac, 0x03, 0x88, collectChest, 0xd2),
 	"cave south of mrs. ruul": seasonsChest(

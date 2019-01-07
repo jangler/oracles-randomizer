@@ -6,6 +6,7 @@ package rom
 import (
 	"crypto/sha1"
 	"fmt"
+	"math/rand"
 	"sort"
 	"strings"
 )
@@ -76,17 +77,6 @@ func Init(game int) {
 	itemGfx["harp 3"] = itemGfx["tune of ages"]
 	itemGfx["flippers 1"] = itemGfx["flippers"]
 	itemGfx["flippers 2"] = itemGfx["mermaid suit"]
-
-	// get set of unique items (to determine which can be slotted freely)
-	treasureCounts := make(map[string]int)
-	for _, slot := range ItemSlots {
-		name := FindTreasureName(slot.Treasure)
-		if treasureCounts[name] == 0 {
-			treasureCounts[name] = 1
-		} else {
-			treasureCounts[name]++
-		}
-	}
 }
 
 // Addr is a fully-specified memory address.
@@ -160,6 +150,9 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
 		ItemSlots["master diver's reward"].idAddrs[0].offset = codeAddr.offset + 1
 		ItemSlots["master diver's reward"].subIDAddrs[0].offset = codeAddr.offset + 2
+		codeAddr = codeMutables["create mt. cucco item"].(*MutableRange).Addrs[0]
+		ItemSlots["mt. cucco, platform cave"].idAddrs[0].offset = codeAddr.offset + 2
+		ItemSlots["mt. cucco, platform cave"].subIDAddrs[0].offset = codeAddr.offset + 1
 	} else {
 		// explicitly set these addresses and IDs after their functions
 		mut := codeMutables["soldier script give item"].(*MutableRange)
@@ -172,6 +165,14 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	}
 
 	setSeedData(game)
+
+	// set the text IDs for all rings to $ff (blank), since custom code deals
+	// with text
+	for _, treasure := range Treasures {
+		if treasure.id == 0x2d {
+			treasure.text = 0xff
+		}
+	}
 
 	var err error
 	mutables := getAllMutables()
@@ -226,7 +227,8 @@ func Verify(b []byte, game int) []error {
 		case "maku tree", "fool's ore", "member's card", "treasure map",
 			"temple of seasons", "rare peach stone", "ribbon", "blaino prize",
 			"subrosia seaside", "great furnace", "subrosian smithy",
-			"master diver's reward", "d5 basement":
+			"master diver's reward", "d5 basement", "green joy ring",
+			"mt. cucco, platform cave":
 		// ages misc.
 		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
 			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",
@@ -409,4 +411,40 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 		offset += 0x100
 	}
 	return &Addr{0x01, offset}
+}
+
+// RandomizeRingPool randomizes the types of rings in the item pool, returning
+// a map of vanilla ring names to the randomized ones.
+func RandomizeRingPool(src *rand.Rand) map[string]string {
+	nameMap := make(map[string]string)
+	usedRings := make([]bool, 0x40)
+
+	for _, slot := range ItemSlots {
+		if slot.Treasure.id == 0x2d {
+			oldName := FindTreasureName(slot.Treasure)
+
+			// loop until we get a ring that's not literally useless, and which
+			// we haven't used before.
+			done := false
+			for !done {
+				param := byte(src.Intn(0x40))
+				switch rings[param] {
+				case "friendship ring", "GBA time ring", "GBA nature ring",
+					"slayer's ring", "rupee ring", "victory ring", "sign ring",
+					"100th ring":
+					break
+				default:
+					if !usedRings[param] {
+						slot.Treasure.param = param
+						usedRings[param] = true
+						done = true
+					}
+				}
+			}
+
+			nameMap[oldName] = rings[slot.Treasure.param]
+		}
+	}
+
+	return nameMap
 }

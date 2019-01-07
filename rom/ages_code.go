@@ -115,7 +115,7 @@ func initAgesEOB() {
 	r.replace(0x02, 0x66a9, "call check tree visited 2",
 		"\xcd\x39\x66", "\xcd"+checkTreeVisited)
 	checkCursorVisited := r.appendToBank(0x02, "check cursor visited",
-		"\xfa\xb6\xcb\xfe\x78\xc2\x39\x66\xb7\xc9")
+		"\xfa\xb6\xcb\xc3"+checkTreeVisited)
 	r.replace(0x02, 0x619d, "call check cursor visited",
 		"\xcd\x36\x66", "\xcd"+checkCursorVisited)
 
@@ -126,6 +126,26 @@ func initAgesEOB() {
 			"\xfe\x13\x20\x05\x3e\xa3\xc3\x55\x62\xc3\x48\x62")
 	r.replace(0x02, 0x6245, "jump display portal popup",
 		"\xfa\xb6\xcb", "\xc3"+displayPortalPopup)
+
+	// allow ring list to be accessed through the ring box icon
+	ringListOpener := r.appendToBank(0x02, "ring list opener",
+		"\xfa\xd1\xcb\xfe\x0f\xc0\x3e\x81\xea\xd3\xcb\x3e\x04\xcd\xb0\x1a\xe1\xc9")
+	r.replace(0x02, 0x56dd, "call ring list opener",
+		"\xfa\xd1\xcb", "\xcd"+ringListOpener)
+
+	// auto-equip selected ring from ring list
+	autoEquipRing := r.appendToBank(0x02, "auto-equip ring",
+		"\xcd\x3b\x72\xea\xcb\xc6\xc9")
+	r.replace(0x02, 0x7019, "call auto-equip ring",
+		"\xcd\x3b\x72", "\xcd"+autoEquipRing)
+
+	// don't save gfx when opening ring list from subscreen (they were already saved when
+	// opening the item menu), and clear screen scroll variables (which are saved anyway)
+	ringListGfxFix := r.appendToBank(0x02, "ring list gfx fix",
+		"\xcd\xad\x0c\xfa\xd3\xcb\xcb\x7f\xc8\xe6\x7f\xea\xd3\xcb"+
+			"\xaf\xe0\xaa\xe0\xac\x21\x08\xcd\x22\x22\xc3\xb1\x50")
+	r.replace(0x02, 0x5074, "call ring list gfx fix",
+		"\xcd\xad\x0c", "\xcd"+ringListGfxFix)
 
 	// bank 03
 
@@ -152,6 +172,7 @@ func initAgesEOB() {
 			"\xea\x6e\xca"+
 			"\x3e\x01\xea\x76\xc8\xea\x38\xc7"+ // room flag 1
 			"\x3e\xc8\xea\x39\xc7\x3e\x02\xea\x6d\xca"+ // other rooms
+			"\x3e\x10\xea\x9f\xc6\x3e\x03\xea\xcc\xc6"+ // give L-3 ring box
 			"\xe1\xc9")
 	r.replace(0x03, 0x6e97, "call skip opening",
 		"\xc3\xf9\x31", "\xc3"+skipOpening)
@@ -224,12 +245,8 @@ func initAgesEOB() {
 			"\xfa\x88\xc6\xb7\x20\x0d"+ // check B item
 			"\xfa\x81\xc4\xe6\x02\x28\x06"+ // check input
 			"\xf1\xfa\x09\xd0\x37\xc9\xf1\xc9") // jump over ledge
-	graveJump := r.appendToBank(0x05, "grave jump",
-		"\xf5\xfe\x84\x20\x0f"+ // tile
-			"\xc5\x01\x00\x5b\xcd"+compareRoom+"\xc1\x20\x05"+ // room
-			"\xf1\x3e\x10\x37\xc9\xf1\xc9") // jump
 	cliffLookup := r.appendToBank(0x05, "cliff lookup",
-		"\xcd"+devJump+"\xd8\xcd"+graveJump+"\xd8\xc3\x1f\x1e")
+		"\xcd"+devJump+"\xd8\xc3\x1f\x1e")
 	r.replace(0x05, 0x6083, "call cliff lookup",
 		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
 
@@ -268,6 +285,9 @@ func initAgesEOB() {
 		"\x01\x00\xa9\xcd"+compareRoom+"\x01\x01\x09\xc0\x01\x01\x56\xc9")
 	r.replace(0x06, 0x40e7, "call set portal sign text",
 		"\x01\x01\x09", "\xcd"+setPortalSignText)
+
+	// Use expert's or fist ring with only one button unequipped
+	r.replace(0x06, 0x4969, "punch with 1 button", "\xc0", "\x00")
 
 	// bank 16 (pt. 1)
 
@@ -363,6 +383,17 @@ func initAgesEOB() {
 			"\x7b\xc3\x1c\x17")
 	r.replace(0x09, 0x4c4e, "call handle get item",
 		"\xcd\x1c\x17", "\xcd"+handleGetItem)
+
+	// remove generic "you got a ring" text for rings from shops
+	r.replace(0x09, 0x4580, "obtain ring text replacement (shop) 1", "\x54", "\x00")
+	r.replace(0x09, 0x458a, "obtain ring text replacement (shop) 2", "\x54", "\x00")
+	r.replace(0x09, 0x458b, "obtain ring text replacement (shop) 3", "\x54", "\x00")
+
+	// remove generic "you got a ring" text for gasha nuts
+	gashaNutRingText := r.appendToBank(0x0b, "remove ring text from gasha nut",
+		"\x79\xfe\x04\xc2\x72\x18\xe1\xc9")
+	r.replace(0x0b, 0x45bb, "remove ring text from gasha nut caller",
+		"\xc3\x72\x18", "\xc3"+gashaNutRingText)
 
 	// don't set room's item flag if it's nayru's item on the maku tree screen,
 	// since link still might not have taken the maku tree's item.
@@ -467,6 +498,10 @@ func initAgesEOB() {
 			"\x21\x24\xc7\xcb\xce\xe1\xc9")
 	r.replace(0x0c, 0x7a6f, "call set bridge flag",
 		"\xb9\xb6\x25", "\xe0"+setBridgeFlag)
+
+	// skip forced ring appraisal and ring list with vasu (prevents softlock)
+	r.replace(0x0c, 0x4a27, "skip vasu ring appraisal",
+		"\x98\x33", "\x4a\x35")
 
 	// bank 0f
 
@@ -587,6 +622,12 @@ func initAgesEOB() {
 	r.replace(0x16, 0x4539, "call modify treasure",
 		"\x47\xcb\x37", "\xcd"+modifyTreasure)
 
+	// bank 21
+
+	// replace ring appraisal text with "you got the {ring}"
+	r.replace(0x21, 0x76a0, "obtain ring text replacement",
+		"\x04\x2c\x20\x04\x96\x21", "\x02\x06\x0f\xfd\x21\x00")
+
 	// bank 3f
 
 	// set hl to the address of the item sprite with ID a.
@@ -650,6 +691,12 @@ func initAgesEOB() {
 			"\x30\x08\x2a\x47\x7e\xe1\x67\x68\xc1\xe9\xe1\xc1\xf1\xc9")
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
+
+	// put obtained rings directly into ring list (no need for appraisal), and tell the
+	// player what type of ring it is
+	r.replace(0x3f, 0x4614, "auto ring appraisal",
+		"\xcb\xf1\xcd\x6f\x46\xfe\x64\x38",
+		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x72\x18\xc9")
 }
 
 // makes ages-specific additions to the collection mode table.
