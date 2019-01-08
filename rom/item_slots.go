@@ -52,6 +52,11 @@ func check(b []byte, addr Addr, value byte) error {
 
 // Check verifies that the slot's data matches the given ROM data.
 func (ms *MutableSlot) Check(b []byte) error {
+	// skip zero addresses
+	if ms.idAddrs[0].offset == 0 {
+		return nil
+	}
+
 	for _, addr := range ms.idAddrs {
 		if err := check(b, addr, ms.Treasure.id); err != nil {
 			return err

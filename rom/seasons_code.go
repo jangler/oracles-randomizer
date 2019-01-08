@@ -582,6 +582,17 @@ func initSeasonsEOB() {
 	r.replace(0x15, 0x70cf, "rod give item call",
 		"\xcd\xeb\x16", "\xcd"+giveItem)
 
+	// call function to spawn item based on room instead of spawning a heart
+	// container.
+	bossItemTable := r.appendToBank(0x15, "boss item table", "\x00\x00"+
+		"\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00")
+	spawnBossItem := r.appendToBank(0x15, "spawn boss item",
+		"\xe5\x21"+bossItemTable+"\xfa\x55\xcc\xdf"+
+			"\x46\x23\x4e\xcd\x1b\x27\xcd\xfd\x21\xe1\xc9")
+	// some dungeons share the same script for spawning the HC.
+	r.replace(0x0b, 0x4b8f, "HC call 1", "\xdd\x2a\x00", "\xe0"+spawnBossItem)
+	r.replace(0x0b, 0x4bb1, "HC call 2", "\xdd\x2a\x00", "\xe0"+spawnBossItem)
+
 	// bank 1f
 
 	// replace ring appraisal text with "you got the {ring}"
