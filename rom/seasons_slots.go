@@ -309,6 +309,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x4fd5, 0x04, 0x19, collectChest2, 0x96),
 	"d1 goriya chest": seasonsChest(
 		"d1 boss key", 0x4fcd, 0x04, 0x14, collectChest, 0x96),
+	"d1 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x04, 0x12, collectAppear2, 0x96),
 
 	// d2
 	"d2 moblin chest": seasonsChest(
@@ -323,6 +325,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"compass", 0x4ff1, 0x04, 0x36, collectChest2, 0x8d),
 	"d2 terrace chest": seasonsChest(
 		"d2 boss key", 0x4fdd, 0x04, 0x24, collectChest, 0x8d),
+	"d2 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x04, 0x29, collectAppear2, 0x8d),
 
 	// d3
 	"d3 mimic chest": seasonsChest(
@@ -339,6 +343,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x5011, 0x04, 0x51, collectChest2, 0x60),
 	"d3 giant blade room": seasonsChest(
 		"d3 boss key", 0x4ffd, 0x04, 0x46, collectChest, 0x60),
+	"d3 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x04, 0x53, collectAppear2, 0x60),
 
 	// d4
 	"d4 cracked floor room": seasonsChest(
@@ -351,6 +357,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"compass", 0x5035, 0x04, 0x83, collectChest2, 0x1d),
 	"d4 dive spot": seasonsScriptItem(
 		"d4 boss key", 0x4c0b, 0x04, 0x6c, collectDive, 0x1d),
+	"d4 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x04, 0x5f, collectAppear2, 0x1d),
 
 	// d5
 	"d5 magnet ball chest": seasonsChest(
@@ -363,6 +371,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"compass", 0x5049, 0x04, 0x9d, collectChest2, 0x8a),
 	"d5 basement": seasonsScriptItem(
 		"d5 boss key", 0x4c22, 0x06, 0x8b, collectFind2, 0x8a),
+	"d5 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x04, 0x8c, collectAppear2, 0x8a),
 
 	// d6
 	"d6 armos hall": seasonsChest(
@@ -381,6 +391,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x5061, 0x04, 0xb0, collectChest2, 0x00),
 	"d6 escape room": seasonsChest(
 		"d6 boss key", 0x5079, 0x04, 0xc4, collectChest, 0x00),
+	"d6 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x04, 0xd5, collectAppear2, 0x00),
 
 	// d7
 	"d7 spike chest": seasonsChest(
@@ -395,6 +407,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x50b2, 0x05, 0x58, collectChest2, 0xd0),
 	"d7 stalfos chest": seasonsChest(
 		"d7 boss key", 0x50a6, 0x05, 0x48, collectChest, 0xd0),
+	"d7 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x05, 0x50, collectAppear2, 0xd0),
 
 	// d8
 	"d8 armos chest": seasonsChest(
@@ -409,6 +423,8 @@ var seasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x50de, 0x05, 0x8e, collectChest2, 0x04),
 	"d8 pols voice chest": seasonsChest(
 		"d8 boss key", 0x50ca, 0x05, 0x80, collectChest, 0x04),
+	"d8 boss": seasonsChest( // EOB addr
+		"heart container", 0x0000, 0x05, 0x64, collectAppear2, 0x04),
 
 	// don't use this slot; no one knows about it and it's not required for
 	// anything in a normal playthrough

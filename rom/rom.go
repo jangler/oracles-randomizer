@@ -141,6 +141,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setTreasureMapData()
 
 		// explicitly set these addresses and IDs after their functions
+		setBossItemAddrs()
 		codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
 		ItemSlots["subrosia seaside"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["subrosia seaside"].subIDAddrs[0].offset = codeAddr.offset + 5
@@ -185,6 +186,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 	// explicitly set these IDs after their functions are written
 	if game == GameSeasons {
+		writeBossItems(b)
 		ItemSlots["subrosia seaside"].Mutate(b)
 		ItemSlots["great furnace"].Mutate(b)
 		ItemSlots["master diver's reward"].Mutate(b)
@@ -447,4 +449,20 @@ func RandomizeRingPool(src *rand.Rand) map[string]string {
 	}
 
 	return nameMap
+}
+
+func setBossItemAddrs() {
+	table := codeMutables["boss item table"].(*MutableRange)
+
+	for i := 1; i <= 8; i++ {
+		treasure := ItemSlots[fmt.Sprintf("d%d boss", i)].Treasure
+		table.New[i*2] = treasure.id
+		table.New[i*2+1] = treasure.subID
+	}
+}
+
+func writeBossItems(b []byte) {
+	for i := 1; i <= 8; i++ {
+		ItemSlots[fmt.Sprintf("d%d boss", i)].Mutate(b)
+	}
 }

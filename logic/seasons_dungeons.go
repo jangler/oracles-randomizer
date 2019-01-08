@@ -28,7 +28,7 @@ var seasonsD1Nodes = map[string]*Node{
 		Or("ember seeds", Hard("mystery seeds")), "kill goriya (pit)"),
 	"d1 floormaster room": AndSlot("enter d1",
 		Or("ember seeds", Hard("mystery seeds"))),
-	"d1 essence": AndStep("d1 floormaster room", "d1 boss key",
+	"d1 boss": AndSlot("d1 floormaster room", "d1 boss key",
 		"kill aquamentus"),
 
 	"d1 key A": And("d1 key fall"),
@@ -53,7 +53,7 @@ var seasonsD2Nodes = map[string]*Node{
 	"d2 roller chest":  AndSlot("d2 bomb wall", "bombs", "bracelet"),
 	"d2 spinner":       And("d2 roller chest", "d2 2 keys"), // min. 1 key
 	"d2 terrace chest": AndSlot("d2 spinner", "d2 3 keys"),
-	"d2 essence":       And("d2 spinner", "d2 boss key"),
+	"d2 boss":          AndSlot("d2 spinner", "d2 boss key"),
 
 	"d2 key A": And("d2 rope room"),
 	"d2 key B": And("d2 spiral chest"),
@@ -84,7 +84,7 @@ var seasonsD3Nodes = map[string]*Node{
 		"d3 2 keys"), // min. 1 key
 	"d3 trampoline chest": AndSlot("d3 center", "jump 2"),
 	"enter mothula":       And("d3 omuai stairs", "d3 boss key"),
-	"d3 essence":          AndStep("enter mothula", "kill mothula"),
+	"d3 boss":             AndSlot("enter mothula", "kill mothula"),
 
 	// fixed items
 	"d3 key A":  And("d3 roller chest"),
@@ -123,7 +123,7 @@ var seasonsD4Nodes = map[string]*Node{
 	"enter gohma": And("d4 basement stairs", "d4 boss key",
 		Or("ember slingshot", Hard("mystery slingshot"), "jump 3",
 			HardAnd("jump 2", Or("ember seeds", "mystery seeds")))),
-	"d4 essence": AndStep("enter gohma", "kill gohma"),
+	"d4 boss": AndSlot("enter gohma", "kill gohma"),
 
 	// fixed items
 	"d4 key A": And("d4 pot room"),
@@ -167,7 +167,7 @@ var seasonsD5Nodes = map[string]*Node{
 	// you always have access to enough small keys for these nodes:
 	"d5 basement": AndSlot("d5 drop ball", "d5 post-syger",
 		"magnet gloves", Or("kill magunesu", Hard("jump 2"))),
-	"d5 essence": AndStep("d5 post-syger", "magnet gloves",
+	"d5 boss": AndSlot("d5 post-syger", "magnet gloves",
 		Or("jump 2", Hard()), "d5 boss key"),
 
 	// fixed items
@@ -210,7 +210,7 @@ var seasonsD6Nodes = map[string]*Node{
 
 	// 5F
 	"d6 pre-boss room": And("enter vire", "kill vire", "kill hardhat (magnet)"),
-	"d6 essence": AndStep("d6 pre-boss room", "d6 boss key",
+	"d6 boss": AndSlot("d6 pre-boss room", "d6 boss key",
 		"kill manhandla"),
 
 	// fixed items
@@ -253,8 +253,7 @@ var seasonsD7Nodes = map[string]*Node{
 		"d7 4 keys"),
 	"d7 skipped room":  And("d7 maze chest"),
 	"d7 stalfos chest": AndSlot("d7 maze chest", "d7 key E"),
-	"d7 essence": AndStep("d7 maze chest", "d7 boss key",
-		"kill gleeok"),
+	"d7 boss":          AndSlot("d7 maze chest", "d7 boss key", "kill gleeok"),
 
 	// fixed items
 	"d7 key A": And("d7 wizzrobe chest"),
@@ -303,7 +302,7 @@ var seasonsD8Nodes = map[string]*Node{
 	"d8 spinner chest": And("d8 armos chest"),
 	"d8 SE lava chest": And("d8 SE crystal"),
 	"d8 SW lava chest": AndSlot("d8 SE crystal"),
-	"d8 essence": AndStep("d8 SW crystal", "d8 SE crystal", "d8 NW crystal",
+	"d8 boss": AndSlot("d8 SW crystal", "d8 SE crystal", "d8 NW crystal",
 		"d8 7 keys", "d8 boss key", "kill medusa head"),
 
 	// fixed items
