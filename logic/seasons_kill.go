@@ -114,7 +114,7 @@ var seasonsKillNodes = map[string]*Node{
 	"kill darknut (across pit)": Or("scent slingshot", "magnet gloves",
 		And("jump 4", "kill darknut (pit)"), And("sword", "energy ring"),
 		HardAnd("toss ring", "bombs")),
-	"kill gleeok": Or("sword", Hard("bombs"), "fool's ore", "punch enemy"),
+	"kill gleeok": Or("sword", "fool's ore", "punch enemy"),
 	"kill frypolar": Or(And("bracelet",
 		Or("mystery slingshot", Hard("mystery satchel"))),
 		Or("ember slingshot", Hard("ember satchel"))),
