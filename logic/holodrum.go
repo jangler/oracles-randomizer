@@ -283,7 +283,7 @@ var holodrumNodes = map[string]*Node{
 	"holodrum plain east old man": And("blaino's gym", "ember seeds",
 		Or("ricky's flute", "holodrum plain default summer",
 			And("ghastly stump", "summer",
-				Or("jump 2", "flute", And("break bush", "flippers"))))),
+				Or("jump 2", "flute", And("remove bush", "flippers"))))),
 	"horon village old man":       And("horon village", "ember seeds"),
 	"north horon old man":         And("north horon stump", "ember seeds"),
 	"tarm ruins old man":          And("enter d6", "ember seeds"),
