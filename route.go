@@ -420,8 +420,7 @@ func getDungeonItem(prefix, itemName string, slotList,
 	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
-		if !strings.HasPrefix(slot.Name, prefix) ||
-			strings.HasSuffix(slot.Name, " boss") {
+		if !strings.HasPrefix(slot.Name, prefix) {
 			continue
 		}
 
