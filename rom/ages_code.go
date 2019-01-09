@@ -575,6 +575,15 @@ func initAgesEOB() {
 	r.replace(0x0c, 0x6e6e, "jump target carts flag",
 		"\x88\x6e", targetCartsFlag)
 
+	// call function to spawn item based on room instead of spawning a heart
+	// container.
+	bossItemTable := r.appendToBank(0x15, "boss item table", "\x00\x00"+
+		"\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00\x2a\x00")
+	spawnBossItem := r.appendToBank(0x15, "spawn boss item",
+		"\xe5\x21"+bossItemTable+"\xfa\x39\xcc\xdf"+
+			"\x46\x23\x4e\xcd\xd4\x27\xcd\x42\x22\xe1\xc9")
+	r.replace(0x0c, 0x4bd8, "HC call", "\xdd\x2a\x00", "\xe0"+spawnBossItem)
+
 	// bank 16
 
 	// given a treasure ID in dx42, return hl = the start of the treasure data

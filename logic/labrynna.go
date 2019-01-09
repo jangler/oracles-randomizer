@@ -49,8 +49,8 @@ var labrynnaNodes = map[string]*Node{
 	"rescue nayru": AndSlot("ambi's palace chest", "mystery seeds",
 		"switch hook", Or("sword", "punch enemy")),
 	"mayor plen's house": AndSlot("long hook"),
-	"maku seed": And("d1 essence", "d2 essence", "d3 essence", "d4 essence",
-		"d5 essence", "d6 essence", "d7 essence", "d8 essence"),
+	"maku seed": And("d1 boss", "d2 boss", "d3 boss", "d4 boss", "d5 boss",
+		"d6 boss", "d7 boss", "d8 boss"),
 
 	// yoll graveyard
 	"yoll graveyard": And("ember seeds"),

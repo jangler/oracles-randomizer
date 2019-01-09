@@ -141,7 +141,6 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setTreasureMapData()
 
 		// explicitly set these addresses and IDs after their functions
-		setBossItemAddrs()
 		codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
 		ItemSlots["subrosia seaside"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["subrosia seaside"].subIDAddrs[0].offset = codeAddr.offset + 5
@@ -165,6 +164,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["target carts 2"].subIDAddrs[1].offset = codeAddr.offset + 2
 	}
 
+	setBossItemAddrs()
 	setSeedData(game)
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
@@ -185,8 +185,8 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	}
 
 	// explicitly set these IDs after their functions are written
+	writeBossItems(b)
 	if game == GameSeasons {
-		writeBossItems(b)
 		ItemSlots["subrosia seaside"].Mutate(b)
 		ItemSlots["great furnace"].Mutate(b)
 		ItemSlots["master diver's reward"].Mutate(b)

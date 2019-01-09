@@ -20,7 +20,7 @@ var agesD1Nodes = map[string]*Node{
 	"d1 basement":     AndSlot("d1 U-room", "ember seeds"),
 	"d1 west terrace": AndSlot("enter d1", "break pot"),
 	"d1 pot chest":    AndSlot("enter d1", "break pot"),
-	"d1 essence": AndStep("d1 free key chest", "break bush safe", "d1 boss key",
+	"d1 boss": AndSlot("d1 free key chest", "break bush safe", "d1 boss key",
 		"kill pumpkin head"),
 }
 
@@ -39,7 +39,7 @@ var agesD2Nodes = map[string]*Node{
 	"d2 statue room": And("d2 moblin platform", Or("bracelet", "cane",
 		HardAnd("switch hook", "push enemy"))),
 	"d2 color room": AndSlot("d2 all keys"),
-	"d2 essence":    AndStep("d2 all keys", "d2 boss key"),
+	"d2 boss":       AndSlot("d2 all keys", "d2 boss key"),
 
 	"d2 key 1":     And("enter d2", "kill spiked beetle", "kill normal"),
 	"d2 key 2":     And("enter d2", "d2 key 1", "bombs"),
@@ -92,7 +92,7 @@ var agesD3Nodes = map[string]*Node{
 		"any seed shooter"),
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
 	"d3 all keys":  And("d3 armos key", "d3 compass key", "d3 block key"),
-	"d3 essence": AndStep("d3 boss key", "d3 all keys",
+	"d3 boss": AndSlot("d3 boss key", "d3 all keys",
 		Or("ember seeds", "scent seeds"),
 		Or("seed shooter", And(
 			Or("ember seeds", Hard()),
@@ -119,7 +119,7 @@ var agesD4Nodes = map[string]*Node{
 		Or("sword", "switch hook", "scent shooter", "punch enemy", Hard())),
 	"d4 key chest E":    And("d4 minecart D", "switch hook"),
 	"d4 lava pot chest": AndSlot("d4 key chest E", "d4 key E"),
-	"d4 essence": AndStep("d4 key chest E", "d4 boss key",
+	"d4 boss": AndSlot("d4 key chest E", "d4 boss key",
 		Or("sword", "boomerang", "punch enemy")),
 
 	"d4 key A": And("d4 key chest A"),
@@ -141,7 +141,7 @@ var agesD5Nodes = map[string]*Node{
 	"d5 eyes chest":  And("d5 switch A", "any seed shooter"),
 	"d5 2-statue chest": And("d5 switch A", "break pot", "cane", "feather",
 		Or("any seed shooter", "boomerang", HardAnd("feather", "sword"))),
-	"d5 essence": AndStep("d5 switch A", "d5 boss key", "cane", "sword"),
+	"d5 boss": AndSlot("d5 switch A", "d5 boss key", "cane", "sword"),
 
 	// require 1 small key minimum, 2 maximum.
 	// keys A (dark chest) and E (3-statue chest) are always available by now.
@@ -187,7 +187,7 @@ var agesD6Nodes = map[string]*Node{
 		"switch hook"),
 
 	// past, 3 keys
-	"d6 essence": AndStep("d6 past spinner", "d6 past key A", "d6 past key B",
+	"d6 boss": AndSlot("d6 past spinner", "d6 past key A", "d6 past key B",
 		"d6 past key C", "d6 boss key", "any seed shooter"),
 
 	"d6 past key A": And("d6 past stalfos chest"),
@@ -262,7 +262,7 @@ var agesD7Nodes = map[string]*Node{
 	// which also requires cane, since it's needed to get a small key
 	"d7 post-hallway chest": AndSlot("flood d7", "cane"),
 
-	"d7 essence": AndStep("d7 boss key", "flood d7"),
+	"d7 boss": AndSlot("d7 boss key", "flood d7"),
 }
 
 // small keys aren't randomized, so the items alone here are enough to get the
@@ -288,7 +288,7 @@ var agesD8Nodes = map[string]*Node{
 	"d8 B3F chest": AndSlot("d8 group G"),
 	"d8 tile room": AndSlot("d8 group G", "feather"),
 	"d8 SE slate":  And("d8 group G", "feather"),
-	"d8 essence": AndStep("d8 boss key", "d8 group G", "d8 NW slate",
+	"d8 boss": AndSlot("d8 boss key", "d8 group G", "d8 NW slate",
 		"d8 NE slate", "d8 SW slate", "d8 SE slate"),
 }
 

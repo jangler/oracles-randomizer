@@ -20,6 +20,12 @@ func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
 	return basicSlot(treasure, 0x16, addr, addr+1, group, room, mode, 0)
 }
 
+// for boss items.
+func agesHC(group, room byte) *MutableSlot {
+	return basicSlot("heart container", 0x15, 0, 0,
+		group, room, collectAppear2, 0)
+}
+
 // for items given by script command de.
 func agesScriptItem(treasure string, addr uint16,
 	group, room byte) *MutableSlot {
@@ -164,12 +170,14 @@ var agesSlots = map[string]*MutableSlot{
 	"d1 pot chest":             agesChest("d1 boss key", 0x5196, 0x04, 0x23),
 	"d1 east terrace":          agesChest("dungeon map", 0x519a, 0x04, 0x25),
 	"d1 basement":              agesScriptItem("bracelet 1", 0x4bbb, 0x06, 0x10),
+	"d1 boss":                  agesHC(0x04, 0x13),
 	"d2 color room":            agesChest("d2 boss key", 0x51a2, 0x04, 0x3e),
 	"d2 bombed terrace":        agesChest("dungeon map", 0x51a6, 0x04, 0x40),
 	"d2 moblin platform":       agesChest("gasha seed", 0x51aa, 0x04, 0x41),
 	"d2 rope room":             agesChest("compass", 0x51ae, 0x04, 0x45),
 	"d2 thwomp shelf":          agesScriptItem("rupees, 30", 0x4c0f, 0x06, 0x27),
 	"d2 thwomp tunnel":         agesScriptItem("feather", 0x4c0a, 0x06, 0x28),
+	"d2 boss":                  agesHC(0x04, 0x2b),
 	"d3 bridge chest":          agesChest("rupees, 20", 0x51b6, 0x04, 0x4e),
 	"d3 B1F east":              agesChest("d3 boss key", 0x51ba, 0x04, 0x50),
 	"d3 torch chest":           agesChest("gasha seed", 0x51be, 0x04, 0x55),
@@ -178,15 +186,18 @@ var agesSlots = map[string]*MutableSlot{
 	"d3 bush beetle room":      agesChest("rupees, 30", 0x51ca, 0x04, 0x5c),
 	"d3 crossroads":            agesChest("gasha seed", 0x51ce, 0x04, 0x60),
 	"d3 pols voice chest":      agesChest("dungeon map", 0x51d2, 0x04, 0x65),
+	"d3 boss":                  agesHC(0x04, 0x4a),
 	"d4 lava pot chest":        agesChest("d4 boss key", 0x51de, 0x04, 0x7a),
 	"d4 small floor puzzle":    agesChest("switch hook 1", 0x51e2, 0x04, 0x87),
 	"d4 first chest":           agesChest("compass", 0x51e6, 0x04, 0x8b),
 	"d4 minecart chest":        agesChest("dungeon map", 0x51ea, 0x04, 0x8f),
+	"d4 boss":                  agesHC(0x04, 0x6b),
 	"d5 red peg chest":         agesChest("rupees, 50", 0x51f6, 0x04, 0x99),
 	"d5 owl puzzle":            agesChest("d5 boss key", 0x51fa, 0x04, 0x9b),
 	"d5 six-statue puzzle":     agesChest("cane", 0x520a, 0x04, 0xa5),
 	"d5 diamond chest":         agesChest("compass", 0x520e, 0x04, 0xad),
 	"d5 blue peg chest":        agesChest("dungeon map", 0x521a, 0x04, 0xbe),
+	"d5 boss":                  agesHC(0x04, 0xbf),
 	"d6 present vire chest":    agesChest("flippers 2", 0x524f, 0x05, 0x13),
 	"d6 present RNG chest":     agesChest("d6 boss key", 0x525b, 0x05, 0x1c),
 	"d6 present diamond chest": agesChest("dungeon map", 0x525f, 0x05, 0x1d),
@@ -196,6 +207,7 @@ var agesSlots = map[string]*MutableSlot{
 	"d6 past color room":       agesChest("compass", 0x527f, 0x05, 0x3f),
 	"d6 past pool chest":       agesChest("dungeon map", 0x5283, 0x05, 0x41),
 	"d6 past wizzrobe chest":   agesChest("gasha seed", 0x5287, 0x05, 0x45),
+	"d6 boss":                  agesHC(0x05, 0x36),
 	"d7 pot island chest":      agesChest("like-like ring", 0x528b, 0x05, 0x4c),
 	"d7 stairway chest":        agesChest("gasha seed", 0x528f, 0x05, 0x4d),
 	"d7 miniboss chest":        agesChest("switch hook 2", 0x5293, 0x05, 0x4e),
@@ -203,12 +215,14 @@ var agesSlots = map[string]*MutableSlot{
 	"d7 spike chest":           agesChest("dungeon map", 0x52a7, 0x05, 0x65),
 	"d7 hallway chest":         agesChest("gasha seed", 0x52ab, 0x05, 0x6a),
 	"d7 post-hallway chest":    agesChest("d7 boss key", 0x52af, 0x05, 0x6c),
+	"d7 boss":                  agesHC(0x05, 0x62),
 	"d8 B3F chest":             agesChest("d8 boss key", 0x52bb, 0x05, 0x79),
 	"d8 ghini chest":           agesChest("dungeon map", 0x52cb, 0x05, 0x85),
 	"d8 sarcophagus chest":     agesChest("gasha seed", 0x52db, 0x05, 0x9f),
 	"d8 blue peg chest":        agesChest("compass", 0x52e3, 0x05, 0xa4),
 	"d8 floor puzzle":          agesChest("bracelet 2", 0x52eb, 0x05, 0xa6),
 	"d8 tile room":             agesChest("gasha seed", 0x52ef, 0x05, 0x91),
+	"d8 boss":                  agesHC(0x05, 0x78),
 
 	// seed trees work differently in ages; the seed type is determined by the
 	// high nybble of the tree sub ID, and the low nybble is used to identify it
