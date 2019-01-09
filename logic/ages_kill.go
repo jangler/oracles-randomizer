@@ -27,6 +27,8 @@ var agesKillNodes = map[string]*Node{
 	// unlike in seasons, shovel doesn't hit levers.
 	"hit lever": Or("sword", "ember seeds", "scent seeds", "mystery seeds",
 		"any seed shooter", "switch hook", "boomerang", "punch object"),
+	// and seeds from minecart don't hit levers. not sure if this is because
+	// the ones in seasons are horizontal and the one in ages D2 is vertical.
 	"hit lever from minecart": Or("sword", "any seed shooter", "boomerang"),
 	"hit switch": Or("sword", "bombs", "punch object", "ember seeds",
 		"scent seeds", "mystery seeds", "any seed shooter", "switch hook",

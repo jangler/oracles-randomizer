@@ -19,8 +19,8 @@ func isParent(p1Name string, p2 *Node) bool {
 
 func TestLinks(t *testing.T) {
 	// need to be changed manually for now
-	nodes := GetAges()
-	rom.Init(rom.GameAges)
+	nodes := GetSeasons()
+	rom.Init(rom.GameSeasons)
 
 	for key, slot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(slot.Treasure)
@@ -46,7 +46,8 @@ func TestLinks(t *testing.T) {
 	for name := range nodes {
 		switch name {
 		case "done", "gasha seed", "piece of heart", "rare peach stone",
-			"treasure map", "dungeon map", "compass", "strange flute":
+			"treasure map", "dungeon map", "compass", "strange flute",
+			"heart container":
 			continue
 		case "pegasus seeds", "any satchel":
 			// defined for consistency but unused
