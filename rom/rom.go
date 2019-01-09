@@ -454,10 +454,10 @@ func RandomizeRingPool(src *rand.Rand) map[string]string {
 func setBossItemAddrs() {
 	table := codeMutables["boss item table"].(*MutableRange)
 
-	for i := 1; i <= 8; i++ {
-		treasure := ItemSlots[fmt.Sprintf("d%d boss", i)].Treasure
-		table.New[i*2] = treasure.id
-		table.New[i*2+1] = treasure.subID
+	for i := uint16(1); i <= 8; i++ {
+		slot := ItemSlots[fmt.Sprintf("d%d boss", i)]
+		slot.idAddrs[0].offset = table.Addrs[0].offset + i*2
+		slot.subIDAddrs[0].offset = table.Addrs[0].offset + i*2 + 1
 	}
 }
 
