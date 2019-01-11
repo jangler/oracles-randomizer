@@ -413,7 +413,7 @@ var seasonsVarMutables = map[string]Mutable{
 	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
 
 	// determines what natzu looks like and what animal the flute calls
-	"animal region": MutableByte(Addr{0x07, 0x41a6}, 0x0b, 0x0b),
+	"animal region": MutableByte(Addr{0x0a, 0x7fff}, 0x0a, 0x0b),
 }
 
 var Seasons = map[string]*MutableRange{

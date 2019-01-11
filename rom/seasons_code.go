@@ -411,7 +411,7 @@ func initSeasonsEOB() {
 	setStartingFlags := r.appendToBank(0x0a, "set starting flags",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xcd\x30\xe1\x18\xf4\xe1"+ // init global flags
-			"\x3e\xff\xea\x46\xc6"+ // mark animal text as shown
+			"\xfa\xff\x7f\xea\x10\xc6\x3e\xff\xea\x46\xc6"+ // animal stuff
 			"\x3e\x50\xea\xa7\xc7"+ // bits 4 + 6
 			"\x3e\x60\xea\x9a\xc7"+ // bits 5 + 6
 			"\x3e\xc0\xea\x98\xc7\xea\xcb\xc7"+ // bits 6 + 7
