@@ -195,6 +195,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	}
 
 	setCompassData(b, game)
+	setLinkedData(b, game)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
@@ -409,4 +410,23 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 		offset += 0x100
 	}
 	return &Addr{0x01, offset}
+}
+
+// set data to make linked playthroughs isomorphic to unlinked ones.
+func setLinkedData(b []byte, game int) {
+	if game == GameSeasons {
+		// make starting item match unlinked hero's cave 1
+		linkedStartItem := &MutableSlot{
+			idAddrs:    []Addr{{0x0a, 0x7ffd}},
+			paramAddrs: []Addr{{0x0a, 0x7ffe}},
+			Treasure:   ItemSlots["d0 sword chest"].Treasure,
+		}
+		linkedStartItem.Mutate(b)
+
+		// make linked hero's cave terrace chest match unlinked hero's cave 2
+		linkedChest := seasonsChest(
+			"rupees, 20", 0x50e2, 0x05, 0x2c, collectChest, 0xd4)
+		linkedChest.Treasure = ItemSlots["d0 rupee chest"].Treasure
+		linkedChest.Mutate(b)
+	}
 }

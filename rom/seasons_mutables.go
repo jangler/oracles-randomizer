@@ -92,6 +92,11 @@ var seasonsFixedMutables = map[string]Mutable{
 	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
 		"\x40\x33\xc5", "\x20\x33\xe6"),
 
+	// bank 07
+
+	"start linked w/o sword": MutableString(Addr{0x07, 0x41ac},
+		"\x82\x05\x92\x24", "\x82\x00\x92\x04"),
+
 	// banks 08-0a (most interaction-specific non-script behavior?)
 
 	// have horon village shop stock *and* sell items from the start, including

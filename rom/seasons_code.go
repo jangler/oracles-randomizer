@@ -408,10 +408,14 @@ func initSeasonsEOB() {
 	// well as some other flags to skip cutscenes, etc.
 	initialGlobalFlags := r.appendToBank(0x0a, "initial global flags",
 		"\x0a\x1c\xff")
+	giveLinkedStartItem := r.appendToBank(0x0a, "give linked starting item",
+		"\xfa\xfe\x7f\x4f\xfa\xfd\x7f\xea\x82\xc6\xcd\xeb\x16"+
+			"\xaf\xea\x80\xc6\xc9")
 	setStartingFlags := r.appendToBank(0x0a, "set starting flags",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xcd\x30\xe1\x18\xf4\xe1"+ // init global flags
 			"\xfa\xff\x7f\xea\x10\xc6\x3e\xff\xea\x46\xc6"+ // animal stuff
+			"\xfa\x01\xcc\xb7\xc4"+giveLinkedStartItem+ // in place of sword
 			"\x3e\x50\xea\xa7\xc7"+ // bits 4 + 6
 			"\x3e\x60\xea\x9a\xc7"+ // bits 5 + 6
 			"\x3e\xc0\xea\x98\xc7\xea\xcb\xc7"+ // bits 6 + 7
@@ -420,7 +424,7 @@ func initSeasonsEOB() {
 			"\xea\x1d\xc7\xea\x8a\xc7\xea\xe9\xc7\xea\x9b\xc7\xea\x29\xc8"+
 			"\xc9")
 	r.replace(0x0a, 0x66ed, "call set starting flags",
-		"\x1e\x78\x1a", "\xc3"+setStartingFlags)
+		"\x1e\x78\x1a\xcb\x7f\x20", "\xcd"+setStartingFlags+"\xc3\x9e\x21")
 
 	// bank 0b
 
@@ -579,6 +583,14 @@ func initSeasonsEOB() {
 			"\x26\xc6\x6f\xfe\x45\x20\x04\xcb\xee\x18\x02\xcb\xfe"+
 			"\xe1\xd1\xf1\xcd\x4e\x45\xc9")
 	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
+
+	// don't play a sound for obtaining an item if it's on the starting screen,
+	// so that the linked starting item can be given silently.
+	giveItemSilently := r.appendToBank(0x3f, "give item silently",
+		"\x47\xfa\x4c\xcc\xfe\xa7\x78\xc2\x74\x0c"+
+			"\xfa\x49\xcc\xb7\x78\xc2\x74\x0c\xc9")
+	r.replace(0x3f, 0x4535, "call give item silently",
+		"\xcd\x74\x0c", "\xcd"+giveItemSilently)
 }
 
 // makes seasons-specific additions to the collection mode table.
