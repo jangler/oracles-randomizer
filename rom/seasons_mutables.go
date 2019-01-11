@@ -162,6 +162,10 @@ var seasonsFixedMutables = map[string]Mutable{
 	"maku seed check 1": MutableByte(Addr{0x09, 0x7da4}, 0xea, 0x76),
 	"maku seed check 2": MutableByte(Addr{0x09, 0x7da6}, 0x30, 0x18),
 
+	// disable linked vire event for woods of winter chest
+	"disable vire event": MutableString(Addr{0x0a, 0x5000},
+		"\x20\x0d", "\x20\x00"),
+
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
 	"wooden sword second item": MutableByte(Addr{0x0a, 0x7bb9}, 0x05, 0x3f),
@@ -185,6 +189,11 @@ var seasonsFixedMutables = map[string]Mutable{
 	// end northen peak barrier cutscene as soon as the barrier is broken.
 	"abbreviate barrier cutscene": MutableString(Addr{0x0b, 0x79f1},
 		"\x88\x18\x50\xf8", "\xb6\x1d\xbe\x00"),
+
+	// stop spool swamp cave and eyeglass lake caves from swapping items in
+	// linked games.
+	"linked swamp cave addr": MutableWord(Addr{0x0b, 0x7388}, 0x9e73, 0x9273),
+	"linked lake cave addr":  MutableWord(Addr{0x0b, 0x7390}, 0x9273, 0x9e73),
 
 	// bank 0d
 
