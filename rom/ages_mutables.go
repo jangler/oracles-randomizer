@@ -286,6 +286,10 @@ var agesFixedMutables = map[string]Mutable{
 	// the magic oar, not on essences.
 	"rafton script check": MutableString(Addr{0x15, 0x6b42},
 		"\xc7\xdb\xcd\x80", "\xcb\xc0\xc6\x09"),
+
+	// start linked games with shield instead of sword.
+	"start linked with shield": MutableString(Addr{0x07, 0x41c0},
+		"\x8a\x05\x9a\x24", "\x8a\x01\x9a\x06"),
 }
 
 var agesVarMutables = map[string]Mutable{
