@@ -78,16 +78,26 @@ func initSeasonsEOB() {
 	// treasure data
 	progData := r.endOfBank[0x00]
 	r.appendToBank(0x00, "progressive item data",
-		"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20")
+		"\x03\x21\x15"+ // mirror shield
+			"\x02\x1d\x11"+ // noble sword
+			"\x03\x1e\x12"+ // master sword
+			"\x02\x23\x1d"+ // boomerang
+			"\x02\x2f\x22"+ // slingshot
+			"\x02\x28\x17"+ // feather
+			"\x00\x46\x20") // satchel
 	// change hl to point to different treasure data if the item is progressive
 	// and needs to be upgraded. param a = treasure ID.
 	progressiveItemFunc := r.appendToBank(0x00, "progressive item func",
 		"\xd5\x5f\xcd"+upgradeFeather+"\x7b\xd1\xd0"+ // ret if missing L-1
-			"\xfe\x05\x20\x04\x21"+addrString(progData)+"\xc9"+ // sword
-			"\xfe\x06\x20\x04\x21"+addrString(progData+3)+"\xc9"+ // boomerang
-			"\xfe\x13\x20\x04\x21"+addrString(progData+6)+"\xc9"+ // slingshot
-			"\xfe\x17\x20\x04\x21"+addrString(progData+9)+"\xc9"+ // feather
-			"\xfe\x19\xc0\x21"+addrString(progData+12)+"\xc9") // satchel
+			"\xfe\x01\x20\x0b\xfa\xa9\xc6\xfe\x02\x20\x04"+ // shield
+			"\x21"+addrString(progData)+"\xc9"+ // to mirror shield
+			"\xfe\x05\x20\x0f\xfa\xac\xc6\xfe\x02\x28\x04"+ // sword
+			"\x21"+addrString(progData+3)+"\xc9"+ // to noble sword
+			"\x21"+addrString(progData+6)+"\xc9"+ // to master sword
+			"\xfe\x06\x20\x04\x21"+addrString(progData+9)+"\xc9"+ // boomerang
+			"\xfe\x13\x20\x04\x21"+addrString(progData+12)+"\xc9"+ // slingshot
+			"\xfe\x17\x20\x04\x21"+addrString(progData+15)+"\xc9"+ // feather
+			"\xfe\x19\xc0\x21"+addrString(progData+18)+"\xc9") // satchel
 
 	// this is a replacement for giveTreasure that gives treasure, plays sound,
 	// and sets text based on item ID a and sub ID c, and accounting for item
