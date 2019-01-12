@@ -198,6 +198,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	}
 
 	setCompassData(b, game)
+	setLinkedData(b, game)
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil
@@ -230,7 +231,7 @@ func Verify(b []byte, game int) []error {
 			"temple of seasons", "rare peach stone", "ribbon", "blaino prize",
 			"subrosia seaside", "great furnace", "subrosian smithy",
 			"master diver's reward", "d5 basement", "green joy ring",
-			"mt. cucco, platform cave":
+			"mt. cucco, platform cave", "diving spot outside D4":
 		// ages misc.
 		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
 			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",
@@ -464,5 +465,24 @@ func setBossItemAddrs() {
 func writeBossItems(b []byte) {
 	for i := 1; i <= 8; i++ {
 		ItemSlots[fmt.Sprintf("d%d boss", i)].Mutate(b)
+	}
+}
+
+// set data to make linked playthroughs isomorphic to unlinked ones.
+func setLinkedData(b []byte, game int) {
+	if game == GameSeasons {
+		// make starting item match unlinked hero's cave 1
+		linkedStartItem := &MutableSlot{
+			idAddrs:    []Addr{{0x0a, 0x7ffd}},
+			paramAddrs: []Addr{{0x0a, 0x7ffe}},
+			Treasure:   ItemSlots["d0 sword chest"].Treasure,
+		}
+		linkedStartItem.Mutate(b)
+
+		// make linked hero's cave terrace chest match unlinked hero's cave 2
+		linkedChest := seasonsChest(
+			"rupees, 20", 0x50e2, 0x05, 0x2c, collectChest, 0xd4)
+		linkedChest.Treasure = ItemSlots["d0 rupee chest"].Treasure
+		linkedChest.Mutate(b)
 	}
 }

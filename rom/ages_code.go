@@ -157,7 +157,7 @@ func initAgesEOB() {
 	// set flags to skip opening and a bunch of other things. see
 	// doc/technical.md for a dictionary of the flags.
 	initialGlobalFlags := r.appendToBank(0x03, "initial global flags",
-		"\x0a\x0c\x1d\x20\x23\x2b\x33\x3d\x40\x41\x43\x45\xff")
+		"\x0a\x0c\x1d\x20\x23\x2b\x33\x38\x3d\x40\x41\x43\x45\xff")
 	skipOpening := r.appendToBank(0x03, "skip opening",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xf9\x31\xe1\x18\xf4"+ // init global flags
@@ -291,24 +291,28 @@ func initAgesEOB() {
 
 	// bank 16 (pt. 1)
 
-	// upgraded item data (one byte for old ID, one for new ID two for address):
+	// upgraded item data (old ID, old related var, new ID, new addr)
 	progItemAddrs := r.appendToBank(0x16, "progressive item addrs",
-		"\x05\x05\xea\x54"+ // noble sword
-			"\x0a\x0a\x12\x55"+ // long switch
-			"\x16\x16\x52\x55"+ // power glove
-			"\x19\x19\x76\x55"+ // satchel upgrade
-			"\x25\x26\xca\x53"+ // tune of currents
-			"\x26\x27\xce\x53"+ // tune of ages
-			"\x2e\x4a\x5a\x54"+ // mermaid suit
+		"\x01\x02\x01\xc6\x54"+ // mirror shield
+			"\x05\x01\x05\xea\x54"+ // noble sword
+			"\x05\x02\x05\xee\x54"+ // master sword
+			"\x0a\x01\x0a\x12\x55"+ // long switch
+			"\x16\x01\x16\x52\x55"+ // power glove
+			"\x19\x01\x19\x76\x55"+ // satchel upgrade 1
+			"\x19\x02\x19\x76\x55"+ // satchel upgrade 2 (same deal)
+			"\x25\x00\x26\xca\x53"+ // tune of currents
+			"\x26\x00\x27\xce\x53"+ // tune of ages
+			"\x2e\x00\x4a\x5a\x54"+ // mermaid suit
 			"\xff")
 	// given a treasure ID in b, make hl = the start of the upgraded treasure
 	// data + 1, if the treasure needs to be upgraded, and returns the new
 	// treasure ID in b.
 	getUpgradedTreasure := r.appendToBank(0x16, "get upgraded treasure",
-		"\x78\xcd\x48\x17\x78\xd0"+ // check obtained
+		"\x78\xcd\x48\x17\x4f\x78\xd0"+ // check obtained / get related var
 			"\xfe\x25\x20\x09\x3e\x26\x5f\xcd\x48\x17\x30\x01\x43"+ // harp
-			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x13"+ // search
-			"\xb8\x20\x06\x2a\x47\x2a\x5e\x18\x05\x23\x23\x23\x18\xed"+
+			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x18"+ // search
+			"\xb8\x20\x0a\x2a\xb9\x20\x07\x2a\x47\x2a\x5e\x18\x06"+
+			"\x23\x23\x23\x23\x18\xe8"+ // next
 			"\xe1\x63\x6f\x23\xc9\xe1\xc9") // done
 	// load the address of a treasure's 4-byte data entry + 1 into hl, using b
 	// as the ID and c as sub ID, accounting for progressive upgrades.

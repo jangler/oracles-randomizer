@@ -78,16 +78,26 @@ func initSeasonsEOB() {
 	// treasure data
 	progData := r.endOfBank[0x00]
 	r.appendToBank(0x00, "progressive item data",
-		"\x02\x1d\x11\x02\x23\x1d\x02\x2f\x22\x02\x28\x17\x00\x46\x20")
+		"\x03\x21\x15"+ // mirror shield
+			"\x02\x1d\x11"+ // noble sword
+			"\x03\x1e\x12"+ // master sword
+			"\x02\x23\x1d"+ // boomerang
+			"\x02\x2f\x22"+ // slingshot
+			"\x02\x28\x17"+ // feather
+			"\x00\x46\x20") // satchel
 	// change hl to point to different treasure data if the item is progressive
 	// and needs to be upgraded. param a = treasure ID.
 	progressiveItemFunc := r.appendToBank(0x00, "progressive item func",
 		"\xd5\x5f\xcd"+upgradeFeather+"\x7b\xd1\xd0"+ // ret if missing L-1
-			"\xfe\x05\x20\x04\x21"+addrString(progData)+"\xc9"+ // sword
-			"\xfe\x06\x20\x04\x21"+addrString(progData+3)+"\xc9"+ // boomerang
-			"\xfe\x13\x20\x04\x21"+addrString(progData+6)+"\xc9"+ // slingshot
-			"\xfe\x17\x20\x04\x21"+addrString(progData+9)+"\xc9"+ // feather
-			"\xfe\x19\xc0\x21"+addrString(progData+12)+"\xc9") // satchel
+			"\xfe\x01\x20\x0b\xfa\xa9\xc6\xfe\x02\x20\x04"+ // shield
+			"\x21"+addrString(progData)+"\xc9"+ // to mirror shield
+			"\xfe\x05\x20\x0f\xfa\xac\xc6\xfe\x02\x28\x04"+ // sword
+			"\x21"+addrString(progData+3)+"\xc9"+ // to noble sword
+			"\x21"+addrString(progData+6)+"\xc9"+ // to master sword
+			"\xfe\x06\x20\x04\x21"+addrString(progData+9)+"\xc9"+ // boomerang
+			"\xfe\x13\x20\x04\x21"+addrString(progData+12)+"\xc9"+ // slingshot
+			"\xfe\x17\x20\x04\x21"+addrString(progData+15)+"\xc9"+ // feather
+			"\xfe\x19\xc0\x21"+addrString(progData+18)+"\xc9") // satchel
 
 	// this is a replacement for giveTreasure that gives treasure, plays sound,
 	// and sets text based on item ID a and sub ID c, and accounting for item
@@ -446,10 +456,14 @@ func initSeasonsEOB() {
 	// well as some other flags to skip cutscenes, etc.
 	initialGlobalFlags := r.appendToBank(0x0a, "initial global flags",
 		"\x0a\x1c\xff")
+	giveLinkedStartItem := r.appendToBank(0x0a, "give linked starting item",
+		"\xfa\xfe\x7f\x4f\xfa\xfd\x7f\xea\x82\xc6\xcd\xeb\x16"+
+			"\xaf\xea\x80\xc6\xc9")
 	setStartingFlags := r.appendToBank(0x0a, "set starting flags",
 		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
 			"\xe5\xcd\xcd\x30\xe1\x18\xf4\xe1"+ // init global flags
-			"\x3e\xff\xea\x46\xc6"+ // mark animal text as shown
+			"\xfa\xff\x7f\xea\x10\xc6\x3e\xff\xea\x46\xc6"+ // animal stuff
+			"\xfa\x01\xcc\xb7\xc4"+giveLinkedStartItem+ // in place of sword
 			"\x3e\x50\xea\xa7\xc7"+ // bits 4 + 6
 			"\x3e\x60\xea\x9a\xc7"+ // bits 5 + 6
 			"\x3e\xc0\xea\x98\xc7\xea\xcb\xc7"+ // bits 6 + 7
@@ -459,7 +473,7 @@ func initSeasonsEOB() {
 			"\x3e\x10\xea\x97\xc6\x3e\x03\xea\xc6\xc6"+ // give L-3 ring box
 			"\xc9")
 	r.replace(0x0a, 0x66ed, "call set starting flags",
-		"\x1e\x78\x1a", "\xc3"+setStartingFlags)
+		"\x1e\x78\x1a\xcb\x7f\x20", "\xcd"+setStartingFlags+"\xc3\x9e\x21")
 
 	// remove generic "you got a ring" text for gasha nuts
 	gashaNutRingText := r.appendToBank(0x0a, "remove ring text from gasha nut",
@@ -651,6 +665,14 @@ func initSeasonsEOB() {
 	r.replace(0x3f, 0x461a, "auto ring appraisal",
 		"\xcb\xf1\xcd\x75\x46\xfe\x64\x38",
 		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x4b\x18\xc9")
+
+	// don't play a sound for obtaining an item if it's on the starting screen,
+	// so that the linked starting item can be given silently.
+	giveItemSilently := r.appendToBank(0x3f, "give item silently",
+		"\x47\xfa\x4c\xcc\xfe\xa7\x78\xc2\x74\x0c"+
+			"\xfa\x49\xcc\xb7\x78\xc2\x74\x0c\xc9")
+	r.replace(0x3f, 0x4535, "call give item silently",
+		"\xcd\x74\x0c", "\xcd"+giveItemSilently)
 }
 
 // makes seasons-specific additions to the collection mode table.

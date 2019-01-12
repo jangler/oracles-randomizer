@@ -122,12 +122,15 @@ to be ridden; i think the others are specific to each animal.
 - 15 = volcano under temple ruins bombed
 - 1b = makes pirate skull appear in desert
 - 1c = saw twinrova cutscene outside d6
+- 22 = needs to be set for linked great moblin event to happen
 
 ### ages flags
 
 - 0a = finished intro (can open menu?)
+- 0b = left ambi's palace after receiving bombs
 - 0c = maku tree vanished
 - 0e = fairies put the forest back in order
+- 10 = taken to ambi's palace to receive bombs
 - 11 = maku tree tells you where the seventh essence is
 - 12 = past maku tree opened gate
 - 13 = finished talking to maku tree after getting maku seed
@@ -160,6 +163,8 @@ to be ridden; i think the others are specific to each animal.
 - 35 = finished twinrova cutscene after getting maku seed
 - 36 = traded mystery seeds for feather
 - 37 = traded scent seeds for bracelet
+- 38 = checked on bridge builder screen in linked game; beat vire minigame?
+- 39 = talked to impa outside black tower present in linked game (after D3)
 - 3d = set at start
 - 3e = maku tree told you to go to yoll graveyard
 - 3f = past maku tree opened gate (2)

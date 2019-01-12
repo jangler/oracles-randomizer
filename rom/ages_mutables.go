@@ -289,6 +289,10 @@ var agesFixedMutables = map[string]Mutable{
 
 	// vanilla bug: compass doesn't show D6 boss key chest.
 	"fix d6 compass": MutableByte(Addr{0x01, 0x4eea}, 0x14, 0x34),
+
+	// start linked games with shield instead of sword.
+	"start linked with shield": MutableString(Addr{0x07, 0x41c0},
+		"\x8a\x05\x9a\x24", "\x8a\x01\x9a\x06"),
 }
 
 var agesVarMutables = map[string]Mutable{
