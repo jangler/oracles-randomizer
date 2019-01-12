@@ -18,7 +18,8 @@ var portalNodes = map[string]*Node{
 	"lake portal": Or("furnace", And("north horon stump", Or(
 		And("wet eyeglass lake", Or("jump 2", "ricky's flute", "moosh's flute"),
 			Or("flippers", And("dimitri's flute", "bracelet"))),
-		And(Or("north horon default winter", "winter"), "jump 6")))),
+		And(Or("north horon default winter", "winter"),
+			Or("jump 6", And("jump 2", "dimitri's flute")))))),
 
 	"village portal": Or(
 		And("horon village", Or("boomerang L-2", Hard("jump 6"))),
