@@ -68,8 +68,15 @@ var seasonsSlots = map[string]*MutableSlot{
 		"spring banana", 0x66c6, 0x00, 0x0f, collectFind2, 0x0f),
 	"goron mountain, across pits": seasonsFoundItem(
 		"dragon key", 0x62a3, 0x00, 0x1a, collectFind1, 0x1a),
-	"diving spot outside D4": seasonsScriptItem(
-		"pyramid jewel", 0x734e, 0x07, 0xe5, collectUnderwater, 0x1d),
+	"diving spot outside D4": &MutableSlot{
+		treasureName: "pyramid jewel",
+		idAddrs:      []Addr{{0x0b, 0x734e}, {0x0b, 0x7358}},
+		subIDAddrs:   []Addr{{0x0b, 0x734f}, {0x0b, 0x7359}},
+		group:        0x07,
+		room:         0xe5,
+		collectMode:  collectUnderwater,
+		mapCoords:    0x1d,
+	},
 	"black beast's chest": seasonsChest(
 		"x-shaped jewel", 0x4f8a, 0x00, 0xf4, collectChest, 0xf4),
 	"old man in treehouse": seasonsScriptItem(
