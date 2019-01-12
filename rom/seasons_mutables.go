@@ -95,7 +95,7 @@ var seasonsFixedMutables = map[string]Mutable{
 	// bank 07
 
 	"start linked w/o sword": MutableString(Addr{0x07, 0x41ac},
-		"\x82\x05\x92\x24", "\x82\x00\x92\x04"),
+		"\x82\x05\x92\x24", "\xa2\x10\x92\x04"),
 
 	// banks 08-0a (most interaction-specific non-script behavior?)
 
