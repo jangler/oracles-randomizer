@@ -4,9 +4,7 @@ import (
 	"container/list"
 	"fmt"
 	"math/rand"
-	"regexp"
 	"sort"
-	"strconv"
 	"strings"
 
 	"github.com/jangler/oracles-randomizer/graph"
@@ -349,46 +347,29 @@ func rollAnimalCompanion(src *rand.Rand, r *Route, game int) int {
 	return companion
 }
 
-// dungeonIndex returns the index of a slot's dungeon if it's in a dungeon, or
-// -1 if it's not.
-func dungeonIndex(node *graph.Node) int {
-	isInDungeon, _ := regexp.MatchString(`^d\d `, node.Name)
-	if isInDungeon {
-		index, _ := strconv.Atoi(string(node.Name[1]))
-		return index
-	}
-	return -1
-}
-
-// place maps, compasses, and boss keys in chests in dungeons (before
+// place maps, compasses, boss keys, and slates in chests in dungeons (before
 // attempting to slot the other ones).
 func placeDungeonItems(src *rand.Rand, r *Route, game int,
 	itemList, usedItems, slotList, usedSlots *list.List) {
-
 	// place boss keys first
 	for i := 1; i < 9; i++ {
-		slotted := false
-		for ei := itemList.Front(); ei != nil && !slotted; ei = ei.Next() {
-			item := ei.Value.(*graph.Node)
-			if item.Name == fmt.Sprintf("d%d boss key", i) {
-				for es := slotList.Front(); es != nil; es = es.Next() {
-					slot := es.Value.(*graph.Node)
+		prefix := fmt.Sprintf("d%d", i)
+		itemName := prefix + " boss key"
 
-					// dungeon items can't go on the boss
-					if !strings.HasSuffix(slot.Name, " boss") &&
-						dungeonIndex(slot) == i {
-						item.AddParents(slot)
+		slotElem, itemElem, slotNode, itemNode :=
+			getDungeonItem(prefix, itemName, slotList, itemList)
+		placeItem(slotNode, itemNode, slotElem, itemElem,
+			usedSlots, slotList, usedItems, itemList)
+	}
 
-						usedSlots.PushBack(slot)
-						slotList.Remove(es)
-						usedItems.PushBack(item)
-						itemList.Remove(ei)
-
-						slotted = true
-						break
-					}
-				}
-			}
+	// place slates in ages
+	if game == rom.GameAges {
+		for i := 1; i <= 4; i++ {
+			itemName := fmt.Sprintf("slate %d", i)
+			slotElem, itemElem, slotNode, itemNode :=
+				getDungeonItem("d8", itemName, slotList, itemList)
+			placeItem(slotNode, itemNode, slotElem, itemElem,
+				usedSlots, slotList, usedItems, itemList)
 		}
 	}
 
@@ -405,22 +386,23 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int,
 		for _, itemName := range []string{"dungeon map", "compass"} {
 			slotElem, itemElem, slotNode, itemNode :=
 				getDungeonItem(prefix, itemName, slotList, itemList)
-
-			usedSlots.PushBack(slotNode)
-			slotList.Remove(slotElem)
-			usedItems.PushBack(itemNode)
-			itemList.Remove(itemElem)
-
-			itemNode.AddParents(slotNode)
+			placeItem(slotNode, itemNode, slotElem, itemElem,
+				usedSlots, slotList, usedItems, itemList)
 		}
 	}
 }
 
+// find a valid position for a dungeon item
 func getDungeonItem(prefix, itemName string, slotList,
 	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
 		if !strings.HasPrefix(slot.Name, prefix) {
+			continue
+		}
+		if (strings.HasSuffix(itemName, "boss key") ||
+			strings.HasPrefix(itemName, "slate")) &&
+			strings.HasSuffix(slot.Name, "boss") {
 			continue
 		}
 
@@ -435,6 +417,18 @@ func getDungeonItem(prefix, itemName string, slotList,
 	}
 
 	panic("could not place dungeon-specific items")
+}
+
+// place item in the given slot, and remove it from the pool
+func placeItem(slotNode, itemNode *graph.Node,
+	slotElem, itemElem *list.Element,
+	usedSlots, slotList, usedItems, itemList *list.List) {
+	usedSlots.PushBack(slotNode)
+	slotList.Remove(slotElem)
+	usedItems.PushBack(itemNode)
+	itemList.Remove(itemElem)
+
+	itemNode.AddParents(slotNode)
 }
 
 func emptyList(l *list.List) []*graph.Node {
