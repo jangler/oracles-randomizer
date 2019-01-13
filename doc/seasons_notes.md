@@ -75,6 +75,7 @@ Out of logic:
 - Fighting Frypolar without slingshot
 - D8 sidescrollers without cape
 - Magic rings from non-randomized locations
+- Linked secrets
 
 
 ### Hard logic
@@ -87,3 +88,4 @@ exception of:
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
 - Magic rings from non-randomized locations
+- Linked secrets

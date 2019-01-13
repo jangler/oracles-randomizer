@@ -44,6 +44,7 @@ General details common to both games:
 	- Gasha nut contents
 	- Fixed drops (from bushes, pots, etc.)
 	- Maple drops
+	- Linked secrets
 - Mystical seed trees are randomized, with no more than two trees of each type.
   Items that use seeds for ammunition start with the type of seed that's on the
   Horon Village or Lynna City tree.
@@ -91,7 +92,9 @@ A: no
 
 **Q: Can I at least do a linked game?**
 
-A: Not yet. Probably in a future version.
+A: Yes, although linked support has not been extensively tested, and linked
+elements of the games are not randomized. Animal companion is still determined
+by the seed, not by the linked file.
 
 
 ## Thanks to:

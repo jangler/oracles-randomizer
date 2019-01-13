@@ -76,6 +76,7 @@ Out of logic:
 - Various stupid tricks in D2, D3, D4, and D5
 - Text warps
 - Magic rings from non-randomized locations
+- Linked secrets
 
 
 ### Hard logic
@@ -87,3 +88,4 @@ exception of:
 - Mystery seeds as a weapon
 - Text warps
 - Magic rings from non-randomized locations
+- Linked secrets
