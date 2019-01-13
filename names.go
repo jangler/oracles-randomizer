@@ -48,6 +48,10 @@ var niceNames = map[string]string{
 	"star ore":         "star-shaped ore",
 	"rare peach stone": "piece of heart",
 	"goron letter":     "letter of introduction",
+	"slate 1":          "slate",
+	"slate 2":          "slate",
+	"slate 3":          "slate",
+	"slate 4":          "slate",
 
 	// seasons slots
 	"d0 sword chest":  "hero's cave sword chest",
