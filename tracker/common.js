@@ -37,12 +37,12 @@ function init() {
   }
 
   let sword = document.getElementById("sword");
-  states.set(sword, ["img/sword1.gif", "img/sword2.gif"]);
+  states.set(sword, ["img/sword1.gif", "img/sword2.gif", "img/sword3.gif"]);
 
   let flute = document.getElementById("flute");
   states.set(flute, ["img/flutestrange.gif", "img/flutericky.gif",
     "img/flutedimitri.gif", "img/flutemoosh.gif"]);
 
   let shield = document.getElementById("shield");
-  states.set(shield, ["img/shield1.gif", "img/shield2.gif"]);
+  states.set(shield, ["img/shield1.gif", "img/shield2.gif", "img/shield3.gif"]);
 }
