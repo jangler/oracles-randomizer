@@ -279,17 +279,18 @@ var agesD8Nodes = map[string]*Node{
 	"d8 floor puzzle":      AndSlot("d8 group C"),
 	"d8 sarcophagus chest": AndSlot("d8 group C", "power glove"),
 
-	"d8 group D":  And("d8 group C", "sword"), // post-miniboss
-	"d8 NW slate": And("d8 group D"),
-	"d8 SW slate": And("d8 group D", "bracelet"), // +1 small key
-	"d8 NE slate": And("d8 group D", "feather", "flippers", "ember seeds"),
+	"d8 group D":        And("d8 group C", "sword"), // post-miniboss
+	"d8 NW slate chest": AndSlot("d8 group D"),
+	"d8 SW slate chest": AndSlot("d8 group D", "bracelet"), // +1 small key
+	"d8 NE slate chest": AndSlot("d8 group D", "feather", "flippers",
+		"ember seeds"),
 
-	"d8 group G":   And("d8 group D", "power glove"),
-	"d8 B3F chest": AndSlot("d8 group G"),
-	"d8 tile room": AndSlot("d8 group G", "feather"),
-	"d8 SE slate":  And("d8 group G", "feather"),
-	"d8 boss": AndSlot("d8 boss key", "d8 group G", "d8 NW slate",
-		"d8 NE slate", "d8 SW slate", "d8 SE slate"),
+	"d8 group G":        And("d8 group D", "power glove"),
+	"d8 B3F chest":      AndSlot("d8 group G"),
+	"d8 tile room":      AndSlot("d8 group G", "feather"),
+	"d8 SE slate chest": AndSlot("d8 group G", "feather"),
+	"d8 boss": AndSlot("d8 boss key", "d8 group G", "slate 1", "slate 2",
+		"slate 3", "slate 4"),
 }
 
 var agesD9Nodes = map[string]*Node{

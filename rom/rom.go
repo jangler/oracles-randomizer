@@ -77,6 +77,11 @@ func Init(game int) {
 	itemGfx["harp 3"] = itemGfx["tune of ages"]
 	itemGfx["flippers 1"] = itemGfx["flippers"]
 	itemGfx["flippers 2"] = itemGfx["mermaid suit"]
+
+	// slates
+	for i := 1; i <= 4; i++ {
+		itemGfx[fmt.Sprintf("slate %d", i)] = itemGfx["slate"]
+	}
 }
 
 // Addr is a fully-specified memory address.
