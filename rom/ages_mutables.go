@@ -178,10 +178,10 @@ var agesFixedMutables = map[string]Mutable{
 	// remove ralph/veran cutscene outside veran fight
 	"skip ralph at veran": MutableByte(Addr{0x12, 0x6668}, 0xf2, 0xff),
 
-	// remove special interaction from caves in sea of storms so that the
-	// chests can be normal chests
-	"normalize sea of storms chests": MutableStrings(
-		[]Addr{{0x12, 0x6417}, {0x12, 0x6421}}, "\xf1", "\xff"),
+	// remove special interaction from cave in sea of storms past so that the
+	// chest can be a normal chest
+	"normalize sea of storms chest": MutableByte(Addr{0x12, 0x6421},
+		0xf1, 0xff),
 
 	// fix pickup text for harp tunes
 	"tune of echoes text": MutableString(Addr{0x1e, 0x4c3e}, "\x49",
