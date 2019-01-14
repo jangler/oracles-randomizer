@@ -417,7 +417,8 @@ func initAgesEOB() {
 		"\xcd\x1c\x17", "\xcd"+shopGiveTreasure)
 	// display text based on above temp wram address.
 	shopShowText := r.appendToBank(0x09, "shop show text",
-		"\x1a\xfe\x0d\xc2\x72\x18\xfa\x0d\xcf\x06\x00\x4f\xc3\x72\x18")
+		"\x1a\xfe\x0d\xc2\x72\x18\xfa\x0d\xcf\x06\x00\x4f"+
+			"\x79\xfe\xff\xc8\xc3\x72\x18") // text $ff is ring
 	r.replace(0x09, 0x4443, "call shop show text",
 		"\xc2\x72\x18", "\xc2"+shopShowText)
 
