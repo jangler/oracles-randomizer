@@ -293,6 +293,10 @@ var agesFixedMutables = map[string]Mutable{
 	// start linked games with shield instead of sword.
 	"start linked with shield": MutableString(Addr{0x07, 0x41c0},
 		"\x8a\x05\x9a\x24", "\x8a\x01\x9a\x06"),
+
+	// move linked great fairy outside D2 present out of the entrance.
+	"move linked great fairy": MutableString(Addr{0x12, 0x5d40},
+		"\x28\x58", "\x38\x68"),
 }
 
 var agesVarMutables = map[string]Mutable{
