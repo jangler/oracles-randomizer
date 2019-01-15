@@ -216,7 +216,7 @@ var labrynnaNodes = map[string]*Node{
 	"zora seas chest":      AndSlot("clean seas"),
 	"enter d7":             And("king zora", "clean seas"),
 	"fisher's island cave": AndSlot("mermaid suit", "ages", "long hook"),
-	"zora's reward":        AndSlot("d7 essence"),
+	"zora's reward":        AndSlot("d7 boss"),
 
 	// sea of storms / sea of no return
 	"piratian captain":   AndSlot("lynna city", "mermaid suit", "zora scale"),
