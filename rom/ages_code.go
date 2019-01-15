@@ -233,7 +233,8 @@ func initAgesEOB() {
 	// and exit into the present if the past entrance is closed.
 	replaceWarpExit := r.appendToBank(0x00, "replace warp exit",
 		"\xea\x48\xcc\xfe\x83\xc0\xfa\x83\xc8\xe6\x80\xc0"+
-			"\xfa\x47\xcc\xfe\x01\xc0\xaf\xea\x47\xcc\xc9")
+			"\xfa\x47\xcc\xe6\x0f\xfe\x01\xc0"+
+			"\xfa\x47\xcc\xe6\xf0\xea\x47\xcc\xc9")
 	r.replace(0x04, 0x45e8, "call replace warp exit normal",
 		"\xea\x48\xcc", "\xcd"+replaceWarpExit)
 	r.replace(0x0a, 0x4738, "call replace warp exit essence",
