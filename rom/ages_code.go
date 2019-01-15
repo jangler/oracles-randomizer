@@ -710,6 +710,12 @@ func initAgesEOB() {
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
 
+	// use different seed capacity table, so that level zero satchel can still
+	// hold 20 seeds.
+	seedCapTable := r.appendToBank(0x3f, "seed capacity table",
+		"\x20\x20\x50\x99")
+	r.replace(0x3f, 0x4608, "seed capacity pointer", "\x10\x46", seedCapTable)
+
 	// put obtained rings directly into ring list (no need for appraisal), and tell the
 	// player what type of ring it is
 	r.replace(0x3f, 0x4614, "auto ring appraisal",

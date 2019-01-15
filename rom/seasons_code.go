@@ -660,6 +660,12 @@ func initSeasonsEOB() {
 			"\xe1\xd1\xf1\xcd\x4e\x45\xc9")
 	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
 
+	// use different seed capacity table, so that level zero satchel can still
+	// hold 20 seeds.
+	seedCapTable := r.appendToBank(0x3f, "seed capacity table",
+		"\x20\x20\x50\x99")
+	r.replace(0x3f, 0x460e, "seed capacity pointer", "\x16\x46", seedCapTable)
+
 	// put obtained rings directly into ring list (no need for appraisal), and tell the
 	// player what type of ring it is
 	r.replace(0x3f, 0x461a, "auto ring appraisal",

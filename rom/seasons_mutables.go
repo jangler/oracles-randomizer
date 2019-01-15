@@ -356,12 +356,6 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// bank 3f
 
-	// since slingshot doesn't increment seed capacity, set the level-zero
-	// capacity of seeds to 20, and move the pointer up by one byte.
-	"satchel capacity": MutableString(Addr{0x3f, 0x4617},
-		"\x20\x50\x99", "\x20\x20\x50"),
-	"satchel capacity pointer": MutableByte(Addr{0x3f, 0x460e}, 0x16, 0x17),
-
 	// give member's card, treasure map, fool's ore, and identified flutes
 	// graphics in treasure sprite table
 	"member's card gfx": MutableString(Addr{0x3f, 0x67b4},
