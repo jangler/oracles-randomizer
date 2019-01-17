@@ -103,7 +103,7 @@ func initSeasonsEOB() {
 	// and sets text based on item ID a and sub ID c, and accounting for item
 	// progression.
 	giveItem := r.appendToBank(0x00, "give item func",
-		"\xcd"+getTreasureData+"\xcd"+progressiveItemFunc+ // get treasure data
+		"\xcd"+getTreasureData+"\x47\xcd"+progressiveItemFunc+"\x78"+ // load data
 			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
 			"\x06\x00\x23\x4e\x79\xfe\xff\xc8\xcd\x4b\x18\xaf\xc9") // show text
 
