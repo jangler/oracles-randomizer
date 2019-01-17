@@ -697,6 +697,9 @@ func makeSeasonsCollectModeTable() string {
 		b.Write([]byte{0x02, room, collectFall})
 	}
 
+	// add linked hero's cave chest
+	b.Write([]byte{0x05, 0x2c, collectChest})
+
 	b.Write([]byte{0xff})
 	return b.String()
 }
