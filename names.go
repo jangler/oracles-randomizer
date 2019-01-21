@@ -62,7 +62,7 @@ var niceNames = map[string]string{
 	"member's shop 3": "member's shop, 200 rupees",
 
 	// ages slots
-	"ridge base chest":    "ridge base east present",
+	"ridge base chest":    "ridge west top present",
 	"goron diamond chest": "ridge hook cave present",
 	"ridge west cave":     "ridge base west present",
 	"ridge bush cave":     "ridge past bush cave",
