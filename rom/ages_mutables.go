@@ -291,6 +291,12 @@ var agesFixedMutables = map[string]Mutable{
 	// move linked great fairy outside D2 present out of the entrance.
 	"move linked great fairy": MutableString(Addr{0x12, 0x5d40},
 		"\x28\x58", "\x38\x68"),
+
+	// keep past zora guarding sea of storms in linked game.
+	"keep past zora guard": MutableString(Addr{0x0b, 0x61cc},
+		"\xc2\x05\x3b", "\x00\x00\x00"),
+	// and don't place a whirlpool on their tile.
+	"remove linked whirlpool": MutableByte(Addr{0x04, 0x63a9}, 0xf1, 0x00),
 }
 
 var agesVarMutables = map[string]Mutable{

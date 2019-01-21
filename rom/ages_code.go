@@ -485,6 +485,13 @@ func initAgesEOB() {
 	r.replace(0x0b, 0x7954, "call fairy queen func",
 		"\xea\x04\xcc", "\xcd"+fairyQueenFunc)
 
+	// check either zora guard's flag for the two in sea of storms, so that
+	// either can be accessed after losing the zora scale in a linked game.
+	checkZoraGuards := r.appendToBank(0x0b, "check zora guards",
+		"\xfa\xd7\xc7\xc5\x47\xfa\xd6\xc8\xb0\xc1\xc9")
+	r.replace(0x0b, 0x61d7, "call check zora guards",
+		"\xcd\x7d\x19", "\xcd"+checkZoraGuards)
+
 	// bank 0c
 
 	// use custom script for soldier in deku forest with sub ID 0; they should
