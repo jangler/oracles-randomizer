@@ -177,7 +177,7 @@ var agesSlots = map[string]*MutableSlot{
 	"d2 rope room":             agesChest("compass", 0x51ae, 0x04, 0x45),
 	"d2 thwomp shelf":          agesScriptItem("rupees, 30", 0x4c0f, 0x06, 0x27),
 	"d2 thwomp tunnel":         agesScriptItem("feather", 0x4c0a, 0x06, 0x28),
-	"d2 boss":                  agesHC(0x04, 0x2b),
+	"d2 boss":                  agesHC(0x06, 0x2b),
 	"d3 bridge chest":          agesChest("rupees, 20", 0x51b6, 0x04, 0x4e),
 	"d3 B1F east":              agesChest("d3 boss key", 0x51ba, 0x04, 0x50),
 	"d3 torch chest":           agesChest("gasha seed", 0x51be, 0x04, 0x55),
