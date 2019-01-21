@@ -108,6 +108,10 @@ var seasonsFixedMutables = map[string]Mutable{
 	"horon shop flute check 2": MutableWord(Addr{0x08, 0x4afb},
 		0xcb6f, 0xafaf),
 
+	// make linked shop item behave the same way as unlinked.
+	"shop item ignore linked": MutableString(Addr{0x08, 0x4b09},
+		"\x20\x04", "\x20\x00"),
+
 	// prevent the first member's shop item from always refilling all seeds.
 	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
 		"\xcc\xe5\x17", "\x00\x00\x00"),
