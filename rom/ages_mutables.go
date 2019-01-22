@@ -296,7 +296,7 @@ var agesFixedMutables = map[string]Mutable{
 	"keep past zora guard": MutableString(Addr{0x0b, 0x61cc},
 		"\xc2\x05\x3b", "\x00\x00\x00"),
 	// and don't place a whirlpool on their tile.
-	"remove linked whirlpool": MutableByte(Addr{0x04, 0x63a9}, 0xf1, 0x00),
+	"remove linked whirlpool": MutableByte(Addr{0x04, 0x63ab}, 0xe9, 0x19),
 }
 
 var agesVarMutables = map[string]Mutable{
