@@ -629,7 +629,7 @@ func initAgesEOB() {
 		"\x1e\x4b\x1a\xfe\x38\x1e\x19\xc8\x1e\x0a\xc9")
 	// lava juice trading goron also has a chest in the room.
 	collectLavaJuiceFunc := r.appendToBank(0x06, "collect lava juice room",
-		"\x1e\x4d\x1a\xfe\x68\x1e\x0a\xd8\x1e\x38\xc9")
+		"\x1e\x4d\x1a\xfe\x68\x1e\x02\xd8\x1e\x38\xc9")
 	collectModeJumpTable := r.appendToBank(0x06, "collect mode jump table",
 		collectMakuTreeFunc+collectTargetCartsFunc+collectBigBangFunc+
 			collectLavaJuiceFunc)
