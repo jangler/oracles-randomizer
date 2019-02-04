@@ -92,6 +92,15 @@ var seasonsFixedMutables = map[string]Mutable{
 	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
 		"\x40\x33\xc5", "\x20\x33\xe6"),
 
+	// bank 05
+
+	// vanilla game doesn't save animal position if it's not the natzu animal
+	// if it's ricky and you have an identified flute, dimitri and you have
+	// flippers, or moosh and you have essence 5. i don't know why and i want
+	// it to stop.
+	"don't erase animals on dismount": MutableString(Addr{0x05, 0x45c9},
+		"\x28\x28", "\x18\x28"),
+
 	// bank 07
 
 	"start linked w/o sword": MutableString(Addr{0x07, 0x41ac},
@@ -161,7 +170,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// essences. bit 6 seems related to this, and needs to be zero too?
 	"skip moosh essence check 1": MutableByte(Addr{0x0f, 0x7429}, 0x03, 0x00),
 	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e36}, 0xca, 0xc3),
-	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ead}, 0x40, 0x00),
 
 	// sell member's card in subrosian market before completing d3
 	"member's card essence check": MutableWord(Addr{0x09, 0x7750},

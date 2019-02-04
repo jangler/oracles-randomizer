@@ -251,6 +251,15 @@ func initSeasonsEOB() {
 	r.replace(0x05, 0x5fe8, "cliff lookup call",
 		"\xcd\xdd\x1d", "\xcd"+cliffLookupFunc)
 
+	// make moosh unrideable on mt cucco in the case of not having flute in a
+	// moosh seed.
+	checkMooshFlute := r.appendToBank(0x05, "check moosh flute",
+		"\x3e\x0e\xc3\x17\x17")
+	r.replace(0x05, 0x776b, "call check moosh flute 1",
+		"\xfa\x10\xc6", "\xcd"+checkMooshFlute)
+	r.replace(0x05, 0x7a65, "call check moosh flute 2",
+		"\xfa\x10\xc6", "\xcd"+checkMooshFlute)
+
 	// bank 06
 
 	// replace a random item drop with gale seeds 1/4 of the time if the player
