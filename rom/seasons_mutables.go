@@ -92,6 +92,15 @@ var seasonsFixedMutables = map[string]Mutable{
 	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
 		"\x40\x33\xc5", "\x20\x33\xe6"),
 
+	// bank 05
+
+	// vanilla game doesn't save animal position if it's not the natzu animal
+	// if it's ricky and you have an identified flute, dimitri and you have
+	// flippers, or moosh and you have essence 5. i don't know why and i want
+	// it to stop.
+	"don't erase animals on dismount": MutableString(Addr{0x05, 0x45c9},
+		"\x28\x28", "\x18\x28"),
+
 	// bank 07
 
 	"start linked w/o sword": MutableString(Addr{0x07, 0x41ac},
