@@ -10,7 +10,7 @@ var NodeValues = map[string]int{
 
 	"blaino prize": -10,
 
-	"king zora":                -300,
+	"syrup":                    -300,
 	"wild tokay game":          -10,
 	"goron dance, with letter": -20,
 	"goron dance present":      -10,
