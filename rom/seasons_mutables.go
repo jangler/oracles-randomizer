@@ -170,7 +170,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// essences. bit 6 seems related to this, and needs to be zero too?
 	"skip moosh essence check 1": MutableByte(Addr{0x0f, 0x7429}, 0x03, 0x00),
 	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e36}, 0xca, 0xc3),
-	"skip moosh flag check":      MutableByte(Addr{0x09, 0x4ead}, 0x40, 0x00),
 
 	// sell member's card in subrosian market before completing d3
 	"member's card essence check": MutableWord(Addr{0x09, 0x7750},
