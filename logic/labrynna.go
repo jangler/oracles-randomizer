@@ -26,7 +26,8 @@ var labrynnaNodes = map[string]*Node{
 	"south shore dirt": AndSlot("shore present", Or("shovel", "flute")),
 	"balloon guy": And("feather", Or("sword", "boomerang"),
 		Or("currents", "ricky's gloves", "ricky's flute",
-			And("shore present", "any seed shooter"))),
+			And("shore present", Or("any seed shooter",
+				HardAnd("pegasus satchel", "boomerang"))))),
 	"balloon guy's gift": AndSlot("balloon guy"),
 	"balloon guy's upgrade": AndSlot("balloon guy", Or( // 3 types of seeds
 		And("ember seeds", Or(
