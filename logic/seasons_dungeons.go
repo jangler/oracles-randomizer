@@ -290,10 +290,10 @@ var seasonsD8Nodes = map[string]*Node{
 		Or("jump 6", "boomerang L-2", Hard())),
 	"d8 crystal room": And("d8 ice puzzle room", "d8 4 keys"),
 	"d8 ghost armos":  And("d8 crystal room"),
-	"d8 NW crystal":   And("d8 crystal room", "d8 7 keys"),
-	"d8 NE crystal":   And("d8 crystal room", "hit lever"),
-	"d8 SE crystal":   And("d8 crystal room"),
-	"d8 SW crystal":   And("d8 crystal room", "d8 7 keys"),
+	"d8 NW crystal":   And("d8 crystal room", "bracelet", "d8 7 keys"),
+	"d8 NE crystal":   And("d8 crystal room", "bracelet", "hit lever"),
+	"d8 SE crystal":   And("d8 crystal room", "bracelet"),
+	"d8 SW crystal":   And("d8 crystal room", "bracelet", "d8 7 keys"),
 	"d8 pot chest":    And("d8 SE crystal", "d8 NE crystal", "remove pot"),
 
 	// B1F
@@ -301,7 +301,7 @@ var seasonsD8Nodes = map[string]*Node{
 	"d8 armos chest":   AndSlot("d8 spinner", "magnet gloves"),
 	"d8 spinner chest": And("d8 armos chest"),
 	"d8 SE lava chest": And("d8 SE crystal"),
-	"d8 SW lava chest": AndSlot("d8 SE crystal"),
+	"d8 SW lava chest": AndSlot("d8 crystal room"),
 	"d8 boss": AndSlot("d8 SW crystal", "d8 SE crystal", "d8 NW crystal",
 		"d8 7 keys", "d8 boss key", "kill medusa head"),
 
