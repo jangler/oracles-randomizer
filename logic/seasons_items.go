@@ -47,7 +47,7 @@ var seasonsItemNodes = map[string]*Node{
 		"seed item", "refill seeds"),
 	"harvest pegasus seeds": And("seed item", Or(
 		And("pegasus tree seeds", "refill seeds"),
-		HardAnd("beach", "shield", "ore chunks", "seed item"))), // market
+		HardAnd("beach", "shield", "ore chunks"))), // market
 	"harvest gale seeds": And("gale tree seeds",
 		"seed item", "refill seeds"),
 
