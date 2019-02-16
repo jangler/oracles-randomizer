@@ -77,13 +77,12 @@ and
 
 A: Yes, the Oracles Discord server (link
 [here](https://www.speedrun.com/oos/thread/3qwe1)). The server is mainly focused
-on speedrunning, but the #randomizer channel is for anything pertaining to the
-randomizer.
+on speedrunning, but randomizer-specific channels exist as well.
 
 **Q: I found a problem. What do I do?**
 
-A: Open an issue about it on GitHub or bring it up in the #randomizer channel
-in the Oracles discord. Provide your seed's log file either way.
+A: Open an issue about it on GitHub or bring it up in a randomizer channel in
+the Oracles discord. Provide your seed's log file either way.
 
 **Q: Will you make a cross-game randomizer that combines Ages and Seasons into
 one ROM?**
