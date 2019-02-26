@@ -241,6 +241,9 @@ var agesFixedMutables = map[string]Mutable{
 	// and don't change the brothers' state if the tuni nut has been placed
 	"brother ignore flag": MutableString(Addr{0x15, 0x78e5},
 		"\xb5\x29", "\xb0\x02"),
+	// and change wives' state based on whether brother's item was obtained
+	"wife ignore flag": MutableString(Addr{0x15, 0x784f},
+		"\xb5\x29", "\xdf\x1e"),
 
 	// skip a text box in the symmetry city brothers' script
 	"skip brother text": MutableString(Addr{0x15, 0x7910},
