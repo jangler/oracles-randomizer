@@ -30,7 +30,7 @@ var holodrumNodes = map[string]*Node{
 		"mystery seeds", "kill moldorm"),
 	"enter d0":    And("horon village"),
 	"pirate ship": And("pirate's bell", "pirate house"),
-	"coast stump": And("pirate ship", "bombs", "jump 2"),
+	"coast stump": And("pirate ship", "bombs", Or("jump 2", Hard())),
 	"enter d7": And("pirate ship",
 		Or("jump 3", "western coast default summer",
 			And("coast stump", "summer")),
