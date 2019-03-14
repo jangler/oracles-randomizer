@@ -241,11 +241,6 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// bank 15 (script functions)
 
-	// you can softlock in d6 misusing keys without magnet gloves, so just move
-	// the magnet ball onto the button it needs to press to get the key the
-	// speedrun skips.
-	"move d6 magnet ball": MutableByte(Addr{0x15, 0x4f36}, 0x98, 0x58),
-
 	// if you go up the stairs into the room in d8 with the magnet ball and
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.

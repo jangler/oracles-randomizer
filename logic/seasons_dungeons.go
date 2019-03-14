@@ -189,7 +189,7 @@ var seasonsD6Nodes = map[string]*Node{
 	// 1F
 	"d6 1F east":    AndSlot("enter d6"),
 	"d6 rupee room": And("enter d6", "bombs"),
-	"d6 magkey room": And("enter d6",
+	"d6 beetle key room": And("enter d6",
 		Or(And("magnet gloves", "jump 2"), "jump 4")),
 	"d6 beamos room":       AndSlot("enter d6", "d6 key A", "d6 key C"),
 	"d6 1F terrace":        AndSlot("enter d6"),
@@ -198,7 +198,8 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 torch stairs":      And("d6 U-room", "ember seeds"),
 
 	// 2F
-	"d6 skipped chest":  And("enter d6", "magnet gloves", "break crystal"),
+	"d6 skipped chest": And("enter d6", "kill normal", "magnet gloves",
+		"break crystal", Or("jump 2", Hard())),
 	"d6 2F gibdo chest": AndSlot("d6 beamos room"),
 	"d6 2F armos chest": AndSlot("d6 2F gibdo chest", "bombs"),
 	"d6 escape room":    AndSlot("d6 torch stairs", "jump 2"),
@@ -214,7 +215,7 @@ var seasonsD6Nodes = map[string]*Node{
 		"kill manhandla"),
 
 	// fixed items
-	"d6 key A":  And("d6 magkey room"),
+	"d6 key A":  And("d6 beetle key room"),
 	"d6 key B":  And("d6 vire chest"),
 	"d6 key C":  And("d6 skipped chest"),
 	"d6 3 keys": And("d6 key A", "d6 key B", "d6 key C"),
