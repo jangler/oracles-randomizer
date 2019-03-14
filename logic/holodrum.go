@@ -23,8 +23,6 @@ var holodrumNodes = map[string]*Node{
 	"member's shop 3":  AndSlot("member's card"),
 
 	// western coast
-	//
-	// possible but not in logic: reaching the stump without feather
 	"black beast's chest": AndSlot("horon village",
 		Or("ember slingshot", Hard("mystery slingshot")),
 		"mystery seeds", "kill moldorm"),
