@@ -96,6 +96,7 @@ var agesD3Nodes = map[string]*Node{
 		Or("ember seeds", "scent seeds"),
 		Or("seed shooter", And(
 			Or("ember seeds", Hard()),
+			Or("d3 bridge chest", "jump 3", Hard("feather")),
 			Or("boomerang", Hard("jump 3"),
 				HardAnd("feather", "sword", "switch hook"))))),
 }
