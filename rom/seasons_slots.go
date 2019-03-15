@@ -204,14 +204,29 @@ var seasonsSlots = map[string]*MutableSlot{
 	},
 
 	// subrosia
+	//
+	// since treasure map sparkles only display on the holodrum map, the
+	// location of the subrosia portal "nearest" to the check is used.
+	// "nearest" is defined as: fewest screen transitions, with ties broken by
+	// earliest portal in the vanilla game sequence.
+	//
+	// holodrum portal locations are:
+	// - 0x04: temple ruins, upper
+	// - 0x1e: mt. cucco
+	// - 0x25: temple ruins, lower
+	// - 0x9a: rosa
+	// - 0xb0: spool swamp
+	// - 0xb9: eyeglass lake
+	// - 0xf7: horon village
+	//
 	"tower of winter": seasonsScriptItem(
-		"winter", 0x4fc5, 0x05, 0xf2, collectFind1, 0x9a),
+		"winter", 0x4fc5, 0x05, 0xf2, collectFind1, 0xb0),
 	"tower of summer": seasonsScriptItem(
 		"summer", 0x4fb9, 0x05, 0xf8, collectFind1, 0xb0),
 	"tower of spring": seasonsScriptItem(
 		"spring", 0x4fb5, 0x05, 0xf5, collectFind1, 0x1e),
 	"tower of autumn": seasonsScriptItem(
-		"autumn", 0x4fc1, 0x05, 0xfb, collectFind1, 0xb9),
+		"autumn", 0x4fc1, 0x05, 0xfb, collectFind1, 0xb0),
 	"subrosian dance hall": seasonsScriptItem(
 		"boomerang 1", 0x6646, 0x03, 0x95, collectFind2, 0x9a),
 	"temple of seasons": &MutableSlot{
@@ -221,7 +236,7 @@ var seasonsSlots = map[string]*MutableSlot{
 		group:        0x03,
 		room:         0xac,
 		collectMode:  collectNil,
-		mapCoords:    0x9a,
+		mapCoords:    0xb0,
 	},
 	"subrosia seaside": &MutableSlot{ // addrs set dynamically at EOB
 		treasureName: "star ore",
@@ -235,11 +250,11 @@ var seasonsSlots = map[string]*MutableSlot{
 	"subrosian wilds chest": seasonsChest(
 		"blue ore", 0x4f9f, 0x01, 0x41, collectChest, 0x1e),
 	"subrosia village chest": seasonsChest(
-		"red ore", 0x4fa3, 0x01, 0x58, collectChest, 0xb9),
+		"red ore", 0x4fa3, 0x01, 0x58, collectChest, 0xb0),
 	"subrosia, open cave": seasonsChest(
 		"gasha seed", 0x5095, 0x04, 0xf1, collectChest, 0x25),
 	"subrosia, locked cave": seasonsChest(
-		"gasha seed", 0x5116, 0x05, 0xc6, collectChest, 0xb0),
+		"gasha seed", 0x5116, 0x05, 0xc6, collectChest, 0x25),
 	"subrosia market, 1st item": &MutableSlot{
 		treasureName: "ribbon",
 		idAddrs:      []Addr{{0x09, 0x77da}},
@@ -283,7 +298,7 @@ var seasonsSlots = map[string]*MutableSlot{
 		group:        0x03,
 		room:         0x97,
 		collectMode:  collectFind2,
-		mapCoords:    0x25,
+		mapCoords:    0x1e,
 	},
 
 	// hero's cave
