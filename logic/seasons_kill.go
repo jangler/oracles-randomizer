@@ -65,7 +65,6 @@ var seasonsKillNodes = map[string]*Node{
 	"kill aquamentus":   Or("scent kill normal"),
 	"hit far switch": Or("boomerang", "bombs", "any slingshot",
 		And("sword", "energy ring")),
-	"kill rope": Or("kill normal"),
 	"kill hardhat (pit)": Or("sword", "boomerang", "shield", "rod",
 		"fool's ore", Hard("bombs"), And(
 			Or("slingshot", Hard("satchel")), Or("scent seeds", "gale seeds"))),

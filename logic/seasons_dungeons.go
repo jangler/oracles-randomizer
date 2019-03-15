@@ -8,8 +8,8 @@ package logic
 // reference (and that node should not be defined here).
 //
 // bush- and pot-throwing is in hard logic, but with an arbitrary limit of
-// three screen transitions per carry. otherwise you could have to carry pots
-// from pols voices to mimics in D3, or entrance to wizzrobes in D7.
+// three screen transitions per carry, and no more than two enemies can be
+// required to be killed with one throw.
 
 var seasonsD0Nodes = map[string]*Node{
 	"d0 key chest":   And("enter d0"),
@@ -47,12 +47,9 @@ var seasonsD1Nodes = map[string]*Node{
 	"d1 key B": And("d1 key chest"),
 }
 
-// pot-throwing does *not* apply to the rope room with the chest in it, since
-// it's practically impossible to corral four ropes in that space.
 var seasonsD2Nodes = map[string]*Node{
 	"d2 left from entrance": AndSlot("d2 torch room"),
-	"d2 rope room": And("d2 torch room",
-		Or("kill rope", Hard("bracelet"))),
+	"d2 rope room":          And("d2 torch room", "kill normal"),
 	"d2 arrow room": Or("enter d2 B",
 		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
 	"d2 rupee room":   And("d2 arrow room", "bombs"),
