@@ -94,8 +94,7 @@ var seasonsD3Nodes = map[string]*Node{
 	"d3 giant blade room": AndSlot("d3 omuai stairs"),
 
 	// second floor
-	"d3 moldorm chest": AndSlot("d3 mimic stairs",
-		Or("kill moldorm", Hard("bracelet"))),
+	"d3 moldorm chest":     AndSlot("d3 mimic stairs", "kill moldorm"),
 	"d3 bombed wall chest": AndSlot("d3 moldorm chest", "bombs"),
 	"d3 mimic chest": AndSlot("d3 water room", "kill mimic",
 		"d3 2 keys"), // min. 1 key
