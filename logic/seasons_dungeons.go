@@ -47,35 +47,39 @@ var seasonsD1Nodes = map[string]*Node{
 	"d1 key B": And("d1 key chest"),
 }
 
+// being able to reach the key doors near facade guarantees that you can reach
+// the blade trap key and spiral key, so the only requirement for any of the
+// key doors is the rope key. a corrolary is that since bombs are in hard logic
+// as weapons, you will *always* have access to enough small keys for the key
+// doors you can reach in hard logic.
 var seasonsD2Nodes = map[string]*Node{
 	"d2 left from entrance": AndSlot("d2 torch room"),
 	"d2 rope room":          And("d2 torch room", "kill normal"),
 	"d2 arrow room": Or("enter d2 B",
 		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
 	"d2 rupee room":   And("d2 arrow room", "bombs"),
-	"d2 hardhat room": And("d2 arrow room", "d2 2 keys"), // min. 1 key
+	"d2 hardhat room": And("d2 arrow room", Or("d2 key A", Hard())),
 	"d2 pot chest":    AndSlot("d2 hardhat room", "remove pot"),
 	"d2 rope chest":   AndSlot("d2 arrow room", "kill normal"),
 	"d2 bracelet room": And("d2 hardhat room",
 		Or("kill hardhat (pit)", Hard("bracelet"))),
 	"d2 moblin chest": AndSlot("d2 bracelet room",
 		Or("kill moblin (gap)", Hard("bracelet"))),
-	"d2 spiral chest": And("enter d2 B", "bombs"),
+	// "d2 spiral chest": And("enter d2 B", "bombs"), // logically irrelevant
 	"d2 blade chest": Or("enter d2 B",
 		And("d2 arrow room", Or("kill normal", Hard("bracelet")))),
 
 	// from here on it's entirely linear.
 	"d2 roller chest":  AndSlot("d2 bomb wall", "bombs", "bracelet"),
-	"d2 spinner":       And("d2 roller chest", "d2 2 keys"), // min. 1 key
-	"d2 terrace chest": AndSlot("d2 spinner", "d2 3 keys"),
+	"d2 spinner":       And("d2 roller chest"),
+	"d2 terrace chest": AndSlot("d2 spinner", "d2 key A"),
 	"d2 boss":          AndSlot("d2 spinner", "d2 boss key"),
 
 	"d2 key A": And("d2 rope room"),
-	"d2 key B": And("d2 spiral chest"),
-	"d2 key C": And("d2 blade chest"),
-	"d2 2 keys": Or(And("d2 key A", "d2 key B"), And("d2 key A", "d2 key C"),
-		And("d2 key B", "d2 key C")),
-	"d2 3 keys": And("d2 key A", "d2 key B", "d2 key C"),
+
+	// logically irrelevant keys
+	// "d2 key B": And("d2 spiral chest"),
+	// "d2 key C": And("d2 blade chest"),
 
 	"d2 torch room": Or("enter d2 A", "d2 rope chest"),
 	"d2 bomb wall":  And("d2 blade chest"), // alias for external reference
