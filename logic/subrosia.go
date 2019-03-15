@@ -7,7 +7,7 @@ package logic
 // 2. "beach": swamp portal, market, beach
 // 3. "hide and seek": H&S, mountain portal, spring tower
 // 4. "pirate house": village portal, pirates
-// 5. "furnace": lake portal, furnace, bomb flower
+// 5. "furnace": lake portal, furnace
 // 6. "bridge": bridge area (large but not visited in any%)
 //
 // the other locations are isolated and only traverseable with some combination
@@ -24,7 +24,7 @@ var subrosiaNodes = map[string]*Node{
 		And("hide and seek", "jump 2", "bracelet",
 			Or("bomb jump 2", "magnet gloves")),
 		And("furnace", "bracelet", "jump 2"),
-		And("furnace", Or("jump 4", Hard("jump 3"))),
+		And("furnace", Or("jump 4", Hard("bomb jump 3"))),
 		And("furnace", "jump 2", "magnet gloves"),
 		And("temple", "jump 2")),
 
@@ -35,7 +35,7 @@ var subrosiaNodes = map[string]*Node{
 	"pirate house": Or("village portal", And("hide and seek", "jump 2")),
 
 	"furnace": Or("lake portal",
-		And("beach", Or("jump 4", Hard("jump 3"))),
+		And("beach", Or("jump 4", Hard("bomb jump 3"))),
 		And("beach", "magnet gloves", "jump 2")),
 
 	"bridge": Or(
