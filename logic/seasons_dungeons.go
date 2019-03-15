@@ -6,6 +6,10 @@ package logic
 // dungeons should rely on overworld information as little as possible.
 // ideally "enter <dungeon>" is the only overworld item the dungeon nodes
 // reference (and that node should not be defined here).
+//
+// bush- and pot-throwing is in hard logic, but with an arbitrary limit of
+// three screen transitions per carry. otherwise you could have to carry pots
+// from pols voices to mimics in D3, or entrance to wizzrobes in D7.
 
 var seasonsD0Nodes = map[string]*Node{
 	"d0 key chest":   And("enter d0"),
@@ -15,15 +19,23 @@ var seasonsD0Nodes = map[string]*Node{
 	"d0 small key": And("d0 key chest"),
 }
 
+// bush-throwing is in hard logic for a few rooms, though the first stalfos one
+// doesn't matter, the goriya one only matters if you killed the stalfos with
+// rod, and the lever one only matters if you killed the stalfos with bombs.
+// bush-throwing is *not* in logic for the vanilla BK room, since you need to
+// relight the torches every time you leave.
 var seasonsD1Nodes = map[string]*Node{
-	"d1 key fall":           And("enter d1", "kill stalfos"),
-	"d1 stalfos chest":      AndSlot("d1 key A", "kill stalfos"),
-	"d1 lever room":         AndSlot("d1 stalfos chest"),
-	"d1 block-pushing room": AndSlot("d1 stalfos chest", "kill goriya"),
-	"d1 railway chest":      AndSlot("d1 stalfos chest", "hit lever"),
-	"d1 key chest":          And("d1 railway chest"),
-	"enter goriya bros":     And("d1 railway chest", "bombs", "d1 key B"),
-	"d1 basement":           AndSlot("enter goriya bros", "kill goriya bros"),
+	"d1 key fall": And("enter d1",
+		Or("kill stalfos", Hard("bracelet"))),
+	"d1 stalfos chest": AndSlot("d1 key A", "kill stalfos"),
+	"d1 lever room":    AndSlot("d1 stalfos chest"),
+	"d1 block-pushing room": AndSlot("d1 stalfos chest",
+		Or("kill goriya", Hard("bracelet"))),
+	"d1 railway chest": AndSlot("d1 stalfos chest",
+		Or("hit lever", Hard("bracelet"))),
+	"d1 key chest":      And("d1 railway chest"),
+	"enter goriya bros": And("d1 railway chest", "bombs", "d1 key B"),
+	"d1 basement":       AndSlot("enter goriya bros", "kill goriya bros"),
 	"d1 goriya chest": AndSlot("d1 stalfos chest",
 		Or("ember seeds", Hard("mystery seeds")), "kill goriya (pit)"),
 	"d1 floormaster room": AndSlot("enter d1",
@@ -35,19 +47,25 @@ var seasonsD1Nodes = map[string]*Node{
 	"d1 key B": And("d1 key chest"),
 }
 
+// pot-throwing does *not* apply to the rope room with the chest in it, since
+// it's practically impossible to corral four ropes in that space.
 var seasonsD2Nodes = map[string]*Node{
 	"d2 left from entrance": AndSlot("d2 torch room"),
-	"d2 rope room":          And("d2 torch room", "kill rope"),
+	"d2 rope room": And("d2 torch room",
+		Or("kill rope", Hard("bracelet"))),
 	"d2 arrow room": Or("enter d2 B",
 		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
-	"d2 rupee room":    And("d2 arrow room", "bombs"),
-	"d2 hardhat room":  And("d2 arrow room", "d2 2 keys"), // min. 1 key
-	"d2 pot chest":     AndSlot("d2 hardhat room", "remove pot"),
-	"d2 rope chest":    AndSlot("d2 arrow room", "kill normal"),
-	"d2 bracelet room": And("d2 hardhat room", "kill hardhat (pit)"),
-	"d2 moblin chest":  AndSlot("d2 bracelet room", "kill moblin (gap)"),
-	"d2 spiral chest":  And("enter d2 B", "bombs"),
-	"d2 blade chest":   Or("enter d2 B", And("d2 arrow room", "kill normal")),
+	"d2 rupee room":   And("d2 arrow room", "bombs"),
+	"d2 hardhat room": And("d2 arrow room", "d2 2 keys"), // min. 1 key
+	"d2 pot chest":    AndSlot("d2 hardhat room", "remove pot"),
+	"d2 rope chest":   AndSlot("d2 arrow room", "kill normal"),
+	"d2 bracelet room": And("d2 hardhat room",
+		Or("kill hardhat (pit)", Hard("bracelet"))),
+	"d2 moblin chest": AndSlot("d2 bracelet room",
+		Or("kill moblin (gap)", Hard("bracelet"))),
+	"d2 spiral chest": And("enter d2 B", "bombs"),
+	"d2 blade chest": Or("enter d2 B",
+		And("d2 arrow room", Or("kill normal", Hard("bracelet")))),
 
 	// from here on it's entirely linear.
 	"d2 roller chest":  AndSlot("d2 bomb wall", "bombs", "bracelet"),
@@ -68,7 +86,8 @@ var seasonsD2Nodes = map[string]*Node{
 
 var seasonsD3Nodes = map[string]*Node{
 	// first floor
-	"d3 center":            And("enter d3", "kill spiked beetle"),
+	"d3 center": And("enter d3",
+		Or("kill spiked beetle", HardAnd("flip spiked beetle", "bracelet"))),
 	"d3 mimic stairs":      Or("d3 water room", And("d3 center", "bracelet")),
 	"d3 roller chest":      And("d3 mimic stairs", "bracelet"),
 	"d3 water room":        OrSlot("d3 mimic stairs", And("d3 center", "jump 2")),
@@ -78,7 +97,8 @@ var seasonsD3Nodes = map[string]*Node{
 	"d3 giant blade room": AndSlot("d3 omuai stairs"),
 
 	// second floor
-	"d3 moldorm chest":     AndSlot("d3 mimic stairs", "kill moldorm"),
+	"d3 moldorm chest": AndSlot("d3 mimic stairs",
+		Or("kill moldorm", Hard("bracelet"))),
 	"d3 bombed wall chest": AndSlot("d3 moldorm chest", "bombs"),
 	"d3 mimic chest": AndSlot("d3 water room", "kill mimic",
 		"d3 2 keys"), // min. 1 key
@@ -105,9 +125,9 @@ var seasonsD4Nodes = map[string]*Node{
 		"d4 1 key"),
 	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 1 key"),
 	"d4 water key room": And("d4 roller minecart", "hit lever from minecart",
-		"kill normal"),
+		Or("kill normal", Hard("bracelet"))),
 	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
-		"kill stalfos"),
+		Or("kill stalfos", Hard("bracelet"))),
 
 	// 1F
 	"d4 pre-mid chest":      And("d4 stalfos stairs"),
@@ -271,7 +291,9 @@ var seasonsD7Nodes = map[string]*Node{
 // this does *not* account for HSS skip.
 //
 // possible but not in logic: hitting the sets of three eye statues quickly
-// enough to make the chest/stairs appear, without HSS
+// enough to make the chest/stairs appear, without HSS.
+//
+// pots don't hurt magunesu, thank goodness.
 var seasonsD8Nodes = map[string]*Node{
 	// 1F
 	"d8 eye room": And("enter d8", "remove pot", Or("any slingshot",
