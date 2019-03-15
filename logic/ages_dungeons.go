@@ -89,7 +89,7 @@ var agesD3Nodes = map[string]*Node{
 	"kill subterror": And("shovel", Or("sword", "switch hook", "scent seeds",
 		"punch enemy", Hard("bombs"))),
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
-		"any seed shooter"),
+		Or("any seed shooter", Hard("sword"))), // spin slash through corner
 	"d3 block key": And("d3 B1F spinner", "kill subterror"),
 	"d3 all keys":  And("d3 armos key", "d3 compass key", "d3 block key"),
 	"d3 boss": AndSlot("d3 boss key", "d3 all keys",
