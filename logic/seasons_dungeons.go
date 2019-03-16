@@ -49,7 +49,7 @@ var seasonsD1Nodes = map[string]*Node{
 
 // being able to reach the key doors near facade guarantees that you can reach
 // the blade trap key and spiral key, so the only requirement for any of the
-// key doors is the rope key. a corrolary is that since bombs are in hard logic
+// key doors is the rope key. a corollary is that since bombs are in hard logic
 // as weapons, you will *always* have access to enough small keys for the key
 // doors you can reach in hard logic.
 var seasonsD2Nodes = map[string]*Node{
