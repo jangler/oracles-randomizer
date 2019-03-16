@@ -290,23 +290,23 @@ var seasonsD7Nodes = map[string]*Node{
 
 // this does *not* account for HSS skip.
 //
-// possible but not in logic: hitting the sets of three eye statues quickly
-// enough to make the chest/stairs appear, without HSS.
-//
 // pots don't hurt magunesu, thank goodness.
 var seasonsD8Nodes = map[string]*Node{
 	// 1F
 	"d8 eye room": And("enter d8", "remove pot", Or("any slingshot",
 		HardAnd("jump 2",
 			Or("ember satchel", "scent satchel", "mystery satchel")))),
-	"d8 three eyes chest": AndSlot("enter d8", "any slingshot L-2", "jump 2"),
-	"d8 hardhat room":     And("enter d8", "kill magunesu"),
-	"d8 hardhat key":      And("d8 hardhat room", "kill hardhat (magnet)"),
+	"d8 three eyes chest": AndSlot("enter d8", "jump 2",
+		Or("any slingshot L-2",
+			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
+	"d8 hardhat room": And("enter d8", "kill magunesu"),
+	"d8 hardhat key":  And("d8 hardhat room", "kill hardhat (magnet)"),
 	"d8 spike room": AndSlot("d8 hardhat room", "d8 1 key",
 		Or("jump 4", Hard("jump 3"))),
 	"d8 magnet ball room": AndSlot("d8 spinner"),
-	"d8 bomb chest": And("d8 armos chest", "any slingshot L-2", "bombs",
-		"kill darknut"),
+	"d8 bomb chest": And("d8 armos chest", "bombs", "kill darknut",
+		Or("any slingshot L-2",
+			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
 	"d8 ice puzzle room": And("d8 armos chest", "kill frypolar", "ember seeds",
 		"slingshot L-2"),
 	"d8 pols voice chest": AndSlot("d8 ice puzzle room",
