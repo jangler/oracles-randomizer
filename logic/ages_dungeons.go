@@ -145,8 +145,9 @@ var agesD5Nodes = map[string]*Node{
 
 	// require 1 small key minimum, 2 maximum.
 	// keys A (dark chest) and E (3-statue chest) are always available by now.
+	// sword is to manip RNG to switch with the darknut.
 	"d5 crossroads": And("d5 switch A", "feather", "bracelet",
-		Or("cane", Hard("jump 3"))),
+		Or("cane", Hard("jump 3"), HardAnd("sword", "switch hook"))),
 	"d5 diamond chest": AndSlot("d5 crossroads", "switch hook"),
 
 	// require 1 small key minimum, 5 maximum.
