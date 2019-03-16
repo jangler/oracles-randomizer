@@ -137,11 +137,10 @@ var agesD5Nodes = map[string]*Node{
 	"d5 blue peg chest": AndSlot("d5 switch A"),
 	"d5 dark chest": And("d5 switch A",
 		Or("cane", "switch hook", HardOr("kill normal", "push enemy"))),
-	"d5 boxed chest": And("d5 switch A", "hit switch ranged"),
-	"d5 eyes chest":  And("d5 switch A", "any seed shooter"),
-	"d5 2-statue chest": And("d5 switch A", "break pot", "cane", "feather",
-		Or("any seed shooter", "boomerang", HardAnd("feather", "sword"))),
-	"d5 boss": AndSlot("d5 switch A", "d5 boss key", "cane", "sword"),
+	"d5 boxed chest":    And("d5 switch A", "hit switch ranged"),
+	"d5 eyes chest":     And("d5 switch A", "any seed shooter"),
+	"d5 2-statue chest": And("d5 switch A", "break pot", "cane", "feather"),
+	"d5 boss":           AndSlot("d5 switch A", "d5 boss key", "cane", "sword"),
 
 	// require 1 small key minimum, 2 maximum.
 	// keys A (dark chest) and E (3-statue chest) are always available by now.
