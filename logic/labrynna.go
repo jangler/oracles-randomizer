@@ -81,7 +81,7 @@ var labrynnaNodes = map[string]*Node{
 		Or("feather", "switch hook", "ember seeds", "ages", "gale satchel")),
 	"deku forest tree": AndSlot("deku forest", Or("sword", "punch object"),
 		"seed item", Or("ember seeds", "ages", "switch hook", "gale satchel",
-			Hard("feather"))),
+			HardAnd("feather", Or("sword", "bombs")))),
 	"deku forest soldier": AndSlot("deku forest", "mystery seeds"),
 	"enter d2":            And("deku forest", Or("bombs", "currents")),
 
