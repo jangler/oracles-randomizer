@@ -19,14 +19,13 @@ var seasonsD0Nodes = map[string]*Node{
 	"d0 small key": And("d0 key chest"),
 }
 
-// bush-throwing is in hard logic for a few rooms, though the first stalfos one
-// doesn't matter, the goriya one only matters if you killed the stalfos with
-// rod, and the lever one only matters if you killed the stalfos with bombs.
-// bush-throwing is *not* in logic for the vanilla BK room, since you need to
-// relight the torches every time you leave.
+// bush-throwing is in hard logic for a few rooms. goriya one only matters if
+// you killed the stalfos with rod, and the lever one only matters if you
+// killed the stalfos with bombs. bush-throwing is *not* in logic for the
+// vanilla BK room, since you need to relight the torches every time you leave.
 var seasonsD1Nodes = map[string]*Node{
 	"d1 key fall": And("enter d1",
-		Or("kill stalfos", Hard("bracelet"))),
+		Or("kill stalfos", "bracelet")),
 	"d1 stalfos chest": AndSlot("d1 key A", "kill stalfos"),
 	"d1 lever room":    AndSlot("d1 stalfos chest"),
 	"d1 block-pushing room": AndSlot("d1 stalfos chest",
@@ -88,7 +87,7 @@ var seasonsD2Nodes = map[string]*Node{
 var seasonsD3Nodes = map[string]*Node{
 	// first floor
 	"d3 center": And("enter d3",
-		Or("kill spiked beetle", HardAnd("flip spiked beetle", "bracelet"))),
+		Or("kill spiked beetle", And("flip spiked beetle", "bracelet"))),
 	"d3 mimic stairs":      Or("d3 water room", And("d3 center", "bracelet")),
 	"d3 roller chest":      And("d3 mimic stairs", "bracelet"),
 	"d3 water room":        OrSlot("d3 mimic stairs", And("d3 center", "jump 2")),
@@ -125,9 +124,9 @@ var seasonsD4Nodes = map[string]*Node{
 		"d4 1 key"),
 	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 1 key"),
 	"d4 water key room": And("d4 roller minecart", "hit lever from minecart",
-		Or("kill normal", Hard("bracelet"))),
+		Or("kill normal", "bracelet")),
 	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
-		Or("kill stalfos", Hard("bracelet"))),
+		Or("kill stalfos", "bracelet")),
 
 	// 1F
 	"d4 pre-mid chest":      And("d4 stalfos stairs"),
@@ -177,8 +176,8 @@ var seasonsD5Nodes = map[string]*Node{
 		And("d5 cart bay", "jump 2", "bombs"))),
 	"d5 spiral chest": AndSlot("enter d5", Or("shield",
 		And("kill moldorm", "kill iron mask"))),
-	"d5 armos chest": And("d5 terrace chest", "kill moldorm", "kill iron mask",
-		"kill armos"),
+	// if you can kill the moldorms, you can kill the armos
+	"d5 armos chest":   And("d5 terrace chest", "kill moldorm", "kill iron mask"),
 	"d5 spinner chest": And("d5 cart bay", Or("magnet gloves", "jump 6")),
 	"d5 drop ball": And("d5 cart bay", "hit lever from minecart",
 		"kill darknut (pit)"),

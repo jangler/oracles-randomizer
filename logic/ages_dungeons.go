@@ -71,8 +71,7 @@ var agesD3Nodes = map[string]*Node{
 	"d3 bush beetle room": AndSlot("d3 armos key"),
 	"d3 W crystal":        And("d3 statue key"),
 	"d3 compass key":      And("d3 statue key"),
-	"d3 mimic room": AndSlot("d3 armos key", "d3 compass key",
-		"kill moldorm"),
+	"d3 mimic room":       AndSlot("d3 all keys"),
 
 	"break crystal switch": Or("sword", "switch hook", "boomerang",
 		"ember satchel", "scent satchel", "mystery satchel",
@@ -83,21 +82,23 @@ var agesD3Nodes = map[string]*Node{
 	"d3 conveyor belt room": AndSlot("d3 statue key"),
 	"d3 bridge chest": AndSlot("d3 statue key",
 		Or("any seed shooter", "jump 3", HardAnd("d3 all keys", "feather"),
-			HardAnd("boomerang", Or("feather", "pegasus satchel")))),
+			HardAnd(Or("boomerang", And("bracelet", "toss ring")),
+				Or("feather", "pegasus satchel")))),
 	"d3 torch chest": AndSlot("d3 B1F spinner",
 		Or("ember shooter", Hard("mystery shooter"))),
 	"kill subterror": And("shovel", Or("sword", "switch hook", "scent seeds",
 		"punch enemy", Hard("bombs"))),
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
 		Or("any seed shooter", Hard("sword"))), // spin slash through corner
-	"d3 block key": And("d3 B1F spinner", "kill subterror"),
-	"d3 all keys":  And("d3 armos key", "d3 compass key", "d3 block key"),
+	"d3 moldorm key": And("d3 B1F spinner", "kill subterror"),
+	"d3 all keys":    And("d3 armos key", "d3 compass key", "d3 moldorm key"),
 	"d3 boss": AndSlot("d3 boss key", "d3 all keys",
 		Or("ember seeds", "scent seeds"),
 		Or("seed shooter", And(
 			Or("ember seeds", Hard()),
-			Or("boomerang", Hard("jump 3"),
-				HardAnd("feather", "sword", "switch hook"))))),
+			Or(And("boomerang", "d3 bridge chest"), Hard("jump 3"),
+				HardAnd("feather", "sword",
+					Or("switch hook", And("bracelet", "toss ring"))))))),
 }
 
 var agesD4Nodes = map[string]*Node{
@@ -125,20 +126,25 @@ var agesD4Nodes = map[string]*Node{
 	"d4 key A": And("d4 key chest A"),
 	"d4 key B": And("d4 key chest B"),
 	"d4 key C": And("d4 key chest C"),
-	"d4 key D": And("d4 minecart C", Or("sword", "ember seeds",
-		"scent shooter", "gale shooter", Hard("scent satchel"))),
+	"d4 key D": And("d4 minecart C", Or("sword", "ember seeds", "scent shooter",
+		"gale shooter", HardOr("scent satchel", "peace ring"))),
 	"d4 key E": And("d4 key chest E"),
 }
 
 // every chest not behind a key door in d5 requires you to be able to hit a
 // switch, so that's a requirement for the first node.
 var agesD5Nodes = map[string]*Node{
-	"d5 switch A":       And("enter d5", "kill normal", "hit switch"),
+	"d5 switch A": And("enter d5", "kill normal",
+		Or("hit switch", Hard("bracelet"))),
 	"d5 blue peg chest": AndSlot("d5 switch A"),
-	"d5 dark chest": And("d5 switch A",
+	"d5 dark chest": And("d5 switch A", "hit switch", // can't use pots here
 		Or("cane", "switch hook", HardOr("kill normal", "push enemy"))),
-	"d5 boxed chest":    And("d5 switch A", "hit switch ranged"),
-	"d5 eyes chest":     And("d5 switch A", "any seed shooter"),
+	"d5 boxed chest": And("d5 switch A",
+		Or("hit switch ranged", Hard("bracelet"))),
+	"d5 eyes chest": And("d5 switch A", Or("any seed shooter",
+		HardAnd("pegasus satchel", "feather",
+			Or("hit switch ranged", And("bracelet", "toss ring")),
+			Or("ember seeds", "scent seeds", "mystery seeds")))),
 	"d5 2-statue chest": And("d5 switch A", "break pot", "cane", "feather"),
 	"d5 boss":           AndSlot("d5 switch A", "d5 boss key", "cane", "sword"),
 

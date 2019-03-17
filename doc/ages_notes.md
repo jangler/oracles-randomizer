@@ -68,8 +68,9 @@ Out of logic:
 - Lighting torches using mystery seeds
 - Using only mystery seeds as a weapon
 - Using only scent or gale seeds from the seed satchel as a weapon
-- Using only bombs as a weapon, except versus armos
+- Using only bombs as a weapon, except versus enemies immune to sword
 - Using fist ring as a weapon
+- Carrying bushes or pots between rooms
 - Doing Patch's restoration ceremony without sword
 - Getting a potion for King Zora from Maple
 - Guard skip
