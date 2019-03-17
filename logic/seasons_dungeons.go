@@ -272,7 +272,7 @@ var seasonsD7Nodes = map[string]*Node{
 	"d7 maze chest": AndSlot("d7 water stairs", "kill moldorm", "jump 4",
 		"d7 4 keys"),
 	"d7 skipped room":  And("d7 maze chest"),
-	"d7 stalfos chest": AndSlot("d7 maze chest", "d7 key E"),
+	"d7 stalfos chest": AndSlot("d7 maze chest", "d7 key E", "pegasus satchel"),
 	"d7 boss":          AndSlot("d7 maze chest", "d7 boss key", "kill gleeok"),
 
 	// fixed items
