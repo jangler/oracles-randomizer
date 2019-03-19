@@ -71,8 +71,6 @@ Out of logic:
 - Using fist ring as a weapon
 - Carrying bushes or pots between rooms
 - Poe skip
-- Lighting the second Poe sister's torches without either pegasus seeds or
-  hyper slingshot
 - Fighting Frypolar without slingshot
 - D8 sidescrollers without cape
 - Magic rings from non-randomized locations
@@ -90,3 +88,7 @@ exception of:
 - Mystery seeds as a weapon
 - Magic rings from non-randomized locations
 - Linked secrets
+
+See
+[the wiki](https://github.com/jangler/oracles-randomizer/wiki/Seasons-Hard-Logic-Strategy-Guide)
+for more information on specific tricks in hard logic.

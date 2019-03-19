@@ -74,7 +74,6 @@ Out of logic:
 - Doing Patch's restoration ceremony without sword
 - Getting a potion for King Zora from Maple
 - Guard skip
-- Various stupid tricks in D2, D3, D4, and D5
 - Text warps
 - Magic rings from non-randomized locations
 - Linked secrets
@@ -90,3 +89,7 @@ exception of:
 - Text warps
 - Magic rings from non-randomized locations
 - Linked secrets
+
+See
+[the wiki](https://github.com/jangler/oracles-randomizer/wiki/Ages-Hard-Logic-Strategy-Guide)
+for more information on specific tricks in hard logic.
