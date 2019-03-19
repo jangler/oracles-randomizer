@@ -112,7 +112,7 @@ var agesD4Nodes = map[string]*Node{
 	"d4 minecart B": And("d4 minecart A", "hit lever",
 		"d4 key B", "bracelet", "kill stalfos"),
 	"d4 key chest C": And("d4 minecart B",
-		Or("any seed shooter", HardAnd("jump 3", "boomerang"))),
+		Or("any seed shooter", Hard("boomerang"))),
 	"d4 minecart C": And("d4 minecart B", "d4 key C"),
 	"d4 minecart D": And("d4 minecart C", "d4 key D"),
 	// these weapons are for the miniboss, not the moldorms
