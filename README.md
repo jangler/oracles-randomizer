@@ -68,7 +68,7 @@ General details common to both games:
 For game-specific notes on randomization and logic, see
 [seasons_notes.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/seasons_notes.md)
 and
-[ages_notes.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/ages_notes.md)
+[ages_notes.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/ages_notes.md).
 
 
 ## FAQ

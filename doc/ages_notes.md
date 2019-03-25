@@ -91,5 +91,5 @@ exception of:
 - Linked secrets
 
 See
-[the wiki](https://github.com/jangler/oracles-randomizer/wiki/Ages-Hard-Logic-Strategy-Guide)
+[ages_hard_guide.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/ages_hard_guide.md)
 for more information on specific tricks in hard logic.

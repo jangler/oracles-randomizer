@@ -90,5 +90,5 @@ exception of:
 - Linked secrets
 
 See
-[the wiki](https://github.com/jangler/oracles-randomizer/wiki/Seasons-Hard-Logic-Strategy-Guide)
+[seasons_hard_guide.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/seasons_hard_guide.md)
 for more information on specific tricks in hard logic.
