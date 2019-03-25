@@ -1,6 +1,8 @@
-oos-randomizer
+oracles-randomizer
+oracles-randomizer.exe
 dist/
 gbc/
+ref/
 *.out
 *.prof
 *log*.txt
