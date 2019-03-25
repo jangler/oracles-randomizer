@@ -24,7 +24,7 @@ func seasonsFoundItem(treasure string, addr uint16,
 	return basicSlot(treasure, 0x09, addr+1, addr, group, room, mode, coords)
 }
 
-var seasonsSlots = map[string]*MutableSlot{
+var SeasonsSlots = map[string]*MutableSlot{
 	// holodrum
 	"eyeglass lake, across bridge": seasonsChest(
 		"gasha seed", 0x4f92, 0x00, 0xb8, collectChest, 0xb8),

@@ -5,7 +5,7 @@ func agesTreasure(id, subID byte, offset uint16,
 	return &Treasure{id, subID, Addr{0x16, offset}, mode, param, text, sprite}
 }
 
-var agesTreasures = map[string]*Treasure{
+var AgesTreasures = map[string]*Treasure{
 	// equip items
 	"bombs, 10":       agesTreasure(0x03, 0x00, 0x54ce, 0x38, 0x10, 0x4d, 0x05),
 	"wooden shield":   agesTreasure(0x01, 0x00, 0x54be, 0x0a, 0x01, 0x1f, 0x13),

@@ -13,10 +13,10 @@ const (
 // bank $16, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to almost all chests, and exclusively to chests.
 func agesChest(treasure string, addr uint16, group, room byte) *MutableSlot {
-	if _, ok := agesTreasures[treasure]; !ok {
+	if _, ok := AgesTreasures[treasure]; !ok {
 		panic("treasure " + treasure + " does not exist")
 	}
-	mode := agesTreasures[treasure].mode
+	mode := AgesTreasures[treasure].mode
 	return basicSlot(treasure, 0x16, addr, addr+1, group, room, mode, 0)
 }
 
@@ -39,7 +39,7 @@ func agesBufferItem(treasure string, addr uint16,
 	return basicSlot(treasure, 0x15, addr, addr+1, group, room, collectFind2, 0)
 }
 
-var agesSlots = map[string]*MutableSlot{
+var AgesSlots = map[string]*MutableSlot{
 	// overworld present
 	"starting chest": basicSlot("sword 1", 0x00, 0x10f8, 0x10f7,
 		0x00, 0x39, collectChest, 0x39),

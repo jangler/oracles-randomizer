@@ -23,15 +23,15 @@ var itemGfx map[string]int
 
 func Init(game int) {
 	if game == GameAges {
-		ItemSlots = agesSlots
-		Treasures = agesTreasures
+		ItemSlots = AgesSlots
+		Treasures = AgesTreasures
 		fixedMutables = agesFixedMutables
 		varMutables = agesVarMutables
 		itemGfx = agesItemGfx
 		initAgesEOB()
 	} else {
-		ItemSlots = seasonsSlots
-		Treasures = seasonsTreasures
+		ItemSlots = SeasonsSlots
+		Treasures = SeasonsTreasures
 		fixedMutables = seasonsFixedMutables
 		varMutables = seasonsVarMutables
 		itemGfx = seasonsItemGfx

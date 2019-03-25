@@ -5,7 +5,7 @@ func seasonsTreasure(id, subID byte, offset uint16,
 	return &Treasure{id, subID, Addr{0x15, offset}, mode, param, text, sprite}
 }
 
-var seasonsTreasures = map[string]*Treasure{
+var SeasonsTreasures = map[string]*Treasure{
 	// equip items
 	"wooden shield":   seasonsTreasure(0x01, 0x00, 0x52bd, 0x0a, 0x01, 0x1f, 0x13),
 	"shield L-2":      seasonsTreasure(0x01, 0x01, 0x52c1, 0x0a, 0x02, 0x20, 0x14),
