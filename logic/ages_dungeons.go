@@ -175,7 +175,7 @@ var agesD5Nodes = map[string]*Node{
 
 var agesD6Nodes = map[string]*Node{
 	// past, 0 keys
-	"d6 past color room": AndSlot("enter d6 past", "feather", "kill gel"),
+	"d6 past color room": AndSlot("enter d6 past", "feather", "kill color gel"),
 	"d6 past wizzrobe chest": AndSlot("enter d6 past", "bombs",
 		"kill wizzrobe"),
 	"d6 past pool chest": AndSlot("enter d6 past", "bombs", "ember seeds",
