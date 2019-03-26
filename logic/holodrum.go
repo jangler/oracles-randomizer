@@ -67,6 +67,7 @@ var holodrumNodes = map[string]*Node{
 			"eastern suburbs default spring",
 			"eastern suburbs default summer",
 			"eastern suburbs default autumn")))),
+	"woods of winter owl": And("mystery seeds", "central woods of winter"),
 	"woods of winter seed tree": AndSlot("central woods of winter",
 		"seed item", Or("harvest tree", "dimitri's flute")),
 	"enter d2 A": And("central woods of winter", Or("remove bush", "flute")),

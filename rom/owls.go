@@ -9,7 +9,7 @@ import (
 // the low bytes of their respective text IDs.
 
 var seasonsOwls = map[string]byte{
-	"dodongo owl":          0x00,
+	"dodongo owl":          0x0d,
 	"gohma owl":            0x0e,
 	"armos order owl":      0x0f,
 	"silent watch owl":     0x10,
@@ -21,7 +21,7 @@ var seasonsOwls = map[string]byte{
 	"trampoline owl":       0x18,
 	"seasons pegajump owl": 0x19,
 	"frypolar owl":         0x1a,
-	"shining blue owl":     0x1b,
+	"shining blue owl":     0x1c,
 	"speed seeds owl":      0x1d,
 	// "roller owl":        0x12, // unused
 	// "guide owl":         0x13, // unused

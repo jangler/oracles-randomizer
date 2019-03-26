@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/jangler/oracles-randomizer/hints"
 	"github.com/jangler/oracles-randomizer/rom"
 	"github.com/jangler/oracles-randomizer/ui"
 )
@@ -425,7 +426,12 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 		return 0, nil, "", fmt.Errorf("no route found")
 	}
 
-	checksum, err := setROMData(romData, game, ri, logf, verbose)
+	checks := getChecks(ri)
+	spheres := getSpheres(ri.Route.Graph, checks, hard)
+	owlHints := hints.Generate(ri.Src, ri.Route.Graph, checks,
+		rom.GetOwlNames(game), game)
+
+	checksum, err := setROMData(romData, game, ri, owlHints, logf, verbose)
 	if err != nil {
 		return 0, nil, "", err
 	}
@@ -451,8 +457,6 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	}
 	summary <- ""
 	summary <- ""
-	checks := getChecks(ri)
-	spheres := getSpheres(ri.Route.Graph, checks, hard)
 	summary <- "-- progression items --"
 	summary <- ""
 	logSpheres(summary, checks, spheres,
@@ -509,8 +513,8 @@ func itemIsJunk(name string) bool {
 }
 
 // setROMData mutates the ROM data in-place based on the given route.
-func setROMData(romData []byte, game int, ri *RouteInfo, logf logFunc,
-	verbose bool) ([]byte, error) {
+func setROMData(romData []byte, game int, ri *RouteInfo,
+	owlHints map[string]string, logf logFunc, verbose bool) ([]byte, error) {
 	// place selected treasures in slots
 	checks := getChecks(ri)
 	for slot, item := range checks {
@@ -533,12 +537,6 @@ func setROMData(romData []byte, game int, ri *RouteInfo, logf logFunc,
 	}
 
 	rom.SetAnimal(ri.Companion)
-
-	// set owl statue text (TODO)
-	owlHints := make(map[string]string)
-	for _, name := range rom.GetOwlNames(game) {
-		owlHints[name] = "what up bitch"
-	}
 	rom.SetOwlData(owlHints, game)
 
 	// do it! (but don't write anything)

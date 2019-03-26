@@ -181,7 +181,7 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 terrace chest": AndSlot("enter d5", Or("magnet gloves",
 		And("d5 cart bay", "jump 2", "bombs"))),
-	"armor order owl": And("mystery seeds", "d5 terrace chest"),
+	"armos order owl": And("mystery seeds", "d5 terrace chest"),
 	"d5 spiral chest": AndSlot("enter d5", Or("shield",
 		And("kill moldorm", "kill iron mask"))),
 	// if you can kill the moldorms, you can kill the armos

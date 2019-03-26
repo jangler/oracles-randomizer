@@ -8,7 +8,7 @@ import (
 	"github.com/jangler/oracles-randomizer/logic"
 )
 
-// getChecks converts a route info into a slice of checks.
+// getChecks converts a route info into a map of checks.
 func getChecks(ri *RouteInfo) map[*graph.Node]*graph.Node {
 	checks := make(map[*graph.Node]*graph.Node)
 

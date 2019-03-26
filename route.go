@@ -130,6 +130,7 @@ type RouteInfo struct {
 	UsedItems, UsedSlots *list.List
 	RingMap              map[string]string
 	AttemptCount         int
+	Src                  *rand.Rand
 }
 
 const (
@@ -154,23 +155,22 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 	}
 
 	// try to find the route, retrying if needed
-	var src *rand.Rand
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
-		src = rand.New(rand.NewSource(int64(ri.Seed)))
+		ri.Src = rand.New(rand.NewSource(int64(ri.Seed)))
 		logf("trying seed %08x", ri.Seed)
 
 		r := NewRoute(game)
-		ri.Companion = rollAnimalCompanion(src, r, game)
-		ri.RingMap = rom.RandomizeRingPool(src)
-		itemList, slotList = initRouteInfo(src, r, ri.RingMap, game,
+		ri.Companion = rollAnimalCompanion(ri.Src, r, game)
+		ri.RingMap = rom.RandomizeRingPool(ri.Src)
+		itemList, slotList = initRouteInfo(ri.Src, r, ri.RingMap, game,
 			ri.Companion)
 
 		// slot initial nodes before algorithm slots progression items
 		if game == rom.GameSeasons {
-			ri.Seasons = rollSeasons(src, r)
+			ri.Seasons = rollSeasons(ri.Src, r)
 		}
-		placeDungeonItems(src, r, game,
+		placeDungeonItems(ri.Src, r, game,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
 		slotRecord := 0
@@ -185,7 +185,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 				logf("%d/%d iterations", i, maxIterations)
 			}
 
-			eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
+			eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
 				countSteps, ri.UsedSlots.Len(), hard, false)
 
 			if eItem != nil {
@@ -228,7 +228,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 					logf("%d/%d iterations", i, maxIterations)
 				}
 
-				eItem, eSlot := trySlotRandomItem(r, src, itemList, slotList,
+				eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
 					countSteps, ri.UsedSlots.Len(), hard, true)
 
 				if eItem != nil {
@@ -271,7 +271,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		ri.UsedItems, ri.UsedSlots = list.New(), list.New()
 
 		// get a new seed for the next iteration
-		ri.Seed = uint32(src.Int31())
+		ri.Seed = uint32(ri.Src.Int31())
 	}
 
 	if tries >= maxTries {

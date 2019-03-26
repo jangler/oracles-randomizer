@@ -1,484 +1,103 @@
 package hints
 
-// rules:
-// - names of specific items get capitalized
-// - articles *usually* appear as in the "you got x" text, but are always a/an
-//   in the case of nonspecific items ("a sword")
+import (
+	"fmt"
+	"math/rand"
+	"sort"
+	"strings"
 
-type itemName struct {
-	article string
-	name    string
-	plural  bool
+	"github.com/jangler/oracles-randomizer/graph"
+)
+
+const (
+	GameNil = iota
+	GameAges
+	GameSeasons
+)
+
+// Generate returns a randomly generated map of owl names to owl messages.
+func Generate(src *rand.Rand, g graph.Graph,
+	checks map[*graph.Node]*graph.Node, owlNames []string,
+	game int) map[string]string {
+	// function body starts here lol
+	hints := make(map[string]string)
+	slots := getOrderedSlots(src, checks)
+	i := 0
+
+	for _, owlName := range owlNames {
+		for {
+			slot, item := slots[i], checks[slots[i]]
+			i = (i + 1) % len(slots)
+
+			// don't give hints about checks that are required to reach the owl
+			// in the first place, *as dictated by hard logic*.
+			item.RemoveParent(slot)
+			required := g[owlName].GetMark(g[owlName], true) == graph.MarkFalse
+			item.AddParents(slot)
+
+			if !required {
+				hints[owlName] = formatMessage(slot, item, game)
+				break
+			}
+		}
+	}
+
+	return hints
 }
 
-var itemMap = map[string]itemName{
-	"wooden shield":      {"a", "shield", false},
-	"iron shield":        {"a", "shield", false},
-	"bombs, 10":          {"", "Bombs", false},
-	"sword 1":            {"a", "sword", false},
-	"sword 2":            {"a", "sword", false},
-	"ricky's flute":      {"", "Ricky's Flute", false},
-	"dimitri's flute":    {"", "Dimitri's Flute", false},
-	"moosh's flute":      {"", "Moosh's Flute", false},
-	"shovel":             {"the", "Shovel", false},
-	"feather 1":          {"a", "feather", false},
-	"feather 2":          {"a", "feather", false},
-	"satchel 1":          {"a", "Seed Satchel", false},
-	"satchel 2":          {"a", "Seed Satchel", false},
-	"ember tree seeds":   {"", "Ember Seeds", true},
-	"scent tree seeds":   {"", "Scent Seeds", true},
-	"pegasus tree seeds": {"", "Pegasus Seeds", true},
-	"gale tree seeds":    {"", "Gale Seeds", true},
-	"mystery tree seeds": {"", "Mystery Seeds", true},
-	"heart container":    {"a", "Heart Container", false},
-	"piece of heart":     {"a", "Piece of Heart", false},
-	"gasha seed":         {"a", "Gasha Seed", false},
-	"ricky's gloves":     {"", "Ricky's Gloves", true},
-	"bomb flower":        {"a", "Bomb Flower", false},
+// getOrderedSlots returns a randomly ordered slice of slot nodes.
+func getOrderedSlots(src *rand.Rand,
+	checks map[*graph.Node]*graph.Node) []*graph.Node {
+	// make slice of check names
+	slots := make([]*graph.Node, len(checks)-8*3)
+	i := 0
+	for slot, item := range checks {
+		// don't include dungeon items, since dungeon item hints would be
+		// useless ("Level 7 holds a Boss Key")
+		if item.Name == "dungeon map" ||
+			item.Name == "compass" ||
+			strings.HasSuffix(item.Name, "boss key") {
+			continue
+		}
 
-	// seasons-specific
-	"boomerang 1":      {"a", "boomerang", false},
-	"boomerang 2":      {"a", "boomerang", false},
-	"spring":           {"the", "Rod of Spring", false},
-	"summer":           {"the", "Rod of Summer", false},
-	"autumn":           {"the", "Rod of Autumn", false},
-	"winter":           {"the", "Rod of Winter", false},
-	"magnet gloves":    {"the", "Magnetic Gloves", true},
-	"slingshot 1":      {"a", "slingshot", false},
-	"slingshot 2":      {"a", "slingshot", false},
-	"bracelet":         {"the", "Power Bracelet", false},
-	"fool's ore":       {"", "Fool's Ore", false},
-	"rare peach stone": {"a", "Piece of Heart", false},
-	"flippers":         {"", "Zora's Flippers", true},
-	"gnarled key":      {"the", "Gnarled Key", false},
-	"floodgate key":    {"the", "Floodgate Key", false},
-	"dragon key":       {"the", "Dragon Key", false},
-	"star ore":         {"a", "Star-Shaped Ore", false},
-	"ribbon":           {"a", "Ribbon", false},
-	"spring banana":    {"a", "Spring Banana", false},
-	"rusty bell":       {"the", "Rusty Bell", false},
-	"treasure map":     {"the", "Treasure Map", false},
-	"round jewel":      {"the", "Round Jewel", false},
-	"pyramid jewel":    {"the", "Pyramid Jewel", false},
-	"square jewel":     {"the", "Square Jewel", false},
-	"x-shaped jewel":   {"the", "X-Shaped Jewel", false},
-	"red ore":          {"", "Red Ore", false},
-	"blue ore":         {"", "Blue Ore", false},
-	"hard ore":         {"", "Hard Ore", false},
-	"member's card":    {"a", "Member's Card", false},
-	"master's plaque":  {"the", "Master's Plaque", false},
+		slots[i] = slot
+		i++
+	}
 
-	// ages-specific
-	"cane":            {"the", "Cane of Somaria", false},
-	"boomerang":       {"a", "Boomerang", false},
-	"switch hook 1":   {"a", "hook", false},
-	"switch hook 2":   {"a", "hook", false},
-	"seed shooter":    {"the", "Seed Shooter", false},
-	"harp 1":          {"a", "tune", false},
-	"harp 2":          {"a", "tune", false},
-	"harp 3":          {"a", "tune", false},
-	"bracelet 1":      {"a", "bracelet", false},
-	"bracelet 2":      {"a", "bracelet", false},
-	"feather":         {"", "Roc's Feather", false},
-	"flippers 1":      {"", "flippers", true},
-	"flippers 2":      {"", "flippers", true},
-	"graveyard key":   {"the", "Graveyard Key", false},
-	"crown key":       {"the", "Crown Key", false},
-	"old mermaid key": {"the", "Old Mermaid Key", false},
-	"mermaid key":     {"the", "Mermaid Key", false},
-	"library key":     {"the", "Library Key", false},
-	"tuni nut":        {"the", "Tuni Nut", false},
-	"scent seedling":  {"a", "Seedling", false},
-	"zora scale":      {"the", "Zora Scale", false},
-	"tokay eyeball":   {"the", "Tokay Eyeball", false},
-	"fairy powder":    {"", "Fairy Powder", false},
-	"cheval rope":     {"", "Cheval Rope", false},
-	"island chart":    {"an", "Island Chart", false},
-	"book of seals":   {"the", "Book of Seals", false},
-	"goron letter":    {"a", "Letter", false}, // full name too long
-	"lava juice":      {"", "Lava Juice", false},
-	"brother emblem":  {"the", "Brother Emblem", false},
-	"goron vase":      {"the", "Goron Vase", false},
-	"goronade":        {"", "Goronade", false},
-	"rock brisket":    {"", "Rock Brisket", false},
+	// sort the slots before shuffling to get "deterministic" results
+	sort.Sort(nodeSlice(slots))
+	src.Shuffle(len(slots), func(i, j int) {
+		slots[i], slots[j] = slots[j], slots[i]
+	})
 
-	// rings
-	"friendship ring": {"the", "Friendship Ring", false},
-	"power ring L-1":  {"the", "Power Ring L-1", false},
-	"power ring L-2":  {"the", "Power Ring L-2", false},
-	"power ring L-3":  {"the", "Power Ring L-3", false},
-	"armor ring L-1":  {"the", "Armor Ring L-1", false},
-	"armor ring L-2":  {"the", "Armor Ring L-2", false},
-	"armor ring L-3":  {"the", "Armor Ring L-3", false},
-	"red ring":        {"the", "Red Ring", false},
-	"blue ring":       {"the", "Blue Ring", false},
-	"green ring":      {"the", "Green Ring", false},
-	"cursed ring":     {"the", "Cursed Ring", false},
-	"expert's ring":   {"the", "Expert's Ring", false},
-	"blast ring":      {"the", "Blast Ring", false},
-	"rang ring L-1":   {"the", "Rang Ring L-1", false},
-	"GBA time ring":   {"the", "GBA Time Ring", false},
-	"maple's ring":    {"the", "Maple's Ring", false},
-	"steadfast ring":  {"the", "Steadfast Ring", false},
-	"pegasus ring":    {"the", "Pegasus Ring", false},
-	"toss ring":       {"the", "Toss Ring", false},
-	"heart ring L-1":  {"the", "Heart Ring L-1", false},
-	"heart ring L-2":  {"the", "Heart Ring L-2", false},
-	"swimmer's ring":  {"the", "Swimmer's Ring", false},
-	"charge ring":     {"the", "Charge Ring", false},
-	"light ring L-1":  {"the", "Light Ring L-1", false},
-	"light ring L-2":  {"the", "Light Ring L-2", false},
-	"bomber's ring":   {"the", "Bomber's Ring", false},
-	"green luck ring": {"the", "Green Luck Ring", false},
-	"blue luck ring":  {"the", "Blue Luck Ring", false},
-	"gold luck ring":  {"the", "Gold Luck Ring", false},
-	"red luck ring":   {"the", "Red Luck Ring", false},
-	"green holy ring": {"the", "Green Holy Ring", false},
-	"blue holy ring":  {"the", "Blue Holy Ring", false},
-	"red holy ring":   {"the", "Red Holy Ring", false},
-	"snowshoe ring":   {"the", "Snowshoe Ring", false},
-	"roc's ring":      {"the", "Roc's Ring", false},
-	"quicksand ring":  {"the", "Quicksand Ring", false},
-	"red joy ring":    {"the", "Red Joy Ring", false},
-	"blue joy ring":   {"the", "Blue Joy Ring", false},
-	"gold joy ring":   {"the", "Gold Joy Ring", false},
-	"green joy ring":  {"the", "Green Joy Ring", false},
-	"discovery ring":  {"the", "Discovery Ring", false},
-	"rang ring L-2":   {"the", "Rang Ring L-2", false},
-	"octo ring":       {"the", "Octo Ring", false},
-	"moblin ring":     {"the", "Moblin Ring", false},
-	"like-like ring":  {"the", "Like-Like Ring", false},
-	"subrosian ring":  {"the", "Subrosian Ring", false},
-	"first gen ring":  {"the", "First Gen Ring", false},
-	"spin ring":       {"the", "Spin Ring", false},
-	"bombproof ring":  {"the", "Bombproof Ring", false},
-	"energy ring":     {"the", "Energy Ring", false},
-	"dbl. edged ring": {"the", "Dbl. Edged Ring", false},
-	"GBA nature ring": {"the", "GBA Nature Ring", false},
-	"slayer's ring":   {"the", "Slayer's Ring", false},
-	"rupee ring":      {"the", "Rupee Ring", false},
-	"victory ring":    {"the", "Victory Ring", false},
-	"sign ring":       {"the", "Sign Ring", false},
-	"100th ring":      {"the", "100th Ring", false},
-	"whisp ring":      {"the", "Whisp Ring", false},
-	"gasha ring":      {"the", "Gasha Ring", false},
-	"peace ring":      {"the", "Peace Ring", false},
-	"zora ring":       {"the", "Zora Ring", false},
-	"fist ring":       {"the", "Fist Ring", false},
-	"whimsical ring":  {"the", "Whimsical Ring", false},
-	"protection ring": {"the", "Protection Ring", false},
-
-	// just call all of these "Rupees" instead of specific amounts. otherwise
-	// it might imply a *total* number of rupees in a location.
-	"rupees, 1":   {"", "Rupees", true},
-	"rupees, 5":   {"", "Rupees", true},
-	"rupees, 10":  {"", "Rupees", true},
-	"rupees, 20":  {"", "Rupees", true},
-	"rupees, 30":  {"", "Rupees", true},
-	"rupees, 50":  {"", "Rupees", true},
-	"rupees, 100": {"", "Rupees", true},
-	"rupees, 200": {"", "Rupees", true},
-
-	// unused
-	"rod":           {"the", "Rod of Seasons", false},
-	"bombchus":      {"", "Bombchus", true},
-	"strange flute": {"a", "Strange Flute", false},
-	"ring box L-1":  {"a", "ring box", false},
-	"ring box L-2":  {"a", "ring box", false},
-	"small key":     {"a", "Small Key", false},
-	"boss key":      {"a", "Boss Key", false},
-	"d1 boss key":   {"a", "Boss Key", false},
-	"d2 boss key":   {"a", "Boss Key", false},
-	"d3 boss key":   {"a", "Boss Key", false},
-	"d4 boss key":   {"a", "Boss Key", false},
-	"d5 boss key":   {"a", "Boss Key", false},
-	"d6 boss key":   {"a", "Boss Key", false},
-	"d7 boss key":   {"a", "Boss Key", false},
-	"d8 boss key":   {"a", "Boss Key", false},
-	"compass":       {"a", "Compass", false},
-	"dungeon map":   {"a", "Dungeon Map", false},
-	"slate 1":       {"a", "Slate", false},
-	"slate 2":       {"a", "Slate", false},
-	"slate 3":       {"a", "Slate", false},
-	"slate 4":       {"a", "Slate", false},
+	return slots
 }
 
-// rules:
-// - each dungeon is its own area
-// - single-map-tile non-dungeon locations are not their own areas
-// - areas go by map tile names unless they're on a certain side of a
-//   boundary tile; e.g. waterfall caves in sunken city are labeled "Mt. Cucco"
-//   on the map, but "Sunken City" in this system
-// - subrosia is weird and i'm just calling it all one area
-// - rolling ridge and rolling ridge base are technically different areas on
-//   the map, but distinction within the caves is tricky and "Rolling Ridge
-//   Base" doesn't fit on one line, so it's all just rolling ridge
+// implement sort.Interface for []*graph.Node
+type nodeSlice []*graph.Node
 
-var seasonsAreaMap = map[string]string{
-	"eyeglass lake, across bridge": "Eyeglass Lake",
-	"maku tree":                    "Horon Village",
-	"horon village SW chest":       "Horon Village",
-	"horon village SE chest":       "Horon Village",
-	"holly's house":                "Woods of Winter",
-	"chest on top of D2":           "Woods of Winter",
-	"blaino prize":                 "Woods of Winter",
-	"floodgate keeper's house":     "Spool Swamp",
-	"spool swamp cave":             "Spool Swamp",
-	"moblin keep":                  "Moblin Keep",
-	"master diver's challenge":     "Sunken City",
-	"master diver's reward":        "Sunken City",
-	"spring banana tree":           "Mt. Cucco",
-	"goron mountain, across pits":  "Goron Mountain",
-	"mt. cucco, platform cave":     "Mt. Cucco",
-	"diving spot outside D4":       "Mt. Cucco",
-	"black beast's chest":          "Western Coast",
-	"old man in treehouse":         "Holodrum Plain",
-	"lost woods":                   "Tarm Ruins",
-	"samasa desert pit":            "Samasa Desert",
-	"samasa desert chest":          "Samasa Desert",
-	"western coast, beach chest":   "Western Coast",
-	"western coast, in house":      "Western Coast",
-	"cave south of mrs. ruul":      "Holodrum Plain",
-	"cave north of D1":             "North Horon",
-	"cave outside D2":              "Woods of Winter",
-	"woods of winter, 1st cave":    "Woods of Winter",
-	"sunken city, summer cave":     "Sunken City",
-	"chest in master diver's cave": "Sunken City",
-	"dry eyeglass lake, east cave": "Eyeglass Lake",
-	"chest in goron mountain":      "Goron Mountain",
-	"natzu region, across water":   "Natzu",
-	"mt. cucco, talon's cave":      "Mt. Cucco",
-	"tarm ruins, under tree":       "Tarm Ruins",
-	"eastern suburbs, on cliff":    "Eastern Suburbs",
-	"dry eyeglass lake, west cave": "Eyeglass Lake",
-	"woods of winter, 2nd cave":    "Woods of Winter",
-	"shop, 20 rupees":              "Horon Village",
-	"shop, 30 rupees":              "Horon Village",
-	"shop, 150 rupees":             "Horon Village",
-	"member's shop 1":              "Horon Village",
-	"member's shop 2":              "Horon Village",
-	"member's shop 3":              "Horon Village",
-	"tower of winter":              "Subrosia",
-	"tower of summer":              "Subrosia",
-	"tower of spring":              "Subrosia",
-	"tower of autumn":              "Subrosia",
-	"subrosian dance hall":         "Subrosia",
-	"temple of seasons":            "Subrosia",
-	"subrosia seaside":             "Subrosia",
-	"subrosian wilds chest":        "Subrosia",
-	"subrosia village chest":       "Subrosia",
-	"subrosia, open cave":          "Subrosia",
-	"subrosia, locked cave":        "Subrosia",
-	"subrosia market, 1st item":    "Subrosia",
-	"subrosia market, 2nd item":    "Subrosia",
-	"subrosia market, 5th item":    "Subrosia",
-	"great furnace":                "Subrosia",
-	"subrosian smithy":             "Subrosia",
-	"d0 sword chest":               "Hero's Cave",
-	"d0 rupee chest":               "Hero's Cave",
-	"d1 basement":                  "Level 1",
-	"d1 block-pushing room":        "Level 1",
-	"d1 railway chest":             "Level 1",
-	"d1 floormaster room":          "Level 1",
-	"d1 lever room":                "Level 1",
-	"d1 stalfos chest":             "Level 1",
-	"d1 goriya chest":              "Level 1",
-	"d1 boss":                      "Level 1",
-	"d2 moblin chest":              "Level 2",
-	"d2 roller chest":              "Level 2",
-	"d2 left from entrance":        "Level 2",
-	"d2 pot chest":                 "Level 2",
-	"d2 rope chest":                "Level 2",
-	"d2 terrace chest":             "Level 2",
-	"d2 boss":                      "Level 2",
-	"d3 mimic chest":               "Level 3",
-	"d3 water room":                "Level 3",
-	"d3 quicksand terrace":         "Level 3",
-	"d3 moldorm chest":             "Level 3",
-	"d3 trampoline chest":          "Level 3",
-	"d3 bombed wall chest":         "Level 3",
-	"d3 giant blade room":          "Level 3",
-	"d3 boss":                      "Level 3",
-	"d4 cracked floor room":        "Level 4",
-	"d4 north of entrance":         "Level 4",
-	"d4 maze chest":                "Level 4",
-	"d4 water ring room":           "Level 4",
-	"d4 dive spot":                 "Level 4",
-	"d4 boss":                      "Level 4",
-	"d5 magnet ball chest":         "Level 5",
-	"d5 terrace chest":             "Level 5",
-	"d5 gibdo/zol chest":           "Level 5",
-	"d5 spiral chest":              "Level 5",
-	"d5 basement":                  "Level 5",
-	"d5 boss":                      "Level 5",
-	"d6 armos hall":                "Level 6",
-	"d6 crystal trap room":         "Level 6",
-	"d6 1F east":                   "Level 6",
-	"d6 2F gibdo chest":            "Level 6",
-	"d6 2F armos chest":            "Level 6",
-	"d6 beamos room":               "Level 6",
-	"d6 1F terrace":                "Level 6",
-	"d6 escape room":               "Level 6",
-	"d6 boss":                      "Level 6",
-	"d7 spike chest":               "Level 7",
-	"d7 maze chest":                "Level 7",
-	"d7 right of entrance":         "Level 7",
-	"d7 bombed wall chest":         "Level 7",
-	"d7 quicksand chest":           "Level 7",
-	"d7 stalfos chest":             "Level 7",
-	"d7 boss":                      "Level 7",
-	"d8 armos chest":               "Level 8",
-	"d8 SW lava chest":             "Level 8",
-	"d8 three eyes chest":          "Level 8",
-	"d8 spike room":                "Level 8",
-	"d8 magnet ball room":          "Level 8",
-	"d8 pols voice chest":          "Level 8",
-	"d8 boss":                      "Level 8",
-	"horon village seed tree":      "Horon Village",
-	"woods of winter seed tree":    "Woods of Winter",
-	"north horon seed tree":        "North Horon",
-	"spool swamp seed tree":        "Spool Swamp",
-	"sunken city seed tree":        "Sunken City",
-	"tarm ruins seed tree":         "Tarm Ruins",
+func (ns nodeSlice) Len() int {
+	return len(ns)
 }
 
-var agesAreaMap = map[string]string{
-	"starting chest":           "Forest of Time",
-	"nayru's house":            "Forest of Time",
-	"maku tree":                "Lynna City", // this one's kind of weird
-	"grave under tree":         "Yoll Graveyard",
-	"graveyard poe":            "Yoll Graveyard",
-	"cheval's test":            "Yoll Graveyard",
-	"cheval's invention":       "Yoll Graveyard",
-	"south shore dirt":         "South Shore",
-	"balloon guy's gift":       "Forest of Time",
-	"balloon guy's upgrade":    "Forest of Time",
-	"shop, 150 rupees":         "Lynna City",
-	"defeat great moblin":      "Rolling Ridge",
-	"goron elder":              "Rolling Ridge",
-	"target carts 1":           "Rolling Ridge",
-	"target carts 2":           "Rolling Ridge",
-	"goron dance present":      "Rolling Ridge",
-	"trade rock brisket":       "Rolling Ridge",
-	"trade goron vase":         "Rolling Ridge",
-	"big bang game":            "Rolling Ridge",
-	"goron shooting gallery":   "Rolling Ridge",
-	"trade lava juice":         "Rolling Ridge",
-	"rescue nayru":             "Ambi's Palace",
-	"king zora":                "Zora Village",
-	"library present":          "Zora Seas",
-	"zora's reward":            "Sea of Storms",
-	"piratian captain":         "Sea of Storms",
-	"lynna city chest":         "Lynna City",
-	"fairies' woods chest":     "Fairies' Woods",
-	"fairies' coast chest":     "Zora Village",
-	"zora seas chest":          "Zora Seas",
-	"talus peaks chest":        "Talus Peaks",
-	"under moblin keep":        "Rolling Ridge",
-	"nuun highlands cave":      "Nuun Highlands",
-	"zora village present":     "Zora Village",
-	"pool in d6 entrance":      "Rolling Ridge",
-	"mayor plen's house":       "Lynna City",
-	"under crescent island":    "Crescent Island",
-	"goron's hiding place":     "Rolling Ridge",
-	"ridge base chest":         "Rolling Ridge",
-	"ridge NE cave present":    "Rolling Ridge",
-	"goron diamond cave":       "Rolling Ridge",
-	"ridge west cave":          "Rolling Ridge",
-	"zora NW cave":             "Zora Village",
-	"zora palace chest":        "Zora Village",
-	"black tower worker":       "The Black Tower",
-	"deku forest soldier":      "Deku Forest",
-	"wild tokay game":          "Crescent Island",
-	"hidden tokay cave":        "Crescent Island",
-	"symmetry city brother":    "Symmetry City",
-	"tokkey's composition":     "Talus Peaks",
-	"goron dance, with letter": "Rolling Ridge",
-	"library past":             "Zora Seas",
-	"sea of no return":         "The Labyrinth", // real name too long
-	"bomb goron head":          "Rolling Ridge",
-	"tokay bomb cave":          "Crescent Island",
-	"fisher's island cave":     "Zora Seas",
-	"ridge bush cave":          "Rolling Ridge",
-	"sea of storms past":       "Sea of Storms",
-	"deku forest cave west":    "Deku Forest",
-	"ridge diamonds past":      "Rolling Ridge",
-	"ridge base past":          "Rolling Ridge",
-	"deku forest cave east":    "Deku Forest",
-	"ambi's palace chest":      "Ambi's Palace",
-	"tokay crystal cave":       "Crescent Island",
-	"tokay pot cave":           "Crescent Island",
-	"d1 button chest":          "Level 1",
-	"d1 crystal room":          "Level 1",
-	"d1 crossroads":            "Level 1",
-	"d1 west terrace":          "Level 1",
-	"d1 pot chest":             "Level 1",
-	"d1 east terrace":          "Level 1",
-	"d1 basement":              "Level 1",
-	"d1 boss":                  "Level 1",
-	"d2 color room":            "Level 2",
-	"d2 bombed terrace":        "Level 2",
-	"d2 moblin platform":       "Level 2",
-	"d2 rope room":             "Level 2",
-	"d2 thwomp shelf":          "Level 2",
-	"d2 thwomp tunnel":         "Level 2",
-	"d2 boss":                  "Level 2",
-	"d3 bridge chest":          "Level 3",
-	"d3 B1F east":              "Level 3",
-	"d3 torch chest":           "Level 3",
-	"d3 conveyor belt room":    "Level 3",
-	"d3 mimic room":            "Level 3",
-	"d3 bush beetle room":      "Level 3",
-	"d3 crossroads":            "Level 3",
-	"d3 pols voice chest":      "Level 3",
-	"d3 boss":                  "Level 3",
-	"d4 lava pot chest":        "Level 4",
-	"d4 small floor puzzle":    "Level 4",
-	"d4 first chest":           "Level 4",
-	"d4 minecart chest":        "Level 4",
-	"d4 boss":                  "Level 4",
-	"d5 red peg chest":         "Level 5",
-	"d5 owl puzzle":            "Level 5",
-	"d5 six-statue puzzle":     "Level 5",
-	"d5 diamond chest":         "Level 5",
-	"d5 blue peg chest":        "Level 5",
-	"d5 boss":                  "Level 5",
-	"d6 present vire chest":    "Level 6",
-	"d6 present RNG chest":     "Level 6",
-	"d6 present diamond chest": "Level 6",
-	"d6 present beamos chest":  "Level 6",
-	"d6 present channel chest": "Level 6",
-	"d6 past spear chest":      "Level 6",
-	"d6 past color room":       "Level 6",
-	"d6 past pool chest":       "Level 6",
-	"d6 past wizzrobe chest":   "Level 6",
-	"d6 boss":                  "Level 6",
-	"d7 pot island chest":      "Level 7",
-	"d7 stairway chest":        "Level 7",
-	"d7 miniboss chest":        "Level 7",
-	"d7 crab chest":            "Level 7",
-	"d7 spike chest":           "Level 7",
-	"d7 hallway chest":         "Level 7",
-	"d7 post-hallway chest":    "Level 7",
-	"d7 boss":                  "Level 7",
-	"d8 B3F chest":             "Level 8",
-	"d8 NW slate chest":        "Level 8",
-	"d8 NE slate chest":        "Level 8",
-	"d8 ghini chest":           "Level 8",
-	"d8 SE slate chest":        "Level 8",
-	"d8 SW slate chest":        "Level 8",
-	"d8 sarcophagus chest":     "Level 8",
-	"d8 blue peg chest":        "Level 8",
-	"d8 floor puzzle":          "Level 8",
-	"d8 tile room":             "Level 8",
-	"d8 boss":                  "Level 8",
-	"symmetry city tree":       "Symmetry City",
-	"south lynna tree":         "South Lynna",
-	"crescent island tree":     "Crescent Island",
-	"zora village tree":        "Zora Village",
-	"rolling ridge west tree":  "Rolling Ridge",
-	"ambi's palace tree":       "Ambi's Palace",
-	"rolling ridge east tree":  "Rolling Ridge",
-	"deku forest tree":         "Deku Forest",
-	"shop, 30 rupees":          "Lynna City",
+func (ns nodeSlice) Less(i, j int) bool {
+	return ns[i].Name < ns[j].Name
+}
+
+func (ns nodeSlice) Swap(i, j int) {
+	ns[i], ns[j] = ns[j], ns[i]
+}
+
+// returns a message stating that an item is in an area, formatted for an owl
+// text box. this doesn't include control characters.
+func formatMessage(slot, item *graph.Node, game int) string {
+	var areaMap map[string]string
+	if game == GameSeasons {
+		areaMap = seasonsAreaMap
+	} else {
+		areaMap = agesAreaMap
+	}
+
+	return fmt.Sprintf("%s\nholds %s\n%s.", areaMap[slot.Name],
+		itemMap[item.Name].article, itemMap[item.Name].name)
 }
