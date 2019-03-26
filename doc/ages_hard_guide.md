@@ -95,5 +95,5 @@ This document details tricks and obscurities that are in Ages hard logic.
 
 - Pass through the rock on the west side of Lynna City by switching with the
   Octorok. Clipping slightly into the fence tiles makes it slightly easier,
-  Using scent seeds to attract the Octorok makes it faster.
+  using scent seeds to attract the Octorok makes it faster.
   [[Video]](https://streamable.com/3r6uv)
