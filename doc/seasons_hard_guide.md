@@ -78,6 +78,9 @@ This document details tricks and obscurities that are in Seasons hard logic.
 - Poe skip: skip fighting the first Poe in D7. This is only in logic to skip
   lighting the torches, **not** to skip the key.
   [[Video]](https://streamable.com/ztzsh)
+- Hit the three buttons in D7 in the correct order without pegasus seeds, by
+  jumping on the edges of the tiles.
+  [[Video]](https://streamable.com/q7gnh)
 - Hit the first eye statue in D8 with seeds + feather + satchel.
   [[Video]](https://streamable.com/jle4o)
 - Hit sets of three eye statues in D8 with feather + satchel instead of HSS.
