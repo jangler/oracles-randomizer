@@ -292,7 +292,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 		mapCoords:    0xb9,
 	},
 	"subrosian smithy": &MutableSlot{
-		treasureName: "shield L-2",
+		treasureName: "iron shield",
 		idAddrs:      []Addr{{0x15, 0x62be}},
 		subIDAddrs:   []Addr{{0x15, 0x62b4}},
 		group:        0x03,

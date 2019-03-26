@@ -94,7 +94,7 @@ func FindTreasureName(t *Treasure) string {
 // and seek).
 func TreasureCanBeLost(name string) bool {
 	switch name {
-	case "wooden shield", "shield L-2", "star ore", "ribbon",
+	case "wooden shield", "iron shield", "star ore", "ribbon",
 		"spring banana", "ricky's gloves", "round jewel", "pyramid jewel",
 		"square jewel", "x-shapred jewel", "red ore", "blue ore", "hard ore":
 		return true

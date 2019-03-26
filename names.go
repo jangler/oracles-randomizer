@@ -15,7 +15,6 @@ var niceNames = map[string]string{
 	"gale tree seeds":    "gale seeds",
 
 	// equip items
-	"shield L-2":    "iron shield",
 	"cane":          "cane of somaria",
 	"sword 1":       "wooden/noble sword",
 	"sword 2":       "wooden/noble sword",

@@ -13,8 +13,7 @@ type itemName struct {
 
 var itemMap = map[string]itemName{
 	"wooden shield":      {"a", "shield", false},
-	"iron shield":        {"a", "shield", false}, // TODO call this "shield L-2"
-	"shield L-2":         {"a", "shield", false},
+	"iron shield":        {"a", "shield", false},
 	"bombs, 10":          {"", "Bombs", false},
 	"sword 1":            {"a", "sword", false},
 	"sword 2":            {"a", "sword", false},

@@ -81,7 +81,7 @@ var seasonsItemNodes = map[string]*Node{
 	"shield L-1": Or("wooden shield", And("beach", "ember seeds")),
 
 	"sword":     Or("sword L-1", "sword L-2"),
-	"shield":    Or("shield L-1", "shield L-2"),
+	"shield":    Or("shield L-1", "iron shield"),
 	"boomerang": Or("boomerang L-1", "boomerang L-2"),
 	"slingshot": Or("slingshot L-1", "slingshot L-2"),
 	"seed item": Or("satchel", "slingshot"),
