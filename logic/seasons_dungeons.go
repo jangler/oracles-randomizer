@@ -71,6 +71,7 @@ var seasonsD2Nodes = map[string]*Node{
 	// from here on it's entirely linear.
 	"d2 roller chest":  AndSlot("d2 bomb wall", "bombs", "bracelet"),
 	"d2 spinner":       And("d2 roller chest"),
+	"dodongo owl":      And("mystery seeds", "d2 spinner"),
 	"d2 terrace chest": AndSlot("d2 spinner", "d2 key A"),
 	"d2 boss":          AndSlot("d2 spinner", "d2 boss key"),
 
@@ -86,12 +87,14 @@ var seasonsD2Nodes = map[string]*Node{
 
 var seasonsD3Nodes = map[string]*Node{
 	// first floor
+	"seasons spikes owl": And("mystery seeds", "enter d3"),
 	"d3 center": And("enter d3",
 		Or("kill spiked beetle", And("flip spiked beetle", "bracelet"))),
 	"d3 mimic stairs":      Or("d3 water room", And("d3 center", "bracelet")),
 	"d3 roller chest":      And("d3 mimic stairs", "bracelet"),
 	"d3 water room":        OrSlot("d3 mimic stairs", And("d3 center", "jump 2")),
 	"d3 quicksand terrace": AndSlot("d3 mimic stairs", "jump 2"),
+	"omuai owl":            And("mystery seeds", "d3 mimic stairs", "jump 2"),
 	"d3 omuai stairs": And("d3 mimic stairs", "jump 2", "kill omuai",
 		"d3 2 keys"), // min. 1 key
 	"d3 giant blade room": AndSlot("d3 omuai stairs"),
@@ -101,6 +104,7 @@ var seasonsD3Nodes = map[string]*Node{
 	"d3 bombed wall chest": AndSlot("d3 moldorm chest", "bombs"),
 	"d3 mimic chest": AndSlot("d3 water room", "kill mimic",
 		"d3 2 keys"), // min. 1 key
+	"trampoline owl":      And("mystery seeds", "d3 center", "jump 2"),
 	"d3 trampoline chest": AndSlot("d3 center", "jump 2"),
 	"enter mothula":       And("d3 omuai stairs", "d3 boss key"),
 	"d3 boss":             AndSlot("enter mothula", "kill mothula"),
@@ -125,6 +129,8 @@ var seasonsD4Nodes = map[string]*Node{
 	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 1 key"),
 	"d4 water key room": And("d4 roller minecart", "hit lever from minecart",
 		Or("kill normal", "bracelet")),
+	"seasons pegajump owl": And("mystery seeds", "d4 roller minecart",
+		"d4 2 keys"),
 	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
 		Or("kill stalfos", "bracelet")),
 
@@ -139,6 +145,7 @@ var seasonsD4Nodes = map[string]*Node{
 		"d4 5 keys"), // min. 2 keys
 
 	// B1F
+	"gohma owl": And("mystery seeds", "d4 basement stairs"),
 	"enter gohma": And("d4 basement stairs", "d4 boss key",
 		Or("ember slingshot", Hard("mystery slingshot"), "jump 3",
 			HardAnd("jump 2", Or("ember seeds", "mystery seeds")))),
@@ -174,6 +181,7 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 terrace chest": AndSlot("enter d5", Or("magnet gloves",
 		And("d5 cart bay", "jump 2", "bombs"))),
+	"armor order owl": And("mystery seeds", "d5 terrace chest"),
 	"d5 spiral chest": AndSlot("enter d5", Or("shield",
 		And("kill moldorm", "kill iron mask"))),
 	// if you can kill the moldorms, you can kill the armos
@@ -246,6 +254,7 @@ var seasonsD6Nodes = map[string]*Node{
 // to kill the first poe.
 var seasonsD7Nodes = map[string]*Node{
 	// 1F
+	"poe curse owl":        And("mystery seeds", "enter d7"),
 	"d7 wizzrobe chest":    And("enter d7", "kill wizzrobe"),
 	"d7 right of entrance": AndSlot("enter d7", "d7 key A"),
 	"enter poe A": And("d7 right of entrance",
@@ -274,6 +283,7 @@ var seasonsD7Nodes = map[string]*Node{
 	"d7 skipped room": And("d7 maze chest"),
 	"d7 stalfos chest": AndSlot("d7 maze chest", "d7 key E",
 		Or("pegasus satchel", Hard())),
+	"shining blue owl": And("mystery seeds", "d7 stalfos chest"),
 	"d7 boss":          AndSlot("d7 maze chest", "d7 boss key", "kill gleeok"),
 
 	// fixed items
@@ -303,15 +313,18 @@ var seasonsD8Nodes = map[string]*Node{
 	"d8 hardhat key":  And("d8 hardhat room", "kill hardhat (magnet)"),
 	"d8 spike room": AndSlot("d8 hardhat room", "d8 1 key",
 		Or("jump 4", Hard("jump 3"))),
+	"silent watch owl":    And("mystery seeds", "d8 spinner"),
 	"d8 magnet ball room": AndSlot("d8 spinner"),
 	"d8 bomb chest": And("d8 armos chest", "bombs", "kill darknut",
 		Or("any slingshot L-2",
 			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
+	"frypolar owl": And("mystery seeds", "d8 armos chest"),
 	"d8 ice puzzle room": And("d8 armos chest", "kill frypolar", "ember seeds",
 		"slingshot L-2"),
 	"d8 pols voice chest": AndSlot("d8 ice puzzle room",
 		Or("jump 6", "boomerang L-2", Hard())),
 	"d8 crystal room": And("d8 ice puzzle room", "d8 4 keys"),
+	"magical ice owl": And("mystery seeds", "d8 crystal room"),
 	"d8 ghost armos":  And("d8 crystal room"),
 	"d8 NW crystal":   And("d8 crystal room", "bracelet", "d8 7 keys"),
 	"d8 NE crystal":   And("d8 crystal room", "bracelet", "hit lever"),

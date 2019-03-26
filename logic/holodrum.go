@@ -127,6 +127,8 @@ var holodrumNodes = map[string]*Node{
 	"spool swamp seed tree": AndSlot("north swamp", "seed item",
 		Or("harvest tree", "dimitri's flute")),
 	"floodgate keeper's house": AndSlot("north swamp", "hit lever"),
+	"speed seeds owl": And("mystery seeds",
+		"floodgate keeper's house"),
 	"spool stump": And("north swamp", "hit lever", "bracelet", "floodgate key",
 		Or("pegasus satchel", "flippers", "bomb jump 3")),
 	"dry swamp": Or("spool swamp default summer",

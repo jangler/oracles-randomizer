@@ -59,7 +59,8 @@ func TestLinks(t *testing.T) {
 			strings.HasSuffix(name, "old man") ||
 			strings.HasSuffix(name, " ring") ||
 			strings.Contains(name, " ring L-") ||
-			strings.Contains(name, " default ") {
+			strings.Contains(name, " default ") ||
+			strings.HasSuffix(name, " owl") {
 			continue
 		}
 
