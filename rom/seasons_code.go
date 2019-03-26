@@ -688,6 +688,20 @@ func initSeasonsEOB() {
 			"\xfa\x49\xcc\xb7\x78\xc2\x74\x0c\xc9")
 	r.replace(0x3f, 0x4535, "call give item silently",
 		"\xcd\x74\x0c", "\xcd"+giveItemSilently)
+
+	// use different addresses for owl statue text.
+	owlTextOffsets := r.appendToBank(0x3f, "owl text offsets",
+		string(make([]byte, 0x1e*2))) // to be set later
+	useOwlText := r.appendToBank(0x3f, "use owl text",
+		"\xea\xd4\xd0\xfa\xa3\xcb\xfe\x3d\xc0"+ // ret if normal text
+			"\x21"+owlTextOffsets+"\xfa\xa2\xcb\xdf\x2a\x66\x6f"+ // set addr
+			"\x3e\x3f\xea\xd4\xd0\xc9") // set bank
+	r.replace(0x3f, 0x4fd9, "call use owl text",
+		"\xea\xd4\xd0", "\xcd"+useOwlText)
+
+	// this *MUST* be the last thing in the bank, since it's going to grow
+	// dynamically later.
+	r.appendToBank(0x3f, "owl text", "")
 }
 
 // makes seasons-specific additions to the collection mode table.
