@@ -53,7 +53,6 @@ var agesKillNodes = map[string]*Node{
 		Hard("bombs")),
 	"kill underwater": Or("sword", "shooter weapon", "punch enemy"),
 
-	"kill gel":       Or("kill normal", "switch hook", "boomerang", "shovel"),
 	"kill color gel": Or("kill normal", "switch hook"),
 	"kill stalfos":   Or("kill normal"),
 	"kill zol":       Or("kill normal", "switch hook"),
