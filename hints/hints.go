@@ -1,7 +1,6 @@
 package hints
 
 import (
-	"fmt"
 	"math/rand"
 	"sort"
 	"strings"
