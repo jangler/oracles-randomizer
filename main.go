@@ -467,21 +467,20 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	logSpheres(summary, checks, spheres, itemIsJunk)
 	if game == rom.GameSeasons {
 		summary <- ""
-		summary <- "default seasons:"
+		summary <- "-- default seasons --"
 		summary <- ""
 		for name, area := range rom.Seasons {
 			summary <- fmt.Sprintf("%-15s <- %s",
 				name[:len(name)-7], seasonsByID[int(area.New[0])])
 		}
-		summary <- ""
-		summary <- fmt.Sprintf("natzu region <- %s", []string{
-			"", "natzu prairie", "natzu river", "natzu wasteland",
-		}[ri.Companion])
-	} else {
-		summary <- ""
-		summary <- fmt.Sprintf("animal companion <- %s", []string{
-			"", "ricky", "dimitri", "moosh",
-		}[ri.Companion])
+	}
+	summary <- ""
+	summary <- ""
+	summary <- "-- hints --"
+	summary <- ""
+	for owlName, hint := range owlHints {
+		summary <- fmt.Sprintf("%-20s <- \"%s\"", owlName,
+			strings.ReplaceAll(strings.ReplaceAll(hint, "\n", " "), "  ", " "))
 	}
 
 	close(summary)

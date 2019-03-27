@@ -87,7 +87,7 @@ var seasonsD2Nodes = map[string]*Node{
 
 var seasonsD3Nodes = map[string]*Node{
 	// first floor
-	"seasons spikes owl": And("mystery seeds", "enter d3"),
+	"spiked beetles owl": And("mystery seeds", "enter d3"),
 	"d3 center": And("enter d3",
 		Or("kill spiked beetle", And("flip spiked beetle", "bracelet"))),
 	"d3 mimic stairs":      Or("d3 water room", And("d3 center", "bracelet")),
@@ -129,7 +129,7 @@ var seasonsD4Nodes = map[string]*Node{
 	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 1 key"),
 	"d4 water key room": And("d4 roller minecart", "hit lever from minecart",
 		Or("kill normal", "bracelet")),
-	"seasons pegajump owl": And("mystery seeds", "d4 roller minecart",
+	"greater distance owl": And("mystery seeds", "d4 roller minecart",
 		"d4 2 keys"),
 	"d4 stalfos stairs": And("d4 roller minecart", "d4 2 keys",
 		Or("kill stalfos", "bracelet")),
@@ -181,7 +181,7 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 left chest": And("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 terrace chest": AndSlot("enter d5", Or("magnet gloves",
 		And("d5 cart bay", "jump 2", "bombs"))),
-	"armos order owl": And("mystery seeds", "d5 terrace chest"),
+	"armos knights owl": And("mystery seeds", "d5 terrace chest"),
 	"d5 spiral chest": AndSlot("enter d5", Or("shield",
 		And("kill moldorm", "kill iron mask"))),
 	// if you can kill the moldorms, you can kill the armos

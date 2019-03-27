@@ -11,18 +11,18 @@ import (
 var seasonsOwls = map[string]byte{
 	"dodongo owl":          0x0d,
 	"gohma owl":            0x0e,
-	"armos order owl":      0x0f,
+	"armos knights owl":    0x0f,
 	"silent watch owl":     0x10,
 	"magical ice owl":      0x11,
 	"woods of winter owl":  0x14,
 	"omuai owl":            0x15,
 	"poe curse owl":        0x16,
-	"seasons spikes owl":   0x17,
+	"spiked beetles owl":   0x17,
 	"trampoline owl":       0x18,
-	"seasons pegajump owl": 0x19,
+	"greater distance owl": 0x19,
 	"frypolar owl":         0x1a,
 	"shining blue owl":     0x1c,
-	"speed seeds owl":      0x1d,
+	"floodgate keeper owl": 0x1d,
 	// "roller owl":        0x12, // unused
 	// "guide owl":         0x13, // unused
 }
