@@ -17,7 +17,7 @@ const (
 // Generate returns a randomly generated map of owl names to owl messages.
 func Generate(src *rand.Rand, g graph.Graph,
 	checks map[*graph.Node]*graph.Node, owlNames []string,
-	game int) map[string]string {
+	game int, hard bool) map[string]string {
 	// function body starts here lol
 	hints := make(map[string]string)
 	slots := getOrderedSlots(src, checks)
@@ -41,7 +41,7 @@ func Generate(src *rand.Rand, g graph.Graph,
 			// in the first place, *as dictated by hard logic*.
 			item.RemoveParent(slot)
 			g.ClearMarks()
-			required := g[owlName].GetMark(g[owlName], true) == graph.MarkFalse
+			required := g[owlName].GetMark(g[owlName], hard) == graph.MarkFalse
 			item.AddParents(slot)
 
 			if !required {
