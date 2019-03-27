@@ -422,7 +422,7 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 
 // RandomizeRingPool randomizes the types of rings in the item pool, returning
 // a map of vanilla ring names to the randomized ones.
-func RandomizeRingPool(src *rand.Rand) map[string]string {
+func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 	nameMap := make(map[string]string)
 	usedRings := make([]bool, 0x40)
 
@@ -440,6 +440,12 @@ func RandomizeRingPool(src *rand.Rand) map[string]string {
 					"slayer's ring", "rupee ring", "victory ring", "sign ring",
 					"100th ring":
 					break
+				case "rang ring L-1", "rang ring L-2":
+					// these rings are literally useless in ages.
+					if game == GameAges {
+						break
+					}
+					fallthrough
 				default:
 					if !usedRings[param] {
 						slot.Treasure.param = param

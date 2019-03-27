@@ -162,7 +162,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 
 		r := NewRoute(game)
 		ri.Companion = rollAnimalCompanion(ri.Src, r, game)
-		ri.RingMap = rom.RandomizeRingPool(ri.Src)
+		ri.RingMap = rom.RandomizeRingPool(ri.Src, game)
 		itemList, slotList = initRouteInfo(ri.Src, r, ri.RingMap, game,
 			ri.Companion)
 
