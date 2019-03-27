@@ -18,7 +18,7 @@ var seasonsAreaMap = map[string]string{
 	"horon village SE chest":       "Horon Village",
 	"holly's house":                "Woods of Winter",
 	"chest on top of D2":           "Woods of Winter",
-	"blaino prize":                 "Woods of Winter",
+	"blaino prize":                 "North Horon",
 	"floodgate keeper's house":     "Spool Swamp",
 	"spool swamp cave":             "Spool Swamp",
 	"moblin keep":                  "Moblin Keep",
