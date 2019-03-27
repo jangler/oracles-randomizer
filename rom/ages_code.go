@@ -26,6 +26,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x12] = 0x7e8f
 	r.endOfBank[0x15] = 0x7bfb
 	r.endOfBank[0x16] = 0x7e03
+	r.endOfBank[0x38] = 0x6b00 // to be safe
 	r.endOfBank[0x3f] = 0x7d0a
 
 	return &r
@@ -728,6 +729,21 @@ func initAgesEOB() {
 	r.replace(0x3f, 0x4614, "auto ring appraisal",
 		"\xcb\xf1\xcd\x6f\x46\xfe\x64\x38",
 		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x72\x18\xc9")
+
+	// use different addresses for owl statue text. the text itself is stored
+	// in bank $38 instead of $3f, since there's not enough room in $3f.
+	owlTextOffsets := r.appendToBank(0x3f, "owl text offsets",
+		string(make([]byte, 0x14*2))) // to be set later
+	useOwlText := r.appendToBank(0x3f, "use owl text",
+		"\xea\xd4\xd0\xfa\xa3\xcb\xfe\x3d\xc0"+ // ret if normal text
+			"\x21"+owlTextOffsets+"\xfa\xa2\xcb\xdf\x2a\x66\x6f"+ // set addr
+			"\x3e\x38\xea\xd4\xd0\xc9") // set bank
+	r.replace(0x3f, 0x4faa, "call use owl text",
+		"\xea\xd4\xd0", "\xcd"+useOwlText)
+
+	// this *MUST* be the last thing in the bank, since it's going to grow
+	// dynamically later.
+	r.appendToBank(0x38, "owl text", "")
 }
 
 // makes ages-specific additions to the collection mode table.

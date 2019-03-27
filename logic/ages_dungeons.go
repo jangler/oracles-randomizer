@@ -25,12 +25,14 @@ var agesD1Nodes = map[string]*Node{
 }
 
 var agesD2Nodes = map[string]*Node{
-	"d2 bombed terrace": AndSlot("enter d2", "kill spiked beetle", "bombs"),
+	"spiked beetles owl": And("mystery seeds", "enter d2"),
+	"d2 bombed terrace":  AndSlot("enter d2", "kill spiked beetle", "bombs"),
 	"d2 rope room": AndSlot("enter d2", "d2 key 1", "d2 color key",
 		"d2 basement key", "d2 statue key"),
 	"enter swoop": Or(And("enter d2", "kill spiked beetle", "feather"),
 		And("d2 key 1", "d2 key 2")),
 	"d2 basement":      And("enter swoop", "kill swoop"),
+	"blue wing owl":    And("mystery seeds", "d2 basement"),
 	"d2 thwomp tunnel": AndSlot("d2 basement"),
 	"d2 thwomp shelf": AndSlot("d2 basement",
 		Or("feather", HardAnd("cane", "pegasus satchel"))),
@@ -38,8 +40,9 @@ var agesD2Nodes = map[string]*Node{
 	// push moblin into doorway, stand on button, use switch hook
 	"d2 statue room": And("d2 moblin platform", Or("bracelet", "cane",
 		HardAnd("switch hook", "push enemy"))),
-	"d2 color room": AndSlot("d2 all keys"),
-	"d2 boss":       AndSlot("d2 all keys", "d2 boss key"),
+	"d2 color room":   AndSlot("d2 all keys"),
+	"d2 boss":         AndSlot("d2 all keys", "d2 boss key"),
+	"head thwomp owl": And("mystery seeds", "d2 boss"),
 
 	"d2 key 1":     And("enter d2", "kill spiked beetle", "kill normal"),
 	"d2 key 2":     And("enter d2", "d2 key 1", "bombs"),
@@ -62,11 +65,13 @@ var agesD3Nodes = map[string]*Node{
 	"d3 pols voice chest": AndSlot("enter d3", "bombs"),
 	"d3 1F spinner":       And("enter d3", Or("kill moldorm", "bracelet")),
 	"d3 S crystal":        And("d3 1F spinner"),
+	"four crystals owl":   And("mystery seeds", "d3 1F spinner"),
 	"d3 E crystal":        And("d3 1F spinner", "bombs"),
 	"d3 statue key":       And("d3 E crystal"),
 	// you can clip into the blocks enough to hit this crystal with switch hook
 	"d3 N crystal": And("d3 statue key",
 		Or("any seed shooter", "boomerang", Hard("switch hook"))),
+	"stone soldiers owl":  And("mystery seeds", "d3 statue key"),
 	"d3 armos key":        And("d3 statue key"),
 	"d3 bush beetle room": AndSlot("d3 armos key"),
 	"d3 W crystal":        And("d3 statue key"),
@@ -162,7 +167,8 @@ var agesD5Nodes = map[string]*Node{
 	// require 4 small keys minimum, 5 maximum.
 	"d5 red peg chest": AndSlot("d5 crossroads", "d5 all keys",
 		"hit switch ranged"),
-	"d5 owl puzzle": AndSlot("d5 red peg chest"),
+	"crown dungeon owl": And("mystery seeds", "d5 red peg chest"),
+	"d5 owl puzzle":     AndSlot("d5 red peg chest"),
 
 	"d5 key A": And("d5 dark chest"),
 	"d5 key B": And("d5 boxed chest"),
@@ -180,7 +186,8 @@ var agesD6Nodes = map[string]*Node{
 		"kill wizzrobe"),
 	"d6 past pool chest": AndSlot("enter d6 past", "bombs", "ember seeds",
 		"flippers"),
-	"d6 open wall": And("enter d6 past", "bombs", "ember shooter"),
+	"d6 open wall":    And("enter d6 past", "bombs", "ember shooter"),
+	"deep waters owl": And("mystery seeds", "d6 open wall"),
 	"d6 past stalfos chest": And("enter d6 past", "ember seeds",
 		Or("kill normal ranged", "scent satchel", "feather", Hard())),
 	"d6 past rope chest": And("d6 open wall", "mermaid suit"),
@@ -202,9 +209,11 @@ var agesD6Nodes = map[string]*Node{
 
 	// present, 0 keys
 	"d6 present diamond chest": AndSlot("enter d6 present", "switch hook"),
-	"d6 present rope chest": And("enter d6 present", "scent satchel",
+	"d6 present rope room": And("enter d6 present",
 		Or("flippers", "feather", "switch hook"),
 		Or("any seed shooter", "boomerang", "jump 3")),
+	"scent seduction owl":   And("mystery seeds", "d6 present rope room"),
+	"d6 present rope chest": And("d6 present rope room", "scent satchel"),
 	"d6 present hand room": And("enter d6 present",
 		Or("flippers", "feather", "switch hook"),
 		Or("any seed shooter", "boomerang",
@@ -218,6 +227,8 @@ var agesD6Nodes = map[string]*Node{
 		Or("flippers", And("d6 present 2 keys", "switch hook")), "feather"),
 
 	// present, 1+ keys (keys can be used in any order if player has flippers)
+	"luck test owl": And("mystery seeds", "d6 present beamos chest",
+		"d6 present all keys"),
 	"d6 present RNG chest": AndSlot("d6 present beamos chest",
 		"d6 present all keys", "bracelet", Or("sword", "cane", "switch hook")),
 	"d6 present channel chest": AndSlot("enter d6 present", "d6 open wall",
@@ -248,10 +259,12 @@ var agesD7Nodes = map[string]*Node{
 	// but everything except compass chest needs to be locked behind this
 	"refill d7": And("enter d7", Or("long hook", And("switch hook", "cane"))),
 	// and those requirements are also enough to drain the dungeon
-	"drain d7": And("refill d7"),
+	"drain d7":             And("refill d7"),
+	"jabu switch room owl": And("mystery seeds", "drain d7"),
 	// and get these chests
 	"d7 spike chest":    AndSlot("refill d7"),
 	"d7 stairway chest": AndSlot("refill d7"),
+	"golden isle owl":   And("mystery seeds", "refill d7"),
 	// but cane is needed here, since long hook can skip it initially.
 	"d7 pot island chest": AndSlot("refill d7", "cane"),
 
@@ -268,13 +281,15 @@ var agesD7Nodes = map[string]*Node{
 	// which also requires cane, since it's needed to get a small key
 	"d7 post-hallway chest": AndSlot("flood d7", "cane"),
 
-	"d7 boss": AndSlot("d7 boss key", "flood d7"),
+	"plasmarine owl": And("mystery shooter", "flood d7"),
+	"d7 boss":        AndSlot("d7 boss key", "flood d7"),
 }
 
 // small keys aren't randomized, so the items alone here are enough to get the
 // required keys.
 var agesD8Nodes = map[string]*Node{
-	"d8 group A": And("enter d8", "bombs"), // only has small key
+	"open ears owl": And("mystery seeds", "enter d8"),
+	"d8 group A":    And("enter d8", "bombs"), // only has small key
 
 	"d8 group B": And("d8 group A", "switch hook", "cane",
 		"seed shooter", Or("ember seeds", Hard("mystery seeds"))), // +1 key
@@ -290,6 +305,7 @@ var agesD8Nodes = map[string]*Node{
 	"d8 SW slate chest": AndSlot("d8 group D", "bracelet"), // +1 small key
 	"d8 NE slate chest": AndSlot("d8 group D", "feather", "flippers",
 		"ember seeds"),
+	"ancient words owl": And("mystery shooter", "d8 NE slate chest"),
 
 	"d8 group G":        And("d8 group D", "power glove"),
 	"d8 B3F chest":      AndSlot("d8 group G"),
@@ -300,6 +316,7 @@ var agesD8Nodes = map[string]*Node{
 }
 
 var agesD9Nodes = map[string]*Node{
+	"black tower owl": And("mystery seeds", "maku seed"),
 	"done": AndStep("maku seed", "mystery seeds", "switch hook",
 		Or("sword", "punch enemy"), "bombs"), // bombs in case of spider form
 }

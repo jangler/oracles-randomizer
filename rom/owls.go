@@ -28,25 +28,25 @@ var seasonsOwls = map[string]byte{
 }
 
 var agesOwls = map[string]byte{
-	"greedy owl":          0x00, // TODO where?
-	"ages spikes owl":     0x01,
-	"slates owl":          0x02, // "ancient words", right?
-	"colored heights owl": 0x03, // TODO where?
-	"talus peaks owl":     0x04,
-	"deku forest owl":     0x06,
-	"head thwomp owl":     0x07,
-	"scents owl":          0x08, // TODO where?
-	"deep waters owl":     0x09, // TODO where?
-	"d8 entrance owl":     0x0a,
-	"test your luck owl":  0x0b,
-	"stone soldiers owl":  0x0c,
-	"four crystals owl":   0x0d,
-	"black tower owl":     0x0e,
-	"rolling ridge owl":   0x0f,
-	"jabu switches owl":   0x10,
-	"color weakness owl":  0x11, // TODO where?
-	"golden isle owl":     0x12,
-	"mermaid legend owl":  0x13, // TODO where?
+	"crown dungeon owl":    0x00,
+	"spiked beetles owl":   0x01,
+	"ancient words owl":    0x02,
+	"blue wing owl":        0x03,
+	"talus peaks owl":      0x05,
+	"deku forest owl":      0x06,
+	"head thwomp owl":      0x07,
+	"scent seduction owl":  0x08,
+	"deep waters owl":      0x09,
+	"open ears owl":        0x0a,
+	"luck test owl":        0x0b,
+	"stone soldiers owl":   0x0c,
+	"four crystals owl":    0x0d,
+	"black tower owl":      0x0e,
+	"rolling ridge owl":    0x0f,
+	"jabu switch room owl": 0x10,
+	"plasmarine owl":       0x11,
+	"golden isle owl":      0x12,
+	"mermaid legend owl":   0x13,
 }
 
 // updates the owl statue text data based on the given hints. does not mutate

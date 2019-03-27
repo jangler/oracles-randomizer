@@ -29,22 +29,3 @@ func TestHintCoverage(t *testing.T) {
 		}
 	}
 }
-
-// make sure that every name fits on a line, with room for punctuation.
-func TestHintLength(t *testing.T) {
-	for _, name := range itemMap {
-		if len(name.name) > 15 {
-			t.Errorf("hint name \"%s\" too long", name.name)
-		}
-	}
-	for _, name := range seasonsAreaMap {
-		if len(name) > 15 {
-			t.Errorf("hint name \"%s\" too long", name)
-		}
-	}
-	for _, name := range agesAreaMap {
-		if len(name) > 15 {
-			t.Errorf("hint name \"%s\" too long", name)
-		}
-	}
-}

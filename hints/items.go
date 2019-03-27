@@ -95,7 +95,7 @@ var itemMap = map[string]itemName{
 	"cheval rope":     {"", "Cheval Rope", false},
 	"island chart":    {"an", "Island Chart", false},
 	"book of seals":   {"the", "Book of Seals", false},
-	"goron letter":    {"a", "Letter", false}, // full name too long
+	"goron letter":    {"a", "Letter of Introduction", false},
 	"lava juice":      {"", "Lava Juice", false},
 	"brother emblem":  {"the", "Brother Emblem", false},
 	"goron vase":      {"the", "Goron Vase", false},
