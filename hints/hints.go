@@ -107,7 +107,7 @@ func (ns nodeSlice) Swap(i, j int) {
 }
 
 // returns a message stating that an item is in an area, formatted for an owl
-// text box. this doesn't include control characters.
+// text box. this doesn't include control characters (except newlines).
 func formatMessage(slot, item *graph.Node, game int) string {
 	var areaMap map[string]string
 	if game == GameSeasons {
@@ -116,6 +116,29 @@ func formatMessage(slot, item *graph.Node, game int) string {
 		areaMap = agesAreaMap
 	}
 
-	return fmt.Sprintf("%s\nholds %s\n%s.", areaMap[slot.Name],
-		itemMap[item.Name].article, itemMap[item.Name].name)
+	// split message into words to be wrapped
+	words := strings.Split(areaMap[slot.Name], " ")
+	words = append(words, "holds")
+	if itemMap[item.Name].article != "" {
+		words = append(words, itemMap[item.Name].article)
+	}
+	words = append(words, strings.Split(itemMap[item.Name].name, " ")...)
+	words[len(words)-1] = words[len(words)-1] + "."
+
+	// build message line by line
+	msg := new(strings.Builder)
+	line := ""
+	for _, word := range words {
+		if len(line) == 0 {
+			line += word
+		} else if len(line)+len(word) <= 15 {
+			line += " " + word
+		} else {
+			msg.WriteString(line + "\n")
+			line = word
+		}
+	}
+	msg.WriteString(line)
+
+	return msg.String()
 }
