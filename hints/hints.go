@@ -60,7 +60,7 @@ func Generate(src *rand.Rand, g graph.Graph,
 func getOrderedSlots(src *rand.Rand,
 	checks map[*graph.Node]*graph.Node) []*graph.Node {
 	// make slice of check names
-	slots := make([]*graph.Node, len(checks)-8*3)
+	slots := make([]*graph.Node, len(checks)-8*3-2)
 	i := 0
 	for slot, item := range checks {
 		// don't include dungeon items, since dungeon item hints would be
@@ -68,6 +68,13 @@ func getOrderedSlots(src *rand.Rand,
 		if item.Name == "dungeon map" ||
 			item.Name == "compass" ||
 			strings.HasSuffix(item.Name, "boss key") {
+			continue
+		}
+
+		// and don't include these checks, since they're dummy slots that
+		// aren't actually randomized.
+		switch slot.Name {
+		case "shop, 20 rupees", "shop, 30 rupees":
 			continue
 		}
 
