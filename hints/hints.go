@@ -24,10 +24,19 @@ func Generate(src *rand.Rand, g graph.Graph,
 	slots := getOrderedSlots(src, checks)
 	i := 0
 
+	// keep track of which slots have been hinted at in order to avoid
+	// duplicates. in practice the implementation of the hint loop makes this
+	// very unlikely in the first place.
+	hintedSlots := make(map[*graph.Node]bool)
+
 	for _, owlName := range owlNames {
 		for {
 			slot, item := slots[i], checks[slots[i]]
 			i = (i + 1) % len(slots)
+
+			if hintedSlots[slot] {
+				continue
+			}
 
 			// don't give hints about checks that are required to reach the owl
 			// in the first place, *as dictated by hard logic*.
@@ -38,6 +47,7 @@ func Generate(src *rand.Rand, g graph.Graph,
 
 			if !required {
 				hints[owlName] = formatMessage(slot, item, game)
+				hintedSlots[slot] = true
 				break
 			}
 		}
