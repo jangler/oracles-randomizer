@@ -83,15 +83,8 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"x-shaped jewel", 0x4f8a, 0x00, 0xf4, collectChest, 0xf4),
 	"old man in treehouse": seasonsScriptItem(
 		"round jewel", 0x7332, 0x03, 0x94, collectFind2, 0xb5),
-	"lost woods": &MutableSlot{
-		treasureName: "sword 2",
-		idAddrs:      []Addr{{0x0b, 0x6418}, {0x0b, 0x641f}},
-		subIDAddrs:   []Addr{{0x0b, 0x6419}, {0x0b, 0x6420}},
-		group:        0x00,
-		room:         0xc9,
-		collectMode:  collectFind1,
-		mapCoords:    0x40,
-	},
+	"lost woods": seasonsScriptItem(
+		"sword 2", 0x6418, 0x00, 0xc9, collectFind1, 0x40),
 	"samasa desert pit": &MutableSlot{
 		treasureName: "rusty bell",
 		idAddrs:      []Addr{{0x09, 0x648d}, {0x0b, 0x60b1}},

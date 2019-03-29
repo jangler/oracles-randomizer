@@ -166,6 +166,11 @@ var seasonsFixedMutables = map[string]Mutable{
 	// rusty bell.
 	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
 
+	// ignore sword level for lost woods pedestal so that an item still appears
+	// if you have L-3 sword.
+	"pedestal ignore sword level": MutableString(Addr{0x08, 0x7e62},
+		"\xfe\x03", "\x3e\x01"),
+
 	// moosh won't spawn in the mountains if you have the wrong number of
 	// essences. bit 6 seems related to this, and needs to be zero too?
 	"skip moosh essence check 1": MutableByte(Addr{0x0f, 0x7429}, 0x03, 0x00),
