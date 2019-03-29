@@ -38,7 +38,7 @@ func Generate(src *rand.Rand, g graph.Graph,
 			}
 
 			// don't give hints about checks that are required to reach the owl
-			// in the first place, *as dictated by hard logic*.
+			// in the first place, as dictated by the logic of the seed.
 			item.RemoveParent(slot)
 			g.ClearMarks()
 			required := g[owlName].GetMark(g[owlName], hard) == graph.MarkFalse
