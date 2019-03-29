@@ -66,7 +66,7 @@ func getOrderedSlots(src *rand.Rand,
 		// useless ("Level 7 holds a Boss Key")
 		if item.Name == "dungeon map" ||
 			item.Name == "compass" ||
-			item.Name == "slate" ||
+			strings.HasPrefix(item.Name, "slate") ||
 			strings.HasSuffix(item.Name, "boss key") {
 			continue
 		}
