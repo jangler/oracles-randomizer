@@ -494,7 +494,7 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 func itemIsJunk(name string) bool {
 	switch name {
 	case "fist ring", "expert's ring", "energy ring", "toss ring",
-		"swimmer's ring":
+		"swimmer's ring", "peace ring":
 		return false
 	}
 
