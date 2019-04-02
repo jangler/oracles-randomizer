@@ -142,12 +142,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
 	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
 
-	// restrict the area triggering sokra to talk to link in horon village to
-	// the left side of the burnable trees (prevents softlock).
-	"resize sokra trigger": MutableString(Addr{0x08, 0x5ba5},
-		"\xfa\x0b\xd0\xfe\x3c\xd8\xfe\x60\xd0",
-		"\xfe\x88\xd0\xfa\x0b\xd0\xfe\x3c\xd8"),
-
 	// i don't know what global flag 0e is. it's only checked in for star ore
 	// digging, and disabling the check seems to be sometimes necessary (?)
 	"star ore flag check": MutableString(Addr{0x08, 0x62aa},
