@@ -1,6 +1,7 @@
 package rom
 
 import (
+	"sort"
 	"strings"
 )
 
@@ -79,8 +80,8 @@ func SetOwlData(owlHints map[string]string, game int) {
 	codeMutables["owl text"] = text
 }
 
-// returns an array of owl statue names for the given game (matching those in
-// the logic package).
+// returns a sorted array of owl statue names for the given game (matching
+// those in the logic package).
 func GetOwlNames(game int) []string {
 	var src map[string]byte
 	if game == GameSeasons {
@@ -95,6 +96,8 @@ func GetOwlNames(game int) []string {
 		a[i] = k
 		i++
 	}
+
+	sort.Strings(a)
 
 	return a
 }
