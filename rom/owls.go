@@ -65,7 +65,8 @@ func SetOwlData(owlHints map[string]string, game int) {
 		owlTextIDs = agesOwls
 	}
 
-	for owlName, hint := range owlHints {
+	for _, owlName := range GetOwlNames(game) {
+		hint := owlHints[owlName]
 		textID := owlTextIDs[owlName]
 		str := "\x0c\x00" + strings.ReplaceAll(hint, "\n", "\x01") + "\x00"
 		table.New[textID*2] = addrString(addr)[0]
