@@ -426,7 +426,17 @@ func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 	nameMap := make(map[string]string)
 	usedRings := make([]bool, 0x40)
 
-	for _, slot := range ItemSlots {
+	keys := make([]string, len(ItemSlots))
+	i := 0
+	for key, _ := range ItemSlots {
+		keys[i] = key
+		i++
+	}
+	sort.Strings(keys)
+
+	for _, key := range keys {
+		slot := ItemSlots[key]
+
 		if slot.Treasure.id == 0x2d {
 			oldName := FindTreasureName(slot.Treasure)
 
