@@ -358,7 +358,7 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 	g := r.Graph
 
 	// place small keys first
-	for i := 1; i < 9; i++ {
+	for i := 0; i < 9; i++ {
 		prefix := fmt.Sprintf("d%d", i)
 		itemName := prefix + " small key"
 
