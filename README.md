@@ -38,7 +38,6 @@ General details common to both games:
 
 - Items and chests are randomized, with these exceptions:
     - Renewable shop and business scrub items (bombs, shield, hearts, etc.)
-	- Small keys
 	- Gasha seeds and pieces of heart outside of chests
 	- NPCs that give non-progression items in the vanilla game
 	- Gasha nut contents
@@ -64,7 +63,7 @@ General details common to both games:
   warps to the seed tree in Horon Village or Lynna City. Tree warp comes with
   no warranty and is not supported as a "feature", so think carefully before
   using it.
-- Owl statues messages are replaced with  "hints" about the seed. For more
+- Owl statues messages are replaced with "hints" about the seed. For more
   information, see
   [owls.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/owls.md).
 
