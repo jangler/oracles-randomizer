@@ -464,7 +464,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"d7 small key", 0x50a2, 0x05, 0x47, collectChest, 0xd0),
 	"d7 quicksand chest": seasonsChest(
 		"dungeon map", 0x50b2, 0x05, 0x58, collectChest2, 0xd0),
-	"d7 skipped drop": keyDropSlot("d7 small key", 0x05, 0x3d, 0xd0),
+	"d7 B2F drop": keyDropSlot("d7 small key", 0x05, 0x3d, 0xd0),
 	"d7 stalfos chest": seasonsChest(
 		"d7 boss key", 0x50a6, 0x05, 0x48, collectChest, 0xd0),
 	"d7 boss": seasonsChest( // EOB addr
@@ -485,9 +485,9 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"d8 small key", 0x50c2, 0x05, 0x70, collectChest, 0x04),
 	"d8 magnet ball room": seasonsChest(
 		"dungeon map", 0x50de, 0x05, 0x8e, collectChest2, 0x04),
-	"d8 darknut room": seasonsChest(
+	"d8 darknut chest": seasonsChest(
 		"d8 small key", 0x50d6, 0x05, 0x8c, collectChest, 0x04),
-	"d8 ghost armos": keyDropSlot("d8 small key", 0x05, 0x7f, 0x04),
+	"d8 ghost armos drop": keyDropSlot("d8 small key", 0x05, 0x7f, 0x04),
 	"d8 pols voice chest": seasonsChest(
 		"d8 boss key", 0x50ca, 0x05, 0x80, collectChest, 0x04),
 	"d8 SE lava chest": seasonsChest(

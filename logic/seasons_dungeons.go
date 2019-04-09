@@ -20,7 +20,7 @@ var seasonsD0Nodes = map[string]*Node{
 	"d0 rupee chest": OrSlot("remove bush safe", "flute"),
 
 	// 1 key
-	"d0 sword chest": AndSlot("enter d0", "d0 small key"), // TODO self-key
+	"d0 sword chest": AndSlot("enter d0", "d0 small key"),
 }
 
 // bush-throwing is in hard logic for a few rooms. goriya one only matters if
@@ -47,7 +47,7 @@ var seasonsD1Nodes = map[string]*Node{
 
 	// 2 keys
 	"d1 basement": AndSlot("d1 railway chest", "bombs",
-		Count(2, "d1 small key"), "kill armored"), // TODO self-key
+		Count(2, "d1 small key"), "kill armored"),
 }
 
 var seasonsD2Nodes = map[string]*Node{
@@ -74,11 +74,11 @@ var seasonsD2Nodes = map[string]*Node{
 	"d2 pot chest":    AndSlot("d2 hardhat room", "remove pot"),
 	"d2 moblin chest": AndSlot("d2 hardhat room",
 		Or(Hard("bracelet"), And("kill hardhat (pit)", "kill moblin (gap)"))),
-	// TODO self-key
 	"d2 terrace chest": AndSlot("d2 spinner", Count(3, "d2 small key")),
 
 	// alias for external reference
-	"d2 bomb wall": And("d2 blade chest"),
+	"d2 bomb wall":     And("d2 blade chest"),
+	"d2 bracelet room": And("d2 moblin chest"),
 }
 
 var seasonsD3Nodes = map[string]*Node{
@@ -199,61 +199,60 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 north chest": AndSlot("break crystal", Or("jump 2", Hard()),
 		Or("d6 armos hall", And("enter d6", "kill normal", "magnet gloves",
 			Count(3, "d6 small key")))),
-	"enter vire": And("d6 vire chest", Count(3, "d6 small key")),
-
-	// 5F
+	"enter vire":       And("d6 vire chest", Count(3, "d6 small key")),
 	"d6 pre-boss room": And("enter vire", "kill vire", "kill hardhat (magnet)"),
 	"d6 boss": AndSlot("d6 pre-boss room", "d6 boss key",
 		"kill manhandla"),
 }
 
-// poe skip with magnet gloves is possible in hard logic since you can't
-// keylock that way and there's no warning, but you can still waste a key on
-// the first key door, so the only difference it makes is that you don't have
-// to kill the first poe.
-//
-// TODO: the above may not longer be accurate to do randomized small keys.
-//       re-examine the potential possibilities and consequences.
+// the chest to the right of the entrance is locked behind all keys in logic
+// because of poe skip, but the poe fight itself is only locked behind one.
 var seasonsD7Nodes = map[string]*Node{
-	// 1F
+	// 0 keys
 	"poe curse owl":        And("mystery seeds", "enter d7"),
 	"d7 wizzrobe chest":    AndSlot("enter d7", "kill normal"),
-	"d7 right of entrance": AndSlot("enter d7", "d7 key A"),
-	"enter poe A": And("d7 right of entrance",
-		Or("ember slingshot", Hard("mystery slingshot"))),
 	"d7 bombed wall chest": AndSlot("enter d7", "bombs"),
-	"d7 quicksand chest":   AndSlot("d7 pot room", "jump 2", "d7 key B"),
 
-	// B1F
+	// 1 key
+	"enter poe A": And("enter d7", "d7 small key",
+		Or("ember slingshot", Hard("mystery slingshot"))),
 	"d7 pot room": And("enter d7", "bracelet", Or(
 		And("enter poe A", "kill armored"),
-		HardAnd("magnet gloves", "jump 2", "pegasus satchel"))),
-	"d7 zol button": AndSlot("d7 pot room", "jump 2"),
+		HardAnd("jump 2", "pegasus satchel"))),
+	"d7 zol button":   AndSlot("d7 pot room", "jump 2"),
+	"d7 armos puzzle": AndSlot("d7 pot room", Or("jump 3", "magnet gloves")),
 	"d7 magunesu chest": AndSlot("d7 armos puzzle", "jump 3", "kill magunesu",
 		"magnet gloves"),
-	"enter poe B": And("d7 pot room", "d7 3 keys", "ember seeds",
+
+	// 2 keys
+	"d7 quicksand chest": AndSlot("d7 pot room", "jump 2",
+		Count(2, "d7 small key")),
+
+	// 3 keys
+	"enter poe B": And("d7 pot room", "ember seeds", Count(3, "d7 small key"),
 		Or("pegasus satchel", "slingshot L-2", Hard())),
 	"d7 water stairs": And("enter poe B", "flippers"),
-	"d7 spike chest":  AndSlot("d7 water stairs", "d7 cross bridge"),
-
-	// B2F
-	"d7 armos puzzle": AndSlot("d7 pot room", Or("jump 3", "magnet gloves")),
 	"d7 cross bridge": Or("jump 4", "kill armored (across pit)",
 		And("jump 2", "magnet gloves")),
+	"d7 spike chest": AndSlot("d7 water stairs", "d7 cross bridge"),
+
+	// 4 keys
 	"d7 maze chest": AndSlot("d7 water stairs", "kill armored", "jump 4",
-		"d7 4 keys"),
-	"d7 skipped drop": AndSlot("d7 maze chest"),
-	"d7 stalfos chest": AndSlot("d7 maze chest", "d7 key E",
-		Or("pegasus satchel", Hard())),
+		Count(4, "d7 small key")),
+	"d7 B2F drop":      AndSlot("d7 maze chest"),
 	"shining blue owl": And("mystery seeds", "d7 stalfos chest"),
 	"d7 boss":          AndSlot("d7 maze chest", "d7 boss key", "kill gleeok"),
+
+	// 5 keys
+	"d7 right of entrance": AndSlot("enter d7", Count(5, "d7 small key")),
+	"d7 stalfos chest": AndSlot("d7 maze chest", Count(5, "d7 small key"),
+		Or("pegasus satchel", Hard())),
 }
 
-// this does *not* account for HSS skip.
-//
+// HSS skip is out of logic and can lead to key-locks.
 // pots don't hurt magunesu, thank goodness.
 var seasonsD8Nodes = map[string]*Node{
-	// 1F
+	// 0 keys
 	"d8 eye drop": AndSlot("enter d8", "remove pot", Or("any slingshot",
 		HardAnd("jump 2",
 			Or("ember satchel", "scent satchel", "mystery satchel")))),
@@ -262,35 +261,48 @@ var seasonsD8Nodes = map[string]*Node{
 			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
 	"d8 hardhat room": And("enter d8", "kill magunesu"),
 	"d8 hardhat drop": AndSlot("d8 hardhat room", "kill hardhat (magnet)"),
-	"d8 spike room": AndSlot("d8 hardhat room", "d8 1 key",
+
+	// 1 key
+	"d8 spike room": AndSlot("d8 hardhat room", "d8 small key",
 		Or("jump 4", Hard("jump 3"))),
+
+	// 2 keys
+	"d8 spinner":          And("d8 spike room", Count(2, "d8 small key")),
 	"silent watch owl":    And("mystery seeds", "d8 spinner"),
 	"d8 magnet ball room": AndSlot("d8 spinner"),
-	"d8 bomb chest": And("d8 armos chest", "bombs", "kill armored",
+	"d8 armos chest":      AndSlot("d8 spinner", "magnet gloves"),
+	"d8 spinner chest":    AndSlot("d8 armos chest"),
+	"frypolar owl":        And("mystery seeds", "d8 armos chest"),
+	"d8 darknut chest": AndSlot("d8 armos chest", "bombs", "kill armored",
 		Or("any slingshot L-2",
 			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
-	"frypolar owl": And("mystery seeds", "d8 armos chest"),
-	"d8 ice puzzle room": And("d8 armos chest", "kill frypolar", "ember seeds",
-		"slingshot L-2"),
+
+	// 3 keys
+	"d8 ice puzzle room": And("d8 armos chest", Count(3, "d8 small key"),
+		"kill frypolar", "ember seeds", "slingshot L-2"),
 	"d8 pols voice chest": AndSlot("d8 ice puzzle room",
 		Or("jump 6", "boomerang L-2", Hard())),
-	"d8 crystal room": And("d8 ice puzzle room", "d8 4 keys"),
-	"magical ice owl": And("mystery seeds", "d8 crystal room"),
-	"d8 ghost armos":  AndSlot("d8 crystal room"),
-	"d8 NW crystal":   And("d8 crystal room", "bracelet", "d8 7 keys"),
-	"d8 NE crystal":   And("d8 crystal room", "bracelet", "hit lever"),
-	"d8 SE crystal":   And("d8 crystal room", "bracelet"),
-	"d8 SW crystal":   And("d8 crystal room", "bracelet", "d8 7 keys"),
-	"d8 pot chest":    And("d8 SE crystal", "d8 NE crystal", "remove pot"),
 
-	// B1F
-	"d8 spinner":       And("d8 spike room", "d8 2 keys"),
-	"d8 armos chest":   AndSlot("d8 spinner", "magnet gloves"),
-	"d8 spinner chest": AndSlot("d8 armos chest"),
-	"d8 SE lava chest": AndSlot("d8 SE crystal"),
+	// 4 keys
+	"d8 crystal room":     And("d8 ice puzzle room", Count(4, "d8 small key")),
+	"magical ice owl":     And("mystery seeds", "d8 crystal room"),
+	"d8 ghost armos drop": AndSlot("d8 crystal room"),
+	"d8 NE crystal":       And("d8 crystal room", "bracelet", "hit lever"),
+	"d8 SE crystal":       And("d8 crystal room", "bracelet"),
+	"d8 SE lava chest":    AndSlot("d8 SE crystal"),
+	"d8 spark chest": AndSlot("d8 SE crystal", "d8 NE crystal",
+		"remove pot"),
 	"d8 SW lava chest": AndSlot("d8 crystal room"),
-	"d8 boss": AndSlot("d8 SW crystal", "d8 SE crystal", "d8 NW crystal",
-		"d8 7 keys", "d8 boss key", "kill medusa head"),
+
+	// 6 keys
+	"d8 NW crystal": And("d8 crystal room", "bracelet",
+		Count(6, "d8 small key")),
+	"d8 SW crystal": And("d8 crystal room", "bracelet",
+		Count(6, "d8 small key")),
+
+	// 7 keys
+	"d8 boss": AndSlot("d8 SW crystal", "d8 NW crystal",
+		Count(7, "d8 small key"), "d8 boss key", "kill medusa head"),
 }
 
 // onox's castle
