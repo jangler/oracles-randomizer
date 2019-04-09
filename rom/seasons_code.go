@@ -514,6 +514,19 @@ func initSeasonsEOB() {
 	r.replace(0x0b, 0x4a2b, "skip vasu ring appraisal",
 		"\x98\x33", "\x4a\x39")
 
+	// this will be overwritten after randomization
+	smallKeyDrops := r.appendToBank(0x3f, "small key drops",
+		makeKeyDropTable())
+	lookUpKeyDropBank3F := r.appendToBank(0x3f, "look up key drop bank 3f",
+		"\xfa\x49\xcc\x57\xfa\x4c\xcc\x5f\x21"+smallKeyDrops+ // load group/room
+			"\x2a\xfe\xff\xc8\xba\x20\x06\x2a\xbb\x28\x07"+ // cp w/ each entry
+			"\x18\x01\x23\x23\x23\x18\xee\x46\x23\x4e\xc9")
+	lookUpKeyDrop := r.appendToBank(0x0b, "look up key drop",
+		"\x36\x60\x2c\xd5\xe5\x1e\x3f\x21"+lookUpKeyDropBank3F+
+			"\xcd\x8a\x00\xe1\xd1\xc9")
+	r.replace(0x0b, 0x4416, "call look up key drop",
+		"\x36\x60\x2c", "\xcd"+lookUpKeyDrop)
+
 	// bank 11
 
 	// the interaction on the mount cucco waterfall/vine screen

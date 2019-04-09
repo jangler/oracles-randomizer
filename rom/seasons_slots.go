@@ -295,6 +295,8 @@ var SeasonsSlots = map[string]*MutableSlot{
 	},
 
 	// hero's cave
+	"d0 key chest": seasonsChest(
+		"d0 small key", 0x4fb1, 0x04, 0x03, collectChest, 0xd4),
 	"d0 sword chest": &MutableSlot{
 		treasureName: "sword 1",
 		idAddrs:      []Addr{{0x0a, 0x7b90}},
@@ -310,6 +312,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"rupees, 30", 0x4fb5, 0x04, 0x05, collectChest, 0xd4),
 
 	// d1
+	"d1 stalfos drop": keyDropSlot("d1 small key", 0x04, 0x1b, 0x96),
 	"d1 basement": seasonsFoundItem(
 		"satchel 1", 0x66b1, 0x06, 0x09, collectFind2, 0x96),
 	"d1 block-pushing room": seasonsChest(
@@ -322,12 +325,15 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"compass", 0x4fc1, 0x04, 0x0f, collectChest2, 0x96),
 	"d1 stalfos chest": seasonsChest(
 		"dungeon map", 0x4fd5, 0x04, 0x19, collectChest2, 0x96),
+	"d1 button chest": seasonsChest(
+		"d1 small key", 0x4fc9, 0x04, 0x11, collectChest, 0x96),
 	"d1 goriya chest": seasonsChest(
 		"d1 boss key", 0x4fcd, 0x04, 0x14, collectChest, 0x96),
 	"d1 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x04, 0x12, collectAppear2, 0x96),
 
 	// d2
+	"d2 rope drop": keyDropSlot("d2 small key", 0x04, 0x34, 0x8d),
 	"d2 moblin chest": seasonsChest(
 		"bracelet", 0x4fe1, 0x04, 0x2a, collectChest, 0x8d),
 	"d2 roller chest": seasonsChest(
@@ -338,14 +344,22 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x4fe5, 0x04, 0x2b, collectChest2, 0x8d),
 	"d2 rope chest": seasonsChest(
 		"compass", 0x4ff1, 0x04, 0x36, collectChest2, 0x8d),
+	"d2 blade chest": seasonsChest(
+		"d2 small key", 0x4fed, 0x04, 0x31, collectChest, 0x8d),
+	"d2 spiral chest": seasonsChest(
+		"d2 small key", 0x4fe9, 0x04, 0x2d, collectChest, 0x8d),
 	"d2 terrace chest": seasonsChest(
 		"d2 boss key", 0x4fdd, 0x04, 0x24, collectChest, 0x8d),
 	"d2 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x04, 0x29, collectAppear2, 0x8d),
 
 	// d3
+	"d3 roller chest": seasonsChest(
+		"d3 small key", 0x5005, 0x04, 0x4c, collectChest, 0x60),
 	"d3 mimic chest": seasonsChest(
 		"feather 1", 0x5015, 0x04, 0x50, collectChest, 0x60),
+	"d3 zol chest": seasonsChest(
+		"d3 small key", 0x500d, 0x04, 0x4f, collectChest, 0x60),
 	"d3 water room": seasonsChest(
 		"rupees, 30", 0x4ff9, 0x04, 0x41, collectChest, 0x60),
 	"d3 quicksand terrace": seasonsChest(
@@ -362,34 +376,55 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"heart container", 0x0000, 0x04, 0x53, collectAppear2, 0x60),
 
 	// d4
+	"d4 pot puzzle": keyDropSlot("d4 small key", 0x04, 0x7b, 0x1d),
 	"d4 cracked floor room": seasonsChest(
 		"slingshot 1", 0x502d, 0x04, 0x73, collectChest, 0x1d),
 	"d4 north of entrance": seasonsChest(
 		"bombs, 10", 0x5031, 0x04, 0x7f, collectChest, 0x1d),
 	"d4 maze chest": seasonsChest(
 		"dungeon map", 0x5025, 0x04, 0x69, collectChest2, 0x1d),
+	"d4 dark room": seasonsChest(
+		"d4 small key", 0x5029, 0x04, 0x6d, collectChest, 0x1d),
 	"d4 water ring room": seasonsChest(
 		"compass", 0x5035, 0x04, 0x83, collectChest2, 0x1d),
+	"d4 pool": keyDropSlot("d4 small key", 0x04, 0x75, 0x1d),
+	"d4 terrace": seasonsChest(
+		"d4 small key", 0x501d, 0x04, 0x63, collectChest, 0x1d),
+	"d4 torch chest": seasonsChest(
+		"d4 small key", 0x5021, 0x04, 0x64, collectChest, 0x1d),
 	"d4 dive spot": seasonsScriptItem(
 		"d4 boss key", 0x4c0b, 0x04, 0x6c, collectDive, 0x1d),
 	"d4 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x04, 0x5f, collectAppear2, 0x1d),
 
 	// d5
+	"d5 cart chest": seasonsChest(
+		"d5 small key", 0x5045, 0x04, 0x99, collectChest, 0x8a),
+	"d5 left chest": seasonsChest(
+		"d5 small key", 0x5051, 0x04, 0xa3, collectChest, 0x8a),
 	"d5 magnet ball chest": seasonsChest(
 		"magnet gloves", 0x503d, 0x04, 0x89, collectChest, 0x89),
 	"d5 terrace chest": seasonsChest(
 		"rupees, 100", 0x5041, 0x04, 0x97, collectChest, 0x8a),
+	"d5 armos chest": basicSlot(
+		"d5 small key", 0x09, 0x5051, 0x5052, 0x04, 0x91, collectChest, 0x8a),
 	"d5 gibdo/zol chest": seasonsChest(
 		"dungeon map", 0x5039, 0x04, 0x8f, collectChest2, 0x8f),
 	"d5 spiral chest": seasonsChest(
 		"compass", 0x5049, 0x04, 0x9d, collectChest2, 0x8a),
+	"d5 spinner chest": seasonsChest(
+		"d5 small key", 0x504d, 0x04, 0x9f, collectChest, 0x8a),
+	"d5 stalfos room": seasonsChest(
+		"d5 small key", 0x5055, 0x04, 0xa5, collectChest, 0x8a),
 	"d5 basement": seasonsScriptItem(
 		"d5 boss key", 0x4c22, 0x06, 0x8b, collectFind2, 0x8a),
 	"d5 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x04, 0x8c, collectAppear2, 0x8a),
 
 	// d6
+	"d6 magnet ball drop": keyDropSlot("d6 small key", 0x04, 0xab, 0x00),
+	"d6 north chest": seasonsChest(
+		"d6 small key", 0x5071, 0x04, 0xc2, collectChest, 0x00),
 	"d6 armos hall": seasonsChest(
 		"boomerang 2", 0x507d, 0x04, 0xd0, collectChest, 0x00),
 	"d6 crystal trap room": seasonsChest(
@@ -406,10 +441,14 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"dungeon map", 0x5061, 0x04, 0xb0, collectChest2, 0x00),
 	"d6 escape room": seasonsChest(
 		"d6 boss key", 0x5079, 0x04, 0xc4, collectChest, 0x00),
+	"d6 vire chest": seasonsChest(
+		"d6 small key", 0x506d, 0x04, 0xc1, collectChest, 0x00),
 	"d6 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x04, 0xd5, collectAppear2, 0x00),
 
 	// d7
+	"d7 wizzrobe chest": seasonsChest(
+		"d7 small key", 0x50ae, 0x05, 0x54, collectChest, 0xd0),
 	"d7 spike chest": seasonsChest(
 		"feather 2", 0x509e, 0x05, 0x44, collectChest, 0xd0),
 	"d7 maze chest": seasonsChest(
@@ -418,26 +457,43 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"power ring L-1", 0x50b6, 0x05, 0x5a, collectChest, 0xd0),
 	"d7 bombed wall chest": seasonsChest(
 		"compass", 0x50aa, 0x05, 0x52, collectChest2, 0xd0),
+	// TODO additional work needed for the room above
+	"d7 zol button":   keyDropSlot("d7 small key", 0x05, 0x45, 0xd0),
+	"d7 armos puzzle": keyDropSlot("d7 small key", 0x05, 0x35, 0xd0),
+	"d7 magunesu chest": seasonsChest(
+		"d7 small key", 0x50a2, 0x05, 0x47, collectChest, 0xd0),
 	"d7 quicksand chest": seasonsChest(
 		"dungeon map", 0x50b2, 0x05, 0x58, collectChest2, 0xd0),
+	"d7 skipped drop": keyDropSlot("d7 small key", 0x05, 0x3d, 0xd0),
 	"d7 stalfos chest": seasonsChest(
 		"d7 boss key", 0x50a6, 0x05, 0x48, collectChest, 0xd0),
 	"d7 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x05, 0x50, collectAppear2, 0xd0),
 
 	// d8
+	"d8 eye drop": keyDropSlot("d8 small key", 0x05, 0x82, 0x04),
 	"d8 armos chest": seasonsChest(
 		"slingshot 2", 0x50da, 0x05, 0x8d, collectChest, 0x04),
 	"d8 SW lava chest": seasonsChest(
 		"bombs, 10", 0x50ba, 0x05, 0x6a, collectChest, 0x04),
 	"d8 three eyes chest": seasonsChest(
 		"steadfast ring", 0x50c6, 0x05, 0x7d, collectChest, 0x04),
+	"d8 hardhat drop": keyDropSlot("d8 small key", 0x05, 0x75, 0x04),
 	"d8 spike room": seasonsChest(
 		"compass", 0x50d2, 0x05, 0x8b, collectChest2, 0x04),
+	"d8 spinner chest": seasonsChest(
+		"d8 small key", 0x50c2, 0x05, 0x70, collectChest, 0x04),
 	"d8 magnet ball room": seasonsChest(
 		"dungeon map", 0x50de, 0x05, 0x8e, collectChest2, 0x04),
+	"d8 darknut room": seasonsChest(
+		"d8 small key", 0x50d6, 0x05, 0x8c, collectChest, 0x04),
+	"d8 ghost armos": keyDropSlot("d8 small key", 0x05, 0x7f, 0x04),
 	"d8 pols voice chest": seasonsChest(
 		"d8 boss key", 0x50ca, 0x05, 0x80, collectChest, 0x04),
+	"d8 SE lava chest": seasonsChest(
+		"d8 small key", 0x50be, 0x05, 0x6b, collectChest, 0x04),
+	"d8 spark chest": seasonsChest(
+		"d8 small key", 0x50ce, 0x05, 0x8a, collectChest, 0x04),
 	"d8 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x05, 0x64, collectAppear2, 0x04),
 

@@ -228,6 +228,10 @@ var seasonsFixedMutables = map[string]Mutable{
 	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
 	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
 
+	// key falls in a pool normally, which doesn't work for ordinary items.
+	"move d4 key drop": MutableString(Addr{0x11, 0x750c},
+		"\x58\x68", "\x68\x58"),
+
 	// bank 14 (scripts loaded in c3xx block)
 
 	// skip the great furnace dance. for some reason command c4 (jumpalways)

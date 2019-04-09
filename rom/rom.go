@@ -171,6 +171,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 	setBossItemAddrs()
 	setSeedData(game)
+	setSmallKeyData()
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
 	// with text
@@ -346,6 +347,11 @@ func setSeedData(game int) {
 			mut.New[0] = 0x15 + ItemSlots[name].Treasure.id
 		}
 	}
+}
+
+func setSmallKeyData() {
+	mut := codeMutables["small key drops"].(*MutableRange)
+	mut.New = []byte(makeKeyDropTable())
 }
 
 // sets the high nybble (seed type) of a seed tree interaction in ages.
