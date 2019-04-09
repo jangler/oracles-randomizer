@@ -377,11 +377,11 @@ var SeasonsSlots = map[string]*MutableSlot{
 
 	// d5
 	"d5 magnet ball chest": seasonsChest(
-		"magnet gloves", 0x503d, 0x04, 0x89, collectChest, 0x89),
+		"magnet gloves", 0x503d, 0x04, 0x89, collectChest, 0x8a),
 	"d5 terrace chest": seasonsChest(
 		"rupees, 100", 0x5041, 0x04, 0x97, collectChest, 0x8a),
 	"d5 gibdo/zol chest": seasonsChest(
-		"dungeon map", 0x5039, 0x04, 0x8f, collectChest2, 0x8f),
+		"dungeon map", 0x5039, 0x04, 0x8f, collectChest2, 0x8a),
 	"d5 spiral chest": seasonsChest(
 		"compass", 0x5049, 0x04, 0x9d, collectChest2, 0x8a),
 	"d5 basement": seasonsScriptItem(

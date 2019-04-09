@@ -5,7 +5,9 @@
 # strictly speaking nothing here should need quoting but that's just my
 # environment
 
-version="$(git tag --contains HEAD)"
+go generate
+
+version="$(grep -o '".\+"' version.go | tr -d '"')"
 appname="$(basename "$PWD")"
 
 unix2dos -n README.md README.txt

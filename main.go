@@ -1,5 +1,7 @@
 package main
 
+//go:generate bash scripts/generate.sh
+
 import (
 	"flag"
 	"fmt"
