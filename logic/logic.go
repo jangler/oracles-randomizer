@@ -34,13 +34,15 @@ const (
 	OrStepType
 	HardAndType
 	HardOrType
+	CountType
 )
 
 // A Node is a mapping of strings that will become And or Or nodes in the
 // graph. A node can have nested nodes as parents instead of strings.
 type Node struct {
-	Parents []interface{}
-	Type    Type
+	Parents  []interface{}
+	Type     Type
+	MinCount int
 }
 
 // CreateFunc returns a function that creates graph nodes from a list of key
@@ -49,6 +51,14 @@ func CreateFunc(nodeType Type) func(parents ...interface{}) *Node {
 	return func(parents ...interface{}) *Node {
 		return &Node{Parents: parents, Type: nodeType}
 	}
+}
+
+// CreateCountType creates a CountType node.
+func CreateCountType(count int, parents ...interface{}) *Node {
+	if len(parents) > 1 {
+		panic("Count nodes do not support multiple parents")
+	}
+	return &Node{Parents: parents, Type: CountType, MinCount: count}
 }
 
 // Convenience functions for creating nodes succinctly. See the Type const
@@ -64,6 +74,7 @@ var (
 	Hard    = CreateFunc(HardAndType) // for wrapping single nodes
 	HardAnd = CreateFunc(HardAndType)
 	HardOr  = CreateFunc(HardOrType)
+	Count   = CreateCountType
 )
 
 var seasonsNodes, agesNodes map[string]*Node

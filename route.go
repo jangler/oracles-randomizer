@@ -100,6 +100,10 @@ func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
 
 			node := graph.NewNode(key, nodeType, isStep, isSlot, isHard)
 			g.AddNodes(node)
+		case logic.CountType:
+			node := graph.NewNode(key, graph.CountType, false, false, false)
+			node.MinCount = pn.MinCount
+			g.AddNodes(node)
 		default:
 			panic("unknown logic type for " + key)
 		}

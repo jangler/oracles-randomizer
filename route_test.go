@@ -9,8 +9,8 @@ import (
 )
 
 func TestGraph(t *testing.T) {
-	// testSeasonsGraph(t)
-	testAgesGraph(t)
+	testSeasonsGraph(t)
+	// testAgesGraph(t)
 }
 
 // check that graph logic is working as expected
@@ -19,113 +19,46 @@ func testSeasonsGraph(t *testing.T) {
 	r := NewRoute(rom.GameSeasons)
 	g := r.Graph
 
+	// test basic start item
 	checkReach(t, g,
 		map[string]string{
-			"feather 1": "d0 sword chest",
+			"d0 key chest": "feather 1",
 		}, "maku tree", false, false)
-
 	checkReach(t, g,
 		map[string]string{
-			"sword 1": "d0 sword chest",
+			"d0 key chest": "sword 1",
 		}, "maku tree", false, true)
 
+	// test hard logic via bombs as weapon
 	checkReach(t, g,
 		map[string]string{
-			"sword 1":          "d0 sword chest",
-			"ember tree seeds": "horon village seed tree",
-			"satchel 1":        "maku tree",
-			"member's card":    "d0 rupee chest",
-		}, "member's shop 1", false, true)
-
+			"d0 key chest":           "moosh's flute",
+			"d0 rupee chest":         "bombs",
+			"horon village SE chest": "gnarled key",
+		}, "d1 stalfos drop", false, false)
 	checkReach(t, g,
 		map[string]string{
-			"sword 1":  "d0 sword chest",
-			"bracelet": "maku tree",
-		}, "floodgate keeper's house", false, false)
+			"d0 key chest":           "moosh's flute",
+			"d0 rupee chest":         "bombs",
+			"horon village SE chest": "gnarled key",
+		}, "d1 stalfos drop", true, true)
 
+	// test key counting
 	checkReach(t, g,
 		map[string]string{
-			"bracelet":         "d0 sword chest",
-			"spring":           "horon village SW chest",
-			"flippers":         "maku tree",
-			"satchel 1":        "natzu region, across water",
-			"ember tree seeds": "horon village seed tree",
-
-			"woods of winter default summer": "",
-			"woods of winter default winter": "start",
-		}, "holly's house", false, false)
-
-	// check normal vs hard
+			"d0 key chest":     "sword 1",
+			"maku tree":        "gnarled key",
+			"d1 stalfos drop":  "d1 small key",
+			"d1 stalfos chest": "bombs",
+		}, "d1 basement", false, false)
 	checkReach(t, g,
 		map[string]string{
-			"sword 1":            "d0 sword chest",
-			"satchel 1":          "d0 rupee chest",
-			"feather 1":          "maku tree",
-			"feather 2":          "shop, 150 rupees",
-			"pegasus tree seeds": "horon village seed tree",
-
-			"north horon default winter": "",
-			"north horon default summer": "start",
-		}, "village portal", false, false)
-	checkReach(t, g,
-		map[string]string{
-			"sword 1":            "d0 sword chest",
-			"satchel 1":          "d0 rupee chest",
-			"feather 1":          "maku tree",
-			"feather 2":          "shop, 150 rupees",
-			"pegasus tree seeds": "horon village seed tree",
-
-			"north horon default winter": "",
-			"north horon default summer": "start",
-		}, "village portal", true, true)
-
-	// make sure that all slots in the game are reachable, given vanilla
-	// progression.
-	for slotName, _ := range rom.ItemSlots {
-		r := NewRoute(rom.GameSeasons)
-		g := r.Graph
-		checkReach(t, g, map[string]string{
-			"sword 1":            "d0 sword chest",
-			"gnarled key":        "maku tree",
-			"bombs, 10":          "d1 railway chest",
-			"satchel 1":          "d1 basement",
-			"ember tree seeds":   "horon village seed tree",
-			"boomerang 1":        "subrosian dance hall",
-			"winter":             "tower of winter",
-			"shovel":             "holly's house",
-			"mystery tree seeds": "woods of winter seed tree",
-			"bracelet":           "d2 moblin chest",
-			"ricky's flute":      "shop, 150 rupees",
-			"pegasus tree seeds": "spool swamp seed tree",
-			"floodgate key":      "floodgate keeper's house",
-			"square jewel":       "spool swamp cave",
-			"star ore":           "subrosia seaside",
-			"ribbon":             "subrosia market, 1st item",
-			"summer":             "tower of summer",
-			"feather 1":          "d3 moldorm chest", // vanilla unsafe
-			"master's plaque":    "master diver's challenge",
-			"flippers":           "master diver's reward",
-			"spring":             "tower of spring",
-			"spring banana":      "spring banana tree",
-			"dragon key":         "goron mountain, across pits",
-			"pyramid jewel":      "diving spot outside D4",
-			"slingshot 1":        "d4 north of entrance", // vanilla unsafe
-			"autumn":             "tower of autumn",
-			"magnet gloves":      "d5 spiral chest", // vanilla unsafe
-			"round jewel":        "old man in treehouse",
-			"x-shaped jewel":     "black beast's chest",
-			"boomerang 2":        "d6 armos hall",
-			"rusty bell":         "samasa desert pit",
-			"feather 2":          "d7 spike chest",
-			"slingshot 2":        "d8 armos chest",
-
-			// vanilla non-required
-			"member's card": "subrosia market, 5th item",
-			"red ore":       "subrosia village chest",
-			"blue ore":      "subrosian wilds chest",
-			"hard ore":      "great furnace",
-		}, slotName, false, true)
-	}
+			"d0 key chest":     "sword 1",
+			"maku tree":        "gnarled key",
+			"d1 stalfos drop":  "d1 small key",
+			"d1 stalfos chest": "bombs",
+			"d1 railway chest": "d1 small key",
+		}, "d1 basement", false, true)
 }
 
 // check that graph logic is working as expected
@@ -286,14 +219,14 @@ func BenchmarkGraphExplore(b *testing.B) {
 
 // helper function for testing whether a node is reachable given a certain
 // slotting
-func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
+func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 	target string, hard, expect bool) {
 	t.Helper()
 
 	// add parents at the start of the function, and remove them at the end. if
 	// a parent is blank, remove it at the start and add it at the end (only
 	// useful for default seasons).
-	for child, parent := range parents {
+	for parent, child := range links {
 		if parent == "" {
 			g[child].ClearParents()
 		} else {
@@ -301,7 +234,7 @@ func checkReach(t *testing.T, g graph.Graph, parents map[string]string,
 		}
 	}
 	defer func() {
-		for child, parent := range parents {
+		for parent, child := range links {
 			if parent == "" {
 				g[child].AddParents(g["start"])
 			} else {

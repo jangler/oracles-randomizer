@@ -33,6 +33,7 @@ const (
 	RootType NodeType = iota
 	AndType
 	OrType
+	CountType
 )
 
 // A Node is a single point in the directed graph.
@@ -44,6 +45,7 @@ type Node struct {
 	IsSlot   bool
 	IsHard   bool
 	Mark     Mark
+	MinCount int
 	parents  []*Node
 	children []*Node
 }
@@ -71,6 +73,8 @@ func NewNode(name string, nodeType NodeType,
 		n.GetMark = getAndMark
 	case OrType:
 		n.GetMark = getOrMark
+	case CountType:
+		n.GetMark = getCountMark
 	default:
 		panic("unknown node type for node " + name)
 	}
@@ -145,6 +149,40 @@ func getOrMark(n *Node, hard bool) Mark {
 		if (allPending && len(n.parents) > 0) || n.Mark == MarkPending {
 			n.Mark = MarkNone
 			return MarkFalse
+		}
+	}
+
+	return n.Mark
+}
+
+// in order for a count node to be true, at least x of its parent's parents
+// must also be true.
+func getCountMark(n *Node, hard bool) Mark {
+	count := 0
+
+	if n.Mark == MarkNone {
+		n.Mark = MarkPending
+
+		for _, parent := range n.parents[0].parents {
+			if !hard && parent.IsHard {
+				continue
+			}
+
+			switch parent.GetMark(parent, hard) {
+			case MarkPending, MarkFalse:
+				continue
+			default:
+				count++
+			}
+
+			if count >= n.MinCount {
+				n.Mark = MarkTrue
+				return n.Mark
+			}
+		}
+
+		if n.Mark == MarkPending {
+			n.Mark = MarkFalse
 		}
 	}
 

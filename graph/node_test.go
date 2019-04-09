@@ -182,4 +182,17 @@ func TestHardNodes(t *testing.T) {
 		t.Fatalf("want %d, got %d", MarkTrue, mark)
 	}
 	clearMarks(or1, hard1)
+
+	count1 := NewNode("or1", CountType, false, false, false)
+	count1.AddParents(or1)
+	count1.MinCount = 2
+	if mark := count1.GetMark(count1, true); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(count1, hard1)
+	or1.AddParents(and1)
+	if mark := count1.GetMark(count1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(count1, hard1)
 }
