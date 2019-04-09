@@ -369,47 +369,70 @@ func setTreasureMapData() {
 	}
 }
 
-// match the compass's beep beep beep boops to the actual boss key locations.
+// set dungeon properties so that the compass beeps in the rooms actually
+// containing small keys and boss keys.
 func setCompassData(b []byte, game int) {
-	var names []string
+	var prefixes []string
 	if game == GameSeasons {
-		names = []string{"d1 goriya chest", "d2 terrace chest",
-			"d3 giant blade room", "d4 dive spot", "d5 basement",
-			"d6 escape room", "d7 stalfos chest", "d8 pols voice chest"}
+		prefixes = []string{"d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7",
+			"d8"}
 	} else {
-		names = []string{"d1 pot chest", "d2 color room", "d3 B1F east",
-			"d4 lava pot chest", "d5 owl puzzle", "d6 present RNG chest",
-			"d7 post-hallway chest", "d8 B3F chest"}
+		prefixes = []string{"d0", "d1", "d2", "d3", "d4", "d5", "d6 present",
+			"d6 past", "d7", "d8"}
 	}
 
-	// clear original boss key flags
-	for _, name := range names {
-		slot := ItemSlots[name]
-		offset :=
-			getDungeonPropertiesAddr(game, slot.group, slot.room).fullOffset()
-		b[offset] = b[offset] & 0xef // reset bit 4
+	// clear key flags
+	for _, prefix := range prefixes {
+		for name, slot := range ItemSlots {
+			if strings.HasPrefix(name, prefix+" ") {
+				offset := getDungeonPropertiesAddr(
+					game, slot.group, slot.room).fullOffset()
+				b[offset] = b[offset] & 0xed // reset bit 4
+			}
+		}
 	}
 
-	// add new boss key flags
-	for i := 1; i <= 8; i++ {
-		name := fmt.Sprintf("d%d boss key", i)
-		slot := lookupItemSlot(name)
-		offset :=
-			getDungeonPropertiesAddr(game, slot.group, slot.room).fullOffset()
-		b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
+	// set key flags
+	for _, prefix := range prefixes {
+		slots := lookupAllItemSlots(fmt.Sprintf("%s small key", prefix))
+		switch prefix {
+		case "d0", "d6 present":
+			break
+		case "d6 past":
+			slots = append(slots, lookupItemSlot("d6 boss key"))
+		default:
+			slots = append(slots,
+				lookupItemSlot(fmt.Sprintf("%s boss key", prefix)))
+		}
+
+		for _, slot := range slots {
+			offset := getDungeonPropertiesAddr(
+				game, slot.group, slot.room).fullOffset()
+			b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
+		}
 	}
 }
 
 // returns the slot where the named item was placed. this only works for unique
 // items, of course.
 func lookupItemSlot(itemName string) *MutableSlot {
+	if slots := lookupAllItemSlots(itemName); len(slots) > 0 {
+		return slots[0]
+	} else {
+		return nil
+	}
+}
+
+// returns all slots where the named item was placed.
+func lookupAllItemSlots(itemName string) []*MutableSlot {
 	t := Treasures[itemName]
+	slots := make([]*MutableSlot, 0)
 	for _, slot := range ItemSlots {
 		if slot.Treasure == t {
-			return slot
+			slots = append(slots, slot)
 		}
 	}
-	return nil
+	return slots
 }
 
 // get the location of the dungeon properties byte for a specific room.
