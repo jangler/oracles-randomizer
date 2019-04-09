@@ -117,7 +117,7 @@ var seasonsD4Nodes = map[string]*Node{
 
 	// 1 key
 	"d4 water ring room": AndSlot("enter d4", Or("flippers", "jump 4"), "bombs",
-		"d4 small key"),
+		"d4 small key", Or("bracelet", "kill normal", And("rod", "boomerang"))),
 	"d4 roller minecart": And("enter d4", "flippers", "jump 2", "d4 small key"),
 	"d4 pool": AndSlot("d4 roller minecart", "hit lever from minecart",
 		Or("kill normal", "bracelet")),
@@ -195,10 +195,12 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 beamos room":    AndSlot("enter d6", Count(3, "d6 small key")),
 	"d6 2F gibdo chest": AndSlot("d6 beamos room"),
 	"d6 2F armos chest": AndSlot("d6 2F gibdo chest", "bombs"),
-	"d6 armos hall":     AndSlot("d6 2F armos chest"),
-	"d6 north chest": AndSlot("break crystal", Or("jump 2", Hard()),
-		Or("d6 armos hall", And("enter d6", "kill normal", "magnet gloves",
-			Count(3, "d6 small key")))),
+	"d6 armos hall":     AndSlot("d6 2F armos chest", "jump 2"),
+	"d6 north chest": AndSlot("break crystal", Or("jump 2", Hard()), Or(
+		And("enter d6", "kill normal", "magnet gloves",
+			Count(3, "d6 small key")),
+		And("enter d6", "bombs", "jump 2", "magnet gloves",
+			Count(2, "d6 small key")))),
 	"enter vire":       And("d6 vire chest", Count(3, "d6 small key")),
 	"d6 pre-boss room": And("enter vire", "kill vire", "kill hardhat (magnet)"),
 	"d6 boss": AndSlot("d6 pre-boss room", "d6 boss key",
@@ -217,7 +219,7 @@ var seasonsD7Nodes = map[string]*Node{
 	"enter poe A": And("enter d7", "d7 small key",
 		Or("ember slingshot", Hard("mystery slingshot"))),
 	"d7 pot room": And("enter d7", "bracelet", Or(
-		And("enter poe A", "kill armored"),
+		And("enter poe A", "kill poe sister"),
 		HardAnd("jump 2", "pegasus satchel"))),
 	"d7 zol button":   AndSlot("d7 pot room", "jump 2"),
 	"d7 armos puzzle": AndSlot("d7 pot room", Or("jump 3", "magnet gloves")),
@@ -234,12 +236,13 @@ var seasonsD7Nodes = map[string]*Node{
 	"d7 water stairs": And("enter poe B", "flippers"),
 	"d7 cross bridge": Or("jump 4", "kill armored (across pit)",
 		And("jump 2", "magnet gloves")),
-	"d7 spike chest": AndSlot("d7 water stairs", "d7 cross bridge"),
+	"d7 spike chest": AndSlot("d7 water stairs", "d7 cross bridge", "jump 2"),
 
 	// 4 keys
-	"d7 maze chest": AndSlot("d7 water stairs", "kill armored", "jump 4",
+	"d7 maze chest": AndSlot("d7 water stairs", "kill poe sister", "jump 4",
 		Count(4, "d7 small key")),
-	"d7 B2F drop":      AndSlot("d7 maze chest"),
+	"d7 B2F drop": AndSlot("d7 maze chest",
+		Or("magnet gloves", Hard("jump 6"))),
 	"shining blue owl": And("mystery seeds", "d7 stalfos chest"),
 	"d7 boss":          AndSlot("d7 maze chest", "d7 boss key", "kill gleeok"),
 
