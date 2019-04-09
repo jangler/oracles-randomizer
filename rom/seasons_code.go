@@ -546,11 +546,6 @@ func initSeasonsEOB() {
 		"\xf2\xab\x00\x40\x70\x22\x0a\x58\x44\xf8\x2d\x00\x33\xfe")
 	r.replace(0x11, 0x650b, "moblin keep interaction jump",
 		"\xf2\xab\x00\x40", "\xf3"+moblinKeepInteractions+"\xff")
-	// d7 armos room
-	armosRoomInteractions := r.appendToBank(0x11, "armos room interactions",
-		"\xf8\x09\x80\x79\xf2\x22\x0a\x58\x78\xfe")
-	r.replace(0x11, 0x7925, "armos room interaction jump",
-		"\xf8\x09\x80\x79", "\xf3"+armosRoomInteractions+"\xff")
 	// hss skip room
 	hssSkipInteractions := r.appendToBank(0x11, "hss skip interactions",
 		"\xf2\x22\x0a\x88\x98\xf3\x93\x55\xfe")
