@@ -196,11 +196,10 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 2F gibdo chest": AndSlot("d6 beamos room"),
 	"d6 2F armos chest": AndSlot("d6 2F gibdo chest", "bombs"),
 	"d6 armos hall":     AndSlot("d6 2F armos chest", "jump 2"),
-	"d6 north chest": AndSlot("break crystal", Or("jump 2", Hard()), Or(
-		And("enter d6", "kill normal", "magnet gloves",
-			Count(3, "d6 small key")),
-		And("enter d6", "bombs", "jump 2", "magnet gloves",
-			Count(2, "d6 small key")))),
+	"d6 north chest": AndSlot("enter d6", "magnet gloves", "break crystal",
+		Or("jump 2", Hard()), Or(
+			And("kill normal", Count(3, "d6 small key")),
+			And("bombs", "jump 2", Count(2, "d6 small key")))),
 	"enter vire":       And("d6 vire chest", Count(3, "d6 small key")),
 	"d6 pre-boss room": And("enter vire", "kill vire", "kill hardhat (magnet)"),
 	"d6 boss": AndSlot("d6 pre-boss room", "d6 boss key",
