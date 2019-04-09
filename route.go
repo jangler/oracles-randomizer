@@ -174,7 +174,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		if game == rom.GameSeasons {
 			ri.Seasons = rollSeasons(ri.Src, r)
 		}
-		placeDungeonItems(ri.Src, r, game,
+		placeDungeonItems(ri.Src, r, game, hard,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
 		slotRecord := 0
@@ -351,17 +351,37 @@ func rollAnimalCompanion(src *rand.Rand, r *Route, game int) int {
 	return companion
 }
 
-// place maps, compasses, boss keys, and slates in chests in dungeons (before
-// attempting to slot the other ones).
-func placeDungeonItems(src *rand.Rand, r *Route, game int,
+// place maps, compasses, small keys, boss keys, and slates in chests in
+// dungeons (before attempting to slot the other items).
+func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 	itemList, usedItems, slotList, usedSlots *list.List) {
-	// place boss keys first
+	g := r.Graph
+
+	// place small keys first
+	for i := 1; i < 9; i++ {
+		prefix := fmt.Sprintf("d%d", i)
+		itemName := prefix + " small key"
+
+		for {
+			slotElem, itemElem, slotNode, itemNode :=
+				getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
+			if itemNode == nil {
+				// no more small keys to place for this dungeon
+				break
+			}
+
+			placeItem(slotNode, itemNode, slotElem, itemElem,
+				usedSlots, slotList, usedItems, itemList)
+		}
+	}
+
+	// then place boss keys
 	for i := 1; i < 9; i++ {
 		prefix := fmt.Sprintf("d%d", i)
 		itemName := prefix + " boss key"
 
 		slotElem, itemElem, slotNode, itemNode :=
-			getDungeonItem(prefix, itemName, slotList, itemList)
+			getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
 		placeItem(slotNode, itemNode, slotElem, itemElem,
 			usedSlots, slotList, usedItems, itemList)
 	}
@@ -371,7 +391,7 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int,
 		for i := 1; i <= 4; i++ {
 			itemName := fmt.Sprintf("slate %d", i)
 			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem("d8", itemName, slotList, itemList)
+				getDungeonItem("d8", itemName, slotList, itemList, g, hard)
 			placeItem(slotNode, itemNode, slotElem, itemElem,
 				usedSlots, slotList, usedItems, itemList)
 		}
@@ -389,7 +409,7 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int,
 	for _, prefix := range prefixes {
 		for _, itemName := range []string{"dungeon map", "compass"} {
 			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem(prefix, itemName, slotList, itemList)
+				getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
 			placeItem(slotNode, itemNode, slotElem, itemElem,
 				usedSlots, slotList, usedItems, itemList)
 		}
@@ -397,8 +417,8 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int,
 }
 
 // find a valid position for a dungeon item
-func getDungeonItem(prefix, itemName string, slotList,
-	itemList *list.List) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
+func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
+	g graph.Graph, hard bool) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
 		slot := es.Value.(*graph.Node)
 		if !strings.HasPrefix(slot.Name, prefix) {
@@ -409,6 +429,10 @@ func getDungeonItem(prefix, itemName string, slotList,
 			strings.HasSuffix(slot.Name, "boss") {
 			continue
 		}
+		if strings.HasSuffix(itemName, "small key") &&
+			!canReachViaSmallKeys(g, slot, hard) {
+			continue
+		}
 
 		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*graph.Node)
@@ -417,6 +441,12 @@ func getDungeonItem(prefix, itemName string, slotList,
 			}
 
 			return es, ei, slot, item
+		}
+
+		// return nil when there are no more small keys to place, since this is
+		// how the caller determines whether it needs to place more keys.
+		if slot != nil && strings.HasSuffix(itemName, "small key") {
+			return nil, nil, nil, nil
 		}
 	}
 
@@ -433,6 +463,21 @@ func placeItem(slotNode, itemNode *graph.Node,
 	itemList.Remove(itemElem)
 
 	itemNode.AddParents(slotNode)
+}
+
+// returns true iff the target node can be reached if the player has automatic
+// access to every item that isn't a small key.
+func canReachViaSmallKeys(g graph.Graph, target *graph.Node, hard bool) bool {
+	g.ClearMarks()
+
+	for _, itemSlot := range rom.ItemSlots {
+		treasureName := rom.FindTreasureName(itemSlot.Treasure)
+		if !strings.HasSuffix(treasureName, "small key") {
+			g[treasureName].Mark = graph.MarkTrue
+		}
+	}
+
+	return target.GetMark(target, hard) == graph.MarkTrue
 }
 
 func emptyList(l *list.List) []*graph.Node {
