@@ -1,6 +1,7 @@
 package rom
 
 import (
+	"sort"
 	"strings"
 )
 
@@ -64,7 +65,8 @@ func SetOwlData(owlHints map[string]string, game int) {
 		owlTextIDs = agesOwls
 	}
 
-	for owlName, hint := range owlHints {
+	for _, owlName := range GetOwlNames(game) {
+		hint := owlHints[owlName]
 		textID := owlTextIDs[owlName]
 		str := "\x0c\x00" + strings.ReplaceAll(hint, "\n", "\x01") + "\x00"
 		table.New[textID*2] = addrString(addr)[0]
@@ -79,8 +81,8 @@ func SetOwlData(owlHints map[string]string, game int) {
 	codeMutables["owl text"] = text
 }
 
-// returns an array of owl statue names for the given game (matching those in
-// the logic package).
+// returns a sorted array of owl statue names for the given game (matching
+// those in the logic package).
 func GetOwlNames(game int) []string {
 	var src map[string]byte
 	if game == GameSeasons {
@@ -95,6 +97,8 @@ func GetOwlNames(game int) []string {
 		a[i] = k
 		i++
 	}
+
+	sort.Strings(a)
 
 	return a
 }

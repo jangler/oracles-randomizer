@@ -1,5 +1,7 @@
 package main
 
+//go:generate bash scripts/generate.sh
+
 import (
 	"flag"
 	"fmt"
@@ -473,8 +475,8 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 			summary <- fmt.Sprintf("%-15s <- %s",
 				name[:len(name)-7], seasonsByID[int(area.New[0])])
 		}
+		summary <- ""
 	}
-	summary <- ""
 	summary <- ""
 	summary <- "-- hints --"
 	summary <- ""

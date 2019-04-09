@@ -36,7 +36,7 @@ section_template = """<h2>%s</h2>
 %s
 """
 
-with open('summary.go') as f:
+with open('version.go') as f:
     for line in f.readlines():
         match = version_regexp.match(line)
         if match:
