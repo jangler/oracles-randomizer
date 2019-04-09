@@ -338,16 +338,13 @@ func initSeasonsEOB() {
 	warnHSSSkip := r.appendToBank(0x15, "warn hss skip",
 		"\xfa\x86\xca\xb7\xc0\xcd\x56\x19\xcb\x76\xc0\xcb\xf6"+
 			"\x3e\x02\xea\xe0\xcf\xc3"+warnGeneric)
-	warnPoeSkip := r.appendToBank(0x15, "warn poe skip",
-		"\xfa\x5a\xca\xcb\x67\xc0"+
-			"\x3e\x08\xcd\x17\x17\xd8\xc3"+warnHSSSkip)
 	// this communicates with the warning script by setting bit zero of $cfc0
 	// if the warning needs to be displayed (based on room, season, etc), and
 	// also displays the exclamation mark if so.
 	warningFunc := r.appendToBank(0x15, "warning func",
 		"\xc5\xd5\xcd"+addrString(r.endOfBank[0x15]+8)+"\xd1\xc1\xc9"+ // wrap
 			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load env data
-			"\xfe\x46\xca"+warnPoeSkip+"\xfe\x7c\xca"+warnFlowerCliff+
+			"\xfe\x7c\xca"+warnFlowerCliff+
 			"\xfe\x6e\xca"+warnDivingSpot+"\xfe\x3d\xca"+warnWaterfallCliff+
 			"\xfe\x5c\xca"+warnMoblinKeep+"\xfe\x78\xca"+warnHSSSkip+
 			"\xc3"+warnGeneric)
