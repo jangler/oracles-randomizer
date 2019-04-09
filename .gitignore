@@ -4,6 +4,7 @@ version.go
 checklist/
 dist/
 gbc/
+notes/
 ref/
 *.out
 *.prof
