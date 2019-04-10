@@ -37,3 +37,10 @@ your changes on the appropriate branch.
 
 Forking Go repositories is pretty much a mess, because Go has no notion of
 relative imports. I have no specific advice on the matter, but Google might.
+
+
+## Code style
+
+Always run `go fmt` on each package that has been changed (note that `go fmt`
+coerces all line-initial indentation to tabs). Wrap lines longer than 80
+characters when possible, assuming 8-space tabs.
