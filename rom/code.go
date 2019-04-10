@@ -86,7 +86,14 @@ func makeCollectModeTable() string {
 			continue
 		}
 
-		_, err := b.Write([]byte{slot.group, slot.room, slot.collectMode})
+		var err error
+		if slot.collectMode == collectFall && slot.Treasure != nil &&
+			slot.Treasure.id == 0x30 {
+			// use falling key mode (no fanfare) if falling item is a key
+			_, err = b.Write([]byte{slot.group, slot.room, collectKeyFall})
+		} else {
+			_, err = b.Write([]byte{slot.group, slot.room, slot.collectMode})
+		}
 		if err != nil {
 			panic(err)
 		}
@@ -113,6 +120,9 @@ func makeKeyDropTable() string {
 		var err error
 		if slot.Treasure == nil {
 			_, err = b.Write([]byte{slot.group, slot.room, 0x00, 0x00})
+		} else if slot.Treasure.id == 0x30 {
+			// make small keys the normal falling variety, with no text box.
+			_, err = b.Write([]byte{slot.group, slot.room, 0x30, 0x01})
 		} else {
 			_, err = b.Write([]byte{slot.group, slot.room,
 				slot.Treasure.id, slot.Treasure.subID})

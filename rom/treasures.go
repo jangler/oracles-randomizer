@@ -16,6 +16,7 @@ const (
 	collectFind2      = 0x0a
 	collectAppear1    = 0x19 // d5 boss key
 	collectAppear2    = 0x1a // heart containers
+	collectKeyFall    = 0x28 // no fanfare
 	collectFall       = 0x29
 	collectChest      = 0x38 // most chests
 	collectDive       = 0x49

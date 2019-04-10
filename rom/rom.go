@@ -172,6 +172,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	setBossItemAddrs()
 	setSeedData(game)
 	setSmallKeyData()
+	setCollectModeData(game)
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
 	// with text
@@ -350,9 +351,21 @@ func setSeedData(game int) {
 	}
 }
 
+// fill table—initial table is blank, since it's created before items are
+// placed.
 func setSmallKeyData() {
 	mut := codeMutables["small key drops"].(*MutableRange)
 	mut.New = []byte(makeKeyDropTable())
+}
+
+// regenerate collect mode table to accommodate changes based on contents.
+func setCollectModeData(game int) {
+	mut := codeMutables["collection mode table"].(*MutableRange)
+	if game == GameSeasons {
+		mut.New = []byte(makeSeasonsCollectModeTable())
+	} else {
+		mut.New = []byte(makeAgesCollectModeTable())
+	}
 }
 
 // sets the high nybble (seed type) of a seed tree interaction in ages.
