@@ -237,7 +237,8 @@ func Verify(b []byte, game int) []error {
 			"temple of seasons", "rare peach stone", "ribbon", "blaino prize",
 			"subrosia seaside", "great furnace", "subrosian smithy",
 			"master diver's reward", "d5 basement", "green joy ring",
-			"mt. cucco, platform cave", "diving spot outside D4":
+			"mt. cucco, platform cave", "diving spot outside D4",
+			"d7 armos puzzle":
 		// ages misc.
 		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
 			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",
