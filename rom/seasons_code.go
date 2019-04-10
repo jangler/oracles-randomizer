@@ -112,10 +112,19 @@ func initSeasonsEOB() {
 	callBank2 := r.appendToBank(0x00, "call bank 02",
 		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9")
 
-	// increment (hl) until it equals either register a or ff. returns z if a
+	// increment hl until (hl) equals either register a or ff. returns z if a
 	// match was found.
 	searchValue := r.appendToBank(0x00, "search value",
 		"\xc5\x47\x2a\xb8\x28\x06\x3c\x28\x02\x18\xf7\x3c\x78\xc1\xc9")
+
+	// search for a key bc in a dictionary starting at hl. the dictionary is a
+	// series of two-byte keys and two-byte values. if a match is found, hl is
+	// the address of the value, and z is set. the dictionary ends when $ff is
+	// encountered at the beginning of an entry.
+	lookupWord := r.appendToBank(0x00, "lookup word",
+		"\x2a\xfe\xff\x20\x02\xb7\xc9"+ // ret if key is $ff
+			"\xb8\x2a\x20\x02\xb9\xc8"+ // compare key bytes
+			"\x23\x23\x18\xef") // loop
 
 	// bank 01
 
@@ -515,9 +524,8 @@ func initSeasonsEOB() {
 	smallKeyDrops := r.appendToBank(0x3f, "small key drops",
 		makeKeyDropTable())
 	lookUpKeyDropBank3F := r.appendToBank(0x3f, "look up key drop bank 3f",
-		"\xfa\x49\xcc\x57\xfa\x4c\xcc\x5f\x21"+smallKeyDrops+ // load group/room
-			"\x2a\xfe\xff\xc8\xba\x20\x06\x2a\xbb\x28\x07"+ // cp w/ each entry
-			"\x18\x01\x23\x23\x23\x18\xee\x46\x23\x4e\xc9")
+		"\xc5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+smallKeyDrops+ // load group/room
+			"\xcd"+lookupWord+"\xc1\xc0\x46\x23\x4e\xc9")
 	lookUpKeyDrop := r.appendToBank(0x0b, "look up key drop",
 		"\x36\x60\x2c\xd5\xe5\x1e\x3f\x21"+lookUpKeyDropBank3F+
 			"\xcd\x8a\x00\xe1\xd1\xc9")
