@@ -573,11 +573,12 @@ func initSeasonsEOB() {
 	collectModeDiver := r.appendToBank(0x15, "diver collect mode",
 		"\x3e\x05\xb8\xc0\x3e\xbd\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd8"+
 			"\xaf\x3e\x02\xc9")
-	// cp link's position if in d7 compass room, set mode to default if on
-	// left side, ret z if set
+	// if in d7 compass room, set mode based on link's x position: left =
+	// key drop; right = chest.
 	collectModeD7Key := r.appendToBank(0x15, "d7 key collect mode",
-		"\x3e\x05\xb8\xc0\x3e\x52\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd0"+
-			"\xaf\x7b\xc9")
+		"\x3e\x05\xb8\xc0\x3e\x52\xb9\xc0"+ // cp room
+			"\xfa\x0d\xd0\xfe\x80\x30\x04"+ // cp x
+			"\xaf\x3e\x28\xc9\xaf\x3e\x38\xc9")
 	// if link already has the maku tree's item, use default mode.
 	collectModeMakuSeed := r.appendToBank(0x15, "maku seed collect mode",
 		"\x3e\x02\xb8\xc0\x3e\x5d\xb9\xc0\x3e\x0a\xcd\x17\x17\x38\x02"+

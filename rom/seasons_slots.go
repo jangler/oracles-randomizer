@@ -457,7 +457,6 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"power ring L-1", 0x50b6, 0x05, 0x5a, collectChest, 0xd0),
 	"d7 bombed wall chest": seasonsChest(
 		"compass", 0x50aa, 0x05, 0x52, collectChest2, 0xd0),
-	// TODO additional work needed for the room above
 	"d7 zol button": keyDropSlot("d7 small key", 0x05, 0x45, 0xd0),
 	"d7 armos puzzle": seasonsFoundItem(
 		"d7 small key", 0x5689, 0x05, 0x35, collectFall, 0xd0),

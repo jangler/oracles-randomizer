@@ -436,6 +436,13 @@ var seasonsVarMutables = map[string]Mutable{
 
 	// determines what natzu looks like and what animal the flute calls
 	"animal region": MutableByte(Addr{0x0a, 0x7fff}, 0x0a, 0x0b),
+
+	// for the item dropped in the room *above* the trampoline
+	"above d7 zol button": &MutableSlot{
+		Treasure:   SeasonsTreasures["d7 small key"],
+		idAddrs:    []Addr{{0x15, 0x55d8}},
+		subIDAddrs: []Addr{{0x15, 0x55db}},
+	},
 }
 
 var Seasons = map[string]*MutableRange{

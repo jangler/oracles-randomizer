@@ -171,7 +171,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 	setBossItemAddrs()
 	setSeedData(game)
-	setSmallKeyData()
+	setSmallKeyData(game)
 	setCollectModeData(game)
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
@@ -239,7 +239,7 @@ func Verify(b []byte, game int) []error {
 			"subrosia seaside", "great furnace", "subrosian smithy",
 			"master diver's reward", "d5 basement", "green joy ring",
 			"mt. cucco, platform cave", "diving spot outside D4",
-			"d7 armos puzzle":
+			"d7 armos puzzle", "above d7 zol button":
 		// ages misc.
 		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
 			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",
@@ -353,9 +353,14 @@ func setSeedData(game int) {
 
 // fill table—initial table is blank, since it's created before items are
 // placed.
-func setSmallKeyData() {
+func setSmallKeyData(game int) {
 	mut := codeMutables["small key drops"].(*MutableRange)
 	mut.New = []byte(makeKeyDropTable())
+
+	if game == GameSeasons {
+		mut := varMutables["above d7 zol button"].(*MutableSlot)
+		mut.Treasure = ItemSlots["d7 zol button"].Treasure
+	}
 }
 
 // regenerate collect mode table to accommodate changes based on contents.
