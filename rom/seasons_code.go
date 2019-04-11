@@ -583,12 +583,18 @@ func initSeasonsEOB() {
 	collectModeMakuSeed := r.appendToBank(0x15, "maku seed collect mode",
 		"\x3e\x02\xb8\xc0\x3e\x5d\xb9\xc0\x3e\x0a\xcd\x17\x17\x38\x02"+
 			"\x3c\xc9\xaf\x7b\xc9")
+	// if room is D4 pool and interaction already exists with a z axis speed,
+	// return dive collect mode instead (for when item falls in water).
+	collectModeD4Pool := r.appendToBank(0x15, "d4 pool collect mode",
+		"\x3e\x04\xb8\xc0\x3e\x75\xb9\xc0"+ // cp room
+			"\x1e\x54\x1a\xd6\x01\xd8\xaf\x3e\x49\xc9")
 	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
 		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\x28\x1d\xb8\x20\x16\x2a\xb9\x20\x13"+
-			"\xcd"+collectModeDiver+"\x28\x12\xcd"+collectModeD7Key+"\x28\x0d"+
+			"\x2a\xfe\xff\x28\x22\xb8\x20\x1b\x2a\xb9\x20\x18"+
+			"\xcd"+collectModeD4Pool+"\x28\x17\xcd"+collectModeDiver+"\x28\x12"+
+			"\xcd"+collectModeD7Key+"\x28\x0d"+
 			"\xcd"+collectModeMakuSeed+"\x28\x08"+
-			"\x2a\x18\x05\x23\x23\x18\xde\x7b\xe1\xc1\xc9")
+			"\x2a\x18\x05\x23\x23\x18\xd9\x7b\xe1\xc1\xc9")
 
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created, and set collection mode.
