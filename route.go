@@ -357,7 +357,18 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 	itemList, usedItems, slotList, usedSlots *list.List) {
 	g := r.Graph
 
-	// place small keys first
+	// place boss keys first
+	for i := 1; i < 9; i++ {
+		prefix := fmt.Sprintf("d%d", i)
+		itemName := prefix + " boss key"
+
+		slotElem, itemElem, slotNode, itemNode :=
+			getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
+		placeItem(slotNode, itemNode, slotElem, itemElem,
+			usedSlots, slotList, usedItems, itemList)
+	}
+
+	// then place small keys
 	for i := 0; i < 9; i++ {
 		prefix := fmt.Sprintf("d%d", i)
 		itemName := prefix + " small key"
@@ -373,17 +384,6 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 			placeItem(slotNode, itemNode, slotElem, itemElem,
 				usedSlots, slotList, usedItems, itemList)
 		}
-	}
-
-	// then place boss keys
-	for i := 1; i < 9; i++ {
-		prefix := fmt.Sprintf("d%d", i)
-		itemName := prefix + " boss key"
-
-		slotElem, itemElem, slotNode, itemNode :=
-			getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
-		placeItem(slotNode, itemNode, slotElem, itemElem,
-			usedSlots, slotList, usedItems, itemList)
 	}
 
 	// place slates in ages
@@ -430,7 +430,7 @@ func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
 			continue
 		}
 		if strings.HasSuffix(itemName, "small key") &&
-			!canReachViaSmallKeys(g, slot, hard) {
+			!canReachViaKeys(g, slot, hard) {
 			continue
 		}
 
@@ -466,13 +466,14 @@ func placeItem(slotNode, itemNode *graph.Node,
 }
 
 // returns true iff the target node can be reached if the player has automatic
-// access to every item that isn't a small key.
-func canReachViaSmallKeys(g graph.Graph, target *graph.Node, hard bool) bool {
+// access to every item that isn't a small key or boss key.
+func canReachViaKeys(g graph.Graph, target *graph.Node, hard bool) bool {
 	g.ClearMarks()
 
 	for _, itemSlot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(itemSlot.Treasure)
-		if !strings.HasSuffix(treasureName, "small key") {
+		if !strings.HasSuffix(treasureName, "small key") &&
+			!strings.HasSuffix(treasureName, "boss key") {
 			g[treasureName].Mark = graph.MarkTrue
 		}
 	}
