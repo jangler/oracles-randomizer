@@ -110,6 +110,7 @@ func logSpheres(summary chan string, checks map[*graph.Node]*graph.Node,
 		// then log the sphere if it's non-empty.
 		if len(lines) > 0 {
 			summary <- fmt.Sprintf("sphere %d:", i)
+			sort.Strings(lines)
 			for _, line := range lines {
 				summary <- line
 			}

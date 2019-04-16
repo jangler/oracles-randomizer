@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -478,18 +479,28 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 		summary <- ""
 		summary <- "-- default seasons --"
 		summary <- ""
+		seasonLines := make([]string, 0, len(rom.Seasons))
 		for name, area := range rom.Seasons {
-			summary <- fmt.Sprintf("%-15s <- %s",
-				name[:len(name)-7], seasonsByID[int(area.New[0])])
+			seasonLines = append(seasonLines, fmt.Sprintf("%-15s <- %s",
+				name[:len(name)-7], seasonsByID[int(area.New[0])]))
+		}
+		sort.Strings(seasonLines)
+		for _, line := range seasonLines {
+			summary <- line
 		}
 		summary <- ""
 	}
 	summary <- ""
 	summary <- "-- hints --"
 	summary <- ""
+	owlLines := make([]string, 0, len(owlHints))
 	for owlName, hint := range owlHints {
-		summary <- fmt.Sprintf("%-20s <- \"%s\"", owlName,
-			strings.ReplaceAll(strings.ReplaceAll(hint, "\n", " "), "  ", " "))
+		owlLines = append(owlLines, fmt.Sprintf("%-20s <- \"%s\"", owlName,
+			strings.ReplaceAll(strings.ReplaceAll(hint, "\n", " "), "  ", " ")))
+	}
+	sort.Strings(owlLines)
+	for _, line := range owlLines {
+		summary <- line
 	}
 
 	close(summary)
