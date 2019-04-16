@@ -9,6 +9,7 @@ import (
 	"math/rand"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -461,8 +462,14 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	summary <- ""
 	summary <- "-- progression items --"
 	summary <- ""
-	logSpheres(summary, checks, spheres,
-		func(name string) bool { return !itemIsJunk(name) })
+	keyRegexp := regexp.MustCompile(" (small|boss) key$")
+	logSpheres(summary, checks, spheres, func(name string) bool {
+		return !keyRegexp.MatchString(name) && !itemIsJunk(name)
+	})
+	summary <- ""
+	summary <- "-- small keys and boss keys --"
+	summary <- ""
+	logSpheres(summary, checks, spheres, keyRegexp.MatchString)
 	summary <- ""
 	summary <- "-- other items --"
 	summary <- ""
