@@ -44,7 +44,9 @@ func Generate(src *rand.Rand, g graph.Graph,
 			required := g[owlName].GetMark(g[owlName], hard) == graph.MarkFalse
 			item.AddParents(slot)
 
-			if !required {
+			if !required &&
+				!(owlName == "woods of winter owl" &&
+					slot.Name == "woods of winter seed tree") {
 				hints[owlName] = formatMessage(slot, item, game)
 				hintedSlots[slot] = true
 				break
@@ -73,9 +75,11 @@ func getOrderedSlots(src *rand.Rand,
 		}
 
 		// and don't include these checks, since they're dummy slots that
-		// aren't actually randomized.
+		// aren't actually randomized, or seed trees that the player is
+		// guaranteed to know about if they're using seeds.
 		switch slot.Name {
-		case "shop, 20 rupees", "shop, 30 rupees":
+		case "shop, 20 rupees", "shop, 30 rupees",
+			"horon village seed tree", "south lynna tree":
 			continue
 		}
 
