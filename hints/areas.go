@@ -127,7 +127,7 @@ var seasonsAreaMap = map[string]string{
 	"d5 basement":                  "Level 5",
 	"d5 boss":                      "Level 5",
 	"d6 magnet ball drop":          "Level 6",
-	"d6 north chest":               "Level 6",
+	"d6 spinner north":             "Level 6",
 	"d6 armos hall":                "Level 6",
 	"d6 crystal trap room":         "Level 6",
 	"d6 1F east":                   "Level 6",
