@@ -197,6 +197,12 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["subrosia seaside"].Mutate(b)
 		ItemSlots["great furnace"].Mutate(b)
 		ItemSlots["master diver's reward"].Mutate(b)
+
+		// annoying special case to prevent text on key drop
+		mut := ItemSlots["d7 armos puzzle"]
+		if mut.Treasure.id == SeasonsTreasures["d7 small key"].id {
+			b[mut.subIDAddrs[0].fullOffset()] = 0x01
+		}
 	} else {
 		ItemSlots["nayru's house"].Mutate(b)
 		ItemSlots["deku forest soldier"].Mutate(b)
