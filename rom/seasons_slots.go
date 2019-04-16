@@ -423,7 +423,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 
 	// d6
 	"d6 magnet ball drop": keyDropSlot("d6 small key", 0x04, 0xab, 0x00),
-	"d6 north chest": seasonsChest(
+	"d6 spinner north": seasonsChest(
 		"d6 small key", 0x5071, 0x04, 0xc2, collectChest, 0x00),
 	"d6 armos hall": seasonsChest(
 		"boomerang 2", 0x507d, 0x04, 0xd0, collectChest, 0x00),
