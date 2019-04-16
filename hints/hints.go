@@ -44,9 +44,7 @@ func Generate(src *rand.Rand, g graph.Graph,
 			required := g[owlName].GetMark(g[owlName], hard) == graph.MarkFalse
 			item.AddParents(slot)
 
-			if !required &&
-				!(owlName == "woods of winter owl" &&
-					slot.Name == "woods of winter seed tree") {
+			if !required {
 				hints[owlName] = formatMessage(slot, item, game)
 				hintedSlots[slot] = true
 				break
