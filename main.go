@@ -523,6 +523,11 @@ func itemIsJunk(name string) bool {
 		return true
 	}
 
+	// not part of next switch since the ID is only junk in seasons
+	if name == "treasure map" {
+		return true
+	}
+
 	switch rom.Treasures[name].ID() {
 	// heart refill, PoH, HC, ring, compass, dungeon map, gasha seed
 	case 0x29, 0x2a, 0x2b, 0x2d, 0x32, 0x33, 0x34:
