@@ -46,13 +46,14 @@ func logStats(game, trials int, hard bool, logf logFunc) {
 		spheres := getSpheres(ri.Route.Graph, checks, hard)
 		for i, sphere := range spheres {
 			for _, node := range sphere {
-				if !node.IsStep {
+				if !node.IsSlot {
 					continue
 				}
-				if meanSpheres[node.Name] == 0 {
-					meanSpheres[node.Name] = 0
+				itemName := checks[node].Name
+				if meanSpheres[itemName] == 0 {
+					meanSpheres[itemName] = 0
 				}
-				meanSpheres[node.Name] += float64(i)
+				meanSpheres[itemName] += float64(i)
 			}
 		}
 	}
