@@ -182,7 +182,8 @@ func getCountMark(n *Node, hard bool) Mark {
 		}
 
 		if n.Mark == MarkPending {
-			n.Mark = MarkFalse
+			n.Mark = MarkNone
+			return MarkFalse
 		}
 	}
 
