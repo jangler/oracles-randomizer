@@ -1,66 +1,65 @@
 package logic
 
-// skipping keys is often possible in ages dungeons, but it doesn't matter in
-// logic because you could misuse the keys anyway. the logic always assumes the
-// worst possible key usage.
-
-// third key door is changed to a shutter from the "wrong" side, since if you
-// use your first key on it, you can't reach the other two keys.
 var agesD1Nodes = map[string]*Node{
+	// 0 keys
 	"d1 east terrace": AndSlot("enter d1", "kill zol"),
-	"d1 ghini key":    And("d1 east terrace", "kill ghini"),
+	"d1 ghini drop":   AndSlot("d1 east terrace", "kill ghini"),
 	"d1 crossroads":   AndSlot("d1 east terrace"),
 	"d1 crystal room": AndSlot("d1 east terrace", "ember seeds",
 		"break crystal"),
-	"d1 free key chest":     And("d1 ghini key"),
-	"d1 platform key chest": And("d1 ghini key"),
-	"d1 button chest":       AndSlot("d1 ghini key"),
-	"d1 U-room": Or("d1 west terrace", And("d1 free key chest",
-		"d1 platform key chest", "break bush safe", "kill giant ghini")),
-	"d1 basement":     AndSlot("d1 U-room", "ember seeds"),
 	"d1 west terrace": AndSlot("enter d1", "break pot"),
 	"d1 pot chest":    AndSlot("enter d1", "break pot"),
-	"d1 boss": AndSlot("d1 free key chest", "break bush safe", "d1 boss key",
+
+	// 2 keys
+	"d1 wide room chest":  AndSlot("d1 ghini drop", Count(2, "d1 small key")),
+	"d1 two-button chest": AndSlot("d1 wide room chest"),
+	"d1 one-button chest": AndSlot("d1 wide room chest"),
+	"d1 boss": AndSlot("d1 wide room chest", "break bush safe", "d1 boss key",
 		"kill pumpkin head"),
+
+	// potentially 3 keys w/ vanilla route
+	"d1 U-room": Or("d1 west terrace",
+		And("d1 wide room chest", "break bush safe", "kill giant ghini",
+			Count(3, "d1 small key"))),
+	"d1 basement": AndSlot("d1 U-room", "ember seeds"),
 }
 
 var agesD2Nodes = map[string]*Node{
+	// 0 keys
 	"spiked beetles owl": And("mystery seeds", "enter d2"),
 	"d2 bombed terrace":  AndSlot("enter d2", "kill spiked beetle", "bombs"),
-	"d2 rope room": AndSlot("enter d2", "d2 key 1", "d2 color key",
-		"d2 basement key", "d2 statue key"),
+	"d2 moblin drop": AndSlot("enter d2", "kill spiked beetle",
+		"kill normal"),
+
+	// potentially 2 keys w/ vanilla route
 	"enter swoop": Or(And("enter d2", "kill spiked beetle", "feather"),
-		And("d2 key 1", "d2 key 2")),
+		Count(2, "d2 small key")),
 	"d2 basement":      And("enter swoop", "kill swoop"),
 	"blue wing owl":    And("mystery seeds", "d2 basement"),
 	"d2 thwomp tunnel": AndSlot("d2 basement"),
 	"d2 thwomp shelf": AndSlot("d2 basement",
 		Or("feather", HardAnd("cane", "pegasus satchel"))),
-	"d2 moblin platform": AndSlot("d2 3 keys"),
-	// push moblin into doorway, stand on button, use switch hook
-	"d2 statue room": And("d2 moblin platform", Or("bracelet", "cane",
-		HardAnd("switch hook", "push enemy"))),
-	"d2 color room":   AndSlot("d2 all keys"),
-	"d2 boss":         AndSlot("d2 all keys", "d2 boss key"),
-	"head thwomp owl": And("mystery seeds", "d2 boss"),
-
-	"d2 key 1":     And("enter d2", "kill spiked beetle", "kill normal"),
-	"d2 key 2":     And("enter d2", "d2 key 1", "bombs"),
-	"d2 color key": And("d2 basement", "feather"),
+	"d2 color key": And("d2 basement", "feather"), // TODO
 	"d2 basement key": And("d2 basement", "feather", "bombs",
-		"hit lever from minecart", "kill normal"),
-	"d2 3 keys": Or(
-		And("d2 key 1",
-			Or(And("d2 key 2", Or("d2 color key", "d2 basement key")),
-				And("d2 color key", "d2 basement key"))),
-		And("d2 key 2", "d2 color key", "d2 basement key")),
-	"d2 statue key": And("d2 statue room", "feather"),
-	"d2 all keys": And("d2 key 1", "d2 key 2", "d2 color key",
-		"d2 basement key", "d2 statue key"),
+		"hit lever from minecart", "kill normal"), // TODO
+
+	// 3 keys
+	"d2 moblin platform": AndSlot("d2 basement", Count(3, "d2 small key")),
+	// push moblin into doorway, stand on button, use switch hook
+	"d2 statue room": AndSlot("d2 moblin platform",
+		Or("bracelet", "cane", HardAnd("switch hook", "push enemy"))),
+
+	// 4 keys
+	"d2 rope room": AndSlot("enter d2", "kill rope",
+		Count(4, "d2 small key")),
+	"d2 ladder chest": AndSlot("enter d2", Count(4, "d2 small key"), "bombs"),
+
+	// 5 keys
+	"d2 color room":   AndSlot("d2 statue room", Count(5, "d2 small key")),
+	"d2 boss":         AndSlot("d2 color room", "d2 boss key"),
+	"head thwomp owl": And("mystery seeds", "d2 boss"),
 }
 
-// killing armos is an exception to the "bombs are hard logic" rule, and since
-// you need bombs to do anything in d3, they're not even relevant to logic.
 var agesD3Nodes = map[string]*Node{
 	"d3 pols voice chest": AndSlot("enter d3", "bombs"),
 	"d3 1F spinner":       And("enter d3", Or("kill moldorm", "bracelet")),

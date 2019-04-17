@@ -195,7 +195,6 @@ func initAgesEOB() {
 			"\x00\x6b\x02\x42\xce"+ // not removed tree in yoll graveyard
 			"\x00\x83\x00\x43\xa4"+ // rock outside D2
 			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
-			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\x01\x13\x00\x61\xd7"+ // portal in symmetry city past
 			"\x04\xa6\x80\x54\x1e"+ // add key block after removed D5 key door
 			"\x05\x5a\x80\x66\x1e"+ // add key block before removed D7 key door

@@ -1,8 +1,5 @@
 package logic
 
-// keep small keys and their chests separate, so that they can be changed into
-// slots if small keys are ever randomized.
-//
 // dungeons should rely on overworld information as little as possible.
 // ideally "enter <dungeon>" is the only overworld item the dungeon nodes
 // reference (and that node should not be defined here).
@@ -10,9 +7,6 @@ package logic
 // bush- and pot-throwing is in hard logic, but with an arbitrary limit of
 // three screen transitions per carry, and no more than two enemies can be
 // required to be killed with one throw.
-//
-// blank lines usually mean that the nodes after the line require more keys
-// than the nodes before it.
 
 var seasonsD0Nodes = map[string]*Node{
 	// 0 keys
