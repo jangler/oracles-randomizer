@@ -368,9 +368,16 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 			usedSlots, slotList, usedItems, itemList)
 	}
 
+	prefixes := []string{"d0", "d1", "d2", "d3", "d4", "d5"}
+	if game == rom.GameSeasons {
+		prefixes = append(prefixes, "d6")
+	} else {
+		prefixes = append(prefixes[1:], "d6 present", "d6 past")
+	}
+	prefixes = append(prefixes, "d7", "d8")
+
 	// then place small keys
-	for i := 0; i < 9; i++ {
-		prefix := fmt.Sprintf("d%d", i)
+	for _, prefix := range prefixes {
 		itemName := prefix + " small key"
 
 		for {
@@ -397,15 +404,10 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 		}
 	}
 
-	prefixes := []string{"d1", "d2", "d3", "d4", "d5"}
-	if game == rom.GameSeasons {
-		prefixes = append(prefixes, "d6")
-	} else {
-		prefixes = append(prefixes, "d6 present", "d6 past")
-	}
-	prefixes = append(prefixes, "d7", "d8")
-
 	// then place maps and compasses
+	if game == rom.GameSeasons {
+		prefixes = prefixes[1:] // no map/compass in hero's cave
+	}
 	for _, prefix := range prefixes {
 		for _, itemName := range []string{"dungeon map", "compass"} {
 			slotElem, itemElem, slotNode, itemNode :=

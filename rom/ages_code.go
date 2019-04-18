@@ -16,6 +16,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x04] = 0x7edb
 	r.endOfBank[0x05] = 0x7d9d
 	r.endOfBank[0x06] = 0x7a31
+	r.endOfBank[0x08] = 0x7f60
 	r.endOfBank[0x09] = 0x7dee
 	r.endOfBank[0x0a] = 0x7e09
 	r.endOfBank[0x0b] = 0x7fa8
@@ -494,6 +495,29 @@ func initAgesEOB() {
 
 	// bank 0c
 
+	// this will be overwritten after randomization
+	smallKeyDrops := r.appendToBank(0x38, "small key drops",
+		makeKeyDropTable())
+	lookUpKeyDropBank38 := r.appendToBank(0x38, "look up key drop bank 38",
+		"\xc5\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x21"+smallKeyDrops+ // load group/room
+			"\x1e\x02\xcd"+searchDoubleKey+"\xc1\xc0\x46\x23\x4e\xc9")
+	// ages has different key drop code across three different banks because
+	// it's a jerk
+	callBank38Code := "\xd5\xe5\x1e\x38\x21" + lookUpKeyDropBank38 +
+		"\xcd\x8a\x00\xe1\xd1\xc9"
+	lookUpKeyDropBank0C := r.appendToBank(0x0c, "look up key drop bank 0c",
+		"\x36\x60\x2c"+callBank38Code)
+	r.replace(0x0c, 0x442e, "call look up key drop bank 0c",
+		"\x36\x60\x2c", "\xcd"+lookUpKeyDropBank0C)
+	lookUpKeyDropBank0A := r.appendToBank(0x0a, "look up key drop bank 0A",
+		"\x01\x01\x30"+callBank38Code)
+	r.replace(0x0a, 0x7075, "call look up key drop bank 0A",
+		"\x01\x01\x30", "\xcd"+lookUpKeyDropBank0A)
+	lookUpKeyDropBank08 := r.appendToBank(0x08, "look up key drop bank 08",
+		"\x01\x01\x30"+callBank38Code)
+	r.replace(0x08, 0x5087, "call look up key drop bank 08",
+		"\x01\x01\x30", "\xcd"+lookUpKeyDropBank08)
+
 	// use custom script for soldier in deku forest with sub ID 0; they should
 	// give an item in exchange for mystery seeds.
 	soldierScriptAfter := r.appendToBank(0x0c, "soldier script after item",
@@ -697,6 +721,11 @@ func initAgesEOB() {
 		"\x1e\x15\x21\xd8\x5d\xc3"+set80Sprite)
 	setLibrarySprite := r.appendToBank(0x3f, "set library sprite",
 		"\x1e\x15\x21\xb9\x5d\xc3"+set80Sprite)
+	// TODO does bomb flower work here?
+	// TODO also, the ID and sub ID this function looks up are probably
+	//      backwards, and it probably needs special code for them not to be.
+	setStalfosItemSprite := r.appendToBank(0x3f, "set stalfos item sprite",
+		"\x1e\x0a\x21\x77\x60\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
 	// table of ID, sub ID, jump address
 	customSpriteTable := r.appendToBank(0x3f, "custom sprite table",
 		"\x40\x00"+setSoldierSprite+
@@ -706,6 +735,7 @@ func initAgesEOB() {
 			"\x63\x3e"+setWildTokaySprite+ // wild tokay game prize
 			"\x6b\x0b"+setInventionSprite+ // cheval's invention
 			"\x6b\x0c"+setChevalTestSprite+
+			"\x77\x31"+setStalfosItemSprite+ // D8
 			"\x80\x07"+setLibraryPastSprite+
 			"\x80\x08"+setLibrarySprite+
 			"\xff")
