@@ -223,12 +223,15 @@ func initAgesEOB() {
 	r.replace(0x00, 0x38c0, "tile replace call",
 		"\xcd\xef\x5f", "\xcd"+tileReplaceFunc)
 
-	// treat the d2 present entrance like the d2 past entrance.
+	// treat the d2 present entrance like the d2 past entrance, and reset the
+	// water level when entering jabu (see logic comments).
 	replaceWarpEnter := r.appendToBank(0x04, "replace warp enter",
-		"\xc5\x01\x00\x83\xcd"+compareRoom+"\xc1\xfa\x2d\xcc\xc0\x3c\xc9")
+		"\xc5\x01\x00\x83\xcd"+compareRoom+"\x20\x04\xc1\x3e\x01\xc9"+
+			"\x01\x02\x90\xcd"+compareRoom+"\xc1\x20\x05\x3e\x21\xea\xe9\xc6"+
+			"\xfa\x2d\xcc\xc9")
 	r.replace(0x04, 0x4630, "call replace warp enter",
 		"\xfa\x2d\xcc", "\xcd"+replaceWarpEnter)
-	// and exit into the present if the past entrance is closed.
+	// d2: exit into the present if the past entrance is closed.
 	replaceWarpExit := r.appendToBank(0x00, "replace warp exit",
 		"\xea\x48\xcc\xfe\x83\xc0\xfa\x83\xc8\xe6\x80\xc0"+
 			"\xfa\x47\xcc\xe6\x0f\xfe\x01\xc0"+

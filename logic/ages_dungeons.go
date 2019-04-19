@@ -239,43 +239,46 @@ var agesD6Nodes = map[string]*Node{
 		Or("sword", "expert's ring", Hard()), "switch hook"),
 }
 
-// assume mermaid suit
-// TODO this dungeon is currently impossible to fill, keywise
+// assume mermaid suit.
+// leaving/entering the dungeon (but not loading a file) resets the water
+// level. this is necessary to make keys work out, since otherwise you can
+// drain the water level without getting enough keys to refill it! there just
+// aren't enough chests otherwise.
 var agesD7Nodes = map[string]*Node{
 	// 0 keys
+	"d7 spike chest": AndSlot("enter d7"),
 	"d7 crab chest": AndSlot("enter d7",
 		Or("kill underwater", And("drain d7", "kill normal"))),
 	"d7 diamond puzzle": AndSlot("enter d7", "switch hook"),
+	"d7 flower room":    AndSlot("enter d7", "long hook"),
+	"golden isle owl":   And("mystery seeds", "enter d7"),
+	"d7 stairway chest": AndSlot("enter d7",
+		Or("long hook", And("refill d7", "cane"))),
+	"d7 right wing": AndSlot("d7 stairway chest", "kill moldorm"),
 
-	// 3 keys - enough to maintain at least starting water level
-	"refill d7": And("enter d7", Or("long hook", And("switch hook", "cane")),
-		Count(3, "d7 small key")),
-	"d7 stairway chest": AndSlot("refill d7"),
-	"d7 right wing":     AndSlot("refill d7"),
-	"golden isle owl":   And("mystery seeds", "refill d7"),
-	"d7 flower room":    AndSlot("refill d7", "long hook"),
-
-	// 4 keys - enough to choose between drained and flooded 1F
-	"drain d7":               And("long hook", Count(4, "d7 small key")),
+	// 3 keys - enough to drain dungeon (and also refill 1F)
+	"drain d7":               And("enter d7", Count(3, "d7 small key")),
+	"refill d7":              And("drain d7", "switch hook"),
 	"jabu switch room owl":   And("mystery seeds", "drain d7"),
 	"d7 boxed chest":         AndSlot("drain d7"),
-	"d7 spike chest":         AndSlot("drain d7"),
-	"d7 pot island chest":    AndSlot("drain d7"),
-	"d7 cane/diamond puzzle": AndSlot("drain d7", "cane"),
+	"d7 pot island chest":    AndSlot("drain d7", "switch hook"),
+	"d7 cane/diamond puzzle": AndSlot("drain d7", "long hook", "cane"),
+
+	// 4 keys - enough to choose any water level
+	"flood d7":       And("refill d7", "long hook", Count(4, "d7 small key")),
+	"d7 3F terrace":  AndSlot("flood d7"),
+	"d7 left wing":   AndSlot("flood d7"),
+	"plasmarine owl": And("mystery shooter", "flood d7"),
+	"d7 boss":        AndSlot("d7 boss key", "flood d7"),
 
 	// 5 keys
-	"d7 hallway chest": AndSlot("flood d7", Count(5, "d7 small key")),
+	"d7 hallway chest": AndSlot("drain d7", "long hook",
+		Count(5, "d7 small key")),
 
-	// 7 keys - enough to choose any water level
-	"d7 miniboss chest": AndSlot("refill d7", "feather", "cane",
+	// 7 keys
+	"d7 miniboss chest": AndSlot("d7 stairway chest", "feather",
 		Or("sword", "boomerang", "scent shooter"), Count(7, "d7 small key")),
-	"flood d7": And("refill d7", "long hook",
-		Count(7, "d7 small key")),
-	"d7 post-hallway chest": AndSlot("flood d7"), // via key equivalence
-	"d7 3F terrace":         AndSlot("flood d7"),
-	"d7 left wing":          AndSlot("flood d7"),
-	"plasmarine owl":        And("mystery shooter", "flood d7"),
-	"d7 boss":               AndSlot("d7 boss key", "flood d7"),
+	"d7 post-hallway chest": AndSlot("flood d7", Count(7, "d7 small key")),
 }
 
 var agesD8Nodes = map[string]*Node{
