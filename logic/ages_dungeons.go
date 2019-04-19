@@ -192,15 +192,15 @@ var agesD6Nodes = map[string]*Node{
 		"flippers"),
 	"d6 open wall":    And("enter d6 past", "bombs", "ember shooter"),
 	"deep waters owl": And("mystery seeds", "d6 open wall"),
-	"d6 past stalfos chest": And("enter d6 past", "ember seeds",
+	"d6 past stalfos chest": AndSlot("enter d6 past", "ember seeds",
 		Or("kill normal ranged", "scent satchel", "feather", Hard())),
-	"d6 past rope chest": And("d6 open wall", "mermaid suit"),
+	"d6 past rope chest": AndSlot("d6 open wall", "mermaid suit"),
 
 	// past, 1 key
 	"d6 past spinner": And("enter d6 past", "cane", "bracelet", "feather",
 		"d6 past small key", "bombs"),
 	"d6 past spear chest": AndSlot("d6 past spinner", "mermaid suit"),
-	"d6 past diamond chest": And("d6 past spinner", "mermaid suit",
+	"d6 past diamond chest": AndSlot("d6 past spinner", "mermaid suit",
 		"switch hook"),
 
 	// past, 3 keys
@@ -221,8 +221,8 @@ var agesD6Nodes = map[string]*Node{
 				"scent seeds", "mystery seeds", Hard("bombs"))))),
 	"d6 present cube chest": AndSlot("d6 present hand room", "bombs",
 		"switch hook", Or("feather", Hard())),
-	"d6 present spinner chest": And("d6 past spinner", "d6 present hand room",
-		Or("feather", "switch hook")),
+	"d6 present spinner chest": AndSlot("d6 past spinner",
+		"d6 present hand room", Or("feather", "switch hook")),
 	"d6 present beamos chest": AndSlot("enter d6 present", "d6 open wall",
 		"feather", Or("flippers",
 			And("switch hook", Count(2, "d6 present small key")))),
