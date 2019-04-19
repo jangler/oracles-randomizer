@@ -500,7 +500,7 @@ func initAgesEOB() {
 		makeKeyDropTable())
 	lookUpKeyDropBank38 := r.appendToBank(0x38, "look up key drop bank 38",
 		"\xc5\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x21"+smallKeyDrops+ // load group/room
-			"\x1e\x02\xcd"+searchDoubleKey+"\xc1\xc0\x46\x23\x4e\xc9")
+			"\x1e\x02\xcd"+searchDoubleKey+"\xc1\xd0\x46\x23\x4e\xc9")
 	// ages has different key drop code across three different banks because
 	// it's a jerk
 	callBank38Code := "\xd5\xe5\x1e\x38\x21" + lookUpKeyDropBank38 +
