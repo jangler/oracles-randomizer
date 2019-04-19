@@ -54,6 +54,9 @@ func Init(game int) {
 		if treasure.id == 0x31 {
 			itemGfx[name] = itemGfx["boss key"]
 		}
+		if treasure.id == 0x30 {
+			itemGfx[name] = itemGfx["small key"]
+		}
 	}
 
 	// use these graphics as default for progressive items (seasons)
