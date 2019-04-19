@@ -396,9 +396,8 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 	// place slates in ages
 	if game == rom.GameAges {
 		for i := 1; i <= 4; i++ {
-			itemName := fmt.Sprintf("slate %d", i)
 			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem("d8", itemName, slotList, itemList, g, hard)
+				getDungeonItem("d8", "slate", slotList, itemList, g, hard)
 			placeItem(slotNode, itemNode, slotElem, itemElem,
 				usedSlots, slotList, usedItems, itemList)
 		}
@@ -426,8 +425,7 @@ func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
 		if !strings.HasPrefix(slot.Name, prefix) {
 			continue
 		}
-		if (strings.HasSuffix(itemName, "boss key") ||
-			strings.HasPrefix(itemName, "slate")) &&
+		if (strings.HasSuffix(itemName, "boss key") || itemName == "slate") &&
 			strings.HasSuffix(slot.Name, "boss") {
 			continue
 		}

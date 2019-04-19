@@ -55,7 +55,8 @@ var labrynnaNodes = map[string]*Node{
 
 	// yoll graveyard
 	"yoll graveyard": And("ember seeds"),
-	"cheval's grave": And("yoll graveyard", Or("kill ghini", "bomb jump 3")),
+	"cheval's grave": And("yoll graveyard",
+		Or("kill switch hook", "bomb jump 3")),
 	"cheval's test": AndSlot("cheval's grave", "bracelet",
 		Or("feather", "flippers")),
 	"cheval's invention": AndSlot("cheval's grave", "flippers"),

@@ -19,8 +19,8 @@ func isParent(p1Name string, p2 *Node) bool {
 
 func TestLinks(t *testing.T) {
 	// need to be changed manually for now
-	nodes := GetSeasons()
-	rom.Init(rom.GameSeasons)
+	nodes := GetAges()
+	rom.Init(rom.GameAges)
 
 	for key, slot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(slot.Treasure)
