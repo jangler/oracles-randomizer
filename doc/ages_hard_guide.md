@@ -81,6 +81,8 @@ This document details tricks and obscurities that are in Ages hard logic.
 - Hit two switches in D5 from a distance by throwing pots. The second throw
   requires the toss ring, plus feather (+ seeds?) to cross the next barrier.
   [[Video]](https://streamable.com/b9xp3)
+- Hit the second switch in D5 (from above video) using ember/scent/mystery
+  seeds + satchel, using feather to jump past the red pegs before they rise.
 - Hit the three eye statues in D5 by using pegasus seeds, feather, and
   ember/scent/mystery seeds from satchel.
   [[Video]](https://streamable.com/hbyt6)

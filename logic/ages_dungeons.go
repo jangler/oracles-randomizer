@@ -71,42 +71,53 @@ var agesD3Nodes = map[string]*Node{
 
 	// 1 key
 	// you can clip into the blocks enough to hit this crystal with switch hook
-	"d3 N crystal": And("d3 small key",
+	"d3 W crystal": And("enter d3", "d3 small key"),
+	"d3 N crystal": And("d3 W crystal",
 		Or("any seed shooter", "boomerang", Hard("switch hook"))),
 	"stone soldiers owl": And("mystery seeds", "d3 small key"),
-	"d3 armos drop":      AndSlot("d3 small key"),
-	"d3 W crystal":       And("d3 small key"),
-	"d3 six-block drop":  AndSlot("d3 small key"),
+	"d3 armos drop":      AndSlot("d3 W crystal"),
+	"d3 six-block drop":  AndSlot("d3 W crystal"),
 	"break crystal switch": Or("sword", "switch hook", "boomerang",
 		"ember satchel", "scent satchel", "mystery satchel",
 		"any seed shooter", "punch object"),
 	"d3 B1F spinner": And("d3 S crystal", "d3 E crystal", "d3 N crystal",
 		"d3 W crystal", "break crystal switch"),
 	"d3 crossroads":         AndSlot("d3 B1F spinner"),
-	"d3 conveyor belt room": AndSlot("d3 small key"),
+	"d3 conveyor belt room": AndSlot("d3 W crystal"),
 	"d3 torch chest": AndSlot("d3 B1F spinner",
 		Or("ember shooter", Hard("mystery shooter"))),
-	"d3 bridge chest": AndSlot("d3 small key",
+	"d3 bridge chest": AndSlot("d3 W crystal",
 		Or("any seed shooter", "jump 3",
 			HardAnd(Count(4, "d3 small key"), "feather"),
 			HardAnd(Or("boomerang", And("bracelet", "toss ring")),
 				Or("feather", "pegasus satchel")))),
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
 		Or("any seed shooter", Hard("sword"))), // spin slash through corner
-	"d3 moldorm drop": AndSlot("d3 B1F spinner", "kill subterror"),
+	// post-subterror and boss door do not reference each other
+	"d3 post-subterror": Or(
+		"d3 boss door",
+		And("d3 B1F spinner", "kill subterror"),
+		And("d3 bridge chest", Count(4, "d3 small key"),
+			Or("jump 3", Hard("feather")))),
+	"d3 boss door": Or(
+		And("d3 post-subterror", Or("jump 3", Hard("feather")),
+			Or("any seed shooter", "boomerang",
+				HardAnd("sword", Or("jump 3", "switch hook",
+					And("bracelet", "toss ring", Count(4, "d3 small key")))))),
+		And("d3 bridge chest", Count(4, "d3 small key"),
+			Or("any seed shooter", "boomerang"))),
+	"d3 moldorm drop": AndSlot("kill moldorm", "d3 post-subterror"),
+	"d3 boss": AndSlot("d3 boss door", "d3 boss key",
+		Or("ember shooter", "scent shooter", "ember satchel",
+			Hard("scent satchel"))),
 
 	// 3 keys
-	"d3 bush beetle room": AndSlot(Count(3, "d3 small key")),
+	"d3 bush beetle room": AndSlot("enter d3", "kill switch hook",
+		Count(3, "d3 small key")),
 
 	// 4 keys
-	"d3 mimic room": AndSlot(Count(4, "d3 small key")),
-	"d3 boss": AndSlot("d3 boss key", Count(4, "d3 small key"),
-		Or("ember seeds", "scent seeds"),
-		Or("seed shooter", And(
-			Or("ember seeds", Hard()),
-			Or("d3 bridge chest", "jump 3", Hard("feather")),
-			Or("boomerang", Hard("jump 3"), HardAnd("feather", "sword",
-				Or("switch hook", And("bracelet", "toss ring"))))))),
+	"d3 mimic room": AndSlot("d3 bush beetle room", "kill normal",
+		Count(4, "d3 small key")),
 }
 
 var agesD4Nodes = map[string]*Node{
@@ -157,13 +168,15 @@ var agesD5Nodes = map[string]*Node{
 	"d5 dark room": AndSlot("d5 switch A", "hit switch", // can't use pots here
 		Or("cane", "switch hook", HardOr("kill normal", "push enemy"))),
 	"d5 like-like chest": AndSlot("d5 switch A",
-		Or("hit switch ranged", Hard("bracelet"))),
+		Or("hit switch ranged", Hard("bracelet"), HardAnd("feather", "cane",
+			Or("ember seeds", "scent seeds", "mystery seeds")))),
 	"d5 eyes chest": AndSlot("d5 switch A", Or("any seed shooter",
 		HardAnd("pegasus satchel", "feather",
-			Or("hit switch ranged", And("bracelet", "toss ring")),
+			Or("hit switch ranged", And("bracelet", "toss ring"), "cane"),
 			Or("ember seeds", "scent seeds", "mystery seeds")))),
-	"d5 two-statue puzzle": AndSlot("d5 switch A", "break pot", "cane", "feather"),
-	"d5 boss":              AndSlot("d5 switch A", "d5 boss key", "cane", "sword"),
+	"d5 two-statue puzzle": AndSlot("d5 switch A", "break pot", "cane",
+		"feather", Or("any seed shooter", "boomerang", Hard("sword"))),
+	"d5 boss": AndSlot("d5 switch A", "d5 boss key", "cane", "sword"),
 
 	// 2 keys
 	"d5 crossroads": And("d5 switch A", "feather", "bracelet",
@@ -230,8 +243,10 @@ var agesD6Nodes = map[string]*Node{
 	// present, 3 keys
 	"luck test owl": And("mystery seeds", "d6 present beamos chest",
 		Count(3, "d6 present small key")),
+	// only sustainable weapons count for killing the ropes
 	"d6 present RNG chest": AndSlot("d6 present beamos chest", "bracelet",
-		Or("sword", "cane", "switch hook"), Count(3, "d6 present small key")),
+		Or("sword", "cane", "switch hook", "punch enemy"),
+		Count(3, "d6 present small key")),
 	"d6 present channel chest": AndSlot("enter d6 present", "d6 open wall",
 		"switch hook", Count(3, "d6 present small key")),
 	"d6 present vire chest": AndSlot("d6 present spinner chest",
