@@ -9,8 +9,8 @@ import (
 )
 
 func TestGraph(t *testing.T) {
-	testSeasonsGraph(t)
-	// testAgesGraph(t)
+	// testSeasonsGraph(t)
+	testAgesGraph(t)
 }
 
 // check that graph logic is working as expected
@@ -20,45 +20,39 @@ func testSeasonsGraph(t *testing.T) {
 	g := r.Graph
 
 	// test basic start item
-	checkReach(t, g,
-		map[string]string{
-			"d0 key chest": "feather 1",
-		}, "maku tree", false, false)
-	checkReach(t, g,
-		map[string]string{
-			"d0 key chest": "sword 1",
-		}, "maku tree", false, true)
+	checkReach(t, g, map[string]string{
+		"d0 key chest": "feather 1",
+	}, "maku tree", false, false)
+	checkReach(t, g, map[string]string{
+		"d0 key chest": "sword 1",
+	}, "maku tree", false, true)
 
 	// test hard logic via bombs as weapon
-	checkReach(t, g,
-		map[string]string{
-			"d0 key chest":           "moosh's flute",
-			"d0 rupee chest":         "bombs",
-			"horon village SE chest": "gnarled key",
-		}, "d1 stalfos drop", false, false)
-	checkReach(t, g,
-		map[string]string{
-			"d0 key chest":           "moosh's flute",
-			"d0 rupee chest":         "bombs",
-			"horon village SE chest": "gnarled key",
-		}, "d1 stalfos drop", true, true)
+	checkReach(t, g, map[string]string{
+		"d0 key chest":           "moosh's flute",
+		"d0 rupee chest":         "bombs",
+		"horon village SE chest": "gnarled key",
+	}, "d1 stalfos drop", false, false)
+	checkReach(t, g, map[string]string{
+		"d0 key chest":           "moosh's flute",
+		"d0 rupee chest":         "bombs",
+		"horon village SE chest": "gnarled key",
+	}, "d1 stalfos drop", true, true)
 
 	// test key counting
-	checkReach(t, g,
-		map[string]string{
-			"d0 key chest":     "sword 1",
-			"maku tree":        "gnarled key",
-			"d1 stalfos drop":  "d1 small key",
-			"d1 stalfos chest": "bombs",
-		}, "d1 basement", false, false)
-	checkReach(t, g,
-		map[string]string{
-			"d0 key chest":     "sword 1",
-			"maku tree":        "gnarled key",
-			"d1 stalfos drop":  "d1 small key",
-			"d1 stalfos chest": "bombs",
-			"d1 railway chest": "d1 small key",
-		}, "d1 basement", false, true)
+	checkReach(t, g, map[string]string{
+		"d0 key chest":     "sword 1",
+		"maku tree":        "gnarled key",
+		"d1 stalfos drop":  "d1 small key",
+		"d1 stalfos chest": "bombs",
+	}, "d1 basement", false, false)
+	checkReach(t, g, map[string]string{
+		"d0 key chest":     "sword 1",
+		"maku tree":        "gnarled key",
+		"d1 stalfos drop":  "d1 small key",
+		"d1 stalfos chest": "bombs",
+		"d1 railway chest": "d1 small key",
+	}, "d1 basement", false, true)
 }
 
 // check that graph logic is working as expected
@@ -67,143 +61,41 @@ func testAgesGraph(t *testing.T) {
 	r := NewRoute(rom.GameAges)
 	g := r.Graph
 
+	// test basic start item
 	checkReach(t, g, map[string]string{
-		"sword 1":          "starting chest",
-		"shovel":           "black tower worker",
-		"satchel 1":        "maku tree",
-		"ember tree seeds": "south lynna tree",
-		"graveyard key":    "grave under tree",
-	}, "enter d1", false, true)
-
+		"starting chest": "feather",
+	}, "black tower worker", false, false)
 	checkReach(t, g, map[string]string{
-		"harp 1":     "starting chest",
-		"harp 2":     "nayru's house",
-		"bracelet 1": "black tower worker",
-	}, "enter d2", false, true)
+		"starting chest": "sword 1",
+	}, "black tower worker", false, true)
 
+	// test hard logic via bombs as weapon
 	checkReach(t, g, map[string]string{
-		"dimitri's flute": "starting chest",
-	}, "enter d3", false, true)
-
+		"starting chest":     "bombs",
+		"nayru's house":      "bracelet",
+		"black tower worker": "shovel",
+	}, "d2 bombed terrace", false, false)
 	checkReach(t, g, map[string]string{
-		"harp 1":     "starting chest",
-		"harp 2":     "nayru's house",
-		"harp 3":     "black tower worker",
-		"flippers 1": "lynna city chest",
-		"sword 1":    "fairies' woods chest",
-		"tuni nut":   "tokkey's composition",
-	}, "symmetry past", false, true)
+		"starting chest":     "bombs",
+		"nayru's house":      "bracelet",
+		"black tower worker": "shovel",
+	}, "d2 bombed terrace", true, true)
 
+	// test key counting
 	checkReach(t, g, map[string]string{
-		"sword 1":            "starting chest",
-		"satchel 1":          "black tower worker",
-		"ember tree seeds":   "south lynna tree",
-		"graveyard key":      "grave under tree",
-		"switch hook 1":      "lynna city chest",
-		"feather":            "nayru's house",
-		"bomb flower":        "d1 east terrace",
-		"bracelet 1":         "d1 crystal room",
-		"flippers 1":         "d1 west terrace",
-		"harp 1":             "d1 pot chest",
-		"harp 2":             "d1 crossroads",
-		"pegasus tree seeds": "rolling ridge west tree",
-		"crown key":          "under moblin keep",
-	}, "enter d5", false, true)
-
+		"starting chest":      "sword 1",
+		"nayru's house":       "bombs",
+		"black tower worker":  "dimitri's flute",
+		"d3 pols voice chest": "d3 small key",
+	}, "d3 bush beetle room", false, false)
 	checkReach(t, g, map[string]string{
-		"harp 1":      "starting chest",
-		"harp 2":      "nayru's house",
-		"flippers 1":  "black tower worker",
-		"flippers 2":  "fairies' woods chest",
-		"feather":     "lynna city chest",
-		"mermaid key": "hidden tokay cave",
-	}, "enter d6 past", false, true)
-
-	checkReach(t, g, map[string]string{
-		"harp 1":          "starting chest",
-		"harp 2":          "nayru's house",
-		"flippers 1":      "black tower worker",
-		"flippers 2":      "fairies' woods chest",
-		"feather":         "lynna city chest",
-		"old mermaid key": "hidden tokay cave",
-	}, "enter d6 present", false, true)
-
-	checkReach(t, g, map[string]string{
-		"harp 1":           "starting chest",
-		"harp 2":           "nayru's house",
-		"harp 3":           "black tower worker",
-		"flippers 1":       "fairies' woods chest",
-		"flippers 2":       "lynna city chest",
-		"switch hook 1":    "hidden tokay cave",
-		"sword 1":          "zora village present",
-		"satchel 1":        "zora palace chest",
-		"ember tree seeds": "zora village tree",
-		"fairy powder":     "grave under tree",
-		"graveyard key":    "under crescent island",
-	}, "enter d7", false, true)
-
-	checkReach(t, g, map[string]string{
-		"sword 1":       "starting chest",
-		"flippers 1":    "nayru's house",
-		"flippers 2":    "black tower worker",
-		"tokay eyeball": "hidden tokay cave",
-		"feather":       "under crescent island",
-		"bombs, 10":     "tokay crystal cave",
-		"bracelet 1":    "ambi's palace chest",
-		"cane":          "tokay bomb cave",
-	}, "enter d8", false, true)
-
-	// make sure that all slots in the game are reachable, given vanilla
-	// progression.
-	for slotName, _ := range rom.ItemSlots {
-		r := NewRoute(rom.GameAges)
-		g := r.Graph
-		checkReach(t, g, map[string]string{
-			"sword 1":            "starting chest",
-			"shovel":             "black tower worker",
-			"satchel 1":          "maku tree",
-			"ember tree seeds":   "south lynna tree",
-			"graveyard key":      "grave under tree",
-			"bracelet 1":         "d1 basement",
-			"harp 1":             "nayru's house",
-			"mystery tree seeds": "deku forest tree",
-			"bombs, 10":          "deku forest soldier",
-			"feather":            "d2 thwomp tunnel",
-			"flippers 1":         "cheval's test",
-			"cheval rope":        "cheval's invention",
-			"ricky's gloves":     "south shore dirt",
-			"island chart":       "balloon guy's gift",
-			"scent seedling":     "wild tokay game",
-			"scent tree seeds":   "crescent island tree",
-			"seed shooter":       "d3 pols voice chest",
-			"moosh's flute":      "shop, 150 rupees",
-			"tuni nut":           "symmetry city brother",
-			"harp 2":             "tokkey's composition",
-			"switch hook 1":      "d4 small floor puzzle",
-			"pegasus tree seeds": "rolling ridge west tree",
-			"bomb flower":        "defeat great moblin",
-			"crown key":          "goron elder",
-			"cane":               "d5 blue peg chest", // vanilla unsafe
-			"brother emblem":     "goron dance present",
-			"rock brisket":       "target carts 1",
-			"goron vase":         "trade rock brisket",
-			"goronade":           "trade goron vase",
-			"old mermaid key":    "big bang game",
-			"lava juice":         "goron shooting gallery",
-			"goron letter":       "trade lava juice",
-			"mermaid key":        "goron dance, with letter",
-			"flippers 2":         "d6 present vire chest",
-			"harp 3":             "rescue nayru",
-			"library key":        "king zora",
-			"book of seals":      "library present",
-			"fairy powder":       "library past",
-			"switch hook 2":      "d7 miniboss chest",
-			"d7 boss key":        "d7 post-hallway chest",
-			"zora scale":         "zora's reward",
-			"tokay eyeball":      "piratian captain",
-			"bracelet 2":         "d8 floor puzzle",
-		}, slotName, false, true)
-	}
+		"starting chest":      "sword 1",
+		"nayru's house":       "bombs",
+		"black tower worker":  "dimitri's flute",
+		"d3 pols voice chest": "d3 small key",
+		"d3 statue drop":      "d3 small key",
+		"d3 armos drop":       "d3 small key",
+	}, "d3 bush beetle room", false, true)
 }
 
 func BenchmarkGraphExplore(b *testing.B) {
