@@ -357,17 +357,6 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 	itemList, usedItems, slotList, usedSlots *list.List) {
 	g := r.Graph
 
-	// place boss keys first
-	for i := 1; i < 9; i++ {
-		prefix := fmt.Sprintf("d%d", i)
-		itemName := prefix + " boss key"
-
-		slotElem, itemElem, slotNode, itemNode :=
-			getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
-		placeItem(slotNode, itemNode, slotElem, itemElem,
-			usedSlots, slotList, usedItems, itemList)
-	}
-
 	prefixes := []string{"d0", "d1", "d2", "d3", "d4", "d5"}
 	if game == rom.GameSeasons {
 		prefixes = append(prefixes, "d6")
@@ -376,7 +365,7 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 	}
 	prefixes = append(prefixes, "d7", "d8")
 
-	// then place small keys
+	// place small keys first
 	for _, prefix := range prefixes {
 		itemName := prefix + " small key"
 
@@ -391,6 +380,17 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 			placeItem(slotNode, itemNode, slotElem, itemElem,
 				usedSlots, slotList, usedItems, itemList)
 		}
+	}
+
+	// then place boss keys
+	for i := 1; i < 9; i++ {
+		prefix := fmt.Sprintf("d%d", i)
+		itemName := prefix + " boss key"
+
+		slotElem, itemElem, slotNode, itemNode :=
+			getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
+		placeItem(slotNode, itemNode, slotElem, itemElem,
+			usedSlots, slotList, usedItems, itemList)
 	}
 
 	// place slates in ages
@@ -429,7 +429,10 @@ func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
 			strings.HasSuffix(slot.Name, "boss") {
 			continue
 		}
-		if strings.HasSuffix(itemName, "small key") &&
+		if (strings.HasSuffix(itemName, "small key") ||
+			strings.HasSuffix(itemName, "boss key") ||
+			itemName == "slate") &&
+			!strings.HasSuffix(slot.Name, "boss") && // SKs always ok on boss
 			!canReachViaKeys(g, slot, hard) {
 			continue
 		}
@@ -473,7 +476,8 @@ func canReachViaKeys(g graph.Graph, target *graph.Node, hard bool) bool {
 	for _, itemSlot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(itemSlot.Treasure)
 		if !strings.HasSuffix(treasureName, "small key") &&
-			!strings.HasSuffix(treasureName, "boss key") {
+			!strings.HasSuffix(treasureName, "boss key") &&
+			treasureName != "slate" {
 			g[treasureName].Mark = graph.MarkTrue
 		}
 	}
