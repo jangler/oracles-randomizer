@@ -34,8 +34,12 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 	// have their parents restored even if they're not reachable yet.
 	unreached := make(map[*graph.Node]*graph.Node)
 	for slot, item := range checks {
-		unreached[slot] = item
-		item.RemoveParent(slot)
+		// don't delimit spheres by intra-dungeon keys -- it obscured "actual"
+		// progression in the log file.
+		if !keyRegexp.MatchString(item.Name) {
+			unreached[slot] = item
+			item.RemoveParent(slot)
+		}
 	}
 
 	rupees := 0

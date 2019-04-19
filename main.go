@@ -22,6 +22,8 @@ import (
 
 type logFunc func(string, ...interface{})
 
+var keyRegexp = regexp.MustCompile("(slate|(small|boss) key)$")
+
 // gameName returns the short name associated with a game number.
 func gameName(game int) string {
 	switch game {
@@ -463,7 +465,6 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	summary <- ""
 	summary <- "-- progression items --"
 	summary <- ""
-	keyRegexp := regexp.MustCompile(" (small|boss) key$")
 	logSpheres(summary, checks, spheres, func(name string) bool {
 		return !keyRegexp.MatchString(name) && !itemIsJunk(name)
 	})
