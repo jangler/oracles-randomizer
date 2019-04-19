@@ -683,9 +683,14 @@ func initAgesEOB() {
 	calcItemSpriteAddr := r.appendToBank(0x3f, "get item sprite addr",
 		"\x21\xdb\x66\x5f\x87\xd7\x7b\xd7\xc9")
 	// set hl to the address of the item sprite for the item at hl in bank e.
+	lookupItemSpriteBody := r.appendToBank(0x3f, "look up item sprite body",
+		"\xcd"+getItemSpriteIndex+"\x7b\xcd"+calcItemSpriteAddr+"\xc1\xc9")
+	// used if item at hl is stored in (ID,sub-ID) order
 	lookupItemSpriteAddr := r.appendToBank(0x3f, "look up item sprite addr",
-		"\xc5\xcd"+readWord+"\xcd"+getItemSpriteIndex+
-			"\x7b\xcd"+calcItemSpriteAddr+"\xc1\xc9")
+		"\xc5\xcd"+readWord+"\xc3"+lookupItemSpriteBody)
+	// used if item at hl is stored in (sub-ID,ID) order
+	lookupItemSpriteSwap := r.appendToBank(0x3f, "look up item sprite swap",
+		"\xc5\xcd"+readWord+"\x78\x41\x4f\xc3"+lookupItemSpriteBody)
 
 	// copy three bytes at hl to a temporary ram address, and set hl to the
 	// address of the last byte, with a as the value.
@@ -721,11 +726,8 @@ func initAgesEOB() {
 		"\x1e\x15\x21\xd8\x5d\xc3"+set80Sprite)
 	setLibrarySprite := r.appendToBank(0x3f, "set library sprite",
 		"\x1e\x15\x21\xb9\x5d\xc3"+set80Sprite)
-	// TODO does bomb flower work here?
-	// TODO also, the ID and sub ID this function looks up are probably
-	//      backwards, and it probably needs special code for them not to be.
 	setStalfosItemSprite := r.appendToBank(0x3f, "set stalfos item sprite",
-		"\x1e\x0a\x21\x77\x60\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
+		"\x1e\x0a\x21\x77\x60\xcd"+lookupItemSpriteSwap+"\xf1\xc9")
 	// table of ID, sub ID, jump address
 	customSpriteTable := r.appendToBank(0x3f, "custom sprite table",
 		"\x40\x00"+setSoldierSprite+
