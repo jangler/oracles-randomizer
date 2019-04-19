@@ -432,8 +432,8 @@ func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
 		if (strings.HasSuffix(itemName, "small key") ||
 			strings.HasSuffix(itemName, "boss key") ||
 			itemName == "slate") &&
-			!strings.HasSuffix(slot.Name, "boss") && // SKs always ok on boss
-			!canReachViaKeys(g, slot, hard) {
+			!canReachViaKeys(g, slot, hard,
+				strings.HasSuffix(itemName, "small key")) {
 			continue
 		}
 
@@ -469,15 +469,19 @@ func placeItem(slotNode, itemNode *graph.Node,
 }
 
 // returns true iff the target node can be reached if the player has automatic
-// access to every item that isn't a small key or boss key.
-func canReachViaKeys(g graph.Graph, target *graph.Node, hard bool) bool {
+// access to every item that isn't a small key or boss key. optionally, this
+// can also assume boss keys and slates.
+func canReachViaKeys(g graph.Graph, target *graph.Node,
+	hard, assumeBKs bool) bool {
+
 	g.ClearMarks()
 
 	for _, itemSlot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(itemSlot.Treasure)
 		if !strings.HasSuffix(treasureName, "small key") &&
-			!strings.HasSuffix(treasureName, "boss key") &&
-			treasureName != "slate" {
+			(assumeBKs ||
+				(!strings.HasSuffix(treasureName, "boss key") &&
+					treasureName != "slate")) {
 			g[treasureName].Mark = graph.MarkTrue
 		}
 	}
