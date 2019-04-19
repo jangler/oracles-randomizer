@@ -307,10 +307,10 @@ var agesD8Nodes = map[string]*Node{
 	"d8 boss": AndSlot("d8 boss key", "d8 tile room",
 		Count(4, "slate")),
 
-	// 6 keys
-	"d8 floor puzzle": AndSlot("d8 blue peg chest", Count(6, "d8 small key")),
+	// 5 keys
+	"d8 floor puzzle": AndSlot("d8 blue peg chest", Count(5, "d8 small key")),
 	"d8 SW slate chest": AndSlot("d8 maze chest", "bracelet",
-		Count(6, "d8 small key")),
+		Count(5, "d8 small key")),
 }
 
 var agesD9Nodes = map[string]*Node{
