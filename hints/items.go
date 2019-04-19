@@ -206,8 +206,9 @@ var itemMap = map[string]itemName{
 	"d8 boss key":   {"a", "Boss Key", false},
 	"compass":       {"a", "Compass", false},
 	"dungeon map":   {"a", "Dungeon Map", false},
-	"slate 1":       {"a", "Slate", false},
-	"slate 2":       {"a", "Slate", false},
-	"slate 3":       {"a", "Slate", false},
-	"slate 4":       {"a", "Slate", false},
+	"slate":         {"a", "Slate", false},
+
+	// also unused
+	"d6 present small key": {"a", "Small Key", false},
+	"d6 past small key":    {"a", "Small Key", false},
 }
