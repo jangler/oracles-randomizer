@@ -637,7 +637,7 @@ func initAgesEOB() {
 
 	// return collection mode in a and e, based on current room. call is in
 	// bank 16, func is in bank 00, body is in bank 06.
-	collectModeTable := r.appendToBank(0x06, "collect mode table",
+	collectModeTable := r.appendToBank(0x06, "collection mode table",
 		makeAgesCollectModeTable())
 	// maku tree item falls or exists on floor depending on script position.
 	collectMakuTreeFunc := r.appendToBank(0x06, "collect maku tree",
