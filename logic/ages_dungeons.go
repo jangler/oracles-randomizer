@@ -102,8 +102,11 @@ var agesD3Nodes = map[string]*Node{
 	"d3 boss door": Or(
 		And("d3 post-subterror", Or("jump 3", Hard("feather")),
 			Or("any seed shooter", "boomerang",
-				HardAnd("sword", Or("jump 3", "switch hook",
-					And("bracelet", "toss ring", Count(4, "d3 small key")))))),
+				HardAnd(
+					Or("sword", And("bomb jump 2",
+						Or("ember seeds", "scent seeds", "mystery seeds"))),
+					Or("jump 3", "switch hook",
+						And("bracelet", Count(4, "d3 small key")))))),
 		And("d3 bridge chest", Count(4, "d3 small key"),
 			Or("any seed shooter", "boomerang"))),
 	"d3 moldorm drop": AndSlot("kill moldorm", "d3 post-subterror"),
@@ -171,11 +174,12 @@ var agesD5Nodes = map[string]*Node{
 		Or("hit switch ranged", Hard("bracelet"), HardAnd("feather", "cane",
 			Or("ember seeds", "scent seeds", "mystery seeds")))),
 	"d5 eyes chest": AndSlot("d5 switch A", Or("any seed shooter",
-		HardAnd("pegasus satchel", "feather",
-			Or("hit switch ranged", And("bracelet", "toss ring"), "cane"),
-			Or("ember seeds", "scent seeds", "mystery seeds")))),
+		HardAnd("pegasus satchel", "feather", "mystery seeds",
+			Or("hit switch ranged", And("bracelet", "toss ring"), "cane")))),
 	"d5 two-statue puzzle": AndSlot("d5 switch A", "break pot", "cane",
-		"feather", Or("any seed shooter", "boomerang", Hard("sword"))),
+		"feather", Or("any seed shooter", "boomerang", Hard("sword"),
+			HardAnd("bomb jump 2",
+				Or("ember seeds", "scent seeds", "mystery seeds")))),
 	"d5 boss": AndSlot("d5 switch A", "d5 boss key", "cane", "sword"),
 
 	// 2 keys
