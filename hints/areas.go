@@ -197,7 +197,7 @@ var agesAreaMap = map[string]string{
 	"rescue nayru":             "Ambi's Palace",
 	"king zora":                "Zora Village",
 	"library present":          "Zora Seas",
-	"zora's reward":            "Sea of Storms",
+	"zora's reward":            "Zora Village",
 	"piratian captain":         "Sea of Storms",
 	"lynna city chest":         "Lynna City",
 	"fairies' woods chest":     "Fairies' Woods",
