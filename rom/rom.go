@@ -206,6 +206,12 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["deku forest soldier"].Mutate(b)
 		ItemSlots["target carts 2"].Mutate(b)
 		ItemSlots["hidden tokay cave"].Mutate(b)
+
+		// other special case to prevent text on key drop
+		mut := ItemSlots["d8 stalfos"]
+		if mut.Treasure.id == AgesTreasures["d8 small key"].id {
+			b[mut.subIDAddrs[0].fullOffset()] = 0x00
+		}
 	}
 
 	setCompassData(b, game)
