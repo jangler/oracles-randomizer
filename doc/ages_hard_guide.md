@@ -54,7 +54,8 @@ This document details tricks and obscurities that are in Ages hard logic.
 ## Dungeons
 
 - Reach the item on a "shelf" in the D2 sidescroller by placing a block with
-  the cane, riding the Thwomp, and using seeds to run across the gap.
+  the cane, riding the Thwomp, and using seeds or a bomb boost to cross the
+  gap.
   [[Video]](https://streamable.com/t88r7)
 - Clip through a shutter door in D2 by standing on the button that opens the
   door, pushing a Moblin into the doorway, and switching with the Moblin. You
