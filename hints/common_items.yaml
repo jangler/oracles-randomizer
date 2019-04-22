@@ -1,0 +1,114 @@
+# misc common items
+bombs, 10: Bombs
+dimitri's flute: Dimitri's Flute
+ember tree seeds: Ember Seeds
+gale tree seeds: Gale Seeds
+gasha seed: a Gasha Seed
+heart container: a Heart Container
+iron shield: a shield
+moosh's flute: Moosh's Flute
+mystery tree seeds: Mystery Seeds
+pegasus tree seeds: Pegasus Seeds
+piece of heart: a Piece of Heart
+ricky's flute: Ricky's Flute
+ricky's gloves: Ricky's Gloves
+satchel 1: a Seed Satchel
+satchel 2: a Seed Satchel
+scent tree seeds: Scent Seeds
+shovel: the Shovel
+strange flute: a Strange Flute
+sword 1: a sword
+sword 2: a sword
+wooden shield: a shield
+
+# dungeon items
+compass: a Compass
+d1 boss key: the Level 1 Boss Key
+d1 small key: a Level 1 Small Key
+d2 boss key: the Level 2 Boss Key
+d2 small key: a Level 2 Small Key
+d3 boss key: the Level 3 Boss Key
+d3 small key: a Level 3 Small Key
+d4 boss key: the Level 4 Boss Key
+d4 small key: a Level 4 Small Key
+d5 boss key: the Level 5 Boss Key
+d5 small key: a Level 5 Small Key
+d6 boss key: the Level 6 Boss Key
+d7 boss key: the Level 7 Boss Key
+d7 small key: a Level 7 Small Key
+d8 boss key: the Level 8 Boss Key
+d8 small key: a Level 8 Small Key
+dungeon map: a Dungeon Map
+
+# rupees - don't give specific amounts lest it imply a total
+rupees, 10: Rupees
+rupees, 20: Rupees
+rupees, 30: Rupees
+rupees, 50: Rupees
+rupees, 100: Rupees
+
+# rings
+100th ring: the 100th Ring
+GBA nature ring: the GBA Nature Ring
+GBA time ring: the GBA Time Ring
+armor ring L-1: the Armor Ring L-1
+armor ring L-2: the Armor Ring L-2
+armor ring L-3: the Armor Ring L-3
+blast ring: the Blast Ring
+blue holy ring: the Blue Holy Ring
+blue joy ring: the Blue Joy Ring
+blue luck ring: the Blue Luck Ring
+blue ring: the Blue Ring
+bomber's ring: the Bomber's Ring
+bombproof ring: the Bombproof Ring
+charge ring: the Charge Ring
+cursed ring: the Cursed Ring
+dbl. edged ring: the Dbl. Edged Ring
+discovery ring: the Discovery Ring
+energy ring: the Energy Ring
+expert's ring: the Expert's Ring
+first gen ring: the First Gen Ring
+fist ring: the Fist Ring
+friendship ring: the Friendship Ring
+gasha ring: the Gasha Ring
+gold joy ring: the Gold Joy Ring
+gold luck ring: the Gold Luck Ring
+green holy ring: the Green Holy Ring
+green joy ring: the Green Joy Ring
+green luck ring: the Green Luck Ring
+green ring: the Green Ring
+heart ring L-1: the Heart Ring L-1
+heart ring L-2: the Heart Ring L-2
+light ring L-1: the Light Ring L-1
+light ring L-2: the Light Ring L-2
+like-like ring: the Like-Like Ring
+maple's ring: the Maple's Ring
+moblin ring: the Moblin Ring
+octo ring: the Octo Ring
+peace ring: the Peace Ring
+pegasus ring: the Pegasus Ring
+power ring L-1: the Power Ring L-1
+power ring L-2: the Power Ring L-2
+power ring L-3: the Power Ring L-3
+protection ring: the Protection Ring
+quicksand ring: the Quicksand Ring
+rang ring L-1: the Rang Ring L-1
+rang ring L-2: the Rang Ring L-2
+red holy ring: the Red Holy Ring
+red joy ring: the Red Joy Ring
+red luck ring: the Red Luck Ring
+red ring: the Red Ring
+roc's ring: the Roc's Ring
+rupee ring: the Rupee Ring
+sign ring: the Sign Ring
+slayer's ring: the Slayer's Ring
+snowshoe ring: the Snowshoe Ring
+spin ring: the Spin Ring
+steadfast ring: the Steadfast Ring
+subrosian ring: the Subrosian Ring
+swimmer's ring: the Swimmer's Ring
+toss ring: the Toss Ring
+victory ring: the Victory Ring
+whimsical ring: the Whimsical Ring
+whisp ring: the Whisp Ring
+zora ring: the Zora Ring

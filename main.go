@@ -1,6 +1,7 @@
 package main
 
 //go:generate bash scripts/generate.sh
+//go:generate esc -o embed.go hints/
 
 import (
 	"flag"
@@ -15,7 +16,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jangler/oracles-randomizer/hints"
 	"github.com/jangler/oracles-randomizer/rom"
 	"github.com/jangler/oracles-randomizer/ui"
 )
@@ -434,8 +434,8 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 
 	checks := getChecks(ri)
 	spheres := getSpheres(ri.Route.Graph, checks, hard)
-	owlHints := hints.Generate(ri.Src, ri.Route.Graph, checks,
-		rom.GetOwlNames(game), game, hard)
+	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
+		rom.GetOwlNames(game), hard)
 
 	checksum, err := setROMData(romData, game, ri, owlHints, logf, verbose)
 	if err != nil {
