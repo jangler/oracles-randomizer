@@ -38,7 +38,7 @@ var agesD2Nodes = map[string]*Node{
 	"blue wing owl":    And("mystery seeds", "d2 basement"),
 	"d2 thwomp tunnel": AndSlot("d2 basement"),
 	"d2 thwomp shelf": AndSlot("d2 basement",
-		Or("feather", HardAnd("cane", "pegasus satchel"))),
+		Or("feather", HardAnd("cane", Or("pegasus satchel", "bombs")))),
 	"d2 basement drop": AndSlot("d2 basement", "feather"),
 	"d2 basement chest": AndSlot("d2 basement", "feather", "bombs",
 		"hit lever from minecart", "kill normal"),
