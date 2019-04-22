@@ -17,7 +17,6 @@ import (
 	"time"
 
 	"github.com/jangler/oracles-randomizer/rom"
-	"github.com/jangler/oracles-randomizer/ui"
 )
 
 type logFunc func(string, ...interface{})
@@ -108,27 +107,27 @@ func main() {
 		})
 	} else if flag.NArg()+flag.NFlag() > 1 { // CLI used
 		// run randomizer on main goroutine
-		runRandomizer(false, func(s string, a ...interface{}) {
+		runRandomizer(nil, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
 	} else { // CLI maybe not used
 		// run TUI on main goroutine and randomizer on alternate goroutine
-		ui.Init("oracles randomizer " + version)
-		go runRandomizer(true, func(s string, a ...interface{}) {
-			ui.Printf(s, a...)
+		ui := newUI("oracles randomizer " + version)
+		go runRandomizer(ui, func(s string, a ...interface{}) {
+			ui.printf(s, a...)
 		})
-		ui.Run()
+		ui.run()
 	}
 }
 
 // run the main randomizer routine, printing messages via logf, which should
 // act analogously to fmt.Printf with added newline.
-func runRandomizer(useTUI bool, logf logFunc) {
+func runRandomizer(ui *uiInstance, logf logFunc) {
 	// close TUI after randomizer is done
 	defer func() {
-		if useTUI {
-			ui.Done()
+		if ui != nil {
+			ui.done()
 		}
 	}()
 
@@ -138,7 +137,7 @@ func runRandomizer(useTUI bool, logf logFunc) {
 	case 0: // no specified files, search in executable's directory
 		var seasons, ages string
 		var err error
-		dirName, seasons, ages, err = findVanillaROMs()
+		dirName, seasons, ages, err = findVanillaROMs(ui)
 		if err != nil {
 			fatal(err, logf)
 			break
@@ -146,24 +145,24 @@ func runRandomizer(useTUI bool, logf logFunc) {
 
 		// print which files, if any, are found.
 		if seasons != "" {
-			ui.PrintPath("found vanilla US seasons ROM: ", seasons, "")
+			ui.printPath("found vanilla US seasons ROM: ", seasons, "")
 		} else {
-			ui.Printf("no vanilla US seasons ROM found.")
+			ui.printf("no vanilla US seasons ROM found.")
 		}
 		if ages != "" {
-			ui.PrintPath("found vanilla US ages ROM: ", ages, "")
+			ui.printPath("found vanilla US ages ROM: ", ages, "")
 		} else {
-			ui.Printf("no vanilla US ages ROM found.")
+			ui.printf("no vanilla US ages ROM found.")
 		}
-		ui.Printf("")
+		ui.printf("")
 
 		// determine which filename to use based on what roms are found, and on
 		// user input.
 		if seasons == "" && ages == "" {
-			ui.Printf("no ROMs found in program's directory, " +
+			ui.printf("no ROMs found in program's directory, " +
 				"and no ROMs specified.")
 		} else if seasons != "" && ages != "" {
-			which := ui.Prompt("randomize (s)easons or (a)ges?")
+			which := ui.doPrompt("randomize (s)easons or (a)ges?")
 			if which == 's' {
 				infile = seasons
 			} else {
@@ -192,9 +191,9 @@ func runRandomizer(useTUI bool, logf logFunc) {
 		}
 		logf("randomizing %s.", infile)
 
-		getAndLogOptions(useTUI, logf)
+		getAndLogOptions(ui, logf)
 
-		if useTUI {
+		if ui != nil {
 			logf("")
 		}
 
@@ -211,16 +210,16 @@ func runRandomizer(useTUI bool, logf logFunc) {
 
 // getAndLogOptions logs values of selected options, prompting for them first
 // if the TUI is used.
-func getAndLogOptions(useTUI bool, logf logFunc) {
-	if useTUI {
-		if ui.Prompt("use specific seed? (y/n)") == 'y' {
-			flagSeed = ui.PromptSeed("enter seed: (8-digit hex number)")
+func getAndLogOptions(ui *uiInstance, logf logFunc) {
+	if ui != nil {
+		if ui.doPrompt("use specific seed? (y/n)") == 'y' {
+			flagSeed = ui.promptSeed("enter seed: (8-digit hex number)")
 			logf("using seed %s.", flagSeed)
 		}
 	}
 
-	if useTUI {
-		flagHard = ui.Prompt("enable hard difficulty? (y/n)") == 'y'
+	if ui != nil {
+		flagHard = ui.doPrompt("enable hard difficulty? (y/n)") == 'y'
 	}
 	if flagHard {
 		logf("using hard difficulty.")
@@ -228,8 +227,8 @@ func getAndLogOptions(useTUI bool, logf logFunc) {
 		logf("using normal difficulty.")
 	}
 
-	if useTUI {
-		flagNoMusic = ui.Prompt("disable music? (y/n)") == 'y'
+	if ui != nil {
+		flagNoMusic = ui.doPrompt("disable music? (y/n)") == 'y'
 	}
 	if flagNoMusic {
 		logf("music off.")
@@ -237,8 +236,8 @@ func getAndLogOptions(useTUI bool, logf logFunc) {
 		logf("music on.")
 	}
 
-	if useTUI {
-		flagTreewarp = ui.Prompt("enable tree warp? (y/n)") == 'y'
+	if ui != nil {
+		flagTreewarp = ui.doPrompt("enable tree warp? (y/n)") == 'y'
 	}
 	if flagTreewarp {
 		logf("tree warp on.")
@@ -271,7 +270,8 @@ func writeROM(b []byte, dirName, filename, logFilename string, seed uint32,
 
 // search for a vanilla US seasons and ages ROMs in the executable's directory,
 // and return their filenames.
-func findVanillaROMs() (dirName, seasons, ages string, err error) {
+func findVanillaROMs(
+	ui *uiInstance) (dirName, seasons, ages string, err error) {
 	// read slice of file info from executable's dir
 	exe, err := os.Executable()
 	if err != nil {
@@ -279,7 +279,7 @@ func findVanillaROMs() (dirName, seasons, ages string, err error) {
 	}
 
 	dirName = filepath.Dir(exe)
-	ui.PrintPath("searching ", dirName, " for ROMs.")
+	ui.printPath("searching ", dirName, " for ROMs.")
 	dir, err := os.Open(dirName)
 	if err != nil {
 		return
