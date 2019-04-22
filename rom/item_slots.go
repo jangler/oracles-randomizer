@@ -109,4 +109,17 @@ func basicSlot(treasure string, bank byte, idOffset, subIDOffset uint16,
 	}
 }
 
+// keyDropSlot constructs a MutableSlot for a small key drop. the mutable
+// itself is a dummy and does not have an address; the data is used to
+// construct a table of small key drops.
+func keyDropSlot(treasure string, group, room, coords byte) *MutableSlot {
+	return &MutableSlot{
+		treasureName: treasure,
+		group:        group,
+		room:         room,
+		collectMode:  collectFall,
+		mapCoords:    coords,
+	}
+}
+
 var ItemSlots map[string]*MutableSlot

@@ -16,6 +16,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x04] = 0x7edb
 	r.endOfBank[0x05] = 0x7d9d
 	r.endOfBank[0x06] = 0x7a31
+	r.endOfBank[0x08] = 0x7f60
 	r.endOfBank[0x09] = 0x7dee
 	r.endOfBank[0x0a] = 0x7e09
 	r.endOfBank[0x0b] = 0x7fa8
@@ -172,10 +173,9 @@ func initAgesEOB() {
 			"\xea\x7c\xc7\xea\x2e\xc7\xea\x97\xc8\xea\x3a\xc7\xea\xba\xc7"+
 			"\xea\x8d\xc7\xea\x0a\xc7\xea\xf6\xc9\xea\x5c\xc8\xea\x83\xc8"+
 			"\xea\x0f\xc8\xea\x03\xc7\xea\x90\xc7\xea\x7b\xc7"+
-			"\x3e\x08\xea\x25\xc7\xea\x13\xc8\xea\xbd\xc9"+ // room flag 3
-			"\xea\x6e\xca"+
+			"\x3e\x08\xea\x25\xc7\xea\x13\xc8"+ // room flag 3
 			"\x3e\x01\xea\x76\xc8\xea\x38\xc7"+ // room flag 1
-			"\x3e\xc8\xea\x39\xc7\x3e\x02\xea\x6d\xca"+ // other rooms
+			"\x3e\xc8\xea\x39\xc7"+ // first encounter with nayru
 			"\x3e\x10\xea\x9f\xc6\x3e\x03\xea\xcc\xc6"+ // give L-3 ring box
 			"\xe1\xc9")
 	r.replace(0x03, 0x6e97, "call skip opening",
@@ -195,10 +195,7 @@ func initAgesEOB() {
 			"\x00\x6b\x02\x42\xce"+ // not removed tree in yoll graveyard
 			"\x00\x83\x00\x43\xa4"+ // rock outside D2
 			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
-			"\x04\x1b\x01\x03\x78"+ // key door in D1
 			"\x01\x13\x00\x61\xd7"+ // portal in symmetry city past
-			"\x04\xa6\x80\x54\x1e"+ // add key block after removed D5 key door
-			"\x05\x5a\x80\x66\x1e"+ // add key block before removed D7 key door
 			"\x00\x25\x00\x37\xd7"+ // portal in nuun highlands
 			"\x05\xda\x01\xa4\xb2"+ // tunnel to moblin keep
 			"\x05\xda\x01\xa5\xb2"+ // cont.
@@ -226,12 +223,15 @@ func initAgesEOB() {
 	r.replace(0x00, 0x38c0, "tile replace call",
 		"\xcd\xef\x5f", "\xcd"+tileReplaceFunc)
 
-	// treat the d2 present entrance like the d2 past entrance.
+	// treat the d2 present entrance like the d2 past entrance, and reset the
+	// water level when entering jabu (see logic comments).
 	replaceWarpEnter := r.appendToBank(0x04, "replace warp enter",
-		"\xc5\x01\x00\x83\xcd"+compareRoom+"\xc1\xfa\x2d\xcc\xc0\x3c\xc9")
+		"\xc5\x01\x00\x83\xcd"+compareRoom+"\x20\x04\xc1\x3e\x01\xc9"+
+			"\x01\x02\x90\xcd"+compareRoom+"\xc1\x20\x05\x3e\x21\xea\xe9\xc6"+
+			"\xfa\x2d\xcc\xc9")
 	r.replace(0x04, 0x4630, "call replace warp enter",
 		"\xfa\x2d\xcc", "\xcd"+replaceWarpEnter)
-	// and exit into the present if the past entrance is closed.
+	// d2: exit into the present if the past entrance is closed.
 	replaceWarpExit := r.appendToBank(0x00, "replace warp exit",
 		"\xea\x48\xcc\xfe\x83\xc0\xfa\x83\xc8\xe6\x80\xc0"+
 			"\xfa\x47\xcc\xe6\x0f\xfe\x01\xc0"+
@@ -495,6 +495,29 @@ func initAgesEOB() {
 
 	// bank 0c
 
+	// this will be overwritten after randomization
+	smallKeyDrops := r.appendToBank(0x38, "small key drops",
+		makeKeyDropTable())
+	lookUpKeyDropBank38 := r.appendToBank(0x38, "look up key drop bank 38",
+		"\xc5\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x21"+smallKeyDrops+ // load group/room
+			"\x1e\x02\xcd"+searchDoubleKey+"\xc1\xd0\x46\x23\x4e\xc9")
+	// ages has different key drop code across three different banks because
+	// it's a jerk
+	callBank38Code := "\xd5\xe5\x1e\x38\x21" + lookUpKeyDropBank38 +
+		"\xcd\x8a\x00\xe1\xd1\xc9"
+	lookUpKeyDropBank0C := r.appendToBank(0x0c, "look up key drop bank 0c",
+		"\x36\x60\x2c"+callBank38Code)
+	r.replace(0x0c, 0x442e, "call look up key drop bank 0c",
+		"\x36\x60\x2c", "\xcd"+lookUpKeyDropBank0C)
+	lookUpKeyDropBank0A := r.appendToBank(0x0a, "look up key drop bank 0A",
+		"\x01\x01\x30"+callBank38Code)
+	r.replace(0x0a, 0x7075, "call look up key drop bank 0A",
+		"\x01\x01\x30", "\xcd"+lookUpKeyDropBank0A)
+	lookUpKeyDropBank08 := r.appendToBank(0x08, "look up key drop bank 08",
+		"\x01\x01\x30"+callBank38Code)
+	r.replace(0x08, 0x5087, "call look up key drop bank 08",
+		"\x01\x01\x30", "\xcd"+lookUpKeyDropBank08)
+
 	// use custom script for soldier in deku forest with sub ID 0; they should
 	// give an item in exchange for mystery seeds.
 	soldierScriptAfter := r.appendToBank(0x0c, "soldier script after item",
@@ -617,7 +640,7 @@ func initAgesEOB() {
 
 	// return collection mode in a and e, based on current room. call is in
 	// bank 16, func is in bank 00, body is in bank 06.
-	collectModeTable := r.appendToBank(0x06, "collect mode table",
+	collectModeTable := r.appendToBank(0x06, "collection mode table",
 		makeAgesCollectModeTable())
 	// maku tree item falls or exists on floor depending on script position.
 	collectMakuTreeFunc := r.appendToBank(0x06, "collect maku tree",
@@ -660,9 +683,14 @@ func initAgesEOB() {
 	calcItemSpriteAddr := r.appendToBank(0x3f, "get item sprite addr",
 		"\x21\xdb\x66\x5f\x87\xd7\x7b\xd7\xc9")
 	// set hl to the address of the item sprite for the item at hl in bank e.
+	lookupItemSpriteBody := r.appendToBank(0x3f, "look up item sprite body",
+		"\xcd"+getItemSpriteIndex+"\x7b\xcd"+calcItemSpriteAddr+"\xc1\xc9")
+	// used if item at hl is stored in (ID,sub-ID) order
 	lookupItemSpriteAddr := r.appendToBank(0x3f, "look up item sprite addr",
-		"\xc5\xcd"+readWord+"\xcd"+getItemSpriteIndex+
-			"\x7b\xcd"+calcItemSpriteAddr+"\xc1\xc9")
+		"\xc5\xcd"+readWord+"\xc3"+lookupItemSpriteBody)
+	// used if item at hl is stored in (sub-ID,ID) order
+	lookupItemSpriteSwap := r.appendToBank(0x3f, "look up item sprite swap",
+		"\xc5\xcd"+readWord+"\x78\x41\x4f\xc3"+lookupItemSpriteBody)
 
 	// copy three bytes at hl to a temporary ram address, and set hl to the
 	// address of the last byte, with a as the value.
@@ -698,6 +726,8 @@ func initAgesEOB() {
 		"\x1e\x15\x21\xd8\x5d\xc3"+set80Sprite)
 	setLibrarySprite := r.appendToBank(0x3f, "set library sprite",
 		"\x1e\x15\x21\xb9\x5d\xc3"+set80Sprite)
+	setStalfosItemSprite := r.appendToBank(0x3f, "set stalfos item sprite",
+		"\x1e\x0a\x21\x77\x60\xcd"+lookupItemSpriteSwap+"\xf1\xc9")
 	// table of ID, sub ID, jump address
 	customSpriteTable := r.appendToBank(0x3f, "custom sprite table",
 		"\x40\x00"+setSoldierSprite+
@@ -707,6 +737,7 @@ func initAgesEOB() {
 			"\x63\x3e"+setWildTokaySprite+ // wild tokay game prize
 			"\x6b\x0b"+setInventionSprite+ // cheval's invention
 			"\x6b\x0c"+setChevalTestSprite+
+			"\x77\x31"+setStalfosItemSprite+ // D8
 			"\x80\x07"+setLibraryPastSprite+
 			"\x80\x08"+setLibrarySprite+
 			"\xff")

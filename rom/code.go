@@ -61,20 +61,24 @@ func (r *romBanks) replaceMultiple(addrs []Addr, name, old, new string) {
 	codeMutables[name] = MutableStrings(addrs, old, new)
 }
 
+// returns an ordered slice of keys for slot names, so that dentical seeds
+// produce identical checksums.
+func getOrderedSlotKeys() []string {
+	keys := make([]string, 0, len(ItemSlots))
+	for k := range ItemSlots {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
 // returns a byte table of (group, room, collect mode) entries for randomized
 // items. in ages, a mode >7f means to use &7f as an index to a jump table for
 // special cases.
 func makeCollectModeTable() string {
 	b := new(strings.Builder)
 
-	// use ordered keys so that identical seeds produce identical checksums
-	keys := make([]string, 0, len(ItemSlots))
-	for k := range ItemSlots {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-
-	for _, key := range keys {
+	for _, key := range getOrderedSlotKeys() {
 		slot := ItemSlots[key]
 
 		// trees and slots where it doesn't matter (shops, rod)
@@ -82,7 +86,47 @@ func makeCollectModeTable() string {
 			continue
 		}
 
-		_, err := b.Write([]byte{slot.group, slot.room, slot.collectMode})
+		var err error
+		if slot.collectMode == collectFall && slot.Treasure != nil &&
+			slot.Treasure.id == 0x30 {
+			// use falling key mode (no fanfare) if falling item is a key
+			_, err = b.Write([]byte{slot.group, slot.room, collectKeyFall})
+		} else {
+			_, err = b.Write([]byte{slot.group, slot.room, slot.collectMode})
+		}
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	b.Write([]byte{0xff})
+	return b.String()
+}
+
+// returns a byte table (group, room, ID, subID) entries for randomized small
+// key drops (and other falling items, but those entries won't be used).
+func makeKeyDropTable() string {
+	b := new(strings.Builder)
+
+	for _, key := range getOrderedSlotKeys() {
+		slot := ItemSlots[key]
+
+		if slot.collectMode != collectFall {
+			continue
+		}
+
+		// accommodate nil treasures when creating the dummy table before
+		// treasures have actually been assigned.
+		var err error
+		if slot.Treasure == nil {
+			_, err = b.Write([]byte{slot.group, slot.room, 0x00, 0x00})
+		} else if slot.Treasure.id == 0x30 {
+			// make small keys the normal falling variety, with no text box.
+			_, err = b.Write([]byte{slot.group, slot.room, 0x30, 0x01})
+		} else {
+			_, err = b.Write([]byte{slot.group, slot.room,
+				slot.Treasure.id, slot.Treasure.subID})
+		}
 		if err != nil {
 			panic(err)
 		}

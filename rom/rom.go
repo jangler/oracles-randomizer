@@ -54,6 +54,9 @@ func Init(game int) {
 		if treasure.id == 0x31 {
 			itemGfx[name] = itemGfx["boss key"]
 		}
+		if treasure.id == 0x30 {
+			itemGfx[name] = itemGfx["small key"]
+		}
 	}
 
 	// use these graphics as default for progressive items (seasons)
@@ -77,11 +80,6 @@ func Init(game int) {
 	itemGfx["harp 3"] = itemGfx["tune of ages"]
 	itemGfx["flippers 1"] = itemGfx["flippers"]
 	itemGfx["flippers 2"] = itemGfx["mermaid suit"]
-
-	// slates
-	for i := 1; i <= 4; i++ {
-		itemGfx[fmt.Sprintf("slate %d", i)] = itemGfx["slate"]
-	}
 }
 
 // Addr is a fully-specified memory address.
@@ -171,6 +169,8 @@ func Mutate(b []byte, game int) ([]byte, error) {
 
 	setBossItemAddrs()
 	setSeedData(game)
+	setSmallKeyData(game)
+	setCollectModeData(game)
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
 	// with text
@@ -195,11 +195,23 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		ItemSlots["subrosia seaside"].Mutate(b)
 		ItemSlots["great furnace"].Mutate(b)
 		ItemSlots["master diver's reward"].Mutate(b)
+
+		// annoying special case to prevent text on key drop
+		mut := ItemSlots["d7 armos puzzle"]
+		if mut.Treasure.id == SeasonsTreasures["d7 small key"].id {
+			b[mut.subIDAddrs[0].fullOffset()] = 0x01
+		}
 	} else {
 		ItemSlots["nayru's house"].Mutate(b)
 		ItemSlots["deku forest soldier"].Mutate(b)
 		ItemSlots["target carts 2"].Mutate(b)
 		ItemSlots["hidden tokay cave"].Mutate(b)
+
+		// other special case to prevent text on key drop
+		mut := ItemSlots["d8 stalfos"]
+		if mut.Treasure.id == AgesTreasures["d8 small key"].id {
+			b[mut.subIDAddrs[0].fullOffset()] = 0x00
+		}
 	}
 
 	setCompassData(b, game)
@@ -236,12 +248,14 @@ func Verify(b []byte, game int) []error {
 			"temple of seasons", "rare peach stone", "ribbon", "blaino prize",
 			"subrosia seaside", "great furnace", "subrosian smithy",
 			"master diver's reward", "d5 basement", "green joy ring",
-			"mt. cucco, platform cave", "diving spot outside D4":
+			"mt. cucco, platform cave", "diving spot outside D4",
+			"d7 armos puzzle", "above d7 zol button":
 		// ages misc.
 		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
 			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",
 			"sea of storms past", "starting chest", "deku forest soldier",
-			"hidden tokay cave", "ridge bush cave", "graveyard poe":
+			"hidden tokay cave", "ridge bush cave", "graveyard poe",
+			"d8 stalfos":
 		// ages, script item using collect mode other than 0a
 		case "trade lava juice", "goron dance, with letter", "goron elder",
 			"balloon guy's upgrade", "king zora", "d2 thwomp shelf":
@@ -348,6 +362,28 @@ func setSeedData(game int) {
 	}
 }
 
+// fill table—initial table is blank, since it's created before items are
+// placed.
+func setSmallKeyData(game int) {
+	mut := codeMutables["small key drops"].(*MutableRange)
+	mut.New = []byte(makeKeyDropTable())
+
+	if game == GameSeasons {
+		mut := varMutables["above d7 zol button"].(*MutableSlot)
+		mut.Treasure = ItemSlots["d7 zol button"].Treasure
+	}
+}
+
+// regenerate collect mode table to accommodate changes based on contents.
+func setCollectModeData(game int) {
+	mut := codeMutables["collection mode table"].(*MutableRange)
+	if game == GameSeasons {
+		mut.New = []byte(makeSeasonsCollectModeTable())
+	} else {
+		mut.New = []byte(makeAgesCollectModeTable())
+	}
+}
+
 // sets the high nybble (seed type) of a seed tree interaction in ages.
 func setTreeNybble(subID Mutable, slot *MutableSlot) {
 	mut := subID.(*MutableRange)
@@ -363,47 +399,70 @@ func setTreasureMapData() {
 	}
 }
 
-// match the compass's beep beep beep boops to the actual boss key locations.
+// set dungeon properties so that the compass beeps in the rooms actually
+// containing small keys and boss keys.
 func setCompassData(b []byte, game int) {
-	var names []string
+	var prefixes []string
 	if game == GameSeasons {
-		names = []string{"d1 goriya chest", "d2 terrace chest",
-			"d3 giant blade room", "d4 dive spot", "d5 basement",
-			"d6 escape room", "d7 stalfos chest", "d8 pols voice chest"}
+		prefixes = []string{"d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7",
+			"d8"}
 	} else {
-		names = []string{"d1 pot chest", "d2 color room", "d3 B1F east",
-			"d4 lava pot chest", "d5 owl puzzle", "d6 present RNG chest",
-			"d7 post-hallway chest", "d8 B3F chest"}
+		prefixes = []string{"d0", "d1", "d2", "d3", "d4", "d5", "d6 present",
+			"d6 past", "d7", "d8"}
 	}
 
-	// clear original boss key flags
-	for _, name := range names {
-		slot := ItemSlots[name]
-		offset :=
-			getDungeonPropertiesAddr(game, slot.group, slot.room).fullOffset()
-		b[offset] = b[offset] & 0xef // reset bit 4
+	// clear key flags
+	for _, prefix := range prefixes {
+		for name, slot := range ItemSlots {
+			if strings.HasPrefix(name, prefix+" ") {
+				offset := getDungeonPropertiesAddr(
+					game, slot.group, slot.room).fullOffset()
+				b[offset] = b[offset] & 0xed // reset bit 4
+			}
+		}
 	}
 
-	// add new boss key flags
-	for i := 1; i <= 8; i++ {
-		name := fmt.Sprintf("d%d boss key", i)
-		slot := lookupItemSlot(name)
-		offset :=
-			getDungeonPropertiesAddr(game, slot.group, slot.room).fullOffset()
-		b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
+	// set key flags
+	for _, prefix := range prefixes {
+		slots := lookupAllItemSlots(fmt.Sprintf("%s small key", prefix))
+		switch prefix {
+		case "d0", "d6 present":
+			break
+		case "d6 past":
+			slots = append(slots, lookupItemSlot("d6 boss key"))
+		default:
+			slots = append(slots,
+				lookupItemSlot(fmt.Sprintf("%s boss key", prefix)))
+		}
+
+		for _, slot := range slots {
+			offset := getDungeonPropertiesAddr(
+				game, slot.group, slot.room).fullOffset()
+			b[offset] = (b[offset] & 0xbf) | 0x10 // set bit 4, reset bit 6
+		}
 	}
 }
 
 // returns the slot where the named item was placed. this only works for unique
 // items, of course.
 func lookupItemSlot(itemName string) *MutableSlot {
+	if slots := lookupAllItemSlots(itemName); len(slots) > 0 {
+		return slots[0]
+	} else {
+		return nil
+	}
+}
+
+// returns all slots where the named item was placed.
+func lookupAllItemSlots(itemName string) []*MutableSlot {
 	t := Treasures[itemName]
+	slots := make([]*MutableSlot, 0)
 	for _, slot := range ItemSlots {
 		if slot.Treasure == t {
-			return slot
+			slots = append(slots, slot)
 		}
 	}
-	return nil
+	return slots
 }
 
 // get the location of the dungeon properties byte for a specific room.

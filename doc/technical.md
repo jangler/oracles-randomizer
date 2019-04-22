@@ -15,6 +15,7 @@ both games.
 - 0:0775 = loadTileset, a is index
 - 0:0c98/0c74 = playSound, a is index
 - 0:10cc/109a = getChestData
+	- 0:10f1/10bf = hl is address of chest data
 - 0:1435 = get tile at position bc (yyxx), returns a (id) and hl (addr)
 - 0:15e9 = interactionInitGraphics
 	- 3f:4404/ = interactionLoadGraphics

@@ -112,10 +112,19 @@ func initSeasonsEOB() {
 	callBank2 := r.appendToBank(0x00, "call bank 02",
 		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9")
 
-	// increment (hl) until it equals either register a or ff. returns z if a
+	// increment hl until (hl) equals either register a or ff. returns z if a
 	// match was found.
 	searchValue := r.appendToBank(0x00, "search value",
 		"\xc5\x47\x2a\xb8\x28\x06\x3c\x28\x02\x18\xf7\x3c\x78\xc1\xc9")
+
+	// search for a key bc in a dictionary starting at hl. the dictionary is a
+	// series of two-byte keys and two-byte values. if a match is found, hl is
+	// the address of the value, and z is set. the dictionary ends when $ff is
+	// encountered at the beginning of an entry.
+	lookupWord := r.appendToBank(0x00, "lookup word",
+		"\x2a\xfe\xff\x20\x02\xb7\xc9"+ // ret if key is $ff
+			"\xb8\x2a\x20\x02\xb9\xc8"+ // compare key bytes
+			"\x23\x23\x18\xef") // loop
 
 	// bank 01
 
@@ -338,16 +347,13 @@ func initSeasonsEOB() {
 	warnHSSSkip := r.appendToBank(0x15, "warn hss skip",
 		"\xfa\x86\xca\xb7\xc0\xcd\x56\x19\xcb\x76\xc0\xcb\xf6"+
 			"\x3e\x02\xea\xe0\xcf\xc3"+warnGeneric)
-	warnPoeSkip := r.appendToBank(0x15, "warn poe skip",
-		"\xfa\x5a\xca\xcb\x67\xc0"+
-			"\x3e\x08\xcd\x17\x17\xd8\xc3"+warnHSSSkip)
 	// this communicates with the warning script by setting bit zero of $cfc0
 	// if the warning needs to be displayed (based on room, season, etc), and
 	// also displays the exclamation mark if so.
 	warningFunc := r.appendToBank(0x15, "warning func",
 		"\xc5\xd5\xcd"+addrString(r.endOfBank[0x15]+8)+"\xd1\xc1\xc9"+ // wrap
 			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load env data
-			"\xfe\x46\xca"+warnPoeSkip+"\xfe\x7c\xca"+warnFlowerCliff+
+			"\xfe\x7c\xca"+warnFlowerCliff+
 			"\xfe\x6e\xca"+warnDivingSpot+"\xfe\x3d\xca"+warnWaterfallCliff+
 			"\xfe\x5c\xca"+warnMoblinKeep+"\xfe\x78\xca"+warnHSSSkip+
 			"\xc3"+warnGeneric)
@@ -514,6 +520,18 @@ func initSeasonsEOB() {
 	r.replace(0x0b, 0x4a2b, "skip vasu ring appraisal",
 		"\x98\x33", "\x4a\x39")
 
+	// this will be overwritten after randomization
+	smallKeyDrops := r.appendToBank(0x3f, "small key drops",
+		makeKeyDropTable())
+	lookUpKeyDropBank3F := r.appendToBank(0x3f, "look up key drop bank 3f",
+		"\xc5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+smallKeyDrops+ // load group/room
+			"\xcd"+lookupWord+"\xc1\xc0\x46\x23\x4e\xc9")
+	lookUpKeyDrop := r.appendToBank(0x0b, "look up key drop",
+		"\x36\x60\x2c\xd5\xe5\x1e\x3f\x21"+lookUpKeyDropBank3F+
+			"\xcd\x8a\x00\xe1\xd1\xc9")
+	r.replace(0x0b, 0x4416, "call look up key drop",
+		"\x36\x60\x2c", "\xcd"+lookUpKeyDrop)
+
 	// bank 11
 
 	// the interaction on the mount cucco waterfall/vine screen
@@ -536,11 +554,6 @@ func initSeasonsEOB() {
 		"\xf2\xab\x00\x40\x70\x22\x0a\x58\x44\xf8\x2d\x00\x33\xfe")
 	r.replace(0x11, 0x650b, "moblin keep interaction jump",
 		"\xf2\xab\x00\x40", "\xf3"+moblinKeepInteractions+"\xff")
-	// d7 armos room
-	armosRoomInteractions := r.appendToBank(0x11, "armos room interactions",
-		"\xf8\x09\x80\x79\xf2\x22\x0a\x58\x78\xfe")
-	r.replace(0x11, 0x7925, "armos room interaction jump",
-		"\xf8\x09\x80\x79", "\xf3"+armosRoomInteractions+"\xff")
 	// hss skip room
 	hssSkipInteractions := r.appendToBank(0x11, "hss skip interactions",
 		"\xf2\x22\x0a\x88\x98\xf3\x93\x55\xfe")
@@ -560,21 +573,28 @@ func initSeasonsEOB() {
 	collectModeDiver := r.appendToBank(0x15, "diver collect mode",
 		"\x3e\x05\xb8\xc0\x3e\xbd\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd8"+
 			"\xaf\x3e\x02\xc9")
-	// cp link's position if in d7 compass room, set mode to default if on
-	// left side, ret z if set
+	// if in d7 compass room, set mode based on link's x position: left =
+	// key drop; right = chest.
 	collectModeD7Key := r.appendToBank(0x15, "d7 key collect mode",
-		"\x3e\x05\xb8\xc0\x3e\x52\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd0"+
-			"\xaf\x7b\xc9")
+		"\x3e\x05\xb8\xc0\x3e\x52\xb9\xc0"+ // cp room
+			"\xfa\x0d\xd0\xfe\x80\x30\x04"+ // cp x
+			"\xaf\x3e\x28\xc9\xaf\x3e\x38\xc9")
 	// if link already has the maku tree's item, use default mode.
 	collectModeMakuSeed := r.appendToBank(0x15, "maku seed collect mode",
 		"\x3e\x02\xb8\xc0\x3e\x5d\xb9\xc0\x3e\x0a\xcd\x17\x17\x38\x02"+
 			"\x3c\xc9\xaf\x7b\xc9")
+	// if room is D4 pool and interaction already exists with a z axis speed,
+	// return dive collect mode instead (for when item falls in water).
+	collectModeD4Pool := r.appendToBank(0x15, "d4 pool collect mode",
+		"\x3e\x04\xb8\xc0\x3e\x75\xb9\xc0"+ // cp room
+			"\x1e\x54\x1a\xd6\x01\xd8\xaf\x3e\x49\xc9")
 	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
 		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\x28\x1d\xb8\x20\x16\x2a\xb9\x20\x13"+
-			"\xcd"+collectModeDiver+"\x28\x12\xcd"+collectModeD7Key+"\x28\x0d"+
+			"\x2a\xfe\xff\x28\x22\xb8\x20\x1b\x2a\xb9\x20\x18"+
+			"\xcd"+collectModeD4Pool+"\x28\x17\xcd"+collectModeDiver+"\x28\x12"+
+			"\xcd"+collectModeD7Key+"\x28\x0d"+
 			"\xcd"+collectModeMakuSeed+"\x28\x08"+
-			"\x2a\x18\x05\x23\x23\x18\xde\x7b\xe1\xc1\xc9")
+			"\x2a\x18\x05\x23\x23\x18\xd9\x7b\xe1\xc1\xc9")
 
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created, and set collection mode.

@@ -14,8 +14,10 @@ const (
 	collectUnderwater = 0x08 // pyramid jewel
 	collectFind1      = 0x09
 	collectFind2      = 0x0a
-	collectAppear1    = 0x19 // d5 boss key
+	collectEnemyDrop  = 0x18 // stalfos in ages D8
+	collectAppear1    = 0x19 // seasons D5 boss key
 	collectAppear2    = 0x1a // heart containers
+	collectKeyFall    = 0x28 // no fanfare
 	collectFall       = 0x29
 	collectChest      = 0x38 // most chests
 	collectDive       = 0x49

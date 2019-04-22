@@ -75,8 +75,7 @@ This document details tricks and obscurities that are in Seasons hard logic.
   [[Video]](https://streamable.com/pxe10)
 - Jump through the "wall" of fire traps in D5.
   [[Video]](https://streamable.com/yxrae)
-- Poe skip: skip fighting the first Poe in D7. This is only in logic to skip
-  lighting the torches, **not** to skip the key.
+- Poe skip: skip fighting the first Poe in D7.
   [[Video]](https://streamable.com/ztzsh)
 - Hit the three buttons in D7 in the correct order without pegasus seeds, by
   jumping on the edges of the tiles.

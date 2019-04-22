@@ -67,14 +67,17 @@ func getOrderedSlots(src *rand.Rand,
 		if item.Name == "dungeon map" ||
 			item.Name == "compass" ||
 			strings.HasPrefix(item.Name, "slate") ||
+			strings.HasSuffix(item.Name, "small key") ||
 			strings.HasSuffix(item.Name, "boss key") {
 			continue
 		}
 
 		// and don't include these checks, since they're dummy slots that
-		// aren't actually randomized.
+		// aren't actually randomized, or seed trees that the player is
+		// guaranteed to know about if they're using seeds.
 		switch slot.Name {
-		case "shop, 20 rupees", "shop, 30 rupees":
+		case "shop, 20 rupees", "shop, 30 rupees",
+			"horon village seed tree", "south lynna tree":
 			continue
 		}
 

@@ -54,7 +54,8 @@ This document details tricks and obscurities that are in Ages hard logic.
 ## Dungeons
 
 - Reach the item on a "shelf" in the D2 sidescroller by placing a block with
-  the cane, riding the Thwomp, and using seeds to run across the gap.
+  the cane, riding the Thwomp, and using seeds or a bomb boost to cross the
+  gap.
   [[Video]](https://streamable.com/t88r7)
 - Clip through a shutter door in D2 by standing on the button that opens the
   door, pushing a Moblin into the doorway, and switching with the Moblin. You
@@ -69,21 +70,24 @@ This document details tricks and obscurities that are in Ages hard logic.
 	2. Using a bush + bracelet + toss ring + seeds or feather + a pot in the
 	   first room.
 	3. Using feather + sword + switch hook in the second room.
-	4. Using feather + sword + a pot + bracelet + toss ring in the second room.
+	4. Using feather + sword + a pot + bracelet in the second room.
 	5. Using seeds + feather + ember/scent/mystery seeds from satchel in the
 	   second room.
 
   [[Video]](https://streamable.com/6uo8u)
-- Get two small key chests in D4 by hitting switches with feather + boomerang.
-  [[Video]](https://streamable.com/2behr)
+- Get two chests in D4 by hitting switches with feather + boomerang instead of
+  seed shooter. [[Video]](https://streamable.com/2behr)
 - Use the Peace Ring to throw bombs at the Stalfos in D4 from a minecart.
   [[Video]](https://streamable.com/nf0ir)
 - Hit two switches in D5 from a distance by throwing pots. The second throw
   requires the toss ring, plus feather (+ seeds?) to cross the next barrier.
   [[Video]](https://streamable.com/b9xp3)
+- Hit the second switch in D5 (from above video) using ember/scent/mystery
+  seeds + satchel, using feather to jump past the red pegs before they rise.
 - Hit the three eye statues in D5 by using pegasus seeds, feather, and
-  ember/scent/mystery seeds from satchel.
-  [[Video]](https://streamable.com/hbyt6)
+  mystery seeds from satchel. [[Video]](https://streamable.com/hbyt6)
+- Hit the switch in D5 before the two-statue puzzle using bomb jump + satchel +
+  ember/scent/mystery seeds.
 - Cross the bridge in D5 with seed + feather jumps, or by RNG manipulating the
   Darknut across the bridge using sword, then switch hooking it. The last two
   sword slashes before transitioning to the bridge room should be high pitch,

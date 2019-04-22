@@ -51,12 +51,9 @@ var agesKillNodes = map[string]*Node{
 		"punch enemy", Hard("bombs")),
 	"kill normal ranged": Or("shooter weapon", And("cane", "bracelet"),
 		Hard("bombs")),
-	"kill underwater": Or("sword", "shooter weapon", "punch enemy"),
+	"kill underwater":  Or("sword", "shooter weapon", "punch enemy"),
+	"kill switch hook": Or("kill normal", "switch hook"),
 
-	"kill color gel": Or("kill normal", "switch hook"),
-	"kill stalfos":   Or("kill normal"),
-	"kill zol":       Or("kill normal", "switch hook"),
-	"kill ghini":     Or("kill normal", "switch hook"),
 	"kill giant ghini": Or("sword", "scent shooter", "switch hook",
 		"punch enemy", HardOr("bombs", "scent satchel")),
 	"kill pumpkin head": And("bracelet",
@@ -72,6 +69,6 @@ var agesKillNodes = map[string]*Node{
 
 	"kill moldorm": Or("sword", "scent shooter", "cane", "switch hook",
 		"punch enemy", HardOr("bombs", "scent satchel")),
-
-	"kill wizzrobe": Or("kill normal"),
+	"kill subterror": And("shovel", Or("sword", "switch hook", "scent seeds",
+		"punch enemy", Hard("bombs"))),
 }

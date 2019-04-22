@@ -152,8 +152,10 @@ func TestNodeGetMark(t *testing.T) {
 
 func TestHardNodes(t *testing.T) {
 	hard1 := NewNode("hard1", AndType, false, false, true)
-	if mark := hard1.GetMark(hard1, false); mark != MarkFalse {
-		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	// hard nodes queries directly return `true` even if the `hard` parameter
+	// is false. this is weird, but it is also ok. i think.
+	if mark := hard1.GetMark(hard1, false); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
 	}
 	clearMarks(hard1)
 	if mark := hard1.GetMark(hard1, true); mark != MarkTrue {
@@ -182,4 +184,17 @@ func TestHardNodes(t *testing.T) {
 		t.Fatalf("want %d, got %d", MarkTrue, mark)
 	}
 	clearMarks(or1, hard1)
+
+	count1 := NewNode("or1", CountType, false, false, false)
+	count1.AddParents(or1)
+	count1.MinCount = 2
+	if mark := count1.GetMark(count1, true); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(count1, hard1)
+	or1.AddParents(and1)
+	if mark := count1.GetMark(count1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(count1, hard1)
 }
