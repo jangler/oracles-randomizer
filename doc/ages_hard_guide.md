@@ -75,8 +75,8 @@ This document details tricks and obscurities that are in Ages hard logic.
 	   second room.
 
   [[Video]](https://streamable.com/6uo8u)
-- Get two small key chests in D4 by hitting switches with feather + boomerang.
-  [[Video]](https://streamable.com/2behr)
+- Get two chests in D4 by hitting switches with feather + boomerang instead of
+  seed shooter. [[Video]](https://streamable.com/2behr)
 - Use the Peace Ring to throw bombs at the Stalfos in D4 from a minecart.
   [[Video]](https://streamable.com/nf0ir)
 - Hit two switches in D5 from a distance by throwing pots. The second throw
