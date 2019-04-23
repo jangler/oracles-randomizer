@@ -91,15 +91,3 @@ func FindTreasureName(t *Treasure) string {
 	}
 	return ""
 }
-
-// returns true iff a treasure can be lost permanently (i.e. outside of hide
-// and seek).
-func TreasureCanBeLost(name string) bool {
-	switch name {
-	case "wooden shield", "iron shield", "star ore", "ribbon",
-		"spring banana", "ricky's gloves", "round jewel", "pyramid jewel",
-		"square jewel", "x-shapred jewel", "red ore", "blue ore", "hard ore":
-		return true
-	}
-	return false
-}
