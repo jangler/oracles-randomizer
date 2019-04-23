@@ -74,7 +74,7 @@ func initFlags() {
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flag.StringVar(&flagStats, "stats", "",
-		"test routes and print stats for 'seasons' or 'ages'")
+		"print aggregate YAML route data for 'seasons' or 'ages'")
 	flag.BoolVar(&flagTreewarp, "treewarp", false,
 		"warp to ember tree by pressing start+B on map screen")
 	flag.BoolVar(&flagVerbose, "verbose", false,

@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"os"
 	"runtime"
+
+	"gopkg.in/yaml.v2"
 )
 
 // generate a bunch of seeds.
@@ -33,33 +35,22 @@ func generateSeeds(n, game int, hard bool) []*RouteInfo {
 	return routes
 }
 
-// generate a bunch of seeds and print information about how often items are
-// required, and what spheres they're normally in.
+// generate a bunch of seeds and print item configurations in YAML format.
 func logStats(game, trials int, hard bool, logf logFunc) {
+	// get `trials` routes
 	routes := generateSeeds(trials, game, hard)
 
-	// aggregate data on required items
-	meanSpheres := make(map[string]float64)
-	for _, ri := range routes {
-		// total spheres
-		checks := getChecks(ri)
-		spheres := getSpheres(ri.Route.Graph, checks, hard)
-		for i, sphere := range spheres {
-			for _, node := range sphere {
-				if !node.IsSlot {
-					continue
-				}
-				itemName := checks[node].Name
-				if meanSpheres[itemName] == 0 {
-					meanSpheres[itemName] = 0
-				}
-				meanSpheres[itemName] += float64(i)
-			}
+	// make a YAML-serializable slice of check maps
+	stringChecks := make([]map[string]string, len(routes))
+	for i, ri := range routes {
+		stringChecks[i] = make(map[string]string)
+		for k, v := range getChecks(ri) {
+			stringChecks[i][k.Name] = v.Name
 		}
 	}
 
-	for item, totalSpheres := range meanSpheres {
-		logf("%s - %4.1f", getNiceName(item),
-			float64(totalSpheres)/float64(len(routes)))
+	// encode to stdout
+	if err := yaml.NewEncoder(os.Stdout).Encode(stringChecks); err != nil {
+		panic(err)
 	}
 }
