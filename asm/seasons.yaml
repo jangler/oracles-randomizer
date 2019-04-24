@@ -1,19 +1,9 @@
 addrs:
   wActiveGroup: 0xcc49
   wActiveRoom: 0xcc4c
-  hMusicVar: 0xffb5
+  hMusicVar: 0xffb5 # used in filterMusic
 banks:
   0x00:
-    # don't play any music. should only be called if the -nomusic flag is
-    # given. TODO: merge this with the equivalent ages function.
-    - filterMusic: |
-        ld h,a
-        cp a,49
-        jr nc,03
-        ld a,08
-        ret
-        ld a,(ff00+b5)
-        ret
     # call a function hl in bank 02, preserving af. e can't be used as a
     # parameter to that function, but it can be returned.
     - callBank2: |

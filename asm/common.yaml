@@ -1,3 +1,14 @@
 addrs:
   interBankCall: 0x008a
-banks: {}
+banks:
+  0x00:
+    # don't play any music. should only be called if the -nomusic flag is
+    # given.
+    - filterMusic: |
+        ld h,a
+        cp a,49
+        jr nc,03
+        ld a,08
+        ret
+        ld a,(hMusicVar)
+        ret
