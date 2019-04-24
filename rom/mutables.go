@@ -83,7 +83,7 @@ func (mr *MutableRange) Check(b []byte) error {
 	return nil
 }
 
-// SetMusic sets music on or off in the modified ROM.
+// SetMusic sets music on or off in the modified ROM. By default, it is off.
 func SetMusic(music bool) {
 	if music {
 		mut := codeMutables["no music call"].(*MutableRange)
@@ -91,7 +91,8 @@ func SetMusic(music bool) {
 	}
 }
 
-// SetTreewarp sets treewarp on or off in the modified ROM.
+// SetTreewarp sets treewarp on or off in the modified ROM. By default, it is
+// on.
 func SetTreewarp(treewarp bool) {
 	if !treewarp {
 		mut := codeMutables["tree warp jump"].(*MutableRange)

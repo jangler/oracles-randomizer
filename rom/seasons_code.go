@@ -5,8 +5,14 @@ import (
 )
 
 func newSeasonsRomBanks() *romBanks {
+	asm, err := newAssembler()
+	if err != nil {
+		panic(err)
+	}
+
 	r := romBanks{
 		endOfBank: make([]uint16, 0x40),
+		assembler: asm,
 	}
 
 	r.endOfBank[0x00] = 0x3ec8
@@ -44,10 +50,10 @@ func initSeasonsEOB() {
 	// bank 00
 
 	// don't play any music if the -nomusic flag is given.
-	noMusicFunc := r.appendToBank(0x00, "no music func",
-		"\x67\xfe\x49\x30\x03\x3e\x08\xc9\xf0\xb5\xc9")
-	r.replace(0x00, 0x0c76, "no music call",
-		"\x67\xf0\xb5", "\xcd"+noMusicFunc)
+	noMusicFunc := r.appendASM(0x00, "no music func",
+		"ld h,a; cp a,49; jr nc,03; ld a,08; ret; ld a,(ff00+b5); ret")
+	r.replaceASM(0x00, 0x0c76, "no music call",
+		"\x67\xf0\xb5", "call %04x", stringAddr(noMusicFunc))
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
