@@ -1,6 +1,6 @@
 package rom
 
-//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua
+//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/
 
 import (
 	"github.com/yuin/gopher-lua"
@@ -38,6 +38,21 @@ func newAssembler() (*assembler, error) {
 func (asm *assembler) compile(s, delim string) (string, error) {
 	if err := asm.ls.CallByParam(lua.P{
 		Fn:      asm.lgbtasm.RawGetString("compile"),
+		NRet:    1,
+		Protect: true,
+	}, lua.LString(s), lua.LString(delim)); err != nil {
+		return "", err
+	}
+	ret := asm.ls.Get(-1)
+	asm.ls.Pop(1)
+
+	return ret.(lua.LString).String(), nil
+}
+
+// decompile wraps `lgbtasm.decompile()`.
+func (asm *assembler) decompile(s, delim string) (string, error) {
+	if err := asm.ls.CallByParam(lua.P{
+		Fn:      asm.lgbtasm.RawGetString("decompile"),
 		NRet:    1,
 		Protect: true,
 	}, lua.LString(s), lua.LString(delim)); err != nil {

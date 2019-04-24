@@ -2,11 +2,27 @@ package rom
 
 import (
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 func newAgesRomBanks() *romBanks {
+	asm, err := newAssembler()
+	if err != nil {
+		panic(err)
+	}
+
 	r := romBanks{
-		endOfBank: make([]uint16, 0x40),
+		endOfBank:  make([]uint16, 0x40),
+		assembler:  asm,
+		asmEntries: make(map[string]string),
+	}
+
+	for _, filename := range []string{"common.yaml", "ages.yaml"} {
+		if err := yaml.Unmarshal(
+			FSMustByte(false, "/asm/"+filename), r.asmEntries); err != nil {
+			panic(err)
+		}
 	}
 
 	r.endOfBank[0x00] = 0x3ef8
@@ -39,10 +55,9 @@ func initAgesEOB() {
 	// bank 00
 
 	// don't play any music if the -nomusic flag is given.
-	noMusicFunc := r.appendToBank(0x00, "no music func",
-		"\x67\xfe\x49\x30\x03\x3e\x08\xc9\xf0\xb7\xc9")
-	r.replace(0x00, 0x0c9a, "no music call",
-		"\x67\xf0\xb7", "\xcd"+noMusicFunc)
+	noMusicFunc := r.appendAsmEntry(0x00, "filterMusic", 0xb7)
+	r.replaceAsm(0x00, 0x0c9a, "no music call",
+		"\x67\xf0\xb7", "call %04x", stringAddr(noMusicFunc))
 
 	// only increment the maku tree's state if on the maku tree screen, or if
 	// all essences are obtained, set it to the value it would normally have at
@@ -56,27 +71,19 @@ func initAgesEOB() {
 		"\x3c\xfe\x11", "\xcd"+makuStateCheck)
 
 	// return z iff the current group and room match c and b.
-	compareRoom := r.appendToBank(0x00, "compare room",
-		"\xfa\x2d\xcc\xb9\xc0\xfa\x30\xcc\xb8\xc9")
+	compareRoom := r.appendAsmEntry(0x00, "compareRoom")
 
 	// read 2 bytes from bank e at hl into bc.
-	readWord := r.appendToBank(0x00, "read word",
-		"\xfa\x97\xff\xf5\x7b\xea\x97\xff\xea\x22\x22"+ // switch bank
-			"\x2a\x47\x7e\x4f"+ // read
-			"\xf1\xea\x97\xff\xea\x22\x22\xc9") // switch back
+	readWord := r.appendAsmEntry(0x00, "readWord")
 
 	// searches for a value in a table starting at hl, with an entry matching
 	// keys b and subkey c, and values e bytes long. sets c if found. a key of
 	// ff ends the table.
-	searchDoubleKey := r.appendToBank(0x00, "search by double key",
-		"\x2a\xfe\xff\xc8\xb8\x20\x06\x2a\xb9\x20\x03\x37\xc9"+
-			"\x23\x7b\xd7\x18\xee")
+	searchDoubleKey := r.appendAsmEntry(0x00, "searchDoubleKey")
 
 	// searches for an interaction with ID a and returns the ID address in de,
 	// and z flag if found.
-	findObjectWithID := r.appendToBank(0x00, "find object with ID",
-		"\xc5\x47\x11\x41\xd0\x1a\xb8\x20\x02\xc1\xc9"+
-			"\x14\x7a\xfe\xe0\x38\xf4\xc1\xb7\xc9")
+	findObjectWithID := r.appendAsmEntry(0x00, "findObjectWithId")
 
 	// bank 01
 

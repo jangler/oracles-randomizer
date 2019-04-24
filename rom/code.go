@@ -28,8 +28,9 @@ func addCode(name string, bank byte, offset uint16, code string) uint16 {
 }
 
 type romBanks struct {
-	endOfBank []uint16
-	assembler *assembler
+	endOfBank  []uint16
+	assembler  *assembler
+	asmEntries map[string]string
 }
 
 var codeMutables = map[string]Mutable{}
@@ -55,17 +56,32 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 	return addrString(eob)
 }
 
-// appendASM acts as appendToBank, but by compiling a block of asm. additional
+// appendAsm acts as appendToBank, but by compiling a block of asm. additional
 // arguments are formatted into `asm` by fmt.Sprintf. the returned address is
 // also given as a uint16 rather than a big-endian word in string form.
-func (r *romBanks) appendASM(bank byte, name, asm string,
+func (r *romBanks) appendAsm(bank byte, name, asm string,
 	a ...interface{}) uint16 {
+	// perform substitutions from other entries
+	for k, v := range r.asmEntries {
+		asm = strings.ReplaceAll(asm, k, v)
+	}
+
 	var err error
 	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")
 	if err != nil {
 		panic(err)
 	}
 	return stringAddr(r.appendToBank(bank, name, asm))
+}
+
+// appendAsmEntry acts as appendAsm, but by looking up the asm block in a
+// preloaded map.
+func (r *romBanks) appendAsmEntry(bank byte, key string,
+	a ...interface{}) string {
+	if _, ok := r.asmEntries[key]; !ok {
+		panic(fmt.Errorf("key not found: %s", key))
+	}
+	return addrString(r.appendAsm(bank, key, r.asmEntries[key], a...))
 }
 
 // replace replaces the old data at the given address with the new data, and
@@ -75,9 +91,9 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 	codeMutables[name] = MutableString(Addr{bank, offset}, old, new)
 }
 
-// replaceASM acts as replace, but by compiling a block of asm. additional
+// replaceAsm acts as replace, but by compiling a block of asm. additional
 // arguments are formatted into `asm` by fmt.Sprintf.
-func (r *romBanks) replaceASM(bank byte, offset uint16, name, old, asm string,
+func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, asm string,
 	a ...interface{}) {
 	var err error
 	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")

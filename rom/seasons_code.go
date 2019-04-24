@@ -2,6 +2,8 @@ package rom
 
 import (
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 func newSeasonsRomBanks() *romBanks {
@@ -11,8 +13,16 @@ func newSeasonsRomBanks() *romBanks {
 	}
 
 	r := romBanks{
-		endOfBank: make([]uint16, 0x40),
-		assembler: asm,
+		endOfBank:  make([]uint16, 0x40),
+		assembler:  asm,
+		asmEntries: make(map[string]string),
+	}
+
+	for _, filename := range []string{"common.yaml", "seasons.yaml"} {
+		if err := yaml.Unmarshal(
+			FSMustByte(false, "/asm/"+filename), r.asmEntries); err != nil {
+			panic(err)
+		}
 	}
 
 	r.endOfBank[0x00] = 0x3ec8
@@ -50,10 +60,9 @@ func initSeasonsEOB() {
 	// bank 00
 
 	// don't play any music if the -nomusic flag is given.
-	noMusicFunc := r.appendASM(0x00, "no music func",
-		"ld h,a; cp a,49; jr nc,03; ld a,08; ret; ld a,(ff00+b5); ret")
-	r.replaceASM(0x00, 0x0c76, "no music call",
-		"\x67\xf0\xb5", "call %04x", noMusicFunc)
+	noMusicFunc := r.appendAsmEntry(0x00, "filterMusic", 0xb5)
+	r.replaceAsm(0x00, 0x0c76, "no music call",
+		"\x67\xf0\xb5", "call %04x", stringAddr(noMusicFunc))
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
@@ -115,22 +124,17 @@ func initSeasonsEOB() {
 
 	// utility function, call a function hl in bank 02, preserving af. e can't
 	// be used as a parameter to that function, but it can be returned.
-	callBank2 := r.appendToBank(0x00, "call bank 02",
-		"\xf5\x1e\x02\xcd\x8a\x00\xf1\xc9")
+	callBank2 := r.appendAsmEntry(0x00, "callBank2")
 
 	// increment hl until (hl) equals either register a or ff. returns z if a
 	// match was found.
-	searchValue := r.appendToBank(0x00, "search value",
-		"\xc5\x47\x2a\xb8\x28\x06\x3c\x28\x02\x18\xf7\x3c\x78\xc1\xc9")
+	searchValue := r.appendAsmEntry(0x00, "searchValue")
 
 	// search for a key bc in a dictionary starting at hl. the dictionary is a
 	// series of two-byte keys and two-byte values. if a match is found, hl is
 	// the address of the value, and z is set. the dictionary ends when $ff is
 	// encountered at the beginning of an entry.
-	lookupWord := r.appendToBank(0x00, "lookup word",
-		"\x2a\xfe\xff\x20\x02\xb7\xc9"+ // ret if key is $ff
-			"\xb8\x2a\x20\x02\xb9\xc8"+ // compare key bytes
-			"\x23\x23\x18\xef") // loop
+	lookupWord := r.appendAsmEntry(0x00, "lookupWord")
 
 	// bank 01
 

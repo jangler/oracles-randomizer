@@ -1,0 +1,63 @@
+# wram
+
+wActiveGroup: 'cc2d'
+wActiveRoom: 'cc30'
+
+# bank-agnostic
+
+compareRoom: |
+    ld a,(wActiveGroup)
+    cp c
+    ret nz
+    ld a,(wActiveRoom)
+    cp b
+    ret
+
+# TODO: these (ff97)s could be replaced with (ff00+97)s
+readWord: |
+    ld a,(ff97)
+    push af
+    ld a,e
+    ld (ff97),a
+    ld (2222),a
+    ldi a,(hl)
+    ld b,a
+    ld a,(hl)
+    ld c,a
+    pop af
+    ld (ff97),a
+    ld (2222),a
+    ret
+
+searchDoubleKey: |
+    ldi a,(hl)
+    cp a,ff
+    ret z
+    cp b
+    jr nz,06
+    ldi a,(hl)
+    cp c
+    jr nz,03
+    scf
+    ret
+    inc hl
+    ld a,e
+    rst 10h
+    jr ee
+
+findObjectWithId: |
+    push bc
+    ld b,a
+    ld de,d041
+    ld a,(de)
+    cp b
+    jr nz,02
+    pop bc
+    ret
+    inc d
+    ld a,d
+    cp a,e0
+    jr c,f4
+    pop bc
+    or a
+    ret

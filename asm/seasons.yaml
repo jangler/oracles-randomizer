@@ -1,0 +1,39 @@
+# bank-agnostic
+
+searchValue: |
+    push bc
+    ld b,a
+    ldi a,(hl)
+    cp b
+    jr z,06
+    inc a
+    jr z,02
+    jr f7
+    inc a
+    ld a,b
+    pop bc
+    ret
+
+lookupWord: |
+    ldi a,(hl)
+    cp a,ff
+    jr nz,02
+    or a
+    ret
+    cp b
+    ldi a,(hl)
+    jr nz,02
+    cp c
+    ret z
+    inc hl
+    inc hl
+    jr ef
+
+# bank 01
+
+readDefaultSeason: |
+    ld h,7e
+    ld l,b
+    ld a,(hl)
+    ld b,a
+    ret
