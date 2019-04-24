@@ -83,16 +83,6 @@ func (r *romBanks) appendAsm(bank byte, name, asm string,
 	return r.addrs[name]
 }
 
-// appendAsmEntry acts as appendAsm, but by looking up the asm block in a
-// preloaded map.
-func (r *romBanks) appendAsmEntry(bank byte, key string,
-	a ...interface{}) string {
-	if _, ok := r.asmEntries[key]; !ok {
-		panic(fmt.Errorf("key not found: %s", key))
-	}
-	return addrString(r.appendAsm(bank, key, r.asmEntries[key], a...))
-}
-
 // replace replaces the old data at the given address with the new data, and
 // associates the change with the given name. actual replacement will fail at
 // runtime if the old data does not match the original data in the ROM.
