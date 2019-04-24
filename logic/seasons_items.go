@@ -22,15 +22,11 @@ var seasonsItemNodes = map[string]*Node{
 	"punch object": Or("fist ring", "expert's ring"),
 	"punch enemy":  Or(Hard("fist ring"), "expert's ring"),
 
-	"sword L-1":     Or("sword 1", "sword 2"),
-	"sword L-2":     And("sword 1", "sword 2"),
-	"boomerang L-1": Or("boomerang 1", "boomerang 2"),
-	"boomerang L-2": And("boomerang 1", "boomerang 2"),
-	"slingshot L-1": Or("slingshot 1", "slingshot 2"),
-	"slingshot L-2": And("slingshot 1", "slingshot 2"),
-	"feather L-1":   Or("feather 1", "feather 2"),
-	"feather L-2":   And("feather 1", "feather 2"),
-	"satchel":       Or("satchel 1", "satchel 2"),
+	// progressives
+	"noble sword":     Count(2, "sword"),
+	"magic boomerang": Count(2, "boomerang"),
+	"hyper slingshot": Count(2, "slingshot"),
+	"cape":            Count(2, "feather"),
 
 	// this of course doesn't apply to all trees, but trees won't have any
 	// seeds attached to them unless they can be harvested. so it works out.
@@ -66,7 +62,7 @@ var seasonsItemNodes = map[string]*Node{
 	"gale slingshot":    And("harvest gale seeds", "slingshot"),
 	"any slingshot": Or("ember slingshot", "mystery slingshot",
 		"scent slingshot", "pegasus slingshot", "gale slingshot"),
-	"any slingshot L-2": And("slingshot L-2", "any slingshot"),
+	"any hyper slingshot": And("hyper slingshot", "any slingshot"),
 
 	"ember seeds":   And("harvest ember seeds", "seed item"),
 	"mystery seeds": And("harvest mystery seeds", "seed item"),
@@ -78,12 +74,8 @@ var seasonsItemNodes = map[string]*Node{
 
 	"flute": Or("ricky's flute", "moosh's flute", "dimitri's flute"),
 
-	"shield L-1": Or("wooden shield", And("beach", "ember seeds")),
-
-	"sword":     Or("sword L-1", "sword L-2"),
-	"shield":    Or("shield L-1", "iron shield"),
-	"boomerang": Or("boomerang L-1", "boomerang L-2"),
-	"slingshot": Or("slingshot L-1", "slingshot L-2"),
+	"shield": Or("wooden shield", "iron shield",
+		And("beach", "ember seeds")),
 	"seed item": Or("satchel", "slingshot"),
 	"kill for bombs": Or("sword", "ember seeds",
 		Or("scent slingshot", Hard("scent seeds")), "fool's ore"),
@@ -95,13 +87,13 @@ var seasonsItemNodes = map[string]*Node{
 					"sunken city default spring"))))))),
 
 	// jump x pit tiles
-	"jump 2":      Or("feather L-1", "feather L-2"),
-	"jump 3":      Or(And("feather L-1", "pegasus satchel"), "feather L-2"),
+	"jump 2":      And("feather"),
+	"jump 3":      Or(And("feather", "pegasus satchel"), "cape"),
 	"bomb jump 2": Or("jump 3", HardAnd("jump 2", "bombs")),
 	"bomb jump 3": Or("jump 4", HardAnd("jump 3", "bombs")),
-	"jump 4":      And("feather L-2"),
+	"jump 4":      And("cape"),
 	"bomb jump 4": Or("jump 6", HardAnd("jump 4", "bombs")),
-	"jump 6":      And("feather L-2", "pegasus satchel"),
+	"jump 6":      And("cape", "pegasus satchel"),
 
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch object"),
 	"harvest bush": Or("sword", "bombs", "fool's ore"),

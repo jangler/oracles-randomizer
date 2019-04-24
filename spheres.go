@@ -92,7 +92,7 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 
 // logSpheres prints item placement by sphere to the summary channel.
 func logSpheres(summary chan string, checks map[*graph.Node]*graph.Node,
-	spheres [][]*graph.Node, filter func(string) bool) {
+	spheres [][]*graph.Node, game int, filter func(string) bool) {
 	for i, sphere := range spheres {
 		// get lines first, to make sure there are actual relevant items in
 		// this sphere.
@@ -104,8 +104,8 @@ func logSpheres(summary chan string, checks map[*graph.Node]*graph.Node,
 			for _, node := range sphere {
 				if node == slot {
 					lines = append(lines, fmt.Sprintf("%-28s <- %s",
-						getNiceName(slot.Name),
-						getNiceName(item.Name)))
+						getNiceName(slot.Name, game),
+						getNiceName(item.Name, game)))
 					break
 				}
 			}

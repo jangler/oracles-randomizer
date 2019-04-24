@@ -57,38 +57,12 @@ func (ms *MutableSlot) Check(b []byte) error {
 		return nil
 	}
 
+	// only check ID addresses, since situational variants and progressive
+	// items mess with everything else.
 	for _, addr := range ms.idAddrs {
 		if err := check(b, addr, ms.Treasure.id); err != nil {
 			return err
 		}
-	}
-	for _, addr := range ms.subIDAddrs {
-		if err := check(b, addr, ms.Treasure.subID); err != nil {
-			return err
-		}
-	}
-	for _, addr := range ms.paramAddrs {
-		if err := check(b, addr, ms.Treasure.param); err != nil {
-			return err
-		}
-	}
-	for _, addr := range ms.textAddrs {
-		if err := check(b, addr, ms.Treasure.text); err != nil {
-			return err
-		}
-	}
-	for _, addr := range ms.gfxAddrs {
-		gfx := itemGfx[FindTreasureName(ms.Treasure)]
-		for i := uint16(0); i < 3; i++ {
-			addr := Addr{addr.bank, addr.offset + i}
-			if err := check(b, addr, byte(gfx>>(8*(2-i)))); err != nil {
-				return err
-			}
-		}
-	}
-	if ms.collectMode != ms.Treasure.mode {
-		return fmt.Errorf("slot/treasure collect mode mismatch: %x/%x",
-			ms.collectMode, ms.Treasure.mode)
 	}
 
 	return nil

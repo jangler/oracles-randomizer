@@ -14,8 +14,8 @@ package logic
 
 // when testing how to kill enemies, remember to try:
 // - sword
-// - boomerang L-1
-// - boomerang L-2
+// - boomerang
+// - magic boomerang
 // - rod
 // - seeds (satchel first, slingshot if satchel doesn't work)
 // - bombs (hard only)
@@ -47,9 +47,9 @@ var seasonsKillNodes = map[string]*Node{
 
 	// the "safe" version is for areas where you can't possibly get stuck from
 	// being on the wrong side of a bush.
-	"remove bush safe": Or("sword", "boomerang L-2", "bracelet",
+	"remove bush safe": Or("sword", "magic boomerang", "bracelet",
 		"ember seeds", "gale slingshot", "bombs"),
-	"remove bush": Or("sword", "boomerang L-2", "bracelet"),
+	"remove bush": Or("sword", "magic boomerang", "bracelet"),
 
 	"kill normal": Or("sword", "satchel kill normal", "slingshot kill normal",
 		"fool's ore", "punch enemy", Hard("bombs")),
@@ -68,7 +68,7 @@ var seasonsKillNodes = map[string]*Node{
 	"kill moblin (gap)": Or("sword", "scent seeds", "slingshot kill normal",
 		"fool's ore", "jump kill normal", "jump pit normal",
 		HardOr("bombs", "punch enemy", "ember seeds")),
-	"remove pot":         Or("sword L-2", "bracelet"),
+	"remove pot":         Or("noble sword", "bracelet"),
 	"flip spiked beetle": Or("shield", "shovel"),
 	// spiked beetles can't be punched for some reason
 	"flip kill spiked beetle": And("flip spiked beetle", Or("sword", "fool's ore",
@@ -76,13 +76,13 @@ var seasonsKillNodes = map[string]*Node{
 	"kill spiked beetle": Or("flip kill spiked beetle", "gale slingshot",
 		Hard("gale seeds")),
 	"kill omuai":         And("kill armored", "bracelet"),
-	"remove flower":      Or("sword", "boomerang L-2"),
+	"remove flower":      Or("sword", "magic boomerang"),
 	"kill agunima":       And("ember seeds", "kill armored"),
-	"hit very far lever": Or("boomerang L-2", "any slingshot"),
+	"hit very far lever": Or("magic boomerang", "any slingshot"),
 	"hit far lever": Or("boomerang", "any slingshot",
 		HardAnd("jump 2", Or("sword", "rod", "fool's ore"))),
 	"kill gohma":         Or("scent seeds", "ember seeds"),
-	"remove mushroom":    Or("boomerang L-2", "bracelet"),
+	"remove mushroom":    Or("magic boomerang", "bracelet"),
 	"kill moldorm":       Or("kill armored"),
 	"kill armored (pit)": Or("kill armored", "shield"),
 	"break crystal":      Or("sword", "bombs", "bracelet", "expert's ring"),
@@ -91,7 +91,7 @@ var seasonsKillNodes = map[string]*Node{
 	"kill vire": Or("sword", Hard("bombs"), "fool's ore", "expert's ring"),
 	"finish manhandla": Or("sword", Hard("bombs"), "any slingshot",
 		"fool's ore", "expert's ring"),
-	"kill manhandla":  And("boomerang L-2", "finish manhandla"),
+	"kill manhandla":  And("magic boomerang", "finish manhandla"),
 	"kill poe sister": Or("kill armored", "rod", "ember seeds"),
 	"kill magunesu":   Or("sword", "fool's ore", "expert's ring"),
 	"kill armored (across pit)": Or("scent slingshot", "magnet gloves",

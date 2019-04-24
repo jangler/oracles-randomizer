@@ -486,6 +486,17 @@ func canReachViaKeys(g graph.Graph, target *graph.Node,
 		}
 	}
 
+	// progressive items
+	for _, name := range []string{
+		"iron shield", "noble sword", "magic boomerang", "long hook",
+		"hyper slingshot", "power glove", "cape", "echoes", "currents", "ages",
+		"mermaid suit",
+	} {
+		if node, ok := g[name]; ok {
+			node.Mark = graph.MarkTrue
+		}
+	}
+
 	return target.GetMark(target, hard) == graph.MarkTrue
 }
 

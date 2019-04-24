@@ -3,14 +3,8 @@ package logic
 var agesItemNodes = map[string]*Node{
 	"shield": Or("wooden shield", "iron shield"),
 
-	"sword":       Or("sword 1", "sword 2"),
-	"noble sword": And("sword 1", "sword 2"),
-
 	"bombs": Or(And("bombs, 10", Or("break bush", "flute", "shovel")),
 		Hard("goron shooting gallery")),
-
-	"switch hook": Or("switch hook 1", "switch hook 2"),
-	"long hook":   And("switch hook 1", "switch hook 2"),
 
 	"ricky's flute":   Root(),
 	"dimitri's flute": Root(),
@@ -22,19 +16,14 @@ var agesItemNodes = map[string]*Node{
 	"punch object": Or("fist ring", "expert's ring"),
 	"punch enemy":  Or(Hard("fist ring"), "expert's ring"),
 
-	"harp":   Or("harp 1", "harp 2", "harp 3"),
-	"echoes": And("harp"),
-	"currents": Or(And("harp 1", Or("harp 2", "harp 3")),
-		And("harp 2", "harp 3")),
-	"ages": And("harp 1", "harp 2", "harp 3"),
-
-	"bracelet":    Or("bracelet 1", "bracelet 2"),
-	"power glove": And("bracelet 1", "bracelet 2"),
-
-	"satchel": Or("satchel 1", "satchel 2"),
-
-	"flippers":     Or("flippers 1", "flippers 2"),
-	"mermaid suit": And("flippers 1", "flippers 2"),
+	// progressives
+	"noble sword":  Count(2, "sword"),
+	"long hook":    Count(2, "switch hook"),
+	"echoes":       Count(1, "harp"),
+	"currents":     Count(2, "harp"),
+	"ages":         Count(3, "harp"),
+	"power glove":  Count(2, "bracelet"),
+	"mermaid suit": Count(2, "flippers"),
 
 	"bomb jump 2": And("feather", Or("pegasus satchel", Hard("bombs"))),
 	"jump 3":      And("feather", "pegasus satchel"),

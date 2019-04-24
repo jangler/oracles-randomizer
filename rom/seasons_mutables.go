@@ -125,8 +125,8 @@ var seasonsFixedMutables = map[string]Mutable{
 	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
 		"\xcc\xe5\x17", "\x00\x00\x00"),
 
-	// zero the original shop item text (don't remember if this is actually
-	// necessary).
+	// zero the original shop item text so that the actual item text can be
+	// displayed.
 	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
 		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
 

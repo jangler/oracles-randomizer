@@ -58,28 +58,6 @@ func Init(game int) {
 			itemGfx[name] = itemGfx["small key"]
 		}
 	}
-
-	// use these graphics as default for progressive items (seasons)
-	itemGfx["sword 1"] = itemGfx["sword L-1"]
-	itemGfx["sword 2"] = itemGfx["sword L-1"]
-	itemGfx["boomerang 1"] = itemGfx["boomerang L-1"]
-	itemGfx["boomerang 2"] = itemGfx["boomerang L-1"]
-	itemGfx["slingshot 1"] = itemGfx["slingshot L-1"]
-	itemGfx["slingshot 2"] = itemGfx["slingshot L-1"]
-	itemGfx["feather 1"] = itemGfx["feather L-1"]
-	itemGfx["feather 2"] = itemGfx["feather L-1"]
-
-	// (ages)
-	itemGfx["sword 1"] = itemGfx["sword L-1"]
-	itemGfx["switch hook 1"] = itemGfx["switch hook"]
-	itemGfx["switch hook 2"] = itemGfx["long hook"]
-	itemGfx["bracelet 1"] = itemGfx["bracelet"]
-	itemGfx["bracelet 2"] = itemGfx["power glove"]
-	itemGfx["harp 1"] = itemGfx["tune of echoes"]
-	itemGfx["harp 2"] = itemGfx["tune of currents"]
-	itemGfx["harp 3"] = itemGfx["tune of ages"]
-	itemGfx["flippers 1"] = itemGfx["flippers"]
-	itemGfx["flippers 2"] = itemGfx["mermaid suit"]
 }
 
 // Addr is a fully-specified memory address.
@@ -228,41 +206,21 @@ func Verify(b []byte, game int) []error {
 	for k, m := range getAllMutables() {
 		// ignore special cases that would error even when correct
 		switch k {
-		// flutes
-		case "ricky's flute", "moosh's flute", "dimitri's flute",
-			"strange flute":
 		// mystical seeds
 		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
 			"pegasus tree seeds", "gale tree seeds":
-		// progressive items
-		case "lost woods", "d6 boomerang chest", "d8 HSS chest",
-			"d7 cape chest", "member's shop 1", "sword 2", "boomerang 2",
-			"slingshot 2", "feather 2", "satchel 2":
-		// shop items (use sub ID instead of param, no text)
-		case "shop, 20 rupees", "shop, 30 rupees", "shop, 150 rupees",
-			"member's shop 2", "member's shop 3", "subrosia market, 1st item",
-			"subrosia market, 2nd item", "subrosia market, 5th item",
-			"zero shop text":
+		// seasons shop items
+		case "strange flute", "zero shop text", "member's card", "treasure map",
+			"rare peach stone", "ribbon":
 		// seasons misc.
-		case "maku tree", "fool's ore", "member's card", "treasure map",
-			"temple of seasons", "rare peach stone", "ribbon", "blaino prize",
-			"subrosia seaside", "great furnace", "subrosian smithy",
-			"master diver's reward", "d5 basement", "green joy ring",
-			"mt. cucco, platform cave", "diving spot outside D4",
-			"d7 armos puzzle", "above d7 zol button":
+		case "temple of seasons", "blaino prize", "green joy ring",
+			"mt. cucco, platform cave", "diving spot outside D4":
+		// ages progressive w/ different item IDs
+		case "nayru's house", "tokkey's composition", "rescue nayru",
+			"d6 present vire chest":
 		// ages misc.
-		case "sword 1", "nayru's house", "south shore dirt", "target carts 1",
-			"target carts 2", "big bang game", "harp 1", "harp 2", "harp 3",
-			"sea of storms past", "starting chest", "deku forest soldier",
-			"hidden tokay cave", "ridge bush cave", "graveyard poe",
-			"d8 stalfos":
-		// ages, script item using collect mode other than 0a
-		case "trade lava juice", "goron dance, with letter", "goron elder",
-			"balloon guy's upgrade", "king zora", "d2 thwomp shelf":
-		// ages, progressive items/slots not covered elsewhere
-		case "d6 present vire chest", "d7 miniboss chest", "d8 floor puzzle",
-			"tokkey's composition", "rescue nayru", "bracelet 2", "flippers 2":
-			break
+		case "south shore dirt", "target carts 1", "target carts 2",
+			"sea of storms past", "starting chest", "graveyard poe":
 		default:
 			if err := m.Check(b); err != nil {
 				errors = append(errors, fmt.Errorf("%s: %v", k, err))

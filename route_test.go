@@ -9,8 +9,8 @@ import (
 )
 
 func TestGraph(t *testing.T) {
-	// testSeasonsGraph(t)
-	testAgesGraph(t)
+	testSeasonsGraph(t)
+	// testAgesGraph(t)
 }
 
 // check that graph logic is working as expected
@@ -21,10 +21,10 @@ func testSeasonsGraph(t *testing.T) {
 
 	// test basic start item
 	checkReach(t, g, map[string]string{
-		"d0 key chest": "feather 1",
+		"d0 key chest": "feather",
 	}, "maku tree", false, false)
 	checkReach(t, g, map[string]string{
-		"d0 key chest": "sword 1",
+		"d0 key chest": "sword",
 	}, "maku tree", false, true)
 
 	// test hard logic via bombs as weapon
@@ -41,13 +41,13 @@ func testSeasonsGraph(t *testing.T) {
 
 	// test key counting
 	checkReach(t, g, map[string]string{
-		"d0 key chest":     "sword 1",
+		"d0 key chest":     "sword",
 		"maku tree":        "gnarled key",
 		"d1 stalfos drop":  "d1 small key",
 		"d1 stalfos chest": "bombs",
 	}, "d1 basement", false, false)
 	checkReach(t, g, map[string]string{
-		"d0 key chest":     "sword 1",
+		"d0 key chest":     "sword",
 		"maku tree":        "gnarled key",
 		"d1 stalfos drop":  "d1 small key",
 		"d1 stalfos chest": "bombs",
@@ -66,7 +66,7 @@ func testAgesGraph(t *testing.T) {
 		"starting chest": "feather",
 	}, "black tower worker", false, false)
 	checkReach(t, g, map[string]string{
-		"starting chest": "sword 1",
+		"starting chest": "sword",
 	}, "black tower worker", false, true)
 
 	// test hard logic via bombs as weapon
@@ -83,13 +83,13 @@ func testAgesGraph(t *testing.T) {
 
 	// test key counting
 	checkReach(t, g, map[string]string{
-		"starting chest":      "sword 1",
+		"starting chest":      "sword",
 		"nayru's house":       "bombs",
 		"black tower worker":  "dimitri's flute",
 		"d3 pols voice chest": "d3 small key",
 	}, "d3 bush beetle room", false, false)
 	checkReach(t, g, map[string]string{
-		"starting chest":      "sword 1",
+		"starting chest":      "sword",
 		"nayru's house":       "bombs",
 		"black tower worker":  "dimitri's flute",
 		"d3 pols voice chest": "d3 small key",

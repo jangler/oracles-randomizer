@@ -22,7 +22,7 @@ var portalNodes = map[string]*Node{
 			Or("jump 6", And("jump 2", "dimitri's flute")))))),
 
 	"village portal": Or(
-		And("horon village", Or("boomerang L-2", Hard("jump 6"))),
+		And("horon village", Or("magic boomerang", Hard("jump 6"))),
 		And("pirate house", "hit lever")),
 
 	// effectively one-way

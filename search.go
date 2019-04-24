@@ -96,27 +96,6 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
-	// give proportionally reduced chances of roughly equivalent items
-	// appearing in the d0 sword chest.
-	if src != nil {
-		if slotNode.Name == "d0 sword chest" {
-			switch itemNode.Name {
-			case "sword 1", "sword 2":
-				if src.Intn(2) != 0 {
-					return false
-				}
-			case "feather 1", "feather 2":
-				if src.Intn(2) != 0 {
-					return false
-				}
-			case "winter", "spring", "summer", "autumn":
-				if src.Intn(4) != 0 {
-					return false
-				}
-			}
-		}
-	}
-
 	// rod of seasons has special graphics something
 	if slotNode.Name == "temple of seasons" &&
 		!rom.CanSlotAsRod(itemNode.Name) {

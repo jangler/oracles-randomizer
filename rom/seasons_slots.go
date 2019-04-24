@@ -84,7 +84,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"old man in treehouse": seasonsScriptItem(
 		"round jewel", 0x7332, 0x03, 0x94, collectFind2, 0xb5),
 	"lost woods": seasonsScriptItem(
-		"sword 2", 0x6418, 0x00, 0xc9, collectFind1, 0x40),
+		"sword", 0x6418, 0x00, 0xc9, collectFind1, 0x40),
 	"samasa desert pit": &MutableSlot{
 		treasureName: "rusty bell",
 		idAddrs:      []Addr{{0x09, 0x648d}, {0x0b, 0x60b1}},
@@ -169,7 +169,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 		mapCoords:    0xe6,
 	},
 	"member's shop 1": &MutableSlot{
-		treasureName: "satchel 2",
+		treasureName: "satchel",
 		idAddrs:      []Addr{{0x08, 0x4cce}},
 		subIDAddrs:   []Addr{{0x08, 0x4ccf}},
 		group:        0x03,
@@ -221,9 +221,9 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"tower of autumn": seasonsScriptItem(
 		"autumn", 0x4fc1, 0x05, 0xfb, collectFind1, 0xb0),
 	"subrosian dance hall": seasonsScriptItem(
-		"boomerang 1", 0x6646, 0x03, 0x95, collectFind2, 0x9a),
+		"boomerang", 0x6646, 0x03, 0x95, collectFind2, 0x9a),
 	"temple of seasons": &MutableSlot{
-		treasureName: "rod",
+		treasureName: "gasha seed", // placeholder; not actually in pool
 		idAddrs:      []Addr{{0x15, 0x70ce}},
 		subIDAddrs:   []Addr{{0x15, 0x70cc}},
 		group:        0x03,
@@ -298,7 +298,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"d0 key chest": seasonsChest(
 		"d0 small key", 0x4fb1, 0x04, 0x03, collectChest, 0xd4),
 	"d0 sword chest": &MutableSlot{
-		treasureName: "sword 1",
+		treasureName: "sword",
 		idAddrs:      []Addr{{0x0a, 0x7b90}},
 		paramAddrs:   []Addr{{0x0a, 0x7b92}},
 		textAddrs:    []Addr{{0x0a, 0x7b9c}},
@@ -314,7 +314,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	// d1
 	"d1 stalfos drop": keyDropSlot("d1 small key", 0x04, 0x1b, 0x96),
 	"d1 basement": seasonsFoundItem(
-		"satchel 1", 0x66b1, 0x06, 0x09, collectFind2, 0x96),
+		"satchel", 0x66b1, 0x06, 0x09, collectFind2, 0x96),
 	"d1 block-pushing room": seasonsChest(
 		"gasha seed", 0x4fbd, 0x04, 0x0d, collectChest, 0x96),
 	"d1 railway chest": seasonsChest(
@@ -357,7 +357,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"d3 roller chest": seasonsChest(
 		"d3 small key", 0x5005, 0x04, 0x4c, collectChest, 0x60),
 	"d3 mimic chest": seasonsChest(
-		"feather 1", 0x5015, 0x04, 0x50, collectChest, 0x60),
+		"feather", 0x5015, 0x04, 0x50, collectChest, 0x60),
 	"d3 zol chest": seasonsChest(
 		"d3 small key", 0x500d, 0x04, 0x4f, collectChest, 0x60),
 	"d3 water room": seasonsChest(
@@ -378,7 +378,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	// d4
 	"d4 pot puzzle": keyDropSlot("d4 small key", 0x04, 0x7b, 0x1d),
 	"d4 cracked floor room": seasonsChest(
-		"slingshot 1", 0x502d, 0x04, 0x73, collectChest, 0x1d),
+		"slingshot", 0x502d, 0x04, 0x73, collectChest, 0x1d),
 	"d4 north of entrance": seasonsChest(
 		"bombs, 10", 0x5031, 0x04, 0x7f, collectChest, 0x1d),
 	"d4 maze chest": seasonsChest(
@@ -426,7 +426,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"d6 spinner north": seasonsChest(
 		"d6 small key", 0x5071, 0x04, 0xc2, collectChest, 0x00),
 	"d6 armos hall": seasonsChest(
-		"boomerang 2", 0x507d, 0x04, 0xd0, collectChest, 0x00),
+		"boomerang", 0x507d, 0x04, 0xd0, collectChest, 0x00),
 	"d6 crystal trap room": seasonsChest(
 		"rupees, 10", 0x505d, 0x04, 0xaf, collectChest, 0x00),
 	"d6 1F east": seasonsChest(
@@ -450,7 +450,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"d7 wizzrobe chest": seasonsChest(
 		"d7 small key", 0x50ae, 0x05, 0x54, collectChest, 0xd0),
 	"d7 spike chest": seasonsChest(
-		"feather 2", 0x509e, 0x05, 0x44, collectChest, 0xd0),
+		"feather", 0x509e, 0x05, 0x44, collectChest, 0xd0),
 	"d7 maze chest": seasonsChest(
 		"rupees, 1", 0x509a, 0x05, 0x43, collectChest, 0xd0),
 	"d7 right of entrance": seasonsChest(
@@ -473,7 +473,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	// d8
 	"d8 eye drop": keyDropSlot("d8 small key", 0x05, 0x82, 0x04),
 	"d8 armos chest": seasonsChest(
-		"slingshot 2", 0x50da, 0x05, 0x8d, collectChest, 0x04),
+		"slingshot", 0x50da, 0x05, 0x8d, collectChest, 0x04),
 	"d8 SW lava chest": seasonsChest(
 		"bombs, 10", 0x50ba, 0x05, 0x6a, collectChest, 0x04),
 	"d8 three eyes chest": seasonsChest(
@@ -496,10 +496,6 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"d8 small key", 0x50ce, 0x05, 0x8a, collectChest, 0x04),
 	"d8 boss": seasonsChest( // EOB addr
 		"heart container", 0x0000, 0x05, 0x64, collectAppear2, 0x04),
-
-	// don't use this slot; no one knows about it and it's not required for
-	// anything in a normal playthrough
-	// "ring box L-2 gift": seasonsScriptItem("ring box L-2", 0x5c18),
 
 	// these are "fake" item slots in that they don't slot real treasures
 	"horon village seed tree": &MutableSlot{

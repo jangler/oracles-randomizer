@@ -465,17 +465,17 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	summary <- ""
 	summary <- "-- progression items --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, func(name string) bool {
+	logSpheres(summary, checks, spheres, game, func(name string) bool {
 		return !keyRegexp.MatchString(name) && !itemIsJunk(name)
 	})
 	summary <- ""
 	summary <- "-- small keys and boss keys --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, keyRegexp.MatchString)
+	logSpheres(summary, checks, spheres, game, keyRegexp.MatchString)
 	summary <- ""
 	summary <- "-- other items --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, itemIsJunk)
+	logSpheres(summary, checks, spheres, game, itemIsJunk)
 	if game == rom.GameSeasons {
 		summary <- ""
 		summary <- "-- default seasons --"

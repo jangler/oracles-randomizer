@@ -180,7 +180,7 @@ var seasonsD6Nodes = map[string]*Node{
 		Or(And("magnet gloves", "jump 2"), "jump 4")),
 	"d6 1F terrace":        AndSlot("enter d6"),
 	"d6 crystal trap room": AndSlot("enter d6"),
-	"d6 U-room":            And("enter d6", "break crystal", "boomerang L-2"),
+	"d6 U-room":            And("enter d6", "break crystal", "magic boomerang"),
 	"d6 torch stairs":      And("d6 U-room", "ember seeds"),
 	"d6 escape room":       AndSlot("d6 torch stairs", "jump 2"),
 	"d6 vire chest":        AndSlot("d6 escape room", "kill stalfos"),
@@ -225,7 +225,7 @@ var seasonsD7Nodes = map[string]*Node{
 
 	// 3 keys
 	"enter poe B": And("d7 pot room", "ember seeds", Count(3, "d7 small key"),
-		Or("pegasus satchel", "slingshot L-2", Hard())),
+		Or("pegasus satchel", "hyper slingshot", Hard())),
 	"d7 water stairs": And("enter poe B", "flippers"),
 	"d7 cross bridge": Or("jump 4", "kill armored (across pit)",
 		And("jump 2", "magnet gloves")),
@@ -253,7 +253,7 @@ var seasonsD8Nodes = map[string]*Node{
 		HardAnd("jump 2",
 			Or("ember satchel", "scent satchel", "mystery satchel")))),
 	"d8 three eyes chest": AndSlot("enter d8", "jump 2",
-		Or("any slingshot L-2",
+		Or("any hyper slingshot",
 			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
 	"d8 hardhat room": And("enter d8", "kill magunesu"),
 	"d8 hardhat drop": AndSlot("d8 hardhat room", "kill hardhat (magnet)"),
@@ -270,14 +270,14 @@ var seasonsD8Nodes = map[string]*Node{
 	"d8 spinner chest":    AndSlot("d8 armos chest"),
 	"frypolar owl":        And("mystery seeds", "d8 armos chest"),
 	"d8 darknut chest": AndSlot("d8 armos chest", "bombs", "kill armored",
-		Or("any slingshot L-2",
+		Or("any hyper slingshot",
 			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
 
 	// 3 keys
 	"d8 ice puzzle room": And("d8 armos chest", Count(3, "d8 small key"),
-		"kill frypolar", "ember seeds", "slingshot L-2"),
+		"kill frypolar", "ember seeds", "hyper slingshot"),
 	"d8 pols voice chest": AndSlot("d8 ice puzzle room",
-		Or("jump 6", "boomerang L-2", Hard())),
+		Or("jump 6", "magic boomerang", Hard())),
 
 	// 4 keys
 	"d8 crystal room":     And("d8 ice puzzle room", Count(4, "d8 small key")),
