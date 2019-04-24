@@ -13,16 +13,9 @@ func newSeasonsRomBanks() *romBanks {
 	}
 
 	r := romBanks{
-		endOfBank:  make([]uint16, 0x40),
-		assembler:  asm,
-		asmEntries: make(map[string]string),
-	}
-
-	for _, filename := range []string{"common.yaml", "seasons.yaml"} {
-		if err := yaml.Unmarshal(
-			FSMustByte(false, "/asm/"+filename), r.asmEntries); err != nil {
-			panic(err)
-		}
+		endOfBank: make([]uint16, 0x40),
+		assembler: asm,
+		addrs:     make(map[string]uint16),
 	}
 
 	r.endOfBank[0x00] = 0x3ec8
@@ -40,6 +33,32 @@ func newSeasonsRomBanks() *romBanks {
 	r.endOfBank[0x11] = 0x7eb0
 	r.endOfBank[0x15] = 0x792d
 	r.endOfBank[0x3f] = 0x714d
+
+	ads := make([]*asmData, 2)
+
+	for i, filename := range []string{"common.yaml", "seasons.yaml"} {
+		ads[i] = new(asmData)
+		if err := yaml.Unmarshal(
+			FSMustByte(false, "/asm/"+filename), ads[i]); err != nil {
+			panic(err)
+		}
+	}
+
+	for _, ad := range ads {
+		for k, v := range ad.Addrs {
+			r.addrs[k] = v
+		}
+	}
+
+	for _, ad := range ads {
+		for bank, items := range ad.Banks {
+			for _, item := range items {
+				for name, body := range item {
+					r.appendAsm(bank, name, body)
+				}
+			}
+		}
+	}
 
 	return &r
 }
@@ -59,10 +78,8 @@ func initSeasonsEOB() {
 
 	// bank 00
 
-	// don't play any music if the -nomusic flag is given.
-	noMusicFunc := r.appendAsmEntry(0x00, "filterMusic", 0xb5)
 	r.replaceAsm(0x00, 0x0c76, "call filterMusic",
-		"ld h,a; ld a,(ff00+b5)", "call %04x", stringAddr(noMusicFunc))
+		"ld h,a; ld a,(ff00+b5)", "call %04x", r.addrs["filterMusic"])
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.
@@ -122,25 +139,10 @@ func initSeasonsEOB() {
 			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
 			"\x06\x00\x23\x4e\x79\xfe\xff\xc8\xcd\x4b\x18\xaf\xc9") // show text
 
-	// utility function, call a function hl in bank 02, preserving af. e can't
-	// be used as a parameter to that function, but it can be returned.
-	callBank2 := r.appendAsmEntry(0x00, "callBank2")
-
-	// increment hl until (hl) equals either register a or ff. returns z if a
-	// match was found.
-	searchValue := r.appendAsmEntry(0x00, "searchValue")
-
-	// search for a key bc in a dictionary starting at hl. the dictionary is a
-	// series of two-byte keys and two-byte values. if a match is found, hl is
-	// the address of the value, and z is set. the dictionary ends when $ff is
-	// encountered at the beginning of an entry.
-	lookupWord := r.appendAsmEntry(0x00, "lookupWord")
-
-	// bank 01
-
-	// helper function, takes b = high byte of season addr, returns season in b
-	readSeason := r.appendToBank(0x01, "read default season",
-		"\x26\x7e\x68\x7e\x47\xc9")
+	callBank2 := addrString(r.addrs["callBank2"])
+	searchValue := addrString(r.addrs["searchValue"])
+	lookupWord := addrString(r.addrs["lookupWord"])
+	readSeason := addrString(r.addrs["readDefaultSeason"])
 
 	// bank 02
 

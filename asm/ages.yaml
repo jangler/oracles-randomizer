@@ -1,63 +1,76 @@
-# wram
-
-wActiveGroup: 'cc2d'
-wActiveRoom: 'cc30'
-
-# bank-agnostic
-
-compareRoom: |
-    ld a,(wActiveGroup)
-    cp c
-    ret nz
-    ld a,(wActiveRoom)
-    cp b
-    ret
-
-# TODO: these (ff97)s could be replaced with (ff00+97)s
-readWord: |
-    ld a,(ff97)
-    push af
-    ld a,e
-    ld (ff97),a
-    ld (2222),a
-    ldi a,(hl)
-    ld b,a
-    ld a,(hl)
-    ld c,a
-    pop af
-    ld (ff97),a
-    ld (2222),a
-    ret
-
-searchDoubleKey: |
-    ldi a,(hl)
-    cp a,ff
-    ret z
-    cp b
-    jr nz,06
-    ldi a,(hl)
-    cp c
-    jr nz,03
-    scf
-    ret
-    inc hl
-    ld a,e
-    rst 10h
-    jr ee
-
-findObjectWithId: |
-    push bc
-    ld b,a
-    ld de,d041
-    ld a,(de)
-    cp b
-    jr nz,02
-    pop bc
-    ret
-    inc d
-    ld a,d
-    cp a,e0
-    jr c,f4
-    pop bc
-    or a
-    ret
+addrs:
+  wActiveGroup: 0xcc2d
+  wActiveRoom: 0xcc30
+  hMusicVar: 0xffb7
+banks:
+  0x00:
+    # don't play any music. should only be called if the -nomusic flag is
+    # given. TODO: merge this with the equivalent seasons function.
+    - filterMusic: |
+        ld h,a
+        cp a,49
+        jr nc,03
+        ld a,08
+        ret
+        ld a,(ff00+b7)
+        ret
+    # return z iff the current group and room match c and b.
+    - compareRoom: |
+        ld a,(wActiveGroup)
+        cp c
+        ret nz
+        ld a,(wActiveRoom)
+        cp b
+        ret
+    # read 2 bytes from bank e at hl into bc.
+    # TODO: these (ff97)s could be replaced with (ff00+97)s
+    - readWord: |
+        ld a,(ff97)
+        push af
+        ld a,e
+        ld (ff97),a
+        ld (2222),a
+        ldi a,(hl)
+        ld b,a
+        ld a,(hl)
+        ld c,a
+        pop af
+        ld (ff97),a
+        ld (2222),a
+        ret
+    # searches for a value in a table starting at hl, with an entry matching
+    # keys b and subkey c, and values e bytes long. sets c if found. a key of
+    # ff ends the table.
+    - searchDoubleKey: |
+        ldi a,(hl)
+        cp a,ff
+        ret z
+        cp b
+        jr nz,06
+        ldi a,(hl)
+        cp c
+        jr nz,03
+        scf
+        ret
+        inc hl
+        ld a,e
+        rst 10h
+        jr ee
+    # searches for an interaction with ID a and returns the ID address in de,
+    # and z flag if found.
+    - findObjectWithId: |
+        push bc
+        ld b,a
+        ld de,d041
+        ld a,(de)
+        cp b
+        jr nz,02
+        pop bc
+        ret
+        inc d
+        ld a,d
+        cp a,e0
+        jr c,f4
+        pop bc
+        or a
+        ret

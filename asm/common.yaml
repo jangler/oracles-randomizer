@@ -1,21 +1,3 @@
-# existing rom
-
-interBankCall: '008a'
-
-# bank-agnostic
-
-callBank2: |
-    push af
-    ld e,02
-    call interBankCall
-    pop af
-    ret
-
-filterMusic: |
-    ld h,a
-    cp a,49
-    jr nc,03
-    ld a,08
-    ret
-    ld a,(ff00+%02x)
-    ret
+addrs:
+  interBankCall: 0x008a
+banks: {}

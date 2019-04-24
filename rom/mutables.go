@@ -86,7 +86,7 @@ func (mr *MutableRange) Check(b []byte) error {
 // SetMusic sets music on or off in the modified ROM. By default, it is off.
 func SetMusic(music bool) {
 	if music {
-		mut := codeMutables["no music call"].(*MutableRange)
+		mut := codeMutables["call filterMusic"].(*MutableRange)
 		mut.New = mut.Old
 	}
 }

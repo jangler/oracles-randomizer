@@ -1,39 +1,65 @@
-# bank-agnostic
-
-searchValue: |
-    push bc
-    ld b,a
-    ldi a,(hl)
-    cp b
-    jr z,06
-    inc a
-    jr z,02
-    jr f7
-    inc a
-    ld a,b
-    pop bc
-    ret
-
-lookupWord: |
-    ldi a,(hl)
-    cp a,ff
-    jr nz,02
-    or a
-    ret
-    cp b
-    ldi a,(hl)
-    jr nz,02
-    cp c
-    ret z
-    inc hl
-    inc hl
-    jr ef
-
-# bank 01
-
-readDefaultSeason: |
-    ld h,7e
-    ld l,b
-    ld a,(hl)
-    ld b,a
-    ret
+addrs:
+  wActiveGroup: 0xcc49
+  wActiveRoom: 0xcc4c
+  hMusicVar: 0xffb5
+banks:
+  0x00:
+    # don't play any music. should only be called if the -nomusic flag is
+    # given. TODO: merge this with the equivalent ages function.
+    - filterMusic: |
+        ld h,a
+        cp a,49
+        jr nc,03
+        ld a,08
+        ret
+        ld a,(ff00+b5)
+        ret
+    # call a function hl in bank 02, preserving af. e can't be used as a
+    # parameter to that function, but it can be returned.
+    - callBank2: |
+        push af
+        ld e,02
+        call interBankCall
+        pop af
+        ret
+    # increment hl until (hl) equals either register a or ff. returns z if
+    # a match was found.
+    - searchValue: |
+        push bc
+        ld b,a
+        ldi a,(hl)
+        cp b
+        jr z,06
+        inc a
+        jr z,02
+        jr f7
+        inc a
+        ld a,b
+        pop bc
+        ret
+    # search for a key bc in a dictionary starting at hl. the dictionary is
+    # a series of two-byte keys and two-byte values. if a match is found,
+    # hl is the address of the value, and z is set. the dictionary ends
+    # when $ff is encountered at the beginning of an entry.
+    - lookupWord: |
+        ldi a,(hl)
+        cp a,ff
+        jr nz,02
+        or a
+        ret
+        cp b
+        ldi a,(hl)
+        jr nz,02
+        cp c
+        ret z
+        inc hl
+        inc hl
+        jr ef
+  0x01:
+    # takes b = high byte of season addr, returns season in b.
+    - readDefaultSeason: |
+        ld h,7e
+        ld l,b
+        ld a,(hl)
+        ld b,a
+        ret

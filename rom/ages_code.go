@@ -13,16 +13,9 @@ func newAgesRomBanks() *romBanks {
 	}
 
 	r := romBanks{
-		endOfBank:  make([]uint16, 0x40),
-		assembler:  asm,
-		asmEntries: make(map[string]string),
-	}
-
-	for _, filename := range []string{"common.yaml", "ages.yaml"} {
-		if err := yaml.Unmarshal(
-			FSMustByte(false, "/asm/"+filename), r.asmEntries); err != nil {
-			panic(err)
-		}
+		endOfBank: make([]uint16, 0x40),
+		assembler: asm,
+		addrs:     make(map[string]uint16),
 	}
 
 	r.endOfBank[0x00] = 0x3ef8
@@ -46,6 +39,32 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x38] = 0x6b00 // to be safe
 	r.endOfBank[0x3f] = 0x7d0a
 
+	ads := make([]*asmData, 2)
+
+	for i, filename := range []string{"common.yaml", "ages.yaml"} {
+		ads[i] = new(asmData)
+		if err := yaml.Unmarshal(
+			FSMustByte(false, "/asm/"+filename), ads[i]); err != nil {
+			panic(err)
+		}
+	}
+
+	for _, ad := range ads {
+		for k, v := range ad.Addrs {
+			r.addrs[k] = v
+		}
+	}
+
+	for _, ad := range ads {
+		for bank, items := range ad.Banks {
+			for _, item := range items {
+				for name, body := range item {
+					r.appendAsm(bank, name, body)
+				}
+			}
+		}
+	}
+
 	return &r
 }
 
@@ -54,10 +73,8 @@ func initAgesEOB() {
 
 	// bank 00
 
-	// don't play any music if the -nomusic flag is given.
-	noMusicFunc := r.appendAsmEntry(0x00, "filterMusic", 0xb7)
 	r.replaceAsm(0x00, 0x0c9a, "no music call",
-		"ld h,a; ld a,(ff00+b7)", "call %04x", stringAddr(noMusicFunc))
+		"ld h,a; ld a,(ff00+b7)", "call %04x", r.addrs["filterMusic"])
 
 	// only increment the maku tree's state if on the maku tree screen, or if
 	// all essences are obtained, set it to the value it would normally have at
@@ -70,20 +87,11 @@ func initAgesEOB() {
 	r.replace(0x00, 0x3e56, "call maku state check",
 		"\x3c\xfe\x11", "\xcd"+makuStateCheck)
 
-	// return z iff the current group and room match c and b.
-	compareRoom := r.appendAsmEntry(0x00, "compareRoom")
+	compareRoom := addrString(r.addrs["compareRoom"])
+	readWord := addrString(r.addrs["readWord"])
+	searchDoubleKey := addrString(r.addrs["searchDoubleKey"])
+	findObjectWithId := addrString(r.addrs["findObjectWithId"])
 
-	// read 2 bytes from bank e at hl into bc.
-	readWord := r.appendAsmEntry(0x00, "readWord")
-
-	// searches for a value in a table starting at hl, with an entry matching
-	// keys b and subkey c, and values e bytes long. sets c if found. a key of
-	// ff ends the table.
-	searchDoubleKey := r.appendAsmEntry(0x00, "searchDoubleKey")
-
-	// searches for an interaction with ID a and returns the ID address in de,
-	// and z flag if found.
-	findObjectWithID := r.appendAsmEntry(0x00, "findObjectWithId")
 
 	// bank 01
 
@@ -285,9 +293,9 @@ func initAgesEOB() {
 	// west present crescent island portal.
 	reenterCurrentsWarp := r.appendToBank(0x06, "special currents actions",
 		"\xc5\x01\x00\xa9\xcd"+compareRoom+"\xc1\x20\x11"+ // island portal
-			"\xd5\x3e\xe1\xcd"+findObjectWithID+"\x20\x05"+ // cont.
+			"\xd5\x3e\xe1\xcd"+findObjectWithId+"\x20\x05"+ // cont.
 			"\x1e\x44\x3e\x02\x12\xd1\xc3\x08\x4e"+ // cont.
-			"\xfa\x34\xcc\xf5\xd5\x3e\xde\xcd"+findObjectWithID+ // reenter
+			"\xfa\x34\xcc\xf5\xd5\x3e\xde\xcd"+findObjectWithId+ // reenter
 			"\x20\x05\x1e\x44\x3e\x02\x12\xd1\xf1\xc3\x37\x4e") // cont.
 	r.replace(0x06, 0x4e34, "call special currents actions",
 		"\xfa\x34\xcc", "\xc3"+reenterCurrentsWarp)

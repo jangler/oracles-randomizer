@@ -28,9 +28,15 @@ func addCode(name string, bank byte, offset uint16, code string) uint16 {
 }
 
 type romBanks struct {
-	endOfBank  []uint16
-	assembler  *assembler
-	asmEntries map[string]string
+	endOfBank []uint16
+	assembler *assembler
+	addrs     map[string]uint16
+}
+
+// used for unmarshaling asm data from yaml.
+type asmData struct {
+	Addrs map[string]uint16
+	Banks map[byte][]map[string]string
 }
 
 var codeMutables = map[string]Mutable{}
@@ -62,8 +68,8 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 func (r *romBanks) appendAsm(bank byte, name, asm string,
 	a ...interface{}) uint16 {
 	// perform substitutions from other entries
-	for k, v := range r.asmEntries {
-		asm = strings.ReplaceAll(asm, k, v)
+	for k, v := range r.addrs {
+		asm = strings.ReplaceAll(asm, k, fmt.Sprintf("%04x", v))
 	}
 
 	var err error
@@ -71,7 +77,10 @@ func (r *romBanks) appendAsm(bank byte, name, asm string,
 	if err != nil {
 		panic(err)
 	}
-	return stringAddr(r.appendToBank(bank, name, asm))
+
+	as := r.appendToBank(bank, name, asm)
+	r.addrs[name] = stringAddr(as)
+	return r.addrs[name]
 }
 
 // appendAsmEntry acts as appendAsm, but by looking up the asm block in a
