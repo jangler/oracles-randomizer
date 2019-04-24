@@ -44,7 +44,7 @@ banks:
         ret
         inc hl
         ld a,e
-        rst 10h
+        rst 10
         jr ee
     # searches for an interaction with ID a and returns the ID address in de,
     # and z flag if found.
