@@ -34,10 +34,10 @@ func newAssembler() (*assembler, error) {
 	}, nil
 }
 
-// compileBlock wraps `lgbtasm.compile_block()`.
-func (asm *assembler) compileBlock(s, delim string) (string, error) {
+// compile wraps `lgbtasm.compile()`.
+func (asm *assembler) compile(s, delim string) (string, error) {
 	if err := asm.ls.CallByParam(lua.P{
-		Fn:      asm.lgbtasm.RawGetString("compile_block"),
+		Fn:      asm.lgbtasm.RawGetString("compile"),
 		NRet:    1,
 		Protect: true,
 	}, lua.LString(s), lua.LString(delim)); err != nil {

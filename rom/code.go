@@ -61,7 +61,7 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 func (r *romBanks) appendASM(bank byte, name, asm string,
 	a ...interface{}) uint16 {
 	var err error
-	asm, err = r.assembler.compileBlock(fmt.Sprintf(asm, a...), ";\n")
+	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")
 	if err != nil {
 		panic(err)
 	}
@@ -80,7 +80,7 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 func (r *romBanks) replaceASM(bank byte, offset uint16, name, old, asm string,
 	a ...interface{}) {
 	var err error
-	asm, err = r.assembler.compileBlock(fmt.Sprintf(asm, a...), ";\n")
+	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")
 	if err != nil {
 		panic(err)
 	}
