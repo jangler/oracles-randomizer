@@ -53,7 +53,7 @@ func initSeasonsEOB() {
 	noMusicFunc := r.appendASM(0x00, "no music func",
 		"ld h,a; cp a,49; jr nc,03; ld a,08; ret; ld a,(ff00+b5); ret")
 	r.replaceASM(0x00, 0x0c76, "no music call",
-		"\x67\xf0\xb5", "call %04x", stringAddr(noMusicFunc))
+		"\x67\xf0\xb5", "call %04x", noMusicFunc)
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.

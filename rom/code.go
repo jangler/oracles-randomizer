@@ -56,15 +56,16 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 }
 
 // appendASM acts as appendToBank, but by compiling a block of asm. additional
-// arguments are formatted into `asm` by fmt.Sprintf.
+// arguments are formatted into `asm` by fmt.Sprintf. the returned address is
+// also given as a uint16 rather than a big-endian word in string form.
 func (r *romBanks) appendASM(bank byte, name, asm string,
-	a ...interface{}) string {
+	a ...interface{}) uint16 {
 	var err error
 	asm, err = r.assembler.compileBlock(fmt.Sprintf(asm, a...), ";\n")
 	if err != nil {
 		panic(err)
 	}
-	return r.appendToBank(bank, name, asm)
+	return stringAddr(r.appendToBank(bank, name, asm))
 }
 
 // replace replaces the old data at the given address with the new data, and
