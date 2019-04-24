@@ -61,8 +61,8 @@ func initSeasonsEOB() {
 
 	// don't play any music if the -nomusic flag is given.
 	noMusicFunc := r.appendAsmEntry(0x00, "filterMusic", 0xb5)
-	r.replaceAsm(0x00, 0x0c76, "no music call",
-		"\x67\xf0\xb5", "call %04x", stringAddr(noMusicFunc))
+	r.replaceAsm(0x00, 0x0c76, "call filterMusic",
+		"ld h,a; ld a,(ff00+b5)", "call %04x", stringAddr(noMusicFunc))
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.

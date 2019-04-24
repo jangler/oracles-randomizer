@@ -91,16 +91,21 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 	codeMutables[name] = MutableString(Addr{bank, offset}, old, new)
 }
 
-// replaceAsm acts as replace, but by compiling a block of asm. additional
-// arguments are formatted into `asm` by fmt.Sprintf.
-func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, asm string,
+// replaceAsm acts as replace, but treating the old and new strings as asm
+// instead of machine code. additional arguments are formatted into `new` by
+// fmt.Sprintf.
+func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, new string,
 	a ...interface{}) {
 	var err error
-	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")
+	old, err = r.assembler.compile(old, ";\n")
 	if err != nil {
 		panic(err)
 	}
-	r.replace(bank, offset, name, old, asm)
+	new, err = r.assembler.compile(fmt.Sprintf(new, a...), ";\n")
+	if err != nil {
+		panic(err)
+	}
+	r.replace(bank, offset, name, old, new)
 }
 
 // replaceMultiple acts as replace, but operates on multiple addresses.

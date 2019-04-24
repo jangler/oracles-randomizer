@@ -57,7 +57,7 @@ func initAgesEOB() {
 	// don't play any music if the -nomusic flag is given.
 	noMusicFunc := r.appendAsmEntry(0x00, "filterMusic", 0xb7)
 	r.replaceAsm(0x00, 0x0c9a, "no music call",
-		"\x67\xf0\xb7", "call %04x", stringAddr(noMusicFunc))
+		"ld h,a; ld a,(ff00+b7)", "call %04x", stringAddr(noMusicFunc))
 
 	// only increment the maku tree's state if on the maku tree screen, or if
 	// all essences are obtained, set it to the value it would normally have at
