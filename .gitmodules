@@ -1,0 +1,3 @@
+[submodule "lgbtasm"]
+	path = lgbtasm
+	url = https://github.com/jangler/lgbtasm
