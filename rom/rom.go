@@ -550,18 +550,29 @@ func writeBossItems(b []byte) {
 // set data to make linked playthroughs isomorphic to unlinked ones.
 func setLinkedData(b []byte, game int) {
 	if game == GameSeasons {
-		// make starting item match unlinked hero's cave 1
+		// set linked starting / hero's cave terrace items based on which items
+		// in unlinked hero's cave aren't keys. order matters.
+		var tStart, tCave *Treasure
+		if ItemSlots["d0 key chest"].Treasure.id == 0x30 {
+			tStart = ItemSlots["d0 sword chest"].Treasure
+			tCave = ItemSlots["d0 rupee chest"].Treasure
+		} else {
+			tStart = ItemSlots["d0 key chest"].Treasure
+			tCave = ItemSlots["d0 sword chest"].Treasure
+		}
+
+		// give this item at start
 		linkedStartItem := &MutableSlot{
 			idAddrs:    []Addr{{0x0a, 0x7ffd}},
 			paramAddrs: []Addr{{0x0a, 0x7ffe}},
-			Treasure:   ItemSlots["d0 sword chest"].Treasure,
+			Treasure:   tStart,
 		}
 		linkedStartItem.Mutate(b)
 
-		// make linked hero's cave terrace chest match unlinked hero's cave 2
+		// create slot for linked hero's cave terrace
 		linkedChest := seasonsChest(
 			"rupees, 20", 0x50e2, 0x05, 0x2c, collectChest, 0xd4)
-		linkedChest.Treasure = ItemSlots["d0 rupee chest"].Treasure
+		linkedChest.Treasure = tCave
 		linkedChest.Mutate(b)
 	}
 }
