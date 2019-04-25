@@ -55,8 +55,8 @@ This document details tricks and obscurities that are in Ages hard logic.
 
 - Reach the item on a "shelf" in the D2 sidescroller by placing a block with
   the cane, riding the Thwomp, and using seeds or a bomb boost to cross the
-  gap.
-  [[Video]](https://streamable.com/t88r7)
+  gap. [[Video (seed)]](https://streamable.com/t88r7)
+  [[Video (bomb)]](https://www.youtube.com/watch?v=2BwkmYC3mt0)
 - Clip through a shutter door in D2 by standing on the button that opens the
   door, pushing a Moblin into the doorway, and switching with the Moblin. You
   need to screen transition immediately after landing; otherwise you'll be
@@ -71,10 +71,11 @@ This document details tricks and obscurities that are in Ages hard logic.
 	   first room.
 	3. Using feather + sword + switch hook in the second room.
 	4. Using feather + sword + a pot + bracelet in the second room.
-	5. Using seeds + feather + ember/scent/mystery seeds from satchel in the
-	   second room.
+	5. Using seeds/bombs + feather + ember/scent/mystery seeds from satchel in
+	   the second room.
 
-  [[Video]](https://streamable.com/6uo8u)
+  [[Video (1-4, 5 w/o bomb boost)]](https://streamable.com/6uo8u)
+  [[Video (5 w/ bomb boost)]](https://clips.twitch.tv/LazyImpartialLadiesMVGame)
 - Get two chests in D4 by hitting switches with feather + boomerang instead of
   seed shooter. [[Video]](https://streamable.com/2behr)
 - Use the Peace Ring to throw bombs at the Stalfos in D4 from a minecart.
@@ -83,7 +84,8 @@ This document details tricks and obscurities that are in Ages hard logic.
   requires the toss ring, plus feather (+ seeds?) to cross the next barrier.
   [[Video]](https://streamable.com/b9xp3)
 - Hit the second switch in D5 (from above video) using ember/scent/mystery
-  seeds + satchel, using feather to jump past the red pegs before they rise.
+  seeds + satchel, using feather and cane to clip through the red pegs.
+  [[Video]](https://clips.twitch.tv/RefinedBlightedPuffinPupper)
 - Hit the three eye statues in D5 by using pegasus seeds, feather, and
   mystery seeds from satchel. [[Video]](https://streamable.com/hbyt6)
 - Hit the switch in D5 before the two-statue puzzle using bomb jump + satchel +
