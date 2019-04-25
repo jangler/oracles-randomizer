@@ -17,182 +17,182 @@ addrs:
 
 banks:
   0x00:
-    # return z iff the current group and room match c and b.
-    - compareRoom: |
-        ld a,(wActiveGroup)
-        cp c
-        ret nz
-        ld a,(wActiveRoom)
-        cp b
-        ret
+  # return z iff the current group and room match c and b.
+  - compareRoom: |
+      ld a,(wActiveGroup)
+      cp c
+      ret nz
+      ld a,(wActiveRoom)
+      cp b
+      ret
 
-    # read 2 bytes from bank e at hl into bc.
-    # TODO: these (ff97)s could be replaced with (ff00+97)s
-    - readWord: |
-        ld a,(ff97)
-        push af
-        ld a,e
-        ld (ff97),a
-        ld (2222),a
-        ldi a,(hl)
-        ld b,a
-        ld a,(hl)
-        ld c,a
-        pop af
-        ld (ff97),a
-        ld (2222),a
-        ret
+  # read 2 bytes from bank e at hl into bc.
+  # TODO: these (ff97)s could be replaced with (ff00+97)s
+  - readWord: |
+      ld a,(ff97)
+      push af
+      ld a,e
+      ld (ff97),a
+      ld (2222),a
+      ldi a,(hl)
+      ld b,a
+      ld a,(hl)
+      ld c,a
+      pop af
+      ld (ff97),a
+      ld (2222),a
+      ret
 
-    # searches for a value in a table starting at hl, with an entry matching
-    # keys b and subkey c, and values e bytes long. sets c if found. a key of
-    # ff ends the table.
-    - searchDoubleKey: |
-        ldi a,(hl)
-        cp a,ff
-        ret z
-        cp b
-        jr nz,06
-        ldi a,(hl)
-        cp c
-        jr nz,03
-        scf
-        ret
-        inc hl
-        ld a,e
-        rst 10
-        jr ee
+  # searches for a value in a table starting at hl, with an entry matching
+  # keys b and subkey c, and values e bytes long. sets c if found. a key of
+  # ff ends the table.
+  - searchDoubleKey: |
+      ldi a,(hl)
+      cp a,ff
+      ret z
+      cp b
+      jr nz,06
+      ldi a,(hl)
+      cp c
+      jr nz,03
+      scf
+      ret
+      inc hl
+      ld a,e
+      rst 10
+      jr ee
 
-    # searches for an interaction with ID a and returns the ID address in de,
-    # and z flag if found.
-    - findObjectWithId: |
-        push bc
-        ld b,a
-        ld de,d041
-        ld a,(de)
-        cp b
-        jr nz,02
-        pop bc
-        ret
-        inc d
-        ld a,d
-        cp a,e0
-        jr c,f4
-        pop bc
-        or a
-        ret
+  # searches for an interaction with ID a and returns the ID address in de,
+  # and z flag if found.
+  - findObjectWithId: |
+      push bc
+      ld b,a
+      ld de,d041
+      ld a,(de)
+      cp b
+      jr nz,02
+      pop bc
+      ret
+      inc d
+      ld a,d
+      cp a,e0
+      jr c,f4
+      pop bc
+      or a
+      ret
 
-    # only increment the maku tree's state if on the maku tree screen, or if
-    # all essences are obtained, set it to the value it would normally have at
-    # that point in the game. this allows getting the maku tree's item as long
-    # as you haven't collected all essences.
-    - checkMakuState: |
-        ld a,(wActiveGroup)
-        cp a,02
-        jr nc,0e
-        ld a,(wActiveRoom)
-        cp a,38
-        jr nz,07
-        ld a,(wMakuTreeState)
-        inc a
-        cp a,11
-        ret
-        ld a,(wEssencesObtained)
-        inc a
-        scf
-        jr nz,03
-        ld a,0e
-        ret
-        ld a,(wMakuTreeState)
-        ret
+  # only increment the maku tree's state if on the maku tree screen, or if
+  # all essences are obtained, set it to the value it would normally have at
+  # that point in the game. this allows getting the maku tree's item as long
+  # as you haven't collected all essences.
+  - checkMakuState: |
+      ld a,(wActiveGroup)
+      cp a,02
+      jr nc,0e
+      ld a,(wActiveRoom)
+      cp a,38
+      jr nz,07
+      ld a,(wMakuTreeState)
+      inc a
+      cp a,11
+      ret
+      ld a,(wEssencesObtained)
+      inc a
+      scf
+      jr nz,03
+      ld a,0e
+      ret
+      ld a,(wMakuTreeState)
+      ret
 
   0x03:
-    # flags in wGlobalFlags to be set at start of game.
-    - initialGlobalFlags: |
-        db 0a,0c,1d,20,23,2b,33,3d,40,41,43,45,ff
+  # flags in wGlobalFlags to be set at start of game.
+  - initialGlobalFlags: |
+      db 0a,0c,1d,20,23,2b,33,3d,40,41,43,45,ff
 
-    # set flags to skip opening and a bunch of other things. see
-    # doc/technical.md for a dictionary of the flags.
-    - setInitialFlags: |
-        push hl
+  # set flags to skip opening and a bunch of other things. see
+  # doc/technical.md for a dictionary of the flags.
+  - setInitialFlags: |
+      push hl
 
-        # global flags
-        ld hl,initialGlobalFlags
-        ldi a,(hl)
-        cp a,ff
-        jr z,07
-        push hl
-        call setGlobalFlag
-        pop hl
-        jr f4
+      # global flags
+      ld hl,initialGlobalFlags
+      ldi a,(hl)
+      cp a,ff
+      jr z,07
+      push hl
+      call setGlobalFlag
+      pop hl
+      jr f4
 
-        # linked global flags
-        ld a,(wIsLinkedGame)
-        or a
-        jr z,07
-        ld a,38
-        push hl
-        call setGlobalFlag
-        pop hl
+      # linked global flags
+      ld a,(wIsLinkedGame)
+      or a
+      jr z,07
+      ld a,38
+      push hl
+      call setGlobalFlag
+      pop hl
 
-        # animal vars
-        ld a,(7fff)
-        ld (wAnimalRegion),a
-        ld a,03
-        ld (wDimitriState),a
-        ld a,ff
-        ld (wAnimalTutorialFlags),a
+      # animal vars
+      ld a,(7fff)
+      ld (wAnimalRegion),a
+      ld a,03
+      ld (wDimitriState),a
+      ld a,ff
+      ld (wAnimalTutorialFlags),a
 
-        # maku tree state (vanished)
-        ld a,01
-        ld (wMakuTreeState),a
+      # maku tree state (vanished)
+      ld a,01
+      ld (wMakuTreeState),a
 
-        # room flags 3 | 6 | 7
-        ld a,c8
-        ld (c739),a
+      # room flags 3 | 6 | 7
+      ld a,c8
+      ld (c739),a
 
-        # room flag 7
-        ld a,80
-        ld (c8bb),a
+      # room flag 7
+      ld a,80
+      ld (c8bb),a
 
-        # room flags 5 | 6
-        ld a,60
-        ld (c8cb),a
+      # room flags 5 | 6
+      ld a,60
+      ld (c8cb),a
 
-        # room flag 6
-        ld a,40
-        ld (c77a),a
-        ld (c76a),a
-        ld (c759),a
-        ld (c77c),a
-        ld (c72e),a
-        ld (c897),a
-        ld (c73a),a
-        ld (c7ba),a
-        ld (c78d),a
-        ld (c70a),a
-        ld (c9f6),a
-        ld (c85c),a
-        ld (c883),a
-        ld (c80f),a
-        ld (c703),a
-        ld (c790),a
-        ld (c77b),a
+      # room flag 6
+      ld a,40
+      ld (c77a),a
+      ld (c76a),a
+      ld (c759),a
+      ld (c77c),a
+      ld (c72e),a
+      ld (c897),a
+      ld (c73a),a
+      ld (c7ba),a
+      ld (c78d),a
+      ld (c70a),a
+      ld (c9f6),a
+      ld (c85c),a
+      ld (c883),a
+      ld (c80f),a
+      ld (c703),a
+      ld (c790),a
+      ld (c77b),a
 
-        # room flag 3
-        ld a,08
-        ld (c725),a
-        ld (c813),a
+      # room flag 3
+      ld a,08
+      ld (c725),a
+      ld (c813),a
 
-        # room flag 0
-        ld a,01
-        ld (c876),a
-        ld (c738),a
+      # room flag 0
+      ld a,01
+      ld (c876),a
+      ld (c738),a
 
-        # give L-3 ring box
-        ld a,10
-        ld (c69f),a
-        ld a,03
-        ld (wRingBoxLevel),a
+      # give L-3 ring box
+      ld a,10
+      ld (c69f),a
+      ld a,03
+      ld (wRingBoxLevel),a
 
-        pop hl
-        ret
+      pop hl
+      ret

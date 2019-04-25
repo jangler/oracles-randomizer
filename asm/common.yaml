@@ -10,23 +10,24 @@ addrs:
 
 banks:
   0x00:
-    # don't play any music. should only be called if the -nomusic flag is
-    # given.
-    - filterMusic: |
-        ld h,a
-        cp a,49
-        jr nc,03
-        ld a,08
-        ret
-        ld a,(hMusicVar)
-        ret
+  # don't play any music. should only be called if the -nomusic flag is
+  # given.
+  - filterMusic: |
+      ld h,a
+      cp a,49
+      jr nc,03
+      ld a,08
+      ret
+      ld a,(hMusicVar)
+      ret
+
   0x03:
-    # allow skipping the capcom screen after one second by pressing start.
-    - skipCapcom: |
-        push hl
-        ld a,(cbb3)
-        cp a,94
-        jr nc,03
-        call forceEnableIntroInputs
-        pop hl
-        jp decHlRef16WithCap
+  # allow skipping the capcom screen after one second by pressing start.
+  - skipCapcom: |
+      push hl
+      ld a,(cbb3)
+      cp a,94
+      jr nc,03
+      call forceEnableIntroInputs
+      pop hl
+      jp decHlRef16WithCap
