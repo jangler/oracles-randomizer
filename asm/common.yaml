@@ -15,9 +15,10 @@ banks:
   - filterMusic: |
       ld h,a
       cp a,49
-      jr nc,03
+      jr nc,.sfx
       ld a,08
       ret
+      .sfx
       ld a,(hMusicVar)
       ret
 
@@ -26,14 +27,15 @@ banks:
   - devWarp: |
       ld a,(wActiveRing)
       cp a,40
-      jr nz,12
+      jr nz,.noWarp
       ld a,(wActiveGroup)
       cp a,02
-      jr nc,0b
+      jr nc,.noWarp
       or a,80
       ld (wWarpDestGroup),a
       ld a,(cbb6)
       ld (wWarpDestIndex),a
+      .noWarp
       ld a,03
       call setMusicVolume
       ret
@@ -44,7 +46,8 @@ banks:
       push hl
       ld a,(cbb3)
       cp a,94
-      jr nc,03
+      jr nc,.noSkip
       call forceEnableIntroInputs
+      .noSkip
       pop hl
       jp decHlRef16WithCap

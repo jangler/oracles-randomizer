@@ -45,13 +45,16 @@ banks:
   - searchValue: |
       push bc
       ld b,a
+      .loop
       ldi a,(hl)
       cp b
-      jr z,06
+      jr z,.match
       inc a
-      jr z,02
-      jr f7
+      jr z,.noMatch
+      jr .loop
+      .noMatch
       inc a
+      .match
       ld a,b
       pop bc
       ret
@@ -61,19 +64,22 @@ banks:
   # hl is the address of the value, and z is set. the dictionary ends
   # when $ff is encountered at the beginning of an entry.
   - lookupWord: |
+      .loop
       ldi a,(hl)
       cp a,ff
-      jr nz,02
+      jr nz,.next
       or a
       ret
+      .next
       cp b
       ldi a,(hl)
-      jr nz,02
+      jr nz,.next2
       cp c
       ret z
+      .next2
       inc hl
       inc hl
-      jr ef
+      jr .loop
 
   # force the item in the temple of seasons cutscene to use normal item
   # animations. TODO: i think there's a better way to do this, like the way
@@ -86,10 +92,11 @@ banks:
       inc e
       ld a,(de)
       cp a,02
-      jr z,03
+      jr z,.next
       dec e
       ld a,(de)
       ret
+      .next
       ld a,60
       ret
 
@@ -105,21 +112,20 @@ banks:
   0x02:
   # warp to ember tree if holding start when closing the map screen.
   - treeWarp: |
-      # close as normal if start not held
       ld a,(wKeysPressed)
       and a,08
-      jr z,15
-      # if indoors, play error sound and ret
+      jr z,.done
       ld a,(wAreaFlags)
       and a,01
-      jr nz,05
+      jr nz,.warp
       ld a,5a
       jp playSound
-      # close + warp
+      .warp
       ld hl,cbb7
       ld (hl),05
       xor a
       call 5e7b
+      .done
       jp _closeMenu
 
   0x07:
@@ -155,13 +161,15 @@ banks:
       # global flags
       push hl
       ld hl,initialGlobalFlags
+      .loop
       ldi a,(hl)
       cp a,ff
-      jr z,07
+      jr z,.done
       push hl
       call setGlobalFlag
       pop hl
-      jr f4
+      jr .loop
+      .done
       pop hl
 
       # animal vars
@@ -239,12 +247,13 @@ banks:
       push af
       ld a,b
       cp a,19
-      jr nz,07
+      jr nz,.notSatchel
       push bc
       push de
       call refillSeedSatchel
       pop de
       pop bc
+      .notSatchel
       pop af
       ld b,a
       ret

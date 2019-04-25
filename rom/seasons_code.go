@@ -607,14 +607,13 @@ func initSeasonsEOB() {
 	// bank 1f
 
 	// replace ring appraisal text with "you got the {ring}"
-	// TODO: this contains an invalid opcode. why?
 	r.replace(0x1f, 0x5d99, "obtain ring text replacement",
 		"\x03\x13\x20\x49\x04\x06", "\x02\x03\x0f\xfd\x21\x00")
 
 	// bank 3f
 
-	r.replace(0x00, 0x16f6, "satchel refill call",
-		"\xcd\xc8\x44", "\xcd"+addrString(r.addrs["satchelRefillSeeds"]))
+	r.replaceAsm(0x00, 0x16f6,
+		"call giveTreasure_body", "call satchelRefillSeeds")
 
 	// returns c,e = treasure ID,subID
 	rodLookup := r.appendToBank(0x15, "rod lookup",

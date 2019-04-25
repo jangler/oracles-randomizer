@@ -53,20 +53,23 @@ banks:
   # keys b and subkey c, and values e bytes long. sets c if found. a key of
   # ff ends the table.
   - searchDoubleKey: |
+      .loop
       ldi a,(hl)
       cp a,ff
       ret z
       cp b
-      jr nz,06
+      jr nz,.next
       ldi a,(hl)
       cp c
-      jr nz,03
+      jr nz,.next2
       scf
       ret
+      .next
       inc hl
+      .next2
       ld a,e
       rst 10
-      jr ee
+      jr .loop
 
   # searches for an interaction with ID a and returns the ID address in de,
   # and z flag if found.
@@ -74,15 +77,17 @@ banks:
       push bc
       ld b,a
       ld de,d041
+      .loop
       ld a,(de)
       cp b
-      jr nz,02
+      jr nz,.next
       pop bc
       ret
+      .next
       inc d
       ld a,d
       cp a,e0
-      jr c,f4
+      jr c,.loop
       pop bc
       or a
       ret
@@ -94,20 +99,22 @@ banks:
   - checkMakuState: |
       ld a,(wActiveGroup)
       cp a,02
-      jr nc,0e
+      jr nc,.notAtMakuTree
       ld a,(wActiveRoom)
       cp a,38
-      jr nz,07
+      jr nz,.notAtMakuTree
       ld a,(wMakuTreeState)
       inc a
       cp a,11
       ret
+      .notAtMakuTree
       ld a,(wEssencesObtained)
       inc a
       scf
-      jr nz,03
+      jr nz,.notAllEssences
       ld a,0e
       ret
+      .notAllEssences
       ld a,(wMakuTreeState)
       ret
 
@@ -117,12 +124,13 @@ banks:
   - treeWarp: |
       ld a,(wKeysPressed)
       and a,08
-      jr z,1a
+      jr z,.done
       ld a,(wAreaFlags)
       and a,01
-      jr nz,05
+      jr nz,.warp
       ld a,5a
       jp playSound
+      .warp
       ld hl,wWarpDestGroup
       ld (hl),80
       inc hl
@@ -130,6 +138,7 @@ banks:
       ld l,4a
       ld (hl),55
       call 5fbf
+      .done
       jp 4fba
 
   0x03:
@@ -144,22 +153,25 @@ banks:
 
       # global flags
       ld hl,initialGlobalFlags
+      .loop
       ldi a,(hl)
       cp a,ff
-      jr z,07
+      jr z,.done
       push hl
       call setGlobalFlag
       pop hl
-      jr f4
+      jr .loop
+      .done
 
       # linked global flags
       ld a,(wIsLinkedGame)
       or a
-      jr z,07
+      jr z,.unlinked
       ld a,38
       push hl
       call setGlobalFlag
       pop hl
+      .unlinked
 
       # animal vars
       ld a,(7fff)
