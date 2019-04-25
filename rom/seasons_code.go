@@ -146,14 +146,9 @@ func initSeasonsEOB() {
 
 	// bank 02
 
-	// warp to ember tree if holding start when closing the map screen.
-	treeWarp := r.appendToBank(0x02, "tree warp",
-		"\xfa\x81\xc4\xe6\x08\x28\x16"+ // close as normal if start not held
-			"\xfa\x50\xcc\xe6\x01\x20\x06"+ // check if indoors
-			"\x3e\x5a\xcd\x74\x0c\xc9"+ // play error sound and ret
-			"\x21\xb7\xcb\x36\x05\xaf\xcd\x7b\x5e\xc3\x7b\x4f") // close + warp
-	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "tree warp jump",
-		"\xc2\x7b\x4f", "\xc4"+treeWarp)
+	// TODO this could be a replaceMultipleAsm or something like that…
+	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "jump treeWarp",
+		"\xc2\x7b\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
 
 	// warp to room under cursor if wearing developer ring.
 	devWarp := r.appendToBank(0x02, "dev ring warp func",
@@ -216,10 +211,8 @@ func initSeasonsEOB() {
 
 	// bank 03
 
-	// allow skipping the capcom screen after one second by pressing start
-	skipCapcom := r.appendToBank(0x03, "skip capcom func",
-		"\xe5\xfa\xb3\xcb\xfe\x94\x30\x03\xcd\x62\x08\xe1\xcd\x37\x02\xc9")
-	r.replace(0x03, 0x4d6c, "skip capcom call", "\x37\x02", skipCapcom)
+	r.replace(0x03, 0x4d6c, "call skipCapcom", "\x37\x02",
+		addrString(r.addrs["skipCapcom"]))
 
 	// bank 04
 
@@ -299,9 +292,7 @@ func initSeasonsEOB() {
 
 	// bank 07
 
-	// if wearing dev ring, change season regardless of where link is standing.
-	devChangeSeason := r.appendToBank(0x07, "dev ring season func",
-		"\xfa\xc5\xc6\xfe\x40\xc8\xfa\xb6\xcc\xfe\x08\xc9")
+	devChangeSeason := addrString(r.addrs["devChangeSeason"])
 	r.replace(0x07, 0x5b75, "dev ring season call",
 		"\xfa\xb6\xcc\xfe\x08", "\xcd"+devChangeSeason+"\x00\x00")
 
@@ -510,14 +501,10 @@ func initSeasonsEOB() {
 
 	// bank 0b
 
-	// custom script command to use on d1 entrance screen: wait until bit of
-	// cfc0 is set, and set ccaa to 01 meanwhile. fixes a vanilla bug where
-	// dismounting an animal on that screen allowed you to enter without key.
-	r.replace(0x0b, 0x4dea, "d1 entrance script cmd", "\xa0", "\xb2")
-	d1EntranceFunc := r.appendToBank(0x0b, "d1 entrance cmd func",
-		"\xe1\xfa\x49\xcc\xfe\x00\xc0\xfa\x4c\xcc\xfe\x96\xc0"+ // check room
-			"\x3e\x01\xea\xaa\xcc\xaf\xc3\x2d\x43")
-	r.replace(0x0b, 0x406d, "d1 entrance cmd jump", "\x03\x41", d1EntranceFunc)
+	// command and corresponding address in jump table
+	r.replace(0x0b, 0x4dea, "d1 entrance cmd byte", "\xa0", "\xb2")
+	r.replace(0x0b, 0x406d, "jump d1EntranceScriptCmd",
+		"\x03\x41", addrString(r.addrs["d1EntranceScriptCmd"]))
 
 	diverIDScript := r.appendToBank(0x0b, "diver fake id script",
 		"\xde\x2e\x00\x92\x94\xc6\x02\xc1")
@@ -651,17 +638,14 @@ func initSeasonsEOB() {
 	// bank 1f
 
 	// replace ring appraisal text with "you got the {ring}"
+	// TODO: this contains an invalid opcode. why?
 	r.replace(0x1f, 0x5d99, "obtain ring text replacement",
 		"\x03\x13\x20\x49\x04\x06", "\x02\x03\x0f\xfd\x21\x00")
 
 	// bank 3f
 
-	// have seed satchel inherently refill all seeds.
-	satchelRefill := r.appendToBank(0x3f, "satchel seed refill func",
-		"\xc5\xcd\xc8\x44\x78\xc1\xf5\x78\xfe\x19\x20\x07"+
-			"\xc5\xd5\xcd\xe5\x17\xd1\xc1\xf1\x47\xc9")
 	r.replace(0x00, 0x16f6, "satchel refill call",
-		"\xcd\xc8\x44", "\xcd"+satchelRefill)
+		"\xcd\xc8\x44", "\xcd"+addrString(r.addrs["satchelRefillSeeds"]))
 
 	// returns c,e = treasure ID,subID
 	rodLookup := r.appendToBank(0x15, "rod lookup",

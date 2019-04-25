@@ -1,7 +1,11 @@
 addrs:
+  # hram
+  hMusicVar: 0xffb7 # used in filterMusic
+
+  # wram
   wActiveGroup: 0xcc2d
   wActiveRoom: 0xcc30
-  hMusicVar: 0xffb7 # used in filterMusic
+
 banks:
   0x00:
     # return z iff the current group and room match c and b.

@@ -1,5 +1,10 @@
 addrs:
+  # wram
+  wKeysPressed: 0xc481
+
+  # rom 00
   interBankCall: 0x008a
+
 banks:
   0x00:
     # don't play any music. should only be called if the -nomusic flag is
