@@ -95,6 +95,12 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 // fmt.Sprintf.
 func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, new string,
 	a ...interface{}) {
+	// perform substitutions from other entries
+	for k, v := range r.addrs {
+		old = strings.ReplaceAll(old, k, fmt.Sprintf("%04x", v))
+		new = strings.ReplaceAll(new, k, fmt.Sprintf("%04x", v))
+	}
+
 	var err error
 	old, err = r.assembler.compile(old, ";\n")
 	if err != nil {

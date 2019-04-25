@@ -159,30 +159,9 @@ func initAgesEOB() {
 
 	r.replaceAsm(0x03, 0x4d6b, "call skipCapcom",
 		"call 0237", "call %04x", r.addrs["skipCapcom"])
+	r.replaceAsm(0x03, 0x6e97, "jump setInitialFlags",
+		"jp setGlobalFlag", "jp setInitialFlags")
 
-	// set flags to skip opening and a bunch of other things. see
-	// doc/technical.md for a dictionary of the flags.
-	initialGlobalFlags := addrString(r.addrs["initialGlobalFlags"])
-	skipOpening := r.appendToBank(0x03, "skip opening",
-		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
-			"\xe5\xcd\xf9\x31\xe1\x18\xf4"+ // init global flags
-			"\xfa\x01\xcc\xb7\x28\x07\x3e\x38\xe5\xcd\xf9\x31\xe1"+ // linked
-			"\xfa\xff\x7f\xea\x10\xc6\x3e\x03\xea\x47\xc6"+ // set animal stuff
-			"\x3e\xff\xea\x49\xc6"+
-			"\x3e\x01\xea\xe8\xc6"+ // make maku tree vanish
-			"\x3e\x80\xea\xbb\xc8"+ // room flag 7
-			"\x3e\x60\xea\xcb\xc8"+ // room flags 5+6
-			"\x3e\x40\xea\x7a\xc7\xea\x6a\xc7\xea\x59\xc7"+ // room flag 6
-			"\xea\x7c\xc7\xea\x2e\xc7\xea\x97\xc8\xea\x3a\xc7\xea\xba\xc7"+
-			"\xea\x8d\xc7\xea\x0a\xc7\xea\xf6\xc9\xea\x5c\xc8\xea\x83\xc8"+
-			"\xea\x0f\xc8\xea\x03\xc7\xea\x90\xc7\xea\x7b\xc7"+
-			"\x3e\x08\xea\x25\xc7\xea\x13\xc8"+ // room flag 3
-			"\x3e\x01\xea\x76\xc8\xea\x38\xc7"+ // room flag 1
-			"\x3e\xc8\xea\x39\xc7"+ // first encounter with nayru
-			"\x3e\x10\xea\x9f\xc6\x3e\x03\xea\xcc\xc6"+ // give L-3 ring box
-			"\xe1\xc9")
-	r.replace(0x03, 0x6e97, "call skip opening",
-		"\xc3\xf9\x31", "\xc3"+skipOpening)
 
 	// bank 04
 

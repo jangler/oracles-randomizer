@@ -1,6 +1,8 @@
 addrs:
   # wram
   wKeysPressed: 0xc481
+  wAnimalRegion: 0xc610
+  wIsLinkedGame: 0xcc01
 
   # rom 00
   interBankCall: 0x008a
