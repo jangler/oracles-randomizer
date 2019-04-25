@@ -10,9 +10,9 @@ addrs:
   wActiveTileType: 0xccb6
 
   # rom 00
-  decHlRef16WithCap: 0x0237
   playSound: 0x0c74
   refillSeedSatchel: 0x17e5
+  forceEnableIntroInputs: 0x0862
 
   # rom 02
   _closeMenu: 0x4f7b
@@ -90,16 +90,6 @@ banks:
         xor a
         call 5e7b
         jp _closeMenu
-  0x03:
-    # allow skipping the capcom screen after one second by pressing start.
-    - skipCapcom: |
-        push hl
-        ld a,(cbb3)
-        cp a,94
-        jr nc,03
-        call 0862
-        pop hl
-        jp decHlRef16WithCap
   0x07:
     # if wearing dev ring, change season regardless of where link is standing.
     - devChangeSeason: |

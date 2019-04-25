@@ -3,8 +3,13 @@ addrs:
   hMusicVar: 0xffb7 # used in filterMusic
 
   # wram
+  wEssencesObtained: 0xc6bf
+  wMakuTreeState: 0xc6e8
   wActiveGroup: 0xcc2d
   wActiveRoom: 0xcc30
+
+  # rom 00
+  forceEnableIntroInputs: 0x0886
 
 banks:
   0x00:
@@ -67,4 +72,27 @@ banks:
         jr c,f4
         pop bc
         or a
+        ret
+    # only increment the maku tree's state if on the maku tree screen, or if
+    # all essences are obtained, set it to the value it would normally have at
+    # that point in the game. this allows getting the maku tree's item as long
+    # as you haven't collected all essences.
+    - checkMakuState: |
+        ld a,(wActiveGroup)
+        cp a,02
+        jr nc,0e
+        ld a,(wActiveRoom)
+        cp a,38
+        jr nz,07
+        ld a,(wMakuTreeState)
+        inc a
+        cp a,11
+        ret
+        ld a,(wEssencesObtained)
+        inc a
+        scf
+        jr nz,03
+        ld a,0e
+        ret
+        ld a,(wMakuTreeState)
         ret

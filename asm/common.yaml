@@ -4,6 +4,7 @@ addrs:
 
   # rom 00
   interBankCall: 0x008a
+  decHlRef16WithCap: 0x0237
 
 banks:
   0x00:
@@ -17,3 +18,13 @@ banks:
         ret
         ld a,(hMusicVar)
         ret
+  0x03:
+    # allow skipping the capcom screen after one second by pressing start.
+    - skipCapcom: |
+        push hl
+        ld a,(cbb3)
+        cp a,94
+        jr nc,03
+        call forceEnableIntroInputs
+        pop hl
+        jp decHlRef16WithCap
