@@ -156,6 +156,12 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		codeAddr = codeMutables["create mt. cucco item"].(*MutableRange).Addrs[0]
 		ItemSlots["mt. cucco, platform cave"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["mt. cucco, platform cave"].subIDAddrs[0].offset = codeAddr.offset + 1
+
+		// ring in d0 sword chest needs the scripted text not to display
+		if ItemSlots["d0 sword chest"].Treasure.id == 0x2d {
+			MutableString(Addr{0x0a, 0x7b9e},
+				"\xc3\x4b\x18", "\xc9\x00\x00").Mutate(b)
+		}
 	} else {
 		// explicitly set these addresses and IDs after their functions
 		mut := codeMutables["soldier script give item"].(*MutableRange)
@@ -189,7 +195,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		}
 	}
 
-	// explicitly set these IDs after their functions are written
+	// explicitly set these items after their functions are written
 	writeBossItems(b)
 	if game == GameSeasons {
 		ItemSlots["subrosia seaside"].Mutate(b)
