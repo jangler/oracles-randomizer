@@ -66,6 +66,24 @@ banks:
       inc hl
       jr ef
 
+  # force the item in the temple of seasons cutscene to use normal item
+  # animations. TODO: i think there's a better way to do this, like the way
+  # that the ages code handles item graphics on non-item interactions.
+  - fixRodCutsceneGfx: |
+      ld e,41
+      ld a,(de)
+      cp a,e6
+      ret nz
+      inc e
+      ld a,(de)
+      cp a,02
+      jr z,03
+      dec e
+      ld a,(de)
+      ret
+      ld a,60
+      ret
+
   0x01:
   # takes b = high byte of season addr, returns season in b.
   - readDefaultSeason: |

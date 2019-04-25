@@ -80,14 +80,8 @@ func initSeasonsEOB() {
 
 	r.replaceAsm(0x00, 0x0c76,
 		"ld h,a; ld a,(ff00+b5)", "call filterMusic")
-
-	// force the item in the temple of seasons cutscene to use normal item
-	// animations.
-	rodCutsceneGfxFunc := r.appendToBank(0x00, "rod cutscene gfx func",
-		"\x1e\x41\x1a\xfe\xe6\xc0\x1c\x1a\xfe\x02\x28\x03\x1d\x1a\xc9"+
-			"\x3e\x60\xc9")
-	r.replace(0x00, 0x2600, "rod cutscene gfx call",
-		"\x1e\x41\x1a", "\xcd"+rodCutsceneGfxFunc)
+	r.replaceAsm(0x00, 0x2600,
+		"ld e,41; ld a,(de)", "call fixRodCutsceneGfx")
 
 	// set hl = address of treasure data + 1 for item with ID a, sub ID c.
 	treasureDataBody := r.appendToBank(0x15, "treasure data body",
