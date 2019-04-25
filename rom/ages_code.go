@@ -49,21 +49,7 @@ func newAgesRomBanks() *romBanks {
 		}
 	}
 
-	for _, ad := range ads {
-		for k, v := range ad.Addrs {
-			r.addrs[k] = v
-		}
-	}
-
-	for _, ad := range ads {
-		for bank, items := range ad.Banks {
-			for _, item := range items {
-				for name, body := range item {
-					r.appendAsm(bank, name, body)
-				}
-			}
-		}
-	}
+	r.applyAsmData(ads)
 
 	return &r
 }

@@ -2,6 +2,7 @@ package rom
 
 import (
 	"fmt"
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -62,15 +63,24 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 	return addrString(eob)
 }
 
+// perform substitutions on labels in asm.
+func (r *romBanks) subLabels(s string) string {
+	// perform substitutions from other entries
+	// TODO cache these regexps?
+	for k, v := range r.addrs {
+		re := regexp.MustCompile(`\b` + k + `\b`)
+		s = re.ReplaceAllString(s, fmt.Sprintf("%04x", v))
+	}
+
+	return s
+}
+
 // appendAsm acts as appendToBank, but by compiling a block of asm. additional
 // arguments are formatted into `asm` by fmt.Sprintf. the returned address is
 // also given as a uint16 rather than a big-endian word in string form.
 func (r *romBanks) appendAsm(bank byte, name, asm string,
 	a ...interface{}) uint16 {
-	// perform substitutions from other entries
-	for k, v := range r.addrs {
-		asm = strings.ReplaceAll(asm, k, fmt.Sprintf("%04x", v))
-	}
+	asm = r.subLabels(asm)
 
 	var err error
 	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")
@@ -95,11 +105,8 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 // fmt.Sprintf.
 func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string,
 	a ...interface{}) {
-	// perform substitutions from other entries
-	for k, v := range r.addrs {
-		old = strings.ReplaceAll(old, k, fmt.Sprintf("%04x", v))
-		new = strings.ReplaceAll(new, k, fmt.Sprintf("%04x", v))
-	}
+	old = r.subLabels(old)
+	new = r.subLabels(new)
 
 	var err error
 	old, err = r.assembler.compile(old, ";\n")
@@ -194,4 +201,54 @@ func makeKeyDropTable() string {
 
 	b.Write([]byte{0xff})
 	return b.String()
+}
+
+// applies the labels and EOB declarations in the given asmData sets.
+func (r *romBanks) applyAsmData(ads []*asmData) {
+	// get preset addrs
+	for _, ad := range ads {
+		for k, v := range ad.Addrs {
+			r.addrs[k] = v
+		}
+	}
+
+	// make placeholders for EOB labels
+	for _, ad := range ads {
+		for _, items := range ad.Banks {
+			for _, item := range items {
+				for name := range item {
+					r.addrs[name] = 0
+				}
+			}
+		}
+	}
+
+	// save original EOB boundaries
+	originalEOBs := make([]uint16, 0x40)
+	copy(originalEOBs, r.endOfBank)
+
+	// write asm using placeholders for labels, in order to get real addrs
+	for _, ad := range ads {
+		for bank, items := range ad.Banks {
+			for _, item := range items {
+				for name, body := range item {
+					r.appendAsm(bank, name, body)
+				}
+			}
+		}
+	}
+
+	// reset EOB boundaries
+	copy(r.endOfBank, originalEOBs)
+
+	// rewrite asm, using real addresses for labels
+	for _, ad := range ads {
+		for bank, items := range ad.Banks {
+			for _, item := range items {
+				for name, body := range item {
+					r.appendAsm(bank, name, body)
+				}
+			}
+		}
+	}
 }

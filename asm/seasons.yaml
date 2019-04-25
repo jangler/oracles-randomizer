@@ -15,6 +15,8 @@ addrs:
   wActiveTileType: 0xccb6
 
   # rom 00
+  multiplyABy4: 0x01c3
+  copyMemory: 0x0462
   forceEnableIntroInputs: 0x0862
   playSound: 0x0c74
   setMusicVolume: 0x0c89
@@ -98,6 +100,21 @@ banks:
       ret
       .next
       ld a,60
+      ret
+
+  # set hl = address of treasure data + 1 for item with ID a, sub ID c. this
+  # uses cdfd-cdff as scratch space.
+  - getTreasureData: |
+      push af
+      push bc
+      push de
+      ld b,a
+      ld e,15
+      ld hl,getTreasureData_body
+      call interBankCall
+      pop de
+      pop bc
+      pop af
       ret
 
   0x01:
@@ -236,6 +253,36 @@ banks:
       ld (ccaa),a
       xor a
       jp 432d
+
+  0x15:
+  # body of getTreasureData in bank 00.
+  - getTreasureData_body: |
+      ld a,b
+      push bc
+      ld hl,5129 # pointer table for treasure data
+      .loop
+      call multiplyABy4
+      add hl,bc
+      bit 7,(hl)
+      jr z,.done
+      inc hl
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      pop bc
+      ld a,c
+      push bc
+      jr .loop
+      .done
+      inc hl
+      ld b,03
+      push de
+      ld de,cdfd
+      call copyMemory
+      ld hl,cdfd
+      pop de
+      pop bc
+      ret
 
   0x3f:
   # have seed satchel inherently refill all seeds.

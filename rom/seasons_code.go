@@ -44,21 +44,7 @@ func newSeasonsRomBanks() *romBanks {
 		}
 	}
 
-	for _, ad := range ads {
-		for k, v := range ad.Addrs {
-			r.addrs[k] = v
-		}
-	}
-
-	for _, ad := range ads {
-		for bank, items := range ad.Banks {
-			for _, item := range items {
-				for name, body := range item {
-					r.appendAsm(bank, name, body)
-				}
-			}
-		}
-	}
+	r.applyAsmData(ads)
 
 	return &r
 }
@@ -83,16 +69,7 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x00, 0x2600,
 		"ld e,41; ld a,(de)", "call fixRodCutsceneGfx")
 
-	// set hl = address of treasure data + 1 for item with ID a, sub ID c.
-	treasureDataBody := r.appendToBank(0x15, "treasure data body",
-		"\x78\xc5\x21\x29\x51\xcd\xc3\x01\x09"+ // add ID offset
-			"\xcb\x7e\x28\x09\x23\x2a\x66\x6f"+ // load as address if bit 7 set
-			"\xc1\x79\xc5\x18\xef"+ // use sub ID as second offset
-			"\x23\x06\x03\xd5\x11\xfd\xcd\xcd\x62\x04"+ // copy data
-			"\x21\xfd\xcd\xd1\xc1\xc9") // set hl and ret
-	getTreasureData := r.appendToBank(0x00, "treasure data func",
-		"\xf5\xc5\xd5\x47\x1e\x15\x21"+treasureDataBody+
-			"\xcd\x8a\x00\xd1\xc1\xf1\xc9")
+	getTreasureData := addrString(r.addrs["getTreasureData"])
 
 	// use cape graphics for stolen feather if applicable.
 	upgradeFeather := r.appendToBank(0x00, "upgrade stolen feather func",
