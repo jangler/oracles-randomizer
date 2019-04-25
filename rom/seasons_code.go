@@ -2,8 +2,6 @@ package rom
 
 import (
 	"strings"
-
-	"gopkg.in/yaml.v2"
 )
 
 func newSeasonsRomBanks() *romBanks {
@@ -34,17 +32,7 @@ func newSeasonsRomBanks() *romBanks {
 	r.endOfBank[0x15] = 0x792d
 	r.endOfBank[0x3f] = 0x714d
 
-	ads := make([]*asmData, 2)
-
-	for i, filename := range []string{"common.yaml", "seasons.yaml"} {
-		ads[i] = new(asmData)
-		if err := yaml.Unmarshal(
-			FSMustByte(false, "/asm/"+filename), ads[i]); err != nil {
-			panic(err)
-		}
-	}
-
-	r.applyAsmData(ads)
+	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/seasons.yaml"})
 
 	return &r
 }

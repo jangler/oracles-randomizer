@@ -5,6 +5,8 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 // this file is for mutables that go at the end of banks. each should be a
@@ -251,4 +253,19 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 			}
 		}
 	}
+}
+
+// applies the labels and EOB declarations in the given asm data files.
+func (r *romBanks) applyAsmFiles(filenames []string) {
+	ads := make([]*asmData, len(filenames))
+
+	for i, filename := range filenames {
+		ads[i] = new(asmData)
+		if err := yaml.Unmarshal(
+			FSMustByte(false, filename), ads[i]); err != nil {
+			panic(err)
+		}
+	}
+
+	r.applyAsmData(ads)
 }

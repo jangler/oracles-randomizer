@@ -2,8 +2,6 @@ package rom
 
 import (
 	"strings"
-
-	"gopkg.in/yaml.v2"
 )
 
 func newAgesRomBanks() *romBanks {
@@ -39,17 +37,7 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x38] = 0x6b00 // to be safe
 	r.endOfBank[0x3f] = 0x7d0a
 
-	ads := make([]*asmData, 2)
-
-	for i, filename := range []string{"common.yaml", "ages.yaml"} {
-		ads[i] = new(asmData)
-		if err := yaml.Unmarshal(
-			FSMustByte(false, "/asm/"+filename), ads[i]); err != nil {
-			panic(err)
-		}
-	}
-
-	r.applyAsmData(ads)
+	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/ages.yaml"})
 
 	return &r
 }
