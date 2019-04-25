@@ -96,3 +96,6 @@ banks:
         ret
         ld a,(wMakuTreeState)
         ret
+  0x03:
+    - initialGlobalFlags: |
+        db 0a,0c,1d,20,23,2b,33,3d,40,41,43,45,ff
