@@ -73,11 +73,10 @@ func initAgesEOB() {
 
 	// bank 00
 
-	r.replaceAsm(0x00, 0x0c9a, "no music call",
-		"ld h,a; ld a,(ff00+b7)", "call %04x", r.addrs["filterMusic"])
-
-	r.replaceAsm(0x00, 0x3e56, "call checkMakuState",
-		"inc a; cp a,11", "call %04x", r.addrs["checkMakuState"])
+	r.replaceAsm(0x00, 0x0c9a,
+		"ld h,a; ld a,(ff00+b7)", "call filterMusic")
+	r.replaceAsm(0x00, 0x3e56,
+		"inc a; cp a,11", "call checkMakuState")
 
 	compareRoom := addrString(r.addrs["compareRoom"])
 	readWord := addrString(r.addrs["readWord"])
@@ -157,11 +156,10 @@ func initAgesEOB() {
 
 	// bank 03
 
-	r.replaceAsm(0x03, 0x4d6b, "call skipCapcom",
-		"call 0237", "call %04x", r.addrs["skipCapcom"])
-	r.replaceAsm(0x03, 0x6e97, "jump setInitialFlags",
+	r.replaceAsm(0x03, 0x4d6b,
+		"call decHlRef16WithCap", "call skipCapcom")
+	r.replaceAsm(0x03, 0x6e97,
 		"jp setGlobalFlag", "jp setInitialFlags")
-
 
 	// bank 04
 

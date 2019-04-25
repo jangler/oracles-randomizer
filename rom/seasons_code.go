@@ -78,8 +78,8 @@ func initSeasonsEOB() {
 
 	// bank 00
 
-	r.replaceAsm(0x00, 0x0c76, "call filterMusic",
-		"ld h,a; ld a,(ff00+b5)", "call %04x", r.addrs["filterMusic"])
+	r.replaceAsm(0x00, 0x0c76,
+		"ld h,a; ld a,(ff00+b5)", "call filterMusic")
 
 	// force the item in the temple of seasons cutscene to use normal item
 	// animations.

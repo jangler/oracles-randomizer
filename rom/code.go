@@ -93,7 +93,7 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 // replaceAsm acts as replace, but treating the old and new strings as asm
 // instead of machine code. additional arguments are formatted into `new` by
 // fmt.Sprintf.
-func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, new string,
+func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string,
 	a ...interface{}) {
 	// perform substitutions from other entries
 	for k, v := range r.addrs {
@@ -110,6 +110,9 @@ func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, new string,
 	if err != nil {
 		panic(err)
 	}
+
+	name := fmt.Sprintf("replacement at %02x:%04x", bank, offset)
+
 	r.replace(bank, offset, name, old, new)
 }
 
