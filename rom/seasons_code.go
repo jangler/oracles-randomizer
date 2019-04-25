@@ -143,12 +143,9 @@ func initSeasonsEOB() {
 	// TODO this could be a replaceMultipleAsm or something like that…
 	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "jump treeWarp",
 		"\xc2\x7b\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
+	println(r.addrs["treeWarp"])
+	r.replaceAsm(0x02, 0x5e9a, "call setMusicVolume", "call devWarp")
 
-	// warp to room under cursor if wearing developer ring.
-	devWarp := r.appendToBank(0x02, "dev ring warp func",
-		"\xfa\xc5\xc6\xfe\x40\x20\x12\xfa\x49\xcc\xfe\x02\x30\x0b\xf6\x80"+
-			"\xea\x63\xcc\xfa\xb6\xcb\xea\x64\xcc\x3e\x03\xcd\x89\x0c\xc9")
-	r.replace(0x02, 0x5e9b, "dev ring warp call", "\x89\x0c", devWarp)
 
 	// load a custom room layout for the problematic woods of winter screen in
 	// winter. the code here is one 8-tile compression block per line.

@@ -7,10 +7,13 @@ addrs:
   wActiveGroup: 0xcc49
   wActiveRoom: 0xcc4c
   wAreaFlags: 0xcc50
+  wWarpDestGroup: 0xcc63
+  wWarpDestIndex: 0xcc64
   wActiveTileType: 0xccb6
 
   # rom 00
   playSound: 0x0c74
+  setMusicVolume: 0x0c89
   refillSeedSatchel: 0x17e5
   forceEnableIntroInputs: 0x0862
 
@@ -99,11 +102,11 @@ banks:
       # close as normal if start not held
       ld a,(wKeysPressed)
       and a,08
-      jr z,16
+      jr z,15
       # if indoors, play error sound and ret
       ld a,(wAreaFlags)
       and a,01
-      jr nz,06
+      jr nz,05
       ld a,5a
       jp playSound
       # close + warp

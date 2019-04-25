@@ -6,13 +6,19 @@ addrs:
   wDimitriState: 0xc647
   wAnimalTutorialFlags: 0xc649
   wEssencesObtained: 0xc6bf
+  wActiveRing: 0xc6cb
   wRingBoxLevel: 0xc6cc
   wMakuTreeState: 0xc6e8
   wActiveGroup: 0xcc2d
   wActiveRoom: 0xcc30
+  wAreaFlags: 0xcc34
+  wWarpDestGroup: 0xcc47
+  wWarpDestIndex: 0xcc48
 
   # rom 00
   forceEnableIntroInputs: 0x0886
+  playSound: 0x0c98
+  setMusicVolume: 0x0cad
   setGlobalFlag: 0x31f9
 
 banks:
@@ -104,6 +110,27 @@ banks:
       ret
       ld a,(wMakuTreeState)
       ret
+
+  0x02:
+  # warp to south lynna present tree if holding start when closing the map
+  # screen.
+  - treeWarp: |
+      ld a,(wKeysPressed)
+      and a,08
+      jr z,1a
+      ld a,(wAreaFlags)
+      and a,01
+      jr nz,05
+      ld a,5a
+      jp playSound
+      ld hl,wWarpDestGroup
+      ld (hl),80
+      inc hl
+      ld (hl),78
+      ld l,4a
+      ld (hl),55
+      call 5fbf
+      jp 4fba
 
   0x03:
   # flags in wGlobalFlags to be set at start of game.

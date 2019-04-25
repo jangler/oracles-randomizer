@@ -21,6 +21,23 @@ banks:
       ld a,(hMusicVar)
       ret
 
+  0x02:
+  # warp to room under cursor if wearing developer ring.
+  - devWarp: |
+      ld a,(wActiveRing)
+      cp a,40
+      jr nz,12
+      ld a,(wActiveGroup)
+      cp a,02
+      jr nc,0b
+      or a,80
+      ld (wWarpDestGroup),a
+      ld a,(cbb6)
+      ld (wWarpDestIndex),a
+      ld a,03
+      call setMusicVolume
+      ret
+
   0x03:
   # allow skipping the capcom screen after one second by pressing start.
   - skipCapcom: |

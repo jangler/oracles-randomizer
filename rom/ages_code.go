@@ -97,21 +97,10 @@ func initAgesEOB() {
 
 	// bank 02
 
-	// warp to ember tree if holding start when closing the map screen.
-	treeWarp := r.appendToBank(0x02, "tree warp",
-		"\xfa\x81\xc4\xe6\x08\x28\x1b"+ // close as normal if start not held
-			"\xfa\x34\xcc\xe6\x01\x20\x06"+ // check if indoors
-			"\x3e\x5a\xcd\x98\x0c\xc9"+ // play error sound and ret
-			"\x21\x47\xcc\x36\x80\x23\x36\x78\x2e\x4a\x36\x55"+ // set dest
-			"\xcd\xbf\x5f\xc3\xba\x4f") // close + warp
 	r.replaceMultiple([]Addr{{0x02, 0x6133}, {0x02, 0x618b}}, "tree warp jump",
-		"\xc2\xba\x4f", "\xc4"+treeWarp)
+		"\xc2\xba\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
+	r.replaceAsm(0x02, 0x5fcb, "call setMusicVolume", "call devWarp")
 
-	// warp to room under cursor if wearing developer ring.
-	devWarp := r.appendToBank(0x02, "dev ring warp func",
-		"\xfa\xcb\xc6\xfe\x40\x20\x12\xfa\x2d\xcc\xfe\x02\x30\x0b\xf6\x80"+
-			"\xea\x47\xcc\xfa\xb6\xcb\xea\x48\xcc\x3e\x03\xcd\xad\x0c\xc9")
-	r.replace(0x02, 0x5fcc, "dev ring warp call", "\xad\x0c", devWarp)
 
 	// allow warping to south lynna tree even if it hasn't been visited (warp
 	// menu locks otherwise).
