@@ -213,7 +213,7 @@ var seasonsD7Nodes = map[string]*Node{
 		Or("ember slingshot", Hard("mystery slingshot"))),
 	"d7 pot room": And("enter d7", "bracelet", Or(
 		And("enter poe A", "kill poe sister"),
-		HardAnd("jump 2", "pegasus satchel"))),
+		HardAnd("bombs", "jump 2", "pegasus satchel"))),
 	"d7 zol button":   AndSlot("d7 pot room", "jump 2"),
 	"d7 armos puzzle": AndSlot("d7 pot room", Or("jump 3", "magnet gloves")),
 	"d7 magunesu chest": AndSlot("d7 armos puzzle", "jump 3", "kill magunesu",
@@ -227,9 +227,10 @@ var seasonsD7Nodes = map[string]*Node{
 	"enter poe B": And("d7 pot room", "ember seeds", Count(3, "d7 small key"),
 		Or("pegasus satchel", "slingshot L-2", Hard())),
 	"d7 water stairs": And("enter poe B", "flippers"),
-	"d7 cross bridge": Or("jump 4", "kill armored (across pit)",
-		And("jump 2", "magnet gloves")),
-	"d7 spike chest": AndSlot("d7 water stairs", "d7 cross bridge", "jump 2"),
+	"d7 spike chest": AndSlot("d7 water stairs",
+		Or("jump 4",
+			And("jump 3", "kill armored (across pit)"),
+			And("jump 2", "magnet gloves"))),
 
 	// 4 keys
 	"d7 maze chest": AndSlot("d7 water stairs", "kill poe sister", "jump 4",
@@ -282,7 +283,7 @@ var seasonsD8Nodes = map[string]*Node{
 	// 4 keys
 	"d8 crystal room":     And("d8 ice puzzle room", Count(4, "d8 small key")),
 	"magical ice owl":     And("mystery seeds", "d8 crystal room"),
-	"d8 ghost armos drop": AndSlot("d8 crystal room"),
+	"d8 ghost armos drop": AndSlot("d8 crystal room", "bombs"),
 	"d8 NE crystal":       And("d8 crystal room", "bracelet", "hit lever"),
 	"d8 SE crystal":       And("d8 crystal room", "bracelet"),
 	"d8 SE lava chest":    AndSlot("d8 SE crystal"),
