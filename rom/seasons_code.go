@@ -143,9 +143,7 @@ func initSeasonsEOB() {
 	// TODO this could be a replaceMultipleAsm or something like that…
 	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "jump treeWarp",
 		"\xc2\x7b\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
-	println(r.addrs["treeWarp"])
 	r.replaceAsm(0x02, 0x5e9a, "call setMusicVolume", "call devWarp")
-
 
 	// load a custom room layout for the problematic woods of winter screen in
 	// winter. the code here is one 8-tile compression block per line.
@@ -202,8 +200,7 @@ func initSeasonsEOB() {
 
 	// bank 03
 
-	r.replace(0x03, 0x4d6c, "call skipCapcom", "\x37\x02",
-		addrString(r.addrs["skipCapcom"]))
+	r.replaceAsm(0x03, 0x4d6b, "call decHlRef16WithCap", "call skipCapcom")
 
 	// bank 04
 
@@ -461,28 +458,9 @@ func initSeasonsEOB() {
 
 	// bank 0a
 
-	// set global flags and room flags that would be set during the intro, as
-	// well as some other flags to skip cutscenes, etc.
-	initialGlobalFlags := r.appendToBank(0x0a, "initial global flags",
-		"\x0a\x1c\xff")
-	giveLinkedStartItem := r.appendToBank(0x0a, "give linked starting item",
-		"\xfa\xfe\x7f\x4f\xfa\xfd\x7f\xea\x82\xc6\xcd\xeb\x16"+
-			"\xaf\xea\x80\xc6\xc9")
-	setStartingFlags := r.appendToBank(0x0a, "set starting flags",
-		"\xe5\x21"+initialGlobalFlags+"\x2a\xfe\xff\x28\x07"+
-			"\xe5\xcd\xcd\x30\xe1\x18\xf4\xe1"+ // init global flags
-			"\xfa\xff\x7f\xea\x10\xc6\x3e\xff\xea\x46\xc6"+ // animal stuff
-			"\xfa\x01\xcc\xb7\xc4"+giveLinkedStartItem+ // in place of sword
-			"\x3e\x50\xea\xa7\xc7"+ // bits 4 + 6
-			"\x3e\x60\xea\x9a\xc7"+ // bits 5 + 6
-			"\x3e\xc0\xea\x98\xc7\xea\xcb\xc7"+ // bits 6 + 7
-			"\x3e\x40\xea\xb6\xc7\xea\x2a\xc8\xea\x00\xc8"+ // bit 6
-			"\xea\x00\xc7\xea\x96\xc7\xea\x8d\xc7\xea\x60\xc7\xea\xd0\xc7"+
-			"\xea\x1d\xc7\xea\x8a\xc7\xea\xe9\xc7\xea\x9b\xc7\xea\x29\xc8"+
-			"\x3e\x10\xea\x97\xc6\x3e\x03\xea\xc6\xc6"+ // give L-3 ring box
-			"\xc9")
-	r.replace(0x0a, 0x66ed, "call set starting flags",
-		"\x1e\x78\x1a\xcb\x7f\x20", "\xcd"+setStartingFlags+"\xc3\x9e\x21")
+	r.replaceAsm(0x0a, 0x66ed,
+		"db 1e,78,1a,cb,7f,20", // dunno what this is
+		"call setInitialFlags; jp objectDelete_useActiveObjectType")
 
 	// remove generic "you got a ring" text for gasha nuts
 	gashaNutRingText := r.appendToBank(0x0a, "remove ring text from gasha nut",

@@ -3,7 +3,10 @@ addrs:
   hMusicVar: 0xffb5 # used in filterMusic
 
   # wram
+  wAnimalTutorialFlags: 0xc646
+  wInventoryB: 0xc680
   wActiveRing: 0xc6c5
+  wRingBoxLevel: 0xc6c6
   wActiveGroup: 0xcc49
   wActiveRoom: 0xcc4c
   wAreaFlags: 0xcc50
@@ -12,10 +15,13 @@ addrs:
   wActiveTileType: 0xccb6
 
   # rom 00
+  forceEnableIntroInputs: 0x0862
   playSound: 0x0c74
   setMusicVolume: 0x0c89
+  giveTreasure_head: 0x16eb
   refillSeedSatchel: 0x17e5
-  forceEnableIntroInputs: 0x0862
+  objectDelete_useActiveObjectType: 0x219e
+  setGlobalFlag: 0x30cd
 
   # rom 02
   _closeMenu: 0x4f7b
@@ -124,6 +130,86 @@ banks:
       ret z
       ld a,(wActiveTileType)
       cp a,08
+      ret
+
+  0x0a:
+  # flags in wGlobalFlags to be set at start of game.
+  - initialGlobalFlags: |
+      db 0a,1c,ff
+
+  # in linked, start with the item that *would* be in the d0 sword chest
+  # instead of the sword.
+  - giveLinkedStartItem: |
+      ld a,(7ffe)
+      ld c,a
+      ld a,(7ffd)
+      ld (c682),a
+      call giveTreasure_head
+      xor a
+      ld (wInventoryB),a
+      ret
+
+  # set flags to skip opening and a bunch of other things. see
+  # doc/technical.md for a dictionary of the flags.
+  - setInitialFlags: |
+      # global flags
+      push hl
+      ld hl,initialGlobalFlags
+      ldi a,(hl)
+      cp a,ff
+      jr z,07
+      push hl
+      call setGlobalFlag
+      pop hl
+      jr f4
+      pop hl
+
+      # animal vars
+      ld a,(7fff)
+      ld (wAnimalRegion),a
+      ld a,ff
+      ld (wAnimalTutorialFlags),a
+
+      # linked start item
+      ld a,(wIsLinkedGame)
+      or a
+      call nz,giveLinkedStartItem
+
+      # room flags 4 | 6
+      ld a,50
+      ld (c7a7),a
+
+      # room flags 5 | 6
+      ld a,60
+      ld (c79a),a
+
+      # room flags 6 | 7
+      ld a,c0
+      ld (c798),a
+      ld (c7cb),a
+
+      # room flag 6
+      ld a,40
+      ld (c7b6),a
+      ld (c82a),a
+      ld (c800),a
+      ld (c700),a
+      ld (c796),a
+      ld (c78d),a
+      ld (c760),a
+      ld (c7d0),a
+      ld (c71d),a
+      ld (c78a),a
+      ld (c7e9),a
+      ld (c79b),a
+      ld (c829),a
+
+      # give L-3 ring box
+      ld a,10
+      ld (c697),a
+      ld a,03
+      ld (wRingBoxLevel),a
+
       ret
 
   0x0b:

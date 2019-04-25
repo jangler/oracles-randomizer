@@ -22,7 +22,7 @@ banks:
       ret
 
   0x02:
-  # warp to room under cursor if wearing developer ring.
+  # warp to room under cursor if using tree warp with developer ring.
   - devWarp: |
       ld a,(wActiveRing)
       cp a,40
