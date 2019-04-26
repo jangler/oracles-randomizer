@@ -1,7 +1,7 @@
 defines:
-  STARTING_TREE_MAP_INDEX: f8
+  # constants
+  STARTING_TREE_MAP_INDEX: 0xf8
 
-addrs:
   # hram
   hCameraY: 0xffa8
   hCameraX: 0xffaa

@@ -1,4 +1,4 @@
-addrs:
+defines:
   # wram
   wKeysPressed: 0xc481
   wAnimalRegion: 0xc610

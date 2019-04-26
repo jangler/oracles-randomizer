@@ -2,7 +2,6 @@ package rom
 
 import (
 	"fmt"
-	"regexp"
 	"sort"
 	"strings"
 
@@ -33,14 +32,11 @@ func addCode(name string, bank byte, offset uint16, code string) uint16 {
 type romBanks struct {
 	endOfBank []uint16
 	assembler *assembler
-	addrs     map[string]uint16
-	defines   map[string]string
 }
 
 // used for unmarshaling asm data from yaml.
 type asmData struct {
-	Defines map[string]string
-	Addrs   map[string]uint16
+	Defines map[string]uint16
 	Banks   map[byte][]map[string]string
 }
 
@@ -62,27 +58,10 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 	}
 
 	codeMutables[name] = MutableString(Addr{bank, eob}, "", data)
+	r.assembler.define(name, eob)
 	r.endOfBank[bank] += uint16(len(data))
 
 	return addrString(eob)
-}
-
-// perform substitutions on labels in asm.
-func (r *romBanks) subLabels(s string) string {
-	// TODO: do this in reverse. don't search the string for every symbol;
-	// index for a symbol when one is encountered. which is probably a job for
-	// the assembler, not for the go code.
-	for k, v := range r.defines {
-		re := regexp.MustCompile(`\b` + k + `\b`)
-		s = re.ReplaceAllString(s, v)
-	}
-
-	for k, v := range r.addrs {
-		re := regexp.MustCompile(`\b` + k + `\b`)
-		s = re.ReplaceAllString(s, fmt.Sprintf("%04x", v))
-	}
-
-	return s
 }
 
 // appendAsm acts as appendToBank, but by compiling a block of asm. additional
@@ -90,8 +69,6 @@ func (r *romBanks) subLabels(s string) string {
 // also given as a uint16 rather than a big-endian word in string form.
 func (r *romBanks) appendAsm(bank byte, name, asm string,
 	a ...interface{}) uint16 {
-	asm = r.subLabels(asm)
-
 	var err error
 	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")
 	if err != nil {
@@ -99,8 +76,7 @@ func (r *romBanks) appendAsm(bank byte, name, asm string,
 	}
 
 	as := r.appendToBank(bank, name, asm)
-	r.addrs[name] = stringAddr(as)
-	return r.addrs[name]
+	return stringAddr(as)
 }
 
 // replace replaces the old data at the given address with the new data, and
@@ -115,9 +91,6 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 // fmt.Sprintf.
 func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string,
 	a ...interface{}) {
-	old = r.subLabels(old)
-	new = r.subLabels(new)
-
 	var err error
 	old, err = r.assembler.compile(old, ";\n")
 	if err != nil {
@@ -218,10 +191,7 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 	// get preset addrs and defines
 	for _, ad := range ads {
 		for k, v := range ad.Defines {
-			r.defines[k] = v
-		}
-		for k, v := range ad.Addrs {
-			r.addrs[k] = v
+			r.assembler.define(k, v)
 		}
 	}
 
@@ -230,7 +200,7 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 		for _, items := range ad.Banks {
 			for _, item := range items {
 				for name := range item {
-					r.addrs[name] = 0
+					r.assembler.define(name, 0)
 				}
 			}
 		}

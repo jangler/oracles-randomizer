@@ -39,9 +39,9 @@ func newAssembler() (*assembler, error) {
 		defs:          ls.NewTable(),
 	}
 
-	asm.compileOpts.RawSet(lua.LString("delims"), lua.LString("\n;"))
-	asm.compileOpts.RawSet(lua.LString("defs"), asm.defs)
-	asm.decompileOpts.RawSet(lua.LString("defs"), asm.defs)
+	asm.compileOpts.RawSetString("delims", lua.LString("\n;"))
+	asm.compileOpts.RawSetString("defs", asm.defs)
+	asm.decompileOpts.RawSetString("defs", asm.defs)
 
 	return asm, nil
 }
@@ -74,4 +74,14 @@ func (asm *assembler) decompile(s, delim string) (string, error) {
 	asm.ls.Pop(1)
 
 	return ret.(lua.LString).String(), nil
+}
+
+// add a constant def as if `define symbol,string` were run.
+func (asm *assembler) define(symbol string, value uint16) {
+	asm.defs.RawSetString(symbol, lua.LNumber(value))
+}
+
+// retrieve a value from the defines table.
+func (asm *assembler) getDef(symbol string) uint16 {
+	return uint16(asm.defs.RawGetString(symbol).(lua.LNumber))
 }

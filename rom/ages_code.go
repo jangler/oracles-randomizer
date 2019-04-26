@@ -13,8 +13,6 @@ func newAgesRomBanks() *romBanks {
 	r := romBanks{
 		endOfBank: make([]uint16, 0x40),
 		assembler: asm,
-		addrs:     make(map[string]uint16),
-		defines:   make(map[string]string),
 	}
 
 	r.endOfBank[0x00] = 0x3ef8
@@ -53,10 +51,10 @@ func initAgesEOB() {
 	r.replaceAsm(0x00, 0x3e56,
 		"inc a; cp a,11", "call checkMakuState")
 
-	compareRoom := addrString(r.addrs["compareRoom"])
-	readWord := addrString(r.addrs["readWord"])
-	searchDoubleKey := addrString(r.addrs["searchDoubleKey"])
-	findObjectWithId := addrString(r.addrs["findObjectWithId"])
+	compareRoom := addrString(r.assembler.getDef("compareRoom"))
+	readWord := addrString(r.assembler.getDef("readWord"))
+	searchDoubleKey := addrString(r.assembler.getDef("searchDoubleKey"))
+	findObjectWithId := addrString(r.assembler.getDef("findObjectWithId"))
 
 	// bank 01
 
@@ -73,7 +71,7 @@ func initAgesEOB() {
 	// bank 02
 
 	r.replaceMultiple([]Addr{{0x02, 0x6133}, {0x02, 0x618b}}, "tree warp jump",
-		"\xc2\xba\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
+		"\xc2\xba\x4f", "\xc4"+addrString(r.assembler.getDef("treeWarp")))
 	r.replaceAsm(0x02, 0x5fcb, "call setMusicVolume", "call devWarp")
 
 	r.replaceAsm(0x02, 0x5ff9,

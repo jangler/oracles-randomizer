@@ -13,8 +13,6 @@ func newSeasonsRomBanks() *romBanks {
 	r := romBanks{
 		endOfBank: make([]uint16, 0x40),
 		assembler: asm,
-		addrs:     make(map[string]uint16),
-		defines:   make(map[string]string),
 	}
 
 	r.endOfBank[0x00] = 0x3ec8
@@ -60,20 +58,20 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x00, 0x39df,
 		"push de; ld a,(ff00+8c)", "jp loadWinterLayout")
 
-	getTreasureData := addrString(r.addrs["getTreasureData"])
-	progressiveItemFunc := addrString(r.addrs["upgradeProgressiveItem"])
-	giveItem := addrString(r.addrs["giveTreasureCustom"])
+	getTreasureData := addrString(r.assembler.getDef("getTreasureData"))
+	progressiveItemFunc := addrString(r.assembler.getDef("upgradeProgressiveItem"))
+	giveItem := addrString(r.assembler.getDef("giveTreasureCustom"))
 
-	callBank2 := addrString(r.addrs["callBank2"])
-	searchValue := addrString(r.addrs["searchValue"])
-	lookupWord := addrString(r.addrs["lookupWord"])
-	readSeason := addrString(r.addrs["readDefaultSeason"])
+	callBank2 := addrString(r.assembler.getDef("callBank2"))
+	searchValue := addrString(r.assembler.getDef("searchValue"))
+	lookupWord := addrString(r.assembler.getDef("lookupWord"))
+	readSeason := addrString(r.assembler.getDef("readDefaultSeason"))
 
 	// bank 02
 
 	// TODO this could be a replaceMultipleAsm or something like that…
 	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "jump treeWarp",
-		"\xc2\x7b\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
+		"\xc2\x7b\x4f", "\xc4"+addrString(r.assembler.getDef("treeWarp")))
 	r.replaceAsm(0x02, 0x5e9a, "call setMusicVolume", "call devWarp")
 
 	r.replaceAsm(0x02, 0x5ec8,
@@ -173,7 +171,7 @@ func initSeasonsEOB() {
 
 	// bank 07
 
-	devChangeSeason := addrString(r.addrs["devChangeSeason"])
+	devChangeSeason := addrString(r.assembler.getDef("devChangeSeason"))
 	r.replace(0x07, 0x5b75, "dev ring season call",
 		"\xfa\xb6\xcc\xfe\x08", "\xcd"+devChangeSeason+"\x00\x00")
 
@@ -366,7 +364,7 @@ func initSeasonsEOB() {
 	// command and corresponding address in jump table
 	r.replace(0x0b, 0x4dea, "d1 entrance cmd byte", "\xa0", "\xb2")
 	r.replace(0x0b, 0x406d, "jump d1EntranceScriptCmd",
-		"\x03\x41", addrString(r.addrs["d1EntranceScriptCmd"]))
+		"\x03\x41", addrString(r.assembler.getDef("d1EntranceScriptCmd")))
 
 	diverIDScript := r.appendToBank(0x0b, "diver fake id script",
 		"\xde\x2e\x00\x92\x94\xc6\x02\xc1")
