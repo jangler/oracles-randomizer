@@ -24,7 +24,7 @@ banks:
       ld a,08
       ret
       .sfx
-      ld a,(hMusicVar)
+      ld a,(ff00+hMusicVar)
       ret
 
   0x02:
@@ -74,8 +74,8 @@ banks:
       and a,7f
       ld (wRingMenu_mode),a
       xor a
-      ld (hCameraY),a
-      ld (hCameraX),a
+      ld (ff00+hCameraY),a
+      ld (ff00+hCameraX),a
       ld hl,wScreenOffsetY
       ldi (hl),a
       ldi (hl),a

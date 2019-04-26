@@ -3,9 +3,9 @@ defines:
   STARTING_TREE_MAP_INDEX: 0xf8
 
   # hram
-  hCameraY: 0xffa8
-  hCameraX: 0xffaa
-  hMusicVar: 0xffb5 # used in filterMusic
+  hCameraY: 0xa8
+  hCameraX: 0xaa
+  hMusicVar: 0xb5 # used in filterMusic
 
   # wram
   wAnimalTutorialFlags: 0xc646
