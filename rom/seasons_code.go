@@ -56,47 +56,12 @@ func initSeasonsEOB() {
 		"ld h,a; ld a,(ff00+b5)", "call filterMusic")
 	r.replaceAsm(0x00, 0x2600,
 		"ld e,41; ld a,(de)", "call fixRodCutsceneGfx")
+	r.replaceAsm(0x00, 0x39df,
+		"push de; ld a,(ff00+8c)", "jp loadWinterLayout")
 
 	getTreasureData := addrString(r.addrs["getTreasureData"])
-
-	// use cape graphics for stolen feather if applicable.
-	upgradeFeather := r.appendToBank(0x00, "upgrade stolen feather func",
-		"\xcd\x17\x17\xd8\xf5\x7b"+ // ret if you have the item
-			"\xfe\x17\x20\x13\xd5\x1e\x43\x1a\xfe\x02\xd1\x20\x0a"+ // check IDs
-			"\xfa\xb4\xc6\xfe\x02\x20\x03"+ // check feather level
-			"\x21\x89\x3f\xf1\xc9"+ // set hl if match
-			"\x02\x37\x17") // treasure data
-	// treasure data
-	progData := r.endOfBank[0x00]
-	r.appendToBank(0x00, "progressive item data",
-		"\x03\x21\x15"+ // mirror shield
-			"\x02\x1d\x11"+ // noble sword
-			"\x03\x1e\x12"+ // master sword
-			"\x02\x23\x1d"+ // boomerang
-			"\x02\x2f\x22"+ // slingshot
-			"\x02\x28\x17"+ // feather
-			"\x00\x46\x20") // satchel
-	// change hl to point to different treasure data if the item is progressive
-	// and needs to be upgraded. param a = treasure ID.
-	progressiveItemFunc := r.appendToBank(0x00, "progressive item func",
-		"\xd5\x5f\xcd"+upgradeFeather+"\x7b\xd1\xd0"+ // ret if missing L-1
-			"\xfe\x01\x20\x0b\xfa\xa9\xc6\xfe\x02\x20\x04"+ // shield
-			"\x21"+addrString(progData)+"\xc9"+ // to mirror shield
-			"\xfe\x05\x20\x0f\xfa\xac\xc6\xfe\x02\x28\x04"+ // sword
-			"\x21"+addrString(progData+3)+"\xc9"+ // to noble sword
-			"\x21"+addrString(progData+6)+"\xc9"+ // to master sword
-			"\xfe\x06\x20\x04\x21"+addrString(progData+9)+"\xc9"+ // boomerang
-			"\xfe\x13\x20\x04\x21"+addrString(progData+12)+"\xc9"+ // slingshot
-			"\xfe\x17\x20\x04\x21"+addrString(progData+15)+"\xc9"+ // feather
-			"\xfe\x19\xc0\x21"+addrString(progData+18)+"\xc9") // satchel
-
-	// this is a replacement for giveTreasure that gives treasure, plays sound,
-	// and sets text based on item ID a and sub ID c, and accounting for item
-	// progression.
-	giveItem := r.appendToBank(0x00, "give item func",
-		"\xcd"+getTreasureData+"\x47\xcd"+progressiveItemFunc+"\x78"+ // load data
-			"\x4e\xcd\xeb\x16\x28\x05\xe5\xcd\x74\x0c\xe1"+ // give, play sound
-			"\x06\x00\x23\x4e\x79\xfe\xff\xc8\xcd\x4b\x18\xaf\xc9") // show text
+	progressiveItemFunc := addrString(r.addrs["upgradeProgressiveItem"])
+	giveItem := addrString(r.addrs["giveTreasureCustom"])
 
 	callBank2 := addrString(r.addrs["callBank2"])
 	searchValue := addrString(r.addrs["searchValue"])
@@ -110,25 +75,6 @@ func initSeasonsEOB() {
 		"\xc2\x7b\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
 	r.replaceAsm(0x02, 0x5e9a, "call setMusicVolume", "call devWarp")
 
-	// load a custom room layout for the problematic woods of winter screen in
-	// winter. the code here is one 8-tile compression block per line.
-	winterLayout := r.appendToBank(0x02, "winter layout",
-		"\x55\x80\x81\x81\x81\x81"+
-			"\x7c\x16\x80\x82\x17"+
-			"\xf0\x1b\xc4\xc4\x70\x72"+
-			"\x00\x01\x0d\x17\xc4\x80\x81\x70\x71"+
-			"\x60\x04\x70\x71\x1a\x1b\x1c\xf7"+
-			"\x05\x80\x81\x81\x70\x71\x9e\x9e"+
-			"\x1c\x16\x04\x15\x17\x80\x81"+
-			"\x30\x1b\x99\x9b\xd9\x1a\x01\x19"+
-			"\x00\x70\x71\x15\x16\x17\xf7\x7a\x8c"+
-			"\x11\x18\x19\x80\x81\x01\x19\x70")
-	loadWinterLayout := r.appendToBank(0x00, "load winter layout",
-		"\xd5\xfa\x4c\xcc\xfe\x9d\x20\x14\xfa\x4e\xcc\xfe\x03\x20\x0d"+
-			"\xfa\x49\xcc\xb7\x20\x07\x3e\x02\xe0\x8c\x21"+winterLayout+
-			"\xf0\x8c\xc3\xe2\x39")
-	r.replace(0x00, 0x39df, "jump to winter layout",
-		"\xd5\xf0\x8c", "\xc3"+loadWinterLayout)
 
 	// allow ring list to be accessed through the ring box icon
 	ringListOpener := r.appendToBank(0x02, "ring list opener",

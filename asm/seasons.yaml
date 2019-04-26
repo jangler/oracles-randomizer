@@ -5,10 +5,14 @@ addrs:
   # wram
   wAnimalTutorialFlags: 0xc646
   wInventoryB: 0xc680
+  wShieldLevel: 0xc6a9
+  wSwordLevel: 0xc6ac
+  wFeatherLevel: 0xc6b4
   wActiveRing: 0xc6c5
   wRingBoxLevel: 0xc6c6
   wActiveGroup: 0xcc49
   wActiveRoom: 0xcc4c
+  wRoomStateModifier: 0xcc4e
   wAreaFlags: 0xcc50
   wWarpDestGroup: 0xcc63
   wWarpDestIndex: 0xcc64
@@ -20,8 +24,10 @@ addrs:
   forceEnableIntroInputs: 0x0862
   playSound: 0x0c74
   setMusicVolume: 0x0c89
-  giveTreasure_head: 0x16eb
+  giveTreasure: 0x16eb
+  checkTreasureObtained: 0x1717
   refillSeedSatchel: 0x17e5
+  showText: 0x184b
   objectDelete_useActiveObjectType: 0x219e
   setGlobalFlag: 0x30cd
 
@@ -117,6 +123,133 @@ banks:
       pop af
       ret
 
+  # use cape graphics for stolen feather if applicable.
+  # TODO: this doesn't appear to get called…
+  - upgradeStolenFeather: |
+      call checkTreasureObtained
+      ret c
+      push af
+      ld a,e
+      cp a,17
+      jr nz,.done
+      push de
+      ld e,43
+      ld a,(de)
+      cp a,02
+      pop de
+      jr nz,.done
+      ld a,(wFeatherLevel)
+      cp a,02
+      jr nz,.done
+      ld hl,3f89 # TODO: reference capeData instead
+      .done
+      pop af
+      ret
+
+  # data used by upgradeStolenFeather. (TODO: not actually used currently)
+  - itemDataStolenCape: db 02,37,17
+
+  # replacement treasure data to use when upgrading progressive items.
+  - itemDataMirrorShield: db 03,21,15
+  - itemDataNobleSword: db 02,1d,11
+  - itemDataMasterSword: db 03,1e,12
+  - itemDataMagicBoomerang: db 02,23,1d
+  - itemDataHyperSlingshot: db 02,2f,22
+  - itemDataRocsCape: db 02,28,17
+  - itemDataSatchel2: db 00,46,20
+
+  # change hl to point to different treasure data if the item is progressive
+  # and needs to be upgraded. param a = treasure ID.
+  - upgradeProgressiveItem: |
+      push de
+      ld e,a
+      call upgradeStolenFeather
+      ld a,e
+      pop de
+      ret nc
+      cp a,01
+      jr nz,.notShield
+      ld a,(wShieldLevel)
+      cp a,02
+      ret nz
+      ld hl,itemDataMirrorShield
+      ret
+      .notShield
+      cp a,05
+      jr nz,.notSword
+      ld a,(wSwordLevel)
+      cp a,02
+      jr z,.masterSword
+      ld hl,itemDataNobleSword
+      ret
+      .masterSword
+      ld hl,itemDataMasterSword
+      ret
+      .notSword
+      cp a,06
+      jr nz,.notBoomerang
+      ld hl,itemDataMagicBoomerang
+      ret
+      .notBoomerang
+      cp a,13
+      jr nz,.notHSS
+      ld hl,itemDataHyperSlingshot
+      ret
+      .notHSS
+      cp a,17
+      jr nz,.notCape
+      ld hl,itemDataRocsCape
+      ret
+      .notCape
+      cp a,19
+      ret nz
+      ld hl,itemDataSatchel2
+      ret
+
+  # this is a replacement for giveTreasure that gives treasure, plays sound,
+  # sets text based on item ID a and sub ID c, and accounts for item
+  # progression.
+  - giveTreasureCustom: |
+      call getTreasureData
+      ld b,a
+      call upgradeProgressiveItem
+      ld a,b
+      ld c,(hl)
+      call giveTreasure
+      jr z,.noSound
+      push hl
+      call playSound
+      pop hl
+      .noSound
+      ld b,00
+      inc hl
+      ld c,(hl)
+      ld a,c
+      cp a,ff
+      ret z
+      call showText
+      xor a
+      ret
+
+  # override room layout with bank 02's winterLayout when appropriate.
+  - loadWinterLayout: |
+      push de
+      ld a,(wActiveRoom)
+      cp a,9d
+      jr nz,.done
+      ld a,(wRoomStateModifier)
+      cp a,03
+      jr nz,.done
+      ld a,(wActiveGroup)
+      or a
+      jr nz,.done
+      ld a,02
+      ld (ff00+8c),a
+      ld hl,winterLayout
+      .done
+      ld a,(ff00+8c)
+      jp 39e2 # TODO: just ret! and make the originating jp a call.
+
   0x01:
   # takes b = high byte of season addr, returns season in b.
   - readDefaultSeason: |
@@ -145,6 +278,20 @@ banks:
       .done
       jp _closeMenu
 
+  # custom room layout for the problematic woods of winter screen in winter.
+  # the code here is one 8-tile compression block per line.
+  - winterLayout: |
+      db 55,80,81,81,81,81
+      db 7c,16,80,82,17
+      db f0,1b,c4,c4,70,72
+      db 00,01,0d,17,c4,80,81,70,71
+      db 60,04,70,71,1a,1b,1c,f7
+      db 05,80,81,81,70,71,9e,9e
+      db 1c,16,04,15,17,80,81
+      db 30,1b,99,9b,d9,1a,01,19
+      db 00,70,71,15,16,17,f7,7a,8c
+      db 11,18,19,80,81,01,19,70
+
   0x07:
   # if wearing dev ring, change season regardless of where link is standing.
   - devChangeSeason: |
@@ -167,7 +314,7 @@ banks:
       ld c,a
       ld a,(7ffd)
       ld (c682),a
-      call giveTreasure_head
+      call giveTreasure
       xor a
       ld (wInventoryB),a
       ret
