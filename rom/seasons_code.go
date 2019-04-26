@@ -14,6 +14,7 @@ func newSeasonsRomBanks() *romBanks {
 		endOfBank: make([]uint16, 0x40),
 		assembler: asm,
 		addrs:     make(map[string]uint16),
+		defines:   make(map[string]string),
 	}
 
 	r.endOfBank[0x00] = 0x3ec8
@@ -75,6 +76,13 @@ func initSeasonsEOB() {
 		"\xc2\x7b\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
 	r.replaceAsm(0x02, 0x5e9a, "call setMusicVolume", "call devWarp")
 
+	r.replaceAsm(0x02, 0x5ec8,
+		"call _mapMenu_checkRoomVisited", "call checkTreeVisited")
+	r.replaceAsm(0x02, 0x65e1,
+		"call _mapMenu_checkRoomVisited", "call checkTreeVisited")
+	r.replaceAsm(0x02, 0x609b,
+		"call _mapMenu_checkCursorRoomVisited", "call checkCursorVisited")
+
 	r.replaceAsm(0x02, 0x56a1,
 		"ld a,(wInventorySubmenu1CursorPos)", "call openRingList")
 	r.replaceAsm(0x02, 0x6f4a,
@@ -82,18 +90,6 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x02, 0x5035,
 		"call setMusicVolume", "call ringListGfxFix")
 
-	// allow warping to horon village tree even if it hasn't been visited (warp
-	// menu locks otherwise).
-	checkTreeVisited := r.appendToBank(0x02, "check tree visited",
-		"\xfe\xf8\xc2\x60\x65\xb7\xc9")
-	r.replace(0x02, 0x5ec8, "call check tree visited 1",
-		"\xcd\x60\x65", "\xcd"+checkTreeVisited)
-	r.replace(0x02, 0x65e1, "call check tree visited 2",
-		"\xcd\x60\x65", "\xcd"+checkTreeVisited)
-	checkCursorVisited := r.appendToBank(0x02, "check cursor visited",
-		"\xfa\xb6\xcb\xc3"+checkTreeVisited)
-	r.replace(0x02, 0x609b, "call check cursor visited",
-		"\xcd\x5d\x65", "\xcd"+checkCursorVisited)
 
 	// bank 03
 

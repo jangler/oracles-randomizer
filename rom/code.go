@@ -34,12 +34,14 @@ type romBanks struct {
 	endOfBank []uint16
 	assembler *assembler
 	addrs     map[string]uint16
+	defines   map[string]string
 }
 
 // used for unmarshaling asm data from yaml.
 type asmData struct {
-	Addrs map[string]uint16
-	Banks map[byte][]map[string]string
+	Defines map[string]string
+	Addrs   map[string]uint16
+	Banks   map[byte][]map[string]string
 }
 
 var codeMutables = map[string]Mutable{}
@@ -67,8 +69,14 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 
 // perform substitutions on labels in asm.
 func (r *romBanks) subLabels(s string) string {
-	// perform substitutions from other entries
-	// TODO cache these regexps?
+	// TODO: do this in reverse. don't search the string for every symbol;
+	// index for a symbol when one is encountered. which is probably a job for
+	// the assembler, not for the go code.
+	for k, v := range r.defines {
+		re := regexp.MustCompile(`\b` + k + `\b`)
+		s = re.ReplaceAllString(s, v)
+	}
+
 	for k, v := range r.addrs {
 		re := regexp.MustCompile(`\b` + k + `\b`)
 		s = re.ReplaceAllString(s, fmt.Sprintf("%04x", v))
@@ -207,8 +215,11 @@ func makeKeyDropTable() string {
 
 // applies the labels and EOB declarations in the given asmData sets.
 func (r *romBanks) applyAsmData(ads []*asmData) {
-	// get preset addrs
+	// get preset addrs and defines
 	for _, ad := range ads {
+		for k, v := range ad.Defines {
+			r.defines[k] = v
+		}
 		for k, v := range ad.Addrs {
 			r.addrs[k] = v
 		}

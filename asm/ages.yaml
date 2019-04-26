@@ -1,3 +1,6 @@
+defines:
+  STARTING_TREE_MAP_INDEX: 78
+
 addrs:
   # hram
   hCameraY: 0xffaa
@@ -149,15 +152,6 @@ banks:
       call 5fbf
       .done
       jp 4fba
-
-  # make an exception for the south lynna tree (always visited).
-  - checkCursorVisited: |
-      ld a,(wMapMenu_cursorIndex)
-  - checkTreeVisited: |
-      cp a,78
-      jp nz,_mapMenu_checkRoomVisited
-      or a
-      ret
 
   # display portal popup map icons for bridge builders' screen present and
   # symmetry city past.

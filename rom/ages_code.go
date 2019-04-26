@@ -14,6 +14,7 @@ func newAgesRomBanks() *romBanks {
 		endOfBank: make([]uint16, 0x40),
 		assembler: asm,
 		addrs:     make(map[string]uint16),
+		defines:   make(map[string]string),
 	}
 
 	r.endOfBank[0x00] = 0x3ef8
@@ -83,6 +84,7 @@ func initAgesEOB() {
 		"call _mapMenu_checkCursorRoomVisited", "call checkCursorVisited")
 	r.replaceAsm(0x02, 0x6245,
 		"ld a,(wMapMenu_cursorIndex)", "jp displayPortalPopups")
+
 	r.replaceAsm(0x02, 0x56dd,
 		"ld a,(wInventorySubmenu1CursorPos)", "call openRingList")
 	r.replaceAsm(0x02, 0x7019,

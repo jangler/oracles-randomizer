@@ -81,6 +81,15 @@ banks:
       ldi (hl),a
       jp clearMenu
 
+  # always treat starting seed tree as visited for warping purposes.
+  - checkCursorVisited: |
+      ld a,(wMapMenu_cursorIndex)
+  - checkTreeVisited: |
+      cp a,STARTING_TREE_MAP_INDEX
+      jp nz,_mapMenu_checkRoomVisited
+      or a
+      ret
+
   0x03:
   # allow skipping the capcom screen after one second by pressing start.
   - skipCapcom: |

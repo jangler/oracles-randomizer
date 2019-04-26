@@ -1,3 +1,6 @@
+defines:
+  STARTING_TREE_MAP_INDEX: f8
+
 addrs:
   # hram
   hCameraY: 0xffa8
@@ -36,8 +39,10 @@ addrs:
 
   # rom 02
   _closeMenu: 0x4f7b
-  _ringMenu_updateSelectedRingFromList: 0x716c
   clearMenu: 0x5072
+  _mapMenu_checkCursorRoomVisited: 0x655d
+  _mapMenu_checkRoomVisited: 0x6560
+  _ringMenu_updateSelectedRingFromList: 0x716c
 
   # rom 3f
   giveTreasure_body: 0x44c8
