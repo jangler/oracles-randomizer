@@ -3,6 +3,7 @@ package rom
 import (
 	"fmt"
 	"io"
+	"os"
 	"sort"
 	"strings"
 
@@ -75,7 +76,7 @@ func (r *romBanks) appendAsm(bank byte, name, asm string,
 	var err error
 	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...))
 	if err != nil {
-		panic(err)
+		exitWithAsmError(name, err)
 	}
 
 	as := r.appendToBank(bank, name, asm)
@@ -94,19 +95,25 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 // fmt.Sprintf.
 func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string,
 	a ...interface{}) {
+	name := fmt.Sprintf("replacement at %02x:%04x", bank, offset)
+
 	var err error
 	old, err = r.assembler.compile(old)
 	if err != nil {
-		panic(err)
+		exitWithAsmError(name+" (old)", err)
 	}
 	new, err = r.assembler.compile(fmt.Sprintf(new, a...))
 	if err != nil {
-		panic(err)
+		exitWithAsmError(name+" (new)", err)
 	}
 
-	name := fmt.Sprintf("replacement at %02x:%04x", bank, offset)
-
 	r.replace(bank, offset, name, old, new)
+}
+
+// exit with an error code and an assembler error message.
+func exitWithAsmError(funcName string, err error) {
+	fmt.Fprintf(os.Stderr, "assembler error in %s:\n%v\n", funcName, err)
+	os.Exit(1)
 }
 
 // replaceMultiple acts as replace, but operates on multiple addresses.
