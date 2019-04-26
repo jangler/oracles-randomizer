@@ -122,27 +122,15 @@ func initSeasonsEOB() {
 
 	// bank 05
 
+	r.replaceAsm(0x05, 0x5fe8,
+		"call lookupCollisionTable", "call cliffLookup")
+
 	// do this so that animals don't immediately stop walking on screen when
 	// called on a bridge.
 	fluteEnterFunc := r.appendToBank(0x05, "flute enter func",
 		"\xcd\xaa\x44\xb7\xc8\xfe\x1a\xc8\xfe\x1b\xc9")
 	r.replaceMultiple([]Addr{{0x05, 0x71ea}, {0x05, 0x493b}},
 		"animal enter call", "\xcd\xaa\x44\xb7", "\xcd"+fluteEnterFunc+"\x00")
-
-	// let link jump down the cliff outside d7, in case of winter sans shovel.
-	// also let link jump down the snow cliff added in woods of winter. also
-	// lets link jump over any tile if wearing dev ring while shielding.
-	cliffLookupFunc := r.appendToBank(0x05, "cliff lookup func",
-		"\xf5\xfa\xc5\xc6\xfe\x40\x20\x0c\xfa\x89\xcc\xb7\x28\x06"+ // dev
-			"\xf1\xfa\x09\xd0\x37\xc9"+ // always jump if dev ring + shield
-			"\xfa\x49\xcc\xb7\x20\x21"+ // cp group
-			"\xfa\x4c\xcc\xfe\xd0\x20\x09\xf1"+ // d7 entrance
-			"\xfe\xa8\x20\x16\x3e\x08\x37\xc9"+ // cp tile
-			"\xfe\x9d\x20\x0d\xf1"+ // woods of winter
-			"\xfe\x99\x28\x04\xfe\x9b\x20\x05\x3e\x10\x37\xc9"+ // cp tile
-			"\xf1\xc3\xdd\x1d") // jp to normal lookup
-	r.replace(0x05, 0x5fe8, "cliff lookup call",
-		"\xcd\xdd\x1d", "\xcd"+cliffLookupFunc)
 
 	// make moosh unrideable on mt cucco in the case of not having flute in a
 	// moosh seed.

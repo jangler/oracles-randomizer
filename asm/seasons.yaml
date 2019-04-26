@@ -34,6 +34,7 @@ defines:
   refillSeedSatchel: 0x17e5
   showText: 0x184b
   openMenu: 0x1a76
+  lookupCollisionTable: 0x1ddd
   objectDelete_useActiveObjectType: 0x219e
   setGlobalFlag: 0x30cd
 
@@ -301,6 +302,43 @@ banks:
       db 30,1b,99,9b,d9,1a,01,19
       db 00,70,71,15,16,17,f7,7a,8c
       db 11,18,19,80,81,01,19,70
+
+  0x05:
+  # let link jump down the cliff outside d7, in case of winter sans shovel.
+  # also let link jump down the snow cliff added in woods of winter. also call
+  # devJump if applicable.
+  - cliffLookup: |
+      call devJump
+      ret c
+      push af
+      ld a,(wActiveGroup)
+      or a
+      jr nz,.noJumpPopAf
+      ld a,(wActiveRoom)
+      cp a,d0
+      jr nz,.notD7Entrance
+      pop af
+      cp a,a8
+      jr nz,.noJump
+      ld a,08
+      scf
+      ret
+      .notD7Entrance
+      cp a,9d
+      jr nz,.noJumpPopAf
+      pop af
+      cp a,99
+      jr z,.snowJump
+      cp a,9b
+      jr nz,.noJump
+      .snowJump
+      ld a,10
+      scf
+      ret
+      .noJumpPopAf
+      pop af
+      .noJump
+      jp lookupCollisionTable
 
   0x07:
   # if wearing dev ring, change season regardless of where link is standing.

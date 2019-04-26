@@ -25,6 +25,7 @@ defines:
   playSound: 0x0c98
   setMusicVolume: 0x0cad
   openMenu: 0x1ab0
+  lookupCollisionTable: 0x1e1f
   setGlobalFlag: 0x31f9
 
   # rom 02
@@ -267,3 +268,11 @@ banks:
 
       pop hl
       ret
+
+  0x05:
+  # check whether a dev jump should happen, then check whether a normal cliff
+  # jump should happen.
+  - cliffLookup: |
+      call devJump
+      ret c
+      jp lookupCollisionTable

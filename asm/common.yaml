@@ -1,13 +1,18 @@
 defines:
+  # constants
+  DEV_RING: 0x40
+
   # wram
   wKeysPressed: 0xc481
   wAnimalRegion: 0xc610
+  wInventoryB: 0xc688
   wMapMenu_mode: 0xcbb3
   wMapMenu_cursorIndex: 0xcbb6
   wInventorySubmenu1CursorPos: 0xcbd1
   wRingMenu_mode: 0xcbd3
   wIsLinkedGame: 0xcc01
   wScreenOffsetY: 0xcd08
+  w1Link.angle: 0xd009
 
   # rom 00
   interBankCall: 0x008a
@@ -31,7 +36,7 @@ banks:
   # warp to room under cursor if using tree warp with developer ring.
   - devWarp: |
       ld a,(wActiveRing)
-      cp a,40
+      cp a,DEV_RING
       jr nz,.noWarp
       ld a,(wActiveGroup)
       cp a,02
@@ -101,3 +106,25 @@ banks:
       .noSkip
       pop hl
       jp decHlRef16WithCap
+
+  0x05:
+  # if wearing dev ring, jump over any tile like a ledge by pressing B with no
+  # B item equipped.
+  - devJump: |
+      push af
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      jr nz,.next
+      ld a,(wInventoryB)
+      or a
+      jr nz,.next
+      ld a,(wKeysPressed)
+      and a,02
+      jr z,.next
+      pop af
+      ld a,(w1Link.angle)
+      scf
+      ret
+      .next
+      pop af
+      ret

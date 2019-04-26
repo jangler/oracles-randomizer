@@ -160,17 +160,8 @@ func initAgesEOB() {
 
 	// bank 05
 
-	// if wearing dev ring, jump over any tile like a ledge by pressing B with
-	// no B item equipped.
-	devJump := r.appendToBank(0x05, "dev jump",
-		"\xf5\xfa\xcb\xc6\xfe\x40\x20\x13"+ // check ring
-			"\xfa\x88\xc6\xb7\x20\x0d"+ // check B item
-			"\xfa\x81\xc4\xe6\x02\x28\x06"+ // check input
-			"\xf1\xfa\x09\xd0\x37\xc9\xf1\xc9") // jump over ledge
-	cliffLookup := r.appendToBank(0x05, "cliff lookup",
-		"\xcd"+devJump+"\xd8\xc3\x1f\x1e")
-	r.replace(0x05, 0x6083, "call cliff lookup",
-		"\xcd\x1f\x1e", "\xcd"+cliffLookup)
+	r.replaceAsm(0x05, 0x6083,
+		"call lookupCollisionTable", "call cliffLookup")
 
 	// prevent link from surfacing from underwater without mermaid suit. this
 	// is probably only relevant for the sea of no return.
