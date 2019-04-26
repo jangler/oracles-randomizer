@@ -146,6 +146,9 @@ func initSeasonsEOB() {
 
 	// bank 06
 
+	r.replaceAsm(0x06, 0x4774,
+		"call setTile", "call checkBreakD6Flower")
+
 	// replace a random item drop with gale seeds 1/4 of the time if the player
 	// is out of gale seeds. this is important so that the one-way cliffs can
 	// be in logic with gale seeds.

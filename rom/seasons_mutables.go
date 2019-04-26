@@ -277,14 +277,6 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// banks 21-24 (room layouts)
 
-	// replace the rock/flower outside of d6 with a normal bush so that the
-	// player doesn't get softlocked if they exit d6 without gale satchel or
-	// default spring.
-	"replace d6 flower spring": MutableByte(Addr{0x21, 0x4e73}, 0xd8, 0xc4),
-	"replace d6 flower non-spring": MutableStrings(
-		[]Addr{{0x22, 0x4b83}, {0x23, 0x4973}, {0x24, 0x45d0}},
-		"\x92", "\xc4"),
-
 	// change water tiles outside d4 from deep to shallow (prevents softlock
 	// from entering without flippers or default summer).
 	"change d4 water tiles": MutableStrings(

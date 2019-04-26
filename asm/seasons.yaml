@@ -3,6 +3,7 @@ defines:
   STARTING_TREE_MAP_INDEX: 0xf8
 
   # hram
+  hBrokenTilePosition: 0x93
   hCameraY: 0xa8
   hCameraX: 0xaa
   hMusicVar: 0xb5 # used in filterMusic
@@ -38,6 +39,7 @@ defines:
   lookupCollisionTable: 0x1ddd
   objectDelete_useActiveObjectType: 0x219e
   setGlobalFlag: 0x30cd
+  setTile: 0x3a52
 
   # rom 02
   _closeMenu: 0x4f7b
@@ -310,6 +312,7 @@ banks:
   0x04:
   # data for applyAllTileSubstitutions: group,room,flags,yx,tile
   - tileSubTable: |
+      db 00,01,01,52,04 # permanently remove flower outside D6 when cut
       db 00,5c,00,64,48 # extend moblin keep railing as chokept for warning
       db 00,5c,00,74,53 # cont.
       db 00,9a,00,14,12 # remove rock across pit blocking exit from D5
@@ -355,6 +358,27 @@ banks:
       pop af
       .noJump
       jp lookupCollisionTable
+
+  0x06:
+  # unset a room flag when the flower outside D6 is broken. see tileSubTable.
+  - checkBreakD6Flower: |
+      push af
+      ld a,(wActiveGroup)
+      or a
+      jr nz,.done
+      ld a,(wActiveRoom)
+      cp a,01
+      jr nz,.done
+      ld a,(ff00+hBrokenTilePosition)
+      cp a,52
+      jr nz,.done
+      push hl
+      ld hl,c701
+      res 0,(hl)
+      pop hl
+      .done
+      pop af
+      jp setTile
 
   0x07:
   # if wearing dev ring, change season regardless of where link is standing.
@@ -439,6 +463,10 @@ banks:
       ld (c7e9),a
       ld (c79b),a
       ld (c829),a
+
+      # room flag 0
+      ld a,01
+      ld (c701),a # flag determines whether flower/rock tile exists
 
       # give L-3 ring box
       ld a,10
