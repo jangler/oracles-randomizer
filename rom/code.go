@@ -2,6 +2,7 @@ package rom
 
 import (
 	"fmt"
+	"io"
 	"sort"
 	"strings"
 
@@ -11,6 +12,8 @@ import (
 // this file is for mutables that go at the end of banks. each should be a
 // self-contained unit (i.e. don't jr to anywhere outside the byte string) so
 // that they can be appended automatically with respect to their size.
+
+var globalRomBanks *romBanks // TODO: get rid of this with the other globals
 
 // return e.g. "\x2d\x79" for 0x792d
 func addrString(addr uint16) string {
@@ -70,7 +73,7 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 func (r *romBanks) appendAsm(bank byte, name, asm string,
 	a ...interface{}) uint16 {
 	var err error
-	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...), ";\n")
+	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...))
 	if err != nil {
 		panic(err)
 	}
@@ -92,11 +95,11 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string,
 	a ...interface{}) {
 	var err error
-	old, err = r.assembler.compile(old, ";\n")
+	old, err = r.assembler.compile(old)
 	if err != nil {
 		panic(err)
 	}
-	new, err = r.assembler.compile(fmt.Sprintf(new, a...), ";\n")
+	new, err = r.assembler.compile(fmt.Sprintf(new, a...))
 	if err != nil {
 		panic(err)
 	}
@@ -249,4 +252,16 @@ func (r *romBanks) applyAsmFiles(filenames []string) {
 	}
 
 	r.applyAsmData(ads)
+}
+
+// ShowAsm writes the disassembly of the specified symbol to the given
+// io.Writer.
+func ShowAsm(symbol string, w io.Writer) error {
+	m := codeMutables[symbol].(*MutableRange)
+	s, err := globalRomBanks.assembler.decompile(string(m.New))
+	if err != nil {
+		return err
+	}
+	_, err = fmt.Fprintln(w, s)
+	return err
 }

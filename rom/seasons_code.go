@@ -45,6 +45,7 @@ var (
 
 func initSeasonsEOB() {
 	r := newSeasonsRomBanks()
+	globalRomBanks = r
 
 	// try to order these first by bank, then by call location. maybe group
 	// them into subfunctions when applicable?
@@ -87,7 +88,6 @@ func initSeasonsEOB() {
 		"call _ringMenu_updateSelectedRingFromList", "call autoEquipRing")
 	r.replaceAsm(0x02, 0x5035,
 		"call setMusicVolume", "call ringListGfxFix")
-
 
 	// bank 03
 

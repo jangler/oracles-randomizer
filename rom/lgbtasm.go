@@ -47,7 +47,7 @@ func newAssembler() (*assembler, error) {
 }
 
 // compile wraps `lgbtasm.compile()`.
-func (asm *assembler) compile(s, delim string) (string, error) {
+func (asm *assembler) compile(s string) (string, error) {
 	if err := asm.ls.CallByParam(lua.P{
 		Fn:      asm.lgbtasm.RawGetString("compile"),
 		NRet:    1,
@@ -62,7 +62,7 @@ func (asm *assembler) compile(s, delim string) (string, error) {
 }
 
 // decompile wraps `lgbtasm.decompile()`.
-func (asm *assembler) decompile(s, delim string) (string, error) {
+func (asm *assembler) decompile(s string) (string, error) {
 	if err := asm.ls.CallByParam(lua.P{
 		Fn:      asm.lgbtasm.RawGetString("decompile"),
 		NRet:    1,

@@ -55,6 +55,7 @@ var (
 	flagNoMusic  bool
 	flagNoUI     bool
 	flagSeed     string
+	flagShowAsm  string
 	flagStats    string
 	flagTreewarp bool
 	flagVerbose  bool
@@ -73,6 +74,8 @@ func initFlags() {
 		"use command line output without option prompts")
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
+	flag.StringVar(&flagShowAsm, "showasm", "",
+		"print disasm for randomizer-defined gameName:functionName")
 	flag.StringVar(&flagStats, "stats", "",
 		"print aggregate YAML route data for 'seasons' or 'ages'")
 	flag.BoolVar(&flagTreewarp, "treewarp", false,
@@ -105,6 +108,28 @@ func main() {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
+	} else if flagShowAsm != "" {
+		var game int
+
+		tokens := strings.Split(flagShowAsm, ":")
+		if len(tokens) != 2 {
+			fmt.Printf("showasm: invalid argument: %s\n", flagShowAsm)
+			return
+		}
+
+		if tokens[0] == "seasons" {
+			game = rom.GameSeasons
+		} else if tokens[0] == "ages" {
+			game = rom.GameAges
+		} else {
+			fmt.Printf("invalid game name: %s\n", tokens[0])
+			return
+		}
+
+		rom.Init(game)
+		if err := rom.ShowAsm(tokens[1], os.Stdout); err != nil {
+			panic(err)
+		}
 	} else if flag.NArg()+flag.NFlag() > 1 { // CLI used
 		// run randomizer on main goroutine
 		runRandomizer(nil, func(s string, a ...interface{}) {

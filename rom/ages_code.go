@@ -43,6 +43,7 @@ func newAgesRomBanks() *romBanks {
 
 func initAgesEOB() {
 	r := newAgesRomBanks()
+	globalRomBanks = r
 
 	// bank 00
 
