@@ -2,6 +2,8 @@ addrs:
   # wram
   wKeysPressed: 0xc481
   wAnimalRegion: 0xc610
+  wMapMenu_mode: 0xcbb3
+  wMapMenu_cursorIndex: 0xcbb6
   wIsLinkedGame: 0xcc01
 
   # rom 00
@@ -33,7 +35,7 @@ banks:
       jr nc,.noWarp
       or a,80
       ld (wWarpDestGroup),a
-      ld a,(cbb6)
+      ld a,(wMapMenu_cursorIndex)
       ld (wWarpDestIndex),a
       .noWarp
       ld a,03

@@ -75,27 +75,14 @@ func initAgesEOB() {
 		"\xc2\xba\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
 	r.replaceAsm(0x02, 0x5fcb, "call setMusicVolume", "call devWarp")
 
-
-	// allow warping to south lynna tree even if it hasn't been visited (warp
-	// menu locks otherwise).
-	checkTreeVisited := r.appendToBank(0x02, "check tree visited",
-		"\xfe\x78\xc2\x39\x66\xb7\xc9")
-	r.replace(0x02, 0x5ff9, "call check tree visited 1",
-		"\xcd\x39\x66", "\xcd"+checkTreeVisited)
-	r.replace(0x02, 0x66a9, "call check tree visited 2",
-		"\xcd\x39\x66", "\xcd"+checkTreeVisited)
-	checkCursorVisited := r.appendToBank(0x02, "check cursor visited",
-		"\xfa\xb6\xcb\xc3"+checkTreeVisited)
-	r.replace(0x02, 0x619d, "call check cursor visited",
-		"\xcd\x36\x66", "\xcd"+checkCursorVisited)
-
-	// display portal popup map icons for bridge builders' screen present and
-	// symmetry city past.
-	displayPortalPopup := r.appendToBank(0x02, "display portal popup",
-		"\xfa\xb3\xcb\xa7\xfa\xb6\xcb\x20\x08\xfe\x25\x20\x0d\x3e\xaa\x18\x06"+
-			"\xfe\x13\x20\x05\x3e\xa3\xc3\x55\x62\xc3\x48\x62")
-	r.replace(0x02, 0x6245, "jump display portal popup",
-		"\xfa\xb6\xcb", "\xc3"+displayPortalPopup)
+	r.replaceAsm(0x02, 0x5ff9,
+		"call _mapMenu_checkRoomVisited", "call checkTreeVisited")
+	r.replaceAsm(0x02, 0x66a9,
+		"call _mapMenu_checkRoomVisited", "call checkTreeVisited")
+	r.replaceAsm(0x02, 0x619d,
+		"call _mapMenu_checkCursorRoomVisited", "call checkCursorVisited")
+	r.replaceAsm(0x02, 0x6245,
+		"ld a,(wMapMenu_cursorIndex)", "jp displayPortalPopups")
 
 	// allow ring list to be accessed through the ring box icon
 	ringListOpener := r.appendToBank(0x02, "ring list opener",

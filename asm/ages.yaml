@@ -21,6 +21,10 @@ addrs:
   setMusicVolume: 0x0cad
   setGlobalFlag: 0x31f9
 
+  # rom 02
+  _mapMenu_checkCursorRoomVisited: 0x6636
+  _mapMenu_checkRoomVisited: 0x6639
+
 banks:
   0x00:
   # return z iff the current group and room match c and b.
@@ -140,6 +144,35 @@ banks:
       call 5fbf
       .done
       jp 4fba
+
+  # make an exception for the south lynna tree (always visited).
+  - checkCursorVisited: |
+      ld a,(wMapMenu_cursorIndex)
+  - checkTreeVisited: |
+      cp a,78
+      jp nz,_mapMenu_checkRoomVisited
+      or a
+      ret
+
+  # display portal popup map icons for bridge builders' screen present and
+  # symmetry city past.
+  - displayPortalPopups: |
+      ld a,(wMapMenu_mode)
+      and a
+      ld a,(wMapMenu_cursorIndex)
+      jr nz,.present
+      cp a,25
+      jr nz,.ret
+      ld a,aa
+      jr .gotIcon
+      .present
+      cp a,13
+      jr nz,.ret
+      ld a,a3
+      .gotIcon
+      jp 6255
+      .ret
+      jp 6248
 
   0x03:
   # flags in wGlobalFlags to be set at start of game.
