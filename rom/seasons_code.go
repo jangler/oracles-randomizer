@@ -75,26 +75,12 @@ func initSeasonsEOB() {
 		"\xc2\x7b\x4f", "\xc4"+addrString(r.addrs["treeWarp"]))
 	r.replaceAsm(0x02, 0x5e9a, "call setMusicVolume", "call devWarp")
 
-
-	// allow ring list to be accessed through the ring box icon
-	ringListOpener := r.appendToBank(0x02, "ring list opener",
-		"\xfa\xd1\xcb\xfe\x0f\xc0\x3e\x81\xea\xd3\xcb\x3e\x04\xcd\x76\x1a\xe1\xc9")
-	r.replace(0x02, 0x56a1, "call ring list opener",
-		"\xfa\xd1\xcb", "\xcd"+ringListOpener)
-
-	// auto-equip selected ring from ring list
-	autoEquipRing := r.appendToBank(0x02, "auto-equip ring",
-		"\xcd\x6c\x71\xea\xc5\xc6\xc9")
-	r.replace(0x02, 0x6f4a, "call auto-equip ring",
-		"\xcd\x6c\x71", "\xcd"+autoEquipRing)
-
-	// don't save gfx when opening ring list from subscreen (they were already saved when
-	// opening the item menu), and clear screen scroll variables (which are saved anyway)
-	ringListGfxFix := r.appendToBank(0x02, "ring list gfx fix",
-		"\xcd\x89\x0c\xfa\xd3\xcb\xcb\x7f\xc8\xe6\x7f\xea\xd3\xcb"+
-			"\xaf\xe0\xa8\xe0\xaa\x21\x08\xcd\x22\x22\xc3\x72\x50")
-	r.replace(0x02, 0x5035, "call ring list gfx fix",
-		"\xcd\x89\x0c", "\xcd"+ringListGfxFix)
+	r.replaceAsm(0x02, 0x56a1,
+		"ld a,(wInventorySubmenu1CursorPos)", "call openRingList")
+	r.replaceAsm(0x02, 0x6f4a,
+		"call _ringMenu_updateSelectedRingFromList", "call autoEquipRing")
+	r.replaceAsm(0x02, 0x5035,
+		"call setMusicVolume", "call ringListGfxFix")
 
 	// allow warping to horon village tree even if it hasn't been visited (warp
 	// menu locks otherwise).

@@ -4,7 +4,10 @@ addrs:
   wAnimalRegion: 0xc610
   wMapMenu_mode: 0xcbb3
   wMapMenu_cursorIndex: 0xcbb6
+  wInventorySubmenu1CursorPos: 0xcbd1
+  wRingMenu_mode: 0xcbd3
   wIsLinkedGame: 0xcc01
+  wScreenOffsetY: 0xcd08
 
   # rom 00
   interBankCall: 0x008a
@@ -41,6 +44,42 @@ banks:
       ld a,03
       call setMusicVolume
       ret
+
+  # allow ring list to be accessed through the ring box icon.
+  - openRingList: |
+      ld a,(wInventorySubmenu1CursorPos)
+      cp a,0f
+      ret nz
+      ld a,81
+      ld (wRingMenu_mode),a
+      ld a,04
+      call openMenu
+      pop hl
+      ret
+
+  # auto-equip rings when selected in ring list.
+  - autoEquipRing: |
+      call _ringMenu_updateSelectedRingFromList
+      ld (wActiveRing),a
+      ret
+
+  # don't save gfx when opening ring list from subscreen (they were already
+  # saved when opening the item menu), and clear screen scroll variables (which
+  # are saved anyway).
+  - ringListGfxFix: |
+      call setMusicVolume
+      ld a,(wRingMenu_mode)
+      bit 7,a
+      ret z
+      and a,7f
+      ld (wRingMenu_mode),a
+      xor a
+      ld (hCameraY),a
+      ld (hCameraX),a
+      ld hl,wScreenOffsetY
+      ldi (hl),a
+      ldi (hl),a
+      jp clearMenu
 
   0x03:
   # allow skipping the capcom screen after one second by pressing start.

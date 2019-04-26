@@ -1,5 +1,7 @@
 addrs:
   # hram
+  hCameraY: 0xffaa
+  hCameraX: 0xffac
   hMusicVar: 0xffb7 # used in filterMusic
 
   # wram
@@ -19,11 +21,14 @@ addrs:
   forceEnableIntroInputs: 0x0886
   playSound: 0x0c98
   setMusicVolume: 0x0cad
+  openMenu: 0x1ab0
   setGlobalFlag: 0x31f9
 
   # rom 02
   _mapMenu_checkCursorRoomVisited: 0x6636
   _mapMenu_checkRoomVisited: 0x6639
+  _ringMenu_updateSelectedRingFromList: 0x723b
+  clearMenu: 0x50b1
 
 banks:
   0x00:

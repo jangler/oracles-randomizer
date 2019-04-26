@@ -1,5 +1,7 @@
 addrs:
   # hram
+  hCameraY: 0xffa8
+  hCameraX: 0xffaa
   hMusicVar: 0xffb5 # used in filterMusic
 
   # wram
@@ -28,11 +30,14 @@ addrs:
   checkTreasureObtained: 0x1717
   refillSeedSatchel: 0x17e5
   showText: 0x184b
+  openMenu: 0x1a76
   objectDelete_useActiveObjectType: 0x219e
   setGlobalFlag: 0x30cd
 
   # rom 02
   _closeMenu: 0x4f7b
+  _ringMenu_updateSelectedRingFromList: 0x716c
+  clearMenu: 0x5072
 
   # rom 3f
   giveTreasure_body: 0x44c8
