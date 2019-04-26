@@ -107,6 +107,54 @@ banks:
       pop hl
       jp decHlRef16WithCap
 
+  0x04:
+  # look up tiles in custom replacement table after loading a room. the format
+  # is (group, room, bitmask, YX, tile ID), with ff ending the table. if the
+  # bitmask AND the current room flags is nonzero, the replacement is not made.
+  - applyExtraTileSubstitutions: |
+      push bc
+      push de
+      call getThisRoomFlags
+      ld e,a
+      ld hl,tileSubTable
+      ld a,(wActiveGroup)
+      ld b,a
+      ld a,(wActiveRoom)
+      ld c,a
+      .loop
+      ldi a,(hl)
+      cp a,ff
+      jr z,.done
+      cp b
+      jr nz,.groupMismatch
+      ldi a,(hl)
+      cp c
+      jr nz,.roomMismatch
+      ldi a,(hl)
+      and e
+      jr nz,.flagMismatch
+      push de
+      ld d,cf
+      ldi a,(hl)
+      ld e,a
+      ldi a,(hl)
+      ld (de),a
+      pop de
+      jr .loop
+      .groupMismatch
+      inc hl
+      .roomMismatch
+      inc hl
+      .flagMismatch
+      inc hl
+      inc hl
+      jr .loop
+      .done
+      pop de
+      pop bc
+      call applyAllTileSubstitutions
+      ret
+
   0x05:
   # if wearing dev ring, jump over any tile like a ledge by pressing B with no
   # B item equipped.

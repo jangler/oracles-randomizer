@@ -95,6 +95,9 @@ func initSeasonsEOB() {
 
 	// bank 04
 
+	r.replaceAsm(0x00, 0x3854,
+		"call applyAllTileSubstitutions", "call applyExtraTileSubstitutions")
+
 	// if entering certain warps blocked by snow piles, mushrooms, or bushes,
 	// set the animal companion to appear right outside instead of where you
 	// left them. table entries are {entered group, entered room, animal room,
@@ -159,9 +162,8 @@ func initSeasonsEOB() {
 
 	// bank 07
 
-	devChangeSeason := addrString(r.assembler.getDef("devChangeSeason"))
-	r.replace(0x07, 0x5b75, "dev ring season call",
-		"\xfa\xb6\xcc\xfe\x08", "\xcd"+devChangeSeason+"\x00\x00")
+	r.replaceAsm(0x07, 0x5b75,
+		"ld a,(wActiveTileType); cp a,08", "call devChangeSeason; nop; nop")
 
 	// bank 08
 

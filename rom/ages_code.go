@@ -100,45 +100,8 @@ func initAgesEOB() {
 
 	// bank 04
 
-	// look up tiles in custom replacement table after loading a room. the
-	// format is (group, room, bitmask, YX, tile ID), with ff ending the table.
-	// if the bitmask AND the current room flags is nonzero, the replacement is
-	// not made.
-	tileReplaceTable := r.appendToBank(0x04, "tile replace table",
-		"\x01\x48\x00\x45\xd7"+ // portal south of past maku tree
-			"\x00\x39\x00\x63\xf0"+ // open chest on intro screen
-			"\x00\x39\x20\x63\xf1"+ // closed chest on intro screen
-			"\x00\x6b\x00\x42\x3a"+ // removed tree in yoll graveyard
-			"\x00\x6b\x02\x42\xce"+ // not removed tree in yoll graveyard
-			"\x00\x83\x00\x43\xa4"+ // rock outside D2
-			"\x03\x0f\x00\x66\xf9"+ // water in d6 past entrance
-			"\x01\x13\x00\x61\xd7"+ // portal in symmetry city past
-			"\x00\x25\x00\x37\xd7"+ // portal in nuun highlands
-			"\x05\xda\x01\xa4\xb2"+ // tunnel to moblin keep
-			"\x05\xda\x01\xa5\xb2"+ // cont.
-			"\x05\xda\x01\xa6\xb2"+ // cont.
-			"\x00\x24\x02\x49\x63"+ // other side of symmetry city bridge
-			"\x00\x24\x02\x59\x63"+ // cont.
-			"\x00\x24\x02\x69\x63"+ // cont.
-			"\x00\x24\x02\x79\x73"+ // cont.
-			"\x01\x2c\x00\x70\x69"+ // ledge in rolling ridge east past
-			"\x01\x2c\x00\x71\x06"+ // cont.
-			"\x01\x2c\x00\x72\x67"+ // cont.
-			"\x00\xa9\x00\x67\xf2"+ // portal sign on crescent island
-			"\x01\xa5\x00\x35\x48"+ // ledge by library past
-			"\x01\xa5\x00\x45\x0b"+ // cont.
-			"\x01\xa5\x00\x55\x6c"+ // cont.
-			"\x00\x83\x00\x44\xd7"+ // portal outside D2 present
-			"\xff")
-	tileReplaceFunc := r.appendToBank(0x04, "tile replace body",
-		"\xc5\xd5\xcd\x7d\x19\x5f\x21"+tileReplaceTable+"\xfa\x2d\xcc\x47"+
-			"\xfa\x30\xcc\x4f"+ // load room flags, table addr, group, room
-			"\x2a\xfe\xff\x28\x1b\xb8\x20\x12\x2a\xb9\x20\x0f"+
-			"\x2a\xa3\x20\x0c"+ // compare group, room, flags
-			"\xd5\x16\xcf\x2a\x5f\x2a\x12\xd1\x18\xe6"+ // replace
-			"\x23\x23\x23\x23\x18\xe0\xd1\xc1\xcd\xef\x5f\xc9")
-	r.replace(0x00, 0x38c0, "tile replace call",
-		"\xcd\xef\x5f", "\xcd"+tileReplaceFunc)
+	r.replaceAsm(0x00, 0x38c0,
+		"call applyAllTileSubstitutions", "call applyExtraTileSubstitutions")
 
 	// treat the d2 present entrance like the d2 past entrance, and reset the
 	// water level when entering jabu (see logic comments).

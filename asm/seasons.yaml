@@ -33,6 +33,7 @@ defines:
   checkTreasureObtained: 0x1717
   refillSeedSatchel: 0x17e5
   showText: 0x184b
+  getThisRoomFlags: 0x1956
   openMenu: 0x1a76
   lookupCollisionTable: 0x1ddd
   objectDelete_useActiveObjectType: 0x219e
@@ -44,6 +45,9 @@ defines:
   _mapMenu_checkCursorRoomVisited: 0x655d
   _mapMenu_checkRoomVisited: 0x6560
   _ringMenu_updateSelectedRingFromList: 0x716c
+
+  # rom 04
+  applyAllTileSubstitutions: 0x5d94
 
   # rom 3f
   giveTreasure_body: 0x44c8
@@ -302,6 +306,12 @@ banks:
       db 30,1b,99,9b,d9,1a,01,19
       db 00,70,71,15,16,17,f7,7a,8c
       db 11,18,19,80,81,01,19,70
+
+  0x04:
+  # data for applyAllTileSubstitutions: group,room,flags,yx,tile
+  - tileSubTable: |
+      db 00,9a,00,34,04 # remove bush next to rosa portal
+      db ff
 
   0x05:
   # let link jump down the cliff outside d7, in case of winter sans shovel.

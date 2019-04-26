@@ -294,7 +294,6 @@ var seasonsFixedMutables = map[string]Mutable{
 		"\xfd\x00\xfc\x06\xfd\xfd\xfd\xfd",
 		"\xdc\x00\xfc\x06\xdc\xdc\xdc\xdc"),
 
-	// move the bushes on the rosa portal screen by one tile so that it's
 	// block the waterfalls from mt cucco to sunken city, so that there only
 	// needs to be one warning interaction at the vines.
 	"block waterfalls": MutableStrings([]Addr{{0x21, 0x5bd1}, {0x21, 0x5c17},
@@ -319,13 +318,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"add rock outside d5": MutableStrings([]Addr{
 		{0x21, 0x7031}, {0x22, 0x6c6e}, {0x23, 0x6a7c}, {0x24, 0x677d}},
 		"\x12", "\x64"),
-
-	// make it possible to leave and re-enter rosa's portal without breaking
-	// bushes.
-	"move rosa portal bushes": MutableStrings([]Addr{
-		{0x21, 0x7454}, {0x22, 0x709d}, {0x23, 0x6ea9}, {0x24, 0x6b9f}},
-		"\x0e\xc4\xf7\x4d\x5f\x11\x6e\x38\xc4\x11\x5e\xf7\x5d\x11",
-		"\x38\xc4\xf7\x4d\x04\x5d\x6e\x38\xc4\x11\x5e\xf7\x4d\x5f"),
 
 	// replace some currents in spool swamp in spring so that the player isn't
 	// trapped by them.

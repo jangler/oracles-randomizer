@@ -24,6 +24,7 @@ defines:
   forceEnableIntroInputs: 0x0886
   playSound: 0x0c98
   setMusicVolume: 0x0cad
+  getThisRoomFlags: 0x197d
   openMenu: 0x1ab0
   lookupCollisionTable: 0x1e1f
   setGlobalFlag: 0x31f9
@@ -33,6 +34,9 @@ defines:
   _mapMenu_checkRoomVisited: 0x6639
   _ringMenu_updateSelectedRingFromList: 0x723b
   clearMenu: 0x50b1
+
+  # rom 04
+  applyAllTileSubstitutions: 0x5fef
 
 banks:
   0x00:
@@ -268,6 +272,35 @@ banks:
 
       pop hl
       ret
+
+  0x04:
+  # data for applyAllTileSubstitutions: group,room,flags,yx,tile
+  - tileSubTable: |
+      db 01,48,00,45,d7 # portal south of past maku tree
+      db 00,39,00,63,f0 # open chest on intro screen
+      db 00,39,20,63,f1 # closed chest on intro screen
+      db 00,6b,00,42,3a # removed tree in yoll graveyard
+      db 00,6b,02,42,ce # not removed tree in yoll graveyard
+      db 00,83,00,43,a4 # rock outside D2
+      db 03,0f,00,66,f9 # water in d6 past entrance
+      db 01,13,00,61,d7 # portal in symmetry city past
+      db 00,25,00,37,d7 # portal in nuun highlands
+      db 05,da,01,a4,b2 # tunnel to moblin keep
+      db 05,da,01,a5,b2 # cont.
+      db 05,da,01,a6,b2 # cont.
+      db 00,24,02,49,63 # other side of symmetry city bridge
+      db 00,24,02,59,63 # cont.
+      db 00,24,02,69,63 # cont.
+      db 00,24,02,79,73 # cont.
+      db 01,2c,00,70,69 # ledge in rolling ridge east past
+      db 01,2c,00,71,06 # cont.
+      db 01,2c,00,72,67 # cont.
+      db 00,a9,00,67,f2 # portal sign on crescent island
+      db 01,a5,00,35,48 # ledge by library past
+      db 01,a5,00,45,0b # cont.
+      db 01,a5,00,55,6c # cont.
+      db 00,83,00,44,d7 # portal outside D2 present
+      db ff
 
   0x05:
   # check whether a dev jump should happen, then check whether a normal cliff
