@@ -8,8 +8,11 @@ import (
 
 // wraps a lua state used for converting gb assembly code to machine code.
 type assembler struct {
-	ls      *lua.LState
-	lgbtasm *lua.LTable
+	ls            *lua.LState
+	lgbtasm       *lua.LTable
+	compileOpts   *lua.LTable
+	decompileOpts *lua.LTable
+	defs          *lua.LTable
 }
 
 // returns a new assembler object, or an error if the source lua code cannot be
@@ -28,10 +31,19 @@ func newAssembler() (*assembler, error) {
 	ls.SetField(preload, "lgbtasm", mod)
 	ls.DoString(`lgbtasm = require "lgbtasm"`)
 
-	return &assembler{
-		ls:      ls,
-		lgbtasm: ls.GetGlobal("lgbtasm").(*lua.LTable),
-	}, nil
+	asm := &assembler{
+		ls:            ls,
+		lgbtasm:       ls.GetGlobal("lgbtasm").(*lua.LTable),
+		compileOpts:   ls.NewTable(),
+		decompileOpts: ls.NewTable(),
+		defs:          ls.NewTable(),
+	}
+
+	asm.compileOpts.RawSet(lua.LString("delims"), lua.LString("\n;"))
+	asm.compileOpts.RawSet(lua.LString("defs"), asm.defs)
+	asm.decompileOpts.RawSet(lua.LString("defs"), asm.defs)
+
+	return asm, nil
 }
 
 // compile wraps `lgbtasm.compile()`.
@@ -40,7 +52,7 @@ func (asm *assembler) compile(s, delim string) (string, error) {
 		Fn:      asm.lgbtasm.RawGetString("compile"),
 		NRet:    1,
 		Protect: true,
-	}, lua.LString(s), lua.LString(delim)); err != nil {
+	}, lua.LString(s), asm.compileOpts); err != nil {
 		return "", err
 	}
 	ret := asm.ls.Get(-1)
@@ -55,7 +67,7 @@ func (asm *assembler) decompile(s, delim string) (string, error) {
 		Fn:      asm.lgbtasm.RawGetString("decompile"),
 		NRet:    1,
 		Protect: true,
-	}, lua.LString(s), lua.LString(delim)); err != nil {
+	}, lua.LString(s), asm.decompileOpts); err != nil {
 		return "", err
 	}
 	ret := asm.ls.Get(-1)
