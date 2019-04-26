@@ -310,7 +310,13 @@ banks:
   0x04:
   # data for applyAllTileSubstitutions: group,room,flags,yx,tile
   - tileSubTable: |
+      db 00,5c,00,64,48 # extend moblin keep railing as chokept for warning
+      db 00,5c,00,74,53 # cont.
+      db 00,9a,00,14,12 # remove rock across pit blocking exit from D5
+      db 00,8a,00,66,64 # ^ but add rock at bottom of cliff to block ricky
       db 00,9a,00,34,04 # remove bush next to rosa portal
+      db 00,b0,00,21,13 # remove spool swamp pits to prevent winter softlock
+      db 00,b0,00,51,13 # cont.
       db ff
 
   0x05:

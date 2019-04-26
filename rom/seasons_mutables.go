@@ -300,25 +300,6 @@ var seasonsFixedMutables = map[string]Mutable{
 		{0x22, 0x58a4}, {0x22, 0x58ea}, {0x23, 0x5645}, {0x23, 0x568b},
 		{0x24, 0x54fa}, {0x24, 0x5540}}, "\x36\xff\x35", "\x40\x40\x40"),
 
-	// extend the railing on moblin keep to require only one warning
-	// interaction for the potential one-way jump in dimitri's region. one
-	// address per natzu region, then one for the ruined version.
-	"moblin keep rail 1": MutableStrings([]Addr{{0x21, 0x63f8}, {0x22, 0x6050},
-		{0x23, 0x5e56}, {0x24, 0x5bb9}}, "\x26", "\x48"),
-	"moblin keep rail 2": MutableStrings([]Addr{{0x21, 0x63ff}, {0x22, 0x6057},
-		{0x23, 0x5e5d}, {0x24, 0x5bc3}}, "\x48", "\x53"),
-
-	// remove the rock blocking exit from D5, since it makes no difference in
-	// logic and is a softlock unless otherwise prevented.
-	"remove rock outside d5": MutableStrings([]Addr{
-		{0x21, 0x7448}, {0x22, 0x7091}, {0x23, 0x6e9d}, {0x24, 0x6b93}},
-		"\xc0", "\x12"),
-	// but add an extra (non-interactable) rock on the actual D5 screen so that
-	// ricky can't jump up the cliff.
-	"add rock outside d5": MutableStrings([]Addr{
-		{0x21, 0x7031}, {0x22, 0x6c6e}, {0x23, 0x6a7c}, {0x24, 0x677d}},
-		"\x12", "\x64"),
-
 	// replace some currents in spool swamp in spring so that the player isn't
 	// trapped by them.
 	"replace currents 1": MutableWord(Addr{0x21, 0x7ab1}, 0xd2d2, 0xd3d3),
@@ -344,13 +325,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// remove some snow piles outside D7 for the same reason.
 	"remove d7 snow piles": MutableString(Addr{0x24, 0x7910},
 		"\xd9\xa0\xb9\xd9", "\x2b\xa0\xb9\x2b"),
-
-	// remove holes on ricky's path to the spool swamp portal in order to
-	// prevent getting stuck when exiting into default winter.
-	"remove swamp holes": MutableStrings([]Addr{
-		{0x21, 0x7a1b}, {0x21, 0x7a39}, {0x22, 0x76ab}, {0x22, 0x76c9},
-		{0x23, 0x7476}, {0x23, 0x7494}, {0x24, 0x7173}, {0x24, 0x7191}},
-		"\xf3", "\x13"),
 
 	// bank 3f
 
