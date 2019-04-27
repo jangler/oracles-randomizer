@@ -90,28 +90,6 @@ banks:
       pop bc
       ret
 
-  # search for a key bc in a dictionary starting at hl. the dictionary is
-  # a series of two-byte keys and two-byte values. if a match is found,
-  # hl is the address of the value, and z is set. the dictionary ends
-  # when $ff is encountered at the beginning of an entry.
-  - lookupWord: |
-      .loop
-      ldi a,(hl)
-      cp a,ff
-      jr nz,.next
-      or a
-      ret
-      .next
-      cp b
-      ldi a,(hl)
-      jr nz,.next2
-      cp c
-      ret z
-      .next2
-      inc hl
-      inc hl
-      jr .loop
-
   # force the item in the temple of seasons cutscene to use normal item
   # animations. TODO: i think there's a better way to do this, like the way
   # that the ages code handles item graphics on non-item interactions.

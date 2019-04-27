@@ -62,7 +62,7 @@ func initSeasonsEOB() {
 
 	callBank2 := addrString(r.assembler.getDef("callBank2"))
 	searchValue := addrString(r.assembler.getDef("searchValue"))
-	lookupWord := addrString(r.assembler.getDef("lookupWord"))
+	searchDoubleKey := addrString(r.assembler.getDef("searchDoubleKey"))
 	readSeason := addrString(r.assembler.getDef("readDefaultSeason"))
 
 	// bank 02
@@ -341,7 +341,7 @@ func initSeasonsEOB() {
 		makeKeyDropTable())
 	lookUpKeyDropBank3F := r.appendToBank(0x3f, "look up key drop bank 3f",
 		"\xc5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+smallKeyDrops+ // load group/room
-			"\xcd"+lookupWord+"\xc1\xc0\x46\x23\x4e\xc9")
+			"\x1e\x02\xcd"+searchDoubleKey+"\xc1\xd0\x46\x23\x4e\xc9")
 	lookUpKeyDrop := r.appendToBank(0x0b, "look up key drop",
 		"\x36\x60\x2c\xd5\xe5\x1e\x3f\x21"+lookUpKeyDropBank3F+
 			"\xcd\x8a\x00\xe1\xd1\xc9")

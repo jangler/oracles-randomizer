@@ -42,6 +42,28 @@ banks:
       cp b
       ret
 
+  # searches for a value in a table starting at hl, with an entry matching
+  # keys b and subkey c, and values e bytes long. sets c if found. a key of
+  # ff ends the table.
+  - searchDoubleKey: |
+      .loop
+      ldi a,(hl)
+      cp a,ff
+      ret z
+      cp b
+      jr nz,.next
+      ldi a,(hl)
+      cp c
+      jr nz,.done
+      scf
+      ret
+      .next
+      inc hl
+      .done
+      ld a,e
+      rst 10
+      jr .loop
+
   0x02:
   # warp to room under cursor if using tree warp with developer ring.
   - devWarp: |

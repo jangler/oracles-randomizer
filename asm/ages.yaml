@@ -57,28 +57,6 @@ banks:
       ld (2222),a
       ret
 
-  # searches for a value in a table starting at hl, with an entry matching
-  # keys b and subkey c, and values e bytes long. sets c if found. a key of
-  # ff ends the table.
-  - searchDoubleKey: |
-      .loop
-      ldi a,(hl)
-      cp a,ff
-      ret z
-      cp b
-      jr nz,.next
-      ldi a,(hl)
-      cp c
-      jr nz,.next2
-      scf
-      ret
-      .next
-      inc hl
-      .next2
-      ld a,e
-      rst 10
-      jr .loop
-
   # searches for an interaction with ID a and returns the ID address in de,
   # and z flag if found.
   - findObjectWithId: |
