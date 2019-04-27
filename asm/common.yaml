@@ -1,5 +1,6 @@
 defines:
   # constants
+  TREASURE_GALE_SEEDS: 0x23
   DEV_RING: 0x40
 
   # wram
@@ -30,6 +31,15 @@ banks:
       ret
       .sfx
       ld a,(ff00+hMusicVar)
+      ret
+
+  # return z iff the current group and room match c and b.
+  - compareRoom: |
+      ld a,(wActiveGroup)
+      cp c
+      ret nz
+      ld a,(wActiveRoom)
+      cp b
       ret
 
   0x02:

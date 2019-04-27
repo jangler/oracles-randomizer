@@ -40,15 +40,6 @@ defines:
 
 banks:
   0x00:
-  # return z iff the current group and room match c and b.
-  - compareRoom: |
-      ld a,(wActiveGroup)
-      cp c
-      ret nz
-      ld a,(wActiveRoom)
-      cp b
-      ret
-
   # read 2 bytes from bank e at hl into bc.
   # TODO: these (ff97)s could be replaced with (ff00+97)s
   - readWord: |

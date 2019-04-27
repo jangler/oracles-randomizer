@@ -47,9 +47,6 @@ func initSeasonsEOB() {
 	r := newSeasonsRomBanks()
 	globalRomBanks = r
 
-	// try to order these first by bank, then by call location. maybe group
-	// them into subfunctions when applicable?
-
 	// bank 00
 
 	r.replaceAsm(0x00, 0x0c76,
@@ -70,10 +67,12 @@ func initSeasonsEOB() {
 
 	// bank 02
 
-	// TODO this could be a replaceMultipleAsm or something like that…
-	r.replaceMultiple([]Addr{{0x02, 0x6089}, {0x02, 0x602c}}, "jump treeWarp",
-		"\xc2\x7b\x4f", "\xc4"+addrString(r.assembler.getDef("treeWarp")))
-	r.replaceAsm(0x02, 0x5e9a, "call setMusicVolume", "call devWarp")
+	r.replaceAsm(0x02, 0x602c,
+		"jp nz,_closeMenu", "call nz,treeWarp")
+	r.replaceAsm(0x02, 0x6089,
+		"jp nz,_closeMenu", "call nz,treeWarp")
+	r.replaceAsm(0x02, 0x5e9a,
+		"call setMusicVolume", "call devWarp")
 
 	r.replaceAsm(0x02, 0x5ec8,
 		"call _mapMenu_checkRoomVisited", "call checkTreeVisited")
@@ -91,77 +90,42 @@ func initSeasonsEOB() {
 
 	// bank 03
 
-	r.replaceAsm(0x03, 0x4d6b, "call decHlRef16WithCap", "call skipCapcom")
+	r.replaceAsm(0x03, 0x4d6b,
+		"call decHlRef16WithCap", "call skipCapcom")
 
 	// bank 04
 
 	r.replaceAsm(0x00, 0x3854,
 		"call applyAllTileSubstitutions", "call applyExtraTileSubstitutions")
-
-	// if entering certain warps blocked by snow piles, mushrooms, or bushes,
-	// set the animal companion to appear right outside instead of where you
-	// left them. table entries are {entered group, entered room, animal room,
-	// saved y, saved x}.
-	animalSaveTable := r.appendToBank(0x04, "animal save point table",
-		"\x04\xfa\xc2\x18\x68\x00"+ // square jewel cave
-			"\x05\xcc\x2a\x38\x18\x00"+ // goron mountain cave
-			"\x05\xb3\x8e\x58\x88\x00"+ // cave outside d2
-			"\x04\xe1\x86\x48\x68\x00"+ // quicksand ring cave
-			"\x05\xc9\x2a\x38\x18\x00"+ // goron mountain main
-			"\x05\xba\x2f\x18\x68\x00"+ // spring banana cave
-			"\x05\xbb\x2f\x18\x68\x00"+ // joy ring cave
-			"\x01\x05\x9a\x38\x48\x00"+ // rosa portal
-			"\x04\x39\x8d\x38\x38\x00"+ // d2 entrance
-			"\xff") // end
-	animalSaveFunc := r.appendToBank(0x04, "animal save point func",
-		// b = group, c = room, d = animal room, hl = table
-		"\xc5\xd5\x47\xfa\x64\xcc\x4f\xfa\x42\xcc\x57\x21"+animalSaveTable+
-			"\x2a\xb8\x20\x12\x2a\xb9\x20\x0e\x7e\xba\x20\x0a"+ // check criteria
-			"\x11\x42\xcc\x06\x03\xcd\x62\x04\x18\x0a"+ // set save pt, done
-			"\x2a\xb7\x20\xfc\x7e\x3c\x28\x02\x18\xe0"+ // go to next table entry
-			"\x79\xd1\xc1\xc9") // done
-	r.replace(0x04, 0x461e, "animal save point call",
-		"\xfa\x64\xcc", "\xcd"+animalSaveFunc)
+	r.replaceAsm(0x04, 0x461e,
+		"ld a,(wWarpDestIndex)", "call checkSetAnimalSavePoint")
 
 	// bank 05
 
 	r.replaceAsm(0x05, 0x5fe8,
 		"call lookupCollisionTable", "call cliffLookup")
 
-	// do this so that animals don't immediately stop walking on screen when
-	// called on a bridge.
-	fluteEnterFunc := r.appendToBank(0x05, "flute enter func",
-		"\xcd\xaa\x44\xb7\xc8\xfe\x1a\xc8\xfe\x1b\xc9")
-	r.replaceMultiple([]Addr{{0x05, 0x71ea}, {0x05, 0x493b}},
-		"animal enter call", "\xcd\xaa\x44\xb7", "\xcd"+fluteEnterFunc+"\x00")
+	r.replaceAsm(0x05, 0x493b,
+		"call _specialObjectGetRelativeTileWithDirectionTable; or a",
+		"call animalEntryIgnoreBridges; nop")
+	r.replaceAsm(0x05, 0x71ea,
+		"call _specialObjectGetRelativeTileWithDirectionTable; or a",
+		"call animalEntryIgnoreBridges; nop")
 
-	// make moosh unrideable on mt cucco in the case of not having flute in a
-	// moosh seed.
-	checkMooshFlute := r.appendToBank(0x05, "check moosh flute",
-		"\x3e\x0e\xc3\x17\x17")
-	r.replace(0x05, 0x776b, "call check moosh flute 1",
-		"\xfa\x10\xc6", "\xcd"+checkMooshFlute)
-	r.replace(0x05, 0x7a65, "call check moosh flute 2",
-		"\xfa\x10\xc6", "\xcd"+checkMooshFlute)
+	r.replaceAsm(0x05, 0x776b,
+		"ld a,(wAnimalRegion)", "call checkFlute")
+	r.replaceAsm(0x05, 0x7a65,
+		"ld a,(wAnimalRegion)", "call checkFlute")
 
 	// bank 06
 
 	r.replaceAsm(0x06, 0x4774,
 		"call setTile", "call checkBreakD6Flower")
+	r.replaceAsm(0x06, 0x47f5,
+		"call getFreePartSlot", "call dropExtraGalesOnEmpty")
 
-	// replace a random item drop with gale seeds 1/4 of the time if the player
-	// is out of gale seeds. this is important so that the one-way cliffs can
-	// be in logic with gale seeds.
-	galeDrop := r.appendToBank(0x06, "gale drop func",
-		"\x3e\x23\xcd\x17\x17\xd0\x2e\xb8\xb6\xc0"+
-			"\xcd\x1a\x04\xfe\x40\xd0\x0e\x08\xc9")
-	galeDropWrapper := r.appendToBank(0x06, "gale drop wrapper",
-		"\xcd"+galeDrop+"\xcd\xa7\x3e\xc9")
-	r.replace(0x06, 0x47f5, "gale drop call",
-		"\xcd\xa7\x3e", "\xcd"+galeDropWrapper)
-
-	// Use expert's or fist ring with only one button unequipped
-	r.replace(0x06, 0x490e, "punch with 1 button", "\xc0", "\x00")
+	// use expert's or fist ring with only one button unequipped.
+	r.replaceAsm(0x06, 0x490e, "ret nz", "nop")
 
 	// bank 07
 

@@ -16,6 +16,7 @@ defines:
   wFeatherLevel: 0xc6b4
   wActiveRing: 0xc6c5
   wRingBoxLevel: 0xc6c6
+  wRememberedCompanionRoom: 0xcc42
   wActiveGroup: 0xcc49
   wActiveRoom: 0xcc4c
   wRoomStateModifier: 0xcc4e
@@ -26,6 +27,7 @@ defines:
 
   # rom 00
   multiplyABy4: 0x01c3
+  getRandomNumber: 0x041a
   copyMemory: 0x0462
   forceEnableIntroInputs: 0x0862
   playSound: 0x0c74
@@ -40,6 +42,7 @@ defines:
   objectDelete_useActiveObjectType: 0x219e
   setGlobalFlag: 0x30cd
   setTile: 0x3a52
+  getFreePartSlot: 0x3ea7
 
   # rom 02
   _closeMenu: 0x4f7b
@@ -50,6 +53,9 @@ defines:
 
   # rom 04
   applyAllTileSubstitutions: 0x5d94
+
+  # rom 05
+  _specialObjectGetRelativeTileWithDirectionTable: 0x44aa
 
   # rom 3f
   giveTreasure_body: 0x44c8
@@ -251,21 +257,20 @@ banks:
   # override room layout with bank 02's winterLayout when appropriate.
   - loadWinterLayout: |
       push de
-      ld a,(wActiveRoom)
-      cp a,9d
-      jr nz,.done
       ld a,(wRoomStateModifier)
       cp a,03
       jr nz,.done
-      ld a,(wActiveGroup)
-      or a
+      push bc
+      ld bc,9d00
+      call compareRoom
+      pop bc
       jr nz,.done
       ld a,02
       ld (ff00+8c),a
       ld hl,winterLayout
       .done
       ld a,(ff00+8c)
-      jp 39e2 # TODO: just ret! and make the originating jp a call.
+      jp 39e2 # can't just ret, idr why
 
   0x01:
   # takes b = high byte of season addr, returns season in b.
@@ -322,6 +327,60 @@ banks:
       db 00,b0,00,51,13 # cont.
       db ff
 
+  # data for checkSetAnimalSavePoint:
+  # entered group, entered room, animal room, saved y, saved x, 00.
+  - animalSavePointTable: |
+      db 04,fa,c2,18,68,00 # spool swamp cave
+      db 05,cc,2a,38,18,00 # goron mountain east cave
+      db 05,b3,8e,58,88,00 # cave outside d2
+      db 04,e1,86,48,68,00 # cave north of d1
+      db 05,c9,2a,38,18,00 # goron mountain main
+      db 05,ba,2f,18,68,00 # spring banana cave
+      db 05,bb,2f,18,68,00 # cave below spring banana cave
+      db 01,05,9a,38,48,00 # rosa portal
+      db 04,39,8d,38,38,00 # d2 entrance
+      db ff
+
+  # if entering certain warps blocked by snow piles, mushrooms, or bushes, set
+  # the animal companion to appear right outside the entrance instead of where
+  # you left them.
+  - checkSetAnimalSavePoint: |
+      push bc
+      push de
+      ld b,a
+      ld a,(wWarpDestIndex)
+      ld c,a
+      ld a,(wRememberedCompanionRoom)
+      ld d,a
+      ld hl,animalSavePointTable
+      .loop
+      ldi a,(hl)
+      cp b
+      jr nz,.incUntilNextEntry
+      ldi a,(hl)
+      cp c
+      jr nz,.incUntilNextEntry
+      ld a,(hl)
+      cp d
+      jr nz,.incUntilNextEntry
+      ld de,wRememberedCompanionRoom
+      ld b,03
+      call copyMemory
+      jr .done
+      .incUntilNextEntry
+      ldi a,(hl)
+      or a
+      jr nz,.incUntilNextEntry
+      ld a,(hl)
+      inc a
+      jr z,.done
+      jr .loop
+      .done
+      ld a,c
+      pop de
+      pop bc
+      ret
+
   0x05:
   # let link jump down the cliff outside d7, in case of winter sans shovel.
   # also let link jump down the snow cliff added in woods of winter. also call
@@ -359,15 +418,31 @@ banks:
       .noJump
       jp lookupCollisionTable
 
+  # do this so that animals don't immediately stop walking onscreen when called
+  # on a bridge, namely the one to/from d1.
+  - animalEntryIgnoreBridges: |
+      call _specialObjectGetRelativeTileWithDirectionTable
+      or a
+      ret z
+      cp a,1a
+      ret z
+      cp a,1b
+      ret
+
+  # this is called to make moosh unrideable on mt cucco in the case of not
+  # having flute in a moosh seed.
+  - checkFlute: |
+      ld a,0e
+      jp checkTreasureObtained
+
   0x06:
   # unset a room flag when the flower outside D6 is broken. see tileSubTable.
   - checkBreakD6Flower: |
       push af
-      ld a,(wActiveGroup)
-      or a
-      jr nz,.done
-      ld a,(wActiveRoom)
-      cp a,01
+      push bc
+      ld bc,0100
+      call compareRoom
+      pop bc
       jr nz,.done
       ld a,(ff00+hBrokenTilePosition)
       cp a,52
@@ -379,6 +454,24 @@ banks:
       .done
       pop af
       jp setTile
+
+  # replace a random item drop with gale seeds 1/4 of the time if the player is
+  # out of gale seeds. just to be nice since warping out of one-ways is in
+  # logic.
+  - dropExtraGalesOnEmpty: |
+      ld a,TREASURE_GALE_SEEDS
+      call checkTreasureObtained
+      jr nc,.done
+      ld l,b8
+      or (hl)
+      jr nz,.done
+      call getRandomNumber
+      cp a,40
+      jr nc,.done
+      ld c,08
+      .done
+      call getFreePartSlot
+      ret
 
   0x07:
   # if wearing dev ring, change season regardless of where link is standing.
@@ -482,11 +575,10 @@ banks:
   # that screen allowed you to enter without the key.
   - d1EntranceScriptCmd: |
       pop hl
-      ld a,(wActiveGroup)
-      cp a,00
-      ret nz
-      ld a,(wActiveRoom)
-      cp a,96
+      push bc
+      ld bc,9600
+      call compareRoom
+      pop bc
       ret nz
       ld a,01
       ld (ccaa),a
