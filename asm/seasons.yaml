@@ -480,15 +480,13 @@ banks:
       ld e,COLLECT_CHEST_MAP_OR_COMPASS
       ret
 
-  # use normal collect mode if falling item has already been obtained. i don't
-  # think script position works because of all the different maku tree
-  # instances that exist? TODO: check anyway.
+  # maku tree item drops at a specific script pos, otherwise use regular mode.
   - collectMakuTree: |
-      ld a,0a # fake treasure ID
-      call checkTreasureObtained
-      ld e,COLLECT_PICKUP
-      ret c
+      ld a,(d258) # script position
+      cp a,8e
       ld e,COLLECT_FALL
+      ret z
+      ld e,COLLECT_PICKUP
       ret
 
   # when the falling item hits the water, it creates a new item interaction.

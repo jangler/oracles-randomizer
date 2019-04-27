@@ -236,6 +236,9 @@ func initSeasonsEOB() {
 	// bank 09
 
 	// shared by maku tree and star-shaped ore.
+	// TODO: i'm not sure whether maku tree needs this anymore, since the
+	//       collect mode func goes off script position now. is it still
+	//       required to determine whether you picked up the drop or something?
 	starOreRoomTable := r.appendToBank(0x02, "star ore room table",
 		string(starOreRooms)+"\xff")
 	makuTreeRoomTable := r.appendToBank(0x02, "maku tree room table",
