@@ -10,7 +10,7 @@ import (
 const (
 	collectNil        = 0x00 // custom, for shop items
 	collectBuySatchel = 0x01
-	collectFind0      = 0x02 // flippers, ring box, maku seed, idk
+	collectFind0      = 0x02 // sets room flag 6 instead of 5
 	collectUnderwater = 0x08 // pyramid jewel
 	collectFind1      = 0x09
 	collectFind2      = 0x0a

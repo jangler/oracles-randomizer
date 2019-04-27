@@ -1,5 +1,13 @@
 defines:
   # constants
+  COLLECT_PICKUP_ALT: 0x02
+  COLLECT_PICKUP: 0x0a
+  COLLECT_POOF: 0x1a
+  COLLECT_FALL_KEY: 0x28
+  COLLECT_FALL: 0x29
+  COLLECT_CHEST: 0x38
+  COLLECT_DIVE: 0x49
+  COLLECT_CHEST_MAP_OR_COMPASS: 0x68
   TREASURE_GALE_SEEDS: 0x23
   DEV_RING: 0x40
 
@@ -65,6 +73,25 @@ banks:
       ld a,e
       rst 10
       jr .loop
+
+  # calls lookupCollectMode_body in another bank.
+  - lookupCollectMode: |
+      push bc
+      push de
+      push hl
+      ld e,06
+      ld hl,lookupCollectMode_body
+      call interBankCall
+      ld a,e
+      pop hl
+      cp a,ff
+      jr nz,.next
+      dec hl
+      ldi a,(hl)
+      .next
+      pop de
+      pop bc
+      ret
 
   0x02:
   # warp to room under cursor if using tree warp with developer ring.
@@ -210,6 +237,34 @@ banks:
       .next
       pop af
       ret
+
+  0x06:
+  # return a spawning item's collection mode in a and e, based on current room.
+  # the table format is (group, room, mode), and modes 80+ are used to index a
+  # jump table for special cases. if no match is found, it returns the regular,
+  # non-overriden mode.
+  - lookupCollectMode_body: |
+      ld a,(wActiveGroup)
+      ld b,a
+      ld a,(wActiveRoom)
+      ld c,a
+      ld e,01
+      ld hl,collectModeTable
+      call searchDoubleKey
+      ld e,a
+      ret nc
+      ld a,(hl)
+      ld e,a
+      cp a,80
+      ret c
+      ld hl,collectSpecialJumpTable
+      and a,7f
+      add a,a
+      rst 10
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      jp (hl)
 
   0x3f:
   # put obtained rings directly into ring list (no need for appraisal), and

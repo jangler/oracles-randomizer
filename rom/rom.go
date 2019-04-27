@@ -340,7 +340,7 @@ func setSmallKeyData(game int) {
 
 // regenerate collect mode table to accommodate changes based on contents.
 func setCollectModeData(game int) {
-	mut := codeMutables["collection mode table"].(*MutableRange)
+	mut := codeMutables["collectModeTable"].(*MutableRange)
 	if game == GameSeasons {
 		mut.New = []byte(makeSeasonsCollectModeTable())
 	} else {

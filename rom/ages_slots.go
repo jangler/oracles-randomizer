@@ -3,10 +3,10 @@ package rom
 // special collection modes that jump to custom code, for when there are
 // multiple modes required in the same room.
 const (
-	collectMakuTree    = 0x80
-	collectTargetCarts = 0x81
-	collectBigBang     = 0x82
-	collectLavaJuice   = 0x83
+	collectAgesMakuTree = 0x80
+	collectTargetCarts  = 0x81
+	collectBigBang      = 0x82
+	collectLavaJuice    = 0x83
 )
 
 // agesChest constructs a MutableSlot from a treasure name and an address in
@@ -51,7 +51,7 @@ var AgesSlots = map[string]*MutableSlot{
 		subIDAddrs:   []Addr{{0x15, 0x70e3}, {0x15, 0x7118}},
 		group:        0x00,
 		room:         0x38,
-		collectMode:  collectMakuTree,
+		collectMode:  collectAgesMakuTree,
 	},
 	"grave under tree": basicSlot("graveyard key", 0x10, 0x750d, 0x750c,
 		0x05, 0xed, collectFall, 0x8d),
@@ -104,7 +104,7 @@ var AgesSlots = map[string]*MutableSlot{
 	"trade lava juice": basicSlot("goron letter", 0x0c, 0x6ee9, 0x6eea,
 		0x03, 0x1f, collectLavaJuice, 0x1c),
 	"rescue nayru": basicSlot("harp", 0x15, 0x54f1, 0x54f2,
-		0x00, 0x38, collectMakuTree, 0x38),
+		0x00, 0x38, collectAgesMakuTree, 0x38),
 	"king zora":            agesScriptItem("library key", 0x7ae4, 0x05, 0xab),
 	"library present":      agesBufferItem("book of seals", 0x5db9, 0x05, 0xc8),
 	"zora's reward":        agesScriptItem("zora scale", 0x7c48, 0x02, 0xa0),

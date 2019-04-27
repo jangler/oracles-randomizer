@@ -1,5 +1,14 @@
 package rom
 
+// special collection modes that jump to custom code, for when there are
+// multiple modes required in the same room.
+const (
+	collectDiverRoom       = 0x80
+	collectPoeSkipRoom     = 0x81
+	collectSeasonsMakuTree = 0x82
+	collectD4Pool          = 0x83
+)
+
 // seasonsChest constructs a MutableSlot from a treasure name and an address in
 // bank $15, where the ID and sub-ID are two consecutive bytes at that address.
 // This applies to almost all chests, and exclusively to chests.
@@ -34,7 +43,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 		subIDAddrs:   []Addr{{0x15, 0x613d}, {0x09, 0x7e19}},
 		group:        0x02,
 		room:         0x0b,
-		collectMode:  collectFall,
+		collectMode:  collectSeasonsMakuTree,
 		mapCoords:    0xc9,
 	},
 	"horon village SW chest": seasonsChest(
@@ -63,7 +72,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"master diver's challenge": seasonsChest(
 		"master's plaque", 0x510a, 0x05, 0xbc, collectChest, 0x2e),
 	"master diver's reward": seasonsScriptItem( // addr set at EOB
-		"flippers", 0x0000, 0x05, 0xbd, collectNil, 0x2e), // special case
+		"flippers", 0x0000, 0x05, 0xbd, collectDiverRoom, 0x2e),
 	"spring banana tree": seasonsFoundItem(
 		"spring banana", 0x66c6, 0x00, 0x0f, collectFind2, 0x0f),
 	"goron mountain, across pits": seasonsFoundItem(
@@ -111,7 +120,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"sunken city, summer cave": seasonsChest(
 		"gasha seed", 0x5106, 0x05, 0xb5, collectChest, 0x4f),
 	"chest in master diver's cave": seasonsChest(
-		"rupees, 50", 0x510e, 0x05, 0xbd, collectChest, 0x2e),
+		"rupees, 50", 0x510e, 0x05, 0xbd, collectDiverRoom, 0x2e),
 	"dry eyeglass lake, east cave": seasonsChest(
 		"piece of heart", 0x5112, 0x05, 0xc0, collectChest, 0xaa),
 	"chest in goron mountain": seasonsChest(
@@ -387,7 +396,13 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"d4 small key", 0x5029, 0x04, 0x6d, collectChest, 0x1d),
 	"d4 water ring room": seasonsChest(
 		"compass", 0x5035, 0x04, 0x83, collectChest2, 0x1d),
-	"d4 pool": keyDropSlot("d4 small key", 0x04, 0x75, 0x1d),
+	"d4 pool": &MutableSlot{ // special case of keyDropSlot
+		treasureName: "d4 small key",
+		group:        0x04,
+		room:         0x75,
+		collectMode:  collectD4Pool,
+		mapCoords:    0x1d,
+	},
 	"d4 terrace": seasonsChest(
 		"d4 small key", 0x501d, 0x04, 0x63, collectChest, 0x1d),
 	"d4 torch chest": seasonsChest(
@@ -456,7 +471,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"d7 right of entrance": seasonsChest(
 		"power ring L-1", 0x50b6, 0x05, 0x5a, collectChest, 0xd0),
 	"d7 bombed wall chest": seasonsChest(
-		"compass", 0x50aa, 0x05, 0x52, collectChest2, 0xd0),
+		"compass", 0x50aa, 0x05, 0x52, collectPoeSkipRoom, 0xd0),
 	"d7 zol button": keyDropSlot("d7 small key", 0x05, 0x45, 0xd0),
 	"d7 armos puzzle": seasonsFoundItem(
 		"d7 small key", 0x5689, 0x05, 0x35, collectFall, 0xd0),

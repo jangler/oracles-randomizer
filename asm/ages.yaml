@@ -239,7 +239,7 @@ banks:
 
       # give L-3 ring box
       ld a,10
-      ld (c69f),a
+      ld (c69f),a # treasure flag
       ld a,03
       ld (wRingBoxLevel),a
 
@@ -282,3 +282,51 @@ banks:
       call devJump
       ret c
       jp lookupCollisionTable
+
+  0x06:
+  # collect modes starting at 80 index this jump table to determine the actual
+  # mode.
+  - collectSpecialJumpTable: |
+      dw collectMakuTree
+      dw collectTargetCarts
+      dw collectBigBangGame
+      dw collectLavaJuiceRoom
+
+  # maku tree item drops at a specific script pos, otherwise use regular mode.
+  - collectMakuTree: |
+      ld a,(d258) # script position
+      cp a,84
+      ld e,COLLECT_FALL
+      ret z
+      ld e,COLLECT_PICKUP
+      ret
+
+  # target carts prizes are displayed with a poof.
+  - collectTargetCarts: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,78
+      ld e,COLLECT_POOF
+      ret z
+      ld e,COLLECT_PICKUP
+      ret
+
+  # big bang game prizes are displayed with a poof.
+  - collectBigBangGame: |
+      ld e,4b
+      ld a,(de) # object y position
+      cp a,38
+      ld e,COLLECT_POOF
+      ret z
+      ld e,COLLECT_PICKUP
+      ret
+
+  # lava juice goron and chest both give items in this room.
+  - collectLavaJuiceRoom: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,68
+      ld e,COLLECT_PICKUP_ALT
+      ret c
+      ld e,COLLECT_CHEST
+      ret

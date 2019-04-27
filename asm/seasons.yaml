@@ -237,14 +237,14 @@ banks:
   - loadWinterLayout: |
       push de
       ld a,(wRoomStateModifier)
-      cp a,03
+      cp a,03 # winter
       jr nz,.done
       push bc
       ld bc,9d00
       call compareRoom
       pop bc
       jr nz,.done
-      ld a,02
+      ld a,02 # bank
       ld (ff00+8c),a
       ld hl,winterLayout
       .done
@@ -452,11 +452,61 @@ banks:
       call getFreePartSlot
       ret
 
+  # collect modes starting at 80 index this jump table to determine the actual
+  # mode.
+  - collectSpecialJumpTable: |
+      dw collectDiverRoom
+      dw collectPoeSkipRoom
+      dw collectMakuTree
+      dw collectD4Pool
+
+  # master diver's room has chest on the left and reward on the right.
+  - collectDiverRoom: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,80
+      ld e,COLLECT_CHEST
+      ret c
+      ld e,COLLECT_PICKUP_ALT
+      ret
+
+  # bombed wall chest in d7 has an item drop on the left side.
+  - collectPoeSkipRoom: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,80
+      ld e,COLLECT_FALL_KEY
+      ret c
+      ld e,COLLECT_CHEST_MAP_OR_COMPASS
+      ret
+
+  # use normal collect mode if falling item has already been obtained. i don't
+  # think script position works because of all the different maku tree
+  # instances that exist? TODO: check anyway.
+  - collectMakuTree: |
+      ld a,0a # fake treasure ID
+      call checkTreasureObtained
+      ld e,COLLECT_PICKUP
+      ret c
+      ld e,COLLECT_FALL
+      ret
+
+  # when the falling item hits the water, it creates a new item interaction.
+  # that one should have the mode that requires diving to get the item.
+  - collectD4Pool: |
+      ld e,54
+      ld a,(de) # object z position
+      sub a,01
+      ld e,COLLECT_FALL_KEY
+      ret c
+      ld e,COLLECT_DIVE
+      ret
+
   0x07:
   # if wearing dev ring, change season regardless of where link is standing.
   - devChangeSeason: |
       ld a,(wActiveRing)
-      cp a,40
+      cp a,DEV_RING
       ret z
       ld a,(wActiveTileType)
       cp a,08
@@ -502,11 +552,6 @@ banks:
       ld a,ff
       ld (wAnimalTutorialFlags),a
 
-      # linked start item
-      ld a,(wIsLinkedGame)
-      or a
-      call nz,giveLinkedStartItem
-
       # room flags 4 | 6
       ld a,50
       ld (c7a7),a
@@ -542,9 +587,14 @@ banks:
 
       # give L-3 ring box
       ld a,10
-      ld (c697),a
+      ld (c697),a # treasure flag
       ld a,03
       ld (wRingBoxLevel),a
+
+      # linked start item
+      ld a,(wIsLinkedGame)
+      or a
+      call nz,giveLinkedStartItem
 
       ret
 

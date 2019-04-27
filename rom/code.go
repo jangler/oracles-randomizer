@@ -171,7 +171,8 @@ func makeKeyDropTable() string {
 	for _, key := range getOrderedSlotKeys() {
 		slot := ItemSlots[key]
 
-		if slot.collectMode != collectFall {
+		if slot.collectMode != collectFall &&
+			slot.collectMode != collectD4Pool {
 			continue
 		}
 

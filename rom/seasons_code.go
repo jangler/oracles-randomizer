@@ -31,6 +31,10 @@ func newSeasonsRomBanks() *romBanks {
 	r.endOfBank[0x15] = 0x792d
 	r.endOfBank[0x3f] = 0x714d
 
+	// do this before loading asm files, since the size of this table varies
+	// with the number of checks.
+	r.appendToBank(0x06, "collectModeTable", makeSeasonsCollectModeTable())
+
 	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/seasons.yaml"})
 
 	return &r
@@ -378,42 +382,9 @@ func initSeasonsEOB() {
 
 	// bank 15
 
-	// look up item collection mode in a table based on room. if no entry is
-	// found, the original mode (a) is preserved. the table is three bytes per
-	// entry, (group, room, collect mode). ff ends the table. rooms that
-	// contain more than one item are special cases.
-	collectModeTable := r.appendToBank(0x15, "collection mode table",
-		makeSeasonsCollectModeTable())
-	// cp link's position if in diver room, set mode to 02 if on right side,
-	// ret z if set
-	collectModeDiver := r.appendToBank(0x15, "diver collect mode",
-		"\x3e\x05\xb8\xc0\x3e\xbd\xb9\xc0\xfa\x0d\xd0\xfe\x80\xd8"+
-			"\xaf\x3e\x02\xc9")
-	// if in d7 compass room, set mode based on link's x position: left =
-	// key drop; right = chest.
-	collectModeD7Key := r.appendToBank(0x15, "d7 key collect mode",
-		"\x3e\x05\xb8\xc0\x3e\x52\xb9\xc0"+ // cp room
-			"\xfa\x0d\xd0\xfe\x80\x30\x04"+ // cp x
-			"\xaf\x3e\x28\xc9\xaf\x3e\x38\xc9")
-	// if link already has the maku tree's item, use default mode.
-	collectModeMakuSeed := r.appendToBank(0x15, "maku seed collect mode",
-		"\x3e\x02\xb8\xc0\x3e\x5d\xb9\xc0\x3e\x0a\xcd\x17\x17\x38\x02"+
-			"\x3c\xc9\xaf\x7b\xc9")
-	// if room is D4 pool and interaction already exists with a z axis speed,
-	// return dive collect mode instead (for when item falls in water).
-	collectModeD4Pool := r.appendToBank(0x15, "d4 pool collect mode",
-		"\x3e\x04\xb8\xc0\x3e\x75\xb9\xc0"+ // cp room
-			"\x1e\x54\x1a\xd6\x01\xd8\xaf\x3e\x49\xc9")
-	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
-		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\x28\x22\xb8\x20\x1b\x2a\xb9\x20\x18"+
-			"\xcd"+collectModeD4Pool+"\x28\x17\xcd"+collectModeDiver+"\x28\x12"+
-			"\xcd"+collectModeD7Key+"\x28\x0d"+
-			"\xcd"+collectModeMakuSeed+"\x28\x08"+
-			"\x2a\x18\x05\x23\x23\x18\xd9\x7b\xe1\xc1\xc9")
-
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created, and set collection mode.
+	collectModeLookup := addrString(r.assembler.getDef("lookupCollectMode"))
 	normalProgressiveFunc := r.appendToBank(0x15, "normal progressive func",
 		"\xcd"+collectModeLookup+"\x47\xcb\x37\xf5"+
 			"\x1e\x43\x1a\xfe\x02\x30\x05"+ // don't upgrade spin slash
