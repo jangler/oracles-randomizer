@@ -21,6 +21,7 @@ defines:
   wActiveRoom: 0xcc4c
   wRoomStateModifier: 0xcc4e
   wAreaFlags: 0xcc50
+  wDungeonIndex: 0xcc55
   wWarpDestGroup: 0xcc63
   wWarpDestIndex: 0xcc64
   wActiveTileType: 0xccb6
@@ -40,6 +41,8 @@ defines:
   openMenu: 0x1a76
   lookupCollisionTable: 0x1ddd
   objectDelete_useActiveObjectType: 0x219e
+  objectCopyPosition: 0x21fd
+  createTreasure: 0x271b
   setGlobalFlag: 0x30cd
   setTile: 0x3a52
   getFreePartSlot: 0x3ea7

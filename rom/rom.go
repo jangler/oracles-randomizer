@@ -496,7 +496,7 @@ func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 }
 
 func setBossItemAddrs() {
-	table := codeMutables["boss item table"].(*MutableRange)
+	table := codeMutables["bossItemTable"].(*MutableRange)
 
 	for i := uint16(1); i <= 8; i++ {
 		slot := ItemSlots[fmt.Sprintf("d%d boss", i)]

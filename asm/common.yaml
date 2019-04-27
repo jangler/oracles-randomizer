@@ -272,6 +272,38 @@ banks:
       ld l,a
       jp (hl)
 
+  0x15:
+  # entries (ID, subID) and indexed by wDungeon Index. these are changed
+  # during randomization.
+  - bossItemTable: |
+      db 00,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+
+  # spawn items from bossItemTable in place of boss heart containers.
+  - spawnBossItem: |
+      push hl
+      ld hl,bossItemTable
+      ld a,(wDungeonIndex)
+      cp a,0c # ages d6 past
+      jr nz,.next
+      ld a,06
+      .next
+      rst 18
+      ld b,(hl)
+      inc hl
+      ld c,(hl)
+      call createTreasure
+      call objectCopyPosition
+      pop hl
+      ret
+
   0x3f:
   # put obtained rings directly into ring list (no need for appraisal), and
   # tell the player what type of ring it is.
@@ -291,3 +323,13 @@ banks:
   # hold 20 seeds.
   - seedCapacityTable: |
       db 20,20,50,99
+
+# some code isn't in the same bank for both games, but it's still the same
+# code. such code is defined here so that it can be included by the other
+# games' asm files *before* assembly.
+#
+# the extra indent level here isn't strictly necessary, but it aligns with the
+# code in the other banks. also note that freeCode is a map and *not* a list.
+#
+# …but actually, this isn't used yet.
+freeCode: {}

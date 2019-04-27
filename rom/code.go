@@ -40,8 +40,9 @@ type romBanks struct {
 
 // used for unmarshaling asm data from yaml.
 type asmData struct {
-	Defines map[string]uint16
-	Banks   map[byte][]map[string]string
+	Defines  map[string]uint16
+	Banks    map[byte][]map[string]string
+	FreeCode map[string]string `yaml:"freeCode"`
 }
 
 var codeMutables = map[string]Mutable{}
@@ -197,6 +198,30 @@ func makeKeyDropTable() string {
 	return b.String()
 }
 
+// used by iterBankItems.
+type bankItem struct {
+	bank byte
+	item map[string]string
+}
+
+// sends the items in the banks of the asmData list in sequence.
+func iterBankItems(ads []*asmData) chan bankItem {
+	c := make(chan bankItem)
+
+	go func() {
+		for _, ad := range ads {
+			for bank, items := range ad.Banks {
+				for _, item := range items {
+					c <- bankItem{bank, item}
+				}
+			}
+		}
+		close(c)
+	}()
+
+	return c
+}
+
 // applies the labels and EOB declarations in the given asmData sets.
 func (r *romBanks) applyAsmData(ads []*asmData) {
 	// get preset addrs and defines
@@ -206,14 +231,26 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 		}
 	}
 
-	// make placeholders for EOB labels
+	// include free code
+	freeCode := make(map[string]string)
 	for _, ad := range ads {
-		for _, items := range ad.Banks {
-			for _, item := range items {
-				for name := range item {
-					r.assembler.define(name, 0)
-				}
+		for k, v := range ad.FreeCode {
+			freeCode[k] = v
+		}
+	}
+	for item := range iterBankItems(ads) {
+		for name, body := range item.item {
+			if strings.HasPrefix(body, "/include") {
+				funcName := strings.Split(body, " ")[1]
+				item.item[name] = freeCode[funcName]
 			}
+		}
+	}
+
+	// make placeholders for EOB labels
+	for item := range iterBankItems(ads) {
+		for name := range item.item {
+			r.assembler.define(name, 0)
 		}
 	}
 
@@ -222,13 +259,9 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 	copy(originalEOBs, r.endOfBank)
 
 	// write asm using placeholders for labels, in order to get real addrs
-	for _, ad := range ads {
-		for bank, items := range ad.Banks {
-			for _, item := range items {
-				for name, body := range item {
-					r.appendAsm(bank, name, body)
-				}
-			}
+	for item := range iterBankItems(ads) {
+		for name, body := range item.item {
+			r.appendAsm(item.bank, name, body)
 		}
 	}
 
@@ -236,13 +269,9 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 	copy(r.endOfBank, originalEOBs)
 
 	// rewrite asm, using real addresses for labels
-	for _, ad := range ads {
-		for bank, items := range ad.Banks {
-			for _, item := range items {
-				for name, body := range item {
-					r.appendAsm(bank, name, body)
-				}
-			}
+	for item := range iterBankItems(ads) {
+		for name, body := range item.item {
+			r.appendAsm(item.bank, name, body)
 		}
 	}
 }

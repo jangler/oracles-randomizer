@@ -17,6 +17,7 @@ defines:
   wActiveGroup: 0xcc2d
   wActiveRoom: 0xcc30
   wAreaFlags: 0xcc34
+  wDungeonIndex: 0xcc39
   wWarpDestGroup: 0xcc47
   wWarpDestIndex: 0xcc48
 
@@ -28,6 +29,8 @@ defines:
   getThisRoomFlags: 0x197d
   openMenu: 0x1ab0
   lookupCollisionTable: 0x1e1f
+  objectCopyPosition: 0x2242
+  createTreasure: 0x27d4
   setGlobalFlag: 0x31f9
 
   # rom 02
