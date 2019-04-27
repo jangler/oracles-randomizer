@@ -1,5 +1,6 @@
 defines:
   # constants
+  BANK_TREASURE_DATA: 0x16
   STARTING_TREE_MAP_INDEX: 0x78
 
   # hram
@@ -22,9 +23,11 @@ defines:
   wWarpDestIndex: 0xcc48
 
   # rom 00
+  copyMemory: 0x0486
   forceEnableIntroInputs: 0x0886
   playSound: 0x0c98
   setMusicVolume: 0x0cad
+  checkTreasureObtained: 0x1748
   showText: 0x1872
   getThisRoomFlags: 0x197d
   openMenu: 0x1ab0
@@ -42,28 +45,15 @@ defines:
   # rom 04
   applyAllTileSubstitutions: 0x5fef
 
+  # rom 16
+  treasureObjectData: 0x5332
+
   # rom 3f
   realignUnappraisedRings: 0x466f
+  interaction60SubidData: 0x66db
 
 banks:
   0x00:
-  # read 2 bytes from bank e at hl into bc.
-  # TODO: these (ff97)s could be replaced with (ff00+97)s
-  - readWord: |
-      ld a,(ff97)
-      push af
-      ld a,e
-      ld (ff97),a
-      ld (2222),a
-      ldi a,(hl)
-      ld b,a
-      ld a,(hl)
-      ld c,a
-      pop af
-      ld (ff97),a
-      ld (2222),a
-      ret
-
   # searches for an interaction with ID a and returns the ID address in de,
   # and z flag if found.
   - findObjectWithId: |
@@ -332,4 +322,137 @@ banks:
       ld e,COLLECT_PICKUP_ALT
       ret c
       ld e,COLLECT_CHEST
+      ret
+
+  0x16:
+  # progressive item upgrade data (old ID, old related var, new ID, new addr)
+  - progressiveUpgrades: |
+      db 01,02,01; dw 54c6 # mirror shield
+      db 05,01,05; dw 54ea # noble sword
+      db 05,02,05; dw 54ee # master sword
+      db 0a,01,0a; dw 5512 # long switch
+      db 16,01,16; dw 5552 # power glove
+      db 19,01,19; dw 5576 # satchel upgrade 1
+      db 19,02,19; dw 5576 # satchel upgrade 2 (same deal)
+      db 25,00,26; dw 53ca # tune of currents
+      db 26,00,27; dw 53ce # tune of ages
+      db 2e,00,4a; dw 545a # mermaid suit
+      db ff
+
+  - getUpgradedTreasure: /include getUpgradedTreasure
+  - getTreasureData_body: /include getTreasureData_body
+  - getTreasureDataBCE: /include getTreasureDataBCE
+  - getTreasureDataSprite: /include getTreasureDataSprite
+  - modifyTreasure: /include modifyTreasure
+  - upgradeTreasure: /include upgradeTreasure
+
+  0x3f:
+  # format (ID, subID, jump address). these functions *must* pop af as the last
+  # action before returning.
+  - customSpriteJumpTable: |
+      db 40,00; dw setSoldierSprite
+      db 47,0d; dw setShopItemSprite
+      db 63,14; dw setHiddenTokaySprite
+      db 63,15; dw setHiddenTokaySprite
+      db 63,3e; dw setWildTokaySprite
+      db 6b,0b; dw setChevalsInventionSprite
+      db 6b,0c; dw setChevalsTestSprite
+      db 77,31; dw setD8StalfosItemSprite
+      db 80,07; dw setLibraryPastSprite
+      db 80,08; dw setLibraryPresentSprite
+      db ff
+
+  # red soldier sprite data for deku forest soldier check.
+  - soldierSpriteData: |
+      db 4d,00,22
+
+  - setSoldierSprite: |
+      ld hl,soldierSpriteData
+      pop af
+      ret
+
+  - setShopItemSprite: |
+      ld e,09
+      ld hl,4511
+      call lookupItemSprite
+      pop af
+      ret
+
+  - setHiddenTokaySprite: |
+      ld e,15
+      ld hl,5b36
+      call lookupItemSprite
+      pop af
+      ret
+
+  - setWildTokaySprite: |
+      ld e,15
+      ld hl,5bbb
+      call lookupItemSprite
+      pop af
+      ret
+
+  - setChevalsInventionSprite: |
+      ld e,0c
+      ld hl,7232
+      jp setInteraction6bSprite
+
+  - setChevalsTestSprite: |
+      ld e,0c
+      ld hl,723b
+      jp setInteraction6bSprite
+
+  - setD8StalfosItemSprite: |
+      ld e,0a
+      ld hl,6077
+      call lookupItemSpriteReverse
+      pop af
+      ret
+
+  - setLibraryPresentSprite: |
+      ld e,15
+      ld hl,5db9
+      jp setInteraction80Sprite
+
+  - setLibraryPastSprite: |
+      ld e,15
+      ld hl,5dd8
+      jp setInteraction80Sprite
+
+  # needs flags changed, can't be bomb flower
+  - setInteraction6bSprite: |
+      call lookupItemSprite
+      call copySpriteData
+      bit 0,(hl)
+      jr nz,.next
+      inc (hl)
+      jr .next2
+      .next
+      dec (hl)
+      .next2
+      dec hl
+      dec hl
+      pop af
+      ret
+
+  # needs flags changed, can't be bomb flower
+  - setInteraction80Sprite: |
+      call lookupItemSprite
+      call copySpriteData
+      ld e,a
+      and a,0f
+      jr nz,.next
+      ld a,e
+      add a,03
+      jr .next2
+      .next
+      cp a,02
+      ld a,e
+      jr z,.next2
+      inc a
+      .next2
+      ld (hl),a
+      dec hl
+      dec hl
+      pop af
       ret

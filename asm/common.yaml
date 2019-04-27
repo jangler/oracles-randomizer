@@ -15,7 +15,12 @@ defines:
   TREASURE_FEATHER: 0x17
   TREASURE_SEED_SATCHEL: 0x19
   TREASURE_GALE_SEEDS: 0x23
+  TREASURE_TUNE_OF_ECHOES: 0x25
+  TREASURE_TUNE_OF_CURRENTS: 0x26
   DEV_RING: 0x40
+
+  # hram
+  hRomBank: 0x97
 
   # wram
   wKeysPressed: 0xc481
@@ -34,6 +39,9 @@ defines:
   interBankCall: 0x008a
   setFlag: 0x020e
   decHlRef16WithCap: 0x0237
+
+  # rom 3f
+  _interactionGetData: 0x4437
 
 banks:
   0x00:
@@ -56,6 +64,35 @@ banks:
       ret nz
       ld a,(wActiveRoom)
       cp b
+      ret
+
+  # returns the byte at e:hl into e.
+  - readByte: |
+      ld a,(ff00+hRomBank)
+      push af
+      ld a,e
+      ld (ff00+hRomBank),a
+      ld (2222),a
+      ld e,(hl)
+      pop af
+      ld (ff00+hRomBank),a
+      ld (2222),a
+      ret
+
+  # read 2 bytes e:hl into bc.
+  - readWord: |
+      ld a,(ff00+hRomBank)
+      push af
+      ld a,e
+      ld (ff00+hRomBank),a
+      ld (2222),a
+      ldi a,(hl)
+      ld b,a
+      ld a,(hl)
+      ld c,a
+      pop af
+      ld (ff00+hRomBank),a
+      ld (2222),a
       ret
 
   # searches for a value in a table starting at hl, with an entry matching
@@ -324,12 +361,188 @@ banks:
   - seedCapacityTable: |
       db 20,20,50,99
 
-# some code isn't in the same bank for both games, but it's still the same
-# code. such code is defined here so that it can be included by the other
-# games' asm files *before* assembly.
+  # overrides the sprite data loaded for certain interactions. this is mostly
+  # used for "non-item" interactions that depict items, like the ones in shops.
+  - checkLoadCustomSprite: |
+      call _interactionGetData
+      push af
+      push bc
+      push hl
+      ld e,41
+      ld a,(de)
+      ld b,a
+      inc e
+      ld a,(de)
+      ld c,a
+      ld e,02
+      ld hl,customSpriteJumpTable
+      call searchDoubleKey
+      jr nc,.done
+      ldi a,(hl)
+      ld b,a
+      ld a,(hl)
+      pop hl
+      ld h,a
+      ld l,b
+      pop bc
+      jp (hl)
+      .done
+      pop hl
+      pop bc
+      pop af
+      ret
+
+  # set hl = the address of the sprite for treasure with ID b and subID c.
+  # it's usually most convenient to call this through lookupItemSprite or
+  # lookupItemSpriteReverse.
+  - lookupItemSprite_body: |
+      ld e,BANK_TREASURE_DATA
+      ld hl,getTreasureDataSprite
+      call interBankCall
+      ld a,e
+      ld hl,interaction60SubidData
+      add a,a
+      rst 10
+      ld a,e
+      rst 10
+      ret
+
+  # used if item at e:hl is stored in (ID,subID) order.
+  - lookupItemSprite: |
+      push bc
+      call readWord
+      call lookupItemSprite_body
+      pop bc
+      ret
+
+  # used if item at e:hl is stored in (subID,ID) order.
+  - lookupItemSpriteReverse: |
+      push bc
+      call readWord
+      ld a,b
+      ld b,c
+      ld c,a
+      call lookupItemSprite_body
+      pop bc
+      ret
+
+  # copy three bytes at hl to a temporary buffer and set hl = the address of
+  # the last byte, with a as its value.
+  - copySpriteData: |
+      push bc
+      push de
+      ld b,3
+      ld de,cff0
+      call copyMemory
+      push de
+      pop hl
+      dec hl
+      pop de
+      pop bc
+      ret
+
+# some code isn't in the same bank for both games, but it's still the same code
+# (addresses aside). such code is defined here so that it can be included by
+# the other games' asm files *before* assembly.
 #
 # the extra indent level here isn't strictly necessary, but it aligns with the
 # code in the other banks. also note that freeCode is a map and *not* a list.
-#
-# …but actually, this isn't used yet.
-freeCode: {}
+freeCode:
+  # bank 15 seasons / 16 ages
+
+  # given a treasure ID in b, if the treasure needs to be upgraded, set hl =
+  # the start of the upgraded treasure data + 1 and b = the new treasure ID.
+  getUpgradedTreasure: |
+      ld a,b
+      call checkTreasureObtained
+      ld c,a
+      ld a,b
+      ret nc
+      cp a,TREASURE_TUNE_OF_ECHOES
+      jr nz,.harpDone
+      ld a,TREASURE_TUNE_OF_CURRENTS
+      ld e,a
+      call checkTreasureObtained
+      jr nc,.harpDone
+      ld b,e
+      .harpDone
+      push hl
+      ld hl,progressiveUpgrades
+      ld e,03
+      call searchDoubleKey
+      jr nc,.done
+      ldi a,(hl)
+      ld b,a
+      ldi a,(hl)
+      ld e,(hl)
+      pop hl
+      ld h,e
+      ld l,a
+      inc hl
+      ret
+      .done
+      pop hl
+      ret
+
+  # set hl = the address of the treasure with ID b and sub ID c, accounting for
+  # progressive upgrades. call through getTreasureDataBCE or
+  # getTreasureDataSprite!
+  getTreasureData_body: |
+      ld hl,treasureObjectData
+      ld a,b
+      add a,a
+      rst 10
+      ld a,b
+      add a,a
+      rst 10
+      bit 7,(hl)
+      jr z,.next
+      inc hl
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      .next
+      ld a,c
+      add a,a
+      add a,a
+      rst 10
+      inc hl
+      jp getUpgradedTreasure
+
+  # load fianl treasure ID, param, and text into b, c, and e.
+  getTreasureDataBCE: |
+      call getTreasureData_body
+      ld c,(hl)
+      inc hl
+      ld e,(hl)
+      ret
+
+  # load final treasure sprite into e.
+  getTreasureDataSprite: |
+      call getTreasureData_body
+      inc hl
+      inc hl
+      ld e,(hl)
+      ret
+
+  # return treasure data address and collect mode modified as necessary, given
+  # a treasure ID in dx42.
+  modifyTreasure: |
+      call upgradeTreasure
+      call lookupCollectMode
+      ld b,a
+      swap a
+      ret
+
+  # given a treasure ID in dx42, return hl = the start of the treasure data
+  # + 1, accounting for progressive upgrades. also writes the new treasure
+  # ID to d070, which is used to set the treasure obtained flag.
+  upgradeTreasure: |
+      ld e,42
+      ld a,(de)
+      ld b,a
+      call getUpgradedTreasure
+      ld e,70
+      ld a,b
+      ld (de),a
+      ret

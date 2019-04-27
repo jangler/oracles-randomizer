@@ -55,13 +55,9 @@ func initSeasonsEOB() {
 
 	r.replaceAsm(0x00, 0x0c76,
 		"ld h,a; ld a,(ff00+b5)", "call filterMusic")
-	r.replaceAsm(0x00, 0x2600,
-		"ld e,41; ld a,(de)", "call fixRodCutsceneGfx")
 	r.replaceAsm(0x00, 0x39df,
 		"push de; ld a,(ff00+8c)", "jp loadWinterLayout")
 
-	getTreasureData := addrString(r.assembler.getDef("getTreasureData"))
-	progressiveItemFunc := addrString(r.assembler.getDef("upgradeProgressiveItem"))
 	giveItem := addrString(r.assembler.getDef("giveTreasureCustom"))
 
 	callBank2 := addrString(r.assembler.getDef("callBank2"))
@@ -142,8 +138,6 @@ func initSeasonsEOB() {
 	// one. this obviates some hard-coded shop data (sprite, text) and allows
 	// the item to progressively upgrade.
 	// param = b (item index/subID), returns c,e = treasure ID,subID
-	shopLookup := r.appendToBank(0x08, "shop item lookup",
-		"\x21\xce\x4c\x78\x87\xd7\x4e\x23\x5e\xc9")
 	shopCheckAddr := r.appendToBank(0x08, "shop check addr",
 		"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9")
 	shopGiveItem := r.appendToBank(0x08, "shop give item func",
@@ -279,9 +273,6 @@ func initSeasonsEOB() {
 		"\xf1\xcd"+giveItem+"\xd1\x37\xc9") // give item, scf, ret
 	marketIDFunc := r.appendToBank(0x09, "market give fake id func",
 		"\xe5\x21\x94\xc6\xcb\xc6\xe1\xca"+marketFinalGiveItem)
-	// param = b (item index/subID), returns c,e = treasure ID,subID
-	marketLookup := r.appendToBank(0x09, "market item lookup",
-		"\x21\xda\x77\x78\x87\xd7\x4e\x23\x5e\xc9")
 	marketGiveItem := r.appendToBank(0x09, "market give item func",
 		"\xf5\x7d\xfe\xdb\xca"+marketFinalGiveItem+
 			"\xfe\xe3\xca"+marketFinalGiveItem+"\xfe\xf5\xca"+marketIDFunc+
@@ -317,6 +308,11 @@ func initSeasonsEOB() {
 		"db 1e,78,1a,cb,7f,20", // dunno what this is
 		"call setInitialFlags; jp objectDelete_useActiveObjectType")
 
+	r.replaceAsm(0x0a, 0x7b93,
+		"call giveTreasure", "call giveTreasureCustom")
+	r.replaceAsm(0x0a, 0x7b9e,
+		"jp showText", "ret; nop; nop")
+
 	// remove generic "you got a ring" text for gasha nuts
 	gashaNutRingText := r.appendToBank(0x0a, "remove ring text from gasha nut",
 		"\x79\xfe\x04\xc2\x4b\x18\xe1\xc9")
@@ -334,10 +330,6 @@ func initSeasonsEOB() {
 		"\xde\x2e\x00\x92\x94\xc6\x02\xc1")
 	r.replace(0x0b, 0x730d, "diver fake id call",
 		"\xde\x2e\x00", "\xc0"+diverIDScript)
-
-	// returns c,e = treasure ID,subID
-	nobleSwordLookup := r.appendToBank(0x0b, "noble sword lookup",
-		"\x21\x18\x64\x4e\x23\x5e\xc9")
 
 	// skip forced ring appraisal and ring list with vasu (prevents softlock)
 	r.replace(0x0b, 0x4a2b, "skip vasu ring appraisal",
@@ -385,15 +377,8 @@ func initSeasonsEOB() {
 
 	// bank 15
 
-	// upgrade normal items (interactions with ID 60) as necessary when they're
-	// created, and set collection mode.
-	collectModeLookup := addrString(r.assembler.getDef("lookupCollectMode"))
-	normalProgressiveFunc := r.appendToBank(0x15, "normal progressive func",
-		"\xcd"+collectModeLookup+"\x47\xcb\x37\xf5"+
-			"\x1e\x43\x1a\xfe\x02\x30\x05"+ // don't upgrade spin slash
-			"\x1b\x1a\xcd"+progressiveItemFunc+"\xf1\xc9")
-	r.replace(0x15, 0x465a, "set normal progressive call",
-		"\x47\xcb\x37", "\xcd"+normalProgressiveFunc)
+	r.replaceAsm(0x15, 0x465a,
+		"ld b,a; swap a", "call modifyTreasure")
 
 	// should be set to match the western coast season
 	pirateSeason := r.appendToBank(0x15, "season after pirate cutscene", "\x15")
@@ -431,36 +416,8 @@ func initSeasonsEOB() {
 
 	r.replaceAsm(0x00, 0x16f6,
 		"call giveTreasure_body", "call satchelRefillSeeds")
-
-	// returns c,e = treasure ID,subID
-	rodLookup := r.appendToBank(0x15, "rod lookup",
-		"\x21\xcc\x70\x5e\x23\x23\x4e\xc9")
-	// return z if object is randomized shop item.
-	checkShopItem := r.appendToBank(0x3f, "check randomized shop item",
-		"\x79\xfe\x47\xc0\x7b\xb7\xc8\xfe\x02\xc8\xfe\x05\xc8\xfe\x0d\xc9")
-	// same as above but for subrosia market.
-	checkMarketItem := r.appendToBank(0x3f, "check randomized market item",
-		"\x79\xfe\x81\xc0\x7b\xb7\xc8\xfe\x04\xc8\xfe\x0d\xc9")
-	// and rod of seasons.
-	checkRod := r.appendToBank(0x3f, "check rod",
-		"\x79\xfe\xe6\xc0\x7b\xfe\x02\xc9")
-	// load gfx data for randomized shop and market items.
-	itemGfxFunc := r.appendToBank(0x3f, "item gfx func",
-		// check for matching object
-		"\x43\x4f\xcd"+checkRod+"\x28\x17\x79\xfe\x59\x28\x19"+ // rod, woods
-			"\xcd"+checkShopItem+"\x28\x1b\xcd"+
-			checkMarketItem+"\x28\x1d"+ // shops
-			"\x79\xfe\x6e\x28\x1f\x06\x00\xc9"+ // feather
-			// look up item ID, subID
-			"\x1e\x15\x21"+rodLookup+"\x18\x1d"+
-			"\x1e\x0b\x21"+nobleSwordLookup+"\x18\x16"+
-			"\x1e\x08\x21"+shopLookup+"\x18\x0f"+
-			"\x1e\x09\x21"+marketLookup+"\x18\x08"+
-			"\xfa\xb4\xc6\xc6\x15\x5f\x18\x0e"+ // feather
-			"\xcd\x8a\x00\x79\x4b\xcd"+getTreasureData+ // get treasure
-			"\xcd"+progressiveItemFunc+"\x23\x23\x5e"+ // get sprite
-			"\x3e\x60\x4f\x06\x00\xc9") // replace object gfx w/ treasure gfx
-	r.replace(0x3f, 0x443c, "item gfx call", "\x4f\x06\x00", "\xcd"+itemGfxFunc)
+	r.replaceAsm(0x3f, 0x4356,
+		"call _interactionGetData", "call checkLoadCustomSprite")
 
 	// "activate" a flute by setting its icon and song when obtained. also
 	// activates the corresponding animal companion.

@@ -80,7 +80,9 @@ var seasonsItemGfx = map[string]int{
 }
 
 // rod of seasons has a different graphics whatever than the rest of the slots
-// and it's tricky to change, so i'm restricting items instead.
+// and it's tricky to change, so i'm restricting items instead. specifically,
+// wide non-symmetrical items don't work.
 func CanSlotAsRod(name string) bool {
-	return (itemGfx[name] & 0xf) == 0
+	flags := itemGfx[name] & 0xf
+	return flags == 0 || flags == 2 || flags == 6
 }

@@ -57,7 +57,6 @@ func initAgesEOB() {
 		"inc a; cp a,11", "call checkMakuState")
 
 	compareRoom := addrString(r.assembler.getDef("compareRoom"))
-	readWord := addrString(r.assembler.getDef("readWord"))
 	searchDoubleKey := addrString(r.assembler.getDef("searchDoubleKey"))
 	findObjectWithId := addrString(r.assembler.getDef("findObjectWithId"))
 
@@ -171,39 +170,7 @@ func initAgesEOB() {
 
 	// bank 16 (pt. 1)
 
-	// upgraded item data (old ID, old related var, new ID, new addr)
-	progItemAddrs := r.appendToBank(0x16, "progressive item addrs",
-		"\x01\x02\x01\xc6\x54"+ // mirror shield
-			"\x05\x01\x05\xea\x54"+ // noble sword
-			"\x05\x02\x05\xee\x54"+ // master sword
-			"\x0a\x01\x0a\x12\x55"+ // long switch
-			"\x16\x01\x16\x52\x55"+ // power glove
-			"\x19\x01\x19\x76\x55"+ // satchel upgrade 1
-			"\x19\x02\x19\x76\x55"+ // satchel upgrade 2 (same deal)
-			"\x25\x00\x26\xca\x53"+ // tune of currents
-			"\x26\x00\x27\xce\x53"+ // tune of ages
-			"\x2e\x00\x4a\x5a\x54"+ // mermaid suit
-			"\xff")
-	// given a treasure ID in b, make hl = the start of the upgraded treasure
-	// data + 1, if the treasure needs to be upgraded, and returns the new
-	// treasure ID in b.
-	getUpgradedTreasure := r.appendToBank(0x16, "get upgraded treasure",
-		"\x78\xcd\x48\x17\x4f\x78\xd0"+ // check obtained / get related var
-			"\xfe\x25\x20\x09\x3e\x26\x5f\xcd\x48\x17\x30\x01\x43"+ // harp
-			"\xe5\x21"+progItemAddrs+"\x2a\xfe\xff\x28\x18"+ // search
-			"\xb8\x20\x0a\x2a\xb9\x20\x07\x2a\x47\x2a\x5e\x18\x06"+
-			"\x23\x23\x23\x23\x18\xe8"+ // next
-			"\xe1\x63\x6f\x23\xc9\xe1\xc9") // done
-	// load the address of a treasure's 4-byte data entry + 1 into hl, using b
-	// as the ID and c as sub ID, accounting for progressive upgrades.
-	getTreasureDataBody := r.appendToBank(0x16, "get treasure data body",
-		"\x21\x32\x53\x78\x87\xd7\x78\x87\xd7\xcb\x7e\x28\x04"+
-			"\x23\x2a\x66\x6f\x79\x87\x87\xd7\x23\xc3"+getUpgradedTreasure)
-	// do the above and put the ID, param, and text in b, c, and e.
-	getTreasureDataBCE := r.appendToBank(0x16, "get treasure data bc",
-		"\xcd"+getTreasureDataBody+"\x4e\x23\x5e\xc9")
-	getTreasureData := r.appendToBank(0x00, "get treasure data",
-		"\x1e\x16\x21"+getTreasureDataBCE+"\xc3\x8a\x00")
+	getTreasureDataBCE := addrString(r.assembler.getDef("getTreasureDataBCE"))
 
 	// bank 09
 
@@ -290,7 +257,7 @@ func initAgesEOB() {
 	// give correct ID and param for shop item, play sound, and load correct
 	// text index into temp wram address.
 	shopGiveTreasure := r.appendToBank(0x09, "shop give treasure",
-		"\x47\x1a\xfe\x0d\x78\x20\x08\xcd"+getTreasureData+"\x7b\xea\x0d\xcf"+
+		"\x47\x1a\xfe\x0d\x78\x20\x08\xcd"+getTreasureDataBCE+"\x7b\xea\x0d\xcf"+
 			"\x78\xcd"+handleGetItem+"\xc2\x98\x0c\x3e\x4c\xc3\x98\x0c")
 	r.replace(0x09, 0x4425, "call shop give treasure",
 		"\xcd\x1c\x17", "\xcd"+shopGiveTreasure)
@@ -495,27 +462,8 @@ func initAgesEOB() {
 
 	// bank 16
 
-	// given a treasure ID in dx42, return hl = the start of the treasure data
-	// + 1, accounting for progressive upgrades. also writes the new treasure
-	// ID to d070, which is used to set the treasure obtained flag.
-	upgradeTreasure := r.appendToBank(0x16, "upgrade treasure",
-		"\x1e\x42\x1a\x47\xcd"+getUpgradedTreasure+"\x1e\x70\x78\x12\xc9")
-
-	// just get item bc's sprite index in e.
-	getItemSpriteIndexBody := r.appendToBank(0x16, "get item sprite index body",
-		"\xcd"+getTreasureDataBody+"\x23\x23\x7e\x5f\xc9")
-	getItemSpriteIndex := r.appendToBank(0x00, "get item sprite index",
-		"\x1e\x16\x21"+getItemSpriteIndexBody+"\xc3\x8a\x00")
-
-	// return collection mode in a and e, based on current room. call is in
-	// bank 16, func is in bank 00, body is in bank 06.
-	collectModeLookup := addrString(r.assembler.getDef("lookupCollectMode"))
-	// return treasure data address and collect mode modified as necessary,
-	// given a treasure ID in dx42.
-	modifyTreasure := r.appendToBank(0x16, "modify treasure",
-		"\xcd"+upgradeTreasure+"\xcd"+collectModeLookup+"\x47\xcb\x37\xc9")
-	r.replace(0x16, 0x4539, "call modify treasure",
-		"\x47\xcb\x37", "\xcd"+modifyTreasure)
+	r.replaceAsm(0x16, 0x4539,
+		"ld b,a; swap a", "call modifyTreasure")
 
 	// bank 21
 
@@ -525,79 +473,10 @@ func initAgesEOB() {
 
 	// bank 3f
 
-	// set hl to the address of the item sprite with ID a.
-	calcItemSpriteAddr := r.appendToBank(0x3f, "get item sprite addr",
-		"\x21\xdb\x66\x5f\x87\xd7\x7b\xd7\xc9")
-	// set hl to the address of the item sprite for the item at hl in bank e.
-	lookupItemSpriteBody := r.appendToBank(0x3f, "look up item sprite body",
-		"\xcd"+getItemSpriteIndex+"\x7b\xcd"+calcItemSpriteAddr+"\xc1\xc9")
-	// used if item at hl is stored in (ID,sub-ID) order
-	lookupItemSpriteAddr := r.appendToBank(0x3f, "look up item sprite addr",
-		"\xc5\xcd"+readWord+"\xc3"+lookupItemSpriteBody)
-	// used if item at hl is stored in (sub-ID,ID) order
-	lookupItemSpriteSwap := r.appendToBank(0x3f, "look up item sprite swap",
-		"\xc5\xcd"+readWord+"\x78\x41\x4f\xc3"+lookupItemSpriteBody)
-
-	// copy three bytes at hl to a temporary ram address, and set hl to the
-	// address of the last byte, with a as the value.
-	copySpriteData := r.appendToBank(0x3f, "copy sprite data",
-		"\xd5\x11\xf0\xcf\x2a\x12\x13\x2a\x12\x13\x7e\x12"+
-			"\x62\x6b\xd1\xc9")
-
-	// make the deku forest soldier that gives the item red instead of blue.
-	soldierSprite := r.appendToBank(0x3f, "soldier sprite", "\x4d\x00\x22")
-	setSoldierSprite := r.appendToBank(0x3f, "set soldier sprite",
-		"\x21"+soldierSprite+"\xf1\xc9")
-	// these interactions use the same flags as regular items
-	setShopItemSprite := r.appendToBank(0x3f, "set shop item sprite",
-		"\x1e\x09\x21\x11\x45\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
-	setHiddenTokaySprite := r.appendToBank(0x3f, "set hidden tokay sprite",
-		"\x1e\x15\x21\x36\x5b\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
-	setWildTokaySprite := r.appendToBank(0x3f, "set wild tokay sprite",
-		"\x1e\x15\x21\xbb\x5b\xcd"+lookupItemSpriteAddr+"\xf1\xc9")
-	// interaction 6b, can't handle bomb flower and needs different flags
-	set6BSprite := r.appendToBank(0x3f, "set interaction 6b sprite",
-		"\xcd"+lookupItemSpriteAddr+"\xcd"+copySpriteData+
-			"\xcb\x46\x20\x03\x34\x18\x01\x35\x2b\x2b\xf1\xc9")
-	setInventionSprite := r.appendToBank(0x3f, "set invention sprite",
-		"\x1e\x0c\x21\x32\x72\xc3"+set6BSprite)
-	setChevalTestSprite := r.appendToBank(0x3f, "set cheval's test sprite",
-		"\x1e\x0c\x21\x3b\x72\xc3"+set6BSprite)
-	// interaction 80, can't handle bomb flower and needs different flags
-	set80Sprite := r.appendToBank(0x3f, "set interaction 80 sprite",
-		"\xcd"+lookupItemSpriteAddr+"\xcd"+copySpriteData+
-			"\x5f\xe6\x0f\x20\x05\x7b\xc6\x03\x18\x06"+
-			"\xfe\x02\x7b\x28\x01\x3c\x77\x2b\x2b\xf1\xc9")
-	setLibraryPastSprite := r.appendToBank(0x3f, "set library past sprite",
-		"\x1e\x15\x21\xd8\x5d\xc3"+set80Sprite)
-	setLibrarySprite := r.appendToBank(0x3f, "set library sprite",
-		"\x1e\x15\x21\xb9\x5d\xc3"+set80Sprite)
-	setStalfosItemSprite := r.appendToBank(0x3f, "set stalfos item sprite",
-		"\x1e\x0a\x21\x77\x60\xcd"+lookupItemSpriteSwap+"\xf1\xc9")
-	// table of ID, sub ID, jump address
-	customSpriteTable := r.appendToBank(0x3f, "custom sprite table",
-		"\x40\x00"+setSoldierSprite+
-			"\x47\x0d"+setShopItemSprite+ // 150 rupees only
-			"\x63\x14"+setHiddenTokaySprite+ // iron shield
-			"\x63\x15"+setHiddenTokaySprite+ // mirror shield
-			"\x63\x3e"+setWildTokaySprite+ // wild tokay game prize
-			"\x6b\x0b"+setInventionSprite+ // cheval's invention
-			"\x6b\x0c"+setChevalTestSprite+
-			"\x77\x31"+setStalfosItemSprite+ // D8
-			"\x80\x07"+setLibraryPastSprite+
-			"\x80\x08"+setLibrarySprite+
-			"\xff")
-	// override the sprites loaded for certain ID / sub ID pairs.
-	loadCustomSprite := r.appendToBank(0x3f, "load custom sprite",
-		"\xcd\x37\x44\xf5\xc5\xe5\x1e\x41\x1a\x47\x1c\x1a\x4f"+
-			"\x1e\x02\x21"+customSpriteTable+"\xcd"+searchDoubleKey+
-			"\x30\x08\x2a\x47\x7e\xe1\x67\x68\xc1\xe9\xe1\xc1\xf1\xc9")
-	r.replace(0x3f, 0x4356, "call load custom sprite",
-		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
-
-	r.replace(0x3f, 0x4608, "seed capacity pointer",
-		"\x10\x46", addrString(r.assembler.getDef("seedCapacityTable")))
-
+	r.replaceAsm(0x3f, 0x4356,
+		"call _interactionGetData", "call checkLoadCustomSprite")
+	r.replaceAsm(0x3f, 0x4607,
+		"ld hl,4610", "ld hl,seedCapacityTable")
 	r.replaceAsm(0x3f, 0x4614,
 		"set 6,c; call realignUnappraisedRings", "nop; jp autoAppraiseRing")
 

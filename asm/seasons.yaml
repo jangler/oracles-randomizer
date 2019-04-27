@@ -1,5 +1,6 @@
 defines:
   # constants
+  BANK_TREASURE_DATA: 0x15
   STARTING_TREE_MAP_INDEX: 0xf8
 
   # hram
@@ -66,6 +67,7 @@ defines:
   # rom 3f
   giveTreasure_body: 0x44c8
   realignUnappraisedRings: 0x4675
+  interaction60SubidData: 0x66dc
 
 banks:
   0x00:
@@ -97,132 +99,18 @@ banks:
       pop bc
       ret
 
-  # force the item in the temple of seasons cutscene to use normal item
-  # animations. TODO: i think there's a better way to do this, like the way
-  # that the ages code handles item graphics on non-item interactions.
-  - fixRodCutsceneGfx: |
-      ld e,41
-      ld a,(de)
-      cp a,e6
-      ret nz
-      inc e
-      ld a,(de)
-      cp a,02
-      jr z,.next
-      dec e
-      ld a,(de)
-      ret
-      .next
-      ld a,60
-      ret
-
-  # set hl = address of treasure data + 1 for item with ID a, sub ID c. this
-  # uses cdfd-cdff as scratch space.
-  - getTreasureData: |
-      push af
-      push bc
-      push de
-      ld b,a
-      ld e,15
-      ld hl,getTreasureData_body
-      call interBankCall
-      pop de
-      pop bc
-      pop af
-      ret
-
-  # use cape graphics for stolen feather if applicable.
-  # TODO: this doesn't appear to get called…
-  - upgradeStolenFeather: |
-      call checkTreasureObtained
-      ret c
-      push af
-      ld a,e
-      cp a,TREASURE_FEATHER
-      jr nz,.done
-      push de
-      ld e,43
-      ld a,(de)
-      cp a,02
-      pop de
-      jr nz,.done
-      ld a,(wFeatherLevel)
-      cp a,02
-      jr nz,.done
-      ld hl,3f89 # TODO: reference capeData instead
-      .done
-      pop af
-      ret
-
-  # data used by upgradeStolenFeather. (TODO: not actually used currently)
-  - itemDataStolenCape: db 02,37,17
-
-  # replacement treasure data to use when upgrading progressive items.
-  - itemDataMirrorShield: db 03,21,15
-  - itemDataNobleSword: db 02,1d,11
-  - itemDataMasterSword: db 03,1e,12
-  - itemDataMagicBoomerang: db 02,23,1d
-  - itemDataHyperSlingshot: db 02,2f,22
-  - itemDataRocsCape: db 02,28,17
-  - itemDataSatchel2: db 00,46,20
-
-  # change hl to point to different treasure data if the item is progressive
-  # and needs to be upgraded. param a = treasure ID.
-  - upgradeProgressiveItem: |
-      push de
-      ld e,a
-      call upgradeStolenFeather
-      ld a,e
-      pop de
-      ret nc
-      cp a,TREASURE_SHIELD
-      jr nz,.notShield
-      ld a,(wShieldLevel)
-      cp a,02
-      ret nz
-      ld hl,itemDataMirrorShield
-      ret
-      .notShield
-      cp a,TREASURE_SWORD
-      jr nz,.notSword
-      ld a,(wSwordLevel)
-      cp a,02
-      jr z,.masterSword
-      ld hl,itemDataNobleSword
-      ret
-      .masterSword
-      ld hl,itemDataMasterSword
-      ret
-      .notSword
-      cp a,TREASURE_BOOMERANG
-      jr nz,.notBoomerang
-      ld hl,itemDataMagicBoomerang
-      ret
-      .notBoomerang
-      cp a,TREASURE_SLINGSHOT
-      jr nz,.notHSS
-      ld hl,itemDataHyperSlingshot
-      ret
-      .notHSS
-      cp a,TREASURE_FEATHER
-      jr nz,.notCape
-      ld hl,itemDataRocsCape
-      ret
-      .notCape
-      cp a,TREASURE_SEED_SATCHEL
-      ret nz
-      ld hl,itemDataSatchel2
-      ret
 
   # this is a replacement for giveTreasure that gives treasure, plays sound,
   # sets text based on item ID a and sub ID c, and accounts for item
   # progression.
   - giveTreasureCustom: |
-      call getTreasureData
       ld b,a
-      call upgradeProgressiveItem
+      push hl
+      ld e,BANK_TREASURE_DATA
+      ld hl,getTreasureDataBCE
+      call interBankCall
+      pop hl
       ld a,b
-      ld c,(hl)
       call giveTreasure
       jr z,.noSound
       push hl
@@ -230,9 +118,8 @@ banks:
       pop hl
       .noSound
       ld b,00
-      inc hl
-      ld c,(hl)
-      ld a,c
+      ld c,e
+      ld a,e
       cp a,ff
       ret z
       call showText
@@ -619,34 +506,25 @@ banks:
       jp 432d
 
   0x15:
-  # body of getTreasureData in bank 00.
-  - getTreasureData_body: |
-      ld a,b
-      push bc
-      ld hl,treasureObjectData
-      .loop
-      call multiplyABy4
-      add hl,bc
-      bit 7,(hl)
-      jr z,.done
-      inc hl
-      ldi a,(hl)
-      ld h,(hl)
-      ld l,a
-      pop bc
-      ld a,c
-      push bc
-      jr .loop
-      .done
-      inc hl
-      ld b,03
-      push de
-      ld de,cdfd
-      call copyMemory
-      ld hl,cdfd
-      pop de
-      pop bc
-      ret
+
+  # progressive item upgrade data (old ID, old related var, new ID, new addr)
+  - progressiveUpgrades: |
+      db 01,02,01; dw 52c5 # mirror shield
+      db 05,01,05; dw 52dd # noble sword
+      db 05,02,05; dw 52e1 # master sword
+      db 06,01,06; dw 52f5 # magic boomerang
+      db 13,01,13; dw 5329 # hyper slingshot
+      db 17,01,17; dw 5331 # roc's cape
+      db 19,01,19; dw 5576 # satchel upgrade 1
+      db 19,02,19; dw 5576 # satchel upgrade 2 (same deal)
+      db ff
+
+  - getUpgradedTreasure: /include getUpgradedTreasure
+  - getTreasureData_body: /include getTreasureData_body
+  - getTreasureDataBCE: /include getTreasureDataBCE
+  - getTreasureDataSprite: /include getTreasureDataSprite
+  - modifyTreasure: /include modifyTreasure
+  - upgradeTreasure: /include upgradeTreasure
 
   0x3f:
   # have seed satchel inherently refill all seeds.
@@ -667,4 +545,140 @@ banks:
       .notSatchel
       pop af
       ld b,a
+      ret
+
+  # format (ID, subID, jump address). these functions *must* pop af as the last
+  # action before returning.
+  - customSpriteJumpTable: |
+      db 47,00; dw setMembersShop1Sprite
+      db 47,02; dw setMembersShop2Sprite
+      db 47,05; dw setMembersShop3Sprite
+      db 47,0d; dw setShopSprite
+      db 59,00; dw setPedestalSprite
+      db 60,16; dw setFeatherSprite
+      db 6e,00; dw setStolenFeatherSprite
+      db 81,00; dw setMarket1Sprite
+      db 81,04; dw setMarket2Sprite
+      db 81,0d; dw setMarket5Sprite
+      db c6,00; dw setHerosCaveSprite
+      db e6,02; dw setTempleOfSeasonsSprite
+      db ff
+
+  - setMembersShop1Sprite: |
+      ld e,08
+      ld hl,4cce
+      jp setGenericSprite
+
+  - setMembersShop2Sprite: |
+      ld e,08
+      ld hl,4cd2
+      jp setGenericSprite
+
+  - setMembersShop3Sprite: |
+      ld e,08
+      ld hl,4cd8
+      jp setGenericSprite
+
+  - setShopSprite: |
+      ld e,08
+      ld hl,4ce8
+      jp setGenericSprite
+
+  - setPedestalSprite: |
+      ld e,0b
+      ld hl,6418
+      jp setGenericSprite
+
+  - setFeatherSprite: |
+      ld e,43
+      ld a,(de) # treasure sub ID
+      cp a,02
+      jp z,setStolenFeatherSprite
+      ld hl,671e
+      ld a,(wFeatherLevel)
+      or a
+      jr z,.feather
+      ld hl,6721
+      .feather
+      pop af
+      ret
+
+  - setStolenFeatherSprite: |
+      ld hl,671e
+      ld a,(wFeatherLevel)
+      cp a,02
+      jr nz,.next
+      ld hl,6721
+      .next
+      pop af
+      ret
+
+  - setMarket1Sprite: |
+      ld e,09
+      ld hl,77da
+      jp setGenericSprite
+
+  - setMarket2Sprite: |
+      ld e,09
+      ld hl,77e2
+      jp setGenericSprite
+
+  - setMarket5Sprite: |
+      ld e,09
+      ld hl,77f4
+      jp setGenericSprite
+
+  - setGenericSprite: |
+      call lookupItemSprite
+      pop af
+      ret
+
+  # TODO: if everything is fine then readByte could be changed to something
+  # like readBytesWithGap, which just skips a byte? it would make these funcs
+  # cleaner and reduce code duplication.
+
+  # ID and subID not adjacent.
+  - setHerosCaveSprite: |
+      ld e,0a
+      ld hl,7b90
+      push bc
+      call readByte
+      ld b,e
+      inc hl
+      inc hl
+      ld e,0a
+      call readByte
+      ld c,e
+      call lookupItemSprite_body
+      pop bc
+      pop af
+      ret
+
+  # ID and subID not adjacent, needs flags changed, can't do wide
+  # non-symmetrical items.
+  - setTempleOfSeasonsSprite: |
+      ld e,15
+      ld hl,70ce
+      push bc
+      call readByte
+      ld b,e
+      dec hl
+      dec hl
+      ld e,15
+      call readByte
+      ld c,e
+      call lookupItemSprite_body
+      call copySpriteData
+      bit 1,(hl)
+      jr z,.next
+      xor a
+      ld (hl),a
+      jr .next2
+      .next
+      inc (hl)
+      .next2
+      dec hl
+      dec hl
+      pop bc
+      pop af
       ret

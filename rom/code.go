@@ -299,6 +299,8 @@ func ShowAsm(symbol string, w io.Writer) error {
 	if err != nil {
 		return err
 	}
+	_, err = fmt.Fprintf(os.Stderr, "%02x:%04x: %s\n",
+		m.Addrs[0].bank, m.Addrs[0].offset, symbol)
 	_, err = fmt.Fprintln(w, s)
 	return err
 }

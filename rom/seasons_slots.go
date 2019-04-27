@@ -306,17 +306,8 @@ var SeasonsSlots = map[string]*MutableSlot{
 	// hero's cave
 	"d0 key chest": seasonsChest(
 		"d0 small key", 0x4fb1, 0x04, 0x03, collectChest, 0xd4),
-	"d0 sword chest": &MutableSlot{
-		treasureName: "sword",
-		idAddrs:      []Addr{{0x0a, 0x7b90}},
-		paramAddrs:   []Addr{{0x0a, 0x7b92}},
-		textAddrs:    []Addr{{0x0a, 0x7b9c}},
-		gfxAddrs:     []Addr{{0x3f, 0x6676}},
-		group:        0x04,
-		room:         0x06,
-		collectMode:  collectNil,
-		mapCoords:    0xd4,
-	},
+	"d0 sword chest": basicSlot(
+		"sword", 0x0a, 0x7b90, 0x7b92, collectNil, 0x04, 0x06, 0xd4),
 	"d0 rupee chest": seasonsChest(
 		"rupees, 30", 0x4fb5, 0x04, 0x05, collectChest, 0xd4),
 
