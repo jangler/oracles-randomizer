@@ -57,6 +57,9 @@ defines:
   # rom 05
   _specialObjectGetRelativeTileWithDirectionTable: 0x44aa
 
+  # rom 15
+  treasureObjectData: 0x5129
+
   # rom 3f
   giveTreasure_body: 0x44c8
   realignUnappraisedRings: 0x4675
@@ -132,7 +135,7 @@ banks:
       ret c
       push af
       ld a,e
-      cp a,17
+      cp a,TREASURE_FEATHER
       jr nz,.done
       push de
       ld e,43
@@ -169,7 +172,7 @@ banks:
       ld a,e
       pop de
       ret nc
-      cp a,01
+      cp a,TREASURE_SHIELD
       jr nz,.notShield
       ld a,(wShieldLevel)
       cp a,02
@@ -177,7 +180,7 @@ banks:
       ld hl,itemDataMirrorShield
       ret
       .notShield
-      cp a,05
+      cp a,TREASURE_SWORD
       jr nz,.notSword
       ld a,(wSwordLevel)
       cp a,02
@@ -188,22 +191,22 @@ banks:
       ld hl,itemDataMasterSword
       ret
       .notSword
-      cp a,06
+      cp a,TREASURE_BOOMERANG
       jr nz,.notBoomerang
       ld hl,itemDataMagicBoomerang
       ret
       .notBoomerang
-      cp a,13
+      cp a,TREASURE_SLINGSHOT
       jr nz,.notHSS
       ld hl,itemDataHyperSlingshot
       ret
       .notHSS
-      cp a,17
+      cp a,TREASURE_FEATHER
       jr nz,.notCape
       ld hl,itemDataRocsCape
       ret
       .notCape
-      cp a,19
+      cp a,TREASURE_SEED_SATCHEL
       ret nz
       ld hl,itemDataSatchel2
       ret
@@ -617,7 +620,7 @@ banks:
   - getTreasureData_body: |
       ld a,b
       push bc
-      ld hl,5129 # pointer table for treasure data
+      ld hl,treasureObjectData
       .loop
       call multiplyABy4
       add hl,bc
@@ -651,7 +654,7 @@ banks:
       pop bc
       push af
       ld a,b
-      cp a,19
+      cp a,TREASURE_SEED_SATCHEL
       jr nz,.notSatchel
       push bc
       push de
