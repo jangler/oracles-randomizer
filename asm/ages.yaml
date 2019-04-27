@@ -24,6 +24,7 @@ defines:
   forceEnableIntroInputs: 0x0886
   playSound: 0x0c98
   setMusicVolume: 0x0cad
+  showText: 0x1872
   getThisRoomFlags: 0x197d
   openMenu: 0x1ab0
   lookupCollisionTable: 0x1e1f
@@ -37,6 +38,9 @@ defines:
 
   # rom 04
   applyAllTileSubstitutions: 0x5fef
+
+  # rom 3f
+  realignUnappraisedRings: 0x466f
 
 banks:
   0x00:

@@ -6,6 +6,7 @@ defines:
   # wram
   wKeysPressed: 0xc481
   wAnimalRegion: 0xc610
+  wRingsObtained: 0xc616
   wInventoryB: 0xc688
   wMapMenu_mode: 0xcbb3
   wMapMenu_cursorIndex: 0xcbb6
@@ -17,6 +18,7 @@ defines:
 
   # rom 00
   interBankCall: 0x008a
+  setFlag: 0x020e
   decHlRef16WithCap: 0x0237
 
 banks:
@@ -208,3 +210,23 @@ banks:
       .next
       pop af
       ret
+
+  0x3f:
+  # put obtained rings directly into ring list (no need for appraisal), and
+  # tell the player what type of ring it is.
+  - autoAppraiseRing: |
+      ld hl,wRingsObtained
+      ld a,c
+      and a,3f
+      call setFlag
+      ld a,c
+      add a,40
+      ld (cbb1),a # part of wTextSubstitutions
+      ld bc,301c
+      call showText
+      ret
+
+  # use different seed capacity table, so that level zero satchel can still
+  # hold 20 seeds.
+  - seedCapacityTable: |
+      db 20,20,50,99

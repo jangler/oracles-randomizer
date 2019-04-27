@@ -162,8 +162,8 @@ func initAgesEOB() {
 	r.replace(0x06, 0x40e7, "call set portal sign text",
 		"\x01\x01\x09", "\xcd"+setPortalSignText)
 
-	// Use expert's or fist ring with only one button unequipped
-	r.replace(0x06, 0x4969, "punch with 1 button", "\xc0", "\x00")
+	// use expert's or fist ring with only one button unequipped.
+	r.replaceAsm(0x06, 0x4969, "ret nz", "nop")
 
 	// bank 16 (pt. 1)
 
@@ -620,17 +620,11 @@ func initAgesEOB() {
 	r.replace(0x3f, 0x4356, "call load custom sprite",
 		"\xcd\x37\x44", "\xcd"+loadCustomSprite)
 
-	// use different seed capacity table, so that level zero satchel can still
-	// hold 20 seeds.
-	seedCapTable := r.appendToBank(0x3f, "seed capacity table",
-		"\x20\x20\x50\x99")
-	r.replace(0x3f, 0x4608, "seed capacity pointer", "\x10\x46", seedCapTable)
+	r.replace(0x3f, 0x4608, "seed capacity pointer",
+		"\x10\x46", addrString(r.assembler.getDef("seedCapacityTable")))
 
-	// put obtained rings directly into ring list (no need for appraisal), and tell the
-	// player what type of ring it is
-	r.replace(0x3f, 0x4614, "auto ring appraisal",
-		"\xcb\xf1\xcd\x6f\x46\xfe\x64\x38",
-		"\x21\x16\xc6\x79\xe6\x3f\xcd\x0e\x02\x79\xc6\x40\xea\xb1\xcb\x01\x1c\x30\xcd\x72\x18\xc9")
+	r.replaceAsm(0x3f, 0x4614,
+		"set 6,c; call realignUnappraisedRings", "nop; jp autoAppraiseRing")
 
 	// use different addresses for owl statue text. the text itself is stored
 	// in bank $38 instead of $3f, since there's not enough room in $3f.

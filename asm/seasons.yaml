@@ -59,6 +59,7 @@ defines:
 
   # rom 3f
   giveTreasure_body: 0x44c8
+  realignUnappraisedRings: 0x4675
 
 banks:
   0x00:
