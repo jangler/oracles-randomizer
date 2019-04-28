@@ -88,7 +88,7 @@ var agesD3Nodes = map[string]*Node{
 		Or("ember shooter", Hard("mystery shooter"))),
 	"d3 bridge chest": AndSlot("d3 W crystal",
 		Or("any seed shooter", "jump 3",
-			HardAnd(Count(4, "d3 small key"), "feather"),
+			HardAnd("d3 post-subterror", Count(4, "d3 small key"), "feather"),
 			HardAnd(Or("boomerang", And("bracelet", "toss ring")),
 				Or("feather", "pegasus satchel")))),
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
