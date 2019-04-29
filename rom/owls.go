@@ -53,8 +53,8 @@ var agesOwls = map[string]byte{
 // updates the owl statue text data based on the given hints. does not mutate
 // anything.
 func SetOwlData(owlHints map[string]string, game int) {
-	table := codeMutables["owl text offsets"].(*MutableRange)
-	text := codeMutables["owl text"].(*MutableRange)
+	table := codeMutables["owlTextOffsets"].(*MutableRange)
+	text := codeMutables["owlText"].(*MutableRange)
 	builder := new(strings.Builder)
 	addr := text.Addrs[0].offset
 
@@ -77,8 +77,8 @@ func SetOwlData(owlHints map[string]string, game int) {
 
 	text.New = []byte(builder.String())
 
-	codeMutables["owl text offsets"] = table
-	codeMutables["owl text"] = text
+	codeMutables["owlTextOffsets"] = table
+	codeMutables["owlText"] = text
 }
 
 // returns a sorted array of owl statue names for the given game (matching

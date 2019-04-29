@@ -39,6 +39,7 @@ func newAgesRomBanks() *romBanks {
 	// do this before loading asm files, since the size of this table varies
 	// with the number of checks.
 	r.appendToBank(0x06, "collectModeTable", makeAgesCollectModeTable())
+	r.appendToBank(0x3f, "owlTextOffsets", string(make([]byte, 0x14*2)))
 
 	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/ages.yaml"})
 
@@ -479,21 +480,12 @@ func initAgesEOB() {
 		"ld hl,4610", "ld hl,seedCapacityTable")
 	r.replaceAsm(0x3f, 0x4614,
 		"set 6,c; call realignUnappraisedRings", "nop; jp autoAppraiseRing")
-
-	// use different addresses for owl statue text. the text itself is stored
-	// in bank $38 instead of $3f, since there's not enough room in $3f.
-	owlTextOffsets := r.appendToBank(0x3f, "owl text offsets",
-		string(make([]byte, 0x14*2))) // to be set later
-	useOwlText := r.appendToBank(0x3f, "use owl text",
-		"\xea\xd4\xd0\xfa\xa3\xcb\xfe\x3d\xc0"+ // ret if normal text
-			"\x21"+owlTextOffsets+"\xfa\xa2\xcb\xdf\x2a\x66\x6f"+ // set addr
-			"\x3e\x38\xea\xd4\xd0\xc9") // set bank
-	r.replace(0x3f, 0x4faa, "call use owl text",
-		"\xea\xd4\xd0", "\xcd"+useOwlText)
+	r.replaceAsm(0x3f, 0x4faa,
+		"ld (w7ActiveBank),a", "call useOwlText")
 
 	// this *MUST* be the last thing in the bank, since it's going to grow
 	// dynamically later.
-	r.appendToBank(0x38, "owl text", "")
+	r.appendToBank(0x38, "owlText", "")
 }
 
 // makes ages-specific additions to the collection mode table.

@@ -1,6 +1,7 @@
 defines:
   # constants
   BANK_TREASURE_DATA: 0x16
+  BANK_OWL_TEXT: 0x38
   STARTING_TREE_MAP_INDEX: 0x78
 
   # hram
