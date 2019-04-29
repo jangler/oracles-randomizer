@@ -223,6 +223,7 @@ banks:
       ld (c790),a # d7 entrance
       ld (c7ba),a # d3 entrance
       ld (c80f),a # d6 entrance (past)
+      ld (c820),a # ralph encounter on talus peaks
       ld (c85c),a # d8 entrance
       ld (c883),a # d2 entrance (past)
       ld (c897),a # ralph encounter near rafton
