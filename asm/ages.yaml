@@ -192,45 +192,45 @@ banks:
 
       # room flags 3 | 6 | 7
       ld a,c8
-      ld (c739),a
+      ld (c739),a # big intro cutscene
 
       # room flag 7
       ld a,80
-      ld (c8bb),a
+      ld (c8bb),a # linked crescent island rosa encounter (1)
 
       # room flags 5 | 6
       ld a,60
-      ld (c8cb),a
+      ld (c8cb),a # linked crescent island rosa encounter (2)
 
       # room flag 6
       ld a,40
-      ld (c77a),a
-      ld (c76a),a
-      ld (c759),a
-      ld (c77c),a
-      ld (c72e),a
-      ld (c897),a
-      ld (c73a),a
-      ld (c7ba),a
-      ld (c78d),a
-      ld (c70a),a
-      ld (c9f6),a
-      ld (c85c),a
-      ld (c883),a
-      ld (c80f),a
-      ld (c703),a
-      ld (c790),a
-      ld (c77b),a
+      ld (c703),a # d4 entrance (present)
+      ld (c70a),a # d5 entrance
+      ld (c72e),a # inside graveyard poe's grave
+      ld (c73a),a # nayru's house
+      ld (c759),a # triangle stone
+      ld (c76a),a # first encounter with impa
+      ld (c77a),a # start
+      ld (c77b),a # graveyard kids
+      ld (c77c),a # graveyard poe
+      ld (c78d),a # d1 entrance
+      ld (c790),a # d7 entrance
+      ld (c7ba),a # d3 entrance
+      ld (c80f),a # d6 entrance (past)
+      ld (c85c),a # d8 entrance
+      ld (c883),a # d2 entrance (past)
+      ld (c897),a # ralph encounter near rafton
+      ld (c9f6),a # top of black tower, south of stairs
 
       # room flag 3
       ld a,08
-      ld (c725),a
-      ld (c813),a
+      ld (c725),a # foreman
+      ld (c813),a # symmetry city "middle house"
 
       # room flag 0
       ld a,01
-      ld (c876),a
-      ld (c738),a
+      ld (c738),a # maku tree (present)
+      ld (c876),a # black tower entrance
 
       # give L-3 ring box
       ld a,10
