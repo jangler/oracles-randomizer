@@ -13,6 +13,10 @@ defines:
   # wram
   wDimitriState: 0xc647
   wAnimalTutorialFlags: 0xc649
+  wDungeonBossKeys: 0xc682
+  wObtainedTreasureFlags: 0xc69a
+  wSeedSatchelLevel: 0xc6b4
+  wFluteIcon: 0xc6b5
   wEssencesObtained: 0xc6bf
   wActiveRing: 0xc6cb
   wRingBoxLevel: 0xc6cc
@@ -29,7 +33,9 @@ defines:
   forceEnableIntroInputs: 0x0886
   playSound: 0x0c98
   setMusicVolume: 0x0cad
+  giveTreasure: 0x171c
   checkTreasureObtained: 0x1748
+  refillSeedSatchel: 0x180c
   showText: 0x1872
   getThisRoomFlags: 0x197d
   openMenu: 0x1ab0
@@ -330,6 +336,186 @@ banks:
   - lookupKeyDropBank08: |
       ld bc,3001
       jp lookupKeyDrop
+
+  0x09:
+  # run certain actions depending on what item was picked up and where. this
+  # has to be explicitly called if an item is given by an interaction other
+  # than ID 60.
+  - handleGetItem: |
+      ld e,a
+      call satchelRefillSeeds
+      call seedShooterGiveSeeds
+      call activateFlute
+      call setD6BossKey
+      call dirtSetFakeId
+      call tingleSetFakeId
+      call symmetryBrotherSetFakeId
+      call goronDanceSetFakeId
+      call kingZoraSetFakeId
+      call makuSeedResetTreeState
+      ld a,e
+      jp giveTreasure
+
+  # make satchel refill seeds inherently, not as part of a scripted event.
+  - satchelRefillSeeds: |
+      ld a,e
+      cp a,TREASURE_SEED_SATCHEL
+      ret nz
+      push bc
+      push de
+      push hl
+      ld hl,wSeedSatchelLevel
+      inc (hl) # needed since this is run *before* the satchel is given
+      call refillSeedSatchel
+      dec (hl)
+      pop hl
+      pop de
+      pop bc
+      ret
+
+  # give 20 of the starting seeds along with the seed shooter.
+  - seedShooterGiveSeeds: |
+      ld a,e
+      cp a,TREASURE_SEED_SHOOTER
+      ret nz
+      push bc
+      ld a,00 # item ID set by randomization
+      ld c,20
+      call giveTreasure
+      pop bc
+      ret
+
+  # sets flute icon and animal flags based on flute param.
+  - activateFlute: |
+      ld a,e
+      cp a,TREASURE_FLUTE
+      ret nz
+      ld a,c
+      sub a,0a
+      ld (wFluteIcon),a
+      push hl
+      ld h,c6
+      add a,45
+      ld l,a
+      ld (hl),c3
+      pop hl
+      ret
+
+  # make boss key in D6 present also give it in D6 past.
+  - setD6BossKey: |
+      ld a,e
+      cp a,TREASURE_BOSS_KEY
+      ret nz
+      ld a,(wDungeonIndex)
+      cp a,06
+      jr z,.next
+      cp a,0c
+      ret nz
+      .next
+      push hl
+      ld hl,wDungeonBossKeys
+      set 6,(hl)
+      inc hl
+      set 4,(hl)
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "gloves" from south short dirt.
+  - dirtSetFakeId: |
+      push bc
+      ld bc,9800
+      call compareRoom
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,TREASURE_MAGNET_GLOVES
+      call setFlag
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "island chart" from tingle.
+  - tingleSetFakeId: |
+      push bc
+      ld bc,7900
+      call compareRoom
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,TREASURE_SLINGSHOT
+      call setFlag
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "tuni nut" from a brother.
+  - symmetryBrotherSetFakeId: |
+      push bc
+      ld bc,6e03
+      call compareRoom
+      jr z,.next
+      inc b
+      call compareRoom
+      .next
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,TREASURE_FOOLS_ORE
+      call setFlag
+      pop hl
+      ret
+
+  # set treasure ID 12 (nothing) for first goron dance, and 14 (nothing) for
+  # the second. if you're in the present, it's always 12. if you're in the
+  # past, it's 12 iff you don't have letter of introduction.
+  - goronDanceSetFakeId: |
+      push bc
+      ld bc,ed02 # present
+      call compareRoom
+      pop bc
+      jr z,.next
+      push bc
+      ld bc,ef02 # past
+      call compareRoom
+      pop bc
+      ret nz
+      ld a,TREASURE_GORON_LETTER
+      call checkTreasureObtained
+      ld a,14 # nil treasure
+      jr c,.next2
+      .next
+      ld a,12 # nil treasure
+      .next2
+      push hl
+      ld hl,wObtainedTreasureFlags
+      call setFlag
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "library key" from king zora.
+  - kingZoraSetFakeId: |
+      push bc
+      ld bc,ab05
+      call compareRoom
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,10 # nil treasure
+      call setFlag
+      pop hl
+      ret
+
+  # reset maku tree to state 02 after getting the maku seed. i think so that
+  # you can still get the "satchel" item afterward if you haven't already.
+  - makuSeedResetTreeState: |
+      ld a,e
+      cp a,TREASURE_MAKU_SEED
+      ret nz
+      ld a,02
+      ld (wMakuTreeState),a
+      ret
 
   0x0a:
   - lookupKeyDropBank0a: |

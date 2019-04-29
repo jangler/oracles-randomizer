@@ -182,59 +182,9 @@ func initAgesEOB() {
 	r.replace(0x09, 0x4418, "call shop set fake ID",
 		"\x21\xf7\x44", "\xcd"+shopSetFakeID)
 
-	// set treasure ID 08 (magnet gloves) when getting item from south shore
-	// dirt pile.
-	digSetFakeID := r.appendToBank(0x09, "dirt set fake ID",
-		"\xc5\x01\x00\x98\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9b\xc6\xcb\xc6"+
-			"\xe1\xc9")
-	// set treasure ID 13 (slingshot) when getting first item from tingle.
-	tingleSetFakeID := r.appendToBank(0x09, "tingle set fake ID",
-		"\xc5\x01\x00\x79\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9c\xc6\xcb\xde"+
-			"\xe1\xc9")
-	// set treasure ID 1e (fool's ore) for symmetry city brother.
-	brotherSetFakeID := r.appendToBank(0x09, "brother set fake ID",
-		"\xc5\x01\x03\x6e\xcd"+compareRoom+"\x28\x04\x04\xcd"+compareRoom+
-			"\xc1\xc0\xe5\x21\x9d\xc6\xcb\xf6\xe1\xc9")
-	// set treasure ID 10 (nothing) for king zora.
-	kingZoraSetFakeID := r.appendToBank(0x09, "king zora set fake ID",
-		"\xc5\x01\x05\xab\xcd"+compareRoom+"\xc1\xc0\xe5\x21\x9c\xc6\xcb\xc6"+
-			"\xe1\xc9")
-	// set treasure ID 12 (nothing) for first goron dance, and 14 (nothing) for
-	// the second. if you're in the present, it's always 12. if you're in the
-	// past, it's 12 iff you don't have letter of introduction.
-	goronDanceSetFakeID := r.appendToBank(0x09, "dance 1 set fake ID",
-		"\xc5\x01\x02\xed\xcd"+compareRoom+"\xc1\x28\x12"+ // present
-			"\xc5\x01\x02\xef\xcd"+compareRoom+"\xc1\xc0"+ // past
-			"\x3e\x59\xcd\x48\x17\x3e\x10\x38\x02\x3e\x04"+
-			"\xe5\x21\x9c\xc6\xb6\x77\xe1\xc9")
-	// set flag for d6 past and present boss keys whether you get the key in
-	// past or present.
-	setD6BossKey := r.appendToBank(0x09, "set d6 boss key",
-		"\x7b\xfe\x31\xc0\xfa\x39\xcc\xfe\x06\x28\x03\xfe\x0c\xc0"+
-			"\xe5\x21\x82\xc6\xcb\xf6\x23\xcb\xe6\xe1\xc9")
-	// refill all seeds when picking up a seed satchel.
-	refillSeedSatchel := r.appendToBank(0x09, "refill seed satchel",
-		"\x7b\xfe\x19\xc0"+
-			"\xc5\xd5\xe5\x21\xb4\xc6\x34\xcd\x0c\x18\x35\xe1\xd1\xc1\xc9")
-	// give 20 seeds when picking up the seed shooter.
-	fillSeedShooter := r.appendToBank(0x09, "fill seed shooter",
-		"\x7b\xfe\x0f\xc0\xc5\x3e\x20\x0e\x20\xcd\x1c\x17\xc1\xc9")
-	// give flute the correct icon and make it functional from the start.
-	activateFlute := r.appendToBank(0x09, "activate flute",
-		"\x7b\xfe\x0e\xc0"+
-			"\x79\xd6\x0a\xea\xb5\xc6\xe5\x26\xc6\xc6\x45\x6f\x36\xc3\xe1\xc9")
-	// reset maku tree to state 02 after getting the maku seed.
-	makuSeedResetState := r.appendToBank(0x09, "maku seed reset state",
-		"\x7b\xfe\x36\xc0\x3e\x02\xea\xe8\xc6\xc9")
-	// this function checks all the above conditions when collecting an item.
-	handleGetItem := r.appendToBank(0x09, "handle get item",
-		"\x5f\xcd"+digSetFakeID+"\xcd"+setD6BossKey+"\xcd"+refillSeedSatchel+
-			"\xcd"+fillSeedShooter+"\xcd"+activateFlute+"\xcd"+tingleSetFakeID+
-			"\xcd"+brotherSetFakeID+"\xcd"+kingZoraSetFakeID+
-			"\xcd"+goronDanceSetFakeID+"\xcd"+makuSeedResetState+
-			"\x7b\xc3\x1c\x17")
-	r.replace(0x09, 0x4c4e, "call handle get item",
-		"\xcd\x1c\x17", "\xcd"+handleGetItem)
+	r.replaceAsm(0x09, 0x4c4e,
+		"call giveTreasure", "call handleGetItem")
+	handleGetItem := addrString(r.assembler.getDef("handleGetItem"))
 
 	// remove generic "you got a ring" text for rings from shops
 	r.replace(0x09, 0x4580, "obtain ring text replacement (shop) 1", "\x54", "\x00")

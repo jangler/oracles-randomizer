@@ -301,7 +301,7 @@ func setSeedData(game int) {
 		// satchel and shooter come with south lynna tree seeds
 		mut := varMutables["satchel initial seeds"].(*MutableRange)
 		mut.New[0] = 0x20 + seedType
-		mut = codeMutables["fill seed shooter"].(*MutableRange)
+		mut = codeMutables["seedShooterGiveSeeds"].(*MutableRange)
 		mut.New[6] = 0x20 + seedType
 		for _, name := range []string{"satchel initial selection",
 			"shooter initial selection"} {
