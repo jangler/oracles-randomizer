@@ -2,6 +2,7 @@ defines:
   # constants
   BANK_TREASURE_DATA: 0x16
   BANK_OWL_TEXT: 0x38
+  BANK_SMALL_KEY_DROPS: 0x38
   STARTING_TREE_MAP_INDEX: 0x78
 
   # hram
@@ -325,6 +326,22 @@ banks:
       ld e,COLLECT_CHEST
       ret
 
+  0x08:
+  - lookupKeyDropBank08: |
+      ld bc,3001
+      jp lookupKeyDrop
+
+  0x0a:
+  - lookupKeyDropBank0a: |
+      ld bc,3001
+      jp lookupKeyDrop
+
+  0x0c:
+  - lookupKeyDropBank0c: |
+      ld (hl),60
+      inc l
+      jp lookupKeyDrop
+
   0x16:
   # progressive item upgrade data (old ID, old related var, new ID, new addr)
   - progressiveUpgrades: |
@@ -346,6 +363,9 @@ banks:
   - getTreasureDataSprite: /include getTreasureDataSprite
   - modifyTreasure: /include modifyTreasure
   - upgradeTreasure: /include upgradeTreasure
+
+  0x38:
+  - lookupKeyDrop_body: /include lookupKeyDrop_body
 
   0x3f:
   # format (ID, subID, jump address). these functions *must* pop af as the last

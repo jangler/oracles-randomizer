@@ -36,9 +36,10 @@ func newAgesRomBanks() *romBanks {
 	r.endOfBank[0x38] = 0x6b00 // to be safe
 	r.endOfBank[0x3f] = 0x7d0a
 
-	// do this before loading asm files, since the size of this table varies
+	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
 	r.appendToBank(0x06, "collectModeTable", makeAgesCollectModeTable())
+	r.appendToBank(0x38, "smallKeyDrops", makeKeyDropTable())
 	r.appendToBank(0x3f, "owlTextOffsets", string(make([]byte, 0x14*2)))
 
 	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/ages.yaml"})
@@ -58,7 +59,6 @@ func initAgesEOB() {
 		"inc a; cp a,11", "call checkMakuState")
 
 	compareRoom := addrString(r.assembler.getDef("compareRoom"))
-	searchDoubleKey := addrString(r.assembler.getDef("searchDoubleKey"))
 	findObjectWithId := addrString(r.assembler.getDef("findObjectWithId"))
 
 	// bank 01
@@ -338,28 +338,12 @@ func initAgesEOB() {
 
 	// bank 0c
 
-	// this will be overwritten after randomization
-	smallKeyDrops := r.appendToBank(0x38, "small key drops",
-		makeKeyDropTable())
-	lookUpKeyDropBank38 := r.appendToBank(0x38, "look up key drop bank 38",
-		"\xc5\xfa\x2d\xcc\x47\xfa\x30\xcc\x4f\x21"+smallKeyDrops+ // load group/room
-			"\x1e\x02\xcd"+searchDoubleKey+"\xc1\xd0\x46\x23\x4e\xc9")
-	// ages has different key drop code across three different banks because
-	// it's a jerk
-	callBank38Code := "\xd5\xe5\x1e\x38\x21" + lookUpKeyDropBank38 +
-		"\xcd\x8a\x00\xe1\xd1\xc9"
-	lookUpKeyDropBank0C := r.appendToBank(0x0c, "look up key drop bank 0c",
-		"\x36\x60\x2c"+callBank38Code)
-	r.replace(0x0c, 0x442e, "call look up key drop bank 0c",
-		"\x36\x60\x2c", "\xcd"+lookUpKeyDropBank0C)
-	lookUpKeyDropBank0A := r.appendToBank(0x0a, "look up key drop bank 0A",
-		"\x01\x01\x30"+callBank38Code)
-	r.replace(0x0a, 0x7075, "call look up key drop bank 0A",
-		"\x01\x01\x30", "\xcd"+lookUpKeyDropBank0A)
-	lookUpKeyDropBank08 := r.appendToBank(0x08, "look up key drop bank 08",
-		"\x01\x01\x30"+callBank38Code)
-	r.replace(0x08, 0x5087, "call look up key drop bank 08",
-		"\x01\x01\x30", "\xcd"+lookUpKeyDropBank08)
+	r.replaceAsm(0x08, 0x5087,
+		"ld bc,3001", "call lookupKeyDropBank08")
+	r.replaceAsm(0x0a, 0x7075,
+		"ld bc,3001", "call lookupKeyDropBank0a")
+	r.replaceAsm(0x0c, 0x442e,
+		"ld (hl),60; inc l", "call lookupKeyDropBank0c")
 
 	// use custom script for soldier in deku forest with sub ID 0; they should
 	// give an item in exchange for mystery seeds.

@@ -31,9 +31,10 @@ func newSeasonsRomBanks() *romBanks {
 	r.endOfBank[0x15] = 0x792d
 	r.endOfBank[0x3f] = 0x714d
 
-	// do this before loading asm files, since the size of this table varies
+	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
 	r.appendToBank(0x06, "collectModeTable", makeSeasonsCollectModeTable())
+	r.appendToBank(0x3f, "smallKeyDrops", makeKeyDropTable())
 	r.appendToBank(0x3f, "owlTextOffsets", string(make([]byte, 0x1e*2)))
 
 	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/seasons.yaml"})
@@ -61,7 +62,6 @@ func initSeasonsEOB() {
 
 	callBank2 := addrString(r.assembler.getDef("callBank2"))
 	searchValue := addrString(r.assembler.getDef("searchValue"))
-	searchDoubleKey := addrString(r.assembler.getDef("searchDoubleKey"))
 	readSeason := addrString(r.assembler.getDef("readDefaultSeason"))
 
 	// bank 02
@@ -317,17 +317,8 @@ func initSeasonsEOB() {
 	r.replace(0x0b, 0x4a2b, "skip vasu ring appraisal",
 		"\x98\x33", "\x4a\x39")
 
-	// this will be overwritten after randomization
-	smallKeyDrops := r.appendToBank(0x3f, "small key drops",
-		makeKeyDropTable())
-	lookUpKeyDropBank3F := r.appendToBank(0x3f, "look up key drop bank 3f",
-		"\xc5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+smallKeyDrops+ // load group/room
-			"\x1e\x02\xcd"+searchDoubleKey+"\xc1\xd0\x46\x23\x4e\xc9")
-	lookUpKeyDrop := r.appendToBank(0x0b, "look up key drop",
-		"\x36\x60\x2c\xd5\xe5\x1e\x3f\x21"+lookUpKeyDropBank3F+
-			"\xcd\x8a\x00\xe1\xd1\xc9")
-	r.replace(0x0b, 0x4416, "call look up key drop",
-		"\x36\x60\x2c", "\xcd"+lookUpKeyDrop)
+	r.replaceAsm(0x0b, 0x4416,
+		"ld (hl),60; inc l", "call lookupKeyDropBank0b")
 
 	// bank 11
 

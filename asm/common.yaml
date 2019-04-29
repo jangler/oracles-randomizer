@@ -140,6 +140,17 @@ banks:
       pop bc
       ret
 
+  # return item ID and subID for a small key drop in group b, room c.
+  - lookupKeyDrop: |
+      push de
+      push hl
+      ld e,BANK_SMALL_KEY_DROPS
+      ld hl,lookupKeyDrop_body
+      call interBankCall
+      pop hl
+      pop de
+      ret
+
   0x02:
   # warp to room under cursor if using tree warp with developer ring.
   - devWarp: |
@@ -565,4 +576,20 @@ freeCode:
       ld e,70
       ld a,b
       ld (de),a
+      ret
+
+  lookupKeyDrop_body: |
+      push bc
+      ld a,(wActiveGroup)
+      ld b,a
+      ld a,(wActiveRoom)
+      ld c,a
+      ld hl,smallKeyDrops
+      ld e,02
+      call searchDoubleKey
+      pop bc
+      ret nc
+      ld b,(hl)
+      inc hl
+      ld c,(hl)
       ret

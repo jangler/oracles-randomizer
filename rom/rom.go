@@ -323,7 +323,7 @@ func setSeedData(game int) {
 // fill table—initial table is blank, since it's created before items are
 // placed.
 func setSmallKeyData(game int) {
-	mut := codeMutables["small key drops"].(*MutableRange)
+	mut := codeMutables["smallKeyDrops"].(*MutableRange)
 	mut.New = []byte(makeKeyDropTable())
 
 	if game == GameSeasons {

@@ -2,6 +2,7 @@ defines:
   # constants
   BANK_TREASURE_DATA: 0x15
   BANK_OWL_TEXT: 0x3f
+  BANK_SMALL_KEY_DROPS: 0x3f
   STARTING_TREE_MAP_INDEX: 0xf8
 
   # hram
@@ -573,6 +574,11 @@ banks:
       xor a
       jp 432d
 
+  - lookupKeyDropBank0b: |
+      ld (hl),60
+      inc l
+      jp lookupKeyDrop
+
   0x15:
 
   # progressive item upgrade data (old ID, old related var, new ID, new addr)
@@ -750,3 +756,5 @@ banks:
       pop bc
       pop af
       ret
+
+  - lookupKeyDrop_body: /include lookupKeyDrop_body
