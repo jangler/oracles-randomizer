@@ -214,17 +214,17 @@ banks:
       db ff
 
   # data for checkSetAnimalSavePoint:
-  # entered group, entered room, animal room, saved y, saved x, 00.
+  # entered group, entered room, animal room, saved y, saved x.
   - animalSavePointTable: |
-      db 04,fa,c2,18,68,00 # spool swamp cave
-      db 05,cc,2a,38,18,00 # goron mountain east cave
-      db 05,b3,8e,58,88,00 # cave outside d2
-      db 04,e1,86,48,68,00 # cave north of d1
-      db 05,c9,2a,38,18,00 # goron mountain main
-      db 05,ba,2f,18,68,00 # spring banana cave
-      db 05,bb,2f,18,68,00 # cave below spring banana cave
-      db 01,05,9a,38,48,00 # rosa portal
-      db 04,39,8d,38,38,00 # d2 entrance
+      db 04,fa,c2,18,68 # spool swamp cave
+      db 05,cc,2a,38,18 # goron mountain east cave
+      db 05,b3,8e,58,88 # cave outside d2
+      db 04,e1,86,48,68 # cave north of d1
+      db 05,c9,2a,38,18 # goron mountain main
+      db 05,ba,2f,18,68 # spring banana cave
+      db 05,bb,2f,18,68 # cave below spring banana cave
+      db 01,05,9a,38,48 # rosa portal
+      db 04,39,8d,38,38 # d2 entrance
       db ff
 
   # if entering certain warps blocked by snow piles, mushrooms, or bushes, set
@@ -236,31 +236,18 @@ banks:
       ld b,a
       ld a,(wWarpDestIndex)
       ld c,a
-      ld a,(wRememberedCompanionRoom)
-      ld d,a
+      ld e,03
       ld hl,animalSavePointTable
-      .loop
-      ldi a,(hl)
-      cp b
-      jr nz,.incUntilNextEntry
-      ldi a,(hl)
-      cp c
-      jr nz,.incUntilNextEntry
-      ld a,(hl)
-      cp d
-      jr nz,.incUntilNextEntry
+      call searchDoubleKey
+      jr nz,.done
       ld de,wRememberedCompanionRoom
-      ld b,03
+      ld a,(de)
+      cp (hl)
+      jr nz,.done
+      ld b,02
+      inc hl
+      inc de
       call copyMemory
-      jr .done
-      .incUntilNextEntry
-      ldi a,(hl)
-      or a
-      jr nz,.incUntilNextEntry
-      ld a,(hl)
-      inc a
-      jr z,.done
-      jr .loop
       .done
       ld a,c
       pop de
