@@ -36,6 +36,7 @@ defines:
   setMusicVolume: 0x0c89
   giveTreasure: 0x16eb
   checkTreasureObtained: 0x1717
+  getRandomRingOfGivenTier: 0x17b9
   refillSeedSatchel: 0x17e5
   showText: 0x184b
   getThisRoomFlags: 0x1956
@@ -101,7 +102,9 @@ banks:
 
   # this is a replacement for giveTreasure that accounts for item progression.
   # call through giveTreasureCustom or giveTreasureCustomSilent, since this
-  # function doesn't xor the a that it returns.
+  # function doesn't xor the a that it returns. importantly, this replacement
+  # treats c as a subID, not a param, so this should *not* be called by
+  # non-randomized whatevers.
   - giveTreasureCustom_body: |
       ld b,a
       push hl
@@ -410,6 +413,61 @@ banks:
       ret z
       ld a,(wActiveTileType)
       cp a,08
+      ret
+
+  0x08:
+  # call giveTreasureCustom instead of giveTreasure in the shop iff the given
+  # item is randomized.
+  - shopGiveTreasure: |
+      push bc
+      ld b,a
+      ld a,l
+      push hl
+      ld hl,shopItemLowAddrs
+      call searchValue
+      pop hl
+      ld a,b
+      pop bc
+      jr z,.next
+      call giveTreasure
+      ret
+      .next
+      call giveTreasureCustom
+      ret
+
+  # these are the low bytes of randomized shop item data addresses.
+  - shopItemLowAddrs: |
+      db e9,cf,d3,d9
+
+  0x09:
+  # use giveTreasureCustom in the subrosian market when appropriate.
+  - marketGiveTreasure: |
+      push af
+      ld a,l
+      cp a,db
+      jr z,.custom
+      cp a,e3
+      jr z,.custom
+      cp a,f5 # trade star ore
+      jr z,.customFakeId
+      pop af
+      cp a,TREASURE_RING
+      jr nz,.next
+      call getRandomRingOfGivenTier
+      .next
+      call giveTreasure
+      ld e,42
+      ret
+      .customFakeId
+      push hl
+      ld hl,c694
+      set 0,(hl)
+      pop hl
+      .custom
+      pop af
+      call giveTreasureCustom
+      pop de
+      scf
       ret
 
   0x0a:

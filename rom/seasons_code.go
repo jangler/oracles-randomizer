@@ -58,8 +58,6 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x00, 0x39df,
 		"push de; ld a,(ff00+8c)", "jp loadWinterLayout")
 
-	giveItem := addrString(r.assembler.getDef("giveTreasureCustom"))
-
 	callBank2 := addrString(r.assembler.getDef("callBank2"))
 	searchValue := addrString(r.assembler.getDef("searchValue"))
 	searchDoubleKey := addrString(r.assembler.getDef("searchDoubleKey"))
@@ -134,17 +132,8 @@ func initSeasonsEOB() {
 
 	// bank 08
 
-	// use the custom "give item" function in the shop instead of the normal
-	// one. this obviates some hard-coded shop data (sprite, text) and allows
-	// the item to progressively upgrade.
-	// param = b (item index/subID), returns c,e = treasure ID,subID
-	shopCheckAddr := r.appendToBank(0x08, "shop check addr",
-		"\xfe\xe9\xc8\xfe\xcf\xc8\xfe\xd3\xc8\xfe\xd9\xc9")
-	shopGiveItem := r.appendToBank(0x08, "shop give item func",
-		"\xc5\x47\x7d\xcd"+shopCheckAddr+"\x78\xc1\x28\x04\xcd\xeb\x16\xc9"+
-			"\xcd"+giveItem+"\xc9") // give item and ret
-	r.replace(0x08, 0x4bfc, "shop give item call",
-		"\xeb\x16", shopGiveItem)
+	r.replaceAsm(0x08, 0x4bfb,
+		"call giveTreasure", "call shopGiveTreasure")
 
 	// give fake treasure 0f for the strange flute item.
 	shopIDFunc := r.appendToBank(0x08, "shop give fake id func",
@@ -269,17 +258,9 @@ func initSeasonsEOB() {
 		"\xdf\x2a\x4e", "\xcd"+tradeStarOre)
 
 	// use custom "give item" func in the subrosian market.
-	marketFinalGiveItem := r.appendToBank(0x09, "market final give item",
-		"\xf1\xcd"+giveItem+"\xd1\x37\xc9") // give item, scf, ret
-	marketIDFunc := r.appendToBank(0x09, "market give fake id func",
-		"\xe5\x21\x94\xc6\xcb\xc6\xe1\xca"+marketFinalGiveItem)
-	marketGiveItem := r.appendToBank(0x09, "market give item func",
-		"\xf5\x7d\xfe\xdb\xca"+marketFinalGiveItem+
-			"\xfe\xe3\xca"+marketFinalGiveItem+"\xfe\xf5\xca"+marketIDFunc+
-			"\xf1\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42\xc9")
-	r.replace(0x09, 0x788a, "market give item call",
-		"\xfe\x2d\x20\x03\xcd\xb9\x17\xcd\xeb\x16\x1e\x42",
-		"\x00\x00\x00\x00\x00\x00\x00\xcd"+marketGiveItem+"\x38\x0b")
+	r.replaceAsm(0x09, 0x788a,
+		"cp a,2d; jr nz,03; call getRandomRingOfGivenTier; call giveTreasure; ld e,42",
+		"db 00,00,00,00,00,00,00; call marketGiveTreasure; jr c,0b")
 
 	// check treasure id 0a to determine whether the maku tree gives its intro
 	// speech and item, but return the number of essences in a.
@@ -432,14 +413,6 @@ func initSeasonsEOB() {
 
 	r.replaceAsm(0x3f, 0x461a,
 		"set 6,c; call realignUnappraisedRings", "nop; jp autoAppraiseRing")
-
-	// don't play a sound for obtaining an item if it's on the starting screen,
-	// so that the linked starting item can be given silently.
-	giveItemSilently := r.appendToBank(0x3f, "give item silently",
-		"\x47\xfa\x4c\xcc\xfe\xa7\x78\xc2\x74\x0c"+
-			"\xfa\x49\xcc\xb7\x78\xc2\x74\x0c\xc9")
-	r.replace(0x3f, 0x4535, "call give item silently",
-		"\xcd\x74\x0c", "\xcd"+giveItemSilently)
 
 	// use different addresses for owl statue text.
 	owlTextOffsets := r.appendToBank(0x3f, "owl text offsets",
