@@ -58,15 +58,8 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"gasha seed", 0x64cc, 0x03, 0xb4, collectFind1, 0x78),
 	"floodgate keeper's house": seasonsFoundItem(
 		"floodgate key", 0x6281, 0x03, 0xb5, collectFind1, 0x62),
-	"spool swamp cave": &MutableSlot{
-		treasureName: "square jewel",
-		idAddrs:      []Addr{{0x0b, 0x7395}},
-		subIDAddrs:   []Addr{{0x0b, 0x7399}},
-		group:        0x04,
-		room:         0xfa,
-		collectMode:  collectChest,
-		mapCoords:    0xc2,
-	},
+	"spool swamp cave": basicSlot(
+		"square jewel", 0x0b, 0x7395, 0x7399, 0x04, 0xfa, collectChest, 0xc2),
 	"moblin keep": seasonsChest(
 		"piece of heart", 0x4f8e, 0x00, 0x5b, collectChest, 0x5b),
 	"master diver's challenge": seasonsChest(
@@ -133,24 +126,10 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"gasha seed", 0x4fa8, 0x03, 0x9b, collectChest, 0x10),
 	"eastern suburbs, on cliff": seasonsChest(
 		"gasha seed", 0x5089, 0x04, 0xf7, collectChest, 0xcc),
-	"dry eyeglass lake, west cave": &MutableSlot{
-		treasureName: "rupees, 100",
-		idAddrs:      []Addr{{0x0b, 0x73a1}},
-		subIDAddrs:   []Addr{{0x0b, 0x73a5}},
-		group:        0x04,
-		room:         0xfb,
-		collectMode:  collectChest,
-		mapCoords:    0xa7,
-	},
-	"woods of winter, 2nd cave": &MutableSlot{
-		treasureName: "gasha seed",
-		idAddrs:      []Addr{{0x0a, 0x5003}},
-		subIDAddrs:   []Addr{{0x0a, 0x5008}},
-		group:        0x05,
-		room:         0x12,
-		collectMode:  collectChest,
-		mapCoords:    0x7e,
-	},
+	"dry eyeglass lake, west cave": basicSlot(
+		"rupees, 100", 0x0b, 0x73a1, 0x73a5, 0x04, 0xfb, collectChest, 0xa7),
+	"woods of winter, 2nd cave": basicSlot(
+		"gasha seed", 0x0a, 0x5003, 0x5008, 0x05, 0x12, collectChest, 0x7e),
 
 	// dummy slots for bombs and shield
 	"shop, 20 rupees": &MutableSlot{
@@ -168,42 +147,14 @@ var SeasonsSlots = map[string]*MutableSlot{
 		mapCoords:    0xe6,
 	},
 
-	"shop, 150 rupees": &MutableSlot{
-		treasureName: "strange flute",
-		idAddrs:      []Addr{{0x08, 0x4ce8}},
-		subIDAddrs:   []Addr{{0x08, 0x4ce9}},
-		group:        0x03,
-		room:         0xa6,
-		collectMode:  collectNil,
-		mapCoords:    0xe6,
-	},
-	"member's shop 1": &MutableSlot{
-		treasureName: "satchel",
-		idAddrs:      []Addr{{0x08, 0x4cce}},
-		subIDAddrs:   []Addr{{0x08, 0x4ccf}},
-		group:        0x03,
-		room:         0xb0,
-		collectMode:  collectNil,
-		mapCoords:    0xe6,
-	},
-	"member's shop 2": &MutableSlot{
-		treasureName: "gasha seed",
-		idAddrs:      []Addr{{0x08, 0x4cd2}},
-		subIDAddrs:   []Addr{{0x08, 0x4cd3}},
-		group:        0x03,
-		room:         0xb0,
-		collectMode:  collectNil,
-		mapCoords:    0xe6,
-	},
-	"member's shop 3": &MutableSlot{
-		treasureName: "treasure map",
-		idAddrs:      []Addr{{0x08, 0x4cd8}},
-		subIDAddrs:   []Addr{{0x08, 0x4cd9}},
-		group:        0x03,
-		room:         0xb0,
-		collectMode:  collectNil,
-		mapCoords:    0xe6,
-	},
+	"shop, 150 rupees": basicSlot(
+		"strange flute", 0x08, 0x4ce8, 0x4ce9, 0x03, 0xa6, collectNil, 0xe6),
+	"member's shop 1": basicSlot(
+		"satchel", 0x08, 0x4cce, 0x4ccf, 0x03, 0xb0, collectNil, 0xe6),
+	"member's shop 2": basicSlot(
+		"gasha seed", 0x08, 0x4cd2, 0x4cd3, 0x03, 0xb0, collectNil, 0xe6),
+	"member's shop 3": basicSlot(
+		"treasure map", 0x08, 0x4cd8, 0x4cd9, 0x03, 0xb0, collectNil, 0xe6),
 
 	// subrosia
 	//
@@ -231,24 +182,10 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"autumn", 0x4fc1, 0x05, 0xfb, collectFind1, 0xb0),
 	"subrosian dance hall": seasonsScriptItem(
 		"boomerang", 0x6646, 0x03, 0x95, collectFind2, 0x9a),
-	"temple of seasons": &MutableSlot{
-		treasureName: "gasha seed", // placeholder; not actually in pool
-		idAddrs:      []Addr{{0x15, 0x70ce}},
-		subIDAddrs:   []Addr{{0x15, 0x70cc}},
-		group:        0x03,
-		room:         0xac,
-		collectMode:  collectNil,
-		mapCoords:    0xb0,
-	},
-	"subrosia seaside": &MutableSlot{ // addrs set dynamically at EOB
-		treasureName: "star ore",
-		idAddrs:      []Addr{{0x08, 0x0000}},
-		subIDAddrs:   []Addr{{0x08, 0x0000}},
-		group:        0x01,
-		room:         0x66,
-		collectMode:  collectDig,
-		mapCoords:    0xb0,
-	},
+	"temple of seasons": basicSlot(
+		"gasha seed", 0x15, 0x70ce, 0x70cc, 0x03, 0xac, collectNil, 0xb0),
+	"subrosia seaside": basicSlot( // addrs set dynamically at EOB
+		"star ore", 0x08, 0x0000, 0x0000, 0x01, 0x66, collectDig, 0xb0),
 	"subrosian wilds chest": seasonsChest(
 		"blue ore", 0x4f9f, 0x01, 0x41, collectChest, 0x1e),
 	"subrosia village chest": seasonsChest(
@@ -257,33 +194,12 @@ var SeasonsSlots = map[string]*MutableSlot{
 		"gasha seed", 0x5095, 0x04, 0xf1, collectChest, 0x25),
 	"subrosia, locked cave": seasonsChest(
 		"gasha seed", 0x5116, 0x05, 0xc6, collectChest, 0x25),
-	"subrosia market, 1st item": &MutableSlot{
-		treasureName: "ribbon",
-		idAddrs:      []Addr{{0x09, 0x77da}},
-		subIDAddrs:   []Addr{{0x09, 0x77db}},
-		group:        0x03,
-		room:         0xa0,
-		collectMode:  collectNil,
-		mapCoords:    0xb0,
-	},
-	"subrosia market, 2nd item": &MutableSlot{
-		treasureName: "rare peach stone",
-		idAddrs:      []Addr{{0x09, 0x77e2}},
-		subIDAddrs:   []Addr{{0x09, 0x77e3}},
-		group:        0x03,
-		room:         0xa0,
-		collectMode:  collectNil,
-		mapCoords:    0xb0,
-	},
-	"subrosia market, 5th item": &MutableSlot{
-		treasureName: "member's card",
-		idAddrs:      []Addr{{0x09, 0x77f4}},
-		subIDAddrs:   []Addr{{0x09, 0x77f5}},
-		group:        0x03,
-		room:         0xa0,
-		collectMode:  collectNil,
-		mapCoords:    0xb0,
-	},
+	"subrosia market, 1st item": basicSlot(
+		"ribbon", 0x09, 0x77da, 0x77db, 0x03, 0xa0, collectNil, 0xb0),
+	"subrosia market, 2nd item": basicSlot(
+		"rare peach stone", 0x09, 0x77e2, 0x77e3, 0x03, 0xa0, collectNil, 0xb0),
+	"subrosia market, 5th item": basicSlot(
+		"member's card", 0x09, 0x77f4, 0x77f5, 0x03, 0xa0, collectNil, 0xb0),
 	"great furnace": &MutableSlot{ // addrs set dynamically at EOB
 		treasureName: "hard ore",
 		idAddrs:      []Addr{{0x15, 0x0000}, {0x09, 0x66eb}},
@@ -293,15 +209,8 @@ var SeasonsSlots = map[string]*MutableSlot{
 		collectMode:  collectFind2,
 		mapCoords:    0xb9,
 	},
-	"subrosian smithy": &MutableSlot{
-		treasureName: "iron shield",
-		idAddrs:      []Addr{{0x15, 0x62be}},
-		subIDAddrs:   []Addr{{0x15, 0x62b4}},
-		group:        0x03,
-		room:         0x97,
-		collectMode:  collectFind2,
-		mapCoords:    0x1e,
-	},
+	"subrosian smithy": basicSlot(
+		"iron shield", 0x15, 0x62be, 0x62b4, 0x03, 0x97, collectFind2, 0x1e),
 
 	// hero's cave
 	"d0 key chest": seasonsChest(

@@ -55,14 +55,7 @@ var AgesSlots = map[string]*MutableSlot{
 	},
 	"grave under tree": basicSlot("graveyard key", 0x10, 0x750d, 0x750c,
 		0x05, 0xed, collectFall, 0x8d),
-	"graveyard poe": &MutableSlot{
-		treasureName: "sword",
-		idAddrs:      []Addr{{0x15, 0x6188}},
-		subIDAddrs:   []Addr{{0x15, 0x6189}},
-		group:        0x00,
-		room:         0x7c,
-		collectMode:  collectFind2,
-	},
+	"graveyard poe":      agesBufferItem("sword", 0x6188, 0x00, 0x7c),
 	"cheval's test":      agesScriptItem("flippers", 0x723b, 0x05, 0xbf),
 	"cheval's invention": agesScriptItem("cheval rope", 0x7232, 0x05, 0xb6),
 	"south shore dirt": basicSlot("ricky's gloves", 0x0a, 0x5e3d, 0x5e3c,
@@ -265,8 +258,8 @@ var AgesSlots = map[string]*MutableSlot{
 	"d8 1F chest":              agesChest("d8 small key", 0x52e7, 0x05, 0xa7),
 	"d8 floor puzzle":          agesChest("bracelet", 0x52eb, 0x05, 0xa6),
 	"d8 tile room":             agesChest("gasha seed", 0x52ef, 0x05, 0x91),
-	"d8 stalfos": basicSlot(
-		"d8 small key", 0x0a, 0x6078, 0x6077, 0x05, 0x98, collectEnemyDrop, 0),
+	"d8 stalfos": basicSlot("d8 small key", 0x0a, 0x6078, 0x6077,
+		0x05, 0x98, collectEnemyDrop, 0),
 	"d8 boss": agesHC(0x05, 0x78),
 
 	// seed trees work differently in ages; the seed type is determined by the
