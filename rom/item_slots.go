@@ -11,8 +11,6 @@ type MutableSlot struct {
 
 	treasureName             string
 	idAddrs, subIDAddrs      []Addr
-	paramAddrs, textAddrs    []Addr
-	gfxAddrs                 []Addr
 	group, room, collectMode byte
 	mapCoords                byte // overworld map coords, yx
 }
@@ -24,18 +22,6 @@ func (ms *MutableSlot) Mutate(b []byte) error {
 	}
 	for _, addr := range ms.subIDAddrs {
 		b[addr.fullOffset()] = ms.Treasure.subID
-	}
-	for _, addr := range ms.paramAddrs {
-		b[addr.fullOffset()] = ms.Treasure.param
-	}
-	for _, addr := range ms.textAddrs {
-		b[addr.fullOffset()] = ms.Treasure.text
-	}
-	for _, addr := range ms.gfxAddrs {
-		gfx := itemGfx[FindTreasureName(ms.Treasure)]
-		for i := 0; i < 3; i++ {
-			b[addr.fullOffset()+i] = byte(gfx >> (8 * uint(2-i)))
-		}
 	}
 
 	return ms.Treasure.Mutate(b)

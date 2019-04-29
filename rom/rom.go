@@ -520,11 +520,9 @@ func setLinkedData(b []byte, game int) {
 		}
 
 		// give this item at start
-		// TODO: give this using w/e custom function so that paramAddrs doesn't
-		// need to exist?
 		linkedStartItem := &MutableSlot{
 			idAddrs:    []Addr{{0x0a, 0x7ffd}},
-			paramAddrs: []Addr{{0x0a, 0x7ffe}},
+			subIDAddrs: []Addr{{0x0a, 0x7ffe}},
 			Treasure:   tStart,
 		}
 		linkedStartItem.Mutate(b)

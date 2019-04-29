@@ -397,8 +397,8 @@ func initSeasonsEOB() {
 		"\x2c\x36\x52", "\xcd"+hardOreFunc)
 
 	// use custom "give item" func in rod cutscene.
-	r.replace(0x15, 0x70cf, "rod give item call",
-		"\xcd\xeb\x16", "\xcd"+giveItem)
+	r.replaceAsm(0x15, 0x70cf,
+		"call giveTreasure", "call giveTreasureCustom")
 
 	// some dungeons share the same script for spawning the HC.
 	r.replaceAsm(0x0b, 0x4b8f,
