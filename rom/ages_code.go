@@ -127,15 +127,10 @@ func initAgesEOB() {
 
 	// bank 05
 
+	r.replaceAsm(0x05, 0x516c,
+		"ld a,(cc91); or a", "call checkPreventSurface; nop")
 	r.replaceAsm(0x05, 0x6083,
 		"call lookupCollisionTable", "call cliffLookup")
-
-	// prevent link from surfacing from underwater without mermaid suit. this
-	// is probably only relevant for the sea of no return.
-	preventSurface := r.appendToBank(0x05, "prevent surface",
-		"\xfa\x91\xcc\xb7\xc0\xfa\xa3\xc6\xe6\x04\xfe\x04\xc9")
-	r.replace(0x05, 0x516c, "call prevent surface",
-		"\xfa\x91\xcc\xb7", "\xcd"+preventSurface+"\x00")
 
 	// bank 06
 
@@ -221,31 +216,18 @@ func initAgesEOB() {
 
 	// bank 0a
 
-	// make ricky appear if you have his gloves, without giving rafton rope.
-	checkRickyAppear := r.appendToBank(0x0a, "check ricky appear",
-		"\xcd\xf3\x31\xc0\xfa\xa3\xc6\xcb\x47\xc0\xfa\x46\xc6\xb7\xc9")
-	r.replace(0x0a, 0x4bb8, "call check ricky appear",
-		"\xcd\xf3\x31", "\xcd"+checkRickyAppear)
-
-	// require giving rafton rope, even if you have the island chart.
-	checkRaftonRope := r.appendToBank(0x0a, "check rafton rope",
-		"\xcd\x48\x17\xd0\x3e\x15\xcd\xf3\x31\xc8\x37\xc9")
-	r.replace(0x0a, 0x4d5f, "call check rafton rope",
-		"\xcd\x48\x17", "\xcd"+checkRaftonRope)
+	r.replaceAsm(0x0a, 0x4d5f,
+		"call checkTreasureObtained", "call checkRaftonHasRope")
+	r.replaceAsm(0x0a, 0x4bb8,
+		"call checkGlobalFlag", "call checkShouldRickyAppear")
+	r.replaceAsm(0x0a, 0x5541,
+		"call setGlobalFlag", "call saveMakuTreeWithNayru")
 
 	// set sub ID for south shore dig item.
 	dirtSpawnItem := r.appendToBank(0x0a, "dirt spawn item",
 		"\xcd\xd4\x27\xc0\xcd\x42\x22\xaf\xc9")
 	r.replace(0x0a, 0x5e3e, "call dirt spawn item",
 		"\xcd\xc5\x24", "\xcd"+dirtSpawnItem)
-
-	// automatically save maku tree when saving nayru.
-	saveMakuTreeWithNayru := r.appendToBank(0x0a, "save maku tree with nayru",
-		"\xcd\xf9\x31\xfa\xe8\xc6\xfe\x0e\x28\x02\x3e\x02\x3d\xea\xe8\xc6"+
-			"\x3e\x0c\xcd\xf9\x31\x3e\x12\xcd\xf9\x31\x3e\x3f\xcd\xf9\x31"+
-			"\xe5\x21\x38\xc7\xcb\x86\x24\xcb\xfe\x2e\x48\xcb\xc6\xe1\xc9")
-	r.replace(0x0a, 0x5541, "call save maku tree with nayru",
-		"\xcd\xf9\x31", "\xcd"+saveMakuTreeWithNayru)
 
 	// use a non-cutscene screen transition for exiting a dungeon via essence,
 	// so that overworld music plays, and set maku tree state.
@@ -254,46 +236,26 @@ func initAgesEOB() {
 	r.replace(0x0a, 0x4745, "call essence warp",
 		"\xea\x4b\xcc", "\xcd"+essenceWarp)
 
-	// on left side of house, swap rafton 00 (builds raft) with rafton 01 (does
-	// trade sequence) if the player enters with the magic oar *and* global
-	// flag 26 (rafton has built raft) is not set.
-	setRaftonSubID := r.appendToBank(0x0a, "set rafton sub ID",
-		"\xcd\xf3\x31\xc2\x05\x3b\xfa\xc0\xc6\xfe\x09\xc2\x5b\x4d"+
-			"\x3e\x01\x12\xc3\xac\x4d")
-	r.replace(0x0a, 0x4d55, "jump set rafton sub ID",
-		"\xcd\xf3\x31", "\xc3"+setRaftonSubID)
-
 	// bank 0b
 
-	// always get item from king zora before permission to enter jabu-jabu.
-	kingZoraCheck := r.appendToBank(0x0b, "king zora check",
-		"\xcd\xf3\x31\xc8\x3e\x10\xcd\x48\x17\x3e\x00\xd0\x3c\xc9")
-	r.replace(0x0b, 0x5464, "call king zora check",
-		"\xcd\xf3\x31", "\xcd"+kingZoraCheck)
-
-	// fairy queen cutscene: just fade back in after the fairy leaves the
-	// screen, and play the long "puzzle solved" sound.
-	fairyQueenFunc := r.appendToBank(0x0b, "fairy queen func",
-		"\xcd\x99\x32\xaf\xea\x02\xcc\xea\x8a\xcc\x3e\x5b\xcd\x98\x0c"+
-			"\x3e\x30\xcd\xf9\x31\xc9")
-	r.replace(0x0b, 0x7954, "call fairy queen func",
-		"\xea\x04\xcc", "\xcd"+fairyQueenFunc)
-
-	// check either zora guard's flag for the two in sea of storms, so that
-	// either can be accessed after losing the zora scale in a linked game.
-	checkZoraGuards := r.appendToBank(0x0b, "check zora guards",
-		"\xfa\xd7\xc7\xc5\x47\xfa\xd6\xc8\xb0\xc1\xc9")
-	r.replace(0x0b, 0x61d7, "call check zora guards",
-		"\xcd\x7d\x19", "\xcd"+checkZoraGuards)
+	r.replaceAsm(0x0b, 0x5464,
+		"call checkGlobalFlag", "call checkKingZoraSequence")
+	r.replaceAsm(0x0b, 0x61d7,
+		"call getThisRoomFlags", "call checkZoraGuards")
+	r.replaceAsm(0x0b, 0x7954,
+		"ld (wCutsceneTrigger),a", "call skipFairyQueenCutscene")
 
 	// bank 0c
 
+	r.replaceAsm(0x0c, 0x442e,
+		"ld (hl),60; inc l", "call lookupKeyDropBank0c")
 	r.replaceAsm(0x08, 0x5087,
 		"ld bc,3001", "call lookupKeyDropBank08")
 	r.replaceAsm(0x0a, 0x7075,
 		"ld bc,3001", "call lookupKeyDropBank0a")
-	r.replaceAsm(0x0c, 0x442e,
-		"ld (hl),60; inc l", "call lookupKeyDropBank0c")
+
+	r.replaceAsm(0x0c, 0x4bd8,
+		"db dd,2a,00", "db e0; dw spawnBossItem")
 
 	// use custom script for soldier in deku forest with sub ID 0; they should
 	// give an item in exchange for mystery seeds.
@@ -330,26 +292,15 @@ func initAgesEOB() {
 
 	// bank 10
 
-	// keep black tower in initial state until the player got the item from the
-	// worker.
-	blackTowerCheck := r.appendToBank(0x10, "black tower check",
-		"\x21\x27\x79\xc8\xfa\xe1\xc9\xe6\x20\xc9")
-	r.replace(0x10, 0x7914, "call black tower check",
-		"\x21\x27\x79", "\xcd"+blackTowerCheck)
-
-	// don't let echoes activate the special crescent island portal.
-	echoesPortalCheck := r.appendToBank(0x10, "echoes portal check",
-		"\xc5\x01\x00\xa9\xcd"+compareRoom+"\xc1\xfa\x8d\xcc\xc0\x3d\xc9")
-	r.replace(0x10, 0x7d88, "call echoes portal check",
-		"\xfa\x8d\xcc", "\xcd"+echoesPortalCheck)
+	r.replaceAsm(0x10, 0x7914,
+		"ld hl,7927", "call checkBlackTowerState")
+	r.replaceAsm(0x10, 0x7d88,
+		"ld a,(cc8d)", "call checkActivateEchoesPortal")
 
 	// bank 11
 
-	// allow collection of seeds with only shooter and no satchel
-	checkSeedHarvest := r.appendToBank(0x11, "check seed harvest",
-		"\xcd\x48\x17\xd8\x3e\x0f\xc3\x48\x17")
-	r.replace(0x11, 0x4aba, "call check seed harvest",
-		"\xcd\x48\x17", "\xcd"+checkSeedHarvest)
+	r.replaceAsm(0x11, 0x4aba,
+		"call checkTreasureObtained", "call checkCanHarvestSeeds")
 
 	// bank 12
 
@@ -373,12 +324,8 @@ func initAgesEOB() {
 
 	// bank 15
 
-	// don't equip sword for shooting galleries if player don't have it
-	// (doesn't work anyway).
-	shootingGalleryEquip := r.appendToBank(0x15, "shooting gallery equip",
-		"\x3e\x05\xcd\x48\x17\x3e\x00\x22\xd0\x2b\x3e\x05\x22\xc9")
-	r.replace(0x15, 0x50ae, "call shooting gallery equip",
-		"\x3e\x05\x22", "\xcd"+shootingGalleryEquip)
+	r.replaceAsm(0x15, 0x50ae,
+		"ld a,TREASURE_SWORD; ldi (hl),a", "call setShootingGalleryEquips")
 
 	// always make "boomerang" second prize for target carts, checking room
 	// flag 6 to track it.
@@ -391,9 +338,6 @@ func initAgesEOB() {
 		"\xde\x06\x02\xb1\x40\xc1")
 	r.replace(0x0c, 0x6e6e, "jump target carts flag",
 		"\x88\x6e", targetCartsFlag)
-
-	r.replaceAsm(0x0c, 0x4bd8,
-		"db dd,2a,00", "db e0; dw spawnBossItem")
 
 	// bank 16
 

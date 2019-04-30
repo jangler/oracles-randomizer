@@ -46,6 +46,7 @@ defines:
   lookupCollisionTable: 0x1ddd
   objectDelete_useActiveObjectType: 0x219e
   objectCopyPosition: 0x21fd
+  interactionSetScript: 0x2544
   createTreasure: 0x271b
   setGlobalFlag: 0x30cd
   setTile: 0x3a52
@@ -176,7 +177,7 @@ banks:
       ld a,(wAreaFlags)
       and a,01
       jr nz,.warp
-      ld a,5a
+      ld a,SND_ERROR
       jp playSound
       .warp
       ld hl,cbb7

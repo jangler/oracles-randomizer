@@ -11,6 +11,7 @@ defines:
   hMusicVar: 0xb7 # used in filterMusic
 
   # wram
+  wRickyState: 0xc647
   wDimitriState: 0xc647
   wAnimalTutorialFlags: 0xc649
   wDungeonBossKeys: 0xc682
@@ -27,6 +28,8 @@ defines:
   wDungeonIndex: 0xcc39
   wWarpDestGroup: 0xcc47
   wWarpDestIndex: 0xcc48
+  wDisabledObjects: 0xcc8a
+  wPlayingInstrument1: 0xcc8d
 
   # rom 00
   copyMemory: 0x0486
@@ -42,7 +45,9 @@ defines:
   lookupCollisionTable: 0x1e1f
   objectCopyPosition: 0x2242
   createTreasure: 0x27d4
+  checkGlobalFlag: 0x31f3
   setGlobalFlag: 0x31f9
+  fadeInFromWhite: 0x3299
 
   # rom 02
   _mapMenu_checkCursorRoomVisited: 0x6636
@@ -119,7 +124,7 @@ banks:
       ld a,(wAreaFlags)
       and a,01
       jr nz,.warp
-      ld a,5a
+      ld a,SND_ERROR
       jp playSound
       .warp
       ld hl,wWarpDestGroup
@@ -284,6 +289,17 @@ banks:
       call devJump
       ret c
       jp lookupCollisionTable
+
+  # prevent surfacing from underwater without the mermaid suit. this is only
+  # relevant for the sea of no return if entrances are unrandomized.
+  - checkPreventSurface: |
+      ld a,(cc91)
+      or a
+      ret nz
+      ld a,(c6a3) # byte in wObtainedTreasureFlags
+      and a,04
+      cp a,04
+      ret
 
   0x06:
   # collect modes starting at 80 index this jump table to determine the actual
@@ -523,11 +539,139 @@ banks:
       ld bc,3001
       jp lookupKeyDrop
 
+  # require giving rafton rope before the island chart.
+  - checkRaftonHasRope: |
+      call checkTreasureObtained
+      ret nc
+      ld a,15
+      call checkGlobalFlag
+      ret z
+      scf
+      ret
+
+  # make ricky appear if you have his gloves, even if rafton doesn't have rope.
+  - checkShouldRickyAppear: |
+      call checkGlobalFlag
+      ret nz
+      ld a,(c6a3) # byte in wObtainedTreasureFlags
+      bit 0,a
+      ret nz
+      ld a,(wRickyState)
+      or a
+      ret
+
+  # saving nayru without having saved the maku tree leads to weirdness, so just
+  # save the maku tree along with nayru.
+  - saveMakuTreeWithNayru: |
+      call setGlobalFlag
+      ld a,(wMakuTreeState)
+      cp a,0e
+      jr z,.next
+      ld a,02
+      .next
+      dec a
+      ld (wMakuTreeState),a
+      ld a,0c
+      call setGlobalFlag
+      ld a,12
+      call setGlobalFlag
+      ld a,3f
+      call setGlobalFlag
+      push hl
+      ld hl,c738
+      res 0,(hl)
+      inc h
+      set 7,(hl)
+      ld l,48
+      set 0,(hl)
+      pop hl
+      ret
+
+  0x0b:
+  # king zora should give the item first, *then* give permission to enter jabu
+  # (on another visit (as in vanilla)).
+  - checkKingZoraSequence: |
+      call checkGlobalFlag
+      ret z
+      ld a,10 # set by kingZoraSetFakeId
+      call checkTreasureObtained
+      ld a,00
+      ret nc
+      inc a
+      ret
+
+  # check either zora guard's flag for the two in sea of storms, so that either
+  # can be accessed after losing the zora scale in a linked game.
+  - checkZoraGuards: |
+      ld a,(c7d7)
+      push bc
+      ld b,a
+      ld a,(c8d6)
+      or b
+      pop bc
+      ret
+
+  # fairy queen cutscene: just fade back in after the fairy leaves the
+  # screen, and play the long "puzzle solved" sound.
+  - skipFairyQueenCutscene: |
+      call fadeInFromWhite
+      xor a
+      ld (wMenuDisabled),a
+      ld (wDisabledObjects),a
+      ld a,SND_SOLVEPUZZLE_2
+      call playSound
+      ld a,30
+      call setGlobalFlag
+      ret
+
   0x0c:
   - lookupKeyDropBank0c: |
       ld (hl),60
       inc l
       jp lookupKeyDrop
+
+  0x10:
+  # keep black tower in initial state until the player gets the item from the
+  # worker.
+  - checkBlackTowerState: |
+      ld hl,7927
+      ret z
+      ld a,(c9e1)
+      and a,20
+      ret
+
+  # don't let the tune of echoes activate the special crescent island portal.
+  - checkActivateEchoesPortal: |
+      push bc
+      ld bc,a900
+      call compareRoom
+      pop bc
+      ld a,(wPlayingInstrument1)
+      ret nz
+      dec a
+      ret
+
+  0x11:
+  # allow harvesting seeds from trees with either shooter or satchel.
+  - checkCanHarvestSeeds: |
+      call checkTreasureObtained
+      ret c
+      ld a,TREASURE_SEED_SHOOTER
+      jp checkTreasureObtained
+
+  0x15:
+  # don't equip sword in shooting gallery if link doesn't have it. it wouldn't
+  # work anyway.
+  - setShootingGalleryEquips: |
+      ld a,TREASURE_SWORD
+      call checkTreasureObtained
+      ld a,00
+      ldi (hl),a
+      ret nc
+      dec hl
+      ld a,TREASURE_SWORD
+      ldi (hl),a
+      ret
 
   0x16:
   # progressive item upgrade data (old ID, old related var, new ID, new addr)

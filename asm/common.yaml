@@ -8,6 +8,8 @@ defines:
   COLLECT_CHEST: 0x38
   COLLECT_DIVE: 0x49
   COLLECT_CHEST_MAP_OR_COMPASS: 0x68
+  SND_ERROR: 0x5a
+  SND_SOLVEPUZZLE_2: 0x5b
   TREASURE_SHIELD: 0x01
   TREASURE_SWORD: 0x05
   TREASURE_BOOMERANG: 0x06
@@ -42,6 +44,8 @@ defines:
   wInventorySubmenu1CursorPos: 0xcbd1
   wRingMenu_mode: 0xcbd3
   wIsLinkedGame: 0xcc01
+  wMenuDisabled: 0xcc02
+  wCutsceneTrigger: 0xcc04
   wScreenOffsetY: 0xcd08
   w1Link.angle: 0xd009
   w7ActiveBank: 0xd0d4
