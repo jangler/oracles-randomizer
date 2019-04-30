@@ -31,6 +31,8 @@ both games.
 - 0:24fe = interactionSetScript, hl is address in bank b
 - 0:250c = runScript, d is object low byte
 - 0:2542 = interactionSaveScriptAddress
+- 0:261b/25b8 = interactionUpdateAnimCounter
+- 0:2647/25e4 = interactionNextAnimationFrame
 - 0:2d2a = getThisRoomDungeonFlags
 	- bit 4 = has key / boss key (for compass beep)
 	- bit 5 = has chest (for map display)
@@ -56,6 +58,7 @@ both games.
 - 6:4713 = tryToBreakTile body
 - 7:497b = itemLoadAttributesAndGraphics
 - 7:49ca = itemSetAnimation
+- 14:54f5 = interactionOamDataTable
 - 15:463f = some function for loading treasure data based on object id/subid
 - 3f:454e = applyParameter when giving treasure (a is type, c is parameter, de
   is address to write to, b happens to be the treasure index)

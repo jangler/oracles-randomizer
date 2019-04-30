@@ -28,6 +28,7 @@ func newSeasonsRomBanks() *romBanks {
 	r.endOfBank[0x0a] = 0x7bea
 	r.endOfBank[0x0b] = 0x7f6d
 	r.endOfBank[0x11] = 0x7eb0
+	r.endOfBank[0x14] = 0x6fd0 // amazing
 	r.endOfBank[0x15] = 0x792d
 	r.endOfBank[0x3f] = 0x714d
 
@@ -347,6 +348,13 @@ func initSeasonsEOB() {
 		"\xf2\x22\x0a\x88\x98\xf3\x93\x55\xfe")
 	r.replace(0x11, 0x7ada, "hss skip interaction jump",
 		"\xf3\x93\x55", "\xf3"+hssSkipInteractions)
+
+	// bank 14
+
+	r.replaceAsm(0x00, 0x25d9,
+		"ld e,41; ld a,(de)", "call overrideAnimationId")
+	r.replaceAsm(0x00, 0x2600,
+		"ld e,41; ld a,(de)", "call overrideAnimationId")
 
 	// bank 15
 

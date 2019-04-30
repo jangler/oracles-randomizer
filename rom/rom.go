@@ -19,22 +19,18 @@ const (
 	GameSeasons
 )
 
-var itemGfx map[string]int
-
 func Init(game int) {
 	if game == GameAges {
 		ItemSlots = AgesSlots
 		Treasures = AgesTreasures
 		fixedMutables = agesFixedMutables
 		varMutables = agesVarMutables
-		itemGfx = agesItemGfx
 		initAgesEOB()
 	} else {
 		ItemSlots = SeasonsSlots
 		Treasures = SeasonsTreasures
 		fixedMutables = seasonsFixedMutables
 		varMutables = seasonsVarMutables
-		itemGfx = seasonsItemGfx
 		initSeasonsEOB()
 
 		for k, v := range Seasons {
@@ -44,19 +40,6 @@ func Init(game int) {
 
 	for _, slot := range ItemSlots {
 		slot.Treasure = Treasures[slot.treasureName]
-	}
-
-	// rings and boss keys all have the same sprite
-	for name, treasure := range Treasures {
-		if treasure.id == 0x2d {
-			itemGfx[name] = itemGfx["ring"]
-		}
-		if treasure.id == 0x31 {
-			itemGfx[name] = itemGfx["boss key"]
-		}
-		if treasure.id == 0x30 {
-			itemGfx[name] = itemGfx["small key"]
-		}
 	}
 }
 

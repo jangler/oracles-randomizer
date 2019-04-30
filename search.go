@@ -7,7 +7,6 @@ import (
 
 	"github.com/jangler/oracles-randomizer/graph"
 	"github.com/jangler/oracles-randomizer/logic"
-	"github.com/jangler/oracles-randomizer/rom"
 )
 
 // returns true iff the node is in the list.
@@ -96,13 +95,10 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 		return false
 	}
 
-	// rod of seasons has special graphics something
-	if slotNode.Name == "temple of seasons" &&
-		!rom.CanSlotAsRod(itemNode.Name) {
-		return false
-	}
-
 	// bomb flower has special graphics something
+	// TODO: maybe this can be worked around like with the temple of seasons
+	// item in seasons. not sure if it's super worth it but it'd be good to be
+	// consistent.
 	if itemNode.Name == "bomb flower" {
 		switch slotNode.Name {
 		case "cheval's test", "cheval's invention", "wild tokay game",

@@ -571,8 +571,23 @@ banks:
       inc l
       jp lookupKeyDrop
 
-  0x15:
+  0x14:
+  # make the rod of seasons interaction behave like a regular item,
+  # graphically. otherwise asymmetric wide items can't go there.
+  - overrideAnimationId: |
+      ld e,41
+      ld a,(de) # ID
+      cp a,e6
+      ret nz
+      ld e,42
+      ld a,(de) # sub ID
+      cp a,02
+      ld a,e6
+      ret nz
+      ld a,60
+      ret
 
+  0x15:
   # progressive item upgrade data (old ID, old related var, new ID, new addr)
   - progressiveUpgrades: |
       db 01,02,01; dw 52c5 # mirror shield
@@ -734,17 +749,6 @@ banks:
       call readByte
       ld c,e
       call lookupItemSprite_body
-      call copySpriteData
-      bit 1,(hl)
-      jr z,.next
-      xor a
-      ld (hl),a
-      jr .next2
-      .next
-      inc (hl)
-      .next2
-      dec hl
-      dec hl
       pop bc
       pop af
       ret
