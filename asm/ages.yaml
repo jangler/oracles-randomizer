@@ -122,7 +122,7 @@ banks:
       and a,08
       jr z,.done
       ld a,(wAreaFlags)
-      and a,01
+      and a,AREAFLAG_OUTDOORS
       jr nz,.warp
       ld a,SND_ERROR
       jp playSound

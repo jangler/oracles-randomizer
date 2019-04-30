@@ -16,6 +16,7 @@ defines:
   wInventoryB: 0xc680
   wShieldLevel: 0xc6a9
   wSwordLevel: 0xc6ac
+  wObtainedSeasons: 0xc6b0
   wFeatherLevel: 0xc6b4
   wActiveRing: 0xc6c5
   wRingBoxLevel: 0xc6c6
@@ -44,12 +45,15 @@ defines:
   getThisRoomFlags: 0x1956
   openMenu: 0x1a76
   lookupCollisionTable: 0x1ddd
+  convertShortToLongPosition: 0x2089
   objectDelete_useActiveObjectType: 0x219e
   objectCopyPosition: 0x21fd
+  objectCopyPositionWithOffset: 0x221a
   interactionSetScript: 0x24fe
   createTreasure: 0x271b
   setGlobalFlag: 0x30cd
   setTile: 0x3a52
+  getFreeInteractionSlot: 0x3ac6
   getFreePartSlot: 0x3ea7
 
   # rom 02
@@ -175,7 +179,7 @@ banks:
       and a,08
       jr z,.done
       ld a,(wAreaFlags)
-      and a,01
+      and a,AREAFLAG_OUTDOORS
       jr nz,.warp
       ld a,SND_ERROR
       jp playSound

@@ -1,5 +1,6 @@
 defines:
   # constants
+  AREAFLAG_OUTDOORS: 0x01
   COLLECT_PICKUP_ALT: 0x02
   COLLECT_PICKUP: 0x0a
   COLLECT_POOF: 0x1a
@@ -8,6 +9,7 @@ defines:
   COLLECT_CHEST: 0x38
   COLLECT_DIVE: 0x49
   COLLECT_CHEST_MAP_OR_COMPASS: 0x68
+  SND_CLINK: 0x5a
   SND_ERROR: 0x5a
   SND_SOLVEPUZZLE_2: 0x5b
   TREASURE_SHIELD: 0x01
@@ -48,6 +50,7 @@ defines:
   wCutsceneTrigger: 0xcc04
   wScreenOffsetY: 0xcd08
   w1Link.angle: 0xd009
+  w1Link.yh: 0xd00b
   w7ActiveBank: 0xd0d4
 
   # rom 00
