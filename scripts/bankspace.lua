@@ -18,7 +18,7 @@ for bank = 0, NUM_BANKS - 1 do
 
         -- ages banks are padded with zeroes.
         -- seasons banks are padded with the bank number.
-        if byte == 0 or byte == i then
+        if byte == 0 or byte == bank then
             run = run + 1
         else
             run = 0
