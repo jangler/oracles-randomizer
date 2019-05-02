@@ -44,7 +44,8 @@ var agesD2Nodes = map[string]*Node{
 		"hit lever from minecart", "kill normal"),
 
 	// 3 keys
-	"d2 moblin platform": AndSlot("d2 basement", Count(3, "d2 small key")),
+	"d2 moblin platform": AndSlot("d2 basement", "feather",
+		Count(3, "d2 small key")),
 	// push moblin into doorway, stand on button, use switch hook
 	"d2 statue puzzle": AndSlot("d2 moblin platform",
 		Or("bracelet", "cane", HardAnd("switch hook", "push enemy"))),
