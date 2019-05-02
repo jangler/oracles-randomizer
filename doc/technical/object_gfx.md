@@ -152,8 +152,8 @@ cannot be adequately matched or generated from the existing tiles of another
 character.  Most mobile NPCs have 8 animation frames total, while Link has
 about 20 just for riding Moosh (although animation frames and tiles do not
 correspond to each other on a 1:4 basis; a complete walking animation usually
-uses 16 tiles for its 8 frames and achieves the other half by flipping the
-tiles).
+uses 16 8x8 tiles for its 8 16x16 frames and achieves the other half by
+flipping the tiles).
 
 Other problems:
 
