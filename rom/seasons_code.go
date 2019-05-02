@@ -399,6 +399,8 @@ func initSeasonsEOB() {
 		"call giveTreasure_body", "call satchelRefillSeeds")
 	r.replaceAsm(0x3f, 0x4356,
 		"call _interactionGetData", "call checkLoadCustomSprite")
+	r.replaceAsm(0x3f, 0x4535,
+		"call playSound", "call playSoundExceptForLinkedStartItem")
 
 	// "activate" a flute by setting its icon and song when obtained. also
 	// activates the corresponding animal companion.

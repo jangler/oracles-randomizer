@@ -754,3 +754,17 @@ banks:
       ret
 
   - lookupKeyDrop_body: /include lookupKeyDrop_body
+
+  # don't play item fanfare for the item given at the start of a linked game.
+  # this doesn't actually check for linked, just for the room.
+  - playSoundExceptForLinkedStartItem: |
+      push bc
+      push de
+      ld e,a
+      ld bc,a700
+      call compareRoom
+      pop de
+      pop bc
+      ld a,e
+      ret z
+      jp playSound
