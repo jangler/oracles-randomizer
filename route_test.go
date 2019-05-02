@@ -30,12 +30,12 @@ func testSeasonsGraph(t *testing.T) {
 	// test hard logic via bombs as weapon
 	checkReach(t, g, map[string]string{
 		"d0 key chest":           "moosh's flute",
-		"d0 rupee chest":         "bombs",
+		"d0 rupee chest":         "bombs, 10",
 		"horon village SE chest": "gnarled key",
 	}, "d1 stalfos drop", false, false)
 	checkReach(t, g, map[string]string{
 		"d0 key chest":           "moosh's flute",
-		"d0 rupee chest":         "bombs",
+		"d0 rupee chest":         "bombs, 10",
 		"horon village SE chest": "gnarled key",
 	}, "d1 stalfos drop", true, true)
 
@@ -44,13 +44,13 @@ func testSeasonsGraph(t *testing.T) {
 		"d0 key chest":     "sword 1",
 		"maku tree":        "gnarled key",
 		"d1 stalfos drop":  "d1 small key",
-		"d1 stalfos chest": "bombs",
+		"d1 stalfos chest": "bombs, 10",
 	}, "d1 basement", false, false)
 	checkReach(t, g, map[string]string{
 		"d0 key chest":     "sword 1",
 		"maku tree":        "gnarled key",
 		"d1 stalfos drop":  "d1 small key",
-		"d1 stalfos chest": "bombs",
+		"d1 stalfos chest": "bombs, 10",
 		"d1 railway chest": "d1 small key",
 	}, "d1 basement", false, true)
 }
@@ -71,12 +71,12 @@ func testAgesGraph(t *testing.T) {
 
 	// test hard logic via bombs as weapon
 	checkReach(t, g, map[string]string{
-		"starting chest":     "bombs",
+		"starting chest":     "bombs, 10",
 		"nayru's house":      "bracelet",
 		"black tower worker": "shovel",
 	}, "d2 bombed terrace", false, false)
 	checkReach(t, g, map[string]string{
-		"starting chest":     "bombs",
+		"starting chest":     "bombs, 10",
 		"nayru's house":      "bracelet",
 		"black tower worker": "shovel",
 	}, "d2 bombed terrace", true, true)
@@ -84,18 +84,37 @@ func testAgesGraph(t *testing.T) {
 	// test key counting
 	checkReach(t, g, map[string]string{
 		"starting chest":      "sword 1",
-		"nayru's house":       "bombs",
+		"nayru's house":       "bombs, 10",
 		"black tower worker":  "dimitri's flute",
 		"d3 pols voice chest": "d3 small key",
 	}, "d3 bush beetle room", false, false)
 	checkReach(t, g, map[string]string{
 		"starting chest":      "sword 1",
-		"nayru's house":       "bombs",
+		"nayru's house":       "bombs, 10",
 		"black tower worker":  "dimitri's flute",
 		"d3 pols voice chest": "d3 small key",
 		"d3 statue drop":      "d3 small key",
 		"d3 armos drop":       "d3 small key",
 	}, "d3 bush beetle room", false, true)
+
+	// test bombs from head thwomp in hard logic
+	headThwompBombMap := map[string]string{
+		"starting chest":        "bracelet",
+		"nayru's house":         "harp 1",
+		"black tower worker":    "harp 2",
+		"lynna city chest":      "switch hook 1",
+		"fairies' woods chest":  "iron shield",
+		"symmetry city brother": "sword 1",
+		"d2 moblin drop":        "feather",
+		"d2 basement drop":      "d2 small key",
+		"d2 thwomp tunnel":      "d2 small key",
+		"d2 thwomp shelf":       "d2 small key",
+		"d2 moblin platform":    "d2 small key",
+		"d2 rope room":          "d2 small key",
+		"d2 statue puzzle":      "d2 boss key",
+	}
+	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", false, false)
+	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", true, true)
 }
 
 func BenchmarkGraphExplore(b *testing.B) {
@@ -134,7 +153,7 @@ func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 			}
 		}
 	}()
-	g.ExploreFromStart(hard)
+	g.ClearMarks()
 
 	if (g[target].GetMark(g[target], hard) == graph.MarkTrue) != expect {
 		if expect {
