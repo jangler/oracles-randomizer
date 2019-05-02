@@ -144,15 +144,16 @@ specific OAM and tile data; without it Link's sprite would simply be drawn on
 top of the water / minecart / animal with an incorrect positional offset (and
 incorrect palette in the case of charging an attack with Ricky or Moosh).
 
-In summary: the most practical way to replace Link's graphics would be to
-replace the tiles themselves. This is technically unchallenging for two-sprite
-objects since Link's graphics data is uncompressed, but the volume of tiles
-that would need to be substituted is large, and many of Link's tiles cannot be
-adequately matched or generated from the existing tiles of another character.
-Most mobile NPCs have 8 animation frames total, while Link has about 20 just
-for riding Moosh (although animation frames and tiles do not correspond to each
-other on a 1:4 basis; a complete walking animation usually uses 16 tiles for
-its 8 frames and achieves the other half by flipping the tiles).
+In summary: the most practical way to adequately replace Link's graphics would
+be to replace the tiles themselves. This is technically unchallenging for
+two-sprite objects since Link's graphics data is uncompressed, but the volume
+of tiles that would need to be substituted is large, and many of Link's tiles
+cannot be adequately matched or generated from the existing tiles of another
+character.  Most mobile NPCs have 8 animation frames total, while Link has
+about 20 just for riding Moosh (although animation frames and tiles do not
+correspond to each other on a 1:4 basis; a complete walking animation usually
+uses 16 tiles for its 8 frames and achieves the other half by flipping the
+tiles).
 
 Other problems:
 
