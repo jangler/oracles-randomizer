@@ -4,7 +4,7 @@ var agesItemNodes = map[string]*Node{
 	"shield": Or("wooden shield", "iron shield"),
 
 	"bombs": Or(And("bombs, 10", Or("break bush", "flute", "shovel")),
-		Hard("goron shooting gallery")),
+		HardOr("d2 boss", "goron shooting gallery")),
 
 	"ricky's flute":   Root(),
 	"dimitri's flute": Root(),

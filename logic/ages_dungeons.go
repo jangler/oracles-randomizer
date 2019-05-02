@@ -44,7 +44,8 @@ var agesD2Nodes = map[string]*Node{
 		"hit lever from minecart", "kill normal"),
 
 	// 3 keys
-	"d2 moblin platform": AndSlot("d2 basement", Count(3, "d2 small key")),
+	"d2 moblin platform": AndSlot("d2 basement", "feather",
+		Count(3, "d2 small key")),
 	// push moblin into doorway, stand on button, use switch hook
 	"d2 statue puzzle": AndSlot("d2 moblin platform",
 		Or("bracelet", "cane", HardAnd("switch hook", "push enemy"))),
@@ -52,12 +53,14 @@ var agesD2Nodes = map[string]*Node{
 	// 4 keys
 	"d2 rope room": AndSlot("enter d2", "kill switch hook",
 		Count(4, "d2 small key")),
-	"d2 ladder chest": AndSlot("enter d2", Count(4, "d2 small key"), "bombs"),
+	"d2 ladder chest": AndSlot("enter d2", "bombs", "kill switch hook",
+		Count(4, "d2 small key")),
 
 	// 5 keys
 	"d2 color room":   AndSlot("d2 statue puzzle", Count(5, "d2 small key")),
-	"d2 boss":         AndSlot("d2 color room", "d2 boss key"),
-	"head thwomp owl": And("mystery seeds", "d2 boss"),
+	"head thwomp owl": And("mystery seeds", "d2 color room", "d2 boss key"),
+	"d2 boss": AndSlot("d2 color room", "d2 boss key",
+		Or("bombs", Hard())),
 }
 
 var agesD3Nodes = map[string]*Node{
@@ -88,7 +91,7 @@ var agesD3Nodes = map[string]*Node{
 		Or("ember shooter", Hard("mystery shooter"))),
 	"d3 bridge chest": AndSlot("d3 W crystal",
 		Or("any seed shooter", "jump 3",
-			HardAnd(Count(4, "d3 small key"), "feather"),
+			HardAnd("d3 post-subterror", Count(4, "d3 small key"), "feather"),
 			HardAnd(Or("boomerang", And("bracelet", "toss ring")),
 				Or("feather", "pegasus satchel")))),
 	"d3 B1F east": AndSlot("d3 B1F spinner", "kill subterror",
@@ -145,7 +148,7 @@ var agesD4Nodes = map[string]*Node{
 	"d4 minecart C": And("d4 minecart B", Count(3, "d4 small key")),
 	"d4 color tile drop": AndSlot("d4 minecart C",
 		Or("sword", "ember seeds", "scent shooter", "gale shooter",
-			HardOr("scent satchel", "peace ring"))),
+			HardOr("scent satchel", And("peace ring", "bombs")))),
 
 	// 4 keys
 	"d4 minecart D": And("d4 minecart C", Count(4, "d4 small key")),
