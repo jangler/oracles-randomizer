@@ -53,12 +53,14 @@ var agesD2Nodes = map[string]*Node{
 	// 4 keys
 	"d2 rope room": AndSlot("enter d2", "kill switch hook",
 		Count(4, "d2 small key")),
-	"d2 ladder chest": AndSlot("enter d2", Count(4, "d2 small key"), "bombs"),
+	"d2 ladder chest": AndSlot("enter d2", "bombs", "kill switch hook",
+		Count(4, "d2 small key")),
 
 	// 5 keys
 	"d2 color room":   AndSlot("d2 statue puzzle", Count(5, "d2 small key")),
-	"d2 boss":         AndSlot("d2 color room", "d2 boss key"),
-	"head thwomp owl": And("mystery seeds", "d2 boss"),
+	"head thwomp owl": And("mystery seeds", "d2 color room", "d2 boss key"),
+	"d2 boss": AndSlot("d2 color room", "d2 boss key",
+		Or("bombs", Hard())),
 }
 
 var agesD3Nodes = map[string]*Node{
