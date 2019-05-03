@@ -56,16 +56,18 @@ var portalNodes = map[string]*Node{
 
 	// pair 6
 
-	"enter temple remains lower portal": And("temple remains",
+	"enter temple remains lower portal": And("temple remains lower stump", Or(
+		And("bomb temple remains", "feather"),
 		Or("temple remains default winter", "winter"), Or(
-			"exit temple remains upper portal",
+			And("exit temple remains upper portal",
+				Or("temple remains default winter", "feather")),
 			HardAnd("shovel", "remove bush", "jump 6"),
 			HardAnd(Or("temple remains default spring", "spring"),
 				"remove flower", "remove bush", "jump 6", "winter"),
 			HardAnd(Or("temple remains default summer", "summer"),
 				"remove bush", "jump 6", "winter"),
 			And(Or("temple remains default autumn", "autumn"),
-				"remove bush", "jump 2", "winter"))),
+				"remove bush", "jump 2", "winter")))),
 	"exit temple remains lower portal": Root(),
 
 	"enter volcanoes west portal": Or(), // not possible without exiting first
@@ -74,11 +76,14 @@ var portalNodes = map[string]*Node{
 	// pair 7
 
 	"enter temple remains upper portal": And(
-		"temple remains", "exit volcanoes west portal", "bombs",
+		"temple remains lower stump", "bomb temple remains",
 		Or("temple remains default summer", "summer"),
 		Or("jump 6", And("bomb jump 2", "magnet gloves"))),
 	"exit temple remains upper portal": Root(),
 
 	"enter d8 portal": And("d8 entrance"),
 	"exit d8 portal":  Root(),
+
+	// idk where to put this
+	"bomb temple remains": And("exit volcanoes west portal", "bombs"),
 }

@@ -110,7 +110,7 @@ var holodrumNodes = map[string]*Node{
 		And("north horon stump", Or("bracelet",
 			And(Or("remove bush", "flute"),
 				Or("flippers", "dimitri's flute")))),
-		And("temple remains", "jump 3"),
+		And("temple remains lower stump", "jump 3"),
 		And("goron mountain", "flippers")),
 	"north horon seed tree": AndSlot("blaino's gym", "seed item",
 		Or("harvest tree", "dimitri's flute")),
@@ -252,7 +252,8 @@ var holodrumNodes = map[string]*Node{
 	// goron mountain
 	"goron mountain": Or(
 		And("mount cucco", Or("shovel", "spring banana"), "bracelet"),
-		And("temple remains", "jump 3", Or("flippers", "bomb jump 4")),
+		And("temple remains lower stump", "jump 3",
+			Or("flippers", "bomb jump 4")),
 		And("blaino's gym", "flippers")),
 	"chest in goron mountain": AndSlot("goron mountain", "bombs", "bomb jump 3"),
 
@@ -274,14 +275,30 @@ var holodrumNodes = map[string]*Node{
 	"samasa desert pit":   AndSlot("desert", "bracelet"),
 	"samasa desert chest": AndSlot("desert", "flippers"),
 
-	// temple remains (the important logic is in the portal nodes)
-	"temple remains": Or(
-		And("exit temple remains upper portal",
-			Or("gale satchel", And("bombs", "exit volcanoes west portal",
+	// temple remains. this is a mess now that portals can be randomized.
+	"temple remains lower stump": Or(
+		And("exit temple remains lower portal", "feather",
+			Or("bomb temple remains", And("temple remains default winter",
+				Or("gale satchel", And("remove bush", Or(
+					HardAnd("spring", "remove flower", "jump 6"),
+					HardAnd("summer", "jump 6"),
+					"autumn")))))),
+		And("exit temple remains upper portal", "feather",
+			// make sure you can get down
+			Or("bomb temple remains", "winter", "temple remains default winter",
+				And("remove bush", Or("autumn", HardAnd("jump 6",
+					Or("temple remains not spring", "remove flower"))))),
+			// then make sure you can get back up
+			Or("gale satchel", And("bomb temple remains",
 				Or("summer", "temple remains default summer"),
 				Or("jump 6", And("bomb jump 2", "magnet gloves"))))),
 		And("goron mountain", Or("flippers", "bomb jump 4"), "jump 3"),
 		And("blaino's gym", "jump 3")),
+	// this is from the upper stump
+	"temple remains not spring": Or(
+		"winter", "temple remains default winter",
+		"summer", "temple remains default summer",
+		"autumn", "temple remains default autumn"),
 
 	// northern peak
 	"maku seed": And("sword", "d1 boss", "d2 boss", "d3 boss", "d4 boss",
