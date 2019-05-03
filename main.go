@@ -50,20 +50,29 @@ func fatal(err error, logf logFunc) {
 
 // options specified on the command line or via the TUI
 var (
-	flagHard     bool
-	flagN        int
-	flagNoMusic  bool
-	flagNoUI     bool
-	flagSeed     string
-	flagShowAsm  string
-	flagStats    string
-	flagTreewarp bool
-	flagVerbose  bool
+	flagEntrances bool
+	flagHard      bool
+	flagN         int
+	flagNoMusic   bool
+	flagNoUI      bool
+	flagSeed      string
+	flagShowAsm   string
+	flagStats     string
+	flagTreewarp  bool
+	flagVerbose   bool
 )
+
+type randomizerOptions struct {
+	entrances bool
+	hard      bool
+	seed      string // given seed, not necessarily final seed
+}
 
 // initFlags initializes the CLI/TUI option values and variables.
 func initFlags() {
 	flag.Usage = usage
+	flag.BoolVar(&flagEntrances, "entrances", false,
+		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
 		"require some plays outside normal logic")
 	flag.IntVar(&flagN, "n", 100,
@@ -89,6 +98,12 @@ func initFlags() {
 func main() {
 	initFlags()
 
+	ropts := randomizerOptions{
+		entrances: flagEntrances,
+		hard:      flagHard,
+		seed:      flagSeed,
+	}
+
 	if flagStats != "" {
 		// do stats instead of randomizing
 		var game int
@@ -104,7 +119,7 @@ func main() {
 
 		rom.Init(game)
 		rand.Seed(time.Now().UnixNano())
-		logStats(game, flagN, flagHard, func(s string, a ...interface{}) {
+		logStats(game, flagN, ropts, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
@@ -132,14 +147,14 @@ func main() {
 		}
 	} else if flag.NArg()+flag.NFlag() > 1 { // CLI used
 		// run randomizer on main goroutine
-		runRandomizer(nil, func(s string, a ...interface{}) {
+		runRandomizer(nil, ropts, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
 	} else { // CLI maybe not used
 		// run TUI on main goroutine and randomizer on alternate goroutine
 		ui := newUI("oracles randomizer " + version)
-		go runRandomizer(ui, func(s string, a ...interface{}) {
+		go runRandomizer(ui, ropts, func(s string, a ...interface{}) {
 			ui.printf(s, a...)
 		})
 		ui.run()
@@ -148,7 +163,7 @@ func main() {
 
 // run the main randomizer routine, printing messages via logf, which should
 // act analogously to fmt.Printf with added newline.
-func runRandomizer(ui *uiInstance, logf logFunc) {
+func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 	// close TUI after randomizer is done
 	defer func() {
 		if ui != nil {
@@ -225,8 +240,8 @@ func runRandomizer(ui *uiInstance, logf logFunc) {
 		rom.SetMusic(!flagNoMusic)
 		rom.SetTreewarp(flagTreewarp)
 
-		if err := randomizeFile(b, game, dirName, outfile, flagSeed,
-			flagHard, flagVerbose, logf); err != nil {
+		if err := randomizeFile(
+			b, game, dirName, outfile, ropts, flagVerbose, logf); err != nil {
 			fatal(err, logf)
 			return
 		}
@@ -387,8 +402,8 @@ func readGivenROM(filename string) ([]byte, int, error) {
 	return b, game, nil
 }
 
-func randomizeFile(romData []byte, game int, dirName, outfile, seedFlag string,
-	hard, verbose bool, logf logFunc) error {
+func randomizeFile(romData []byte, game int, dirName, outfile string,
+	ropts randomizerOptions, verbose bool, logf logFunc) error {
 	var seed uint32
 	var sum []byte
 	var err error
@@ -399,12 +414,12 @@ func randomizeFile(romData []byte, game int, dirName, outfile, seedFlag string,
 		logFilename = outfile[:len(outfile)-4] + "_log.txt"
 	}
 	seed, sum, logFilename, err = randomize(
-		romData, game, dirName, logFilename, seedFlag, hard, verbose, logf)
+		romData, game, dirName, logFilename, ropts, verbose, logf)
 	if err != nil {
 		return err
 	}
 	hardString := ""
-	if hard {
+	if ropts.hard {
 		hardString = "_hard"
 	}
 	if outfile == "" {
@@ -434,8 +449,9 @@ func setRandomSeed(hexString string) (uint32, error) {
 }
 
 // messes up rom data and writes it to a file.
-func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
-	hard, verbose bool, logf logFunc) (uint32, []byte, string, error) {
+func randomize(romData []byte, game int, dirName, logFilename string,
+	ropts randomizerOptions, verbose bool,
+	logf logFunc) (uint32, []byte, string, error) {
 	// sanity check beforehand
 	if errs := rom.Verify(romData, game); errs != nil {
 		if verbose {
@@ -446,29 +462,30 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 		return 0, nil, "", errs[0]
 	}
 
-	seed, err := setRandomSeed(seedFlag)
+	seed, err := setRandomSeed(ropts.seed)
 	if err != nil {
 		return 0, nil, "", err
 	}
 
 	// search for route
-	ri := findRoute(game, seed, hard, verbose, logf)
+	ri := findRoute(game, seed, ropts, verbose, logf)
 	if ri == nil {
 		return 0, nil, "", fmt.Errorf("no route found")
 	}
 
 	checks := getChecks(ri)
-	spheres := getSpheres(ri.Route.Graph, checks, hard)
+	spheres := getSpheres(ri.Route.Graph, checks, ropts.hard)
 	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
-		rom.GetOwlNames(game), hard)
+		rom.GetOwlNames(game), ropts.hard)
 
-	checksum, err := setROMData(romData, game, ri, owlHints, logf, verbose)
+	checksum, err := setROMData(
+		romData, game, ri, owlHints, ropts, logf, verbose)
 	if err != nil {
 		return 0, nil, "", err
 	}
 
 	hardString := ""
-	if hard {
+	if ropts.hard {
 		hardString = "hard_"
 	}
 	if logFilename == "" {
@@ -481,7 +498,7 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	// write info to summary file
 	summary <- fmt.Sprintf("seed: %08x", ri.Seed)
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
-	if hard {
+	if ropts.hard {
 		summary <- fmt.Sprintf("difficulty: hard")
 	} else {
 		summary <- fmt.Sprintf("difficulty: normal")
@@ -501,6 +518,15 @@ func randomize(romData []byte, game int, dirName, logFilename, seedFlag string,
 	summary <- "-- other items --"
 	summary <- ""
 	logSpheres(summary, checks, spheres, game, itemIsJunk)
+	if ropts.entrances {
+		summary <- ""
+		summary <- "-- dungeon entrances --"
+		summary <- ""
+		for entrance, dungeon := range ri.Entrances {
+			summary <- fmt.Sprintf("%s entrance <- %s", entrance, dungeon)
+		}
+		summary <- ""
+	}
 	if game == rom.GameSeasons {
 		summary <- ""
 		summary <- "-- default seasons --"
@@ -564,7 +590,8 @@ func itemIsJunk(name string) bool {
 
 // setROMData mutates the ROM data in-place based on the given route.
 func setROMData(romData []byte, game int, ri *RouteInfo,
-	owlHints map[string]string, logf logFunc, verbose bool) ([]byte, error) {
+	owlHints map[string]string, ropts randomizerOptions, logf logFunc,
+	verbose bool) ([]byte, error) {
 	// place selected treasures in slots
 	checks := getChecks(ri)
 	for slot, item := range checks {
@@ -589,8 +616,14 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 	rom.SetAnimal(ri.Companion)
 	rom.SetOwlData(owlHints, game)
 
+	// pass nil for entrances if unrandomized
+	var entrances map[string]string
+	if ropts.entrances {
+		entrances = ri.Entrances
+	}
+
 	// do it! (but don't write anything)
-	return rom.Mutate(romData, game)
+	return rom.Mutate(romData, game, entrances)
 }
 
 // reverseLookup looks up the key for a given map value. Note that this is only

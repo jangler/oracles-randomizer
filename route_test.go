@@ -28,31 +28,26 @@ func testSeasonsGraph(t *testing.T) {
 	}, "maku tree", false, true)
 
 	// test hard logic via bombs as weapon
-	checkReach(t, g, map[string]string{
+	testMap := map[string]string{
 		"d0 key chest":           "moosh's flute",
 		"d0 rupee chest":         "bombs, 10",
 		"horon village SE chest": "gnarled key",
-	}, "d1 stalfos drop", false, false)
-	checkReach(t, g, map[string]string{
-		"d0 key chest":           "moosh's flute",
-		"d0 rupee chest":         "bombs, 10",
-		"horon village SE chest": "gnarled key",
-	}, "d1 stalfos drop", true, true)
+		"d1 entrance":            "enter d1",
+	}
+	checkReach(t, g, testMap, "d1 stalfos drop", false, false)
+	checkReach(t, g, testMap, "d1 stalfos drop", true, true)
 
 	// test key counting
-	checkReach(t, g, map[string]string{
+	testMap = map[string]string{
 		"d0 key chest":     "sword",
 		"maku tree":        "gnarled key",
+		"d1 entrance":      "enter d1",
 		"d1 stalfos drop":  "d1 small key",
 		"d1 stalfos chest": "bombs, 10",
-	}, "d1 basement", false, false)
-	checkReach(t, g, map[string]string{
-		"d0 key chest":     "sword",
-		"maku tree":        "gnarled key",
-		"d1 stalfos drop":  "d1 small key",
-		"d1 stalfos chest": "bombs, 10",
-		"d1 railway chest": "d1 small key",
-	}, "d1 basement", false, true)
+	}
+	checkReach(t, g, testMap, "d1 basement", false, false)
+	testMap["d1 railway chest"] = "d1 small key"
+	checkReach(t, g, testMap, "d1 basement", false, true)
 }
 
 // check that graph logic is working as expected

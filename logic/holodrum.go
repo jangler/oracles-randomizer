@@ -26,10 +26,10 @@ var holodrumNodes = map[string]*Node{
 	"black beast's chest": AndSlot("horon village",
 		Or("ember slingshot", Hard("mystery slingshot")),
 		"mystery seeds", "kill moldorm"),
-	"enter d0":    And("horon village"),
+	"d0 entrance": And("horon village"),
 	"pirate ship": And("pirate's bell", "pirate house"),
 	"coast stump": And("pirate ship", "bombs", Or("jump 2", Hard())),
-	"enter d7": And("pirate ship",
+	"d7 entrance": And("pirate ship",
 		Or("jump 3", "western coast default summer",
 			And("coast stump", "summer")),
 		Or("shovel", "western coast default spring",
@@ -70,17 +70,17 @@ var holodrumNodes = map[string]*Node{
 	"woods of winter owl": And("mystery seeds", "central woods of winter"),
 	"woods of winter seed tree": AndSlot("central woods of winter",
 		"seed item", Or("harvest tree", "dimitri's flute")),
-	"enter d2 A": And("central woods of winter", Or("remove bush", "flute")),
-	"enter d2 B": Or(
+	"d2 entrance": And("central woods of winter", Or("remove bush", "flute")),
+	"d2 alt entrances": Or(
 		And("central woods of winter", "bracelet",
 			Or("woods of winter default summer", "ricky's flute")),
 		And("d2 blade chest", "bracelet")),
-	"chest on top of D2": AndSlot("enter d2 B"),
+	"chest on top of D2": AndSlot("d2 alt entrances"),
 	"cave outside D2": AndSlot("central woods of winter",
 		Or("remove mushroom", "dimitri's flute"),
 		Or("jump 4", "magnet gloves"),
 		Or("woods of winter default autumn", And("autumn", Or("ricky's flute",
-			"woods of winter default summer", "enter d2 B")))),
+			"woods of winter default summer", "d2 alt entrances")))),
 	"woods of winter, 1st cave": AndSlot("moblin road",
 		Or("bombs", "ricky's flute"), "remove bush safe",
 		Or("woods of winter default spring", "spring",
@@ -144,7 +144,8 @@ var holodrumNodes = map[string]*Node{
 	"spool swamp cave": AndSlot("south swamp",
 		Or("spool swamp default winter", And("spool stump", "winter")),
 		Or("shovel", "flute"), Or("bombs", "ricky's flute")),
-	"enter d3": And("spool stump", Or("spool swamp default summer", "summer")),
+	"d3 entrance": And("spool stump",
+		Or("spool swamp default summer", "summer")),
 
 	// north horon / eyeglass lake
 	"not north horon default summer": Or("north horon default spring",
@@ -157,7 +158,7 @@ var holodrumNodes = map[string]*Node{
 		And("lake portal", "not north horon default summer",
 			"flippers", "jump 2"),
 		And("lake portal", "jump 6", "north horon default winter")),
-	"enter d1": And("gnarled key", Or(
+	"d1 entrance": And("gnarled key", Or(
 		And("south swamp", Or("flippers", "dimitri's flute")),
 		And("north horon stump", Or("remove bush", "flute")))),
 	"wet eyeglass lake": Or("not north horon default summer",
@@ -168,7 +169,7 @@ var holodrumNodes = map[string]*Node{
 		And("north horon stump", Or("jump 2", "ricky's flute", "moosh's flute"),
 			Or("north horon default winter", "winter", "flippers",
 				And("bracelet", "dimitri's flute")))),
-	"enter d5": And("d5 stump", Or("remove mushroom", "dimitri's flute"),
+	"d5 entrance": And("d5 stump", Or("remove mushroom", "dimitri's flute"),
 		Or("autumn", And("north horon default autumn",
 			Or("lake portal", "jump 2", "ricky's flute", "moosh's flute"),
 			Or("flippers",
@@ -177,13 +178,13 @@ var holodrumNodes = map[string]*Node{
 		And("jump 2", Or("north horon default autumn",
 			And("autumn", "north horon stump"))))),
 	"dry eyeglass lake, east cave": AndSlot("d5 stump", "bracelet",
-		Or("summer", And("enter d5", "north horon default summer"))),
+		Or("summer", And("d5 entrance", "north horon default summer"))),
 	"dry eyeglass lake, west cave": AndSlot(
 		Or("bombs", "ricky's flute"), "flippers",
 		Or(And("north horon stump", Or("north horon default summer", "summer"),
 			Or("jump 2", "ricky's flute", "moosh's flute")),
 			And("d5 stump", "summer"),
-			And("enter d5", "north horon default summer"))),
+			And("d5 entrance", "north horon default summer"))),
 
 	// natzu
 	"natzu prairie":   Root("start"),
@@ -242,7 +243,7 @@ var holodrumNodes = map[string]*Node{
 		Or("sunken city default spring", "spring")),
 	"dragon keyhole": And("mt. cucco, talon's cave",
 		"winter", "jump 2", "bracelet"),
-	"enter d4":               And("dragon key", "dragon keyhole", "summer"),
+	"d4 entrance":            And("dragon key", "dragon keyhole", "summer"),
 	"diving spot outside D4": AndSlot("mt. cucco, talon's cave", "flippers"),
 
 	// goron mountain
@@ -258,7 +259,7 @@ var holodrumNodes = map[string]*Node{
 	"lost woods": AndSlot("tarm ruins", "remove mushroom", "winter", "autumn",
 		"spring", "summer"),
 	"tarm ruins seed tree": AndSlot("lost woods", "seed item", "harvest tree"),
-	"enter d6": And("lost woods", "remove flower",
+	"d6 entrance": And("lost woods", "remove flower",
 		Or("tarm ruins default winter", "winter"),
 		Or("tarm ruins default spring", "spring"),
 		Or("shovel", "ember seeds")),
@@ -278,7 +279,7 @@ var holodrumNodes = map[string]*Node{
 	// northern peak
 	"maku seed": And("sword", "d1 boss", "d2 boss", "d3 boss", "d4 boss",
 		"d5 boss", "d6 boss", "d7 boss", "d8 boss"),
-	"enter d9": And("blaino's gym", "maku seed"),
+	"d9 entrance": And("blaino's gym", "maku seed"),
 
 	// old men
 	"goron mountain old man": And("goron mountain", "ember seeds"),
@@ -289,7 +290,7 @@ var holodrumNodes = map[string]*Node{
 				Or("jump 2", "flute", And("remove bush", "flippers"))))),
 	"horon village old man":       And("horon village", "ember seeds"),
 	"north horon old man":         And("north horon stump", "ember seeds"),
-	"tarm ruins old man":          And("enter d6", "ember seeds"),
+	"tarm ruins old man":          And("d6 entrance", "ember seeds"),
 	"woods of winter old man":     And("moblin road", "ember seeds"),
 	"holodrum plain west old man": And("ghastly stump", "ember seeds"),
 }

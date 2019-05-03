@@ -9,6 +9,8 @@ package logic
 // required to be killed with one throw.
 
 var seasonsD0Nodes = map[string]*Node{
+	"enter d0": And("d0 entrance"), // not randomized
+
 	// 0 keys
 	"d0 key chest":   AndSlot("enter d0"),
 	"d0 rupee chest": OrSlot("remove bush safe", "flute"),
@@ -22,6 +24,8 @@ var seasonsD0Nodes = map[string]*Node{
 // killed the stalfos with bombs. bush-throwing is *not* in logic for the
 // vanilla BK room, since you need to relight the torches every time you leave.
 var seasonsD1Nodes = map[string]*Node{
+	"enter d1": Root(),
+
 	// 0 keys
 	"d1 stalfos drop": AndSlot("enter d1", Or("kill stalfos", "bracelet")),
 	"d1 floormaster room": AndSlot("enter d1",
@@ -45,18 +49,23 @@ var seasonsD1Nodes = map[string]*Node{
 }
 
 var seasonsD2Nodes = map[string]*Node{
+	// "alt enter d2" isn't randomized, but in entrance rando it's hooked
+	// directly to "d2 roller chest" and the alternate entrances are removed.
+	"enter d2":     Root(),
+	"alt enter d2": Root(),
+
 	// 0 keys
-	"d2 torch room":         Or("enter d2 A", "d2 rope chest"),
+	"d2 torch room":         Or("enter d2", "d2 rope chest"),
 	"d2 left from entrance": AndSlot("d2 torch room"),
 	"d2 rope drop":          AndSlot("d2 torch room", "kill normal"),
-	"d2 arrow room": Or("enter d2 B",
+	"d2 arrow room": Or("alt enter d2",
 		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
 	"d2 rope chest": AndSlot("d2 arrow room", "kill normal"),
 	"d2 rupee room": And("d2 arrow room", "bombs"),
-	"d2 blade chest": OrSlot("enter d2 B",
+	"d2 blade chest": OrSlot("alt enter d2",
 		And("d2 arrow room", Or("kill normal", Hard("bracelet")))),
 	"d2 roller chest": AndSlot("d2 bomb wall", "bombs", "bracelet"),
-	"d2 spiral chest": AndSlot("enter d2 B", "bombs"),
+	"d2 spiral chest": AndSlot("alt enter d2", "bombs"),
 
 	// 2 keys
 	"d2 spinner":  And("d2 roller chest", Count(2, "d2 small key")),
@@ -76,6 +85,8 @@ var seasonsD2Nodes = map[string]*Node{
 }
 
 var seasonsD3Nodes = map[string]*Node{
+	"enter d3": Root(),
+
 	// 0 keys
 	"spiked beetles owl": And("mystery seeds", "enter d3"),
 	"d3 center": And("enter d3",
@@ -102,6 +113,8 @@ var seasonsD3Nodes = map[string]*Node{
 }
 
 var seasonsD4Nodes = map[string]*Node{
+	"enter d4": Root(),
+
 	// 0 keys
 	"d4 north of entrance": AndSlot("enter d4", Or("flippers", "jump 4")),
 	"d4 pot puzzle":        AndSlot("d4 north of entrance", "bombs", "bracelet"),
@@ -143,6 +156,8 @@ var seasonsD4Nodes = map[string]*Node{
 }
 
 var seasonsD5Nodes = map[string]*Node{
+	"enter d5": Root(),
+
 	// 0 keys
 	"d5 cart bay":   And("enter d5", Or("flippers", "bomb jump 2")),
 	"d5 cart chest": AndSlot("d5 cart bay", "hit lever from minecart"),
@@ -173,6 +188,8 @@ var seasonsD5Nodes = map[string]*Node{
 }
 
 var seasonsD6Nodes = map[string]*Node{
+	"enter d6": Root(),
+
 	// 0 keys
 	"d6 1F east":    AndSlot("enter d6"),
 	"d6 rupee room": And("enter d6", "bombs"),
@@ -203,6 +220,8 @@ var seasonsD6Nodes = map[string]*Node{
 // the chest to the right of the entrance is locked behind all keys in logic
 // because of poe skip, but the poe fight itself is only locked behind one.
 var seasonsD7Nodes = map[string]*Node{
+	"enter d7": Root(),
+
 	// 0 keys
 	"poe curse owl":        And("mystery seeds", "enter d7"),
 	"d7 wizzrobe chest":    AndSlot("enter d7", "kill normal"),
@@ -249,6 +268,8 @@ var seasonsD7Nodes = map[string]*Node{
 // HSS skip is out of logic and can lead to key-locks.
 // pots don't hurt magunesu, thank goodness.
 var seasonsD8Nodes = map[string]*Node{
+	"enter d8": Root(),
+
 	// 0 keys
 	"d8 eye drop": AndSlot("enter d8", "remove pot", Or("any slingshot",
 		HardAnd("jump 2",
@@ -304,5 +325,6 @@ var seasonsD8Nodes = map[string]*Node{
 
 // onox's castle
 var seasonsD9Nodes = map[string]*Node{
-	"done": AndStep("enter d9", "kill armored", "bombs", "kill onox"),
+	"enter d9": And("d9 entrance"), // unrandomized
+	"done":     AndStep("enter d9", "kill armored", "bombs", "kill onox"),
 }

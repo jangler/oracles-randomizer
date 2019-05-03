@@ -79,7 +79,8 @@ var seasonsItemNodes = map[string]*Node{
 	"seed item": Or("satchel", "slingshot"),
 	"kill for bombs": Or("sword", "ember seeds",
 		Or("scent slingshot", Hard("scent seeds")), "fool's ore"),
-	"bombs": Or(Hard("enter d2 B"),
+	"bombs": Or(
+		HardAnd("d2 blade chest", "bracelet"), // deku scrub, TODO: rupees
 		HardAnd("harvest bush", "d2 bracelet room"),
 		And("bombs, 10", Or("remove pot", "shovel", "remove flower", "flute",
 			And("kill for bombs", Or("suburbs", "fairy fountain",

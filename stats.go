@@ -10,7 +10,7 @@ import (
 )
 
 // generate a bunch of seeds.
-func generateSeeds(n, game int, hard bool) []*RouteInfo {
+func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 	threads := runtime.NumCPU()
 	dummyLogf := func(string, ...interface{}) {}
 
@@ -20,7 +20,7 @@ func generateSeeds(n, game int, hard bool) []*RouteInfo {
 		go func() {
 			for i := 0; i < n/threads; i++ {
 				seed := uint32(rand.Int())
-				routeChan <- findRoute(game, seed, hard, false, dummyLogf)
+				routeChan <- findRoute(game, seed, ropts, false, dummyLogf)
 			}
 		}()
 	}
@@ -36,9 +36,9 @@ func generateSeeds(n, game int, hard bool) []*RouteInfo {
 }
 
 // generate a bunch of seeds and print item configurations in YAML format.
-func logStats(game, trials int, hard bool, logf logFunc) {
+func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
 	// get `trials` routes
-	routes := generateSeeds(trials, game, hard)
+	routes := generateSeeds(trials, game, ropts)
 
 	// make a YAML-serializable slice of check maps
 	stringChecks := make([]map[string]string, len(routes))

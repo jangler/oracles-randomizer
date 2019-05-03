@@ -1,11 +1,14 @@
 package logic
 
 import (
+	"regexp"
 	"strings"
 	"testing"
 
 	"github.com/jangler/oracles-randomizer/rom"
 )
+
+var dungeonEntranceRegexp = regexp.MustCompile(`d[1-8] entrance`)
 
 // returns true iff p1 is a parent of p2.
 func isParent(p1Name string, p2 *Node) bool {
@@ -19,8 +22,8 @@ func isParent(p1Name string, p2 *Node) bool {
 
 func TestLinks(t *testing.T) {
 	// need to be changed manually for now
-	nodes := GetAges()
-	rom.Init(rom.GameAges)
+	nodes := GetSeasons()
+	rom.Init(rom.GameSeasons)
 
 	for key, slot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(slot.Treasure)
@@ -61,6 +64,9 @@ func TestLinks(t *testing.T) {
 			strings.Contains(name, " ring L-") ||
 			strings.Contains(name, " default ") ||
 			strings.HasSuffix(name, " owl") {
+			continue
+		}
+		if dungeonEntranceRegexp.MatchString(name) {
 			continue
 		}
 

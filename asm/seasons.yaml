@@ -241,6 +241,11 @@ banks:
       db 00,9a,00,34,04 # remove bush next to rosa portal
       db 00,b0,00,21,13 # remove spool swamp pits to prevent winter softlock
       db 00,b0,00,51,13 # cont.
+  - d2AltEntranceTileSubs: |
+      # these are enabled only if entrances are randomized
+      db 00,8d,ff,18,04 # remove left stairs
+      db 00,8e,ff,12,04 # remove right stairs
+  - endTileSubTable: |
       db ff
 
   # data for checkSetAnimalSavePoint:

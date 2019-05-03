@@ -1,7 +1,5 @@
 package rom
 
-//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/
-
 import (
 	"github.com/yuin/gopher-lua"
 )

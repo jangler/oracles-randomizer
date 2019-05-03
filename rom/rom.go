@@ -3,12 +3,16 @@
 // are specified, Ages comes first.
 package rom
 
+//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml
+
 import (
 	"crypto/sha1"
 	"fmt"
 	"math/rand"
 	"sort"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 const bankSize = 0x4000
@@ -95,7 +99,7 @@ func orderedKeys(m map[string]Mutable) []string {
 
 // Mutate changes the contents of loaded ROM bytes in place. It returns a
 // checksum of the result or an error.
-func Mutate(b []byte, game int) ([]byte, error) {
+func Mutate(b []byte, game int, entranceMap map[string]string) ([]byte, error) {
 	if game == GameSeasons {
 		varMutables["initial season"].(*MutableRange).New =
 			[]byte{0x2d, Seasons["north horon season"].New[0]}
@@ -132,6 +136,9 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	setSeedData(game)
 	setSmallKeyData(game)
 	setCollectModeData(game)
+	if entranceMap != nil {
+		setEntrances(b, game, entranceMap)
+	}
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
 	// with text
@@ -515,5 +522,64 @@ func setLinkedData(b []byte, game int) {
 			"rupees, 20", 0x50e2, 0x05, 0x2c, collectChest, 0xd4)
 		linkedChest.Treasure = tCave
 		linkedChest.Mutate(b)
+	}
+}
+
+// -- dungeon entrance connections --
+
+type WarpData struct {
+	Entry, Exit uint16 // loaded from yaml
+
+	entryOffset, exitOffset int // calculated after loading
+
+	vanillaEntryData, vanillaExitData []byte // read from rom
+}
+
+func setEntrances(b []byte, game int, entranceMap map[string]string) {
+	// load yaml data
+	wd := make(map[string](map[string]*WarpData))
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/rom/warps.yaml"), wd); err != nil {
+		panic(err)
+	}
+	var warps map[string]*WarpData
+	if game == GameSeasons {
+		warps = wd["seasons"]
+	} else {
+		warps = wd["ages"]
+	}
+
+	// read vanilla data
+	for _, warp := range warps {
+		warp.entryOffset = (&Addr{0x04, warp.Entry}).fullOffset()
+		warp.vanillaEntryData = make([]byte, 2)
+		copy(warp.vanillaEntryData, b[warp.entryOffset:warp.entryOffset+2])
+		warp.exitOffset = (&Addr{0x04, warp.Exit}).fullOffset()
+		warp.vanillaExitData = make([]byte, 2)
+		copy(warp.vanillaExitData, b[warp.exitOffset:warp.exitOffset+2])
+	}
+
+	// set randomized data
+	for srcName, destName := range entranceMap {
+		src, dest := warps[srcName], warps[destName]
+		b[src.entryOffset] = dest.vanillaEntryData[0]
+		b[src.entryOffset+1] = dest.vanillaEntryData[1]
+		b[dest.exitOffset] = src.vanillaExitData[0]
+		b[dest.exitOffset+1] = src.vanillaExitData[1]
+	}
+
+	if game == GameSeasons {
+		// remove alternate d2 entrances and connect d2 stairs exits directly
+		// to each other
+		src, dest := warps["d2 alt left"], warps["d2 alt right"]
+		b[src.exitOffset] = dest.vanillaEntryData[0]
+		b[src.exitOffset+1] = dest.vanillaEntryData[1]
+		b[dest.exitOffset] = src.vanillaEntryData[0]
+		b[dest.exitOffset+1] = src.vanillaEntryData[1]
+
+		// also enable removal of the stair tiles
+		mut := codeMutables["d2AltEntranceTileSubs"].(*MutableRange)
+		mut.New[0+2] = 0x00
+		mut.New[5+2] = 0x00
 	}
 }

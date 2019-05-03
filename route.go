@@ -130,6 +130,7 @@ type RouteInfo struct {
 	Route                *Route
 	Seed                 uint32
 	Seasons              map[string]byte
+	Entrances            map[string]string
 	Companion            int // 1 to 3
 	UsedItems, UsedSlots *list.List
 	RingMap              map[string]string
@@ -145,7 +146,7 @@ const (
 
 // attempts to create a path to the given targets by placing different items in
 // slots. returns nils if no route is found.
-func findRoute(game int, seed uint32, hard, verbose bool,
+func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 	logf logFunc) *RouteInfo {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
@@ -174,7 +175,8 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		if game == rom.GameSeasons {
 			ri.Seasons = rollSeasons(ri.Src, r)
 		}
-		placeDungeonItems(ri.Src, r, game, hard,
+		ri.Entrances = setDungeonEntrances(ri.Src, r, game, ropts.entrances)
+		placeDungeonItems(ri.Src, r, game, ropts.hard,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
 		slotRecord := 0
@@ -183,14 +185,14 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 		// slot progression items
 		done := r.Graph["done"]
 		success := true
-		for done.GetMark(done, hard) != graph.MarkTrue {
+		for done.GetMark(done, ropts.hard) != graph.MarkTrue {
 			if verbose {
 				logf("searching; have %d more slots", slotList.Len())
 				logf("%d/%d iterations", i, maxIterations)
 			}
 
 			eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
-				countSteps, ri.UsedSlots.Len(), hard, false)
+				countSteps, ri.UsedSlots.Len(), ropts.hard, false)
 
 			if eItem != nil {
 				item := itemList.Remove(eItem).(*graph.Node)
@@ -233,7 +235,7 @@ func findRoute(game int, seed uint32, hard, verbose bool,
 				}
 
 				eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
-					countSteps, ri.UsedSlots.Len(), hard, true)
+					countSteps, ri.UsedSlots.Len(), ropts.hard, true)
 
 				if eItem != nil {
 					item := itemList.Remove(eItem).(*graph.Node)
@@ -314,6 +316,41 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 	}
 
 	return seasonMap
+}
+
+// connect dungeon entrances, randomly or vanilla-ly.
+func setDungeonEntrances(src *rand.Rand,
+	r *Route, game int, shuffle bool) map[string]string {
+	dungeonEntranceMap := make(map[string]string)
+	var dungeons []string
+
+	if game == rom.GameSeasons {
+		dungeons = []string{"d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"}
+	} else {
+		panic("dungeon entrance randomization NYI for ages!")
+	}
+
+	// reset entrances
+	for _, dungeon := range dungeons {
+		r.ClearParents(fmt.Sprintf("enter %s", dungeon))
+	}
+
+	var entrances = make([]string, len(dungeons))
+	copy(entrances, dungeons)
+
+	if shuffle {
+		src.Shuffle(len(entrances), func(i, j int) {
+			entrances[i], entrances[j] = entrances[j], entrances[i]
+		})
+	}
+
+	for i := 0; i < len(dungeons); i++ {
+		entranceName := fmt.Sprintf("%s entrance", entrances[i])
+		dungeonEntranceMap[entrances[i]] = dungeons[i]
+		r.AddParent(fmt.Sprintf("enter %s", dungeons[i]), entranceName)
+	}
+
+	return dungeonEntranceMap
 }
 
 // randomly determines animal companion and returns its ID (1 to 3)

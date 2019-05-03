@@ -1,0 +1,16 @@
+# addresses are in bank 4. the first byte at each address goes to
+# wWarpDestIndex, and the upper nybble of the second byte goes to
+# wWarpDestGroup.
+seasons:
+  d1: {entry: 0x746d, exit: 0x790d}
+  d2: {entry: 0x7659, exit: 0x7911}
+  d3: {entry: 0x7671, exit: 0x7915}
+  d4: {entry: 0x7479, exit: 0x7919}
+  d5: {entry: 0x747d, exit: 0x791d}
+  d6: {entry: 0x7481, exit: 0x7921}
+  d7: {entry: 0x7485, exit: 0x7a89}
+  d8: {entry: 0x769d, exit: 0x7a8d}
+
+  # stairs on the "roof" of d2
+  d2 alt left: {entry: 0x765d, exit: 0x7935}
+  d2 alt right: {entry: 0x7661, exit: 0x7939}

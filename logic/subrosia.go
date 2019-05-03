@@ -7,11 +7,11 @@ package logic
 // 2. "beach": swamp portal, market, beach
 // 3. "hide and seek": H&S, mountain portal, spring tower
 // 4. "pirate house": village portal, pirates
-// 5. "furnace": lake portal, furnace
-// 6. "bridge": bridge area (large but not visited in any%)
+// 5. "bridge": bridge area (large but not visited in any%)
 //
-// the other locations are isolated and only traverseable with some combination
-// of jumping and boulder removal.
+// "furnace" used to be on this list, but you can get there using an animal
+// companion to jump over the holes at eyeglass lake, so you won't necessarily
+// have feather.
 
 var subrosiaNodes = map[string]*Node{
 	"temple": Or("rosa portal",
@@ -65,5 +65,5 @@ var subrosiaNodes = map[string]*Node{
 		"temple", "bomb flower"),
 	"subrosian smithy": AndSlot("temple", "hard ore"),
 
-	"enter d8": Or("d8 portal"),
+	"d8 entrance": Or("d8 portal"),
 }
