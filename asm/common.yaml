@@ -60,6 +60,7 @@ defines:
 
   # rom 3f
   _interactionGetData: 0x4437
+  giveTreasure_body: 0x44c8
 
 banks:
   0x00:

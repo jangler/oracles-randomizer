@@ -142,15 +142,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
 	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
 
-	// i don't know what global flag 0e is. it's only checked in for star ore
-	// digging, and disabling the check seems to be sometimes necessary (?)
-	"star ore flag check": MutableString(Addr{0x08, 0x62aa},
-		"\xc2\xd9\x3a", "\x00\x00\x00"),
-	// a vanilla bug lets star ore be dug up on the first screen even if you
-	// already have the item. so… make first try a second instance of second
-	// try.
-	"star ore bugfix": MutableWord(Addr{0x08, 0x62d5}, 0x6656, 0x7624),
-
 	// prevent leaving sunken city with dimitri unless you have his flute, in
 	// order to prevent a variety of softlocks.
 	"block dimitri exit": MutableString(Addr{0x09, 0x6f34},

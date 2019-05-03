@@ -51,6 +51,7 @@ defines:
   objectCopyPositionWithOffset: 0x221a
   interactionSetScript: 0x24fe
   createTreasure: 0x271b
+  checkGlobalFlag: 0x30c7
   setGlobalFlag: 0x30cd
   setTile: 0x3a52
   getFreeInteractionSlot: 0x3ac6
@@ -73,7 +74,6 @@ defines:
   treasureObjectData: 0x5129
 
   # rom 3f
-  giveTreasure_body: 0x44c8
   realignUnappraisedRings: 0x4675
   interaction60SubidData: 0x66dc
 
@@ -162,6 +162,31 @@ banks:
       .done
       ld a,(ff00+8c)
       jp 39e2 # can't just ret, idr why
+
+  # check room flags to determine whether to create star ore instead of
+  # whatever global flag 0e is. this also fixes a vanilla bug causing star ore
+  # to be infinitely rediggable (but only when the first screen is rolled? or
+  # that getting it on the first screen doesn't count? something). this is here
+  # since there's no room in bank 8.
+  - starOreRooms: db 65,66,75,76,ff
+  - checkBeachItemObtained: |
+      push de
+      push hl
+      ld de,starOreRooms
+      ld h,c8
+      .loop
+      ld a,(de)
+      cp a,ff
+      jr z,.done
+      ld l,a
+      bit 5,(hl)
+      jr nz,.done
+      inc de
+      jr .loop
+      .done
+      pop hl
+      pop de
+      ret
 
   0x01:
   # takes b = high byte of season addr, returns season in b.
@@ -432,6 +457,15 @@ banks:
   # these are the low bytes of randomized shop item data addresses.
   - shopItemLowAddrs: |
       db e9,cf,d3,d9
+
+  # beach doesn't normally set a subid when creating star ore. the 00 in this
+  # function is overwritten with the correct subid at randomization.
+  - setStarOreSubId: |
+      inc l
+      ld (hl),45
+      inc l
+      ld (hl),00
+      ret
 
   0x09:
   # use giveTreasureCustom in the subrosian market when appropriate.

@@ -136,6 +136,10 @@ func initSeasonsEOB() {
 
 	r.replaceAsm(0x08, 0x4bfb,
 		"call giveTreasure", "call shopGiveTreasure")
+	r.replaceAsm(0x08, 0x62a7,
+		"call checkGlobalFlag", "call checkBeachItemObtained")
+	r.replaceAsm(0x08, 0x62f2,
+		"inc l; ld (hl),45", "call setStarOreSubId")
 
 	// give fake treasure 0f for the strange flute item.
 	shopIDFunc := r.appendToBank(0x08, "shop give fake id func",
@@ -197,12 +201,6 @@ func initSeasonsEOB() {
 			"\xd0\xe0"+warningFunc+"\xa0\xbd\xd7\x3c"+ // wait for collision
 			"\x87\xe0\xcf"+warnCliffText+warnBushText+warnSkipText) // jp table
 	r.replace(0x08, 0x5663, "warning script pointer", "\x87\x4e", warningScript)
-
-	// set sub ID for star ore
-	starOreIDFunc := r.appendToBank(0x08, "star ore id func",
-		"\x2c\x36\x45\x2c\x36\x00\xc9")
-	r.replace(0x08, 0x62f2, "star ore id call",
-		"\x2c\x36\x45", "\xcd"+starOreIDFunc)
 
 	// remove volcano cutscene.
 	rmVolcano := r.appendToBank(0x02, "remove volcano scene",

@@ -105,7 +105,7 @@ func Mutate(b []byte, game int) ([]byte, error) {
 		setTreasureMapData()
 
 		// explicitly set these addresses and IDs after their functions
-		codeAddr := codeMutables["star ore id func"].(*MutableRange).Addrs[0]
+		codeAddr := codeMutables["setStarOreSubId"].(*MutableRange).Addrs[0]
 		ItemSlots["subrosia seaside"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["subrosia seaside"].subIDAddrs[0].offset = codeAddr.offset + 5
 		codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
