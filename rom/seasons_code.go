@@ -319,6 +319,12 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x0b, 0x4416,
 		"ld (hl),60; inc l", "call lookupKeyDropBank0b")
 
+	// some dungeons share the same script for spawning the HC.
+	r.replaceAsm(0x0b, 0x4b8f,
+		"db dd,2a,00", "db e0; dw spawnBossItem")
+	r.replaceAsm(0x0b, 0x4bb1,
+		"db dd,2a,00", "db e0; dw spawnBossItem")
+
 	// bank 11
 
 	// the interaction on the mount cucco waterfall/vine screen
@@ -379,11 +385,8 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x15, 0x70cf,
 		"call giveTreasure", "call giveTreasureCustom")
 
-	// some dungeons share the same script for spawning the HC.
-	r.replaceAsm(0x0b, 0x4b8f,
-		"db dd,2a,00", "db e0; dw spawnBossItem")
-	r.replaceAsm(0x0b, 0x4bb1,
-		"db dd,2a,00", "db e0; dw spawnBossItem")
+	// skip "you got all four seasons" text from season spirits.
+	r.replaceAsm(0x15, 0x57c2, "cp a,04", "cp a,05")
 
 	// bank 1f
 
