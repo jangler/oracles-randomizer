@@ -139,13 +139,18 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x08, 0x62a7,
 		"call checkGlobalFlag", "call checkBeachItemObtained")
 	r.replaceAsm(0x08, 0x62f2,
-		"inc l; ld (hl),45", "call setStarOreSubId")
+		"inc l; ld (hl),45", "call setStarOreIds")
+	r.replaceAsm(0x09, 0x641a,
+		"ld bc,2701", "jp createMtCuccoItem")
 
 	// give fake treasure 0f for the strange flute item.
 	shopIDFunc := r.appendToBank(0x08, "shop give fake id func",
 		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9")
 	r.replace(0x08, 0x4bfe, "shop give fake id call",
 		"\x1e\x42\x1a", "\xcd"+shopIDFunc)
+
+	// allow desert pits to work even if player has the actual bell already.
+	r.replaceAsm(0x08, 0x73a2, "jr c,09", "nop; nop")
 
 	// ORs the default season in the given area (low byte b in bank 1) with the
 	// seasons the rod has (c), then ANDs and compares the results with d.
@@ -276,13 +281,6 @@ func initSeasonsEOB() {
 	r.replace(0x09, 0x4b4f, "call essence warp",
 		"\xea\x67\xcc", "\xcd"+essenceWarp)
 
-	// use createTreasure for mt. cucco platform cave item, not
-	// createRingTreasure.
-	createMtCuccoItem := r.appendToBank(0x09, "create mt. cucco item",
-		"\x01\x00\x00\xcd\x1b\x27\xc3\x21\x64")
-	r.replace(0x09, 0x641a, "call create mt. cucco item",
-		"\x01\x01\x27", "\xc3"+createMtCuccoItem)
-
 	// bank 0a
 
 	r.replaceAsm(0x0a, 0x66ed,
@@ -364,22 +362,10 @@ func initSeasonsEOB() {
 
 	r.replaceAsm(0x15, 0x465a,
 		"ld b,a; swap a", "call modifyTreasure")
-
-	// should be set to match the western coast season
-	pirateSeason := r.appendToBank(0x15, "season after pirate cutscene", "\x15")
-	// skip pirate cutscene. includes setting flag $1b, which makes the pirate
-	// skull appear in the desert in case the player hasn't talked to the
-	// ghost yet.
-	pirateFlagFunc := r.appendToBank(0x15, "pirate flag func",
-		"\xcd\xcd\x30\x3e\x17\xcd\xcd\x30\x3e\x1b\xcd\xcd\x30\x21\xe2\xc7"+
-			"\xcb\xf6\xfa"+pirateSeason+"\xea\x4e\xcc\xc9")
-	r.replace(0x15, 0x5a0f, "pirate flag call", "\xcd\x30", pirateFlagFunc)
-
-	// set sub ID for hard ore
-	hardOreFunc := r.appendToBank(0x15, "hard ore id func",
-		"\x2c\x36\x52\x2c\x36\x00\xc9")
-	r.replace(0x15, 0x5b83, "hard ore id call",
-		"\x2c\x36\x52", "\xcd"+hardOreFunc)
+	r.replaceAsm(0x15, 0x5a0e,
+		"call setGlobalFlag", "call setPirateCutsceneFlags")
+	r.replaceAsm(0x15, 0x5b83,
+		"inc l; ld (hl),52", "call setHardOreIds")
 
 	// use custom "give item" func in rod cutscene.
 	r.replaceAsm(0x15, 0x70cf,
@@ -411,9 +397,8 @@ func initSeasonsEOB() {
 			"\xe1\xd1\xf1\xcd\x4e\x45\xc9")
 	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
 
-	r.replace(0x3f, 0x460e, "seed capacity pointer",
-		"\x16\x46", addrString(r.assembler.getDef("seedCapacityTable")))
-
+	r.replaceAsm(0x3f, 0x460d,
+		"ld hl,4616", "ld hl,seedCapacityTable")
 	r.replaceAsm(0x3f, 0x461a,
 		"set 6,c; call realignUnappraisedRings", "nop; jp autoAppraiseRing")
 	r.replaceAsm(0x3f, 0x4fd9,

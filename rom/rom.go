@@ -99,22 +99,22 @@ func Mutate(b []byte, game int) ([]byte, error) {
 	if game == GameSeasons {
 		varMutables["initial season"].(*MutableRange).New =
 			[]byte{0x2d, Seasons["north horon season"].New[0]}
-		codeMutables["season after pirate cutscene"].(*MutableRange).New =
+		codeMutables["seasonAfterPirateCutscene"].(*MutableRange).New =
 			[]byte{Seasons["western coast season"].New[0]}
 
 		setTreasureMapData()
 
 		// explicitly set these addresses and IDs after their functions
-		codeAddr := codeMutables["setStarOreSubId"].(*MutableRange).Addrs[0]
+		codeAddr := codeMutables["setStarOreIds"].(*MutableRange).Addrs[0]
 		ItemSlots["subrosia seaside"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["subrosia seaside"].subIDAddrs[0].offset = codeAddr.offset + 5
-		codeAddr = codeMutables["hard ore id func"].(*MutableRange).Addrs[0]
+		codeAddr = codeMutables["setHardOreIds"].(*MutableRange).Addrs[0]
 		ItemSlots["great furnace"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["great furnace"].subIDAddrs[0].offset = codeAddr.offset + 5
 		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
 		ItemSlots["master diver's reward"].idAddrs[0].offset = codeAddr.offset + 1
 		ItemSlots["master diver's reward"].subIDAddrs[0].offset = codeAddr.offset + 2
-		codeAddr = codeMutables["create mt. cucco item"].(*MutableRange).Addrs[0]
+		codeAddr = codeMutables["createMtCuccoItem"].(*MutableRange).Addrs[0]
 		ItemSlots["mt. cucco, platform cave"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["mt. cucco, platform cave"].subIDAddrs[0].offset = codeAddr.offset + 1
 	} else {

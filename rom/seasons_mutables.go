@@ -147,10 +147,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"block dimitri exit": MutableString(Addr{0x09, 0x6f34},
 		"\xfa\x10\xc6\xfe\x0c", "\xfa\xaf\xc6\xfe\x02"),
 
-	// normally none of the desert pits will work if the player already has the
-	// rusty bell.
-	"desert item check": MutableByte(Addr{0x08, 0x739e}, 0x4a, 0x04),
-
 	// ignore sword level for lost woods pedestal so that an item still appears
 	// if you have L-3 sword.
 	"pedestal ignore sword level": MutableString(Addr{0x08, 0x7e62},
@@ -213,7 +209,7 @@ var seasonsFixedMutables = map[string]Mutable{
 	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
 	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
 
-	// bank 14 (scripts loaded in c3xx block)
+	// bank 14 (scripts loaded into c3xx block, also some OAM pointers?)
 
 	// skip the great furnace dance. for some reason command c4 (jumpalways)
 	// doesn't work here, so a jump based on c6xx is used instead.
@@ -311,8 +307,8 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// bank 3f
 
-	// give member's card, treasure map, fool's ore, and identified flutes
-	// graphics in treasure sprite table
+	// give items that don't normally appear as treasure interactions entries
+	// in the treasure graphics table.
 	"member's card gfx": MutableString(Addr{0x3f, 0x67b4},
 		"\x00\x00\x00", "\x5d\x0c\x13"),
 	"treasure map gfx": MutableString(Addr{0x3f, 0x67b7},

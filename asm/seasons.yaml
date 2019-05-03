@@ -458,9 +458,9 @@ banks:
   - shopItemLowAddrs: |
       db e9,cf,d3,d9
 
-  # beach doesn't normally set a subid when creating star ore. the 00 in this
-  # function is overwritten with the correct subid at randomization.
-  - setStarOreSubId: |
+  # star ore item doesn't normally get a subid. values are replaced at
+  # randomization.
+  - setStarOreIds: |
       inc l
       ld (hl),45
       inc l
@@ -497,6 +497,13 @@ banks:
       pop de
       scf
       ret
+
+  # mt. cucco platform cave item is normally created using ring-specific code.
+  # values are replaced at randomization.
+  - createMtCuccoItem: |
+      ld bc,0000
+      call createTreasure
+      jp 6421
 
   0x0a:
   # flags in wGlobalFlags to be set at start of game.
@@ -640,6 +647,31 @@ banks:
   - getTreasureDataSprite: /include getTreasureDataSprite
   - modifyTreasure: /include modifyTreasure
   - upgradeTreasure: /include upgradeTreasure
+
+  # hard ore item doesn't normally get a subid. values are replaced at
+  # randomization.
+  - setHardOreIds: |
+      inc l
+      ld (hl),52
+      inc l
+      ld (hl),00
+      ret
+
+  # set flags that are normally set during the pirate cutscene when skipping
+  # it. the season value should be set to the western coast default at
+  # randomization.
+  - seasonAfterPirateCutscene: db 00
+  - setPirateCutsceneFlags: |
+      call setGlobalFlag
+      ld a,17
+      call setGlobalFlag
+      ld a,1b
+      call setGlobalFlag
+      ld hl,c7e2
+      set 6,(hl) # remove ship from desert
+      ld a,(seasonAfterPirateCutscene)
+      ld (wRoomStateModifier),a
+      ret
 
   0x3f:
   # have seed satchel inherently refill all seeds.
