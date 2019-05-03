@@ -522,38 +522,38 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		summary <- "-- dungeon entrances --"
 		summary <- ""
-		for entrance, dungeon := range ri.Entrances {
-			summary <- fmt.Sprintf("%s entrance <- %s", entrance, dungeon)
-		}
+		sendSorted(summary, func(c chan string) {
+			for entrance, dungeon := range ri.Entrances {
+				c <- fmt.Sprintf("%s entrance <- %s", entrance, dungeon)
+			}
+			close(c)
+		})
 		summary <- ""
 	}
 	if game == rom.GameSeasons {
 		summary <- ""
 		summary <- "-- default seasons --"
 		summary <- ""
-		seasonLines := make([]string, 0, len(rom.Seasons))
-		for name, area := range rom.Seasons {
-			seasonLines = append(seasonLines, fmt.Sprintf("%-15s <- %s",
-				name[:len(name)-7], seasonsByID[int(area.New[0])]))
-		}
-		sort.Strings(seasonLines)
-		for _, line := range seasonLines {
-			summary <- line
-		}
+		sendSorted(summary, func(c chan string) {
+			for name, area := range rom.Seasons {
+				c <- fmt.Sprintf("%-15s <- %s",
+					name[:len(name)-7], seasonsByID[int(area.New[0])])
+			}
+			close(c)
+		})
 		summary <- ""
 	}
 	summary <- ""
 	summary <- "-- hints --"
 	summary <- ""
-	owlLines := make([]string, 0, len(owlHints))
-	for owlName, hint := range owlHints {
-		owlLines = append(owlLines, fmt.Sprintf("%-20s <- \"%s\"", owlName,
-			strings.ReplaceAll(strings.ReplaceAll(hint, "\n", " "), "  ", " ")))
-	}
-	sort.Strings(owlLines)
-	for _, line := range owlLines {
-		summary <- line
-	}
+	sendSorted(summary, func(c chan string) {
+		for owlName, hint := range owlHints {
+			oneLineHint := strings.ReplaceAll(hint, "\n", " ")
+			oneLineHint = strings.ReplaceAll(oneLineHint, "  ", " ")
+			c <- fmt.Sprintf("%-20s <- \"%s\"", owlName, oneLineHint)
+		}
+		close(c)
+	})
 
 	close(summary)
 	<-summaryDone
@@ -635,4 +635,21 @@ func reverseLookup(m map[string]string, v string) (string, bool) {
 		}
 	}
 	return "", false
+}
+
+// get the output of a function that sends strings to a given channel, sort
+// those strings, and send them to the `out` channel.
+func sendSorted(out chan string, generate func(chan string)) {
+	in := make(chan string)
+	lines := make([]string, 0, 20) // should be enough capacity for most cases
+
+	go generate(in)
+	for s := range in {
+		lines = append(lines, s)
+	}
+
+	sort.Strings(lines)
+	for _, line := range lines {
+		out <- line
+	}
 }
