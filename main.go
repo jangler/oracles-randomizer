@@ -50,28 +50,30 @@ func fatal(err error, logf logFunc) {
 
 // options specified on the command line or via the TUI
 var (
-	flagEntrances bool
-	flagHard      bool
-	flagN         int
-	flagNoMusic   bool
-	flagNoUI      bool
-	flagSeed      string
-	flagShowAsm   string
-	flagStats     string
-	flagTreewarp  bool
-	flagVerbose   bool
+	flagDungeons bool
+	flagHard     bool
+	flagN        int
+	flagNoMusic  bool
+	flagNoUI     bool
+	flagPortals  bool
+	flagSeed     string
+	flagShowAsm  string
+	flagStats    string
+	flagTreewarp bool
+	flagVerbose  bool
 )
 
 type randomizerOptions struct {
-	entrances bool
-	hard      bool
-	seed      string // given seed, not necessarily final seed
+	dungeons bool
+	hard     bool
+	portals  bool
+	seed     string // given seed, not necessarily final seed
 }
 
 // initFlags initializes the CLI/TUI option values and variables.
 func initFlags() {
 	flag.Usage = usage
-	flag.BoolVar(&flagEntrances, "entrances", false,
+	flag.BoolVar(&flagDungeons, "dungeons", false,
 		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
 		"require some plays outside normal logic")
@@ -81,6 +83,8 @@ func initFlags() {
 		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
 		"use command line output without option prompts")
+	flag.BoolVar(&flagPortals, "portals", false,
+		"shuffle subrosia portal connections (seasons)")
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flag.StringVar(&flagShowAsm, "showasm", "",
@@ -99,9 +103,10 @@ func main() {
 	initFlags()
 
 	ropts := randomizerOptions{
-		entrances: flagEntrances,
-		hard:      flagHard,
-		seed:      flagSeed,
+		dungeons: flagDungeons,
+		hard:     flagHard,
+		portals:  flagPortals,
+		seed:     flagSeed,
 	}
 
 	if flagStats != "" {
@@ -409,6 +414,10 @@ func randomizeFile(romData []byte, game int, dirName, outfile string,
 	var err error
 	var logFilename string
 
+	if ropts.portals && game == rom.GameAges {
+		return fmt.Errorf("portal randomization does not apply to ages")
+	}
+
 	// operate on rom data
 	if outfile != "" {
 		logFilename = outfile[:len(outfile)-4] + "_log.txt"
@@ -518,13 +527,25 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	summary <- "-- other items --"
 	summary <- ""
 	logSpheres(summary, checks, spheres, game, itemIsJunk)
-	if ropts.entrances {
+	if ropts.dungeons {
 		summary <- ""
 		summary <- "-- dungeon entrances --"
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for entrance, dungeon := range ri.Entrances {
 				c <- fmt.Sprintf("%s entrance <- %s", entrance, dungeon)
+			}
+			close(c)
+		})
+		summary <- ""
+	}
+	if ropts.portals {
+		summary <- ""
+		summary <- "-- subrosia portals --"
+		summary <- ""
+		sendSorted(summary, func(c chan string) {
+			for in, out := range ri.Portals {
+				c <- fmt.Sprintf("%-20s <- %s", in, subrosianPortalNames[out])
 			}
 			close(c)
 		})
@@ -616,14 +637,20 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 	rom.SetAnimal(ri.Companion)
 	rom.SetOwlData(owlHints, game)
 
-	// pass nil for entrances if unrandomized
-	var entrances map[string]string
-	if ropts.entrances {
-		entrances = ri.Entrances
+	warps := make(map[string]string)
+	if ropts.dungeons {
+		for k, v := range ri.Entrances {
+			warps[k] = v
+		}
+	}
+	if ropts.portals {
+		for k, v := range ri.Portals {
+			warps[fmt.Sprintf("%s portal", k)] = fmt.Sprintf("%s portal", v)
+		}
 	}
 
 	// do it! (but don't write anything)
-	return rom.Mutate(romData, game, entrances)
+	return rom.Mutate(romData, game, warps, ropts.dungeons)
 }
 
 // reverseLookup looks up the key for a given map value. Note that this is only

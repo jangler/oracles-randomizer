@@ -99,7 +99,8 @@ func orderedKeys(m map[string]Mutable) []string {
 
 // Mutate changes the contents of loaded ROM bytes in place. It returns a
 // checksum of the result or an error.
-func Mutate(b []byte, game int, entranceMap map[string]string) ([]byte, error) {
+func Mutate(b []byte, game int, warpMap map[string]string,
+	dungeons bool) ([]byte, error) {
 	if game == GameSeasons {
 		varMutables["initial season"].(*MutableRange).New =
 			[]byte{0x2d, Seasons["north horon season"].New[0]}
@@ -136,8 +137,8 @@ func Mutate(b []byte, game int, entranceMap map[string]string) ([]byte, error) {
 	setSeedData(game)
 	setSmallKeyData(game)
 	setCollectModeData(game)
-	if entranceMap != nil {
-		setEntrances(b, game, entranceMap)
+	if len(warpMap) != 0 {
+		setWarps(b, game, warpMap, dungeons)
 	}
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
@@ -525,7 +526,7 @@ func setLinkedData(b []byte, game int) {
 	}
 }
 
-// -- dungeon entrance connections --
+// -- dungeon entrance / subrosia portal connections --
 
 type WarpData struct {
 	Entry, Exit uint16 // loaded from yaml
@@ -535,7 +536,7 @@ type WarpData struct {
 	vanillaEntryData, vanillaExitData []byte // read from rom
 }
 
-func setEntrances(b []byte, game int, entranceMap map[string]string) {
+func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 	// load yaml data
 	wd := make(map[string](map[string]*WarpData))
 	if err := yaml.Unmarshal(
@@ -560,7 +561,7 @@ func setEntrances(b []byte, game int, entranceMap map[string]string) {
 	}
 
 	// set randomized data
-	for srcName, destName := range entranceMap {
+	for srcName, destName := range warpMap {
 		src, dest := warps[srcName], warps[destName]
 		b[src.entryOffset] = dest.vanillaEntryData[0]
 		b[src.entryOffset+1] = dest.vanillaEntryData[1]

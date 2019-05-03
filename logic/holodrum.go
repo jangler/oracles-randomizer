@@ -8,8 +8,9 @@ var holodrumNodes = map[string]*Node{
 	"start": And(), // parent for nodes reachable by default
 
 	// horon village
-	"horon village": And("start"),
-	"maku tree":     AndSlot("horon village", "sword"),
+	"horon village": Or("start", // portal included in case something changes
+		And("exit horon village portal", Or("hit lever", Hard("jump 6")))),
+	"maku tree": AndSlot("horon village", "sword"),
 	"horon village seed tree": AndSlot("horon village", "seed item",
 		Or("harvest tree", "dimitri's flute", Hard("remove bush"))),
 	"horon village SE chest": AndSlot("horon village", "bombs"),
@@ -42,7 +43,7 @@ var holodrumNodes = map[string]*Node{
 	// eastern suburbs
 	"suburbs": Or( // this is the area south of the pool by sokra's stump
 		And("horon village", "ember seeds"),
-		And("rosa portal", "remove bush"),
+		And("exit eastern suburbs portal", "remove bush"),
 		And("fairy fountain", Or("eastern suburbs default winter", "winter",
 			"flippers", "jump 2", "ricky's flute", "dimitri's flute"))),
 	"fairy fountain": Or(
@@ -140,7 +141,7 @@ var holodrumNodes = map[string]*Node{
 		And("spool stump", "dry swamp", Or("jump 2", "flute")),
 		And("ghastly stump", "remove bush", Or("flippers", "dimitri's flute")),
 		And("blaino's gym", Or("flippers", "dimitri's flute")),
-		And("swamp portal", "bracelet")),
+		And("exit spool swamp portal", "bracelet")),
 	"spool swamp cave": AndSlot("south swamp",
 		Or("spool swamp default winter", And("spool stump", "winter")),
 		Or("shovel", "flute"), Or("bombs", "ricky's flute")),
@@ -155,23 +156,25 @@ var holodrumNodes = map[string]*Node{
 		And("blaino's gym", "bracelet"),
 		And("south swamp", Or("flippers", "dimitri's flute"),
 			Or("remove bush", "flute")),
-		And("lake portal", "not north horon default summer",
+		And("exit eyeglass lake portal", "not north horon default summer",
 			"flippers", "jump 2"),
-		And("lake portal", "jump 6", "north horon default winter")),
+		And("exit eyeglass lake portal", "jump 6",
+			"north horon default winter")),
 	"d1 entrance": And("gnarled key", Or(
 		And("south swamp", Or("flippers", "dimitri's flute")),
 		And("north horon stump", Or("remove bush", "flute")))),
 	"wet eyeglass lake": Or("not north horon default summer",
 		"spring", "autumn", "winter"),
 	"d5 stump": Or(
-		And("lake portal", "not north horon default summer",
+		And("exit eyeglass lake portal", "not north horon default summer",
 			Or("flippers", And("north horon default winter", "jump 6"))),
 		And("north horon stump", Or("jump 2", "ricky's flute", "moosh's flute"),
 			Or("north horon default winter", "winter", "flippers",
 				And("bracelet", "dimitri's flute")))),
 	"d5 entrance": And("d5 stump", Or("remove mushroom", "dimitri's flute"),
 		Or("autumn", And("north horon default autumn",
-			Or("lake portal", "jump 2", "ricky's flute", "moosh's flute"),
+			Or("exit eyeglass lake portal", "jump 2", "ricky's flute",
+				"moosh's flute"),
 			Or("flippers",
 				And("dimitri's flute", Or("bracelet", "winter")))))),
 	"eyeglass lake, across bridge": AndSlot("horon village", Or("jump 4",
@@ -226,7 +229,7 @@ var holodrumNodes = map[string]*Node{
 	"chest in master diver's cave": AndSlot("dimitri"),
 
 	// mount cucco
-	"mount cucco": Or("mountain portal",
+	"mount cucco": Or("exit mt. cucco portal",
 		And("sunken city", "flippers",
 			Or("sunken city default summer", "summer")),
 		And("goron mountain", "bracelet", "shovel")),
@@ -273,6 +276,10 @@ var holodrumNodes = map[string]*Node{
 
 	// temple remains (the important logic is in the portal nodes)
 	"temple remains": Or(
+		And("exit temple remains upper portal",
+			Or("gale satchel", And("bombs", "exit volcanoes west portal",
+				Or("summer", "temple remains default summer"),
+				Or("jump 6", And("bomb jump 2", "magnet gloves"))))),
 		And("goron mountain", Or("flippers", "bomb jump 4"), "jump 3"),
 		And("blaino's gym", "jump 3")),
 

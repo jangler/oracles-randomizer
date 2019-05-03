@@ -9,8 +9,8 @@ import (
 )
 
 func TestGraph(t *testing.T) {
-	// testSeasonsGraph(t)
-	testAgesGraph(t)
+	testSeasonsGraph(t)
+	// testAgesGraph(t)
 }
 
 // check that graph logic is working as expected
@@ -48,6 +48,16 @@ func testSeasonsGraph(t *testing.T) {
 	checkReach(t, g, testMap, "d1 basement", false, false)
 	testMap["d1 railway chest"] = "d1 small key"
 	checkReach(t, g, testMap, "d1 basement", false, true)
+
+	// check a subrosia portal
+	testMap = map[string]string{
+		"d0 key chest":   "sword",
+		"d0 rupee chest": "boomerang",
+		"maku tree":      "boomerang",
+	}
+	checkReach(t, g, testMap, "suburbs", false, false)
+	testMap["enter horon village portal"] = "exit eastern suburbs portal"
+	checkReach(t, g, testMap, "suburbs", false, true)
 }
 
 // check that graph logic is working as expected
@@ -132,7 +142,6 @@ func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 		if parent == "" {
 			g[child].ClearParents()
 		} else {
-			println(parent, child)
 			g[child].AddParents(g[parent])
 		}
 	}

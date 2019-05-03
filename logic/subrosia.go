@@ -14,13 +14,13 @@ package logic
 // have feather.
 
 var subrosiaNodes = map[string]*Node{
-	"temple": Or("rosa portal",
+	"temple": Or("exit volcanoes east portal",
 		And("beach", "ribbon"),
 		And("beach", "jump 2"),
 		And("hide and seek", "bomb jump 4"),
 		And("bridge", "jump 2")),
 
-	"beach": Or("swamp portal",
+	"beach": Or("exit subrosia market portal",
 		And("hide and seek", "jump 2", "bracelet",
 			Or("bomb jump 2", "magnet gloves")),
 		And("furnace", "bracelet", "jump 2"),
@@ -28,19 +28,20 @@ var subrosiaNodes = map[string]*Node{
 		And("furnace", "jump 2", "magnet gloves"),
 		And("temple", "jump 2")),
 
-	"hide and seek": Or("mountain portal",
-		And("pirate house", "jump 2"),
-		And("bomb jump 4", Or("temple", "bridge"))),
+	"hide and seek": And("feather", Or(
+		"exit strange brothers portal", "pirate house",
+		And("bomb jump 4", Or("temple", "bridge")))),
 
-	"pirate house": Or("village portal", And("hide and seek", "jump 2")),
+	"pirate house": Or("exit house of pirates portal",
+		And("hide and seek", "jump 2")),
 
-	"furnace": Or("lake portal",
+	"furnace": Or("exit great furnace portal",
 		And("beach", Or("jump 4", Hard("bomb jump 3"))),
 		And("beach", "magnet gloves", "jump 2")),
 
 	"bridge": Or(
 		And("temple", "jump 2"),
-		And("remains portal", "bracelet", "bomb jump 3"),
+		And("exit volcanoes west portal", "bracelet", "bomb jump 3"),
 		And("hide and seek", "bomb jump 4")),
 
 	"subrosian dance hall": AndSlot("temple"),
@@ -65,5 +66,5 @@ var subrosiaNodes = map[string]*Node{
 		"temple", "bomb flower"),
 	"subrosian smithy": AndSlot("temple", "hard ore"),
 
-	"d8 entrance": Or("d8 portal"),
+	"d8 entrance": And("exit d8 portal"),
 }

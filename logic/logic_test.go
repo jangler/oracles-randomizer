@@ -9,6 +9,7 @@ import (
 )
 
 var dungeonEntranceRegexp = regexp.MustCompile(`d[1-8] entrance`)
+var portalEntranceRegexp = regexp.MustCompile(`enter .+ portal`)
 
 // returns true iff p1 is a parent of p2.
 func isParent(p1Name string, p2 *Node) bool {
@@ -66,7 +67,8 @@ func TestLinks(t *testing.T) {
 			strings.HasSuffix(name, " owl") {
 			continue
 		}
-		if dungeonEntranceRegexp.MatchString(name) {
+		if dungeonEntranceRegexp.MatchString(name) ||
+			portalEntranceRegexp.MatchString(name) {
 			continue
 		}
 

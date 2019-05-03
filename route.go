@@ -15,6 +15,18 @@ import (
 // give up completely if routing fails too many times
 const maxTries = 50
 
+// names of portals from the subrosia side. log and logic care about these, but
+// rom code doesn't.
+var subrosianPortalNames = map[string]string{
+	"eastern suburbs":      "volcanoes east",
+	"spool swamp":          "subrosia market",
+	"mt. cucco":            "strange brothers",
+	"eyeglass lake":        "great furnace",
+	"horon village":        "house of pirates",
+	"temple remains lower": "volcanoes west",
+	"temple remains upper": "d8",
+}
+
 // adds nodes to the map based on default contents of item slots.
 func addDefaultItemNodes(nodes map[string]*logic.Node) {
 	for key, slot := range rom.ItemSlots {
@@ -131,6 +143,7 @@ type RouteInfo struct {
 	Seed                 uint32
 	Seasons              map[string]byte
 	Entrances            map[string]string
+	Portals              map[string]string
 	Companion            int // 1 to 3
 	UsedItems, UsedSlots *list.List
 	RingMap              map[string]string
@@ -174,8 +187,9 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		// slot initial nodes before algorithm slots progression items
 		if game == rom.GameSeasons {
 			ri.Seasons = rollSeasons(ri.Src, r)
+			ri.Portals = setPortals(ri.Src, r, ropts.portals)
 		}
-		ri.Entrances = setDungeonEntrances(ri.Src, r, game, ropts.entrances)
+		ri.Entrances = setDungeonEntrances(ri.Src, r, game, ropts.dungeons)
 		placeDungeonItems(ri.Src, r, game, ropts.hard,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
@@ -354,6 +368,41 @@ func setDungeonEntrances(src *rand.Rand,
 	return dungeonEntranceMap
 }
 
+// connect subrosia portals, randomly or vanilla-ly.
+func setPortals(src *rand.Rand, r *Route, shuffle bool) map[string]string {
+	portalMap := make(map[string]string)
+	var portals = []string{
+		"eastern suburbs", "spool swamp", "mt. cucco", "eyeglass lake",
+		"horon village", "temple remains lower", "temple remains upper",
+	}
+
+	// reset exits
+	for _, portal := range portals {
+		r.ClearParents(fmt.Sprintf("exit %s portal", portal))
+		r.ClearParents(fmt.Sprintf("exit %s portal",
+			subrosianPortalNames[portal]))
+	}
+
+	var connects = make([]string, len(portals))
+	copy(connects, portals)
+
+	if shuffle {
+		src.Shuffle(len(connects), func(i, j int) {
+			connects[i], connects[j] = connects[j], connects[i]
+		})
+	}
+
+	for i := 0; i < len(portals); i++ {
+		portalMap[portals[i]] = connects[i]
+		r.AddParent(fmt.Sprintf("exit %s portal", subrosianPortalNames[connects[i]]),
+			fmt.Sprintf("enter %s portal", portals[i]))
+		r.AddParent(fmt.Sprintf("exit %s portal", portals[i]),
+			fmt.Sprintf("enter %s portal", subrosianPortalNames[connects[i]]))
+	}
+
+	return portalMap
+}
+
 // randomly determines animal companion and returns its ID (1 to 3)
 func rollAnimalCompanion(src *rand.Rand, r *Route, game int) int {
 	companion := src.Intn(3) + 1
@@ -491,7 +540,7 @@ func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
 		}
 	}
 
-	panic("could not place dungeon-specific items")
+	panic("could not place dungeon-specific item: " + itemName)
 }
 
 // place item in the given slot, and remove it from the pool

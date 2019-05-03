@@ -14,6 +14,14 @@ seasons:
   # stairs on the "roof" of d2
   d2 alt left: {entry: 0x765d, exit: 0x7935}
   d2 alt right: {entry: 0x7661, exit: 0x7939}
+
+  eastern suburbs portal: {entry: 0x74fd, exit: 0x76b5}
+  spool swamp portal: {entry: 0x7501, exit: 0x76b9}
+  mt. cucco portal: {entry: 0x7601, exit: 0x76bd}
+  eyeglass lake portal: {entry: 0x7509, exit: 0x76c1}
+  horon village portal: {entry: 0x7905, exit: 0x7729}
+  temple remains lower portal: {entry: 0x750d, exit: 0x76c5}
+  temple remains upper portal: {entry: 0x788d, exit: 0x76c9}
 ages:
   d1: {entry: 0x7718, exit: 0x7ad0}
   d2: {entry: 0x772c, exit: 0x7ad4}
