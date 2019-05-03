@@ -38,8 +38,8 @@ func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
 		slot := es.Value.(*graph.Node)
 
 		r.Graph.ClearMarks()
-		if slot.GetMark(slot, hard) != graph.MarkTrue ||
-			!canAffordSlot(r, slot, hard) {
+		if !fillUnused && (slot.GetMark(slot, hard) != graph.MarkTrue ||
+			!canAffordSlot(r, slot, hard)) {
 			continue
 		}
 

@@ -199,6 +199,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		// slot progression items
 		done := r.Graph["done"]
 		success := true
+		r.Graph.ClearMarks()
 		for done.GetMark(done, ropts.hard) != graph.MarkTrue {
 			if verbose {
 				logf("searching; have %d more slots", slotList.Len())
@@ -340,6 +341,10 @@ func setDungeonEntrances(src *rand.Rand,
 
 	if game == rom.GameSeasons {
 		dungeons = []string{"d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"}
+		if !shuffle {
+			r.ClearParents("d2 alt entrances enabled")
+			r.AddParent("d2 alt entrances enabled", "start")
+		}
 	} else {
 		dungeons = []string{"d1", "d2", "d3", "d4", "d5",
 			"d6 present", "d6 past", "d7", "d8"}

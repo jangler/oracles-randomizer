@@ -49,23 +49,20 @@ var seasonsD1Nodes = map[string]*Node{
 }
 
 var seasonsD2Nodes = map[string]*Node{
-	// "alt enter d2" isn't randomized, but in entrance rando it's hooked
-	// directly to "d2 roller chest" and the alternate entrances are removed.
-	"enter d2":     Root(),
-	"alt enter d2": Root(),
+	"enter d2": Root(),
 
 	// 0 keys
 	"d2 torch room":         Or("enter d2", "d2 rope chest"),
 	"d2 left from entrance": AndSlot("d2 torch room"),
 	"d2 rope drop":          AndSlot("d2 torch room", "kill normal"),
-	"d2 arrow room": Or("alt enter d2",
+	"d2 arrow room": Or("d2 alt entrances",
 		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
 	"d2 rope chest": AndSlot("d2 arrow room", "kill normal"),
 	"d2 rupee room": And("d2 arrow room", "bombs"),
-	"d2 blade chest": OrSlot("alt enter d2",
+	"d2 blade chest": OrSlot("d2 alt entrances",
 		And("d2 arrow room", Or("kill normal", Hard("bracelet")))),
 	"d2 roller chest": AndSlot("d2 bomb wall", "bombs", "bracelet"),
-	"d2 spiral chest": AndSlot("alt enter d2", "bombs"),
+	"d2 spiral chest": AndSlot("d2 roller chest"),
 
 	// 2 keys
 	"d2 spinner":  And("d2 roller chest", Count(2, "d2 small key")),
