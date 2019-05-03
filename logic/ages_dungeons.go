@@ -1,6 +1,8 @@
 package logic
 
 var agesD1Nodes = map[string]*Node{
+	"enter d1": Root(),
+
 	// 0 keys
 	"d1 east terrace": AndSlot("enter d1", "kill switch hook"),
 	"d1 ghini drop":   AndSlot("d1 east terrace"),
@@ -25,6 +27,8 @@ var agesD1Nodes = map[string]*Node{
 }
 
 var agesD2Nodes = map[string]*Node{
+	"enter d2": Root(),
+
 	// 0 keys
 	"spiked beetles owl": And("mystery seeds", "enter d2"),
 	"d2 bombed terrace":  AndSlot("enter d2", "kill spiked beetle", "bombs"),
@@ -64,6 +68,8 @@ var agesD2Nodes = map[string]*Node{
 }
 
 var agesD3Nodes = map[string]*Node{
+	"enter d3": Root(),
+
 	// 0 keys
 	"d3 pols voice chest": AndSlot("enter d3", "bombs"),
 	"d3 1F spinner":       And("enter d3", Or("kill moldorm", "bracelet")),
@@ -127,6 +133,8 @@ var agesD3Nodes = map[string]*Node{
 }
 
 var agesD4Nodes = map[string]*Node{
+	"enter d4": Root(),
+
 	// 0 keys
 	"d4 first chest": AndSlot("enter d4", Or("kill normal", "push enemy"),
 		Or("feather", "switch hook")),
@@ -167,6 +175,8 @@ var agesD4Nodes = map[string]*Node{
 // every chest not behind a key door in d5 requires you to be able to hit a
 // switch, so that's a requirement for the first node.
 var agesD5Nodes = map[string]*Node{
+	"enter d5": Root(),
+
 	// 0 keys
 	"d5 switch A": And("enter d5", "kill normal",
 		Or("hit switch", Hard("bracelet"))),
@@ -203,6 +213,9 @@ var agesD5Nodes = map[string]*Node{
 }
 
 var agesD6Nodes = map[string]*Node{
+	"enter d6 present": Root(),
+	"enter d6 past":    Root(),
+
 	// past, 0 keys
 	"d6 past color room": AndSlot(
 		"enter d6 past", "feather", "kill switch hook"),
@@ -261,49 +274,57 @@ var agesD6Nodes = map[string]*Node{
 		Or("sword", "expert's ring", Hard()), "switch hook"),
 }
 
-// assume mermaid suit.
 // leaving/entering the dungeon (but not loading a file) resets the water
 // level. this is necessary to make keys work out, since otherwise you can
 // drain the water level without getting enough keys to refill it! there just
 // aren't enough chests otherwise.
 var agesD7Nodes = map[string]*Node{
+	// now that dungeon entrances are randomized, mermaid suit can't be assumed
+	// anymore. the current functionality is that being in underwater rooms
+	// without mermaid suit is ok (the game acts like you have it anyway), but
+	// you aren't allowed to surface, since you would just die if you did.
+	"enter d7": Root(),
+
 	// 0 keys
-	"d7 spike chest": AndSlot("enter d7"),
+	"d7 spike chest": AndSlot("enter d7", Or("mermaid suit", "flood d7")),
 	"d7 crab chest": AndSlot("enter d7",
 		Or("kill underwater", And("drain d7", "kill normal"))),
 	"d7 diamond puzzle": AndSlot("enter d7", "switch hook"),
-	"d7 flower room":    AndSlot("enter d7", "long hook"),
-	"golden isle owl":   And("mystery seeds", "enter d7"),
+	"d7 flower room":    AndSlot("enter d7", "flippers", "long hook", "feather"),
+	"golden isle owl": And("mystery seeds", "enter d7",
+		Or("mermaid suit", "flood d7")),
 	"d7 stairway chest": AndSlot("enter d7",
-		Or("long hook", And("refill d7", "cane"))),
-	"d7 right wing": AndSlot("d7 stairway chest", "kill moldorm"),
+		Or("long hook", And("drain d7", "cane", Or("feather", "flippers")))),
+	"d7 right wing": AndSlot("d7 stairway chest", "kill moldorm",
+		Or("mermaid suit", "flood d7")),
 
-	// 3 keys - enough to drain dungeon (and also refill 1F)
-	"drain d7":               And("enter d7", Count(3, "d7 small key")),
-	"refill d7":              And("drain d7", "switch hook"),
+	// 3 keys - enough to drain dungeon
+	"drain d7": And("enter d7",
+		Or("flood d7", And("mermaid suit", Count(3, "d7 small key")))),
 	"jabu switch room owl":   And("mystery seeds", "drain d7"),
 	"d7 boxed chest":         AndSlot("drain d7"),
 	"d7 pot island chest":    AndSlot("drain d7", "switch hook"),
 	"d7 cane/diamond puzzle": AndSlot("drain d7", "long hook", "cane"),
 
 	// 4 keys - enough to choose any water level
-	"flood d7":       And("refill d7", "long hook", Count(4, "d7 small key")),
+	"flood d7":       And("enter d7", "long hook", Count(4, "d7 small key")),
 	"d7 3F terrace":  AndSlot("flood d7"),
 	"d7 left wing":   AndSlot("flood d7"),
 	"plasmarine owl": And("mystery shooter", "flood d7"),
 	"d7 boss":        AndSlot("d7 boss key", "flood d7"),
 
 	// 5 keys
-	"d7 hallway chest": AndSlot("drain d7", "long hook",
-		Count(5, "d7 small key")),
+	"d7 hallway chest": AndSlot("flood d7", Count(5, "d7 small key")),
 
 	// 7 keys
-	"d7 miniboss chest": AndSlot("d7 stairway chest", "feather",
+	"d7 miniboss chest": AndSlot("d7 stairway chest", "flippers", "feather",
 		Or("sword", "boomerang", "scent shooter"), Count(7, "d7 small key")),
 	"d7 post-hallway chest": AndSlot("flood d7", Count(7, "d7 small key")),
 }
 
 var agesD8Nodes = map[string]*Node{
+	"enter d8": Root(),
+
 	// 0 keys
 	"open ears owl": And("mystery seeds", "enter d8"),
 	"d8 1F chest":   AndSlot("enter d8", "bombs"),

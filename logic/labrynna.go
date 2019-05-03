@@ -64,7 +64,7 @@ var labrynnaNodes = map[string]*Node{
 	"syrup": And("yoll graveyard", "graveyard key",
 		Or("flippers", "bomb jump 2", "dimitri's flute", "long hook")),
 	"graveyard poe": AndSlot("yoll graveyard", "graveyard key", "bracelet"),
-	"enter d1":      And("yoll graveyard", "graveyard key"),
+	"d1 entrance":   And("yoll graveyard", "graveyard key"),
 
 	// western woods
 	// it's possible to switch hook the octorok through the boulder to enter
@@ -85,7 +85,7 @@ var labrynnaNodes = map[string]*Node{
 			HardAnd("feather", Or("sword", "bombs")))),
 	"deku forest owl":     And("mystery seeds", "deku forest tree"),
 	"deku forest soldier": AndSlot("deku forest", "mystery seeds"),
-	"enter d2":            And("deku forest", Or("bombs", "currents")),
+	"d2 entrance":         And("deku forest", Or("bombs", "currents")),
 
 	// crescent island
 	// the western present portal responds to currents only, in order to
@@ -104,7 +104,7 @@ var labrynnaNodes = map[string]*Node{
 	"crescent present west": Or("dimitri's flute",
 		And("lynna city", "mermaid suit"),
 		And("crescent past", Or("currents", And("shovel", "echoes")))),
-	"enter d3":              And("crescent present west"),
+	"d3 entrance":           And("crescent present west"),
 	"hidden tokay cave":     AndSlot("lynna city", "mermaid suit"),
 	"under crescent island": AndSlot("lynna city", "mermaid suit"),
 	"tokay pot cave":        AndSlot("crescent past", "long hook"),
@@ -120,8 +120,8 @@ var labrynnaNodes = map[string]*Node{
 		And("moosh nuun", Or("flute", "currents",
 			And("break bush", "jump 3"))))),
 	"symmetry present": And("nuun", Or("currents", "flute")),
-	"symmetry city tree": AndSlot(Or("sword", "punch object",
-		And("dimitri's flute", "enter d4")), "seed item", "symmetry present"),
+	"symmetry city tree": AndSlot(Or("sword", "punch object", "seed item",
+		And("dimitri's flute", "d4 entrance")), "symmetry present"),
 	"symmetry past": And("symmetry present",
 		Or("ages", And("break bush safe", "echoes"))),
 	"symmetry city brother": AndSlot("symmetry past"),
@@ -132,7 +132,7 @@ var labrynnaNodes = map[string]*Node{
 	"patch": And("restoration wall", Or("sword",
 		HardOr("shield", "boomerang", "switch hook", "scent seeds", "shovel"))),
 	"talus peaks chest": OrSlot("restoration wall"),
-	"enter d4":          And("symmetry present", "tuni nut", "patch"),
+	"d4 entrance":       And("symmetry present", "tuni nut", "patch"),
 
 	// rolling ridge. what a nightmare
 	"goron elder": AndSlot("bomb flower", "switch hook",
@@ -153,12 +153,12 @@ var labrynnaNodes = map[string]*Node{
 		Or("defeat great moblin", And("ridge upper present", "feather"))),
 	"ridge upper present": Or(And("ridge base present", "switch hook"),
 		And("defeat great moblin", "feather")),
-	"enter d5": And("crown key", "ridge upper present"),
+	"d5 entrance": And("crown key", "ridge upper present"),
 	"ridge base present": Or("ridge upper present",
 		"ridge mid present",
 		And("currents", Or("ridge base past east", "ridge base past west"))),
 	"mermaid legend owl":       And("ridge base present"),
-	"enter d6 present":         And("old mermaid key", "ridge base present"),
+	"d6 present entrance":      And("old mermaid key", "ridge base present"),
 	"pool in d6 entrance":      AndSlot("ridge base present", "mermaid suit"),
 	"goron dance present":      AndSlot("ridge base present"),
 	"goron dance, with letter": AndSlot("ridge base past", "goron letter"),
@@ -192,7 +192,7 @@ var labrynnaNodes = map[string]*Node{
 		And("ridge base past east", Or("flippers", Hard("bomb jump 2"))),
 		"ridge mid past"), // Ledge added to prevent softlocks
 	"ridge base past": AndSlot("ridge base past west", "bombs"),
-	"enter d6 past": And("mermaid key", "ridge base past west",
+	"d6 past entrance": And("mermaid key", "ridge base past west",
 		Or("flippers", And("ages", "feather"), Hard("bomb jump 2"))),
 	"ridge diamonds past": AndSlot("ridge base past west", "switch hook"),
 	"bomb goron head": AndSlot("bombs", Or(
@@ -227,14 +227,14 @@ var labrynnaNodes = map[string]*Node{
 		Or("book of seals", "bomb jump 3")),
 	"clean seas":           And("zora village", "fairy powder"),
 	"zora seas chest":      AndSlot("clean seas"),
-	"enter d7":             And("king zora", "clean seas"),
+	"d7 entrance":          And("king zora", "clean seas"),
 	"fisher's island cave": AndSlot("mermaid suit", "ages", "long hook"),
 	"zora's reward":        AndSlot("d7 boss"),
 
 	// sea of storms / sea of no return
 	"piratian captain":   AndSlot("lynna city", "mermaid suit", "zora scale"),
 	"sea of storms past": AndSlot("lynna city", "mermaid suit", "zora scale"),
-	"enter d8": And("crescent past", "tokay eyeball", "kill normal", "break pot",
-		"bombs", Or("cane", Hard()), "mermaid suit", "feather"),
-	"sea of no return": AndSlot("enter d8", "power glove"),
+	"d8 entrance": And("crescent past", "tokay eyeball", "kill normal",
+		"break pot", "bombs", Or("cane", Hard()), "mermaid suit", "feather"),
+	"sea of no return": AndSlot("d8 entrance", "power glove"),
 }

@@ -14,3 +14,13 @@ seasons:
   # stairs on the "roof" of d2
   d2 alt left: {entry: 0x765d, exit: 0x7935}
   d2 alt right: {entry: 0x7661, exit: 0x7939}
+ages:
+  d1: {entry: 0x7718, exit: 0x7ad0}
+  d2: {entry: 0x772c, exit: 0x7ad4}
+  d3: {entry: 0x75c8, exit: 0x7ad8}
+  d4: {entry: 0x75cc, exit: 0x7adc}
+  d5: {entry: 0x76b0, exit: 0x7ae0}
+  d6 present: {entry: 0x7748, exit: 0x7c48}
+  d6 past: {entry: 0x79b4, exit: 0x7c54}
+  d7: {entry: 0x7874, exit: 0x7c60}
+  d8: {entry: 0x7730, exit: 0x7c74}

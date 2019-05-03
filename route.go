@@ -327,7 +327,8 @@ func setDungeonEntrances(src *rand.Rand,
 	if game == rom.GameSeasons {
 		dungeons = []string{"d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"}
 	} else {
-		panic("dungeon entrance randomization NYI for ages!")
+		dungeons = []string{"d1", "d2", "d3", "d4", "d5",
+			"d6 present", "d6 past", "d7", "d8"}
 	}
 
 	// reset entrances

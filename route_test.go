@@ -9,8 +9,8 @@ import (
 )
 
 func TestGraph(t *testing.T) {
-	testSeasonsGraph(t)
-	// testAgesGraph(t)
+	// testSeasonsGraph(t)
+	testAgesGraph(t)
 }
 
 // check that graph logic is working as expected
@@ -65,41 +65,37 @@ func testAgesGraph(t *testing.T) {
 	}, "black tower worker", false, true)
 
 	// test hard logic via bombs as weapon
-	checkReach(t, g, map[string]string{
+	testMap := map[string]string{
 		"starting chest":     "bombs, 10",
 		"nayru's house":      "bracelet",
 		"black tower worker": "shovel",
-	}, "d2 bombed terrace", false, false)
-	checkReach(t, g, map[string]string{
-		"starting chest":     "bombs, 10",
-		"nayru's house":      "bracelet",
-		"black tower worker": "shovel",
-	}, "d2 bombed terrace", true, true)
+		"d2 entrance":        "enter d2",
+	}
+	checkReach(t, g, testMap, "d2 bombed terrace", false, false)
+	checkReach(t, g, testMap, "d2 bombed terrace", true, true)
 
 	// test key counting
-	checkReach(t, g, map[string]string{
-		"starting chest":      "sword 1",
+	testMap = map[string]string{
+		"starting chest":      "sword",
 		"nayru's house":       "bombs, 10",
 		"black tower worker":  "dimitri's flute",
-		"d3 pols voice chest": "d3 small key",
-	}, "d3 bush beetle room", false, false)
-	checkReach(t, g, map[string]string{
-		"starting chest":      "sword 1",
-		"nayru's house":       "bombs, 10",
-		"black tower worker":  "dimitri's flute",
+		"d3 entrance":         "enter d3",
 		"d3 pols voice chest": "d3 small key",
 		"d3 statue drop":      "d3 small key",
-		"d3 armos drop":       "d3 small key",
-	}, "d3 bush beetle room", false, true)
+	}
+	checkReach(t, g, testMap, "d3 bush beetle room", false, false)
+	testMap["d3 armos drop"] = "d3 small key"
+	checkReach(t, g, testMap, "d3 bush beetle room", false, true)
 
 	// test bombs from head thwomp in hard logic
 	headThwompBombMap := map[string]string{
 		"starting chest":        "bracelet",
-		"nayru's house":         "harp 1",
-		"black tower worker":    "harp 2",
-		"lynna city chest":      "switch hook 1",
+		"nayru's house":         "harp",
+		"black tower worker":    "harp",
+		"lynna city chest":      "switch hook",
 		"fairies' woods chest":  "iron shield",
-		"symmetry city brother": "sword 1",
+		"symmetry city brother": "sword",
+		"d2 entrance":           "enter d2",
 		"d2 moblin drop":        "feather",
 		"d2 basement drop":      "d2 small key",
 		"d2 thwomp tunnel":      "d2 small key",
@@ -136,6 +132,7 @@ func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 		if parent == "" {
 			g[child].ClearParents()
 		} else {
+			println(parent, child)
 			g[child].AddParents(g[parent])
 		}
 	}
