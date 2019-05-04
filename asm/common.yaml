@@ -9,7 +9,7 @@ defines:
   COLLECT_CHEST: 0x38
   COLLECT_DIVE: 0x49
   COLLECT_CHEST_MAP_OR_COMPASS: 0x68
-  SND_CLINK: 0x5a
+  SND_CLINK: 0x50
   SND_ERROR: 0x5a
   SND_SOLVEPUZZLE_2: 0x5b
   TREASURE_SHIELD: 0x01
@@ -26,10 +26,28 @@ defines:
   TREASURE_TUNE_OF_ECHOES: 0x25
   TREASURE_TUNE_OF_CURRENTS: 0x26
   TREASURE_RING: 0x2d
+  TREASURE_FLIPPERS: 0x2e
   TREASURE_BOSS_KEY: 0x31
   TREASURE_MAKU_SEED: 0x36
+  TREASURE_STAR_ORE: 0x45
   TREASURE_GORON_LETTER: 0x59
   DEV_RING: 0x40
+
+  # script commands
+  scriptend: 0x00
+  jumptable_memoryaddress: 0x87
+  ormemory: 0x92
+  showtext: 0x98
+  checkcfc0bit0: 0xa0
+  disableinput: 0xbd
+  enableinput: 0xbe
+  callscript: 0xc0
+  retscript: 0xc1
+  jumpifmemoryeq: 0xcb
+  checkcollidedwithlink_onground: 0xd0
+  setcounter1: 0xd7
+  giveitem: 0xde
+  asm15: 0xe0
 
   # hram
   hRomBank: 0x97
@@ -56,6 +74,7 @@ defines:
   # rom 00
   interBankCall: 0x008a
   setFlag: 0x020e
+  getNumSetBits: 0x0176
   decHlRef16WithCap: 0x0237
 
   # rom 3f
@@ -494,6 +513,17 @@ banks:
 # the extra indent level here isn't strictly necessary, but it aligns with the
 # code in the other banks. also note that freeCode is a map and *not* a list.
 freeCode:
+  # bank 0a seasons / 0b ages
+
+  # i think this prevent gasha nut rings from displaying additional text along
+  # with auto-appraisal.
+  removeGashaNutRingText: |
+    ld a,c
+    cp a,04
+    jp nz,showText
+    pop hl
+    ret
+
   # bank 15 seasons / 16 ages
 
   # given a treasure id & subid in b & c, if the treasure needs to be upgraded,
@@ -603,6 +633,8 @@ freeCode:
       ld a,b
       ld (de),a
       ret
+
+  # bank 3f seasons / 38 ages
 
   lookupKeyDrop_body: |
       push bc

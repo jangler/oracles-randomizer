@@ -61,10 +61,6 @@ func initSeasonsEOB() {
 	r.replaceAsm(0x00, 0x39df,
 		"push de; ld a,(ff00+8c)", "jp loadWinterLayout")
 
-	callBank2 := addrString(r.assembler.getDef("callBank2"))
-	searchValue := addrString(r.assembler.getDef("searchValue"))
-	readSeason := addrString(r.assembler.getDef("readDefaultSeason"))
-
 	// bank 02
 
 	r.replaceAsm(0x02, 0x602c,
@@ -140,82 +136,21 @@ func initSeasonsEOB() {
 		"call checkGlobalFlag", "call checkBeachItemObtained")
 	r.replaceAsm(0x08, 0x62f2,
 		"inc l; ld (hl),45", "call setStarOreIds")
-	r.replaceAsm(0x09, 0x641a,
-		"ld bc,2701", "jp createMtCuccoItem")
-
-	// give fake treasure 0f for the strange flute item.
-	shopIDFunc := r.appendToBank(0x08, "shop give fake id func",
-		"\x1e\x42\x1a\xfe\x0d\xc0\x21\x93\xc6\xcb\xfe\xc9")
-	r.replace(0x08, 0x4bfe, "shop give fake id call",
-		"\x1e\x42\x1a", "\xcd"+shopIDFunc)
 
 	// allow desert pits to work even if player has the actual bell already.
 	r.replaceAsm(0x08, 0x73a2, "jr c,09", "nop; nop")
 
-	// ORs the default season in the given area (low byte b in bank 1) with the
-	// seasons the rod has (c), then ANDs and compares the results with d.
-	warningHelper := r.appendToBank(0x15, "warning helper",
-		"\x1e\x01\x21"+readSeason+"\xcd\x8a\x00"+ // get default season
-			"\x78\xb7\x3e\x01\x28\x05\xcb\x27\x05\x20\xfb"+ // match rod format
-			"\xb1\xa2\xba\xc9") // OR with c, AND with d, compare with d, ret
-	// returns c if the player has gale seeds and the seed satchel. used for
-	// warnings for cliffs and diving.
-	checkGaleSatchel := r.appendToBank(0x15, "check gale satchel",
-		"\xc5\x47\x3e\x19\xcd\x17\x17\x30\x05\x3e\x23\xcd\x17\x17\x78\xc1\xc9")
-	warnGeneric := r.appendToBank(0x15, "warn generic",
-		"\xcd\xc6\x3a\xc0\x36\x9f\x2e\x46\x36\x3c"+ // init object
-			"\x01\x00\xf1\x11\x0b\xd0\xcd\x1a\x22"+ // set position
-			"\x3e\x50\xcd\x74\x0c"+ // play sound
-			"\x21\xc0\xcf\xcb\xc6\xc9") // set $cfc0 bit and ret
-	warnCliff := r.appendToBank(0x15, "warn cliff",
-		"\xaf\xea\xe0\xcf\xc3"+warnGeneric)
-	warnFlowerCliff := r.appendToBank(0x15, "warn flower cliff",
-		"\xcd"+checkGaleSatchel+"\xd8"+
-			"\x06\x61\x16\x01\xcd"+warningHelper+"\xc8\xc3"+warnCliff)
-	warnDivingSpot := r.appendToBank(0x15, "warn diving spot",
-		"\x78\xfe\x03\xc8\xcd"+checkGaleSatchel+"\xd8"+
-			"\x06\x61\x16\x09\xcd"+warningHelper+"\xc8\xc3"+warnCliff)
-	warnWaterfallCliff := r.appendToBank(0x15, "warn waterfall cliff",
-		"\xcd"+checkGaleSatchel+"\xd8"+
-			"\x06\x65\x16\x02\xcd"+warningHelper+"\xc8\xc3"+warnCliff)
-	warnMoblinKeep := r.appendToBank(0x15, "warn moblin keep",
-		"\xcd"+checkGaleSatchel+"\xd8"+
-			"\xfa\x10\xc6\xfe\x0c\xc0\x3e\x17\xcd\x17\x17\xd8\xc3"+warnCliff)
-	warnHSSSkip := r.appendToBank(0x15, "warn hss skip",
-		"\xfa\x86\xca\xb7\xc0\xcd\x56\x19\xcb\x76\xc0\xcb\xf6"+
-			"\x3e\x02\xea\xe0\xcf\xc3"+warnGeneric)
-	// this communicates with the warning script by setting bit zero of $cfc0
-	// if the warning needs to be displayed (based on room, season, etc), and
-	// also displays the exclamation mark if so.
-	warningFunc := r.appendToBank(0x15, "warning func",
-		"\xc5\xd5\xcd"+addrString(r.endOfBank[0x15]+8)+"\xd1\xc1\xc9"+ // wrap
-			"\xfa\x4e\xcc\x47\xfa\xb0\xc6\x4f\xfa\x4c\xcc"+ // load env data
-			"\xfe\x7c\xca"+warnFlowerCliff+
-			"\xfe\x6e\xca"+warnDivingSpot+"\xfe\x3d\xca"+warnWaterfallCliff+
-			"\xfe\x5c\xca"+warnMoblinKeep+"\xfe\x78\xca"+warnHSSSkip+
-			"\xc3"+warnGeneric)
-	warnCliffText := r.appendToBank(0x0b, "cliff warning script",
-		"\x98\x26\x00\xbe\x00") // show cliff warning text
-	warnBushText := r.appendToBank(0x0b, "bush warning script",
-		"\x00") // impossible since 2.2.0
-	warnSkipText := r.appendToBank(0x0b, "skip warning script",
-		"\x98\x26\x02\xbe\x00") // show key skip warning text
-	// point to this script instead of the normal maku gate script
-	warningScript := r.appendToBank(0x0b, "warning script",
-		"\xcb\x4c\xcc\xd9\x87\x4e"+ // use maku gate script if on that screen
-			"\xd0\xe0"+warningFunc+"\xa0\xbd\xd7\x3c"+ // wait for collision
-			"\x87\xe0\xcf"+warnCliffText+warnBushText+warnSkipText) // jp table
-	r.replace(0x08, 0x5663, "warning script pointer", "\x87\x4e", warningScript)
+	r.replaceAsm(0x08, 0x5663, "dw 4e87", "dw script_checkDisplayWarning")
 
-	// remove volcano cutscene.
-	rmVolcano := r.appendToBank(0x02, "remove volcano scene",
-		"\xcd\x56\x19\xcb\xf6\x11\x44\xd2\x3e\x02\x12\x21\x14\x63\xcd\xfe\x24"+
-			"\x3e\x15\xc3\xcd\x30")
-	r.replace(0x08, 0x7d07, "call remove volcano scene",
-		"\xfa\x18\xcd\xb7\xc0\xcd\x56\x19\xcb\xf6\x3e\x0b\xea\x04\xcc\xcd",
-		"\xfa\x44\xd2\xfe\x01\xc0\xcd\xd9\x3a\x21"+rmVolcano+"\xc3"+callBank2)
-	r.replace(0x08, 0x7cf5, "enable volcano exit",
-		"\xea\xab\xcc", "\x00\x00\x00")
+	// (volcano cutscene skip)
+	r.replaceAsm(0x08, 0x7d07,
+		"ld a,(cd18); or a; ret nz; call getThisRoomFlags;"+
+			"set 6,(hl); ld a,0b; ld (cc04),a",
+		"ld a,(d244); cp a,01; ret nz; call interactionDelete;"+
+			"ld hl,skipVolcanoCutscene; jp callBank2")
+
+	// enable exit from volcano room after skipping cutscene.
+	r.replaceAsm(0x08, 0x7cf5, "ld (ccab),a", "nop; nop; nop")
 
 	// remove generic "you got a ring" text for rings from shops
 	r.replace(0x08, 0x4d55, "obtain ring text replacement (shop) 1", "\x54", "\x00")
@@ -223,96 +158,53 @@ func initSeasonsEOB() {
 
 	// bank 09
 
-	// shared by maku tree and star-shaped ore.
-	// TODO: i'm not sure whether maku tree needs this anymore, since the
-	//       collect mode func goes off script position now. is it still
-	//       required to determine whether you picked up the drop or something?
-	starOreRoomTable := r.appendToBank(0x02, "star ore room table",
-		string(starOreRooms)+"\xff")
-	makuTreeRoomTable := r.appendToBank(0x02, "maku tree room table",
-		string(makuTreeRooms)+"\xff")
-	bank2IDFunc := r.appendToBank(0x02, "bank 2 fake id func",
-		"\xfa\x49\xcc\xfe\x01\x28\x05\xfe\x02\x28\x11\xc9"+ // compare group
-			"\xfa\x4c\xcc\x21"+starOreRoomTable+"\xcd"+searchValue+
-			"\xc0\x21\x94\xc6\xcb\xd6\xc9"+
-			"\xfa\x4c\xcc\x21"+makuTreeRoomTable+"\xcd"+searchValue+
-			"\xc0\x21\x93\xc6\xcb\xd6\xc9")
-	bank9IDFunc := r.appendToBank(0x09, "bank 9 fake id func",
-		"\xf5\xe5\x21"+bank2IDFunc+"\xcd"+callBank2+"\xe1\xf1\xcd\xeb\x16\xc9")
-	r.replace(0x09, 0x42e1, "bank 9 fake id call", "\xeb\x16", bank9IDFunc)
+	r.replaceAsm(0x09, 0x42e0,
+		"call giveTreasure", "call setFakeIdsForStarOreAndMakuTree")
+	r.replaceAsm(0x09, 0x4b4f,
+		"ld (wWarpTransition2),a", "call essenceWarp")
+	r.replaceAsm(0x09, 0x4d9a,
+		"call 4ed9", "call checkFluteCollisions")
+	r.replaceAsm(0x09, 0x4dad,
+		"call 4ed9", "call checkFluteCollisions")
+	r.replaceAsm(0x09, 0x641a,
+		"ld bc,2701", "jp createMtCuccoItem")
+	r.replaceAsm(0x09, 0x7887,
+		"rst 18; ldi a,(hl); ld c,(hl)", "call tradeStarOre")
+	r.replaceAsm(0x09, 0x7d95,
+		"call checkTreasureObtained", "call makuTreeCheckItem")
 
-	// animals called by flute normally veto any nonzero collision value for
-	// the purposes of entering a screen, but this allows double-wide bridges
-	// (1a and 1b) as well. this specifically fixes the problem of not being
-	// able to call an animal on the d1 screen, or on the bridge to the screen
-	// to the right. the vertical collision check isn't modified, since bridges
-	// only run horizontally.
-	fluteCollisionFunc := r.appendToBank(0x09, "flute collision func",
-		"\x06\x01\x7e\xfe\x1a\x28\x06\xfe\x1b\x28\x02\xb7\xc0"+ // first tile
-			"\x7d\x80\x6f\x7e\xfe\x1a\x28\x05\xfe\x1b\x28\x01\xb7"+ // second
-			"\x7d\xc0\xcd\x89\x20\xaf\xc9") // vanilla stuff
-	r.replaceMultiple([]Addr{{0x09, 0x4d9a}, {0x09, 0x4dad}},
-		"flute collision calls", "\xcd\xd9\x4e", "\xcd"+fluteCollisionFunc)
-
-	// remove star ore from inventory when buying the first subrosian market
-	// item. this can't go in the gain/lose items table, since the given item
-	// doesn't necessarily have a unique ID.
-	tradeStarOre := r.appendToBank(0x09, "trade star ore func",
-		"\xb7\x20\x07\xe5\x21\x9a\xc6\xcb\xae\xe1\xdf\x2a\x4e\xc9")
-	r.replace(0x09, 0x7887, "trade star ore call",
-		"\xdf\x2a\x4e", "\xcd"+tradeStarOre)
-
-	// use custom "give item" func in the subrosian market.
+	// use custom "give item" func in subrosia market.
 	r.replaceAsm(0x09, 0x788a,
 		"cp a,2d; jr nz,03; call getRandomRingOfGivenTier; call giveTreasure; ld e,42",
 		"db 00,00,00,00,00,00,00; call marketGiveTreasure; jr c,0b")
 
-	// check treasure id 0a to determine whether the maku tree gives its intro
-	// speech and item, but return the number of essences in a.
-	makuTreeCheckItem := r.appendToBank(0x09, "maku tree check item",
-		"\xcd\x17\x17\xfa\xbb\xc6\xc9")
-	r.replace(0x09, 0x7d93, "maku tree check item call",
-		"\x3e\x40\xcd\x17\x17", "\x3e\x0a\xcd"+makuTreeCheckItem)
-
-	// use a non-cutscene screen transition for exiting a dungeon via essence,
-	// so that overworld music plays, and set maku tree state.
-	essenceWarp := r.appendToBank(0x09, "essence warp",
-		"\x3e\x81\xea\x67\xcc\xfa\xbb\xc6\xcd\x76\x01\xea\xdf\xc6\xc9")
-	r.replace(0x09, 0x4b4f, "call essence warp",
-		"\xea\x67\xcc", "\xcd"+essenceWarp)
-
 	// bank 0a
 
-	r.replaceAsm(0x0a, 0x66ed,
-		"db 1e,78,1a,cb,7f,20", // dunno what this is
-		"call setInitialFlags; jp objectDelete_useActiveObjectType")
-
+	r.replaceAsm(0x0a, 0x4863,
+		"jp showText", "jp removeGashaNutRingText")
 	r.replaceAsm(0x0a, 0x7b93,
 		"call giveTreasure", "call giveTreasureCustom")
 	r.replaceAsm(0x0a, 0x7b9e,
 		"jp showText", "ret; nop; nop")
 
-	// remove generic "you got a ring" text for gasha nuts
-	gashaNutRingText := r.appendToBank(0x0a, "remove ring text from gasha nut",
-		"\x79\xfe\x04\xc2\x4b\x18\xe1\xc9")
-	r.replace(0x0a, 0x4863, "remove ring text from gasha nut caller",
-		"\xc3\x4b\x18", "\xc3"+gashaNutRingText)
+	r.replaceAsm(0x0a, 0x66ed,
+		"db 1e,78,1a,cb,7f,20", // dunno what this is
+		"call setInitialFlags; jp objectDelete_useActiveObjectType")
 
 	// bank 0b
 
 	// command and corresponding address in jump table
 	r.replace(0x0b, 0x4dea, "d1 entrance cmd byte", "\xa0", "\xb2")
-	r.replace(0x0b, 0x406d, "jump d1EntranceScriptCmd",
-		"\x03\x41", addrString(r.assembler.getDef("d1EntranceScriptCmd")))
+	r.replaceAsm(0x0b, 0x406d,
+		"dw scriptEnd", "dw d1EntranceScriptCmd")
 
-	diverIDScript := r.appendToBank(0x0b, "diver fake id script",
-		"\xde\x2e\x00\x92\x94\xc6\x02\xc1")
-	r.replace(0x0b, 0x730d, "diver fake id call",
-		"\xde\x2e\x00", "\xc0"+diverIDScript)
+	r.replaceAsm(0x0b, 0x730d,
+		"db giveitem; db TREASURE_FLIPPERS; db 00",
+		"db callscript; dw script_diverGiveItem")
 
 	// skip forced ring appraisal and ring list with vasu (prevents softlock)
-	r.replace(0x0b, 0x4a2b, "skip vasu ring appraisal",
-		"\x98\x33", "\x4a\x39")
+	r.replaceAsm(0x0b, 0x4a2b,
+		"db showtext; db 33", "dw 394a")
 
 	r.replaceAsm(0x0b, 0x4416,
 		"ld (hl),60; inc l", "call lookupKeyDropBank0b")
@@ -325,31 +217,17 @@ func initSeasonsEOB() {
 
 	// bank 11
 
-	// the interaction on the mount cucco waterfall/vine screen
-	waterfallInteractions := r.appendToBank(0x11, "waterfall interactions",
-		"\xf2\x1f\x08\x68\x68\x22\x0a\x20\x18\xfe")
-	r.replace(0x11, 0x6c10, "waterfall cliff interaction jump",
-		"\xf2\x1f\x08\x68", "\xf3"+waterfallInteractions+"\xff")
-	// natzu / woods of winter cliff
-	flowerCliffInteractions := r.appendToBank(0x11, "flower cliff interactions",
-		"\xf2\x9c\x00\x58\x58\x22\x0a\x30\x58\xfe")
-	r.replace(0x11, 0x6568, "flower cliff interaction jump",
-		"\xf2\x9c\x00\x58", "\xf3"+flowerCliffInteractions+"\xff")
-	// sunken city diving spot
-	divingSpotInteractions := r.appendToBank(0x11, "diving spot interactions",
-		"\xf2\x1f\x0d\x68\x68\x3e\x31\x18\x68\x22\x0a\x64\x68\xfe")
-	r.replace(0x11, 0x69cc, "diving spot interaction jump",
-		"\xf2\x1f\x0d\x68", "\xf3"+divingSpotInteractions+"\xff")
-	// moblin keep -> sunken city
-	moblinKeepInteractions := r.appendToBank(0x11, "moblin keep interactions",
-		"\xf2\xab\x00\x40\x70\x22\x0a\x58\x44\xf8\x2d\x00\x33\xfe")
-	r.replace(0x11, 0x650b, "moblin keep interaction jump",
-		"\xf2\xab\x00\x40", "\xf3"+moblinKeepInteractions+"\xff")
-	// hss skip room
-	hssSkipInteractions := r.appendToBank(0x11, "hss skip interactions",
-		"\xf2\x22\x0a\x88\x98\xf3\x93\x55\xfe")
-	r.replace(0x11, 0x7ada, "hss skip interaction jump",
-		"\xf3\x93\x55", "\xf3"+hssSkipInteractions)
+	// these are all for adding warning interactions
+	r.replaceAsm(0x11, 0x6c10,
+		"db f2,1f,08,68", "db f3; dw waterfallStaticObjects; db ff")
+	r.replaceAsm(0x11, 0x6568,
+		"db f2,9c,00,58", "db f3; dw flowerCliffStaticObjects; db ff")
+	r.replaceAsm(0x11, 0x69cc,
+		"db f2,1f,0d,68", "db f3; dw divingSpotStaticObjects; db ff")
+	r.replaceAsm(0x11, 0x650b,
+		"db f2,ab,00,40", "db f3; dw moblinKeepStaticObjects; db ff")
+	r.replaceAsm(0x11, 0x7ada,
+		"db f3,93,55", "db f3; dw hssSkipStaticObjects; db ff")
 
 	// bank 14
 
@@ -384,19 +262,12 @@ func initSeasonsEOB() {
 
 	r.replaceAsm(0x00, 0x16f6,
 		"call giveTreasure_body", "call satchelRefillSeeds")
+	r.replaceAsm(0x3f, 0x452b,
+		"call applyParameter", "call activateFlute")
 	r.replaceAsm(0x3f, 0x4356,
 		"call _interactionGetData", "call checkLoadCustomSprite")
 	r.replaceAsm(0x3f, 0x4535,
 		"call playSound", "call playSoundExceptForLinkedStartItem")
-
-	// "activate" a flute by setting its icon and song when obtained. also
-	// activates the corresponding animal companion.
-	setFluteIcon := r.appendToBank(0x3f, "flute set icon func",
-		"\xf5\xd5\xe5\x78\xfe\x0e\x20\x15\x1e\xaf\x79\xd6\x0a\x12\xc6\x42"+
-			"\x26\xc6\x6f\xfe\x45\x20\x04\xcb\xee\x18\x02\xcb\xfe"+
-			"\xe1\xd1\xf1\xcd\x4e\x45\xc9")
-	r.replace(0x3f, 0x452c, "flute set icon call", "\x4e\x45", setFluteIcon)
-
 	r.replaceAsm(0x3f, 0x460d,
 		"ld hl,4616", "ld hl,seedCapacityTable")
 	r.replaceAsm(0x3f, 0x461a,

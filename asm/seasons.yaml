@@ -18,6 +18,7 @@ defines:
   wSwordLevel: 0xc6ac
   wObtainedSeasons: 0xc6b0
   wFeatherLevel: 0xc6b4
+  wEssencesObtained: 0xc6bb
   wActiveRing: 0xc6c5
   wRingBoxLevel: 0xc6c6
   wRememberedCompanionRoom: 0xcc42
@@ -28,6 +29,7 @@ defines:
   wDungeonIndex: 0xcc55
   wWarpDestGroup: 0xcc63
   wWarpDestIndex: 0xcc64
+  wWarpTransition2: 0xcc67
   wActiveTileType: 0xccb6
 
   # rom 00
@@ -55,6 +57,7 @@ defines:
   setGlobalFlag: 0x30cd
   setTile: 0x3a52
   getFreeInteractionSlot: 0x3ac6
+  interactionDelete: 0x3ad9
   getFreePartSlot: 0x3ea7
 
   # rom 02
@@ -70,17 +73,22 @@ defines:
   # rom 05
   _specialObjectGetRelativeTileWithDirectionTable: 0x44aa
 
+  # rom 0b
+  scriptEnd: 0x4103
+
   # rom 15
   treasureObjectData: 0x5129
 
   # rom 3f
+  applyParameter: 0x454e
   realignUnappraisedRings: 0x4675
   interaction60SubidData: 0x66dc
 
 banks:
   0x00:
   # call a function hl in bank 02, preserving af. e can't be used as a
-  # parameter to that function, but it can be returned.
+  # parameter to that function, but it can be returned. this function only
+  # exists because banks 08 and 09 are so tight on space.
   - callBank2: |
       push af
       ld e,02
@@ -229,6 +237,45 @@ banks:
       db 30,1b,99,9b,d9,1a,01,19
       db 00,70,71,15,16,17,f7,7a,8c
       db 11,18,19,80,81,01,19,70
+
+  # skip the cutscene when throwing a bomb into the volcano.
+  - skipVolcanoCutscene: |
+      call getThisRoomFlags
+      set 6,(hl)
+      ld de,d244
+      ld a,02
+      ld (de),a
+      ld hl,6314
+      call interactionSetScript
+      ld a,15
+      jp setGlobalFlag
+
+  # star ore and maku tree both need fake treasure ids to check instead of the
+  # vanilla ones.
+  - makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
+  - setFakeIdsForStarOreAndMakuTree_body: |
+      ld a,(wActiveGroup)
+      cp a,01
+      jr z,.subrosia
+      cp a,02
+      jr z,.indoors
+      ret
+      .subrosia
+      ld a,(wActiveRoom)
+      ld hl,starOreRooms
+      call searchValue
+      ret nz
+      ld hl,c694
+      set 2,(hl)
+      ret
+      .indoors
+      ld a,(wActiveRoom)
+      ld hl,makuTreeRooms
+      call searchValue
+      ret nz
+      ld hl,c693
+      set 2,(hl)
+      ret
 
   0x04:
   # data for applyAllTileSubstitutions: group,room,flags,yx,tile
@@ -441,13 +488,15 @@ banks:
 
   0x08:
   # call giveTreasureCustom instead of giveTreasure in the shop iff the given
-  # item is randomized.
+  # item is randomized. also set fake treasure id 0f when buying the "flute",
+  # so that that id can be checked instead of the flute's to determine whether
+  # to stock the item.
   - shopGiveTreasure: |
       push bc
       ld b,a
       ld a,l
       push hl
-      ld hl,shopItemLowAddrs
+      ld hl,randomizedShopItemLowAddrs
       call searchValue
       pop hl
       ld a,b
@@ -457,17 +506,23 @@ banks:
       ret
       .next
       call giveTreasureCustom
+      ld e,42
+      ld a,(de) # subid
+      cp a,0d
+      ret nz
+      ld hl,c693 # in wObtainedTreasureFlags
+      set 7,(hl)
       ret
 
   # these are the low bytes of randomized shop item data addresses.
-  - shopItemLowAddrs: |
+  - randomizedShopItemLowAddrs: |
       db e9,cf,d3,d9
 
   # star ore item doesn't normally get a subid. values are replaced at
   # randomization.
   - setStarOreIds: |
       inc l
-      ld (hl),45
+      ld (hl),TREASURE_STAR_ORE
       inc l
       ld (hl),00
       ret
@@ -509,6 +564,83 @@ banks:
       ld bc,0000
       call createTreasure
       jp 6421
+
+  # see function in bank 02.
+  - setFakeIdsForStarOreAndMakuTree: |
+      push af
+      push hl
+      ld hl,setFakeIdsForStarOreAndMakuTree_body
+      call callBank2
+      pop hl
+      pop af
+      call giveTreasure
+      ret
+
+  # animals called by flute normally veto any nonzero collision value for the
+  # purposes of entering a screen, but this allows double-wide bridges (1a and
+  # 1b) as well. this specifically fixes the problem of not being able to call
+  # an animal on the d1 screen, or on the bridge to the screen to the right.
+  # the vertical collision check isn't modified, since bridges only run
+  # horizontally.
+  - checkFluteCollisions: |
+      ld b,01
+      ld a,(hl)
+      cp a,1a
+      jr z,.firstTileMatched
+      cp a,1b
+      jr z,.firstTileMatched
+      or a
+      ret nz
+      .firstTileMatched
+      ld a,l
+      add a,b
+      ld l,a
+      ld a,(hl)
+      cp a,1a
+      jr z,.secondTileMatched
+      cp a,1b
+      jr z,.secondTileMatched
+      or a
+      .secondTileMatched
+      ld a,l
+      ret nz
+      call convertShortToLongPosition
+      xor a
+      ret
+
+  # remove star ore from inventory when buying the first subrosian market
+  # item. this can't go in the gain/lose items table, since the given item
+  # doesn't necessarily have a unique ID.
+  - tradeStarOre: |
+      or a
+      jr nz,.next
+      push hl
+      ld hl,c69a
+      res 5,(hl)
+      pop hl
+      .next
+      rst 18
+      ldi a,(hl)
+      ld c,(hl)
+      ret
+
+  # check treasure id 0a to determine whether the maku tree gives its intro
+  # speech and item instead of checking essences.
+  - makuTreeCheckItem: |
+      ld a,0a
+      call checkTreasureObtained
+      ld a,(wEssencesObtained)
+      ret
+
+  # use a non-cutscene screen transition for exiting a dungeon via essence, so
+  # that overworld music plays, and set maku tree state.
+  - essenceWarp: |
+      ld a,81
+      ld (wWarpTransition2),a
+      ld a,(wEssencesObtained)
+      call getNumSetBits
+      ld (c6df),a # some maku tree state var? ages-disasm doesn't specify it
+      ret
 
   0x0a:
   # flags in wGlobalFlags to be set at start of game.
@@ -596,6 +728,8 @@ banks:
 
       ret
 
+  - removeGashaNutRingText: /include removeGashaNutRingText
+
   0x0b:
   # custom script command to use on d1 entrance screen: set ccaa to 01 until
   # bit of cfc0 is set. fixes a vanilla bug where dismounting an animal on
@@ -616,6 +750,78 @@ banks:
       ld (hl),60
       inc l
       jp lookupKeyDrop
+
+  - script_warnCliffText: |
+      db showtext; dw 0026
+      db enableinput
+      db scriptend
+
+  - script_warnBushText: |
+      db scriptend # impossible since 2.2.0?
+
+  - script_warnKeySkipText: |
+      db showtext; dw 0226
+      db enableinput
+      db scriptend
+
+  - script_checkDisplayWarning: |
+      db jumpifmemoryeq; dw wActiveRoom; db d9; dw 4e87 # use vanilla script
+      db checkcollidedwithlink_onground
+      db asm15; dw checkDisplayWarning
+      db checkcfc0bit0
+      db disableinput
+      db setcounter1; db 3c
+      db jumptable_memoryaddress; dw cfe0 # value set by warning function
+      dw script_warnCliffText
+      dw script_warnBushText
+      dw script_warnKeySkipText
+
+  # give a fake item id for the master diver to check instead of flippers. the
+  # item id and subid at the beginning of this script are changed during
+  # randomization.
+  - script_diverGiveItem: |
+      db giveitem; db TREASURE_FLIPPERS; db 00
+      db ormemory; dw c694; db 02 # in wObtainedTreasureFlags
+      db retscript
+
+  0x11:
+  # mount cucco waterfall/vine screen (add warning)
+  - waterfallStaticObjects: |
+      db f2
+      db 1f,08,68,68
+      db 22,0a,20,18
+      db fe
+
+  # natzu / woods of winter cliff (add warning)
+  - flowerCliffStaticObjects: |
+      db f2
+      db 9c,00,58,58
+      db 22,0a,30,58
+      db fe
+
+  # sunken city diving spot (add warning)
+  - divingSpotStaticObjects: |
+      db f2
+      db 1f,0d,68,68
+      db 3e,31,18,68
+      db 22,0a,64,68
+      db fe
+
+  # moblin keep -> sunken city ledge (add warning)
+  - moblinKeepStaticObjects: |
+      db f2
+      db ab,00,40,70
+      db 22,0a,58,44
+      db f8
+      db 2d,00,33
+      db fe
+
+  # hss skip room (add warning)
+  - hssSkipStaticObjects: |
+      db f2
+      db 22,0a,88,98
+      db f3; dw 5593
+      db fe
 
   0x14:
   # make the rod of seasons interaction behave like a regular item,
@@ -677,6 +883,152 @@ banks:
       ld a,(seasonAfterPirateCutscene)
       ld (wRoomStateModifier),a
       ret
+
+  # ORs the default season in the given area (low byte b in bank 1) with the
+  # seasons the rod has (c), then ANDs and compares the results with d.
+  - checkSeasonAccessInArea: |
+      ld e,01
+      ld hl,readDefaultSeason
+      call interBankCall
+      ld a,b
+      or a
+      ld a,01
+      jr z,.next
+      .loop
+      sla a
+      dec b
+      jr nz,.loop
+      .next
+      or c
+      and d
+      cp d
+      ret
+
+  # returns c if the player has gale seeds and the seed satchel. used for
+  # warnings for cliffs and diving.
+  - checkGaleSatchel: |
+      push bc
+      ld b,a
+      ld a,TREASURE_SEED_SATCHEL
+      call checkTreasureObtained
+      jr nc,.next
+      ld a,TREASURE_GALE_SEEDS
+      call checkTreasureObtained
+      .next
+      ld a,b
+      pop bc
+      ret
+
+  # all other warning functions jump here.
+  - warnGeneric: |
+      call getFreeInteractionSlot
+      ret nz
+      ld (hl),9f
+      ld l,46
+      ld (hl),3c
+      ld bc,f100
+      ld de,w1Link.yh
+      call objectCopyPositionWithOffset
+      ld a,SND_CLINK
+      call playSound
+      ld hl,cfc0
+      set 0,(hl)
+      ret
+
+  # set cfe0 to the cliff warning text, then display the warning.
+  - warnCliff: |
+      xor a
+      ld (cfe0),a
+      jp warnGeneric
+
+  # warning for the ledge from natzu to eastern suburbs.
+  - warnFlowerCliff: |
+      call checkGaleSatchel
+      ret c
+      ld b,61 # eastern suburbs
+      ld d,01 # spring
+      call checkSeasonAccessInArea
+      ret z
+      jp warnCliff
+
+  # warning for the diving spot from sunken city to woods of winter.
+  - warnDivingSpot: |
+      ld a,b
+      cp a,03 # winter
+      ret z
+      call checkGaleSatchel
+      ret c
+      ld b,61 # eastern suburbs
+      ld d,09 # spring + winter
+      call checkSeasonAccessInArea
+      ret z
+      jp warnCliff
+
+  # warning for the ledge from mt. cucco to sunken city.
+  - warnWaterfallCliff: |
+      call checkGaleSatchel
+      ret c
+      ld b,65 # sunken city / mt. cucco
+      ld d,02 # summer
+      call checkSeasonAccessInArea
+      ret z
+      jp warnCliff
+
+  # warning for the ledge from moblin keep to sunken city.
+  - warnMoblinKeep: |
+      call checkGaleSatchel
+      ret c
+      ld a,(wAnimalRegion)
+      cp a,0c # dimitri
+      ret nz
+      ld a,TREASURE_FEATHER
+      call checkTreasureObtained
+      ret c
+      jp warnCliff
+
+  # warning for small key softlock with HSS skip. checks and sets room flags so
+  # as not to display the warning more than once, ever.
+  - warnHssSkip: |
+      ld a,(ca86) # check if ice puzzle room is visited?
+      or a
+      ret nz
+      call getThisRoomFlags
+      bit 6,(hl)
+      ret nz
+      set 6,(hl)
+      ld a,02
+      ld (cfe0),a # warning text jump table index
+      jp warnGeneric
+
+  # wraps checkDisplayWarning
+  - checkDisplayWarning: |
+      push bc
+      push de
+      call checkDisplayWarning_body
+      pop de
+      pop bc
+      ret
+
+  # this communicates with the warning script by setting bit zero of $cfc0
+  # if the warning needs to be displayed (based on room, season, etc), and
+  # also displays the exclamation mark if so.
+  - checkDisplayWarning_body: |
+      ld a,(wRoomStateModifier)
+      ld b,a
+      ld a,(wObtainedSeasons)
+      ld c,a
+      ld a,(wActiveRoom)
+      cp a,7c
+      jp z,warnFlowerCliff
+      cp a,6e
+      jp z,warnDivingSpot
+      cp a,3d
+      jp z,warnWaterfallCliff
+      cp a,5c
+      jp z,warnMoblinKeep
+      cp a,78
+      jp z,warnHssSkip
+      jp warnGeneric
 
   0x3f:
   # have seed satchel inherently refill all seeds.
@@ -839,3 +1191,32 @@ banks:
       ld a,e
       ret z
       jp playSound
+
+  # setting a flute's icon and song when obtained. also makes the corresponding
+  # animal companion rideable, etc.
+  - activateFlute: |
+      push af
+      push de
+      push hl
+      ld a,b
+      cp a,TREASURE_FLUTE
+      jr nz,.done
+      ld e,af
+      ld a,c
+      sub a,0a # get animal index item parameter
+      ld (de),a
+      add a,42
+      ld h,c6
+      ld l,a # hl = flags for relevant animal
+      cp a,45
+      jr nz,.moosh
+      set 5,(hl)
+      jr .done
+      .moosh
+      set 7,(hl)
+      .done
+      pop hl
+      pop de
+      pop af
+      call applyParameter
+      ret

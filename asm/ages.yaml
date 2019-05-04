@@ -624,6 +624,8 @@ banks:
       call setGlobalFlag
       ret
 
+  - removeGashaNutRingText: /include removeGashaNutRingText
+
   0x0c:
   - lookupKeyDropBank0c: |
       ld (hl),60

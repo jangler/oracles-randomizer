@@ -123,7 +123,7 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 		codeAddr = codeMutables["setHardOreIds"].(*MutableRange).Addrs[0]
 		ItemSlots["great furnace"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["great furnace"].subIDAddrs[0].offset = codeAddr.offset + 5
-		codeAddr = codeMutables["diver fake id script"].(*MutableRange).Addrs[0]
+		codeAddr = codeMutables["script_diverGiveItem"].(*MutableRange).Addrs[0]
 		ItemSlots["master diver's reward"].idAddrs[0].offset = codeAddr.offset + 1
 		ItemSlots["master diver's reward"].subIDAddrs[0].offset = codeAddr.offset + 2
 		codeAddr = codeMutables["createMtCuccoItem"].(*MutableRange).Addrs[0]
