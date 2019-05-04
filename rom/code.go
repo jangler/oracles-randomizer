@@ -41,8 +41,14 @@ type romBanks struct {
 // used for unmarshaling asm data from yaml.
 type asmData struct {
 	Defines  map[string]uint16
-	Banks    map[byte][]map[string]string
+	Appends  map[byte][]map[string]string
+	Replaces map[byte][]AsmReplacement
 	FreeCode map[string]string `yaml:"freeCode"`
+}
+
+type AsmReplacement struct {
+	Addr     uint16
+	Old, New string
 }
 
 var codeMutables = map[string]Mutable{}
@@ -210,7 +216,7 @@ func iterBankItems(ads []*asmData) chan bankItem {
 
 	go func() {
 		for _, ad := range ads {
-			for bank, items := range ad.Banks {
+			for bank, items := range ad.Appends {
 				for _, item := range items {
 					c <- bankItem{bank, item}
 				}
@@ -258,7 +264,7 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 	originalEOBs := make([]uint16, 0x40)
 	copy(originalEOBs, r.endOfBank)
 
-	// write asm using placeholders for labels, in order to get real addrs
+	// write EOB asm using placeholders for labels, in order to get real addrs
 	for item := range iterBankItems(ads) {
 		for name, body := range item.item {
 			r.appendAsm(item.bank, name, body)
@@ -268,10 +274,19 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 	// reset EOB boundaries
 	copy(r.endOfBank, originalEOBs)
 
-	// rewrite asm, using real addresses for labels
+	// rewrite EOB asm, using real addresses for labels
 	for item := range iterBankItems(ads) {
 		for name, body := range item.item {
 			r.appendAsm(item.bank, name, body)
+		}
+	}
+
+	// make non-EOB asm replacements
+	for _, ad := range ads {
+		for bank, items := range ad.Replaces {
+			for _, item := range items {
+				r.replaceAsm(bank, item.Addr, item.Old, item.New)
+			}
 		}
 	}
 }

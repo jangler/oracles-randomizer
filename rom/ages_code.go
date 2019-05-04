@@ -53,8 +53,6 @@ func initAgesEOB() {
 
 	// bank 00
 
-	r.replaceAsm(0x00, 0x0c9a,
-		"ld h,a; ld a,(ff00+b7)", "call filterMusic")
 	r.replaceAsm(0x00, 0x3e56,
 		"inc a; cp a,11", "call checkMakuState")
 

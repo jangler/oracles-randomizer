@@ -46,6 +46,7 @@ defines:
   jumpifmemoryeq: 0xcb
   checkcollidedwithlink_onground: 0xd0
   setcounter1: 0xd7
+  spawnitem: 0xdd
   giveitem: 0xde
   asm15: 0xe0
 
@@ -81,7 +82,7 @@ defines:
   _interactionGetData: 0x4437
   giveTreasure_body: 0x44c8
 
-banks:
+appends:
   0x00:
   # don't play any music. should only be called if the -nomusic flag is
   # given.

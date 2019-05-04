@@ -84,7 +84,7 @@ defines:
   realignUnappraisedRings: 0x4675
   interaction60SubidData: 0x66dc
 
-banks:
+appends:
   0x00:
   # call a function hl in bank 02, preserving af. e can't be used as a
   # parameter to that function, but it can be returned. this function only
@@ -770,7 +770,7 @@ banks:
       db asm15; dw checkDisplayWarning
       db checkcfc0bit0
       db disableinput
-      db setcounter1; db 3c
+      db setcounter1,3c
       db jumptable_memoryaddress; dw cfe0 # value set by warning function
       dw script_warnCliffText
       dw script_warnBushText
@@ -1000,7 +1000,7 @@ banks:
       ld (cfe0),a # warning text jump table index
       jp warnGeneric
 
-  # wraps checkDisplayWarning
+  # wraps checkDisplayWarning.
   - checkDisplayWarning: |
       push bc
       push de
@@ -1220,3 +1220,290 @@ banks:
       pop af
       call applyParameter
       ret
+
+  # this *MUST* be the last thing in the bank, since it's going to grow
+  # dynamically later.
+  - owlText: ''
+
+replaces:
+  0x00:
+  - addr: 0x0c76
+    old: ld h,a; ld a,(ff00+hMusicVar)
+    new: call filterMusic
+  - addr: 0x16f6
+    old: call giveTreasure_body
+    new: call satchelRefillSeeds
+  - addr: 0x25d9
+    old: ld e,41; ld a,(de)
+    new: call overrideAnimationId
+  - addr: 0x2600
+    old: ld e,41; ld a,(de)
+    new: call overrideAnimationId
+  - addr: 0x3854
+    old: call applyAllTileSubstitutions
+    new: call applyExtraTileSubstitutions
+  - addr: 0x39df
+    old: push de; ld a,(ff00+8c)
+    new: jp loadWinterLayout
+
+  0x02:
+  # tree warp stuff
+  - addr: 0x5e9a
+    old: call setMusicVolume
+    new: call devWarp
+  - addr: 0x5ec8
+    old: call _mapMenu_checkRoomVisited
+    new: call checkTreeVisited
+  - addr: 0x602c
+    old: jp nz,_closeMenu
+    new: call nz,treeWarp
+  - addr: 0x6089
+    old: jp nz,_closeMenu
+    new: call nz,treeWarp
+  - addr: 0x609b
+    old: call _mapMenu_checkCursorRoomVisited
+    new: call checkCursorVisited
+  - addr: 0x65e1
+    old: call _mapMenu_checkRoomVisited
+    new: call checkTreeVisited
+
+  # ring stuff
+  - addr: 0x5035
+    old: call setMusicVolume
+    new: call ringListGfxFix
+  - addr: 0x56a1
+    old: ld a,(wInventorySubmenu1CursorPos)
+    new: call openRingList
+  - addr: 0x6f4a
+    old: call _ringMenu_updateSelectedRingFromList
+    new: call autoEquipRing
+
+  0x03:
+  - addr: 0x4d6b
+    old: call decHlRef16WithCap
+    new: call skipCapcom
+
+  0x04:
+  - addr: 0x461e
+    old: ld a,(wWarpDestIndex)
+    new: call checkSetAnimalSavePoint
+
+  0x05:
+  - addr: 0x493b
+    old: call _specialObjectGetRelativeTileWithDirectionTable; or a
+    new: call animalEntryIgnoreBridges; nop
+  - addr: 0x5fe8
+    old: call lookupCollisionTable
+    new: call cliffLookup
+  - addr: 0x71ea
+    old: call _specialObjectGetRelativeTileWithDirectionTable; or a
+    new: call animalEntryIgnoreBridges; nop
+  - addr: 0x776b
+    old: ld a,(wAnimalRegion)
+    new: call checkFlute
+  - addr: 0x7a65
+    old: ld a,(wAnimalRegion)
+    new: call checkFlute
+
+  0x06:
+  - addr: 0x4774
+    old: call setTile
+    new: call checkBreakD6Flower
+  - addr: 0x47f5
+    old: call getFreePartSlot
+    new: call dropExtraGalesOnEmpty
+
+  # use expert's or fist ring with only one button unequipped
+  - addr: 0x490e
+    old: ret nz
+    new: nop
+
+  0x07:
+  - addr: 0x5b75
+    old: ld a,(wActiveTileType); cp a,08
+    new: call devChangeSeason; nop; nop
+
+  0x08:
+  - addr: 0x4bfb
+    old: call giveTreasure
+    new: call shopGiveTreasure
+  - addr: 0x5663
+    old: dw 4e87
+    new: dw script_checkDisplayWarning
+  - addr: 0x62a7
+    old: call checkGlobalFlag
+    new: call checkBeachItemObtained
+  - addr: 0x62f2
+    old: inc l; ld (hl),45
+    new: call setStarOreIds
+
+  # remove generic "you got a ring" text for rings from shops.
+  - addr: 0x4d55
+    old: db 54,54
+    new: db 00,00
+
+  # allow desert pits to work even if player has the actual bell already.
+  - addr: 0x73a2
+    old: jr c,09
+    new: nop; nop
+
+  # enable exit from volcano room after skipping cutscene.
+  - addr: 0x7cf5
+    old: ld (ccab),a
+    new: nop; nop; nop
+
+  # set up for and call skipVolcanoCutscene.
+  - addr: 0x7d07
+    old: |
+      ld a,(cd18)
+      or a
+      ret nz
+      call getThisRoomFlags
+      set 6,(hl)
+      ld a,0b
+      ld (cc04),a
+    new: |
+      ld a,(d244)
+      cp a,01
+      ret nz
+      call interactionDelete
+      ld hl,skipVolcanoCutscene
+      jp callBank2
+
+  0x09:
+  - addr: 0x42e0
+    old: call giveTreasure
+    new: call setFakeIdsForStarOreAndMakuTree
+  - addr: 0x4b4f
+    old: ld (wWarpTransition2),a
+    new: call essenceWarp
+  - addr: 0x4d9a
+    old: call 4ed9
+    new: call checkFluteCollisions
+  - addr: 0x4dad
+    old: call 4ed9
+    new: call checkFluteCollisions
+  - addr: 0x641a
+    old: ld bc,2701
+    new: jp createMtCuccoItem
+  - addr: 0x7887
+    old: rst 18; ldi a,(hl); ld c,(hl)
+    new: call tradeStarOre
+  - addr: 0x788a
+    old: |
+      cp a,2d
+      jr nz,03
+      call getRandomRingOfGivenTier
+    new: |
+      call marketGiveTreasure
+      jr c,12
+      jr 05
+  - addr: 0x7d95
+    old: call checkTreasureObtained
+    new: call makuTreeCheckItem
+
+  0x0a:
+  - addr: 0x4863
+    old: jp showText
+    new: jp removeGashaNutRingText
+  - addr: 0x66ed
+    old: db 1e,78,1a,cb,7f,20 # dunno what this is
+    new: call setInitialFlags; jp objectDelete_useActiveObjectType
+  - addr: 0x7b93
+    old: call giveTreasure
+    new: call giveTreasureCustom
+  - addr: 0x7b9e
+    old: jp showText
+    new: ret; nop; nop
+
+  0x0b:
+  - addr: 0x4416
+    old: ld (hl),60; inc l
+    new: call lookupKeyDropBank0b
+  - addr: 0x4b8f
+    old: db spawnitem,2a,00
+    new: db asm15; dw spawnBossItem
+  - addr: 0x4bb1
+    old: db spawnitem,2a,00
+    new: db asm15; dw spawnBossItem
+  - addr: 0x730d
+    old: db giveitem,TREASURE_FLIPPERS; db scriptend
+    new: db callscript; dw script_diverGiveItem
+
+  # new script command address and id
+  - addr: 0x406d
+    old: dw scriptEnd
+    new: dw d1EntranceScriptCmd
+  - addr: 0x4dea
+    old: db checkcfc0bit0
+    new: db b2
+
+  # skip forced ring appraisal and ring list with vasu (prevents softlock).
+  - addr: 0x4a2b
+    old: db showtext,33
+    new: dw 394a # dunno what this is either
+
+  0x11:
+  # these are all for adding warning interactions
+  - addr: 0x650b
+    old: db f2,ab,00,40
+    new: db f3; dw moblinKeepStaticObjects; db ff
+  - addr: 0x6568
+    old: db f2,9c,00,58
+    new: db f3; dw flowerCliffStaticObjects; db ff
+  - addr: 0x69cc
+    old: db f2,1f,0d,68
+    new: db f3; dw divingSpotStaticObjects; db ff
+  - addr: 0x6c10
+    old: db f2,1f,08,68
+    new: db f3; dw waterfallStaticObjects; db ff
+  - addr: 0x7ada
+    old: db f3; dw 5593
+    new: db f3; dw hssSkipStaticObjects
+
+  0x15:
+  - addr: 0x465a
+    old: ld b,a; swap a
+    new: call modifyTreasure
+  - addr: 0x5a0e
+    old: call setGlobalFlag
+    new: call setPirateCutsceneFlags
+  - addr: 0x5b83
+    old: inc l; ld (hl),52
+    new: call setHardOreIds
+
+  # skip "you got all four seasons text from season spirts.
+  - addr: 0x57c2
+    old: cp a,04
+    new: cp a,05
+
+  # rod cutscene
+  - addr: 0x70cf
+    old: call giveTreasure
+    new: call giveTreasureCustom
+
+  0x1f:
+  # replace ring appraisal text with "you got the {ring}".
+  - addr: 0x5d99
+    old: db 03,13,20,49,04,06
+    new: db 02,03,0f,fd,21,00
+
+  0x3f:
+  - addr: 0x4356
+    old: call _interactionGetData
+    new: call checkLoadCustomSprite
+  - addr: 0x452b
+    old: call applyParameter
+    new: call activateFlute
+  - addr: 0x4535
+    old: call playSound
+    new: call playSoundExceptForLinkedStartItem
+  - addr: 0x460d
+    old: ld hl,4616
+    new: ld hl,seedCapacityTable
+  - addr: 0x461a
+    old: set 6,c; call realignUnappraisedRings
+    new: nop; jp autoAppraiseRing
+  - addr: 0x4fd9
+    old: ld (w7ActiveBank),a
+    new: call useOwlText

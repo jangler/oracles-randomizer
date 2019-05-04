@@ -65,7 +65,7 @@ defines:
   realignUnappraisedRings: 0x466f
   interaction60SubidData: 0x66db
 
-banks:
+appends:
   0x00:
   # searches for an interaction with ID a and returns the ID address in de,
   # and z flag if found.
@@ -810,3 +810,9 @@ banks:
       dec hl
       pop af
       ret
+
+replaces:
+  0x00:
+    - addr: 0x0c9a
+      old: ld h,a; ld a,(ff00+hMusicVar)
+      new: call filterMusic
