@@ -1,6 +1,9 @@
-# addresses are in bank 4. the first byte at each address goes to
-# wWarpDestIndex, and the upper nybble of the second byte goes to
-# wWarpDestGroup.
+# normal entrance/exit warp destinations are in bank 04. the first byte at each
+# address goes to wWarpDestIndex, and the upper nybble of the second byte goes
+# to wWarpDestGroup.
+#
+# warp destinations for getting essences are in bank 09/0a seasons/ages. each
+# four-byte table entry goes directly to warp variables (no further indexing).
 seasons:
   d1: {entry: 0x746d, exit: 0x790d}
   d2: {entry: 0x7659, exit: 0x7911}
@@ -10,6 +13,15 @@ seasons:
   d6: {entry: 0x7481, exit: 0x7921}
   d7: {entry: 0x7485, exit: 0x7a89}
   d8: {entry: 0x769d, exit: 0x7a8d}
+
+  d1 essence: {exit: 0x4b59}
+  d2 essence: {exit: 0x4b5d}
+  d3 essence: {exit: 0x4b61}
+  d4 essence: {exit: 0x4b65}
+  d5 essence: {exit: 0x4b69}
+  d6 essence: {exit: 0x4b6d}
+  d7 essence: {exit: 0x4b71}
+  d8 essence: {exit: 0x4b75}
 
   # stairs on the "roof" of d2
   d2 alt left: {entry: 0x765d, exit: 0x7935}
@@ -32,3 +44,12 @@ ages:
   d6 past: {entry: 0x79b4, exit: 0x7c54}
   d7: {entry: 0x7874, exit: 0x7c60}
   d8: {entry: 0x7730, exit: 0x7c74}
+
+  d1 essence: {exit: 0x474f}
+  d2 essence: {exit: 0x4753}
+  d3 essence: {exit: 0x4757}
+  d4 essence: {exit: 0x475b}
+  d5 essence: {exit: 0x475f}
+  d6 past essence: {exit: 0x4763}
+  d7 essence: {exit: 0x4767}
+  d8 essence: {exit: 0x476b}

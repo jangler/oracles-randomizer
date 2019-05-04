@@ -531,7 +531,9 @@ func setLinkedData(b []byte, game int) {
 type WarpData struct {
 	Entry, Exit uint16 // loaded from yaml
 
-	entryOffset, exitOffset int // calculated after loading
+	// calculated after loading
+	bank                         byte
+	len, entryOffset, exitOffset int
 
 	vanillaEntryData, vanillaExitData []byte // read from rom
 }
@@ -551,22 +553,50 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 	}
 
 	// read vanilla data
-	for _, warp := range warps {
-		warp.entryOffset = (&Addr{0x04, warp.Entry}).fullOffset()
-		warp.vanillaEntryData = make([]byte, 2)
-		copy(warp.vanillaEntryData, b[warp.entryOffset:warp.entryOffset+2])
-		warp.exitOffset = (&Addr{0x04, warp.Exit}).fullOffset()
-		warp.vanillaExitData = make([]byte, 2)
-		copy(warp.vanillaExitData, b[warp.exitOffset:warp.exitOffset+2])
+	for name, warp := range warps {
+		if strings.HasSuffix(name, "essence") {
+			warp.len = 4
+			if game == GameSeasons {
+				warp.bank = 0x09
+			} else {
+				warp.bank = 0x0a
+			}
+		} else {
+			warp.bank, warp.len = 0x04, 2
+		}
+		warp.entryOffset = (&Addr{warp.bank, warp.Entry}).fullOffset()
+		warp.vanillaEntryData = make([]byte, warp.len)
+		copy(warp.vanillaEntryData,
+			b[warp.entryOffset:warp.entryOffset+warp.len])
+		warp.exitOffset = (&Addr{warp.bank, warp.Exit}).fullOffset()
+		warp.vanillaExitData = make([]byte, warp.len)
+		copy(warp.vanillaExitData,
+			b[warp.exitOffset:warp.exitOffset+warp.len])
+	}
+
+	// ages needs essence warp data to d6 present entrance, even though it
+	// doesn't exist in vanilla.
+	if game == GameAges {
+		warps["d6 present essence"] = &WarpData{
+			vanillaExitData: []byte{0x81, 0x0e, 0x16, 0x01},
+		}
 	}
 
 	// set randomized data
 	for srcName, destName := range warpMap {
 		src, dest := warps[srcName], warps[destName]
-		b[src.entryOffset] = dest.vanillaEntryData[0]
-		b[src.entryOffset+1] = dest.vanillaEntryData[1]
-		b[dest.exitOffset] = src.vanillaExitData[0]
-		b[dest.exitOffset+1] = src.vanillaExitData[1]
+		for i := 0; i < src.len; i++ {
+			b[src.entryOffset+i] = dest.vanillaEntryData[i]
+			b[dest.exitOffset+i] = src.vanillaExitData[i]
+		}
+
+		destEssence := warps[destName+" essence"]
+		if destEssence != nil && destEssence.exitOffset != 0 {
+			srcEssence := warps[srcName+" essence"]
+			for i := 0; i < destEssence.len; i++ {
+				b[destEssence.exitOffset+i] = srcEssence.vanillaExitData[i]
+			}
+		}
 	}
 
 	if game == GameSeasons {
