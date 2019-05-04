@@ -422,7 +422,7 @@ func makeSeasonsCollectModeTable() string {
 
 	// add other eight maku tree screens
 	for _, room := range makuTreeRooms[1:] {
-		b.Write([]byte{0x02, room, collectFall})
+		b.Write([]byte{0x02, room, collectSeasonsMakuTree})
 	}
 
 	// add linked hero's cave chest
