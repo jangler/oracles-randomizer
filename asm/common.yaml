@@ -496,10 +496,18 @@ banks:
 freeCode:
   # bank 15 seasons / 16 ages
 
-  # given a treasure ID in b, if the treasure needs to be upgraded, set hl =
-  # the start of the upgraded treasure data + 1 and b = the new treasure ID.
+  # given a treasure id & subid in b & c, if the treasure needs to be upgraded,
+  # set hl = the start of the upgraded treasure data + 1 and b = the new
+  # treasure ID.
   getUpgradedTreasure: |
       ld a,b
+      cp a,TREASURE_SWORD
+      jr nz,.notSpinSlash
+      ld a,c
+      cp a,03
+      ld a,b
+      ret nc
+      .notSpinSlash
       call checkTreasureObtained
       ld c,a
       ld a,b
@@ -580,13 +588,16 @@ freeCode:
       swap a
       ret
 
-  # given a treasure ID in dx42, return hl = the start of the treasure data
-  # + 1, accounting for progressive upgrades. also writes the new treasure
-  # ID to d070, which is used to set the treasure obtained flag.
+  # given a treasure at dx40, return hl = the start of the treasure data + 1,
+  # accounting for progressive upgrades. also writes the new treasure ID to
+  # d070, which is used to set the treasure obtained flag.
   upgradeTreasure: |
       ld e,42
       ld a,(de)
       ld b,a
+      inc de
+      ld a,(de)
+      ld c,a
       call getUpgradedTreasure
       ld e,70
       ld a,b
