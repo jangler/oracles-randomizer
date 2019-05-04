@@ -533,7 +533,8 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for entrance, dungeon := range ri.Entrances {
-				c <- fmt.Sprintf("%s entrance <- %s", entrance, dungeon)
+				c <- fmt.Sprintf("%s entrance <- %s",
+					"D"+entrance[1:], "D"+dungeon[1:])
 			}
 			close(c)
 		})
