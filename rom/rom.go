@@ -606,7 +606,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 		}
 	}
 
-	if game == GameSeasons {
+	if game == GameSeasons && dungeons {
 		// remove alternate d2 entrances and connect d2 stairs exits directly
 		// to each other
 		src, dest := warps["d2 alt left"], warps["d2 alt right"]
