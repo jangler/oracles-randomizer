@@ -3,7 +3,7 @@
 // are specified, Ages comes first.
 package rom
 
-//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml
+//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml
 
 import (
 	"crypto/sha1"
@@ -22,6 +22,8 @@ const (
 	GameAges
 	GameSeasons
 )
+
+var rings []string
 
 func Init(game int) {
 	if game == GameAges {
@@ -44,6 +46,11 @@ func Init(game int) {
 
 	for _, slot := range ItemSlots {
 		slot.Treasure = Treasures[slot.treasureName]
+	}
+
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/rom/rings.yaml"), &rings); err != nil {
+		panic(err)
 	}
 }
 
