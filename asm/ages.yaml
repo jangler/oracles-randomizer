@@ -816,3 +816,8 @@ replaces:
     - addr: 0x0c9a
       old: ld h,a; ld a,(ff00+hMusicVar)
       new: call filterMusic
+
+  0x02:
+  - addr: 0x6649
+    old: ld a,(hl); bit 4,a
+    new: call devRingCheckRoomVisited

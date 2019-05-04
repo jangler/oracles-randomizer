@@ -38,7 +38,7 @@ defines:
   jumptable_memoryaddress: 0x87
   ormemory: 0x92
   showtext: 0x98
-  checkcfc0bit0: 0xa0
+  checkcfc0_bit0: 0xa0
   disableinput: 0xbd
   enableinput: 0xbe
   callscript: 0xc0
@@ -247,6 +247,18 @@ appends:
       cp a,STARTING_TREE_MAP_INDEX
       jp nz,_mapMenu_checkRoomVisited
       or a
+      ret
+
+  # treat all rooms on the map as visited when wearing the dev ring.
+  - devRingCheckRoomVisited: |
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      jr nz,.next
+      or a
+      ret
+      .next
+      ld a,(hl)
+      bit 4,a
       ret
 
   0x03:

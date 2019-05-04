@@ -768,7 +768,7 @@ appends:
       db jumpifmemoryeq; dw wActiveRoom; db d9; dw 4e87 # use vanilla script
       db checkcollidedwithlink_onground
       db asm15; dw checkDisplayWarning
-      db checkcfc0bit0
+      db checkcfc0_bit0
       db disableinput
       db setcounter1,3c
       db jumptable_memoryaddress; dw cfe0 # value set by warning function
@@ -1247,7 +1247,7 @@ replaces:
     new: jp loadWinterLayout
 
   0x02:
-  # tree warp stuff
+  # tree warp / map stuff
   - addr: 0x5e9a
     old: call setMusicVolume
     new: call devWarp
@@ -1263,6 +1263,9 @@ replaces:
   - addr: 0x609b
     old: call _mapMenu_checkCursorRoomVisited
     new: call checkCursorVisited
+  - addr: 0x6578
+    old: ld a,(hl); bit 4,a
+    new: call devRingCheckRoomVisited
   - addr: 0x65e1
     old: call _mapMenu_checkRoomVisited
     new: call checkTreeVisited
@@ -1435,7 +1438,7 @@ replaces:
     old: dw scriptEnd
     new: dw d1EntranceScriptCmd
   - addr: 0x4dea
-    old: db checkcfc0bit0
+    old: db checkcfc0_bit0
     new: db b2
 
   # skip forced ring appraisal and ring list with vasu (prevents softlock).
@@ -1472,7 +1475,7 @@ replaces:
     old: inc l; ld (hl),52
     new: call setHardOreIds
 
-  # skip "you got all four seasons text from season spirts.
+  # skip "you got all four seasons" text from season spirts.
   - addr: 0x57c2
     old: cp a,04
     new: cp a,05
