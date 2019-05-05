@@ -122,7 +122,7 @@ func main() {
 			return
 		}
 
-		rom.Init(game)
+		rom.Init(nil, game)
 		rand.Seed(time.Now().UnixNano())
 		logStats(game, flagN, ropts, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
@@ -146,7 +146,7 @@ func main() {
 			return
 		}
 
-		rom.Init(game)
+		rom.Init(nil, game)
 		if err := rom.ShowAsm(tokens[1], os.Stdout); err != nil {
 			panic(err)
 		}
@@ -232,7 +232,7 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			fatal(err, logf)
 			return
 		} else {
-			rom.Init(game)
+			rom.Init(b, game)
 		}
 		logf("randomizing %s.", infile)
 

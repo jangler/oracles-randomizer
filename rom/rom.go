@@ -3,7 +3,7 @@
 // are specified, Ages comes first.
 package rom
 
-//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml
+//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml ../rom/treasures.yaml
 
 import (
 	"crypto/sha1"
@@ -29,18 +29,29 @@ var rings []string
 // only applies to seasons! used for warps
 var dungeonNameRegexp = regexp.MustCompile(`^d[1-8]$`)
 
-func Init(game int) {
+func Init(b []byte, game int) {
+	Treasures = make(map[string]*Treasure)
+
 	if game == GameAges {
-		ItemSlots = AgesSlots
-		Treasures = AgesTreasures
 		fixedMutables = agesFixedMutables
 		varMutables = agesVarMutables
-		initAgesEOB()
 	} else {
-		ItemSlots = SeasonsSlots
-		Treasures = SeasonsTreasures
 		fixedMutables = seasonsFixedMutables
 		varMutables = seasonsVarMutables
+	}
+
+	if b != nil {
+		loadTreasures(b, game, Treasures)
+		if game == GameAges {
+			ItemSlots = initAgesSlots()
+		} else {
+			ItemSlots = initSeasonsSlots()
+		}
+	}
+
+	if game == GameAges {
+		initAgesEOB()
+	} else {
 		initSeasonsEOB()
 
 		for k, v := range Seasons {
@@ -181,7 +192,7 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 
 		// annoying special case to prevent text on key drop
 		mut := ItemSlots["d7 armos puzzle"]
-		if mut.Treasure.id == SeasonsTreasures["d7 small key"].id {
+		if mut.Treasure.id == Treasures["d7 small key"].id {
 			b[mut.subIDAddrs[0].fullOffset()] = 0x01
 		}
 	} else {
@@ -192,7 +203,7 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 
 		// other special case to prevent text on key drop
 		mut := ItemSlots["d8 stalfos"]
-		if mut.Treasure.id == AgesTreasures["d8 small key"].id {
+		if mut.Treasure.id == Treasures["d8 small key"].id {
 			b[mut.subIDAddrs[0].fullOffset()] = 0x00
 		}
 	}
@@ -215,8 +226,10 @@ func Verify(b []byte, game int) []error {
 		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
 			"pegasus tree seeds", "gale tree seeds":
 		// seasons shop items
-		case "strange flute", "zero shop text", "member's card", "treasure map",
+		case "zero shop text", "member's card", "treasure map",
 			"rare peach stone", "ribbon":
+		// seasons flutes
+		case "dimitri's flute", "moosh's flute":
 		// seasons misc.
 		case "temple of seasons", "blaino prize", "green joy ring",
 			"mt. cucco, platform cave", "diving spot outside D4":

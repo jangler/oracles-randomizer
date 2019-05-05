@@ -15,7 +15,7 @@ func TestGraph(t *testing.T) {
 
 // check that graph logic is working as expected
 func testSeasonsGraph(t *testing.T) {
-	rom.Init(rom.GameSeasons)
+	rom.Init(nil, rom.GameSeasons)
 	r := NewRoute(rom.GameSeasons)
 	g := r.Graph
 
@@ -62,7 +62,7 @@ func testSeasonsGraph(t *testing.T) {
 
 // check that graph logic is working as expected
 func testAgesGraph(t *testing.T) {
-	rom.Init(rom.GameAges)
+	rom.Init(nil, rom.GameAges)
 	r := NewRoute(rom.GameAges)
 	g := r.Graph
 

@@ -105,12 +105,8 @@ func SetTreewarp(treewarp bool) {
 func SetAnimal(companion int) {
 	varMutables["animal region"].(*MutableRange).New =
 		[]byte{byte(companion + 0x0a)}
-
-	// ages
-	if varMutables["flute palette"] != nil {
-		mut := varMutables["flute palette"].(*MutableRange)
-		mut.New[0] = byte(0x10*(4-companion) + 3)
-	}
+	varMutables["flute palette"].(*MutableRange).New =
+		[]byte{byte(0x10*(4-companion) + 3)}
 }
 
 // these mutables have fixed addresses and don't reference other mutables. try
@@ -123,7 +119,9 @@ var fixedMutables map[string]Mutable
 // elsewhere in order to do anything.
 var varMutables map[string]Mutable
 
-// get a collated map of all mutables
+// get a collated map of all mutables, *except* for treasures which do not
+// appear in the seed. this allows things like the three seasons flutes having
+// different data but the same address.
 func getAllMutables() map[string]Mutable {
 	slotMutables := make(map[string]Mutable)
 	treasureMutables := make(map[string]Mutable)

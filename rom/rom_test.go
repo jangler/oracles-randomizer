@@ -8,7 +8,7 @@ import (
 )
 
 func init() {
-	Init(GameSeasons) // XXX have to change this manually to test each game
+	Init(nil, GameSeasons) // XXX have to change this manually to test each game
 }
 
 func TestMutableOverlap(t *testing.T) {

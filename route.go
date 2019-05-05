@@ -641,7 +641,7 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 		default:
 			// substitute identified flute for strange flute
 			treasureName := rom.FindTreasureName(slot.Treasure)
-			if treasureName == "strange flute" {
+			if strings.HasSuffix(treasureName, " flute") {
 				switch companion {
 				case ricky:
 					treasureName = "ricky's flute"

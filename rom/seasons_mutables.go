@@ -315,12 +315,6 @@ var seasonsFixedMutables = map[string]Mutable{
 		"\x00\x00\x00", "\x65\x14\x33"),
 	"fool's ore gfx": MutableString(Addr{0x3f, 0x67ba},
 		"\x00\x00\x00", "\x60\x14\x00"),
-	"ricky's flute gfx": MutableString(Addr{0x3f, 0x67bd},
-		"\x00\x00\x00", "\x5f\x16\x33"),
-	"dimitri's flute gfx": MutableString(Addr{0x3f, 0x67c0},
-		"\x00\x00\x00", "\x5f\x16\x23"),
-	"moosh's flute gfx": MutableString(Addr{0x3f, 0x67c3},
-		"\x00\x00\x00", "\x5f\x16\x13"),
 	"rare peach stone gfx": MutableString(Addr{0x3f, 0x67c6},
 		"\x00\x00\x00", "\x5d\x10\x26"),
 	"ribbon gfx": MutableString(Addr{0x3f, 0x67c9},
@@ -375,12 +369,13 @@ var seasonsVarMutables = map[string]Mutable{
 	// initial seed type
 	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
 
-	// determines what natzu looks like and what animal the flute calls
+	// 33 for ricky, 23 for dimitri, 13 for moosh
+	"flute palette": MutableByte(Addr{0x3f, 0x6747}, 0x03, 0x03),
+	// 0b for ricky, 0c for dimitri, 0d for moosh
 	"animal region": MutableByte(Addr{0x0a, 0x7fff}, 0x0a, 0x0b),
 
 	// for the item dropped in the room *above* the trampoline
 	"above d7 zol button": &MutableSlot{
-		Treasure:   SeasonsTreasures["d7 small key"],
 		idAddrs:    []Addr{{0x15, 0x55d8}},
 		subIDAddrs: []Addr{{0x15, 0x55db}},
 	},
