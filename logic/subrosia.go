@@ -66,5 +66,5 @@ var subrosiaNodes = map[string]*Node{
 		"temple", "bomb flower"),
 	"subrosian smithy": AndSlot("temple", "hard ore"),
 
-	"d8 entrance": And("exit d8 portal"),
+	"d8 entrance": And("exit D8 entrance portal"),
 }

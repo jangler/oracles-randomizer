@@ -81,8 +81,8 @@ var portalNodes = map[string]*Node{
 		Or("jump 6", And("bomb jump 2", "magnet gloves"))),
 	"exit temple remains upper portal": Root(),
 
-	"enter d8 portal": And("d8 entrance"),
-	"exit d8 portal":  Root(),
+	"enter D8 entrance portal": And("d8 entrance"),
+	"exit D8 entrance portal":  Root(),
 
 	// idk where to put this
 	"bomb temple remains": And("exit volcanoes west portal", "bombs"),

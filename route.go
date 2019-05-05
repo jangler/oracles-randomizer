@@ -24,7 +24,7 @@ var subrosianPortalNames = map[string]string{
 	"eyeglass lake":        "great furnace",
 	"horon village":        "house of pirates",
 	"temple remains lower": "volcanoes west",
-	"temple remains upper": "d8",
+	"temple remains upper": "D8 entrance",
 }
 
 // adds nodes to the map based on default contents of item slots.
