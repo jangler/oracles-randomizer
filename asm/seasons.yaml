@@ -30,6 +30,7 @@ defines:
   wWarpDestGroup: 0xcc63
   wWarpDestIndex: 0xcc64
   wWarpTransition2: 0xcc67
+  wDisableTransitions: 0xccab
   wActiveTileType: 0xccb6
 
   # rom 00
@@ -746,10 +747,7 @@ appends:
       xor a
       jp 432d
 
-  - lookupKeyDropBank0b: |
-      ld (hl),60
-      inc l
-      jp lookupKeyDrop
+  - lookupKeyDropBank0b: /include lookupKeyDropLdHl
 
   - script_warnCliffText: |
       db showtext; dw 0026
@@ -1352,19 +1350,19 @@ replaces:
 
   # enable exit from volcano room after skipping cutscene.
   - addr: 0x7cf5
-    old: ld (ccab),a
+    old: ld (wDisableTransitions),a
     new: nop; nop; nop
 
   # set up for and call skipVolcanoCutscene.
   - addr: 0x7d07
     old: |
-      ld a,(cd18)
+      ld a,(wScreenShakeCounterY)
       or a
       ret nz
       call getThisRoomFlags
       set 6,(hl)
       ld a,0b
-      ld (cc04),a
+      ld (wCutsceneTrigger),a
     new: |
       ld a,(d244)
       cp a,01
@@ -1424,10 +1422,10 @@ replaces:
     old: ld (hl),60; inc l
     new: call lookupKeyDropBank0b
   - addr: 0x4b8f
-    old: db spawnitem,2a,00
+    old: db spawnitem,TREASURE_HEART_CONTAINER,00
     new: db asm15; dw spawnBossItem
   - addr: 0x4bb1
-    old: db spawnitem,2a,00
+    old: db spawnitem,TREASURE_HEART_CONTAINER,00
     new: db asm15; dw spawnBossItem
   - addr: 0x730d
     old: db giveitem,TREASURE_FLIPPERS; db scriptend

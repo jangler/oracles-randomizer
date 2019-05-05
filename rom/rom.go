@@ -140,11 +140,12 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 		ItemSlots["mt. cucco, platform cave"].subIDAddrs[0].offset = codeAddr.offset + 1
 	} else {
 		// explicitly set these addresses and IDs after their functions
-		mut := codeMutables["soldier script give item"].(*MutableRange)
+		mut := codeMutables["script_soldierGiveItem"].(*MutableRange)
 		slot := ItemSlots["deku forest soldier"]
 		slot.idAddrs[0].offset = mut.Addrs[0].offset + 13
 		slot.subIDAddrs[0].offset = mut.Addrs[0].offset + 14
-		codeAddr := codeMutables["target carts flag"].(*MutableRange).Addrs[0]
+		mut = codeMutables["script_giveTargetCartsSecondPrize"].(*MutableRange)
+		codeAddr := mut.Addrs[0]
 		ItemSlots["target carts 2"].idAddrs[1].offset = codeAddr.offset + 1
 		ItemSlots["target carts 2"].subIDAddrs[1].offset = codeAddr.offset + 2
 	}

@@ -40,6 +40,7 @@ type romBanks struct {
 
 // used for unmarshaling asm data from yaml.
 type asmData struct {
+	filename string
 	Defines  map[string]uint16
 	Appends  map[byte][]map[string]string
 	Replaces map[byte][]AsmReplacement
@@ -297,6 +298,7 @@ func (r *romBanks) applyAsmFiles(filenames []string) {
 
 	for i, filename := range filenames {
 		ads[i] = new(asmData)
+		ads[i].filename = filename
 		if err := yaml.Unmarshal(
 			FSMustByte(false, filename), ads[i]); err != nil {
 			panic(err)

@@ -22,16 +22,22 @@ defines:
   wActiveRing: 0xc6cb
   wRingBoxLevel: 0xc6cc
   wMakuTreeState: 0xc6e8
+  wJabuWaterLevel: 0xc6e9
+  wStatusBarNeedsRefresh: 0xcbe9
   wActiveGroup: 0xcc2d
   wActiveRoom: 0xcc30
   wAreaFlags: 0xcc34
   wDungeonIndex: 0xcc39
   wWarpDestGroup: 0xcc47
   wWarpDestIndex: 0xcc48
+  wWarpTransition: 0xcc49
+  wWarpTransition2: 0xcc4b
+  wDisableTransitions: 0xcc91
   wDisabledObjects: 0xcc8a
   wPlayingInstrument1: 0xcc8d
 
   # rom 00
+  getRandomNumber: 0x043e
   copyMemory: 0x0486
   forceEnableIntroInputs: 0x0886
   playSound: 0x0c98
@@ -44,16 +50,19 @@ defines:
   openMenu: 0x1ab0
   lookupCollisionTable: 0x1e1f
   objectCopyPosition: 0x2242
+  objectCreateInteraction: 0x24c5
   createTreasure: 0x27d4
   checkGlobalFlag: 0x31f3
   setGlobalFlag: 0x31f9
   fadeInFromWhite: 0x3299
+  incMakuTreeState: 0x3e53
 
   # rom 02
+  _closeMenu: 0x4fba
+  clearMenu: 0x50b1
   _mapMenu_checkCursorRoomVisited: 0x6636
   _mapMenu_checkRoomVisited: 0x6639
   _ringMenu_updateSelectedRingFromList: 0x723b
-  clearMenu: 0x50b1
 
   # rom 04
   applyAllTileSubstitutions: 0x5fef
@@ -112,6 +121,55 @@ appends:
       ret
       .notAllEssences
       ld a,(wMakuTreeState)
+      ret
+
+  # d2: exit into the present if the past entrance is closed.
+  - handleSpecialExits: |
+      ld (wWarpDestIndex),a
+      cp a,83
+      ret nz
+      ld a,(c883) # room flags for d2 past entrance
+      and a,80
+      ret nz
+      ld a,(wWarpDestGroup)
+      and a,0f
+      cp a,01
+      ret nz
+      ld a,(wWarpDestGroup)
+      and a,f0
+      ld (wWarpDestGroup),a
+      ret
+
+  0x01:
+  # invalid tiles to time warp onto if player doesn't have flippers. the
+  # vanilla game assumes you have flippers by the time you have currents, and
+  # only checks against deep water tiles.
+  - noFlippersTable: |
+      db f3,00
+      db fe,00
+      db ff,00
+      db e4,00
+      db e5,00
+      db e6,00
+      db e7,00
+      db e8,00
+      db e9,00
+      db fc,01
+      db fa,00
+      db e0,00
+      db e1,00
+      db e2,00
+      db e3,00
+      db 00
+
+  # check against a different set of invalid time warp destination tiles if the
+  # player doesn't have flippers.
+  - preventDrowningByTimeWarp: |
+      ld hl,6317
+      ld a,(c69f) # in wObtainedTreasureFlags
+      and a,40
+      ret nz
+      ld hl,noFlippersTable
       ret
 
   0x02:
@@ -282,6 +340,27 @@ appends:
       db 00,83,00,44,d7 # portal outside D2 present
       db ff
 
+  # treat the d2 present entrance like the d2 past entrance, and reset the
+  # water level when entering jabu (see logic comments).
+  - handleSpecialEntrances: |
+      push bc
+      ld bc,8300
+      call compareRoom
+      jr nz,.notD2
+      pop bc
+      ld a,01
+      ret
+      .notD2
+      ld bc,9002
+      call compareRoom
+      pop bc
+      jr nz,.notJabu
+      ld a,21
+      ld (wJabuWaterLevel),a
+      .notJabu
+      ld a,(wActiveGroup)
+      ret
+
   0x05:
   # check whether a dev jump should happen, then check whether a normal cliff
   # jump should happen.
@@ -293,7 +372,7 @@ appends:
   # prevent surfacing from underwater without the mermaid suit. this is only
   # relevant for the sea of no return if entrances are unrandomized.
   - checkPreventSurface: |
-      ld a,(cc91)
+      ld a,(wDisableTransitions)
       or a
       ret nz
       ld a,(c6a3) # byte in wObtainedTreasureFlags
@@ -349,10 +428,71 @@ appends:
       ld e,COLLECT_CHEST
       ret
 
+  # burning the first tree in yoll graveyard should set room flag 1 so that it
+  # can be gone for good (see tileSubTable).
+  - removeYollTreeWhenBurned: |
+      push af
+      ld a,(ff00+8f)
+      cp a,0c
+      jr nz,.done
+      push bc
+      ld bc,6b00
+      call compareRoom
+      jr nz,.next
+      ld hl,c76b
+      set 1,(hl)
+      .next
+      pop bc
+      .done
+      pop af
+      ld hl,wTotalSignsDestroyed
+      ret
+
+  # reenter a warp tile that link is standing on when playing the tune of
+  # currents (useful if you warp into a patch of bushes). also activate the
+  # west present crescent island portal, which won't respond to echoes.
+  - handleSpecialCurrentsActions: |
+      push bc
+      ld bc,a900
+      call compareRoom
+      pop bc
+      jr nz,.notIsland
+      push de
+      ld a,e1 # echoes portal
+      call findObjectWithId
+      jr nz,.noDormantPortal
+      ld e,44
+      ld a,02
+      ld (de),a
+      .noDormantPortal
+      pop de
+      jp 4e08 # clear self
+      .notIsland
+      ld a,(wAreaFlags)
+      push af
+      push de
+      ld a,de # currents/ages return portal
+      call findObjectWithId
+      jr nz,.noReturnPortal
+      ld e,44
+      ld a,02
+      ld (de),a
+      .noReturnPortal
+      pop de
+      pop af
+      jp 4e37 # tune echoes in vain
+
+  # set text index for portal sign on crescent island.
+  - setSignTextIndex: |
+      ld bc,a900
+      call compareRoom
+      ld bc,0901
+      ret nz
+      ld bc,5601
+      ret
+
   0x08:
-  - lookupKeyDropBank08: |
-      ld bc,3001
-      jp lookupKeyDrop
+  - lookupKeyDropBank08: /include lookupKeyDropLdBc
 
   0x09:
   # run certain actions depending on what item was picked up and where. this
@@ -534,10 +674,66 @@ appends:
       ld (wMakuTreeState),a
       ret
 
+  # set treasure ID 07 (rod of seasons) when buying the 150 rupee shop item, so
+  # that the shop can check this specific ID.
+  - shopSetFakeId: |
+      cp a,0d
+      jr nz,.next
+      ld hl,wObtainedTreasureFlags
+      set 7,(hl)
+      .next
+      ld hl,44f7
+      ret
+
+  # don't set room's item flag if it's nayru's item on the maku tree screen,
+  # since link still might not have taken the maku tree's item.
+  - ignoreNayruItemForRoomFlag: |
+      call getThisRoomFlags
+      push bc
+      ld bc,c738
+      call compareHlToBc
+      pop bc
+      jr nz,.next
+      ld a,(w1Link.xh)
+      cp a,50
+      ret z
+      .next
+      set 5,(hl)
+      ret
+
+  # give correct ID and param for shop item, play sound, and load correct text
+  # index into temp wram address.
+  - shopGiveTreasure: |
+      ld b,a
+      ld a,(de)
+      cp a,0d
+      ld a,b
+      jr nz,.next
+      call getTreasureDataBCE
+      ld a,e
+      ld (cf0d),a
+      ld a,b
+      .next
+      call handleGetItem
+      jp nz,playSound
+      ld a,SND_GETITEM
+      jp playSound
+
+  # display text based on wram address set in shopGiveTreasure.
+  - shopShowText: |
+      ld a,(de)
+      cp a,0d
+      jp nz,showText
+      ld a,(cf0d)
+      ld b,00
+      ld c,a
+      ld a,c
+      cp a,ff # ring text (or non-text, really)
+      ret z
+      jp showText
+
   0x0a:
-  - lookupKeyDropBank0a: |
-      ld bc,3001
-      jp lookupKeyDrop
+  - lookupKeyDropBank0a: /include lookupKeyDropLdBc
 
   # require giving rafton rope before the island chart.
   - checkRaftonHasRope: |
@@ -587,6 +783,21 @@ appends:
       pop hl
       ret
 
+  # use createTreasure to allow subid for south short dirt item, set by caller.
+  - southShortDirtSpawnItem: |
+      call createTreasure
+      ret nz
+      call objectCopyPosition
+      xor a
+      ret
+
+  # use a non-cutscene screen transition for exiting a dungeon via essence,
+  # so that overworld music plays, and set maku tree state.
+  - essenceWarp: |
+      ld a,81
+      ld (wWarpTransition2),a
+      jp incMakuTreeState
+
   0x0b:
   # king zora should give the item first, *then* give permission to enter jabu
   # (on another visit (as in vanilla)).
@@ -627,10 +838,44 @@ appends:
   - removeGashaNutRingText: /include removeGashaNutRingText
 
   0x0c:
-  - lookupKeyDropBank0c: |
-      ld (hl),60
-      inc l
-      jp lookupKeyDrop
+  - lookupKeyDropBank0c: /include lookupKeyDropLdHl
+
+  # use custom script for soldier in deku forest with sub ID 0; they should
+  # give an item in exchange for mystery seeds.
+  - script_soldierDone: |
+      db rungenericnpc; dw 0859
+      db scriptend
+  - script_soldierGiveItem: |
+      db initcollisions
+      db checkabutton
+      db showtext; dw 0b59
+      db writec6xx,bd,00
+      db ormemory; dw wStatusBarNeedsRefresh; db 02
+      db giveitem,00,00 # item set at randomization
+      db orroomflag,20
+      db jumpalways; dw script_soldierDone
+  - script_soldierCheckSeeds: |
+      db jumpifc6xxset,bd,ff; dw script_soldierGiveItem
+      db 5d,ee # jump
+  - script_dekuForestSoldier: |
+      db jumpifroomflagset,20; dw script_soldierDone
+      db jumpifitemobtained,TREASURE_MYSTERY_SEEDS; dw script_soldierCheckSeeds
+      db 5d,ee # jump
+
+  # set room flag 6 when "boomerang" item is given in script.
+  - script_giveTargetCartsSecondPrize: |
+      db giveitem,TREASURE_BOOMERANG,02 # set during randomization
+      db orroomflag,40
+      db retscript
+
+  0x0f:
+  # set room flag for tunnel behind keep when defeating great moblin (see
+  # tileSubTable).
+  - openMoblinKeepTunnel: |
+      ld hl,c709
+      set 0,(hl)
+      ld hl,cada
+      ret
 
   0x10:
   # keep black tower in initial state until the player gets the item from the
@@ -661,6 +906,34 @@ appends:
       ld a,TREASURE_SEED_SHOOTER
       jp checkTreasureObtained
 
+  0x12:
+  # add time portal interaction in symmetry city past, to avoid softlock if
+  # player only has echoes.
+  - symmetryPortalStaticObjects: |
+      db f1
+      db dc,05
+      db f2
+      db e1,00,68,18
+      db fe
+
+  # add one to nuun highlands too. (actually, the portal is in the replacement.
+  # these are the normal objects, which are jumped to.)
+  - nuunPortalStaticObjects: |
+      db f2
+      db 9a,00,68,48 # all carpenter stuff
+      db 9a,01,58,58
+      db 9a,02,58,68
+      db 9a,03,48,58
+      db 9a,04,38,58
+      db fe
+
+  # and outside D2 present.
+  - d2PresentPortalStaticObjects: |
+      db f2
+      db dc,02,48,38
+      db e1,00,48,48
+      db fe
+
   0x15:
   # don't equip sword in shooting gallery if link doesn't have it. it wouldn't
   # work anyway.
@@ -674,6 +947,29 @@ appends:
       ld a,TREASURE_SWORD
       ldi (hl),a
       ret
+
+  # set room flag for other side of symmetry city bridge at end of building
+  # cutscene (see tileSubTable).
+  - setBridgeFlag: |
+      push hl
+      xor a
+      ld (wDisabledObjects),a
+      ld a,25
+      call setGlobalFlag
+      ld hl,c724
+      set 1,(hl)
+      pop hl
+      ret
+
+  # always make "boomerang" second prize for target carts, checking room flag 6
+  # to track it.
+  - getTargetCartsPrize: |
+      call getThisRoomFlags
+      bit 6,a
+      ld a,04
+      jp z,66bb
+      call getRandomNumber
+      jp 66a5
 
   0x16:
   # progressive item upgrade data (old ID, old related var, new ID, new addr)
@@ -699,6 +995,10 @@ appends:
 
   0x38:
   - lookupKeyDrop_body: /include lookupKeyDrop_body
+
+  # this *MUST* be the last thing in the bank, since it's going to grow
+  # dynamically later.
+  - owlText: ''
 
   0x3f:
   # format (ID, subID, jump address). these functions *must* pop af as the last
@@ -813,11 +1113,253 @@ appends:
 
 replaces:
   0x00:
-    - addr: 0x0c9a
-      old: ld h,a; ld a,(ff00+hMusicVar)
-      new: call filterMusic
+  - addr: 0x0c9a
+    old: ld h,a; ld a,(ff00+hMusicVar)
+    new: call filterMusic
+  - addr: 0x38c0
+    old: call applyAllTileSubstitutions
+    new: call applyExtraTileSubstitutions
+  - addr: 0x3e56
+    old: inc a; cp a,11
+    new: call checkMakuState
+
+  0x01:
+  - addr: 0x6301
+    old: ld hl,6317
+    new: call preventDrowningByTimeWarp
 
   0x02:
+  # tree warp / map stuff
+  - addr: 0x5fcb
+    old: call setMusicVolume
+    new: call devWarp
+  - addr: 0x5ff9
+    old: call _mapMenu_checkRoomVisited
+    new: call checkTreeVisited
+  - addr: 0x6133
+    old: jp nz,_closeMenu
+    new: call nz,treeWarp
+  - addr: 0x618b
+    old: jp nz,_closeMenu
+    new: call nz,treeWarp
+  - addr: 0x619d
+    old: call _mapMenu_checkCursorRoomVisited
+    new: call checkCursorVisited
+  - addr: 0x6245
+    old: ld a,(wMapMenu_cursorIndex)
+    new: jp displayPortalPopups
   - addr: 0x6649
     old: ld a,(hl); bit 4,a
     new: call devRingCheckRoomVisited
+  - addr: 0x66a9
+    old: call _mapMenu_checkRoomVisited
+    new: call checkTreeVisited
+
+  # ring stuff
+  - addr: 0x56dd
+    old: ld a,(wInventorySubmenu1CursorPos)
+    new: call openRingList
+  - addr: 0x7019
+    old: call _ringMenu_updateSelectedRingFromList
+    new: call autoEquipRing
+  - addr: 0x5074
+    old: call setMusicVolume
+    new: call ringListGfxFix
+
+  0x03:
+  - addr: 0x4d6b
+    old: call decHlRef16WithCap
+    new: call skipCapcom
+  - addr: 0x6e97
+    old: jp setGlobalFlag
+    new: jp setInitialFlags
+
+  0x04:
+  - addr: 0x45e8
+    old: ld (wWarpDestIndex),a
+    new: call handleSpecialExits
+  - addr: 0x4630
+    old: ld a,(wActiveGroup)
+    new: call handleSpecialEntrances
+
+  0x05:
+  - addr: 0x516c
+    old: ld a,(wDisableTransitions); or a
+    new: call checkPreventSurface; nop
+  - addr: 0x6083
+    old: call lookupCollisionTable
+    new: call cliffLookup
+
+  0x06:
+  - addr: 0x40e7
+    old: ld bc,0901
+    new: call setSignTextIndex
+  - addr: 0x47aa
+    old: ld hl,wTotalSignsDestroyed
+    new: call removeYollTreeWhenBurned
+  - addr: 0x4e34
+    old: ld a,(wAreaFlags)
+    new: jp handleSpecialCurrentsActions
+
+  # use expert's or fist ring with only one button unequipped.
+  - addr: 0x4969
+    old: ret nz
+    new: nop
+
+  0x08:
+  - addr: 0x5087
+    old: ld bc,3001
+    new: call lookupKeyDropBank08
+
+  0x09:
+  - addr: 0x4418
+    old: ld hl,44f7
+    new: call shopSetFakeId
+  - addr: 0x4425
+    old: call giveTreasure
+    new: call shopGiveTreasure
+  - addr: 0x4443
+    old: jp nz,showText
+    new: jp nz,shopShowText
+  - addr: 0x4c4e
+    old: call giveTreasure
+    new: call handleGetItem
+  - addr: 0x4c82
+    old: call getThisRoomFlags
+    new: jp ignoreNayruItemForRoomFlag
+  - addr: 0x5207
+    old: dw 5dee
+    new: dw script_dekuForestSoldier
+
+  # remove generic "you got a ring" text for rings from shops
+  - addr: 0x4580
+    old: db 54
+    new: db 00
+  - addr: 0x458a
+    old: db 54
+    new: db 00
+  - addr: 0x458b
+    old: db 54
+    new: db 00
+
+  0x0a:
+  - addr: 0x4738
+    old: ld (wWarpDestIndex),a
+    new: call handleSpecialExits
+  - addr: 0x4745
+    old: ld (wWarpTransition2),a
+    new: call essenceWarp
+  - addr: 0x4bb8
+    old: call checkGlobalFlag
+    new: call checkShouldRickyAppear
+  - addr: 0x4d5f
+    old: call checkTreasureObtained
+    new: call checkRaftonHasRope
+  - addr: 0x5541
+    old: call setGlobalFlag
+    new: call saveMakuTreeWithNayru
+  - addr: 0x5e3e
+    old: call objectCreateInteraction
+    new: call southShortDirtSpawnItem
+  - addr: 0x7075
+    old: ld bc,3001
+    new: call lookupKeyDropBank0a
+
+  0x0b:
+  - addr: 0x45bb
+    old: jp showText
+    new: jp removeGashaNutRingText
+  - addr: 0x5464
+    old: call checkGlobalFlag
+    new: call checkKingZoraSequence
+  - addr: 0x61d7
+    old: call getThisRoomFlags
+    new: call checkZoraGuards
+  - addr: 0x7954
+    old: ld (wCutsceneTrigger),a
+    new: call skipFairyQueenCutscene
+
+  0x0c:
+  - addr: 0x442e
+    old: ld (hl),60; inc l
+    new: call lookupKeyDropBank0c
+  - addr: 0x4bd8
+    old: db spawnitem,TREASURE_HEART_CONTAINER,00
+    new: db asm15; dw spawnBossItem
+  - addr: 0x6e6e
+    old: dw 6e88
+    new: dw script_giveTargetCartsSecondPrize
+  - addr: 0x7a6f
+    old: db setdisabledobjectsto00; db setglobalflag,25
+    new: db asm15; dw setBridgeFlag
+
+  # skip forced ring appraisal and ring list with vasu (prevents softlock).
+  - addr: 0x4a27
+    old: db showtext,33
+    new: dw 354a # still don't know what this is
+
+  0x0f:
+  - addr: 0x7f3e
+    old: ld hl,c709
+    new: call openMoblinKeepTunnel
+
+  0x10:
+  - addr: 0x7914
+    old: ld hl,7927
+    new: call checkBlackTowerState
+  - addr: 0x7d88
+    old: ld a,(wPlayingInstrument1)
+    new: call checkActivateEchoesPortal
+
+  0x11:
+  - addr: 0x4aba
+    old: call checkTreasureObtained
+    new: call checkCanHarvestSeeds
+
+  0x12:
+  - addr: 0x5a7b
+    old: db f2; db 9a,00,68,48 # etc
+    new: |
+      db f2
+      db e1,00,38,78
+      db f3; dw nuunPortalStaticObjects
+      db ff
+  - addr: 0x5d42
+    old: db dc,02,48,38
+    new: db f3; dw d2PresentPortalStaticObjects; db ff
+  - addr: 0x5e91
+    old: db f1; db dc,05
+    new: db f3; dw symmetryPortalStaticObjects
+
+  0x15:
+  - addr: 0x50ae
+    old: ld a,TREASURE_SWORD; ldi (hl),a
+    new: call setShootingGalleryEquips
+  - addr: 0x66a2
+    old: call getRandomNumber
+    new: jp getTargetCartsPrize
+
+  0x16:
+  - addr: 0x4539
+    old: ld b,a; swap a
+    new: call modifyTreasure
+
+  0x21:
+  # replace ring appraisal text with "you got the {ring}".
+  - addr: 0x76a0
+    old: db 04,2c,20,04,96,21
+    new: db 02,06,0f,fd,21,00
+
+  0x3f:
+  - addr: 0x4356
+    old: call _interactionGetData
+    new: call checkLoadCustomSprite
+  - addr: 0x4607
+    old: ld hl,4610
+    new: ld hl,seedCapacityTable
+  - addr: 0x4614
+    old: set 6,c; call realignUnappraisedRings
+    new: nop; jp autoAppraiseRing
+  - addr: 0x4faa
+    old: ld (w7ActiveBank),a
+    new: call useOwlText
