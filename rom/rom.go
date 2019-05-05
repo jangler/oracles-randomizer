@@ -9,6 +9,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"math/rand"
+	"regexp"
 	"sort"
 	"strings"
 
@@ -24,6 +25,9 @@ const (
 )
 
 var rings []string
+
+// only applies to seasons! used for warps
+var dungeonNameRegexp = regexp.MustCompile(`^d[1-8]$`)
 
 func Init(game int) {
 	if game == GameAges {
@@ -108,6 +112,11 @@ func orderedKeys(m map[string]Mutable) []string {
 // checksum of the result or an error.
 func Mutate(b []byte, game int, warpMap map[string]string,
 	dungeons bool) ([]byte, error) {
+	// need to set this *before* treasure map data
+	if len(warpMap) != 0 {
+		setWarps(b, game, warpMap, dungeons)
+	}
+
 	if game == GameSeasons {
 		varMutables["initial season"].(*MutableRange).New =
 			[]byte{0x2d, Seasons["north horon season"].New[0]}
@@ -144,9 +153,6 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 	setSeedData(game)
 	setSmallKeyData(game)
 	setCollectModeData(game)
-	if len(warpMap) != 0 {
-		setWarps(b, game, warpMap, dungeons)
-	}
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
 	// with text
@@ -536,10 +542,12 @@ func setLinkedData(b []byte, game int) {
 // -- dungeon entrance / subrosia portal connections --
 
 type WarpData struct {
-	Entry, Exit uint16 // loaded from yaml
+	// loaded from yaml
+	Entry, Exit uint16
+	MapTile     byte
 
-	// calculated after loading
-	bank                         byte
+	// set after loading
+	bank, vanillaMapTile         byte
 	len, entryOffset, exitOffset int
 
 	vanillaEntryData, vanillaExitData []byte // read from rom
@@ -579,6 +587,8 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 		warp.vanillaExitData = make([]byte, warp.len)
 		copy(warp.vanillaExitData,
 			b[warp.exitOffset:warp.exitOffset+warp.len])
+
+		warp.vanillaMapTile = warp.MapTile
 	}
 
 	// ages needs essence warp data to d6 present entrance, even though it
@@ -596,6 +606,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 			b[src.entryOffset+i] = dest.vanillaEntryData[i]
 			b[dest.exitOffset+i] = src.vanillaExitData[i]
 		}
+		dest.MapTile = src.vanillaMapTile
 
 		destEssence := warps[destName+" essence"]
 		if destEssence != nil && destEssence.exitOffset != 0 {
@@ -606,18 +617,64 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 		}
 	}
 
-	if game == GameSeasons && dungeons {
-		// remove alternate d2 entrances and connect d2 stairs exits directly
-		// to each other
-		src, dest := warps["d2 alt left"], warps["d2 alt right"]
-		b[src.exitOffset] = dest.vanillaEntryData[0]
-		b[src.exitOffset+1] = dest.vanillaEntryData[1]
-		b[dest.exitOffset] = src.vanillaEntryData[0]
-		b[dest.exitOffset+1] = src.vanillaEntryData[1]
+	if game == GameSeasons {
+		// set treasure map data. because of d8, portals go first, then dungeon
+		// entrances.
+		conditions := [](func(string) bool){
+			dungeonNameRegexp.MatchString,
+			func(s string) bool { return strings.HasSuffix(s, "portal") },
+		}
+		for _, cond := range conditions {
+			changeTreasureMapTiles(func(c chan byteChange) {
+				for name, warp := range warps {
+					if cond(name) {
+						c <- byteChange{warp.vanillaMapTile, warp.MapTile}
+					}
+				}
+				close(c)
+			})
+		}
 
-		// also enable removal of the stair tiles
-		mut := codeMutables["d2AltEntranceTileSubs"].(*MutableRange)
-		mut.New[0+2] = 0x00
-		mut.New[5+2] = 0x00
+		if dungeons {
+			// remove alternate d2 entrances and connect d2 stairs exits
+			// directly to each other
+			src, dest := warps["d2 alt left"], warps["d2 alt right"]
+			b[src.exitOffset] = dest.vanillaEntryData[0]
+			b[src.exitOffset+1] = dest.vanillaEntryData[1]
+			b[dest.exitOffset] = src.vanillaEntryData[0]
+			b[dest.exitOffset+1] = src.vanillaEntryData[1]
+
+			// also enable removal of the stair tiles
+			mut := codeMutables["d2AltEntranceTileSubs"].(*MutableRange)
+			mut.New[0+2] = 0x00
+			mut.New[5+2] = 0x00
+		}
+	}
+}
+
+type byteChange struct {
+	old, new byte
+}
+
+// process a set of treasure map tile changes in a way that ensures each tile
+// is substituted only once (per call to this function).
+func changeTreasureMapTiles(generate func(chan byteChange)) {
+	pendingTiles := make(map[*MutableSlot]byte)
+	c := make(chan byteChange)
+	go generate(c)
+
+	for change := range c {
+		for name, slot := range ItemSlots {
+			// diving spot outside d4 would be mistaken for a d4 check
+			if slot.mapCoords == change.old &&
+				slot != ItemSlots["diving spot outside D4"] {
+				pendingTiles[slot] = change.new
+				fmt.Printf("%s <- %02x\n", name, change.new)
+			}
+		}
+	}
+
+	for slot, tile := range pendingTiles {
+		slot.mapCoords = tile
 	}
 }

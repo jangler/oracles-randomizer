@@ -4,15 +4,17 @@
 #
 # warp destinations for getting essences are in bank 09/0a seasons/ages. each
 # four-byte table entry goes directly to warp variables (no further indexing).
+#
+# entries only need map tile info for the purposes of the treasure map.
 seasons:
-  d1: {entry: 0x746d, exit: 0x790d}
-  d2: {entry: 0x7659, exit: 0x7911}
-  d3: {entry: 0x7671, exit: 0x7915}
-  d4: {entry: 0x7479, exit: 0x7919}
-  d5: {entry: 0x747d, exit: 0x791d}
-  d6: {entry: 0x7481, exit: 0x7921}
-  d7: {entry: 0x7485, exit: 0x7a89}
-  d8: {entry: 0x769d, exit: 0x7a8d}
+  d1: {entry: 0x746d, exit: 0x790d, maptile: 0x96}
+  d2: {entry: 0x7659, exit: 0x7911, maptile: 0x8d}
+  d3: {entry: 0x7671, exit: 0x7915, maptile: 0x60}
+  d4: {entry: 0x7479, exit: 0x7919, maptile: 0x1d}
+  d5: {entry: 0x747d, exit: 0x791d, maptile: 0x8a}
+  d6: {entry: 0x7481, exit: 0x7921, maptile: 0x00}
+  d7: {entry: 0x7485, exit: 0x7a89, maptile: 0xd0}
+  d8: {entry: 0x769d, exit: 0x7a8d, maptile: 0x04}
 
   d1 essence: {exit: 0x4b59}
   d2 essence: {exit: 0x4b5d}
@@ -27,13 +29,13 @@ seasons:
   d2 alt left: {entry: 0x765d, exit: 0x7935}
   d2 alt right: {entry: 0x7661, exit: 0x7939}
 
-  eastern suburbs portal: {entry: 0x74fd, exit: 0x76b5}
-  spool swamp portal: {entry: 0x7501, exit: 0x76b9}
-  mt. cucco portal: {entry: 0x7601, exit: 0x76bd}
-  eyeglass lake portal: {entry: 0x7509, exit: 0x76c1}
-  horon village portal: {entry: 0x7905, exit: 0x7729}
-  temple remains lower portal: {entry: 0x750d, exit: 0x76c5}
-  temple remains upper portal: {entry: 0x788d, exit: 0x76c9}
+  eastern suburbs portal: {entry: 0x74fd, exit: 0x76b5, maptile: 0x9a}
+  spool swamp portal: {entry: 0x7501, exit: 0x76b9, maptile: 0xb0}
+  mt. cucco portal: {entry: 0x7601, exit: 0x76bd, maptile: 0x1e}
+  eyeglass lake portal: {entry: 0x7509, exit: 0x76c1, maptile: 0xb9}
+  horon village portal: {entry: 0x7905, exit: 0x7729, maptile: 0xf7}
+  temple remains lower portal: {entry: 0x750d, exit: 0x76c5, maptile: 0x25}
+  temple remains upper portal: {entry: 0x788d, exit: 0x76c9, maptile: 0x04}
 ages:
   d1: {entry: 0x7718, exit: 0x7ad0}
   d2: {entry: 0x772c, exit: 0x7ad4}
