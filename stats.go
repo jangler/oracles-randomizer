@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime"
 
+	"github.com/jangler/oracles-randomizer/rom"
 	"gopkg.in/yaml.v2"
 )
 
@@ -46,6 +47,11 @@ func logStats(game, trials int, hard bool, logf logFunc) {
 		stringChecks[i] = make(map[string]string)
 		for k, v := range getChecks(ri) {
 			stringChecks[i][k.Name] = v.Name
+		}
+		if game == rom.GameSeasons {
+			for area, seasonId := range ri.Seasons {
+				stringChecks[i][area] = seasonsByID[int(seasonId)]
+			}
 		}
 	}
 
