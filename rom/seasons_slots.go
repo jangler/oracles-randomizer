@@ -111,7 +111,7 @@ var SeasonsSlots = map[string]*MutableSlot{
 	"woods of winter, 1st cave": seasonsChest(
 		"rupees, 30", 0x5102, 0x05, 0xb4, collectChest, 0x7d),
 	"sunken city, summer cave": seasonsChest(
-		"gasha seed", 0x5106, 0x05, 0xb5, collectChest, 0x4f),
+		"gasha seed", 0x5106, 0x05, 0xb5, collectChest, 0x4e),
 	"chest in master diver's cave": seasonsChest(
 		"rupees, 50", 0x510e, 0x05, 0xbd, collectDiverRoom, 0x2e),
 	"dry eyeglass lake, east cave": seasonsChest(
