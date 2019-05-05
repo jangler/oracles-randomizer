@@ -664,12 +664,11 @@ func changeTreasureMapTiles(generate func(chan byteChange)) {
 	go generate(c)
 
 	for change := range c {
-		for name, slot := range ItemSlots {
+		for _, slot := range ItemSlots {
 			// diving spot outside d4 would be mistaken for a d4 check
 			if slot.mapCoords == change.old &&
 				slot != ItemSlots["diving spot outside D4"] {
 				pendingTiles[slot] = change.new
-				fmt.Printf("%s <- %02x\n", name, change.new)
 			}
 		}
 	}
