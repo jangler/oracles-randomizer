@@ -1,0 +1,695 @@
+# see seasons_slots.yaml for more info.
+
+# overworld present
+starting chest:
+  treasure: sword
+  room: 0x0039
+  reverseaddr: {bank: 0x00, addr: 0x10f7}
+  collect: chest
+nayru's house:
+  treasure: harp
+  room: 0x03ae
+  maptile: 0x3a
+  reverseaddr: {bank: 0x0b, addr: 0x6827}
+  collect: find 2
+maku tree:
+  treasure: satchel
+  room: 0x0038
+  ids: [{bank: 0x15, addr: 0x70e0}, {bank: 0x15, addr: 0x7115}]
+  subids: [{bank: 0x15, addr: 0x70e3}, {bank: 0x15, addr: 0x7118}]
+  collect: maku tree (ages)
+grave under tree:
+  treasure: graveyard key
+  room: 0x05ed
+  maptile: 0x8d
+  reverseaddr: {bank: 0x10, addr: 0x750c}
+graveyard poe:
+  treasure: sword
+  room: 0x007c
+  addr: {bank: 0x15, addr: 0x6188}
+cheval's test:
+  treasure: flippers
+  room: 0x05bf
+  maptile: 0x5b
+  addr: {bank: 0x0c, addr: 0x723b}
+cheval's invention:
+  treasure: cheval rope
+  room: 0x05b6
+  maptile: 0x5b
+  addr: {bank: 0x0c, addr: 0x7232}
+south shore dirt:
+  treasure: ricky's gloves
+  room: 0x0098
+  reverseaddr: {bank: 0x0a, addr: 0x5e3c}
+balloon guy's gift:
+  treasure: island chart
+  room: 0x0079
+  addr: {bank: 0x0c, addr: 0x7e20}
+balloon guy's upgrade:
+  treasure: satchel
+  room: 0x0079
+  addr: {bank: 0x0c, addr: 0x7e7a}
+shop, 150 rupees:
+  treasure: dimitri's flute
+  room: 0x025e
+  maptile: 0x68
+  addr: {bank: 0x09, addr: 0x4511}
+defeat great moblin:
+  treasure: bomb flower
+  room: 0x0009
+  addr: {bank: 0x0c, addr: 0x757d}
+goron elder:
+  treasure: crown key
+  room: 0x05c3
+  maptile: 0x28
+  addr: {bank: 0x15, addr: 0x7386}
+target carts 1:
+  treasure: rock brisket
+  room: 0x05d8
+  maptile: 0x1d
+  ids: [{bank: 0x15, addr: 0x66e8}, {bank: 0x0c, addr: 0x6e71}]
+  subids: [{bank: 0x15, addr: 0x66e9}, {bank: 0x0c, addr: 0x6e72}]
+  collect: target carts
+target carts 2:
+  treasure: boomerang
+  ids: [{bank: 0x15, addr: 0x66f0}, {bank: 0x0c}] # addr set at EOB
+  subids: [{bank: 0x15, addr: 0x66f1}, {bank: 0x0c}] # addr set at EOB
+  room: 0x05d8
+  maptile: 0x1d
+  collect: target carts
+goron dance present:
+  treasure: brother emblem
+  room: 0x02ed
+  maptile: 0x3d
+  addr: {bank: 0x0c, addr: 0x698c}
+trade rock brisket:
+  treasure: goron vase
+  room: 0x02fd
+  maptile: 0x3d
+  addr: {bank: 0x15, addr: 0x6b2c}
+trade goron vase:
+  treasure: goronade
+  room: 0x02ff
+  maptile: 0x3d
+  addr: {bank: 0x15, addr: 0x6b23}
+big bang game:
+  treasure: old mermaid key
+  room: 0x033e
+  maptile: 0x1c
+  ids: [{bank: 0x15, addr: 0x6742}, {bank: 0x0c, addr: 0x707a}]
+  subids: [{bank: 0x15, addr: 0x6743}, {bank: 0x0c, addr: 0x707b}]
+  collect: big bang game
+goron shooting gallery:
+  treasure: lava juice
+  room: 0x03e7
+  maptile: 0x1d
+  addr: {bank: 0x15, addr: 0x5285}
+trade lava juice:
+  treasure: goron letter
+  room: 0x031f
+  maptile: 0x1c
+  addr: {bank: 0x0c, addr: 0x6ee9}
+  collect: lava juice room
+rescue nayru:
+  treasure: harp
+  room: 0x0038
+  addr: {bank: 0x15, addr: 0x54f1}
+  collect: maku tree (ages)
+king zora:
+  treasure: library key
+  room: 0x05ab
+  maptile: 0xa1
+  addr: {bank: 0x0c, addr: 0x7ae4}
+library present:
+  treasure: book of seals
+  room: 0x05c8
+  maptile: 0xa5
+  addr: {bank: 0x15, addr: 0x5db9}
+zora's reward:
+  treasure: zora scale
+  room: 0x02a0
+  addr: {bank: 0x0c, addr: 0x7c48}
+piratian captain:
+  treasure: tokay eyeball
+  room: 0x05f8
+  maptile: 0xd7
+  addr: {bank: 0x15, addr: 0x7969}
+lynna city chest:
+  treasure: rupees, 30
+  room: 0x0049
+fairies' woods chest:
+  treasure: rupees, 50
+  room: 0x0084
+fairies' coast chest:
+  treasure: green holy ring
+  room: 0x0091
+zora seas chest:
+  treasure: whimsical ring
+  room: 0x00d5
+talus peaks chest:
+  treasure: gasha seed
+  room: 0x0063
+under moblin keep:
+  treasure: armor ring L-1
+  room: 0x02be
+  maptile: 0x09
+nuun highlands cave:
+  treasure: light ring L-1
+  room: 0x02f4
+  maptile: 0x37 # correct for 2 out of 3 animals
+  ids: [{bank: 0x16, addr: 0x5150}, {bank: 0x16, addr: 0x5154}, {bank: 0x16, addr: 0x5327}]
+  subids: [{bank: 0x16, addr: 0x5151}, {bank: 0x16, addr: 0x5155}, {bank: 0x16, addr: 0x5328}]
+zora village present:
+  treasure: gasha seed
+  room: 0x02c0
+pool in d6 entrance:
+  treasure: toss ring
+  room: 0x030e
+  maptile: 0x3c
+mayor plen's house:
+  treasure: green luck ring
+  room: 0x03f9
+  maptile: 0x57
+under crescent island:
+  treasure: piece of heart
+  room: 0x03fd
+  maptile: 0xba
+goron's hiding place:
+  treasure: gold joy ring
+  room: 0x05bd
+  maptile: 0x28
+ridge base chest:
+  treasure: rupees, 50
+  room: 0x05b9
+  maptile: 0x28
+ridge NE cave present:
+  treasure: gasha seed
+  room: 0x05ee
+  maptile: 0x0d
+goron diamond cave:
+  treasure: bombs, 10
+  room: 0x05dd
+  maptile: 0x1c
+ridge west cave:
+  treasure: rupees, 30
+  room: 0x05c0
+  maptile: 0x18
+zora NW cave:
+  treasure: blue luck ring
+  room: 0x05c7
+  maptile: 0x0a
+zora palace chest:
+  treasure: rupees, 200
+  room: 0x05ac
+  maptile: 0xa1
+
+# overworld past
+black tower worker:
+  treasure: shovel
+  room: 0x04e1
+  maptile: 0x86
+  addr: {bank: 0x0c, addr: 0x65e3}
+deku forest soldier:
+  treasure: bombs, 10
+  room: 0x0172
+  addr: {bank: 0x0c} # addr set at EOB
+  collect: find 2
+wild tokay game:
+  treasure: scent seedling
+  room: 0x02de
+  maptile: 0xdb
+  addr: {bank: 0x15, addr: 0x5bbb}
+hidden tokay cave:
+  treasure: iron shield
+  room: 0x05e9
+  maptile: 0xd9
+  addr: {bank: 0x15, addr: 0x5b36}
+symmetry city brother:
+  treasure: tuni nut
+  room: 0x036e
+  maptile: 0x13
+  addr: {bank: 0x15, addr: 0x7929}
+tokkey's composition:
+  treasure: harp
+  room: 0x038f
+  maptile: 0x01
+  addr: {bank: 0x15, addr: 0x76cf}
+  collect: find 2
+goron dance, with letter:
+  treasure: mermaid key
+  room: 0x02ef
+  maptile: 0x3d
+  addr: {bank: 0x0c, addr: 0x699f}
+library past:
+  treasure: fairy powder
+  room: 0x05e4
+  maptile: 0xa5
+  addr: {bank: 0x15, addr: 0x5dd8}
+sea of no return:
+  treasure: blue ring
+  room: 0x016d
+bomb goron head:
+  treasure: rupees, 100
+  room: 0x02fc
+  maptile: 0x0d
+tokay bomb cave:
+  treasure: gasha seed
+  room: 0x02ce
+  maptile: 0xcd
+fisher's island cave:
+  treasure: red holy ring
+  room: 0x024f
+  maptile: 0xc5
+ridge bush cave:
+  treasure: rupees, 100
+  room: 0x031f
+  maptile: 0x1c
+  collect: lava juice room
+sea of storms past:
+  treasure: pegasus ring
+  room: 0x03ff
+  maptile: 0xc7
+deku forest cave west:
+  treasure: rupees, 30
+  room: 0x05b5
+  maptile: 0x71
+ridge diamonds past:
+  treasure: rupees, 50
+  room: 0x05e1
+  maptile: 0x2b
+ridge base past:
+  treasure: gasha seed
+  room: 0x05e0
+  maptile: 0x2b
+deku forest cave east:
+  treasure: gasha seed
+  room: 0x05b3
+  maptile: 0x72
+ambi's palace chest:
+  treasure: gold luck ring
+  room: 0x05cb
+  maptile: 0x06
+tokay crystal cave:
+  treasure: gasha seed
+  room: 0x05ca
+  maptile: 0xbb
+tokay pot cave:
+  treasure: power ring L-2
+  room: 0x05f7
+  maptile: 0xdc
+
+# d1
+d1 one-button chest:
+  treasure: gasha seed
+  room: 0x0415
+d1 two-button chest:
+  treasure: d1 small key
+  room: 0x0416
+d1 wide room:
+  treasure: d1 small key
+  room: 0x041a
+d1 crystal room:
+  treasure: power ring L-1
+  room: 0x041c
+d1 crossroads:
+  treasure: compass
+  room: 0x041d
+d1 west terrace:
+  treasure: discovery ring
+  room: 0x041f
+d1 pot chest:
+  treasure: d1 boss key
+  room: 0x0423
+d1 east terrace:
+  treasure: dungeon map
+  room: 0x0425
+d1 ghini drop:
+  treasure: d1 small key
+  room: 0x041e
+  keydrop: true
+d1 basement:
+  treasure: bracelet
+  room: 0x0610
+  addr: {bank: 0x0c, addr: 0x4bbb}
+d1 boss:
+  treasure: heart container
+  room: 0x0413
+  addr: {bank: 0x15} # addr set at EOB
+
+# d2
+d2 basement chest:
+  treasure: d2 small key
+  room: 0x0430
+d2 color room:
+  treasure: d2 boss key
+  room: 0x043e
+d2 bombed terrace:
+  treasure: dungeon map
+  room: 0x0440
+d2 moblin platform:
+  treasure: gasha seed
+  room: 0x0441
+d2 rope room:
+  treasure: compass
+  room: 0x0445
+d2 ladder chest:
+  treasure: d2 small key
+  room: 0x0448
+d2 basement drop:
+  treasure: d2 small key
+  room: 0x042e
+  keydrop: true
+d2 moblin drop:
+  treasure: d2 small key
+  room: 0x0439
+  keydrop: true
+d2 statue puzzle:
+  treasure: d2 small key
+  room: 0x0442
+  keydrop: true
+d2 thwomp shelf:
+  treasure: rupees, 30
+  room: 0x0627
+  addr: {bank: 0x0c, addr: 0x4c0f}
+  collect: find 2
+d2 thwomp tunnel:
+  treasure: feather
+  room: 0x0628
+  addr: {bank: 0x0c, addr: 0x4c0a}
+d2 boss:
+  treasure: heart container
+  room: 0x062b
+  addr: {bank: 0x15} # addr set at EOB
+
+# d3
+d3 bridge chest:
+  treasure: rupees, 20
+  room: 0x044e
+d3 B1F east:
+  treasure: d3 boss key
+  room: 0x0450
+d3 torch chest:
+  treasure: gasha seed
+  room: 0x0455
+d3 conveyor belt room:
+  treasure: compass
+  room: 0x0456
+d3 mimic room:
+  treasure: seed shooter
+  room: 0x0458
+d3 bush beetle room:
+  treasure: rupees, 30
+  room: 0x045c
+d3 crossroads:
+  treasure: gasha seed
+  room: 0x0460
+d3 pols voice chest:
+  treasure: dungeon map
+  room: 0x0465
+d3 moldorm drop:
+  treasure: d3 small key
+  room: 0x044b
+  keydrop: true
+d3 armos drop:
+  treasure: d3 small key
+  room: 0x045e
+  keydrop: true
+d3 statue drop:
+  treasure: d3 small key
+  room: 0x0461
+  keydrop: true
+d3 six-block drop:
+  treasure: d3 small key
+  room: 0x0464
+  keydrop: true
+d3 boss:
+  treasure: heart container
+  room: 0x044a
+  addr: {bank: 0x15} # addr set at EOB
+
+# d4
+d4 large floor puzzle:
+  treasure: d4 small key
+  room: 0x046f
+d4 second crystal switch:
+  treasure: d4 small key
+  room: 0x0474
+d4 lava pot chest:
+  treasure: d4 boss key
+  room: 0x047a
+d4 small floor puzzle:
+  treasure: switch hook
+  room: 0x0487
+d4 first chest:
+  treasure: compass
+  room: 0x048b
+d4 minecart chest:
+  treasure: dungeon map
+  room: 0x048f
+d4 cube chest:
+  treasure: d4 small key
+  room: 0x0490
+d4 first crystal switch:
+  treasure: d4 small key
+  room: 0x0492
+d4 color tile drop:
+  treasure: d4 small key
+  room: 0x047b
+  keydrop: true
+d4 boss:
+  treasure: heart container
+  room: 0x046b
+  addr: {bank: 0x15} # addr set at EOB
+
+# d5
+d5 red peg chest:
+  treasure: rupees, 50
+  room: 0x0499
+d5 owl puzzle:
+  treasure: d5 boss key
+  room: 0x049b
+d5 two-statue puzzle:
+  treasure: d5 small key
+  room: 0x049e
+d5 like-like chest:
+  treasure: d5 small key
+  room: 0x049f
+d5 dark room:
+  treasure: d5 small key
+  room: 0x04a3
+d5 six-statue puzzle:
+  treasure: cane
+  room: 0x04a5
+d5 diamond chest:
+  treasure: compass
+  room: 0x04ad
+d5 eyes chest:
+  treasure: d5 small key
+  room: 0x04ba
+d5 three-statue puzzle:
+  treasure: d5 small key
+  room: 0x04bc
+d5 blue peg chest:
+  treasure: dungeon map
+  room: 0x04be
+d5 boss:
+  treasure: heart container
+  room: 0x04bf
+  addr: {bank: 0x15} # addr set at EOB
+
+# d6 present
+d6 present vire chest:
+  treasure: flippers
+  room: 0x0513
+d6 present spinner chest:
+  treasure: d6 present small key
+  room: 0x0514
+d6 present rope chest:
+  treasure: d6 present small key
+  room: 0x051b
+d6 present RNG chest:
+  treasure: d6 boss key
+  room: 0x051c
+d6 present diamond chest:
+  treasure: dungeon map
+  room: 0x051d
+d6 present beamos chest:
+  treasure: rupees, 10
+  room: 0x051f
+d6 present cube chest:
+  treasure: d6 present small key
+  room: 0x0521
+d6 present channel chest:
+  treasure: compass
+  room: 0x0525
+
+# d6 past
+d6 past diamond chest:
+  treasure: d6 past small key
+  room: 0x052c
+d6 past spear chest:
+  treasure: rupees, 30
+  room: 0x052e
+d6 past rope chest:
+  treasure: d6 past small key
+  room: 0x0531
+d6 past stalfos chest:
+  treasure: d6 past small key
+  room: 0x053c
+d6 past color room:
+  treasure: compass
+  room: 0x053f
+d6 past pool chest:
+  treasure: dungeon map
+  room: 0x0541
+d6 past wizzrobe chest:
+  treasure: gasha seed
+  room: 0x0545
+d6 boss:
+  treasure: heart container
+  room: 0x0536
+  addr: {bank: 0x15} # addr set at EOB
+
+# d7
+d7 pot island chest:
+  treasure: like-like ring
+  room: 0x054c
+d7 stairway chest:
+  treasure: gasha seed
+  room: 0x054d
+d7 miniboss chest:
+  treasure: switch hook
+  room: 0x054e
+d7 cane/diamond puzzle:
+  treasure: d7 small key
+  room: 0x0553
+d7 crab chest:
+  treasure: compass
+  room: 0x0554
+d7 left wing:
+  treasure: d7 small key
+  room: 0x055f
+d7 right wing:
+  treasure: d7 small key
+  room: 0x0564
+d7 spike chest:
+  treasure: dungeon map
+  room: 0x0565
+d7 hallway chest:
+  treasure: gasha seed
+  room: 0x056a
+d7 post-hallway chest:
+  treasure: d7 boss key
+  room: 0x056c
+d7 3F terrace:
+  treasure: d7 small key
+  room: 0x0572
+d7 boxed chest:
+  treasure: d7 small key
+  room: 0x0550
+d7 flower room:
+  treasure: d7 small key
+  room: 0x054b
+  keydrop: true
+d7 diamond puzzle:
+  treasure: d7 small key
+  room: 0x0555
+  keydrop: true
+d7 boss:
+  treasure: heart container
+  room: 0x0562
+  addr: {bank: 0x15} # addr set at EOB
+
+# d8
+d8 B3F chest:
+  treasure: d8 boss key
+  room: 0x0579
+d8 maze chest:
+  treasure: d8 small key
+  room: 0x057b
+d8 NW slate chest:
+  treasure: slate
+  room: 0x057c
+d8 NE slate chest:
+  treasure: slate
+  room: 0x057e
+d8 ghini chest:
+  treasure: dungeon map
+  room: 0x0585
+d8 SE slate chest:
+  treasure: slate
+  room: 0x0592
+d8 SW slate chest:
+  treasure: slate
+  room: 0x0594
+d8 B1F NW chest:
+  treasure: d8 small key
+  room: 0x0597
+d8 sarcophagus chest:
+  treasure: gasha seed
+  room: 0x059f
+d8 blade trap chest:
+  treasure: d8 small key
+  room: 0x05a3
+d8 blue peg chest:
+  treasure: compass
+  room: 0x05a4
+d8 1F chest:
+  treasure: d8 small key
+  room: 0x05a7
+d8 floor puzzle:
+  treasure: bracelet
+  room: 0x05a6
+d8 tile room:
+  treasure: gasha seed
+  room: 0x0591
+d8 stalfos:
+  treasure: d8 small key
+  room: 0x0598
+  reverseaddr: {bank: 0x0a, addr: 0x6077}
+  collect: enemy drop
+d8 boss:
+  treasure: heart container
+  room: 0x0578
+  addr: {bank: 0x15} # addr set at EOB
+
+# seed trees work differently in ages; the seed type is determined by the high
+# nybble of the tree sub ID, and the low nybble is used to identify it for
+# regrowth purposes. so these can't be set directly like ordinary item slots
+# can.
+symmetry city tree:
+  treasure: gale tree seeds
+  room: 0x0013
+  dummy: true
+south lynna tree:
+  treasure: ember tree seeds
+  room: 0x0078
+  dummy: true
+crescent island tree:
+  treasure: scent tree seeds
+  room: 0x00ac
+  dummy: true
+zora village tree:
+  treasure: gale tree seeds
+  room: 0x00c1
+  dummy: true
+rolling ridge west tree:
+  treasure: pegasus tree seeds
+  room: 0x0108
+  dummy: true
+ambi's palace tree:
+  treasure: scent tree seeds
+  room: 0x0125
+  dummy: true
+rolling ridge east tree:
+  treasure: mystery tree seeds
+  room: 0x012d
+  dummy: true
+deku forest tree:
+  treasure: mystery tree seeds
+  room: 0x0180
+  dummy: true
+
+shop, 30 rupees:
+  treasure: wooden shield
+  dummy: true

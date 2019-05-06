@@ -1,0 +1,665 @@
+# TODO: move this comment to a readme or something so it doesn't need to be
+# duplicated.
+#
+# - if `maptile` is not given, it is assumed to be the low byte of the room, or
+#   the item is on a map tile that has exclusive music (like dungeons).
+# - if `collect` is not specified, it uses the mode that the item has in the
+#   vanilla treasure table.
+#
+# TODO: order these by room instead of addr, since chests don't have addrs
+# anymore?
+
+# holodrum
+eyeglass lake, across bridge:
+  treasure: gasha seed
+  room: 0x00b8
+maku tree:
+  treasure: gnarled key
+  room: 0x020b # TODO: this has more than one room!
+  ids: [{bank: 0x15, addr: 0x613a}, {bank: 0x09, addr: 0x7e16}]
+  subids: [{bank: 0x15, addr: 0x613d}, {bank: 0x09, addr: 0x7e19}]
+  collect: maku tree (seasons)
+horon village SW chest:
+  treasure: rupees, 20
+  room: 0x00f5
+horon village SE chest:
+  treasure: rupees, 20
+  room: 0x00f9
+holly's house:
+  treasure: shovel
+  room: 0x03a3
+  maptile: 0x7f
+  addr: {bank: 0x0b, addr: 0x6a6c}
+chest on top of D2:
+  treasure: gasha seed
+  room: 0x008e
+blaino prize:
+  treasure: gasha seed # rip ricky's gloves
+  room: 0x03b4
+  maptile: 0x78
+  addr: {bank: 0x0b, addr: 0x64cc}
+  # TODO: research and rename this and other modes, *OR* extract them
+  # automatically based on the treasure table, when not explicitly given.
+  collect: find 1
+floodgate keeper's house:
+  treasure: floodgate key
+  room: 0x03b5
+  maptile: 0x62
+  reverseaddr: {bank: 0x09, addr: 0x6281}
+spool swamp cave:
+  treasure: square jewel
+  room: 0x04fa
+  maptile: 0xc2
+  ids: [{bank: 0x0b, addr: 0x7395}] # not a real chest!
+  subids: [{bank: 0x0b, addr: 0x7399}]
+moblin keep:
+  treasure: piece of heart
+  room: 0x005b
+master diver's challenge:
+  treasure: master's plaque
+  room: 0x05bc
+  maptile: 0x2e
+master diver's reward:
+  treasure: flippers
+  room: 0x05bd
+  maptile: 0x2e
+  addr: {bank: 0x0b} # addr set at EOB
+  collect: diver room
+spring banana tree:
+  treasure: spring banana
+  room: 0x000f
+  reverseaddr: {bank: 0x09, addr: 0x66c6}
+goron mountain, across pits:
+  treasure: dragon key
+  room: 0x001a
+  reverseaddr: {bank: 0x09, addr: 0x62a3}
+mt. cucco, platform cave:
+  treasure: green joy ring
+  room: 0x05bb
+  maptile: 0x1f
+  reverseaddr: {bank: 0x09} # addr set at EOB
+diving spot outside D4:
+  treasure: pyramid jewel
+  room: 0x07e5
+  maptile: 0x1d
+  ids: [{bank: 0x0b, addr: 0x734e}, {bank: 0x0b, addr: 0x7358}]
+  subids: [{bank: 0x0b, addr: 0x734f}, {bank: 0x0b, addr: 0x7359}]
+black beast's chest:
+  treasure: x-shaped jewel
+  room: 0x00f4
+old man in treehouse:
+  treasure: round jewel
+  room: 0x0394
+  maptile: 0xb5
+  addr: {bank: 0x0b, addr: 0x7332}
+lost woods:
+  treasure: sword
+  room: 0x00c9
+  maptile: 0x40
+  addr: {bank: 0x0b, addr: 0x6418}
+  collect: find 1
+samasa desert pit:
+  treasure: rusty bell
+  room: 0x05d2
+  maptile: 0xbf
+  ids: [{bank: 0x09, addr: 0x648d}, {bank: 0x0b, addr: 0x60b1}]
+  subids: [{bank: 0x09, addr: 0x648c}]
+samasa desert chest:
+  treasure: rang ring L-1
+  room: 0x00ff
+western coast, beach chest:
+  treasure: blast ring
+  room: 0x00e3
+western coast, in house:
+  treasure: bombs, 10
+  room: 0x0388
+  maptile: 0xd2
+cave south of mrs. ruul:
+  treasure: octo ring
+  room: 0x04e0
+  maptile: 0xb3
+cave north of D1:
+  treasure: quicksand ring
+  room: 0x04e1
+  maptile: 0x87
+cave outside D2:
+  treasure: moblin ring
+  room: 0x05b3
+  maptile: 0x8e
+woods of winter, 1st cave:
+  treasure: rupees, 30
+  room: 0x05b4
+  maptile: 0x7d
+sunken city, summer cave:
+  treasure: gasha seed
+  room: 0x05b5
+  maptile: 0x4e
+chest in master diver's cave:
+  treasure: rupees, 50
+  room: 0x05bd
+  maptile: 0x2e
+  collect: diver room
+dry eyeglass lake, east cave:
+  treasure: piece of heart
+  room: 0x05c0
+  maptile: 0xaa
+chest in goron mountain:
+  treasure: armor ring L-2
+  room: 0x05c8
+  maptile: 0x18
+natzu region, across water:
+  treasure: rupees, 50
+  room: 0x050e
+  maptile: 0x49
+mt. cucco, talon's cave:
+  treasure: subrosian ring
+  room: 0x05b6
+  maptile: 0x1b
+tarm ruins, under tree:
+  treasure: gasha seed
+  room: 0x039b
+  maptile: 0x10
+eastern suburbs, on cliff:
+  treasure: gasha seed
+  room: 0x04f7
+  maptile: 0xcc
+dry eyeglass lake, west cave:
+  treasure: rupees, 100
+  room: 0x04fb
+  maptile: 0xa7
+  ids: [{bank: 0x0b, addr: 0x73a1}] # not a real chest!
+  subids: [{bank: 0x0b, addr: 0x73a5}]
+woods of winter, 2nd cave:
+  treasure: gasha seed
+  room: 0x0512
+  maptile: 0x7e
+  ids: [{bank: 0x0a, addr: 0x5003}] # not a real chest!
+  subids: [{bank: 0x0a, addr: 0x5008}]
+shop, 20 rupees:
+  treasure: bombs, 10
+  room: 0x03a6
+  maptile: 0xe6
+  dummy: true # not randomized
+  collect: nil # TODO: these don't need explicitly specified collect modes
+shop, 30 rupees:
+  treasure: wooden shield
+  room: 0x03a6
+  maptile: 0xe6
+  dummy: true # not randomized
+  collect: nil
+shop, 150 rupees:
+  treasure: moosh's flute
+  room: 0x03a6
+  maptile: 0xe6
+  addr: {bank: 0x08, addr: 0x4ce8}
+  collect: nil
+member's shop 1:
+  treasure: satchel
+  room: 0x03b0
+  maptile: 0xe6
+  addr: {bank: 0x08, addr: 0x4cce}
+  collect: nil
+member's shop 2:
+  treasure: gasha seed
+  room: 0x03b0
+  maptile: 0xe6
+  addr: {bank: 0x08, addr: 0x4cd2}
+  collect: nil
+member's shop 3:
+  treasure: treasure map
+  room: 0x03b0
+  maptile: 0xe6
+  addr: {bank: 0x08, addr: 0x4cd8}
+  collect: nil
+
+# subrosia
+#
+# since treasure map sparkles only display on the holodrum map, the location of
+# the subrosia portal "nearest" to the check is used. "nearest" is defined as:
+# fewest screen transitions, with ties broken by earliest portal in the vanilla
+# game sequence.
+#
+# vanilla holodrum portal locations are:
+# - 0x04: temple ruins, upper
+# - 0x1e: mt. cucco
+# - 0x25: temple ruins, lower
+# - 0x9a: rosa
+# - 0xb0: spool swamp
+# - 0xb9: eyeglass lake
+# - 0xf7: horon village
+tower of winter:
+  treasure: winter
+  room: 0x05f2
+  maptile: 0xb0
+  addr: {bank: 0x0b, addr: 0x4fc5}
+tower of summer:
+  treasure: summer
+  room: 0x05f8
+  maptile: 0xb0
+  addr: {bank: 0x0b, addr: 0x4fb9}
+tower of spring:
+  treasure: spring
+  room: 0x05f5
+  maptile: 0x1e
+  addr: {bank: 0x0b, addr: 0x4fb5}
+tower of autumn:
+  treasure: autumn
+  room: 0x05fb
+  maptile: 0xb0
+  addr: {bank: 0x0b, addr: 0x4fc1}
+subrosian dance hall:
+  treasure: boomerang
+  room: 0x0395
+  maptile: 0x9a
+  addr: {bank: 0x0b, addr: 0x6646}
+temple of seasons:
+  treasure: gasha seed # lone rod doesn't exist in rando
+  room: 0x03ac
+  maptile: 0xb0
+  ids: [{bank: 0x15, addr: 0x70ce}]
+  subids: [{bank: 0x15, addr: 0x70cc}]
+  collect: nil
+subrosia seaside:
+  treasure: star ore
+  room: 0x0166 # TODO: and three others!
+  maptile: 0xb0
+  addr: {bank: 0x08} # addr set at EOB
+subrosian wilds chest:
+  treasure: blue ore
+  room: 0x0141
+  maptile: 0x1e
+subrosia village chest:
+  treasure: red ore
+  room: 0x0158
+  maptile: 0xb0
+subrosia, open cave:
+  treasure: gasha seed
+  room: 0x04f1
+  maptile: 0x25
+subrosia, locked cave:
+  treasure: gasha seed
+  room: 0x05c6
+  maptile: 0x25
+subrosia market, 1st item:
+  treasure: ribbon
+  room: 0x03a0
+  maptile: 0xb0
+  addr: {bank: 0x09, addr: 0x77da}
+  collect: nil
+subrosia market, 2nd item:
+  treasure: rare peach stone
+  room: 0x03a0
+  maptile: 0xb0
+  addr: {bank: 0x09, addr: 0x77e2}
+  collect: nil
+subrosia market, 5th item:
+  treasure: member's card
+  room: 0x03a0
+  maptile: 0xb0
+  addr: {bank: 0x09, addr: 0x77f4}
+  collect: nil
+great furnace:
+  treasure: hard ore
+  room: 0x038e
+  maptile: 0xb9
+  ids: [{bank: 0x15}, {bank: 0x09, addr: 0x66eb}] # addr set at EOB
+  subids: [{bank: 0x15}, {bank: 0x09, addr: 0x66ea}] # addr set at EOB
+subrosian smithy:
+  treasure: iron shield
+  room: 0x0397
+  maptile: 0x1e
+  ids: [{bank: 0x15, addr: 0x62be}]
+  subids: [{bank: 0x15, addr: 0x62b4}]
+
+# hero's cave
+d0 key chest:
+  treasure: d0 small key
+  room: 0x0403
+d0 sword chest:
+  treasure: sword
+  room: 0x0404
+  ids: [{bank: 0x0a, addr: 0x7b90}] # not a real chest!
+  subids: [{bank: 0x0a, addr: 0x7b92}]
+d0 rupee chest:
+  treasure: rupees, 30
+  room: 0x0405
+
+# d1
+d1 stalfos drop:
+  treasure: d1 small key
+  room: 0x041b
+  keydrop: true
+d1 basement:
+  treasure: satchel
+  room: 0x0609
+  reverseaddr: {bank: 0x09, addr: 0x66b1}
+d1 block-pushing room:
+  treasure: gasha seed
+  room: 0x040d
+d1 railway chest:
+  treasure: bombs, 10
+  room: 0x0410
+d1 floormaster room:
+  treasure: discovery ring
+  room: 0x0417
+d1 lever room:
+  treasure: compass
+  room: 0x040f
+d1 stalfos chest:
+  treasure: dungeon map
+  room: 0x0419
+d1 button chest:
+  treasure: d1 small key
+  room: 0x0411
+d1 goriya chest:
+  treasure: d1 boss key
+  room: 0x0414
+d1 boss:
+  treasure: heart container
+  room: 0x0412
+  addr: {bank: 0x15} # addr set at EOB
+
+# d2
+d2 rope drop:
+  treasure: d2 small key
+  room: 0x0434
+  keydrop: true
+d2 moblin chest:
+  treasure: bracelet
+  room: 0x042a
+d2 roller chest:
+  treasure: rupees, 10
+  room: 0x041f
+d2 left from entrance:
+  treasure: rupees, 5
+  room: 0x0438
+d2 pot chest:
+  treasure: dungeon map
+  room: 0x042b
+d2 rope chest:
+  treasure: compass
+  room: 0x0436
+d2 blade chest:
+  treasure: d2 small key
+  room: 0x0431
+d2 spiral chest:
+  treasure: d2 small key
+  room: 0x042d
+d2 terrace chest:
+  treasure: d2 boss key
+  room: 0x0424
+d2 boss:
+  treasure: heart container
+  room: 0x0429
+  addr: {bank: 0x15} # addr set at EOB
+
+# d3
+d3 roller chest:
+  treasure: d3 small key
+  room: 0x044c
+d3 mimic chest:
+  treasure: feather
+  room: 0x0450
+d3 zol chest:
+  treasure: d3 small key
+  room: 0x044f
+d3 water room:
+  treasure: rupees, 30
+  room: 0x0441
+d3 quicksand terrace:
+  treasure: gasha seed
+  room: 0x0444
+d3 moldorm chest:
+  treasure: bombs, 10
+  room: 0x0454
+d3 trampoline chest:
+  treasure: compass
+  room: 0x044d
+d3 bombed wall chest:
+  treasure: dungeon map
+  room: 0x0451
+d3 giant blade room:
+  treasure: d3 boss key
+  room: 0x0446
+d3 boss:
+  treasure: heart container
+  room: 0x0453
+  addr: {bank: 0x15} # addr set at EOB
+
+# d4
+d4 pot puzzle:
+  treasure: d4 small key
+  room: 0x047b
+  keydrop: true
+d4 cracked floor room:
+  treasure: slingshot
+  room: 0x0473
+d4 north of entrance:
+  treasure: bombs, 10
+  room: 0x047f
+d4 maze chest:
+  treasure: dungeon map
+  room: 0x0469
+d4 dark room:
+  treasure: d4 small key
+  room: 0x046d
+d4 water ring room:
+  treasure: compass
+  room: 0x0483
+d4 pool:
+  treasure: d4 small key
+  room: 0x0475
+  collect: d4 pool
+d4 terrace:
+  treasure: d4 small key
+  room: 0x0463
+d4 torch chest:
+  treasure: d4 small key
+  room: 0x0464
+d4 dive spot:
+  treasure: d4 boss key
+  room: 0x046c
+  addr: {bank: 0x0b, addr: 0x4c0b}
+  collect: dive
+d4 boss:
+  treasure: heart container
+  room: 0x045f
+  addr: {bank: 0x15} # addr set at EOB
+
+# d5
+d5 cart chest:
+  treasure: d5 small key
+  room: 0x0499
+d5 left chest:
+  treasure: d5 small key
+  room: 0x04a3
+d5 magnet ball chest:
+  treasure: magnet gloves
+  room: 0x0489
+d5 terrace chest:
+  treasure: rupees, 100
+  room: 0x0497
+d5 armos chest:
+  treasure: d5 small key
+  room: 0x0491
+  addr: {bank: 0x09, addr: 0x5051}
+d5 gibdo/zol chest:
+  treasure: dungeon map
+  room: 0x048f
+d5 spiral chest: # TODO: call this "d5 quicksand chest"
+  treasure: compass
+  room: 0x049d
+d5 spinner chest:
+  treasure: d5 small key
+  room: 0x049f
+d5 stalfos room:
+  treasure: d5 small key
+  room: 0x04a5
+d5 basement:
+  treasure: d5 boss key
+  room: 0x068b
+  addr: {bank: 0x0b, addr: 0x4c22}
+  collect: find 2
+d5 boss:
+  treasure: heart container
+  room: 0x048c
+  addr: {bank: 0x15} # addr set at EOB
+
+# d6
+d6 magnet ball drop:
+  treasure: d6 small key
+  room: 0x04ab
+  keydrop: true
+d6 spinner north:
+  treasure: d6 small key
+  room: 0x04c2
+d6 armos hall:
+  treasure: boomerang
+  room: 0x04d0
+  collect: chest
+d6 crystal trap room:
+  treasure: rupees, 10
+  room: 0x04af
+d6 1F east:
+  treasure: rupees, 5
+  room: 0x04b3
+d6 2F gibdo chest:
+  treasure: bombs, 10
+  room: 0x04bf
+d6 2F armos chest:
+  treasure: rupees, 5
+  room: 0x04c3
+d6 beamos room:
+  treasure: compass
+  room: 0x04ad
+d6 1F terrace:
+  treasure: dungeon map
+  room: 0x04b0
+d6 escape room:
+  treasure: d6 boss key
+  room: 0x04c4
+d6 vire chest:
+  treasure: d6 small key
+  room: 0x04c1
+d6 boss:
+  treasure: heart container
+  room: 0x04d5
+  addr: {bank: 0x15} # addr set at EOB
+
+# d7
+d7 wizzrobe chest:
+  treasure: d7 small key
+  room: 0x0554
+d7 spike chest:
+  treasure: feather
+  room: 0x0544
+d7 maze chest:
+  treasure: rupees, 1
+  room: 0x0543
+d7 right of entrance:
+  treasure: power ring L-1
+  room: 0x055a
+d7 bombed wall chest:
+  treasure: compass
+  room: 0x0552
+  collect: poe skip room
+d7 zol button:
+  treasure: d7 small key
+  room: 0x0545
+  keydrop: true
+d7 armos puzzle:
+  treasure: d7 small key
+  room: 0x0535
+  reverseaddr: {bank: 0x09, addr: 0x5689}
+  collect: fall
+d7 magunesu chest:
+  treasure: d7 small key
+  room: 0x0547
+d7 quicksand chest:
+  treasure: dungeon map
+  room: 0x0558
+d7 B2F drop:
+  treasure: d7 small key
+  room: 0x053d
+  keydrop: true
+d7 stalfos chest:
+  treasure: d7 boss key
+  room: 0x0548
+d7 boss:
+  treasure: heart container
+  room: 0x0550
+  addr: {bank: 0x15} # addr set at EOB
+
+# d8
+d8 eye drop:
+  treasure: d8 small key
+  room: 0x0582
+  keydrop: true
+d8 armos chest:
+  treasure: slingshot
+  room: 0x058d
+d8 SW lava chest:
+  treasure: bombs, 10
+  room: 0x056a
+d8 three eyes chest:
+  treasure: steadfast ring
+  room: 0x057d
+d8 hardhat drop:
+  treasure: d8 small key
+  room: 0x0575
+  keydrop: true
+d8 spike room:
+  treasure: compass
+  room: 0x058b
+d8 spinner chest:
+  treasure: d8 small key
+  room: 0x0570
+d8 magnet ball room:
+  treasure: dungeon map
+  room: 0x058e
+d8 darknut chest:
+  treasure: d8 small key
+  room: 0x058c
+d8 ghost armos drop:
+  treasure: d8 small key
+  room: 0x057f
+  keydrop: true
+d8 pols voice chest:
+  treasure: d8 boss key
+  room: 0x0580
+d8 SE lava chest:
+  treasure: d8 small key
+  room: 0x056b
+d8 spark chest:
+  treasure: d8 small key
+  room: 0x058a
+d8 boss:
+  treasure: heart container
+  room: 0x0564
+  addr: {bank: 0x15} # addr set at EOB
+
+# seed trees; semi-fake in that they don't slot real treasures
+horon village seed tree:
+  treasure: ember tree seeds
+  room: 0x00f8
+  ids: [{bank: 0x0d, addr: 0x68fb}]
+woods of winter seed tree:
+  treasure: mystery tree seeds
+  room: 0x009e
+  ids: [{bank: 0x0d, addr: 0x68fe}]
+north horon seed tree:
+  treasure: scent tree seeds
+  room: 0x0067
+  ids: [{bank: 0x0d, addr: 0x6901}]
+spool swamp seed tree:
+  treasure: pegasus tree seeds
+  room: 0x0072
+  ids: [{bank: 0x0d, addr: 0x6904}]
+sunken city seed tree:
+  treasure: gale tree seeds
+  room: 0x005f
+  ids: [{bank: 0x0d, addr: 0x6907}]
+tarm ruins seed tree:
+  treasure: gale tree seeds
+  room: 0x0010
+  ids: [{bank: 0x0d, addr: 0x690a}]

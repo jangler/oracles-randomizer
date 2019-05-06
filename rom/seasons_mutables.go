@@ -81,7 +81,7 @@ var seasonsFixedMutables = map[string]Mutable{
 	// bank 01
 
 	// the d5 boss key room is hard-coded to make a compass beep, even though
-	// the room's can beep based on dungeon room properties.
+	// the room can beep based on dungeon room properties.
 	"fix d5 boss key beep": MutableByte(Addr{0x01, 0x4a0a}, 0x0c, 0x00),
 
 	// bank 04

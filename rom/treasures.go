@@ -26,7 +26,38 @@ const (
 	collectChest2     = 0x68 // map and compass
 	collectDigPile    = 0x51
 	collectDig        = 0x5a
+
+	// special seasons collect modes (jump table indexes)
+	collectDiverRoom       = 0x80
+	collectPoeSkipRoom     = 0x81
+	collectSeasonsMakuTree = 0x82
+	collectD4Pool          = 0x83
+
+	// & ages
+	collectAgesMakuTree = 0x80
+	collectTargetCarts  = 0x81
+	collectBigBang      = 0x82
+	collectLavaJuice    = 0x83
 )
+
+// used for loading from yaml
+var collectModesByName = map[string]byte{
+	"nil":                 collectNil,
+	"find 1":              collectFind1,
+	"find 2":              collectFind2,
+	"enemy drop":          collectEnemyDrop,
+	"fall":                collectFall,
+	"chest":               collectChest,
+	"dive":                collectDive,
+	"diver room":          collectDiverRoom,
+	"poe skip room":       collectPoeSkipRoom,
+	"maku tree (seasons)": collectSeasonsMakuTree,
+	"d4 pool":             collectD4Pool,
+	"maku tree (ages)":    collectAgesMakuTree,
+	"target carts":        collectTargetCarts,
+	"big bang game":       collectBigBang,
+	"lava juice room":     collectLavaJuice,
+}
 
 // A Treasure is data associated with a particular item ID and sub ID.
 type Treasure struct {

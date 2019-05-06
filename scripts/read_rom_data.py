@@ -85,6 +85,7 @@ MUSIC = { # and sound effects
     0x19: "D7",
     0x1a: "D8",
     0x1b: "onox's castle",
+    0x1e: "maku tree",
     0x20: "sea of no return",
     0x24: "symmetry city present",
     0x25: "symmetry city past",

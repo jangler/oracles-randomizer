@@ -58,7 +58,7 @@ rang ring L-1: 0x2d08
 octo ring: 0x2d09
 quicksand ring: 0x2d0a
 armor ring L-2: 0x2d0b
-power ring L-1: 0x2d0e
+power ring L-1: 0x2d0e # TODO: doesn't this appear in ages too?
 subrosian ring: 0x2d10
 
 # ages rings (params will be swapped out)

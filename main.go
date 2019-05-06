@@ -50,15 +50,13 @@ func fatal(err error, logf logFunc) {
 
 // options specified on the command line or via the TUI
 var (
+	flagDevCmd   string
 	flagDungeons bool
 	flagHard     bool
-	flagN        int
 	flagNoMusic  bool
 	flagNoUI     bool
 	flagPortals  bool
 	flagSeed     string
-	flagShowAsm  string
-	flagStats    string
 	flagTreewarp bool
 	flagVerbose  bool
 )
@@ -73,12 +71,12 @@ type randomizerOptions struct {
 // initFlags initializes the CLI/TUI option values and variables.
 func initFlags() {
 	flag.Usage = usage
+	flag.StringVar(&flagDevCmd, "devcmd", "",
+		"subcommands are 'findmut', 'showasm', and 'stats'")
 	flag.BoolVar(&flagDungeons, "dungeons", false,
 		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
 		"require some plays outside normal logic")
-	flag.IntVar(&flagN, "n", 100,
-		"number of trials for stats")
 	flag.BoolVar(&flagNoMusic, "nomusic", false,
 		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
@@ -87,10 +85,6 @@ func initFlags() {
 		"shuffle subrosia portal connections (seasons)")
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
-	flag.StringVar(&flagShowAsm, "showasm", "",
-		"print disasm for randomizer-defined gameName:functionName")
-	flag.StringVar(&flagStats, "stats", "",
-		"print aggregate YAML route data for 'seasons' or 'ages'")
 	flag.BoolVar(&flagTreewarp, "treewarp", false,
 		"warp to ember tree by pressing start+B on map screen")
 	flag.BoolVar(&flagVerbose, "verbose", false,
@@ -109,60 +103,114 @@ func main() {
 		seed:     flagSeed,
 	}
 
-	if flagStats != "" {
+	switch flagDevCmd {
+	case "findaddr":
+		// print the name of the mutable/etc that modifies an address
+		var game int
+
+		tokens := strings.Split(flag.Arg(0), ":")
+		if len(tokens) != 3 {
+			panic("findaddr: invalid argument: " + flag.Arg(0))
+		}
+
+		switch tokens[0] {
+		case "seasons":
+			game = rom.GameSeasons
+		case "ages":
+			game = rom.GameAges
+		default:
+			panic("invalid game name: " + tokens[0])
+		}
+
+		bank, err := strconv.ParseUint(tokens[1], 16, 8)
+		if err != nil {
+			panic(err)
+		}
+		addr, err := strconv.ParseUint(tokens[2], 16, 16)
+		if err != nil {
+			panic(err)
+		}
+
+		// optionall specify path of rom to load
+		if flag.Arg(1) == "" {
+			rom.Init(nil, game)
+		} else {
+			f, err := os.Open(flag.Arg(1))
+			if err != nil {
+				panic(err)
+			}
+			defer f.Close()
+			b, err := ioutil.ReadAll(f)
+			if err != nil {
+				panic(err)
+			}
+			rom.Init(b, game)
+		}
+
+		fmt.Println(rom.FindAddr(byte(bank), uint16(addr)))
+	case "stats":
 		// do stats instead of randomizing
 		var game int
 
-		if flagStats == "seasons" {
+		switch flag.Arg(0) {
+		case "seasons":
 			game = rom.GameSeasons
-		} else if flagStats == "ages" {
+		case "ages":
 			game = rom.GameAges
-		} else {
-			fmt.Printf("'%s' is invalid. try 'seasons' or 'ages'.\n", flagStats)
-			return
+		default:
+			panic("invalid game: " + flag.Arg(0))
+		}
+
+		numTrials, err := strconv.Atoi(flag.Arg(1))
+		if err != nil {
+			panic(err)
 		}
 
 		rom.Init(nil, game)
 		rand.Seed(time.Now().UnixNano())
-		logStats(game, flagN, ropts, func(s string, a ...interface{}) {
+		logStats(game, numTrials, ropts, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
-	} else if flagShowAsm != "" {
+	case "showasm":
+		// print the asm for the named function/etc
 		var game int
 
-		tokens := strings.Split(flagShowAsm, ":")
+		tokens := strings.Split(flag.Arg(0), ":")
 		if len(tokens) != 2 {
-			fmt.Printf("showasm: invalid argument: %s\n", flagShowAsm)
-			return
+			panic("showasm: invalid argument: " + flag.Arg(0))
 		}
 
-		if tokens[0] == "seasons" {
+		switch tokens[0] {
+		case "seasons":
 			game = rom.GameSeasons
-		} else if tokens[0] == "ages" {
+		case "ages":
 			game = rom.GameAges
-		} else {
-			fmt.Printf("invalid game name: %s\n", tokens[0])
-			return
+		default:
+			panic("invalid game name: " + tokens[0])
 		}
 
 		rom.Init(nil, game)
 		if err := rom.ShowAsm(tokens[1], os.Stdout); err != nil {
 			panic(err)
 		}
-	} else if flag.NArg()+flag.NFlag() > 1 { // CLI used
-		// run randomizer on main goroutine
-		runRandomizer(nil, ropts, func(s string, a ...interface{}) {
-			fmt.Printf(s, a...)
-			fmt.Println()
-		})
-	} else { // CLI maybe not used
-		// run TUI on main goroutine and randomizer on alternate goroutine
-		ui := newUI("oracles randomizer " + version)
-		go runRandomizer(ui, ropts, func(s string, a ...interface{}) {
-			ui.printf(s, a...)
-		})
-		ui.run()
+	case "":
+		if flag.NArg()+flag.NFlag() > 1 { // CLI used
+			// run randomizer on main goroutine
+			runRandomizer(nil, ropts, func(s string, a ...interface{}) {
+				fmt.Printf(s, a...)
+				fmt.Println()
+			})
+		} else { // CLI maybe not used
+			// run TUI on main goroutine and randomizer on alternate goroutine
+			ui := newUI("oracles randomizer " + version)
+			go runRandomizer(ui, ropts, func(s string, a ...interface{}) {
+				ui.printf(s, a...)
+			})
+			ui.run()
+		}
+	default:
+		fmt.Printf("invalid dev command: %s\n", flagDevCmd)
 	}
 }
 

@@ -3,7 +3,9 @@
 // are specified, Ages comes first.
 package rom
 
-//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml ../rom/treasures.yaml
+// TODO: put all these yaml files in a folder together so that the folder can
+// be included, instead of every file individually.
+//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml ../rom/treasures.yaml ../rom/seasons_slots.yaml ../rom/ages_slots.yaml ../rom/music.yaml
 
 import (
 	"crypto/sha1"
@@ -24,6 +26,12 @@ const (
 	GameSeasons
 )
 
+var gameNames = map[int]string{
+	GameNil:     "nil",
+	GameAges:    "ages",
+	GameSeasons: "seasons",
+}
+
 var rings []string
 
 // only applies to seasons! used for warps
@@ -31,6 +39,7 @@ var dungeonNameRegexp = regexp.MustCompile(`^d[1-8]$`)
 
 func Init(b []byte, game int) {
 	Treasures = make(map[string]*Treasure)
+	ItemSlots = make(map[string]*MutableSlot)
 
 	if game == GameAges {
 		fixedMutables = agesFixedMutables
@@ -42,11 +51,7 @@ func Init(b []byte, game int) {
 
 	if b != nil {
 		loadTreasures(b, game, Treasures)
-		if game == GameAges {
-			ItemSlots = initAgesSlots()
-		} else {
-			ItemSlots = initSeasonsSlots()
-		}
+		loadSlots(b, game, ItemSlots)
 	}
 
 	if game == GameAges {
@@ -546,8 +551,15 @@ func setLinkedData(b []byte, game int) {
 		linkedStartItem.Mutate(b)
 
 		// create slot for linked hero's cave terrace
-		linkedChest := seasonsChest(
-			"rupees, 20", 0x50e2, 0x05, 0x2c, collectChest, 0xd4)
+		linkedChest := &MutableSlot{
+			treasureName: "rupees, 20",
+			idAddrs:      []Addr{{0x15, 0x50e2}},
+			subIDAddrs:   []Addr{{0x15, 0x50e3}},
+			group:        0x05,
+			room:         0x2c,
+			collectMode:  collectChest,
+			mapCoords:    0xd4,
+		}
 		linkedChest.Treasure = tCave
 		linkedChest.Mutate(b)
 	}

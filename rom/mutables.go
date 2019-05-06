@@ -162,3 +162,42 @@ func getAllMutables() map[string]Mutable {
 
 	return allMutables
 }
+
+// FindAddr returns the name of a mutable that covers the given address, or an
+// empty string if none is found.
+func FindAddr(bank byte, addr uint16) string {
+	muts := getAllMutables()
+	offset := (&Addr{bank, addr}).fullOffset()
+
+	for name, mut := range muts {
+		switch mut := mut.(type) {
+		case *MutableRange:
+			for _, addr := range mut.Addrs {
+				if offset >= addr.fullOffset() &&
+					offset < addr.fullOffset()+len(mut.New) {
+					return name
+				}
+			}
+		case *MutableSlot:
+			for _, addr := range mut.idAddrs {
+				if offset == addr.fullOffset() {
+					return name
+				}
+			}
+			for _, addr := range mut.subIDAddrs {
+				if offset == addr.fullOffset() {
+					return name
+				}
+			}
+		case *Treasure:
+			if offset >= mut.addr.fullOffset() &&
+				offset < mut.addr.fullOffset()+4 {
+				return name
+			}
+		default:
+			panic("unknown type for mutable: " + name)
+		}
+	}
+
+	return ""
+}
