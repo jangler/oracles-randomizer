@@ -15,7 +15,7 @@ eyeglass lake, across bridge:
   room: 0x00b8
 maku tree:
   treasure: gnarled key
-  room: 0x020b # TODO: this has more than one room!
+  room: 0x020b
   ids: [{bank: 0x15, addr: 0x613a}, {bank: 0x09, addr: 0x7e16}]
   subids: [{bank: 0x15, addr: 0x613d}, {bank: 0x09, addr: 0x7e19}]
   collect: maku tree (seasons)
@@ -38,8 +38,6 @@ blaino prize:
   room: 0x03b4
   maptile: 0x78
   addr: {bank: 0x0b, addr: 0x64cc}
-  # TODO: research and rename this and other modes, *OR* extract them
-  # automatically based on the treasure table, when not explicitly given.
   collect: find 1
 floodgate keeper's house:
   treasure: floodgate key
@@ -180,37 +178,31 @@ shop, 20 rupees:
   room: 0x03a6
   maptile: 0xe6
   dummy: true # not randomized
-  collect: nil # TODO: these don't need explicitly specified collect modes
 shop, 30 rupees:
   treasure: wooden shield
   room: 0x03a6
   maptile: 0xe6
   dummy: true # not randomized
-  collect: nil
 shop, 150 rupees:
   treasure: moosh's flute
   room: 0x03a6
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4ce8}
-  collect: nil
 member's shop 1:
   treasure: satchel
   room: 0x03b0
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4cce}
-  collect: nil
 member's shop 2:
   treasure: gasha seed
   room: 0x03b0
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4cd2}
-  collect: nil
 member's shop 3:
   treasure: treasure map
   room: 0x03b0
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4cd8}
-  collect: nil
 
 # subrosia
 #
@@ -258,10 +250,9 @@ temple of seasons:
   maptile: 0xb0
   ids: [{bank: 0x15, addr: 0x70ce}]
   subids: [{bank: 0x15, addr: 0x70cc}]
-  collect: nil
 subrosia seaside:
   treasure: star ore
-  room: 0x0166 # TODO: and three others!
+  room: 0x0166
   maptile: 0xb0
   addr: {bank: 0x08} # addr set at EOB
 subrosian wilds chest:
@@ -285,19 +276,16 @@ subrosia market, 1st item:
   room: 0x03a0
   maptile: 0xb0
   addr: {bank: 0x09, addr: 0x77da}
-  collect: nil
 subrosia market, 2nd item:
   treasure: rare peach stone
   room: 0x03a0
   maptile: 0xb0
   addr: {bank: 0x09, addr: 0x77e2}
-  collect: nil
 subrosia market, 5th item:
   treasure: member's card
   room: 0x03a0
   maptile: 0xb0
   addr: {bank: 0x09, addr: 0x77f4}
-  collect: nil
 great furnace:
   treasure: hard ore
   room: 0x038e
@@ -486,7 +474,7 @@ d5 armos chest:
 d5 gibdo/zol chest:
   treasure: dungeon map
   room: 0x048f
-d5 spiral chest: # TODO: call this "d5 quicksand chest"
+d5 spiral chest:
   treasure: compass
   room: 0x049d
 d5 spinner chest:

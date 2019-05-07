@@ -10,7 +10,6 @@ import (
 // collection modes
 // i don't know what the difference between the two find modes is
 const (
-	collectNil        = 0x00 // custom, for shop items
 	collectBuySatchel = 0x01
 	collectFind0      = 0x02 // sets room flag 6 instead of 5
 	collectUnderwater = 0x08 // pyramid jewel
@@ -42,7 +41,6 @@ const (
 
 // used for loading from yaml
 var collectModesByName = map[string]byte{
-	"nil":                 collectNil,
 	"find 1":              collectFind1,
 	"find 2":              collectFind2,
 	"enemy drop":          collectEnemyDrop,
