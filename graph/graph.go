@@ -114,6 +114,11 @@ func (g Graph) ExploreFromStart(hard bool) map[*Node]bool {
 
 // Reduce returns a version of the graph that is 1. only relevant to the given
 // target and 2. reduced to as few nodes as possible.
+//
+// WARNING: This function is currently (1d95ca8) not used in the randomizer
+// code at all, and I don't remember how well it works. There are tests for it
+// in graph_test.go that pass, but the at the very least it does not do what it
+// is intended to do to the fullest extent possible.
 func (g Graph) Reduce(target string) (Graph, error) {
 	if g[target] == nil {
 		return nil, fmt.Errorf("target node %s not in graph", target)
@@ -131,7 +136,7 @@ func (g Graph) Reduce(target string) (Graph, error) {
 	// iteratively cut out parents with only one child, or zero children, as
 	// long as the parent type matches the type of its single child. direct
 	// parents of the target node also don't need to be parents of any other
-	// node. (TODO this principle can be applied recursively)
+	// node. (this principle can be applied recursively, but currently isn't?)
 	done := false
 	for !done {
 		done = true
