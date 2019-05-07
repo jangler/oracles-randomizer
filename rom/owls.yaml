@@ -1,0 +1,41 @@
+# this file maps owl statue names (matching those in the logic package) to the
+# low bytes of their respective text IDs.
+
+seasons: 
+  dodongo owl: 0x0d
+  gohma owl: 0x0e
+  armos knights owl: 0x0f
+  silent watch owl: 0x10
+  magical ice owl: 0x11
+  woods of winter owl: 0x14
+  omuai owl: 0x15
+  poe curse owl: 0x16
+  spiked beetles owl: 0x17
+  trampoline owl: 0x18
+  greater distance owl: 0x19
+  frypolar owl: 0x1a
+  shining blue owl: 0x1c
+  floodgate keeper owl: 0x1d
+  # roller owl: 0x12 # unused
+  # guide owl: 0x13 # unused
+
+ages:
+  crown dungeon owl: 0x00
+  spiked beetles owl: 0x01
+  ancient words owl: 0x02
+  blue wing owl: 0x03
+  talus peaks owl: 0x05
+  deku forest owl: 0x06
+  head thwomp owl: 0x07
+  scent seduction owl: 0x08
+  deep waters owl: 0x09
+  open ears owl: 0x0a
+  luck test owl: 0x0b
+  stone soldiers owl: 0x0c
+  four crystals owl: 0x0d
+  black tower owl: 0x0e
+  rolling ridge owl: 0x0f
+  jabu switch room owl: 0x10
+  plasmarine owl: 0x11
+  golden isle owl: 0x12
+  mermaid legend owl: 0x13
