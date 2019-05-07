@@ -298,6 +298,10 @@ var seasonsFixedMutables = map[string]Mutable{
 	"add lake ledge 2": MutableByte(Addr{0x22, 0x7905}, 0x52, 0x25),
 	"add lake ledge 3": MutableByte(Addr{0x22, 0x7910}, 0x52, 0x47),
 
+	"replace lake summer water 1": MutableByte(Addr{0x22, 0x74e4}, 0xfd, 0xfa),
+	"replace lake summer water 2": MutableString(Addr{0x22, 0x78ed},
+		"\xfd\xfd\xfd\xfd", "\xfa\xfa\xfa\xfa"),
+
 	// remove the snow piles in front of holly's house so that shovel isn't
 	// required not to softlock there.
 	"remove holly snow piles": MutableByte(Addr{0x24, 0x6474}, 0xd9, 0x04),
