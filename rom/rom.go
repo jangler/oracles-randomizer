@@ -222,23 +222,20 @@ func Verify(b []byte, game int) []error {
 	for k, m := range getAllMutables() {
 		// ignore special cases that would error even when correct
 		switch k {
-		// mystical seeds
-		case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
-			"pegasus tree seeds", "gale tree seeds":
 		// seasons shop items
 		case "zero shop text", "member's card", "treasure map",
 			"rare peach stone", "ribbon":
 		// seasons flutes
 		case "dimitri's flute", "moosh's flute":
 		// seasons misc.
-		case "temple of seasons", "blaino prize", "green joy ring",
-			"mt. cucco, platform cave", "diving spot outside D4":
+		case "temple of seasons", "blaino prize", "mt. cucco, platform cave",
+			"diving spot outside D4":
 		// ages progressive w/ different item IDs
 		case "nayru's house", "tokkey's composition", "rescue nayru",
 			"d6 present vire chest":
 		// ages misc.
-		case "south shore dirt", "target carts 1", "target carts 2",
-			"sea of storms past", "starting chest", "graveyard poe":
+		case "south shore dirt", "target carts 2", "sea of storms past",
+			"starting chest", "graveyard poe":
 		default:
 			if err := m.Check(b); err != nil {
 				errors = append(errors, fmt.Errorf("%s: %v", k, err))
