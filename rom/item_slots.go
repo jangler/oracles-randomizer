@@ -116,8 +116,9 @@ type musicData struct {
 	MapTile byte
 }
 
-// loads slot data from the rom into the given map.
-func loadSlots(b []byte, game int, m map[string]*MutableSlot) {
+// return a map of slot names to slot data. if b is nil, only "static" data is
+// loaded.
+func LoadSlots(b []byte, game int) map[string]*MutableSlot {
 	raws := make(map[string]*rawSlot)
 
 	filename := fmt.Sprintf("/rom/%s_slots.yaml", gameNames[game])
@@ -133,6 +134,8 @@ func loadSlots(b []byte, game int, m map[string]*MutableSlot) {
 	}
 	musicMap := allMusic[gameNames[game]]
 
+	m := make(map[string]*MutableSlot)
+
 	for name, raw := range raws {
 		if raw.Room == 0 && !raw.Dummy {
 			panic(name + " room is zero")
@@ -145,7 +148,7 @@ func loadSlots(b []byte, game int, m map[string]*MutableSlot) {
 		}
 
 		// unspecified map tile = assume overworld
-		if raw.MapTile == nil {
+		if raw.MapTile == nil && b != nil {
 			musicIndex := getMusicIndex(b, game, slot.group, slot.room)
 			if music, ok := musicMap[musicIndex]; ok {
 				slot.mapCoords = music.MapTile
@@ -157,7 +160,7 @@ func loadSlots(b []byte, game int, m map[string]*MutableSlot) {
 				}
 				slot.mapCoords = slot.room
 			}
-		} else {
+		} else if raw.MapTile != nil {
 			slot.mapCoords = *raw.MapTile
 		}
 
@@ -184,7 +187,7 @@ func loadSlots(b []byte, game int, m map[string]*MutableSlot) {
 					slot.subIDAddrs[i] = Addr{subid.Bank, subid.Offset}
 				}
 			}
-		} else if !raw.Dummy && raw.Collect != "d4 pool" {
+		} else if !raw.Dummy && raw.Collect != "d4 pool" && b != nil {
 			// try to get chest data for room
 			addr := getChestAddr(b, game, slot.group, slot.room)
 			if addr != (Addr{}) {
@@ -216,6 +219,8 @@ func loadSlots(b []byte, game int, m map[string]*MutableSlot) {
 
 		m[name] = slot
 	}
+
+	return m
 }
 
 // returns the full offset of a room's chest's two-byte entry in the rom.

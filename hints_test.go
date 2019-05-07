@@ -7,63 +7,47 @@ import (
 	"github.com/jangler/oracles-randomizer/rom"
 )
 
-// TODO rings aren't covered by these tests, since they're separate (and
-// private) in the rom package.
-
 // make sure that every item and check has a corresponding hint name.
 func TestHintCoverage(t *testing.T) {
-	for name, _ := range rom.SeasonsTreasures {
-		if _, ok := newHinter(rom.GameSeasons).items[name]; !ok {
-			t.Errorf("missing name for seasons treasure %q", name)
-		}
-	}
-	for name, _ := range rom.AgesTreasures {
-		if _, ok := newHinter(rom.GameAges).items[name]; !ok {
-			t.Errorf("missing name for ages treasure %q", name)
-		}
-	}
-	// TODO: this is currently broken because of changes to the rom package.
-	// fix this after the changes are done.
-	/*
-		for name, _ := range rom.SeasonsSlots {
-			if _, ok := newHinter(rom.GameSeasons).areas[name]; !ok {
-				t.Errorf("missing name for seasons slot %q", name)
+	for _, game := range []int{rom.GameSeasons, rom.GameAges} {
+		rom.Init(nil, game)
+		hinter := newHinter(game)
+
+		for name := range rom.Treasures {
+			if _, ok := hinter.items[name]; !ok {
+				t.Errorf("%s missing name for item %q",
+					gameName(game), name)
 			}
 		}
-		for name, _ := range rom.AgesSlots {
-			if _, ok := newHinter(rom.GameAges).areas[name]; !ok {
-				t.Errorf("missing name for ages slot %q", name)
+
+		for name := range rom.ItemSlots {
+			if _, ok := hinter.areas[name]; !ok {
+				t.Errorf("%s missing name for area %q",
+					gameName(game), name)
 			}
 		}
-	*/
+	}
 }
 
 // make sure that no hints refer to nothing.
 func TestDanglingHints(t *testing.T) {
-	for name := range newHinter(rom.GameSeasons).items {
-		if rom.SeasonsTreasures[name] == nil &&
-			!strings.Contains(name, " ring") {
-			t.Errorf("dangling item name: %q", name)
-		}
-	}
-	for name := range newHinter(rom.GameAges).items {
-		if rom.AgesTreasures[name] == nil &&
-			!strings.Contains(name, " ring") {
-			t.Errorf("dangling item name: %q", name)
-		}
-	}
-	// TODO: this is currently broken because of changes to the rom package.
-	// fix this after the changes are done.
-	/*
-		for name := range newHinter(rom.GameSeasons).areas {
-			if rom.SeasonsSlots[name] == nil {
-				t.Errorf("dangling area name: %q", name)
+	for _, game := range []int{rom.GameSeasons, rom.GameAges} {
+		rom.Init(nil, game)
+		hinter := newHinter(game)
+
+		for name := range hinter.items {
+			if rom.Treasures[name] == nil &&
+				!strings.Contains(name, " ring") {
+				t.Errorf("dangling %s item name: %q",
+					gameName(game), name)
 			}
 		}
-		for name := range newHinter(rom.GameAges).areas {
-			if rom.AgesSlots[name] == nil {
-				t.Errorf("dangling area name: %q", name)
+
+		for name := range hinter.areas {
+			if rom.ItemSlots[name] == nil {
+				t.Errorf("dangling %s area name: %q",
+					gameName(game), name)
 			}
 		}
-	*/
+	}
 }

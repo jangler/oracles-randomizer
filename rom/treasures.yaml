@@ -1,150 +1,162 @@
 # high byte is id, low byte is subid. for some treasures subid only determines
 # collect mode, which doesn't matter for these purposes since collect mode is
-# set based on other things.
-#
-# TODO: in the very near future that might not be true anymore, though. item
-# slots might get their collect mode from their default treasure data unless
-# overridden, meaning that different subids would need to be represented here.
-# the subids could still be collapsed during loading (when applicable) for the
-# purposes of reference from logic etc.
+# (currently) set based on other things.
 
-# equip items
-wooden shield: 0x0100
-iron shield: 0x0101
-bombs, 10: 0x0300
-cane: 0x0400
-sword: 0x0500
-boomerang: 0x0600
-spring: 0x0702
-summer: 0x0703
-autumn: 0x0704
-winter: 0x0705
-magnet gloves: 0x0800
-switch hook: 0x0a00
-ricky's flute: 0x0e00 # these flutes are correct for ages but fake for seasons
-dimitri's flute: 0x0e01
-moosh's flute: 0x0e02
-seed shooter: 0x0f00
-slingshot: 0x1300
-shovel: 0x1500
-bracelet: 0x1600
-feather: 0x1700
-satchel: 0x1900
-fool's ore: 0x1e00
-harp: 0x2500 # actually tune of echoes, which gives harp as well
+common:
+  # equip items
+  wooden shield: 0x0100
+  iron shield: 0x0101
+  bombs, 10: 0x0300
+  sword: 0x0500
+  boomerang: 0x0600
+  ricky's flute: 0x0e00 # these flutes are correct for ages but fake for seasons
+  dimitri's flute: 0x0e01
+  moosh's flute: 0x0e02
+  shovel: 0x1500
+  bracelet: 0x1600
+  feather: 0x1700
+  satchel: 0x1900
 
-# rupees
-rupees, 1: 0x2800
-rupees, 5: 0x2801
-rupees, 10: 0x2802
-rupees, 20: 0x2803
-rupees, 30: 0x2804
-rupees, 50: 0x2805
-rupees, 100: 0x2806
-rupees, 200: 0x2808
+  # rupees
+  rupees, 10: 0x2802
+  rupees, 20: 0x2803
+  rupees, 30: 0x2804
+  rupees, 50: 0x2805
+  rupees, 100: 0x2806
 
-# hearts
-heart container: 0x2a00
-piece of heart: 0x2b01
-rare peach stone: 0x2b02 # subrosia market
+  # hearts
+  heart container: 0x2a00
+  piece of heart: 0x2b01
 
-# seasons rings (params will be swapped out)
-green joy ring: 0x2d01
-discovery ring: 0x2d04
-moblin ring: 0x2d05
-steadfast ring: 0x2d06
-blast ring: 0x2d07
-rang ring L-1: 0x2d08
-octo ring: 0x2d09
-quicksand ring: 0x2d0a
-armor ring L-2: 0x2d0b
-power ring L-1: 0x2d0e # TODO: doesn't this appear in ages too?
-subrosian ring: 0x2d10
+  # rings
+  discovery ring: 0x2d04
+  power ring L-1: 0x2d0e
 
-# ages rings (params will be swapped out)
-gold joy ring: 0x2d16
-armor ring L-1: 0x2d17
-light ring L-1: 0x2d19
-blue luck ring: 0x2d1a
-power ring L-2: 0x2d1b
-gold luck ring: 0x2d1c
-pegasus ring: 0x2d1e
-green luck ring: 0x2d20
-green holy ring: 0x2d21
-red holy ring: 0x2d22
-whisp ring: 0x2d23
-whimsical ring: 0x2d25
-toss ring: 0x2d26
-blue ring: 0x2d27
-like-like ring: 0x2d28
+  # dungeon items
+  d1 small key: 0x3003
+  d2 small key: 0x3003
+  d3 small key: 0x3003
+  d4 small key: 0x3003
+  d5 small key: 0x3003
+  d7 small key: 0x3003
+  d8 small key: 0x3003
+  d1 boss key: 0x3103
+  d2 boss key: 0x3103
+  d3 boss key: 0x3103
+  d4 boss key: 0x3103 # technically a different subid for seasons
+  d5 boss key: 0x3103 # ^
+  d6 boss key: 0x3103
+  d7 boss key: 0x3103
+  d8 boss key: 0x3103
+  compass: 0x3202
+  dungeon map: 0x3302
 
-# dungeon items
-d0 small key: 0x3003
-d1 small key: 0x3003
-d2 small key: 0x3003
-d3 small key: 0x3003
-d4 small key: 0x3003
-d5 small key: 0x3003
-d6 small key: 0x3003
-d7 small key: 0x3003
-d8 small key: 0x3003
-d6 present small key: 0x3003
-d6 past small key: 0x3003
-d1 boss key: 0x3103
-d2 boss key: 0x3103
-d3 boss key: 0x3103
-d4 boss key: 0x3103 # technically a different subid for seasons
-d5 boss key: 0x3103 # ^
-d6 boss key: 0x3103
-d7 boss key: 0x3103
-d8 boss key: 0x3103
-compass: 0x3202
-dungeon map: 0x3302
+  # common page 2
+  flippers: 0x2e00
+  gasha seed: 0x3401
 
-# common page 2
-flippers: 0x2e00
-gasha seed: 0x3401
+seasons:
+  # equip items
+  spring: 0x0702
+  summer: 0x0703
+  autumn: 0x0704
+  winter: 0x0705
+  magnet gloves: 0x0800
+  slingshot: 0x1300
+  fool's ore: 0x1e00
 
-# seasons page 2
-gnarled key: 0x4200
-floodgate key: 0x4300
-dragon key: 0x4400
-star ore: 0x4500
-ribbon: 0x4600
-spring banana: 0x4700
-ricky's gloves: 0x4800
-rusty bell: 0x4a00
-treasure map: 0x4b00
-round jewel: 0x4c00
-pyramid jewel: 0x4d00
-square jewel: 0x4e00
-x-shaped jewel: 0x4f00
-red ore: 0x5000
-blue ore: 0x5100
-hard ore: 0x5200
-member's card: 0x5300
-master's plaque: 0x5400
+  # rupees
+  rupees, 1: 0x2800
+  rupees, 5: 0x2801
 
-# ages page 2
-graveyard key: 0x4200
-crown key: 0x4300
-mermaid key: 0x4400
-old mermaid key: 0x4500
-library key: 0x4600
-ricky's gloves: 0x4800
-bomb flower: 0x4900
-slate: 0x4b00
-tuni nut: 0x4c00
-scent seedling: 0x4d00
-zora scale: 0x4e00
-tokay eyeball: 0x4f00
-fairy powder: 0x5100
-cheval rope: 0x5200
-island chart: 0x5400
-book of seals: 0x5500
-goron letter: 0x5900
-lava juice: 0x5a00
-brother emblem: 0x5b00
-goron vase: 0x5c00
-goronade: 0x5d00
-rock brisket: 0x5e00
+  # hearts
+  rare peach stone: 0x2b02 # subrosia market
+
+  # dungeon items
+  d0 small key: 0x3003
+  d6 small key: 0x3003
+
+  # rings
+  green joy ring: 0x2d01
+  moblin ring: 0x2d05
+  steadfast ring: 0x2d06
+  blast ring: 0x2d07
+  rang ring L-1: 0x2d08
+  octo ring: 0x2d09
+  quicksand ring: 0x2d0a
+  armor ring L-2: 0x2d0b
+  subrosian ring: 0x2d10
+
+  # page 2
+  gnarled key: 0x4200
+  floodgate key: 0x4300
+  dragon key: 0x4400
+  star ore: 0x4500
+  ribbon: 0x4600
+  spring banana: 0x4700
+  ricky's gloves: 0x4800
+  rusty bell: 0x4a00
+  treasure map: 0x4b00
+  round jewel: 0x4c00
+  pyramid jewel: 0x4d00
+  square jewel: 0x4e00
+  x-shaped jewel: 0x4f00
+  red ore: 0x5000
+  blue ore: 0x5100
+  hard ore: 0x5200
+  member's card: 0x5300
+  master's plaque: 0x5400
+
+ages:
+  cane: 0x0400
+  switch hook: 0x0a00
+  seed shooter: 0x0f00
+  harp: 0x2500 # actually tune of echoes, which gives harp as well
+
+  # rupees
+  rupees, 200: 0x2808
+
+  # rings
+  gold joy ring: 0x2d16
+  armor ring L-1: 0x2d17
+  light ring L-1: 0x2d19
+  blue luck ring: 0x2d1a
+  power ring L-2: 0x2d1b
+  gold luck ring: 0x2d1c
+  pegasus ring: 0x2d1e
+  green luck ring: 0x2d20
+  green holy ring: 0x2d21
+  red holy ring: 0x2d22
+  whisp ring: 0x2d23
+  whimsical ring: 0x2d25
+  toss ring: 0x2d26
+  blue ring: 0x2d27
+  like-like ring: 0x2d28
+
+  # dungeon items
+  d6 present small key: 0x3003
+  d6 past small key: 0x3003
+
+  # page 2
+  graveyard key: 0x4200
+  crown key: 0x4300
+  mermaid key: 0x4400
+  old mermaid key: 0x4500
+  library key: 0x4600
+  ricky's gloves: 0x4800
+  bomb flower: 0x4900
+  slate: 0x4b00
+  tuni nut: 0x4c00
+  scent seedling: 0x4d00
+  zora scale: 0x4e00
+  tokay eyeball: 0x4f00
+  fairy powder: 0x5100
+  cheval rope: 0x5200
+  island chart: 0x5400
+  book of seals: 0x5500
+  goron letter: 0x5900
+  lava juice: 0x5a00
+  brother emblem: 0x5b00
+  goron vase: 0x5c00
+  goronade: 0x5d00
+  rock brisket: 0x5e00

@@ -144,14 +144,24 @@ func getTreasureAddr(b []byte, game int, id, subid byte) Addr {
 	return ptr
 }
 
-// loads treasure data from the rom into the given map.
-func loadTreasures(b []byte, game int, m map[string]*Treasure) {
-	rawIds := make(map[string]uint16)
-
+// return a map of treasure names to treasure data. if b is nil, only "static"
+// data is loaded.
+func LoadTreasures(b []byte, game int) map[string]*Treasure {
+	allRawIds := make(map[string]map[string]uint16)
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/treasures.yaml"), rawIds); err != nil {
+		FSMustByte(false, "/rom/treasures.yaml"), allRawIds); err != nil {
 		panic(err)
 	}
+
+	rawIds := make(map[string]uint16)
+	for k, v := range allRawIds["common"] {
+		rawIds[k] = v
+	}
+	for k, v := range allRawIds[gameNames[game]] {
+		rawIds[k] = v
+	}
+
+	m := make(map[string]*Treasure)
 
 	for name, rawId := range rawIds {
 		if m[name] != nil {
@@ -162,11 +172,14 @@ func loadTreasures(b []byte, game int, m map[string]*Treasure) {
 			id:    byte(rawId >> 8),
 			subID: byte(rawId),
 		}
-		t.addr = getTreasureAddr(b, game, t.id, t.subID)
-		t.mode = b[t.addr.fullOffset()]
-		t.param = b[t.addr.fullOffset()+1]
-		t.text = b[t.addr.fullOffset()+2]
-		t.sprite = b[t.addr.fullOffset()+3]
+
+		if b != nil {
+			t.addr = getTreasureAddr(b, game, t.id, t.subID)
+			t.mode = b[t.addr.fullOffset()]
+			t.param = b[t.addr.fullOffset()+1]
+			t.text = b[t.addr.fullOffset()+2]
+			t.sprite = b[t.addr.fullOffset()+3]
+		}
 
 		m[name] = t
 	}
@@ -216,4 +229,6 @@ func loadTreasures(b []byte, game int, m map[string]*Treasure) {
 	m["pegasus tree seeds"] = &Treasure{id: 0x02}
 	m["gale tree seeds"] = &Treasure{id: 0x03}
 	m["mystery tree seeds"] = &Treasure{id: 0x04}
+
+	return m
 }

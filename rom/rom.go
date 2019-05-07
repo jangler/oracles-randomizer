@@ -38,9 +38,6 @@ var rings []string
 var dungeonNameRegexp = regexp.MustCompile(`^d[1-8]$`)
 
 func Init(b []byte, game int) {
-	Treasures = make(map[string]*Treasure)
-	ItemSlots = make(map[string]*MutableSlot)
-
 	if game == GameAges {
 		fixedMutables = agesFixedMutables
 		varMutables = agesVarMutables
@@ -49,10 +46,8 @@ func Init(b []byte, game int) {
 		varMutables = seasonsVarMutables
 	}
 
-	if b != nil {
-		loadTreasures(b, game, Treasures)
-		loadSlots(b, game, ItemSlots)
-	}
+	Treasures = LoadTreasures(b, game)
+	ItemSlots = LoadSlots(b, game)
 
 	if game == GameAges {
 		initAgesEOB()

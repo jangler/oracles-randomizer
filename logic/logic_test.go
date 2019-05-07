@@ -8,7 +8,7 @@ import (
 	"github.com/jangler/oracles-randomizer/rom"
 )
 
-var dungeonEntranceRegexp = regexp.MustCompile(`d[1-8] entrance`)
+var dungeonEntranceRegexp = regexp.MustCompile(`d[1-8].* entrance`)
 var portalEntranceRegexp = regexp.MustCompile(`enter .+ portal`)
 
 // returns true iff p1 is a parent of p2.
@@ -24,9 +24,6 @@ func isParent(p1Name string, p2 *Node) bool {
 func TestLinks(t *testing.T) {
 	// need to be changed manually for now
 	nodes := GetSeasons()
-
-	// TODO: this is currently broken due to changes in how treasure and check
-	// data are loaded in/from rom. fix this after the changes are done.
 	rom.Init(nil, rom.GameSeasons)
 
 	for key, slot := range rom.ItemSlots {
