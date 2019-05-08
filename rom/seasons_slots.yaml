@@ -38,7 +38,7 @@ blaino prize:
   room: 0x03b4
   maptile: 0x78
   addr: {bank: 0x0b, addr: 0x64cc}
-  collect: find 1
+  collect: touch
 floodgate keeper's house:
   treasure: floodgate key
   room: 0x03b5
@@ -95,7 +95,7 @@ lost woods:
   room: 0x00c9
   maptile: 0x40
   addr: {bank: 0x0b, addr: 0x6418}
-  collect: find 1
+  collect: touch
 samasa desert pit:
   treasure: rusty bell
   room: 0x05d2
@@ -487,7 +487,7 @@ d5 basement:
   treasure: d5 boss key
   room: 0x068b
   addr: {bank: 0x0b, addr: 0x4c22}
-  collect: find 2
+  collect: touch
 d5 boss:
   treasure: heart container
   room: 0x048c
@@ -559,7 +559,7 @@ d7 armos puzzle:
   treasure: d7 small key
   room: 0x0535
   reverseaddr: {bank: 0x09, addr: 0x5689}
-  collect: fall
+  collect: drop
 d7 magunesu chest:
   treasure: d7 small key
   room: 0x0547

@@ -62,16 +62,16 @@ func makeSeasonsCollectModeTable() string {
 
 	// add other three star ore screens
 	for _, room := range starOreRooms[1:] {
-		b.Write([]byte{0x01, room, collectDig})
+		b.Write([]byte{0x01, room, collectModes["dig"]})
 	}
 
 	// add other eight maku tree screens
 	for _, room := range makuTreeRooms[1:] {
-		b.Write([]byte{0x02, room, collectSeasonsMakuTree})
+		b.Write([]byte{0x02, room, collectModes["maku tree (seasons)"]})
 	}
 
 	// add linked hero's cave chest
-	b.Write([]byte{0x05, 0x2c, collectChest})
+	b.Write([]byte{0x05, 0x2c, collectModes["chest"]})
 
 	b.Write([]byte{0xff})
 	return b.String()

@@ -549,7 +549,7 @@ func setLinkedData(b []byte, game int) {
 			subIDAddrs:   []Addr{{0x15, 0x50e3}},
 			group:        0x05,
 			room:         0x2c,
-			collectMode:  collectChest,
+			collectMode:  collectModes["chest"],
 			mapCoords:    0xd4,
 		}
 		linkedChest.Treasure = tCave

@@ -56,34 +56,6 @@ func (ms *MutableSlot) Check(b []byte) error {
 	return nil
 }
 
-// basicSlot constucts a MutableSlot from a treasure name, bank number, and an
-// address for each its ID and sub-ID. Most slots fit this pattern.
-func basicSlot(treasure string, bank byte, idOffset, subIDOffset uint16,
-	group, room, mode, coords byte) *MutableSlot {
-	return &MutableSlot{
-		treasureName: treasure,
-		idAddrs:      []Addr{{bank, idOffset}},
-		subIDAddrs:   []Addr{{bank, subIDOffset}},
-		group:        group,
-		room:         room,
-		collectMode:  mode,
-		mapCoords:    coords,
-	}
-}
-
-// keyDropSlot constructs a MutableSlot for a small key drop. the mutable
-// itself is a dummy and does not have an address; the data is used to
-// construct a table of small key drops.
-func keyDropSlot(treasure string, group, room, coords byte) *MutableSlot {
-	return &MutableSlot{
-		treasureName: treasure,
-		group:        group,
-		room:         room,
-		collectMode:  collectFall,
-		mapCoords:    coords,
-	}
-}
-
 var ItemSlots map[string]*MutableSlot
 
 type rawSlot struct {
@@ -165,7 +137,7 @@ func LoadSlots(b []byte, game int) map[string]*MutableSlot {
 		}
 
 		if raw.KeyDrop {
-			slot.collectMode = collectFall
+			slot.collectMode = collectModes["drop"]
 		} else if raw.Addr != (rawAddr{}) {
 			slot.idAddrs = []Addr{{raw.Addr.Bank, raw.Addr.Offset}}
 			slot.subIDAddrs = []Addr{{raw.Addr.Bank, raw.Addr.Offset + 1}}
@@ -201,9 +173,9 @@ func LoadSlots(b []byte, game int) map[string]*MutableSlot {
 		// TODO: have a Dx small key (drop) treasure or something??
 		// TODO: even better, just have a small key (drop) treasure (etc) and
 		// get dungeon automatically based on music or something
-		if slot.collectMode == 0 { // key drop slots have theirs set already
+		if slot.collectMode != collectModes["drop"] { // drops already set
 			if raw.Collect != "" {
-				if mode, ok := collectModesByName[raw.Collect]; ok {
+				if mode, ok := collectModes[raw.Collect]; ok {
 					slot.collectMode = mode
 				} else {
 					panic("collect mode not found: " + raw.Collect)

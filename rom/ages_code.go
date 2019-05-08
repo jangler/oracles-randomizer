@@ -58,10 +58,11 @@ func makeAgesCollectModeTable() string {
 	b.WriteString(table[:len(table)-1]) // strip final ff
 
 	// add eatern symmetry city brother
-	b.Write([]byte{0x03, 0x6f, collectFind2})
+	b.Write([]byte{0x03, 0x6f, collectModes["touch"]})
 
 	// add ricky and dimitri nuun caves
-	b.Write([]byte{0x02, 0xec, collectChest, 0x05, 0xb8, collectChest})
+	b.Write([]byte{0x02, 0xec, collectModes["chest"],
+		0x05, 0xb8, collectModes["chest"]})
 
 	b.Write([]byte{0xff})
 	return b.String()

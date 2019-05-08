@@ -11,7 +11,7 @@ nayru's house:
   room: 0x03ae
   maptile: 0x3a
   reverseaddr: {bank: 0x0b, addr: 0x6827}
-  collect: find 2
+  collect: touch
 maku tree:
   treasure: satchel
   room: 0x0038
@@ -213,7 +213,7 @@ deku forest soldier:
   treasure: bombs, 10
   room: 0x0172
   addr: {bank: 0x0c} # addr set at EOB
-  collect: find 2
+  collect: touch
 wild tokay game:
   treasure: scent seedling
   room: 0x02de
@@ -234,7 +234,7 @@ tokkey's composition:
   room: 0x038f
   maptile: 0x01
   addr: {bank: 0x15, addr: 0x76cf}
-  collect: find 2
+  collect: touch
 goron dance, with letter:
   treasure: mermaid key
   room: 0x02ef
@@ -371,7 +371,7 @@ d2 thwomp shelf:
   treasure: rupees, 30
   room: 0x0627
   addr: {bank: 0x0c, addr: 0x4c0f}
-  collect: find 2
+  collect: touch
 d2 thwomp tunnel:
   treasure: feather
   room: 0x0628
@@ -647,7 +647,7 @@ d8 stalfos:
   treasure: d8 small key
   room: 0x0598
   reverseaddr: {bank: 0x0a, addr: 0x6077}
-  collect: enemy drop
+  collect: poof
 d8 boss:
   treasure: heart container
   room: 0x0578

@@ -7,54 +7,26 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// collection modes
-// i don't know what the difference between the two find modes is
-const (
-	collectBuySatchel = 0x01
-	collectFind0      = 0x02 // sets room flag 6 instead of 5
-	collectUnderwater = 0x08 // pyramid jewel
-	collectFind1      = 0x09
-	collectFind2      = 0x0a
-	collectEnemyDrop  = 0x18 // stalfos in ages D8
-	collectAppear1    = 0x19 // seasons D5 boss key
-	collectAppear2    = 0x1a // heart containers
-	collectKeyFall    = 0x28 // no fanfare
-	collectFall       = 0x29
-	collectChest      = 0x38 // most chests
-	collectDive       = 0x49
-	collectChest2     = 0x68 // map and compass
-	collectDigPile    = 0x51
-	collectDig        = 0x5a
-
-	// special seasons collect modes (jump table indexes)
-	collectDiverRoom       = 0x80
-	collectPoeSkipRoom     = 0x81
-	collectSeasonsMakuTree = 0x82
-	collectD4Pool          = 0x83
-
-	// & ages
-	collectAgesMakuTree = 0x80
-	collectTargetCarts  = 0x81
-	collectBigBang      = 0x82
-	collectLavaJuice    = 0x83
-)
-
-// used for loading from yaml
-var collectModesByName = map[string]byte{
-	"find 1":              collectFind1,
-	"find 2":              collectFind2,
-	"enemy drop":          collectEnemyDrop,
-	"fall":                collectFall,
-	"chest":               collectChest,
-	"dive":                collectDive,
-	"diver room":          collectDiverRoom,
-	"poe skip room":       collectPoeSkipRoom,
-	"maku tree (seasons)": collectSeasonsMakuTree,
-	"d4 pool":             collectD4Pool,
-	"maku tree (ages)":    collectAgesMakuTree,
-	"target carts":        collectTargetCarts,
-	"big bang game":       collectBigBang,
-	"lava juice room":     collectLavaJuice,
+// treasure interaction spawn + collect modes. bits 0-2 are for collect
+// animation; bit 3 sets room flag on collection; bits 4-6 determine how the
+// treasure appears; bit 7 is used as the randomizer as a jump table index for
+// special cases (it can't appear in the vanilla table).
+var collectModes = map[string]byte{
+	"touch":               0x0a, // standing and given items
+	"poof":                0x1a, // boss HCs
+	"drop":                0x29, // SK drops, maku tree, graveyard key
+	"chest":               0x38, // most chests, rising animation
+	"dive":                0x49, // SK and BK in seasons D4
+	"dig":                 0x5a, // star ore, ricky's gloves (ages)
+	"delay":               0x68, // map and compass chests
+	"diver room":          0x80,
+	"poe skip room":       0x81,
+	"maku tree (seasons)": 0x82,
+	"d4 pool":             0x83,
+	"maku tree (ages)":    0x80,
+	"target carts":        0x81,
+	"big bang game":       0x82,
+	"lava juice room":     0x83,
 }
 
 // A Treasure is data associated with a particular item ID and sub ID.

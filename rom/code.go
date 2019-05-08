@@ -149,20 +149,13 @@ func makeCollectModeTable() string {
 	for _, key := range getOrderedSlotKeys() {
 		slot := ItemSlots[key]
 
-		// trees and slots where it doesn't matter (shops, rod)
-		if slot.collectMode == 0 {
-			continue
+		// use no animation / text box if item is a key outside a chest
+		mode := slot.collectMode
+		if mode < 0x80 && slot.Treasure != nil && slot.Treasure.id == 0x30 {
+			mode &= 0xf8
 		}
 
-		var err error
-		if slot.collectMode == collectFall && slot.Treasure != nil &&
-			slot.Treasure.id == 0x30 {
-			// use falling key mode (no fanfare) if falling item is a key
-			_, err = b.Write([]byte{slot.group, slot.room, collectKeyFall})
-		} else {
-			_, err = b.Write([]byte{slot.group, slot.room, slot.collectMode})
-		}
-		if err != nil {
+		if _, err := b.Write([]byte{slot.group, slot.room, mode}); err != nil {
 			panic(err)
 		}
 	}
@@ -179,8 +172,8 @@ func makeKeyDropTable() string {
 	for _, key := range getOrderedSlotKeys() {
 		slot := ItemSlots[key]
 
-		if slot.collectMode != collectFall &&
-			slot.collectMode != collectD4Pool {
+		if slot.collectMode != collectModes["drop"] &&
+			slot.collectMode != collectModes["d4 pool"] {
 			continue
 		}
 
