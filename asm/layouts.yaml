@@ -1,0 +1,46 @@
+# bank 21 = spring, 22 = summer, 23 = autumn, 24 = winter.
+seasons:
+  # change water tiles outside d4 from deep to shallow, to prevent softlock
+  # from entering without flippers or default summer.
+  21/54a9/: db fa,6b,6b,53,fa,3f,fa
+  22/5197/: db fa,6b,6b,53,fa,3f,fa
+  23/4f6c/: db fa,6b,6b,53,fa,3f,fa
+  24/4cec/: db dc,00,fc,06,dc,dc,dc,dc
+
+  # block the waterfalls from mt cucco to sunken city, so that there only needs
+  # to be one warning interaction at the vines.
+  21/5bd1/: db 40,40,40
+  21/5c17/: db 40,40,40
+  22/58a4/: db 40,40,40
+  22/58ea/: db 40,40,40
+  23/5645/: db 40,40,40
+  23/568b/: db 40,40,40
+  24/54fa/: db 40,40,40
+  24/5540/: db 40,40,40
+
+  # replace some currents in spool swamp in spring so that the player isn't
+  # trapped by them.
+  21/7ab1/: db d3,d3
+  21/7ab6/: db d4,d4,d4
+  21/7abe/: db d1
+
+  # replace deep water in eyeglass lake water with shallow water to prevent a
+  # softlock from default winter + summer rod + no flippers.
+  22/74e4/: db fa
+  22/78ed/: db fa,fa,fa,fa
+
+  # replace the stairs outside the portal in eyeglass lake summer with a
+  # railing, since if the player jumps off they fall into lost woods.
+  22/791b/: db 40,40,40
+  # instead add a ledge to the left side of the platform, so that entering the
+  # portal without feather and resetting the season to summer isn't a softlock.
+  22/78fd/: db 37
+  22/7905/: db 25
+  22/7910/: db 47
+
+  # remove the snow piles in front of holly's house so that shovel isn't
+  # required to leave.
+  24/6474/: db 04
+  # remove some snow outside d7 for the same reason - but off the right ledge,
+  # not in front of the stairs.
+  24/7910/: db 2b,a0,b9,2b

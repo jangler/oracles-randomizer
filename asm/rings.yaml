@@ -34,7 +34,7 @@ common:
       ldi (hl),a
       ldi (hl),a
       jp clearMenu
-  
+
   # put obtained rings directly into ring list (no need for appraisal), and
   # tell the player what type of ring it is.
   3f/autoAppraiseRing: |

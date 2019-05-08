@@ -190,53 +190,6 @@ var seasonsFixedMutables = map[string]Mutable{
 		"\x0c\x00\x43\x6f\x6e\x74\x69\x6e\x75\x65\x20\x61\x74\x01"+ // Continue at
 			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
 
-	// banks 21-24 (room layouts)
-
-	// change water tiles outside d4 from deep to shallow (prevents softlock
-	// from entering without flippers or default summer).
-	"change d4 water tiles": MutableStrings(
-		[]Addr{{0x21, 0x54a9}, {0x22, 0x5197}, {0x23, 0x4f6c}},
-		"\xfd\x6b\x6b\x53\xfa\x3f\xfd", "\xfa\x6b\x6b\x53\xfa\x3f\xfa"),
-	"change d4 water tiles winter": MutableString(Addr{0x24, 0x4cec},
-		"\xfd\x00\xfc\x06\xfd\xfd\xfd\xfd",
-		"\xdc\x00\xfc\x06\xdc\xdc\xdc\xdc"),
-
-	// block the waterfalls from mt cucco to sunken city, so that there only
-	// needs to be one warning interaction at the vines.
-	"block waterfalls": MutableStrings([]Addr{{0x21, 0x5bd1}, {0x21, 0x5c17},
-		{0x22, 0x58a4}, {0x22, 0x58ea}, {0x23, 0x5645}, {0x23, 0x568b},
-		{0x24, 0x54fa}, {0x24, 0x5540}}, "\x36\xff\x35", "\x40\x40\x40"),
-
-	// replace some currents in spool swamp in spring so that the player isn't
-	// trapped by them.
-	"replace currents 1": MutableWord(Addr{0x21, 0x7ab1}, 0xd2d2, 0xd3d3),
-	"replace currents 2": MutableString(Addr{0x21, 0x7ab6},
-		"\xd3\xd2\xd2", "\xd4\xd4\xd4"),
-	"replace currents 3": MutableByte(Addr{0x21, 0x7abe}, 0xd3, 0xd1),
-
-	// replace the stairs outside the portal in eyeglass lake in summer with a
-	// railing, because if the player jumps off those stairs in summer they
-	// fall into the noble sword room.
-	"replace lake stairs": MutableString(Addr{0x22, 0x791b},
-		"\x36\xd0\x35", "\x40\x40\x40"),
-	// instead add a ledge to the left side of the platform, so that entering
-	// the portal without feather and resetting the season to summer isn't a
-	// softlock.
-	"add lake ledge 1": MutableByte(Addr{0x22, 0x78fd}, 0x52, 0x37),
-	"add lake ledge 2": MutableByte(Addr{0x22, 0x7905}, 0x52, 0x25),
-	"add lake ledge 3": MutableByte(Addr{0x22, 0x7910}, 0x52, 0x47),
-
-	"replace lake summer water 1": MutableByte(Addr{0x22, 0x74e4}, 0xfd, 0xfa),
-	"replace lake summer water 2": MutableString(Addr{0x22, 0x78ed},
-		"\xfd\xfd\xfd\xfd", "\xfa\xfa\xfa\xfa"),
-
-	// remove the snow piles in front of holly's house so that shovel isn't
-	// required not to softlock there.
-	"remove holly snow piles": MutableByte(Addr{0x24, 0x6474}, 0xd9, 0x04),
-	// remove some snow piles outside D7 for the same reason.
-	"remove d7 snow piles": MutableString(Addr{0x24, 0x7910},
-		"\xd9\xa0\xb9\xd9", "\x2b\xa0\xb9\x2b"),
-
 	// bank 3f
 
 	// give items that don't normally appear as treasure interactions entries

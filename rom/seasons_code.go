@@ -40,7 +40,7 @@ func newSeasonsRomBanks() *romBanks {
 
 	r.applyAsmFiles(GameSeasons,
 		[]string{"/asm/common.yaml", "/asm/seasons.yaml"},
-		[]string{"/asm/rings.yaml"})
+		[]string{"/asm/rings.yaml", "/asm/layouts.yaml"})
 
 	return &r
 }

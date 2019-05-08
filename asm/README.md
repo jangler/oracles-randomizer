@@ -1,6 +1,11 @@
 # oracles-randomizer `asm/` notes
 
-Asm files are written in YAML and have the following structure:
+There are two YAML-based file formats currently in use for the randomizer's
+assembly code. One is used in common.yaml, seasons.yaml, and ages.yaml, and
+should be considered deprecated. The other is described here, and should be
+used for most, if not all, additions.
+
+The format is:
 
 ```
 common:
