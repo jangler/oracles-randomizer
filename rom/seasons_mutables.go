@@ -1,8 +1,6 @@
 package rom
 
 var seasonsFixedMutables = map[string]Mutable{
-	// start game with link below bushes, not above
-	"initial link placement": MutableByte(Addr{0x07, 0x4197}, 0x38, 0x58),
 	// make link actionable as soon as he drops into the world.
 	"link immediately actionable": MutableString(Addr{0x05, 0x4d98},
 		"\x3e\x08\xcd\x16", "\xcd\x16\x2a\xc9"),
@@ -62,73 +60,12 @@ var seasonsFixedMutables = map[string]Mutable{
 	// check fake treasure ID 0a for maku tree item. this only matters if you
 	// leave the screen without picking up the item.
 	"maku tree check fake id": MutableByte(Addr{0x09, 0x7dfd}, 0x42, 0x0a),
-	// check fake treasure ID 0f for shop item 3.
-	"shop check fake id": MutableStrings([]Addr{{0x08, 0x4a8a},
-		{0x08, 0x4af2}}, "\x0e", "\x0f"),
 	// check fake treasure ID 10 for market item 5.
 	"market check fake id": MutableByte(Addr{0x09, 0x7755}, 0x53, 0x10),
 	// check fake treasure ID 11 for master diver.
 	"diver check fake id": MutableByte(Addr{0x0b, 0x72f1}, 0x2e, 0x11),
-	// check fake treasure ID 12 for subrosia seaside,
-	"star ore fake id check": MutableByte(Addr{0x08, 0x62fe}, 0x45, 0x12),
-
-	// bank 00
-
-	// blaino normally sets bit 6 of active ring to "unequip" it instead of
-	// setting it to $ff. this only matters for the dev ring.
-	"fix blaino ring unequip": MutableWord(Addr{0x00, 0x2376}, 0xcbf6, 0x36ff),
-
-	// bank 01
-
-	// the d5 boss key room is hard-coded to make a compass beep, even though
-	// the room can beep based on dungeon room properties.
-	"fix d5 boss key beep": MutableByte(Addr{0x01, 0x4a0a}, 0x0c, 0x00),
-
-	// bank 04
-
-	// a hack so that a different flag can be used to set the rosa portal tile
-	// replacement, allowing the bush-breaking warning interaction to be used
-	// on this screen.
-	"portal tile replacement": MutableString(Addr{0x04, 0x6016},
-		"\x40\x33\xc5", "\x20\x33\xe6"),
-
-	// bank 05
-
-	// vanilla game doesn't save animal position if it's not the natzu animal
-	// if it's ricky and you have an identified flute, dimitri and you have
-	// flippers, or moosh and you have essence 5. i don't know why and i want
-	// it to stop.
-	"don't erase animals on dismount": MutableString(Addr{0x05, 0x45c9},
-		"\x28\x28", "\x18\x28"),
-
-	// bank 07
-
-	"start linked w/o sword": MutableString(Addr{0x07, 0x41ac},
-		"\x82\x05\x92\x24", "\xa2\x10\x92\x04"),
 
 	// banks 08-0a (most interaction-specific non-script behavior?)
-
-	// have horon village shop stock *and* sell items from the start, including
-	// the flute. also don't stop the flute from appearing because of animal
-	// flags, since it probably won't be a flute at all.
-	"horon shop stock check":   MutableByte(Addr{0x08, 0x4adb}, 0x05, 0x02),
-	"horon shop sell check":    MutableByte(Addr{0x08, 0x48d0}, 0x05, 0x02),
-	"horon shop flute check 1": MutableByte(Addr{0x08, 0x4b02}, 0xcb, 0xf6),
-	"horon shop flute check 2": MutableWord(Addr{0x08, 0x4afb},
-		0xcb6f, 0xafaf),
-
-	// make linked shop item behave the same way as unlinked.
-	"shop item ignore linked": MutableString(Addr{0x08, 0x4b09},
-		"\x20\x04", "\x20\x00"),
-
-	// prevent the first member's shop item from always refilling all seeds.
-	"no shop seed refill": MutableString(Addr{0x08, 0x4c02},
-		"\xcc\xe5\x17", "\x00\x00\x00"),
-
-	// zero the original shop item text so that the actual item text can be
-	// displayed.
-	"zero shop text": MutableStrings([]Addr{{0x08, 0x4d53}, {0x08, 0x4d46},
-		{0x08, 0x4d48}, {0x08, 0x4d4b}}, "\x00", "\x00"),
 
 	// initiate all these events without requiring essences
 	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e72}, 0xcb, 0xf6),
@@ -136,21 +73,12 @@ var seasonsFixedMutables = map[string]Mutable{
 	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e56}, 0x2e, 0x04),
 	"master essence check 1":    MutableByte(Addr{0x0a, 0x4bf5}, 0x02, 0x00),
 	"master essence check 2":    MutableByte(Addr{0x0a, 0x4bea}, 0x40, 0x02),
-	"master essence check 3":    MutableByte(Addr{0x08, 0x5887}, 0x40, 0x02),
 	"round jewel essence check": MutableByte(Addr{0x0a, 0x4f8b}, 0x05, 0x00),
-	"pirate essence check":      MutableByte(Addr{0x08, 0x6c32}, 0x20, 0x00),
-	"eruption check 1":          MutableByte(Addr{0x08, 0x7c41}, 0x07, 0x00),
-	"eruption check 2":          MutableByte(Addr{0x08, 0x7cd3}, 0x07, 0x00),
 
 	// prevent leaving sunken city with dimitri unless you have his flute, in
 	// order to prevent a variety of softlocks.
 	"block dimitri exit": MutableString(Addr{0x09, 0x6f34},
 		"\xfa\x10\xc6\xfe\x0c", "\xfa\xaf\xc6\xfe\x02"),
-
-	// ignore sword level for lost woods pedestal so that an item still appears
-	// if you have L-3 sword.
-	"pedestal ignore sword level": MutableString(Addr{0x08, 0x7e62},
-		"\xfe\x03", "\x3e\x01"),
 
 	// moosh won't spawn in the mountains if you have the wrong number of
 	// essences. bit 6 seems related to this, and needs to be zero too?

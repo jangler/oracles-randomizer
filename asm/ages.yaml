@@ -533,7 +533,7 @@ appends:
   # give 20 of the starting seeds along with the seed shooter.
   - seedShooterGiveSeeds: |
       ld a,e
-      cp a,TREASURE_SEED_SHOOTER
+      cp a,TREASURE_SHOOTER
       ret nz
       push bc
       ld a,00 # item ID set by randomization
@@ -903,7 +903,7 @@ appends:
   - checkCanHarvestSeeds: |
       call checkTreasureObtained
       ret c
-      ld a,TREASURE_SEED_SHOOTER
+      ld a,TREASURE_SHOOTER
       jp checkTreasureObtained
 
   0x12:

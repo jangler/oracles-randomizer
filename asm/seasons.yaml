@@ -687,8 +687,8 @@ appends:
       ld a,50
       ld (c7a7),a # start
 
-      # room flags 5 | 6
-      ld a,60
+      # room flags 3| 5 | 6 | 7
+      ld a,e8
       ld (c79a),a # rosa portal
 
       # room flags 6 | 7
@@ -1244,6 +1244,19 @@ replaces:
     old: push de; ld a,(ff00+8c)
     new: jp loadWinterLayout
 
+  # blaino normally unequips rings by setting bit 6, which turns the friendship
+  # ring into the dev ring. don't do that.
+  - addr: 0x2376
+    old: set 6,(hl)
+    new: ld (hl),ff
+
+  0x01:
+  # remove hard-coded d5 boss key room beep - it beeps just fine based on
+  # normal dungeon room properties.
+  - addr: 0x4a09
+    old: jr z,0c
+    new: nop; nop
+
   0x02:
   # tree warp / map stuff
   - addr: 0x5e9a
@@ -1306,6 +1319,12 @@ replaces:
     old: ld a,(wAnimalRegion)
     new: call checkFlute
 
+  # vanilla game doesn't save non-natzu animal positions when it thinks you
+  # won't need them anymore. stop that.
+  - addr: 0x45c9
+    old: jr z,28
+    new: jr 28
+
   0x06:
   - addr: 0x4774
     old: call setTile
@@ -1320,11 +1339,22 @@ replaces:
     new: nop
 
   0x07:
+  # hooks
   - addr: 0x5b75
     old: ld a,(wActiveTileType); cp a,08
     new: call devChangeSeason; nop; nop
 
+  # drop link below bushes at game start, not above
+  - addr: 0x4197
+    old: db 38
+    new: db 58
+  # start linked games without sword
+  - addr: 0x41ac
+    old: db 82,05,92,24
+    new: db a2,10,92,04
+
   0x08:
+  # hooks
   - addr: 0x4bfb
     old: call giveTreasure
     new: call shopGiveTreasure
@@ -1338,15 +1368,63 @@ replaces:
     old: inc l; ld (hl),45
     new: call setStarOreIds
 
-  # remove generic "you got a ring" text for rings from shops.
-  - addr: 0x4d55
-    old: db 54,54
-    new: db 00,00
+  # have horon village shop stock and sell its items from the start, and don't
+  # stop the flute appearing because of animal flags.
+  - addr: 0x48d7 # sword check
+    old: jr nc,34
+    new: nop; nop
+  - addr: 0x4adf # sword check
+    old: jp nc,4b6d
+    new: nop; nop; nop
+  - addr: 0x4afd # animal + essence + linked checks
+    old: jr nz,10
+    new: jr 0c
+
+  # check fake treasure id for stocking shop item 3.
+  - addr: 0x4a89
+    old: ld a,TREASURE_FLUTE
+    new: ld a,TREASURE_SHOOTER
+  - addr: 0x4af1
+    old: ld a,TREASURE_FLUTE
+    new: ld a,TREASURE_SHOOTER
+
+  # don't refill seeds when getting the first member's shop item.
+  - addr: 0x4c02
+    old: call z,refillSeedSatchel
+    new: nop; nop; nop
+
+  # remove generic text from shops so that replacement text can be displayed.
+  - addr: 0x4d46
+    old: db 46,4c,4b,1f,4d,6c,4b,6d,4b,6d,4b,32,00,3b,4b,54,54
+    new: db 00,4c,00,1f,4d,00,4b,6d,4b,6d,4b,32,00,00,4b,00,00
+
+  # ignore essence check from master diver ??
+  - addr: 0x5886
+    old: ld a,TREASURE_ESSENCE
+    new: ld a,TREASURE_PUNCH
+
+  # check fake treasure id for digging subrosia seaside.
+  - addr: 0x62fd
+    old: ld a,TREASURE_STAR_ORE
+    new: ld a,12
+
+  # ignore essence check from piratian captain.
+  - addr: 0x6c31
+    old: cp a,20
+    new: cp a,00
 
   # allow desert pits to work even if player has the actual bell already.
   - addr: 0x73a2
     old: jr c,09
     new: nop; nop
+
+  # allow volcano event without essences
+  - addr: 0x7c40
+    old: cp a,07
+    new: cp a,00
+  - addr: 0x7cd2
+    old: cp a,07
+    new: cp a,00
 
   # enable exit from volcano room after skipping cutscene.
   - addr: 0x7cf5
@@ -1370,6 +1448,11 @@ replaces:
       call interactionDelete
       ld hl,skipVolcanoCutscene
       jp callBank2
+
+  # ignore sword level for lost woods pedestal.
+  - addr: 0x7e62
+    old: cp a,03
+    new: ld a,01
 
   0x09:
   - addr: 0x42e0
