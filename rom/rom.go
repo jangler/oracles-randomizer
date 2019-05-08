@@ -163,7 +163,7 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 
 	setBossItemAddrs()
 	setSeedData(game)
-	setSmallKeyData(game)
+	setRoomTreasureData(game)
 	setCollectModeData(game)
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
@@ -335,11 +335,11 @@ func setSeedData(game int) {
 	}
 }
 
-// fill table—initial table is blank, since it's created before items are
+// fill table. initial table is blank, since it's created before items are
 // placed.
-func setSmallKeyData(game int) {
-	mut := codeMutables["smallKeyDrops"].(*MutableRange)
-	mut.New = []byte(makeKeyDropTable())
+func setRoomTreasureData(game int) {
+	mut := codeMutables["roomTreasures"].(*MutableRange)
+	mut.New = []byte(makeRoomTreasureTable())
 
 	if game == GameSeasons {
 		mut := varMutables["above d7 zol button"].(*MutableSlot)

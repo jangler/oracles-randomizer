@@ -2,7 +2,7 @@ defines:
   # constants
   BANK_TREASURE_DATA: 0x15
   BANK_OWL_TEXT: 0x3f
-  BANK_SMALL_KEY_DROPS: 0x3f
+  BANK_ROOM_TREASURES: 0x3f
   STARTING_TREE_MAP_INDEX: 0xf8
 
   # hram
@@ -747,8 +747,6 @@ appends:
       xor a
       jp 432d
 
-  - lookupKeyDropBank0b: /include lookupKeyDropLdHl
-
   - script_warnCliffText: |
       db showtext; dw 0026
       db enableinput
@@ -1174,8 +1172,6 @@ appends:
       pop af
       ret
 
-  - lookupKeyDrop_body: /include lookupKeyDrop_body
-
   # don't play item fanfare for the item given at the start of a linked game.
   # this doesn't actually check for linked, just for the room.
   - playSoundExceptForLinkedStartItem: |
@@ -1218,10 +1214,6 @@ appends:
       pop af
       call applyParameter
       ret
-
-  # this *MUST* be the last thing in the bank, since it's going to grow
-  # dynamically later.
-  - owlText: ''
 
 replaces:
   0x00:
@@ -1487,9 +1479,6 @@ replaces:
     new: ret; nop; nop
 
   0x0b:
-  - addr: 0x4416
-    old: ld (hl),60; inc l
-    new: call lookupKeyDropBank0b
   - addr: 0x4b8f
     old: db spawnitem,TREASURE_HEART_CONTAINER,00
     new: db asm15; dw spawnBossItem

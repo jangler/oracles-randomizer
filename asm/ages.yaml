@@ -2,7 +2,7 @@ defines:
   # constants
   BANK_TREASURE_DATA: 0x16
   BANK_OWL_TEXT: 0x38
-  BANK_SMALL_KEY_DROPS: 0x38
+  BANK_ROOM_TREASURES: 0x38
   STARTING_TREE_MAP_INDEX: 0x78
 
   # hram
@@ -491,9 +491,6 @@ appends:
       ld bc,5601
       ret
 
-  0x08:
-  - lookupKeyDropBank08: /include lookupKeyDropLdBc
-
   0x09:
   # run certain actions depending on what item was picked up and where. this
   # has to be explicitly called if an item is given by an interaction other
@@ -733,8 +730,6 @@ appends:
       jp showText
 
   0x0a:
-  - lookupKeyDropBank0a: /include lookupKeyDropLdBc
-
   # require giving rafton rope before the island chart.
   - checkRaftonHasRope: |
       call checkTreasureObtained
@@ -838,8 +833,6 @@ appends:
   - removeGashaNutRingText: /include removeGashaNutRingText
 
   0x0c:
-  - lookupKeyDropBank0c: /include lookupKeyDropLdHl
-
   # use custom script for soldier in deku forest with sub ID 0; they should
   # give an item in exchange for mystery seeds.
   - script_soldierDone: |
@@ -992,13 +985,6 @@ appends:
   - getTreasureDataSprite: /include getTreasureDataSprite
   - modifyTreasure: /include modifyTreasure
   - upgradeTreasure: /include upgradeTreasure
-
-  0x38:
-  - lookupKeyDrop_body: /include lookupKeyDrop_body
-
-  # this *MUST* be the last thing in the bank, since it's going to grow
-  # dynamically later.
-  - owlText: ''
 
   0x3f:
   # format (ID, subID, jump address). these functions *must* pop af as the last
@@ -1195,11 +1181,6 @@ replaces:
     old: ret nz
     new: nop
 
-  0x08:
-  - addr: 0x5087
-    old: ld bc,3001
-    new: call lookupKeyDropBank08
-
   0x09:
   - addr: 0x4418
     old: ld hl,44f7
@@ -1250,9 +1231,6 @@ replaces:
   - addr: 0x5e3e
     old: call objectCreateInteraction
     new: call southShortDirtSpawnItem
-  - addr: 0x7075
-    old: ld bc,3001
-    new: call lookupKeyDropBank0a
 
   0x0b:
   - addr: 0x5464
@@ -1266,9 +1244,6 @@ replaces:
     new: call skipFairyQueenCutscene
 
   0x0c:
-  - addr: 0x442e
-    old: ld (hl),60; inc l
-    new: call lookupKeyDropBank0c
   - addr: 0x4bd8
     old: db spawnitem,TREASURE_HEART_CONTAINER,00
     new: db asm15; dw spawnBossItem

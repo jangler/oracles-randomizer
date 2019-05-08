@@ -1,0 +1,59 @@
+common:
+  # return treasure id and subid in bc for an item in the current room. this is
+  # used for small key drops and heart pieces, which are different instances of
+  # the same event/object.
+  00/lookupRoomTreasure: |
+      push de
+      push hl
+      ld e,BANK_ROOM_TREASURES
+      ld hl,lookupRoomTreasure_body
+      call interBankCall
+      pop hl
+      pop de
+      ret
+
+floating:
+  # see lookupRoomTreasure.
+  lookupRoomTreasure_body: |
+      push bc
+      ld a,(wActiveGroup)
+      ld b,a
+      ld a,(wActiveRoom)
+      ld c,a
+      ld hl,roomTreasures
+      ld e,02
+      call searchDoubleKey
+      pop bc
+      ret nc
+      ld b,(hl)
+      inc hl
+      ld c,(hl)
+      ret
+
+seasons:
+  0b/lookupKeyDropBank0b: |
+      ld (hl),60
+      inc l
+      jp lookupRoomTreasure
+  0b/4416/: call lookupKeyDropBank0b
+
+  3f/lookupRoomTreasure_body: /include lookupRoomTreasure_body
+
+ages:
+  08/lookupKeyDropBank08: |
+      ld bc,3001
+      jp lookupRoomTreasure
+  08/5087/: call lookupKeyDropBank08
+
+  0a/lookupKeyDropBank0a: |
+      ld bc,3001
+      jp lookupRoomTreasure
+  0a/7075/: call lookupKeyDropBank0a
+
+  0c/lookupKeyDropBank0c: |
+      ld (hl),60
+      inc l
+      jp lookupRoomTreasure
+  0c/442e/: call lookupKeyDropBank0c
+
+  38/lookupRoomTreasure_body: /include lookupRoomTreasure_body

@@ -35,12 +35,21 @@ func newSeasonsRomBanks() *romBanks {
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
 	r.appendToBank(0x06, "collectModeTable", makeSeasonsCollectModeTable())
-	r.appendToBank(0x3f, "smallKeyDrops", makeKeyDropTable())
+	r.appendToBank(0x3f, "roomTreasures", makeRoomTreasureTable())
 	r.appendToBank(0x3f, "owlTextOffsets", string(make([]byte, 0x1e*2)))
 
 	r.applyAsmFiles(GameSeasons,
-		[]string{"/asm/common.yaml", "/asm/seasons.yaml"},
-		[]string{"/asm/rings.yaml", "/asm/layouts.yaml"})
+		[]string{
+			"/asm/common.yaml",
+			"/asm/seasons.yaml",
+		},
+		[]string{
+			"/asm/itemlookup.yaml",
+			"/asm/layouts.yaml",
+			"/asm/rings.yaml",
+
+			"/asm/text.yaml", // must go last
+		})
 
 	return &r
 }
