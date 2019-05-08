@@ -1,63 +1,63 @@
 common:
   # allow ring list to be accessed through the ring box icon.
   02/openRingList: |
-    ld a,(wInventorySubmenu1CursorPos)
-    cp a,0f
-    ret nz
-    ld a,81
-    ld (wRingMenu_mode),a
-    ld a,04
-    call openMenu
-    pop hl
-    ret
+      ld a,(wInventorySubmenu1CursorPos)
+      cp a,0f
+      ret nz
+      ld a,81
+      ld (wRingMenu_mode),a
+      ld a,04
+      call openMenu
+      pop hl
+      ret
 
   # auto-equip rings when selected in ring list.
   02/autoEquipRing: |
-    call _ringMenu_updateSelectedRingFromList
-    ld (wActiveRing),a
-    ret
+      call _ringMenu_updateSelectedRingFromList
+      ld (wActiveRing),a
+      ret
 
   # don't save gfx when opening ring list from subscreen (they were already
   # saved when opening the item menu), and clear screen scroll variables (which
   # are saved anyway).
   02/ringListGfxFix: |
-    call setMusicVolume
-    ld a,(wRingMenu_mode)
-    bit 7,a
-    ret z
-    and a,7f
-    ld (wRingMenu_mode),a
-    xor a
-    ld (ff00+hCameraY),a
-    ld (ff00+hCameraX),a
-    ld hl,wScreenOffsetY
-    ldi (hl),a
-    ldi (hl),a
-    jp clearMenu
+      call setMusicVolume
+      ld a,(wRingMenu_mode)
+      bit 7,a
+      ret z
+      and a,7f
+      ld (wRingMenu_mode),a
+      xor a
+      ld (ff00+hCameraY),a
+      ld (ff00+hCameraX),a
+      ld hl,wScreenOffsetY
+      ldi (hl),a
+      ldi (hl),a
+      jp clearMenu
   
   # put obtained rings directly into ring list (no need for appraisal), and
   # tell the player what type of ring it is.
   3f/autoAppraiseRing: |
-    ld hl,wRingsObtained
-    ld a,c
-    and a,3f
-    call setFlag
-    ld a,c
-    add a,40
-    ld (cbb1),a # part of wTextSubstitutions
-    ld bc,301c
-    call showText
-    ret
+      ld hl,wRingsObtained
+      ld a,c
+      and a,3f
+      call setFlag
+      ld a,c
+      add a,40
+      ld (cbb1),a # part of wTextSubstitutions
+      ld bc,301c
+      call showText
+      ret
 
 floating:
   # remove regular text box when getting a ring from a gasha nut so that the
   # auto-appraisal text can display instead.
   removeGashaNutRingText: |
-    ld a,c
-    cp a,04
-    jp nz,showText
-    pop hl
-    ret
+      ld a,c
+      cp a,04
+      jp nz,showText
+      pop hl
+      ret
 
 seasons:
   02/5035/: call ringListGfxFix
