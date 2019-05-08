@@ -42,7 +42,9 @@ func newAgesRomBanks() *romBanks {
 	r.appendToBank(0x38, "smallKeyDrops", makeKeyDropTable())
 	r.appendToBank(0x3f, "owlTextOffsets", string(make([]byte, 0x14*2)))
 
-	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/ages.yaml"})
+	r.applyAsmFiles(GameAges,
+		[]string{"/asm/common.yaml", "/asm/ages.yaml"},
+		[]string{"/asm/rings.yaml"})
 
 	return &r
 }

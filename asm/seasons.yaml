@@ -1281,17 +1281,6 @@ replaces:
     old: call _mapMenu_checkRoomVisited
     new: call checkTreeVisited
 
-  # ring stuff
-  - addr: 0x5035
-    old: call setMusicVolume
-    new: call ringListGfxFix
-  - addr: 0x56a1
-    old: ld a,(wInventorySubmenu1CursorPos)
-    new: call openRingList
-  - addr: 0x6f4a
-    old: call _ringMenu_updateSelectedRingFromList
-    new: call autoEquipRing
-
   0x03:
   - addr: 0x4d6b
     old: call decHlRef16WithCap
@@ -1487,9 +1476,6 @@ replaces:
     new: call makuTreeCheckItem
 
   0x0a:
-  - addr: 0x4863
-    old: jp showText
-    new: jp removeGashaNutRingText
   - addr: 0x66ed
     old: db 1e,78,1a,cb,7f,20 # dunno what this is
     new: call setInitialFlags; jp objectDelete_useActiveObjectType

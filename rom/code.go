@@ -47,6 +47,15 @@ type asmData struct {
 	FreeCode map[string]string `yaml:"freeCode"`
 }
 
+// also loaded from yaml, then converted to yaml.
+type metaAsmData struct {
+	filename string
+	Common   yaml.MapSlice
+	Floating yaml.MapSlice
+	Seasons  yaml.MapSlice
+	Ages     yaml.MapSlice
+}
+
 type AsmReplacement struct {
 	Addr     uint16
 	Old, New string
@@ -223,7 +232,7 @@ func iterBankItems(ads []*asmData) chan bankItem {
 }
 
 // applies the labels and EOB declarations in the given asmData sets.
-func (r *romBanks) applyAsmData(ads []*asmData) {
+func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) {
 	// get preset addrs and defines
 	for _, ad := range ads {
 		for k, v := range ad.Defines {
@@ -231,10 +240,26 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 		}
 	}
 
+	// preprocess map slices
+	slices := make([]yaml.MapSlice, 0)
+	for _, meta := range metas {
+		if game == GameSeasons {
+			slices = append(slices, meta.Common, meta.Seasons)
+		} else {
+			slices = append(slices, meta.Common, meta.Ages)
+		}
+	}
+
 	// include free code
 	freeCode := make(map[string]string)
 	for _, ad := range ads {
 		for k, v := range ad.FreeCode {
+			freeCode[k] = v
+		}
+	}
+	for _, meta := range metas {
+		for _, item := range meta.Floating {
+			k, v := item.Key.(string), item.Value.(string)
 			freeCode[k] = v
 		}
 	}
@@ -246,11 +271,28 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 			}
 		}
 	}
+	for _, slice := range slices {
+		for name, item := range slice {
+			v := item.Value.(string)
+			if strings.HasPrefix(v, "/include") {
+				funcName := strings.Split(v, " ")[1]
+				slice[name].Value = freeCode[funcName]
+			}
+		}
+	}
 
 	// make placeholders for EOB labels
 	for item := range iterBankItems(ads) {
 		for name := range item.item {
 			r.assembler.define(name, 0)
+		}
+	}
+	for _, slice := range slices {
+		for _, item := range slice {
+			k := item.Key.(string)
+			if _, label := parseMetalabel(k); label != "" {
+				r.assembler.define(label, 0)
+			}
 		}
 	}
 
@@ -264,6 +306,14 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 			r.appendAsm(item.bank, name, body)
 		}
 	}
+	for _, slice := range slices {
+		for _, item := range slice {
+			k, v := item.Key.(string), item.Value.(string)
+			if addr, label := parseMetalabel(k); addr.offset == 0 {
+				r.appendAsm(addr.bank, label, v)
+			}
+		}
+	}
 
 	// reset EOB boundaries
 	copy(r.endOfBank, originalEOBs)
@@ -272,6 +322,14 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 	for item := range iterBankItems(ads) {
 		for name, body := range item.item {
 			r.appendAsm(item.bank, name, body)
+		}
+	}
+	for _, slice := range slices {
+		for _, item := range slice {
+			k, v := item.Key.(string), item.Value.(string)
+			if addr, label := parseMetalabel(k); addr.offset == 0 {
+				r.appendAsm(addr.bank, label, v)
+			}
 		}
 	}
 
@@ -283,22 +341,39 @@ func (r *romBanks) applyAsmData(ads []*asmData) {
 			}
 		}
 	}
+	for _, slice := range slices {
+		for _, item := range slice {
+			k, v := item.Key.(string), item.Value.(string)
+			if addr, _ := parseMetalabel(k); addr.offset != 0 {
+				r.replaceAsm(addr.bank, addr.offset, "", v)
+			}
+		}
+	}
 }
 
 // applies the labels and EOB declarations in the given asm data files.
-func (r *romBanks) applyAsmFiles(filenames []string) {
-	ads := make([]*asmData, len(filenames))
-
-	for i, filename := range filenames {
+func (r *romBanks) applyAsmFiles(game int, oldPaths, newPaths []string) {
+	ads := make([]*asmData, len(oldPaths))
+	for i, path := range oldPaths {
 		ads[i] = new(asmData)
-		ads[i].filename = filename
+		ads[i].filename = path
 		if err := yaml.Unmarshal(
-			FSMustByte(false, filename), ads[i]); err != nil {
+			FSMustByte(false, path), ads[i]); err != nil {
 			panic(err)
 		}
 	}
 
-	r.applyAsmData(ads)
+	metas := make([]*metaAsmData, len(newPaths))
+	for i, path := range newPaths {
+		metas[i] = new(metaAsmData)
+		metas[i].filename = path
+		if err := yaml.Unmarshal(
+			FSMustByte(false, path), metas[i]); err != nil {
+			panic(err)
+		}
+	}
+
+	r.applyAsmData(game, ads, metas)
 }
 
 // ShowAsm writes the disassembly of the specified symbol to the given
@@ -313,4 +388,21 @@ func ShowAsm(symbol string, w io.Writer) error {
 		m.Addrs[0].bank, m.Addrs[0].offset, symbol)
 	_, err = fmt.Fprintln(w, s)
 	return err
+}
+
+// returns the address and label components of a meta-label such as
+// "02/openRingList" or "02/56a1/". TODO: write a spec on this.
+func parseMetalabel(ml string) (addr Addr, label string) {
+	switch tokens := strings.Split(ml, "/"); len(tokens) {
+	case 1:
+		fmt.Sscanf(ml, "%s", &label)
+	case 2:
+		fmt.Sscanf(ml, "%x/%s", &addr.bank, &label)
+	case 3:
+		fmt.Sscanf(ml, "%x/%x/%s", &addr.bank, &addr.offset, &label)
+	default:
+		panic("invalid metalabel: " + ml)
+	}
+
+	return
 }

@@ -38,7 +38,9 @@ func newSeasonsRomBanks() *romBanks {
 	r.appendToBank(0x3f, "smallKeyDrops", makeKeyDropTable())
 	r.appendToBank(0x3f, "owlTextOffsets", string(make([]byte, 0x1e*2)))
 
-	r.applyAsmFiles([]string{"/asm/common.yaml", "/asm/seasons.yaml"})
+	r.applyAsmFiles(GameSeasons,
+		[]string{"/asm/common.yaml", "/asm/seasons.yaml"},
+		[]string{"/asm/rings.yaml"})
 
 	return &r
 }

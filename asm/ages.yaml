@@ -1155,17 +1155,6 @@ replaces:
     old: call _mapMenu_checkRoomVisited
     new: call checkTreeVisited
 
-  # ring stuff
-  - addr: 0x56dd
-    old: ld a,(wInventorySubmenu1CursorPos)
-    new: call openRingList
-  - addr: 0x7019
-    old: call _ringMenu_updateSelectedRingFromList
-    new: call autoEquipRing
-  - addr: 0x5074
-    old: call setMusicVolume
-    new: call ringListGfxFix
-
   0x03:
   - addr: 0x4d6b
     old: call decHlRef16WithCap
@@ -1266,9 +1255,6 @@ replaces:
     new: call lookupKeyDropBank0a
 
   0x0b:
-  - addr: 0x45bb
-    old: jp showText
-    new: jp removeGashaNutRingText
   - addr: 0x5464
     old: call checkGlobalFlag
     new: call checkKingZoraSequence
