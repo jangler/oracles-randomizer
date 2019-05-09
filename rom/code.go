@@ -406,3 +406,14 @@ func parseMetalabel(ml string) (addr Addr, label string) {
 
 	return
 }
+
+// returns a $40-entry slice of addresses of the ends of rom banks for the
+// given game.
+func loadBankEnds(game string) []uint16 {
+	eobs := make(map[string][]uint16)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/rom/eob.yaml"), eobs); err != nil {
+		panic(err)
+	}
+	return eobs[game]
+}

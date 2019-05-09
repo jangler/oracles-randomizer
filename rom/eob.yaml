@@ -1,0 +1,139 @@
+# addresses for ends of rom banks - the points at/after which data can safely
+# be inserted. all banks are $4000 bytes, but banks after $00 start at $4000
+# for the purposes of bus addressing.
+#
+# seasons banks are padded with the bank number; ages banks are padded with
+# zeroes. sometimes it's not clear where a bank ends, so i'll leave a small
+# buffer.
+
+seasons:
+  - 0x3ec8 # 00
+  - 0x7e89 # 01
+  - 0x75bb # 02
+  - 0x7dd7 # 03
+  - 0x7e12 # 04
+  - 0x7e2d # 05
+  - 0x77e4 # 06
+  - 0x7900 # 07
+  - 0x7fc0 # 08
+  - 0x7f4e # 09
+  - 0x7bf9 # 0a
+  - 0x7f6d # 0b
+  - 0x7ea1 # 0c
+  - 0x7b82 # 0d
+  - 0x7ef3 # 0e
+  - 0x7f9d # 0f
+  - 0x7bee # 10
+  - 0x7eb0 # 11
+  - 0x7c8f # 12
+  - 0x7bd2 # 13
+  - 0x6fc9 # 14 - ton of free space here
+  - 0x792d # 15
+  - 0x7a07 # 16
+  - 0x7f3a # 17
+  - 0x7e6d # 18
+  - 0x76e1 # 19
+  - 0x70f0 # 1a - here too
+  - 0x7c40 # 1b
+  - 0x8000 # 1c
+  - 0x8000 # 1d
+  - 0x8000 # 1e
+  - 0x8000 # 1f
+  - 0x8000 # 20
+  - 0x8000 # 21
+  - 0x8000 # 22
+  - 0x8000 # 23
+  - 0x8000 # 24
+  - 0x8000 # 25
+  - 0x8000 # 26
+  - 0x8000 # 27
+  - 0x8000 # 28
+  - 0x8000 # 29
+  - 0x8000 # 2a
+  - 0x8000 # 2b
+  - 0x8000 # 2c
+  - 0x8000 # 2d
+  - 0x8000 # 2e
+  - 0x8000 # 2f
+  - 0x8000 # 30
+  - 0x8000 # 31
+  - 0x8000 # 32
+  - 0x8000 # 33
+  - 0x8000 # 34
+  - 0x8000 # 35
+  - 0x8000 # 36
+  - 0x8000 # 37
+  - 0x8000 # 38
+  - 0x8000 # 39
+  - 0x8000 # 3a
+  - 0x8000 # 3b
+  - 0x8000 # 3c
+  - 0x8000 # 3d
+  - 0x8000 # 3e
+  - 0x714b # 3f - also here
+
+ages:
+  - 0x3ef8 # 00
+  - 0x7fc3 # 01
+  - 0x7e96 # 02
+  - 0x7ebd # 03
+  - 0x7ee2 # 04
+  - 0x7d9d # 05
+  - 0x7a31 # 06
+  - 0x8000 # 07 - might end as early as ~7de0 but i can't tell
+  - 0x7f5c # 08
+  - 0x7def # 09
+  - 0x7e08 # 0a
+  - 0x7fa8 # 0b
+  - 0x7f94 # 0c
+  - 0x7eaa # 0d
+  - 0x7f88 # 0e
+  - 0x7f90 # 0f
+  - 0x7ef4 # 10
+  - 0x7f73 # 11
+  - 0x7e8f # 12
+  - 0x7ef0 # 13
+  - 0x7acd # 14
+  - 0x7bfb # 15
+  - 0x7e03 # 16
+  - 0x7f3a # 17
+  - 0x7e7c # 18
+  - 0x7fdf # 19
+  - 0x7ed0 # 1a
+  - 0x7ee0 # 1b
+  - 0x8000 # 1c
+  - 0x8000 # 1d
+  - 0x8000 # 1e
+  - 0x8000 # 1f
+  - 0x8000 # 20
+  - 0x8000 # 21
+  - 0x8000 # 22
+  - 0x8000 # 23
+  - 0x8000 # 24
+  - 0x8000 # 25
+  - 0x8000 # 26
+  - 0x8000 # 27
+  - 0x8000 # 28
+  - 0x8000 # 29
+  - 0x8000 # 2a
+  - 0x8000 # 2b
+  - 0x8000 # 2c
+  - 0x8000 # 2d
+  - 0x8000 # 2e
+  - 0x8000 # 2f
+  - 0x8000 # 30
+  - 0x8000 # 31
+  - 0x8000 # 32
+  - 0x8000 # 33
+  - 0x8000 # 34
+  - 0x8000 # 35
+  - 0x8000 # 36
+  - 0x8000 # 37
+  - 0x6afb # 38 - the only really wide-open bank in ages
+  - 0x8000 # 39
+  - 0x8000 # 3a
+  - 0x8000 # 3b
+  - 0x8000 # 3c
+  - 0x8000 # 3d
+  - 0x8000 # 3e
+  - 0x7d0a # 3f

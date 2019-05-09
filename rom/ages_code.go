@@ -11,30 +11,9 @@ func newAgesRomBanks() *romBanks {
 	}
 
 	r := romBanks{
-		endOfBank: make([]uint16, 0x40),
+		endOfBank: loadBankEnds("ages"),
 		assembler: asm,
 	}
-
-	r.endOfBank[0x00] = 0x3ef8
-	r.endOfBank[0x01] = 0x7fc3
-	r.endOfBank[0x02] = 0x7e93
-	r.endOfBank[0x03] = 0x7ebd
-	r.endOfBank[0x04] = 0x7edb
-	r.endOfBank[0x05] = 0x7d9d
-	r.endOfBank[0x06] = 0x7a31
-	r.endOfBank[0x08] = 0x7f60
-	r.endOfBank[0x09] = 0x7dee
-	r.endOfBank[0x0a] = 0x7e09
-	r.endOfBank[0x0b] = 0x7fa8
-	r.endOfBank[0x0c] = 0x7f94
-	r.endOfBank[0x0f] = 0x7f90
-	r.endOfBank[0x10] = 0x7ef4
-	r.endOfBank[0x11] = 0x7f73
-	r.endOfBank[0x12] = 0x7e8f
-	r.endOfBank[0x15] = 0x7bfb
-	r.endOfBank[0x16] = 0x7e03
-	r.endOfBank[0x38] = 0x6b00 // to be safe
-	r.endOfBank[0x3f] = 0x7d0a
 
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.

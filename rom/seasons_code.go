@@ -11,26 +11,9 @@ func newSeasonsRomBanks() *romBanks {
 	}
 
 	r := romBanks{
-		endOfBank: make([]uint16, 0x40),
+		endOfBank: loadBankEnds("seasons"),
 		assembler: asm,
 	}
-
-	r.endOfBank[0x00] = 0x3ec8
-	r.endOfBank[0x01] = 0x7e89
-	r.endOfBank[0x02] = 0x75bb
-	r.endOfBank[0x03] = 0x7dd7
-	r.endOfBank[0x04] = 0x7e02
-	r.endOfBank[0x05] = 0x7e2d
-	r.endOfBank[0x06] = 0x77d4
-	r.endOfBank[0x07] = 0x78f0
-	r.endOfBank[0x08] = 0x7fc0
-	r.endOfBank[0x09] = 0x7f4e
-	r.endOfBank[0x0a] = 0x7bea
-	r.endOfBank[0x0b] = 0x7f6d
-	r.endOfBank[0x11] = 0x7eb0
-	r.endOfBank[0x14] = 0x6fd0 // amazing
-	r.endOfBank[0x15] = 0x792d
-	r.endOfBank[0x3f] = 0x714d
 
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.

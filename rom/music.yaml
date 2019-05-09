@@ -1,5 +1,6 @@
-# music can be lookup up by room and used to determine which map tile items in
+# music can be looked up by room and used to determine which map tile items in
 # a dungeon should use, among other things.
+
 seasons:
   0x12: # hero's cave
     maptile: 0xd4
@@ -21,6 +22,7 @@ seasons:
     maptile: 0x04
   0x1e: # maku tree
     maptile: 0xc9
+
 ages:
   0x13: # d1
     maptile: 0x8d

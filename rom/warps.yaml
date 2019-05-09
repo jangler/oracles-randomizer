@@ -6,6 +6,7 @@
 # four-byte table entry goes directly to warp variables (no further indexing).
 #
 # entries only need map tile info for the purposes of the treasure map.
+
 seasons:
   d1: {entry: 0x746d, exit: 0x790d, maptile: 0x96}
   d2: {entry: 0x7659, exit: 0x7911, maptile: 0x8d}
@@ -36,6 +37,7 @@ seasons:
   horon village portal: {entry: 0x7905, exit: 0x7729, maptile: 0xf7}
   temple remains lower portal: {entry: 0x750d, exit: 0x76c5, maptile: 0x25}
   temple remains upper portal: {entry: 0x788d, exit: 0x76c9, maptile: 0x04}
+
 ages:
   d1: {entry: 0x7718, exit: 0x7ad0}
   d2: {entry: 0x772c, exit: 0x7ad4}
