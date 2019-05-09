@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/jangler/oracles-randomizer/graph"
-	"github.com/jangler/oracles-randomizer/logic"
 	"github.com/jangler/oracles-randomizer/rom"
 )
 
@@ -116,17 +115,6 @@ func testAgesGraph(t *testing.T) {
 	}
 	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", false, false)
 	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", true, true)
-}
-
-func BenchmarkGraphExplore(b *testing.B) {
-	// init graph
-	r := NewRoute(rom.GameSeasons)
-	b.ResetTimer()
-
-	// explore all items from the d0 sword chest
-	for name := range logic.SeasonsExtraItems() {
-		r.Graph.Explore(make(map[*graph.Node]bool), false, r.Graph[name])
-	}
 }
 
 // helper function for testing whether a node is reachable given a certain

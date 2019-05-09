@@ -49,168 +49,259 @@ func (g Graph) ClearMarks() {
 	}
 }
 
-// Explore returns a new set of all nodes reachable from the set of nodes in
-// start, adding the nodes in add. This is a destructive operation; at the end,
-// the graph will have all nodes in the return set set to MarkTrue and the rest
-// set to MarkNone.
-func (g Graph) Explore(start map[*Node]bool, hard bool,
-	add ...*Node) map[*Node]bool {
-	// copy set, and mark nodes accordingly
-	g.ClearMarks()
-	reached := make(map[*Node]bool, len(start))
-	for node := range start {
-		reached[node] = true
-		node.Mark = MarkTrue
-	}
+// Mark is the current state of a Node in its evaluation. When a non-root Node
+// is evaluated, it is set to MarkFalse until proven otherwise. This is to
+// prevent evaluating (infinite) loops in the graph.
+type Mark uint8
 
-	// make set of unchecked children
-	frontier := make(map[*Node]bool)
-
-	// add nodes to the reached set and add their unreached children to the
-	// frontier.
-	for _, node := range add {
-		reached[node] = true
-		node.Mark = MarkTrue
-
-		for _, child := range node.children {
-			if !reached[child] {
-				frontier[child] = true
-			}
-		}
-	}
-
-	// make set of nodes that were already processed as parents
-	tried := make(map[*Node]bool)
-
-	// explore. done when no new nodes are reached in an iteration
-	for len(frontier) > 0 {
-		for node := range frontier {
-			// if we can reach the node, add it to the reached set and add its
-			// (previously unchecked) children to the frontier
-			if node.GetMark(node, hard) == MarkTrue {
-				reached[node] = true
-				node.Mark = MarkTrue
-				for _, child := range node.children {
-					if !reached[child] && !tried[child] {
-						frontier[child] = true
-					}
-				}
-			}
-
-			// get this node out of my sight
-			delete(frontier, node)
-			tried[node] = true
-		}
-	}
-
-	return reached
-}
-
-// ExploreFromStart calls explore without specific start and add nodes, instead
-// exploring the entirety of the existing graph.
-func (g Graph) ExploreFromStart(hard bool) map[*Node]bool {
-	return g.Explore(nil, hard, g["start"])
-}
-
-// Reduce returns a version of the graph that is 1. only relevant to the given
-// target and 2. reduced to as few nodes as possible.
+// NodeType determines how a node approaches GetMark(). And nodes return
+// MarkTrue only if all of their parents do, Or nodes return MarkTrue if any of
+// their parents do, and Root act as Or nodes, but conventionally start without
+// parents (Or nodes without parents return MarkFalse).
 //
-// WARNING: This function is currently (1d95ca8) not used in the randomizer
-// code at all, and I don't remember how well it works. There are tests for it
-// in graph_test.go that pass, but the at the very least it does not do what it
-// is intended to do to the fullest extent possible.
-func (g Graph) Reduce(target string) (Graph, error) {
-	if g[target] == nil {
-		return nil, fmt.Errorf("target node %s not in graph", target)
+// An And node with no parents always returns MarkTrue.
+type NodeType uint8
+
+// See Mark and NodeType comments for information.
+const (
+	MarkNone    Mark = iota // satisfied depending on parents
+	MarkTrue                // succeed an OrNode, continue an AndNode
+	MarkFalse               // continue an OrNode, fail an AndNode
+	MarkPending             // prevents circular dependencies
+
+	// nodes will not ever set themselves to MarkFalse, but they will return it
+	// if they are set to MarkNone and are not satisfied
+
+	RootType NodeType = iota
+	AndType
+	OrType
+	CountType
+)
+
+// A Node is a single point in the directed graph.
+type Node struct {
+	Name     string
+	Type     NodeType
+	GetMark  func(*Node, bool) Mark // TODO: make this not require a node arg
+	IsHard   bool
+	Mark     Mark
+	MinCount int
+	parents  []*Node
+	children []*Node
+}
+
+// NewNode returns a new unconnected graph node, not yet part of any graph.
+func NewNode(name string, nodeType NodeType, isHard bool) *Node {
+	// create node
+	n := Node{
+		Name:     name,
+		Type:     nodeType,
+		IsHard:   isHard,
+		Mark:     MarkNone,
+		parents:  make([]*Node, 0),
+		children: make([]*Node, 0),
 	}
 
-	// copy graph but remove start node
-	reduced := copyGraph(g)
-	if start := g["start"]; start != nil {
-		for _, child := range start.children {
-			removeParent(child, start)
+	// set node's GetMark function based on type
+	switch n.Type {
+	case RootType:
+		n.GetMark = getOrMark
+	case AndType:
+		n.GetMark = getAndMark
+	case OrType:
+		n.GetMark = getOrMark
+	case CountType:
+		n.GetMark = getCountMark
+	default:
+		panic("unknown node type for node " + name)
+	}
+
+	return &n
+}
+
+func getAndMark(n *Node, hard bool) Mark {
+	if n.Mark == MarkNone {
+		n.Mark = MarkPending
+		for _, parent := range n.parents {
+			if !hard && parent.IsHard {
+				n.Mark = MarkFalse
+				return n.Mark
+			}
+
+			switch parent.GetMark(parent, hard) {
+			case MarkPending, MarkFalse:
+				n.Mark = MarkNone
+				return MarkFalse
+			}
 		}
-		delete(g, "start")
+		if n.Mark == MarkPending {
+			n.Mark = MarkTrue
+		}
 	}
 
-	// iteratively cut out parents with only one child, or zero children, as
-	// long as the parent type matches the type of its single child. direct
-	// parents of the target node also don't need to be parents of any other
-	// node. (this principle can be applied recursively, but currently isn't?)
-	done := false
-	for !done {
-		done = true
+	return n.Mark
+}
 
-		// collapse single-parent lines
-		for name, node := range reduced {
-			if name == target || node.Type == RootType {
+func getOrMark(n *Node, hard bool) Mark {
+	if n.Mark == MarkNone {
+		n.Mark = MarkPending
+		allPending := true
+
+		// prioritize already satisfied nodes
+	OrPeekLoop:
+		for _, parent := range n.parents {
+			if !hard && parent.IsHard {
 				continue
 			}
 
-			switch len(node.children) {
-			case 0:
-				node.ClearParents()
-				delete(reduced, name)
-			case 1:
-				if len(node.parents) == 1 ||
-					node.Type == node.children[0].Type {
-					done = false
-					node.children[0].AddParents(node.parents...)
-					removeParent(node.children[0], node)
-					removeChild(node, node.parents...)
-					delete(reduced, name)
+			switch parent.Mark {
+			case MarkTrue:
+				n.Mark = MarkTrue
+				allPending = false
+				break OrPeekLoop
+			case MarkFalse:
+				allPending = false
+			}
+		}
+
+		// then actually check them otherwise
+		if n.Mark == MarkPending {
+		OrGetLoop:
+			for _, parent := range n.parents {
+				if !hard && parent.IsHard {
+					continue
+				}
+
+				switch parent.GetMark(parent, hard) {
+				case MarkTrue:
+					n.Mark = MarkTrue
+					allPending = false
+					break OrGetLoop
+				case MarkFalse:
+					allPending = false
 				}
 			}
 		}
 
-		// make direct parents of the target node parents only of that node
-		for _, node := range reduced {
-			if IsNodeInSlice(reduced[target], node.children) {
-				for i := 0; i < len(node.children); i++ {
-					if node.children[i] != reduced[target] {
-						done = false
-						removeParent(node.children[i], node)
-						node.children =
-							append(node.children[:i], node.children[i+1:]...)
-						i--
-					}
-				}
+		if (allPending && len(n.parents) > 0) || n.Mark == MarkPending {
+			n.Mark = MarkNone
+			return MarkFalse
+		}
+	}
+
+	return n.Mark
+}
+
+// in order for a count node to be true, at least x of its parent's parents
+// must also be true.
+func getCountMark(n *Node, hard bool) Mark {
+	count := 0
+
+	if n.Mark == MarkNone {
+		n.Mark = MarkPending
+
+		for _, parent := range n.parents[0].parents {
+			if !hard && parent.IsHard {
+				continue
+			}
+
+			switch parent.GetMark(parent, hard) {
+			case MarkPending, MarkFalse:
+				continue
+			default:
+				count++
+			}
+
+			if count >= n.MinCount {
+				n.Mark = MarkTrue
+				return n.Mark
 			}
 		}
-	}
 
-	return reduced, nil
-}
-
-// returns a new copy of the graph with new but identical nodes and
-// relationships.
-func copyGraph(old Graph) Graph {
-	new := New()
-
-	// add nodes
-	for name, node := range old {
-		new[name] = NewNode(node.Name, node.Type, node.IsStep, node.IsSlot,
-			node.IsHard)
-	}
-
-	// add relationships
-	for name, node := range old {
-		for _, parent := range node.parents {
-			newNode := new[name]
-			newNode.parents = append(newNode.parents, new[parent.Name])
-			children := new[parent.Name].children
-			new[parent.Name].children = append(children, newNode)
+		if n.Mark == MarkPending {
+			n.Mark = MarkNone
+			return MarkFalse
 		}
 	}
 
-	return new
+	return n.Mark
 }
 
-// doesn't do anything if the child already doesn't have the parent
-func removeParent(child, removal *Node) {
-	for i, parent := range child.parents {
-		if parent == removal {
-			child.parents = append(child.parents[:i], child.parents[i+1:]...)
+// Parents returns a copy of the node's slice of parents.
+func (n *Node) Parents() []*Node {
+	parents := make([]*Node, 0, len(n.parents))
+	parents = append(parents, n.parents...)
+	return parents
+}
+
+// AddParents makes the given nodes parents of the node, and likewise adds this
+// node to each parent's list of children. If a given parent is already a
+// parent of the node, nothing is done.
+func (n *Node) AddParents(parents ...*Node) {
+	for _, parent := range parents {
+		if !IsNodeInSlice(parent, n.parents) {
+			n.parents = append(n.parents, parent)
+			addChild(n, parent)
+		}
+	}
+}
+
+// RemoveParent removes the given node from this node's parents. It panics if
+// the given node isn't actually a parent of this node.
+// TODO: make this RemoveParents, or make AddParents AddParent.
+func (n *Node) RemoveParent(parent *Node) {
+	for i, p := range n.parents {
+		if p == parent {
+			n.parents = append(n.parents[:i], n.parents[i+1:]...)
+			removeChild(parent, n)
+			return
+		}
+	}
+
+	panic(fmt.Sprintf("RemoveParent: %v is not a parent of %v", parent, n))
+}
+
+// ClearParents makes the node into an effective root node (though not a Root
+// node).
+func (n *Node) ClearParents() {
+	removeChild(n, n.parents...)
+	n.parents = n.parents[:0]
+}
+
+// String satisfies the fmt.Stringer interface.
+func (n *Node) String() string { return n.Name }
+
+// -- helper functions --
+
+// IsNodeInSlice returns true iff the node is in the slice of nodes.
+func IsNodeInSlice(node *Node, slice []*Node) bool {
+	for _, match := range slice {
+		if node == match {
+			return true
+		}
+	}
+	return false
+}
+
+func addChild(child *Node, parents ...*Node) {
+	for _, parent := range parents {
+		if !IsNodeInSlice(child, parent.children) {
+			parent.children = append(parent.children, child)
+		}
+	}
+}
+
+func removeChild(child *Node, parents ...*Node) {
+	for _, parent := range parents {
+		removeNodeFromSlice(child, &parent.children)
+	}
+}
+
+func removeNodeFromSlice(node *Node, slice *[]*Node) {
+	// O(n)
+	for i, match := range *slice {
+		if match == node {
+			*slice = append((*slice)[:i], (*slice)[i+1:]...)
 			break
 		}
 	}

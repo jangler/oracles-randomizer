@@ -323,5 +323,5 @@ var seasonsD8Nodes = map[string]*Node{
 // onox's castle
 var seasonsD9Nodes = map[string]*Node{
 	"enter d9": And("d9 entrance"), // unrandomized
-	"done":     AndStep("enter d9", "kill armored", "bombs", "kill onox"),
+	"done":     And("enter d9", "kill armored", "bombs", "kill onox"),
 }

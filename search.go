@@ -20,17 +20,11 @@ func nodeInList(n *graph.Node, l *list.List) bool {
 }
 
 func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
-	slotPool *list.List, countFunc func(*Route, bool) int, numUsedSlots int,
+	slotPool *list.List, numUsedSlots int,
 	hard, fillUnused bool) (usedItem, usedSlot *list.Element) {
 	// we're dead
 	if slotPool.Len() == 0 || itemPool.Len() == 0 {
 		return nil, nil
-	}
-
-	// this is the last slot, so it has to open up progression
-	var initialCount int
-	if slotPool.Len() == numUsedSlots+1 && !fillUnused {
-		initialCount = countFunc(r, hard)
 	}
 
 	// try placing an item in the first slot until one fits
@@ -51,14 +45,6 @@ func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
 			}
 
 			item.AddParents(slot)
-
-			if slotPool.Len() == numUsedSlots+1 && !fillUnused {
-				newCount := countFunc(r, hard)
-				if newCount <= initialCount {
-					item.RemoveParent(slot)
-					continue
-				}
-			}
 
 			return ei, es
 		}

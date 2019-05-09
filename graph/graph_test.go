@@ -1,198 +1,204 @@
 package graph
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
+
+// helper functions
+
+var andCounter, orCounter int
 
 func newNormalNode(name string, nodeType NodeType) *Node {
-	return NewNode(name, nodeType, false, false, false)
+	return NewNode(name, nodeType, false)
 }
 
-// tests Graph.Reduce on a graph that is effectively a linked list
-func TestListReduce(t *testing.T) {
-	g := New()
+func makeAndNode() *Node {
+	andCounter++
+	return newNormalNode(fmt.Sprintf("and%d", andCounter), AndType)
+}
 
-	// nodes with only one parent can always be collapsed
-	a := newNormalNode("A", OrType)
-	b := newNormalNode("B", AndType)
-	c := newNormalNode("C", OrType)
-	d := newNormalNode("D", RootType)
-	g.AddNodes(a, b, c, d)
+func makeOrNode() *Node {
+	orCounter++
+	return newNormalNode(fmt.Sprintf("or%d", orCounter), OrType)
+}
 
-	// so this graph is just |A <- &B <- |C <- .D
-	g.AddParents(map[string][]string{
-		"A": []string{"B"},
-		"B": []string{"C"},
-		"C": []string{"D"},
-	})
-
-	// and we want it to collapse to |A <- .D
-	expectedGraph := New()
-	expectedGraph.AddNodes(
-		newNormalNode("A", OrType), newNormalNode("D", RootType))
-	expectedGraph.AddParents(map[string][]string{"A": []string{"D"}})
-
-	reduced, err := g.Reduce("A")
-	if err != nil {
-		t.Fatal(err)
+func clearMarks(nodes ...*Node) {
+	for _, n := range nodes {
+		n.Mark = MarkNone
 	}
-	compareGraphs(t, reduced, expectedGraph)
 }
 
-// tests Graph.Reduce on a graph without loops
-func TestTreeReduce(t *testing.T) {
-	given := New()
+// tests
 
-	// only nodes of the same type should be collapsed
-	a := newNormalNode("A", OrType)
-	b := newNormalNode("B", OrType)
-	c := newNormalNode("C", AndType)
-	d := newNormalNode("D", RootType)
-	e := newNormalNode("E", RootType)
-	f := newNormalNode("F", OrType)
-	g := newNormalNode("G", AndType)
-	h := newNormalNode("H", RootType)
-	i := newNormalNode("I", RootType)
-	j := newNormalNode("J", RootType)
-	k := newNormalNode("K", RootType)
-	given.AddNodes(a, b, c, d, e, f, g, h, i, j, k)
-
-	// this graph is:
-	// |A <- |B <- .D
-	//          <- .E
-	//    <- &C <- |F <- .H
-	//                <- .I
-	//          <- &G <- .J
-	//                <- .K
-	given.AddParents(map[string][]string{
-		"A": []string{"B", "C"},
-		"B": []string{"D", "E"},
-		"C": []string{"F", "G"},
-		"F": []string{"H", "I"},
-		"G": []string{"J", "K"},
-	})
-
-	// and we want it to collapse to:
-	// |A <- .D
-	//    <- .E
-	//    <- &C <- |F <- .H
-	//                <- .I
-	//          <- .J
-	//          <- .K
-	expected := New()
-	expected.AddNodes(
-		newNormalNode("A", OrType),
-		newNormalNode("D", RootType),
-		newNormalNode("E", RootType),
-		newNormalNode("C", AndType),
-		newNormalNode("F", OrType),
-		newNormalNode("H", RootType),
-		newNormalNode("I", RootType),
-		newNormalNode("J", RootType),
-		newNormalNode("K", RootType))
-	expected.AddParents(map[string][]string{
-		"A": []string{"D", "E", "C"},
-		"C": []string{"F", "J", "K"},
-		"F": []string{"H", "I"},
-	})
-
-	reduced, err := given.Reduce("A")
-	if err != nil {
-		t.Fatal(err)
+func TestNodeRelationships(t *testing.T) {
+	permutations := [][]func() *Node{
+		[]func() *Node{makeAndNode, makeOrNode},
+		[]func() *Node{makeOrNode, makeAndNode},
 	}
-	compareGraphs(t, reduced, expected)
-}
 
-// tests Graph.Reduce on a graph with loops
-func TestGraphReduce(t *testing.T) {
-	given := New()
+	for _, perm := range permutations {
+		n1, n2 := perm[0](), perm[1]()
 
-	a := newNormalNode("A", AndType)
-	b := newNormalNode("B", OrType)
-	c := newNormalNode("C", AndType)
-	d := newNormalNode("D", RootType)
-	e := newNormalNode("E", RootType)
-	f := newNormalNode("F", RootType)
-	given.AddNodes(a, b, c, d, e, f)
-
-	// this graph is:
-	// &A <- |B <- &C
-	//          <- .D
-	//          <- .E
-	//    <- &C <- .E
-	//          <- .F
-	given.AddParents(map[string][]string{
-		"A": []string{"B", "C"},
-		"B": []string{"C", "D", "E"},
-		"C": []string{"E", "F"},
-	})
-
-	// and we want it to collapse to:
-	// &A <- .D
-	//    <- .E
-	//    <- .F
-	expected := New()
-	expected.AddNodes(
-		newNormalNode("A", AndType),
-		newNormalNode("D", RootType),
-		newNormalNode("E", RootType),
-		newNormalNode("F", RootType))
-	expected.AddParents(map[string][]string{
-		"A": []string{"D", "E", "F"},
-	})
-
-	reduced, err := given.Reduce("A")
-	if err != nil {
-		t.Fatal(err)
-	}
-	compareGraphs(t, reduced, expected)
-}
-
-// report errors if graphs don't match
-func compareGraphs(t *testing.T, given, expected Graph) {
-	t.Helper()
-
-	// compare presence of nodes
-	for name := range expected {
-		if given[name] == nil {
-			t.Errorf("node %s missing from graph", name)
+		// new nodes shouldn't have relationships
+		if len(n1.parents) > 0 {
+			t.Errorf("node has parents: %+v", n1)
 		}
-	}
-	for name := range given {
-		if expected[name] == nil {
-			t.Errorf("node %s present in graph", name)
+		if len(n1.children) > 0 {
+			t.Errorf("node has children: %+v", n1)
 		}
-	}
-	if t.Failed() {
-		t.FailNow()
-	}
+		if t.Failed() {
+			continue
+		}
 
-	// compare node relationships
-	for name, node := range expected {
-		expectedParents, givenParents := node.parents, given[name].parents
-		if len(expectedParents) == len(givenParents) {
-			for _, parent := range expectedParents {
-				if !isEquivalentNodeInSlice(parent, givenParents) {
-					t.Errorf("expected %s parents %v, given %v",
-						name, expectedParents, givenParents)
-				}
-			}
-			for _, parent := range givenParents {
-				if !isEquivalentNodeInSlice(parent, expectedParents) {
-					t.Errorf("expected %s parents %v, given %v",
-						name, expectedParents, givenParents)
-				}
-			}
-		} else {
-			t.Errorf("expected %s parents %v, given %v",
-				name, expectedParents, givenParents)
+		// test adding a parent
+		n1.AddParents(n2)
+		if len(n1.parents) == 0 {
+			t.Errorf("node has no parents: %+v", n1)
+		}
+		if len(n1.children) > 0 {
+			t.Errorf("node has children: %+v", n1)
+		}
+		if len(n2.parents) > 0 {
+			t.Errorf("node has parents: %+v", n2)
+		}
+		if len(n2.children) == 0 {
+			t.Errorf("node has no children: %+v", n2)
+		}
+		if t.Failed() {
+			continue
+		}
+
+		// test clearing parents
+		n1.ClearParents()
+		if len(n1.parents) > 0 {
+			t.Errorf("node has parents: %+v", n1)
+		}
+		if len(n2.children) > 0 {
+			t.Errorf("node has children: %+v", n2)
 		}
 	}
 }
 
-func isEquivalentNodeInSlice(node *Node, slice []*Node) bool {
-	for _, match := range slice {
-		if match.Name == node.Name && match.Type == node.Type {
-			return true
-		}
+// this is the big one…
+func TestNodeGetMark(t *testing.T) {
+	and1, or1 := makeAndNode(), makeOrNode()
+
+	// orphan AndNodes are true
+	if mark := and1.GetMark(and1, false); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
 	}
-	return false
+	// orphan OrNodes are false
+	if mark := or1.GetMark(or1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+
+	and2 := makeAndNode()
+	and1.AddParents(or1, and2)
+	clearMarks(and1, or1)
+
+	// AndNodes need all parents to succeed
+	if mark := and1.GetMark(and1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+
+	or2 := makeOrNode()
+	or1.AddParents(and1, or2)
+	clearMarks(and1, or1, and2)
+
+	// OrNodes need one
+	if mark := or1.GetMark(or1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	// make sure the OrNode gets the same results by peeking
+	or1.Mark = MarkNone
+	if mark := or1.GetMark(or1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+
+	// (clear and re-add w/ true child in front to make sure breaks in switch
+	// statements are breaking to loop labels)
+	or1.ClearParents()
+	or1.AddParents(and2, and1, or2)
+	clearMarks(and1, or1, and2, or2)
+
+	// and only one
+	if mark := or1.GetMark(or1, false); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	// make sure the OrNode gets the same results by peeking
+	or1.Mark = MarkNone
+	if mark := or1.GetMark(or1, false); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	// and now the AndNode should be satisfied
+	if mark := and1.GetMark(and1, false); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+
+	// but make sure loops don't satisfy nodes
+	and1.ClearParents()
+	and2.ClearParents()
+	or1.ClearParents()
+	or2.ClearParents()
+	and1.AddParents(and2)
+	and2.AddParents(and1)
+	or1.AddParents(or2)
+	or2.AddParents(or1)
+	clearMarks(and1, and2, or1, or2)
+	if mark := and1.GetMark(and1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	if mark := or1.GetMark(or1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+}
+
+func TestHardNodes(t *testing.T) {
+	hard1 := NewNode("hard1", AndType, true)
+	// hard nodes queries directly return `true` even if the `hard` parameter
+	// is false. this is weird, but it is also ok. i think.
+	if mark := hard1.GetMark(hard1, false); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(hard1)
+	if mark := hard1.GetMark(hard1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(hard1)
+
+	and1 := NewNode("and1", AndType, false)
+	and1.AddParents(hard1)
+	if mark := and1.GetMark(and1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(and1, hard1)
+	if mark := and1.GetMark(and1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(and1, hard1)
+
+	or1 := NewNode("or1", OrType, false)
+	or1.AddParents(hard1)
+	if mark := or1.GetMark(or1, false); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(or1, hard1)
+	if mark := or1.GetMark(or1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(or1, hard1)
+
+	count1 := NewNode("or1", CountType, false)
+	count1.AddParents(or1)
+	count1.MinCount = 2
+	if mark := count1.GetMark(count1, true); mark != MarkFalse {
+		t.Fatalf("want %d, got %d", MarkFalse, mark)
+	}
+	clearMarks(count1, hard1)
+	or1.AddParents(and1)
+	if mark := count1.GetMark(count1, true); mark != MarkTrue {
+		t.Fatalf("want %d, got %d", MarkTrue, mark)
+	}
+	clearMarks(count1, hard1)
 }

@@ -88,30 +88,22 @@ func (r *Route) ClearParents(node string) {
 func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
-		case logic.AndType, logic.AndSlotType, logic.AndStepType,
-			logic.HardAndType:
-			isStep := pn.Type == logic.AndSlotType ||
-				pn.Type == logic.AndStepType
-			isSlot := pn.Type == logic.AndSlotType
+		case logic.AndType, logic.AndSlotType, logic.HardAndType:
 			isHard := pn.Type == logic.HardAndType
 
-			node := graph.NewNode(key, graph.AndType, isStep, isSlot, isHard)
+			node := graph.NewNode(key, graph.AndType, isHard)
 			g.AddNodes(node)
-		case logic.OrType, logic.OrSlotType, logic.OrStepType, logic.RootType,
-			logic.HardOrType:
-			isStep := pn.Type == logic.OrSlotType ||
-				pn.Type == logic.OrStepType
-			isSlot := pn.Type == logic.OrSlotType
+		case logic.OrType, logic.OrSlotType, logic.RootType, logic.HardOrType:
 			nodeType := graph.OrType
 			if pn.Type == logic.RootType {
 				nodeType = graph.RootType
 			}
 			isHard := pn.Type == logic.HardOrType
 
-			node := graph.NewNode(key, nodeType, isStep, isSlot, isHard)
+			node := graph.NewNode(key, nodeType, isHard)
 			g.AddNodes(node)
 		case logic.CountType:
-			node := graph.NewNode(key, graph.CountType, false, false, false)
+			node := graph.NewNode(key, graph.CountType, false)
 			node.MinCount = pn.MinCount
 			g.AddNodes(node)
 		default:
@@ -205,7 +197,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 			}
 
 			eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
-				countSteps, ri.UsedSlots.Len(), ropts.hard, false)
+				ri.UsedSlots.Len(), ropts.hard, false)
 
 			if eItem != nil {
 				item := itemList.Remove(eItem).(*graph.Node)
@@ -248,7 +240,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 				}
 
 				eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
-					countSteps, ri.UsedSlots.Len(), ropts.hard, true)
+					ri.UsedSlots.Len(), ropts.hard, true)
 
 				if eItem != nil {
 					item := itemList.Remove(eItem).(*graph.Node)
@@ -689,17 +681,4 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 	}
 
 	return itemList, slotList
-}
-
-// return the number of "step" nodes in the given set
-func countSteps(r *Route, hard bool) int {
-	r.Graph.ClearMarks()
-	reached := r.Graph.ExploreFromStart(hard)
-	count := 0
-	for node := range reached {
-		if node.IsStep && canAffordSlot(r, node, hard) {
-			count++
-		}
-	}
-	return count
 }

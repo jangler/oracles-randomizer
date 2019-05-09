@@ -361,6 +361,6 @@ var agesD8Nodes = map[string]*Node{
 
 var agesD9Nodes = map[string]*Node{
 	"black tower owl": And("mystery seeds", "maku seed"),
-	"done": AndStep("maku seed", "mystery seeds", "switch hook",
+	"done": And("maku seed", "mystery seeds", "switch hook",
 		Or("sword", "punch enemy"), "bombs"), // bombs in case of spider form
 }

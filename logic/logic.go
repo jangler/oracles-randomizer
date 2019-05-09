@@ -14,9 +14,7 @@ import (
 type Type int
 
 // And, Or, and Root are pretty self-explanatory. One with a Slot suffix is an
-// item slot, and one with a Step suffix is treated as a milestone for routing
-// purposes. Slot types are also treated as steps; see the Point.IsStep()
-// function.
+// item slot.
 //
 // "Hard" nodes are ones that players aren't expected to do because they're too
 // difficult or esoteric, but they're used to prevent softlocks by knowing that
@@ -30,8 +28,6 @@ const (
 	OrType
 	AndSlotType
 	OrSlotType
-	AndStepType
-	OrStepType
 	HardAndType
 	HardOrType
 	CountType
@@ -67,10 +63,8 @@ var (
 	Root    = CreateFunc(RootType)
 	And     = CreateFunc(AndType)
 	AndSlot = CreateFunc(AndSlotType)
-	AndStep = CreateFunc(AndStepType)
 	Or      = CreateFunc(OrType)
 	OrSlot  = CreateFunc(OrSlotType)
-	OrStep  = CreateFunc(OrStepType)
 	Hard    = CreateFunc(HardAndType) // for wrapping single nodes
 	HardAnd = CreateFunc(HardAndType)
 	HardOr  = CreateFunc(HardOrType)
