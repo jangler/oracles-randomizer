@@ -29,10 +29,8 @@ var subrosianPortalNames = map[string]string{
 
 // adds nodes to the map based on default contents of item slots.
 func addDefaultItemNodes(nodes map[string]*logic.Node) {
-	for key, slot := range rom.ItemSlots {
-		if key != "temple of seasons" { // real rod is an Or, not a Root
-			nodes[rom.FindTreasureName(slot.Treasure)] = logic.Root()
-		}
+	for _, slot := range rom.ItemSlots {
+		nodes[rom.FindTreasureName(slot.Treasure)] = logic.Root()
 	}
 }
 
