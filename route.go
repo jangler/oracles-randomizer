@@ -7,7 +7,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jangler/oracles-randomizer/graph"
 	"github.com/jangler/oracles-randomizer/logic"
 	"github.com/jangler/oracles-randomizer/rom"
 )
@@ -36,14 +35,14 @@ func addDefaultItemNodes(nodes map[string]*logic.Node) {
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph  graph.Graph
-	Slots  map[string]*graph.Node
+	Graph  graph
+	Slots  map[string]*node
 	Rupees int
 }
 
 // NewRoute returns an initialized route with all nodes.
 func NewRoute(game int) *Route {
-	g := graph.New()
+	g := newGraph()
 
 	var totalPrenodes map[string]*logic.Node
 	if game == rom.GameSeasons {
@@ -56,7 +55,7 @@ func NewRoute(game int) *Route {
 	addNodes(totalPrenodes, g)
 	addNodeParents(totalPrenodes, g)
 
-	openSlots := make(map[string]*graph.Node, 0)
+	openSlots := make(map[string]*node, 0)
 	for name, pn := range totalPrenodes {
 		switch pn.Type {
 		case logic.AndSlotType, logic.OrSlotType:
@@ -71,44 +70,39 @@ func NewRoute(game int) *Route {
 }
 
 func (r *Route) AddParent(child, parent string) {
-	r.Graph[child].AddParent(r.Graph[parent])
+	r.Graph[child].addParent(r.Graph[parent])
 }
 
 func (r *Route) ClearParents(node string) {
-	r.Graph[node].ClearParents()
+	r.Graph[node].clearParents()
 }
 
-func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
+func addNodes(prenodes map[string]*logic.Node, g graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
 		case logic.AndType, logic.AndSlotType:
-			node := graph.NewNode(key, graph.AndType)
-			g.AddNodes(node)
+			g[key] = newNode(key, andNode)
 		case logic.OrType, logic.OrSlotType, logic.RootType:
-			node := graph.NewNode(key, graph.OrType)
-			g.AddNodes(node)
+			g[key] = newNode(key, orNode)
 		case logic.CountType:
-			node := graph.NewNode(key, graph.CountType)
-			node.MinCount = pn.MinCount
-			g.AddNodes(node)
+			g[key] = newNode(key, countNode)
+			g[key].minCount = pn.MinCount
 		default:
 			panic("unknown logic type for " + key)
 		}
 	}
 }
 
-func addNodeParents(prenodes map[string]*logic.Node, gs ...graph.Graph) {
+func addNodeParents(prenodes map[string]*logic.Node, g graph) {
 	for k, pn := range prenodes {
-		for _, g := range gs {
-			if g[k] == nil {
+		if g[k] == nil {
+			continue
+		}
+		for _, parent := range pn.Parents {
+			if g[parent.(string)] == nil {
 				continue
 			}
-			for _, parent := range pn.Parents {
-				if g[parent.(string)] == nil {
-					continue
-				}
-				g.AddParents(map[string][]string{k: []string{parent.(string)}})
-			}
+			g.addParents(map[string][]string{k: []string{parent.(string)}})
 		}
 	}
 }
@@ -177,8 +171,8 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		// slot progression items
 		done := r.Graph["done"]
 		success := true
-		r.Graph.ClearMarks()
-		for done.GetMark() != graph.MarkTrue {
+		r.Graph.clearMarks()
+		for done.getMark() != markTrue {
 			if verbose {
 				logf("searching; have %d more slots", slotList.Len())
 				logf("%d/%d iterations", i, maxIterations)
@@ -188,26 +182,26 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 				ri.UsedSlots.Len(), ropts.hard, false)
 
 			if eItem != nil {
-				item := itemList.Remove(eItem).(*graph.Node)
+				item := itemList.Remove(eItem).(*node)
 				ri.UsedItems.PushBack(item)
-				slot := slotList.Remove(eSlot).(*graph.Node)
+				slot := slotList.Remove(eSlot).(*node)
 				ri.UsedSlots.PushBack(slot)
-				r.Rupees += logic.RupeeValues[item.Name]
+				r.Rupees += logic.RupeeValues[item.name]
 
 				if ri.UsedSlots.Len() > slotRecord {
 					slotRecord = ri.UsedSlots.Len()
 					i, maxIterations = 0, 1+itemList.Len()
 				}
 			} else {
-				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
-				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
-				r.Rupees -= logic.RupeeValues[item.Name]
+				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*node)
+				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*node)
+				r.Rupees -= logic.RupeeValues[item.name]
 				itemList.PushBack(item)
 				slotList.PushBack(slot)
-				item.RemoveParent(slot)
+				item.removeParent(slot)
 			}
 
-			r.Graph.ClearMarks()
+			r.Graph.clearMarks()
 
 			i++
 			if i > maxIterations {
@@ -231,23 +225,23 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 					ri.UsedSlots.Len(), ropts.hard, true)
 
 				if eItem != nil {
-					item := itemList.Remove(eItem).(*graph.Node)
+					item := itemList.Remove(eItem).(*node)
 					ri.UsedItems.PushBack(item)
-					slot := slotList.Remove(eSlot).(*graph.Node)
+					slot := slotList.Remove(eSlot).(*node)
 					ri.UsedSlots.PushBack(slot)
-					r.Rupees += logic.RupeeValues[item.Name]
+					r.Rupees += logic.RupeeValues[item.name]
 
 					if ri.UsedSlots.Len() > slotRecord {
 						slotRecord = ri.UsedSlots.Len()
 						i, maxIterations = 0, 1+itemList.Len()
 					}
 				} else {
-					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*graph.Node)
-					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*graph.Node)
-					r.Rupees -= logic.RupeeValues[item.Name]
+					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*node)
+					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*node)
+					r.Rupees -= logic.RupeeValues[item.name]
 					itemList.PushBack(item)
 					slotList.PushBack(slot)
-					item.RemoveParent(slot)
+					item.removeParent(slot)
 				}
 
 				i++
@@ -489,14 +483,14 @@ func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
 
 // find a valid position for a dungeon item
 func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
-	g graph.Graph, hard bool) (slotElem, itemElem *list.Element, slotNode, itemNode *graph.Node) {
+	g graph, hard bool) (slotElem, itemElem *list.Element, slotNode, itemNode *node) {
 	for es := slotList.Front(); es != nil; es = es.Next() {
-		slot := es.Value.(*graph.Node)
-		if !strings.HasPrefix(slot.Name, prefix) {
+		slot := es.Value.(*node)
+		if !strings.HasPrefix(slot.name, prefix) {
 			continue
 		}
 		if (strings.HasSuffix(itemName, "boss key") || itemName == "slate") &&
-			strings.HasSuffix(slot.Name, "boss") {
+			strings.HasSuffix(slot.name, "boss") {
 			continue
 		}
 		if (strings.HasSuffix(itemName, "small key") ||
@@ -508,8 +502,8 @@ func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
 		}
 
 		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-			item := ei.Value.(*graph.Node)
-			if item.Name != itemName {
+			item := ei.Value.(*node)
+			if item.name != itemName {
 				continue
 			}
 
@@ -527,7 +521,7 @@ func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
 }
 
 // place item in the given slot, and remove it from the pool
-func placeItem(slotNode, itemNode *graph.Node,
+func placeItem(slotNode, itemNode *node,
 	slotElem, itemElem *list.Element,
 	usedSlots, slotList, usedItems, itemList *list.List) {
 	usedSlots.PushBack(slotNode)
@@ -535,16 +529,14 @@ func placeItem(slotNode, itemNode *graph.Node,
 	usedItems.PushBack(itemNode)
 	itemList.Remove(itemElem)
 
-	itemNode.AddParent(slotNode)
+	itemNode.addParent(slotNode)
 }
 
 // returns true iff the target node can be reached if the player has automatic
 // access to every item that isn't a small key or boss key. optionally, this
 // can also assume boss keys and slates.
-func canReachViaKeys(g graph.Graph, target *graph.Node,
-	hard, assumeBKs bool) bool {
-
-	g.ClearMarks()
+func canReachViaKeys(g graph, target *node, hard, assumeBKs bool) bool {
+	g.clearMarks()
 
 	for _, itemSlot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(itemSlot.Treasure)
@@ -552,7 +544,7 @@ func canReachViaKeys(g graph.Graph, target *graph.Node,
 			(assumeBKs ||
 				(!strings.HasSuffix(treasureName, "boss key") &&
 					treasureName != "slate")) {
-			g[treasureName].Mark = graph.MarkTrue
+			g[treasureName].mark = markTrue
 		}
 	}
 
@@ -562,28 +554,12 @@ func canReachViaKeys(g graph.Graph, target *graph.Node,
 		"hyper slingshot", "power glove", "cape", "echoes", "currents", "ages",
 		"mermaid suit",
 	} {
-		if node, ok := g[name]; ok {
-			node.Mark = graph.MarkTrue
+		if item, ok := g[name]; ok {
+			item.mark = markTrue
 		}
 	}
 
-	return target.GetMark() == graph.MarkTrue
-}
-
-func emptyList(l *list.List) []*graph.Node {
-	a := make([]*graph.Node, l.Len())
-	i := 0
-	for l.Len() > 0 {
-		a[i] = l.Remove(l.Front()).(*graph.Node)
-		i++
-	}
-	return a
-}
-
-func fillList(l *list.List, a []*graph.Node) {
-	for _, node := range a {
-		l.PushBack(node)
-	}
+	return target.getMark() == markTrue
 }
 
 var seedNames = []string{"ember tree seeds", "scent tree seeds",

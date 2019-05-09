@@ -3,7 +3,6 @@ package main
 import (
 	"testing"
 
-	"github.com/jangler/oracles-randomizer/graph"
 	"github.com/jangler/oracles-randomizer/rom"
 )
 
@@ -122,8 +121,8 @@ func testAgesGraph(t *testing.T) {
 
 // helper function for testing whether a node is reachable given a certain
 // slotting
-func checkReach(t *testing.T, g graph.Graph, links map[string]string,
-	target string, expect bool) {
+func checkReach(t *testing.T, g graph, links map[string]string, target string,
+	expect bool) {
 	t.Helper()
 
 	// add parents at the start of the function, and remove them at the end. if
@@ -131,23 +130,23 @@ func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 	// useful for default seasons).
 	for parent, child := range links {
 		if parent == "" {
-			g[child].ClearParents()
+			g[child].clearParents()
 		} else {
-			g[child].AddParent(g[parent])
+			g[child].addParent(g[parent])
 		}
 	}
 	defer func() {
 		for parent, child := range links {
 			if parent == "" {
-				g[child].AddParent(g["start"])
+				g[child].addParent(g["start"])
 			} else {
-				g[child].ClearParents()
+				g[child].clearParents()
 			}
 		}
 	}()
-	g.ClearMarks()
+	g.clearMarks()
 
-	if (g[target].GetMark() == graph.MarkTrue) != expect {
+	if (g[target].getMark() == markTrue) != expect {
 		if expect {
 			t.Errorf("expected to reach %s, but could not", target)
 		} else {

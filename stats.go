@@ -45,7 +45,7 @@ func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
 	for i, ri := range routes {
 		stringChecks[i] = make(map[string]string)
 		for k, v := range getChecks(ri) {
-			stringChecks[i][k.Name] = v.Name
+			stringChecks[i][k.name] = v.name
 		}
 	}
 

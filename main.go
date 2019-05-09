@@ -666,14 +666,14 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 	checks := getChecks(ri)
 	for slot, item := range checks {
 		if verbose {
-			logf("%s <- %s", slot.Name, item.Name)
+			logf("%s <- %s", slot.name, item.name)
 		}
 
-		romItemName := item.Name
-		if ringName, ok := reverseLookup(ri.RingMap, item.Name); ok {
+		romItemName := item.name
+		if ringName, ok := reverseLookup(ri.RingMap, item.name); ok {
 			romItemName = ringName
 		}
-		rom.ItemSlots[slot.Name].Treasure = rom.Treasures[romItemName]
+		rom.ItemSlots[slot.name].Treasure = rom.Treasures[romItemName]
 	}
 
 	// set season data

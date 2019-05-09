@@ -6,7 +6,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jangler/oracles-randomizer/graph"
 	"gopkg.in/yaml.v2"
 )
 
@@ -57,8 +56,8 @@ func newHinter(game int) *hinter {
 }
 
 // returns a randomly generated map of owl names to owl messages.
-func (h *hinter) generate(src *rand.Rand, g graph.Graph,
-	checks map[*graph.Node]*graph.Node, owlNames []string) map[string]string {
+func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
+	owlNames []string) map[string]string {
 	// function body starts here lol
 	hints := make(map[string]string)
 	slots := getShuffledSlots(src, checks)
@@ -67,7 +66,7 @@ func (h *hinter) generate(src *rand.Rand, g graph.Graph,
 	// keep track of which slots have been hinted at in order to avoid
 	// duplicates. in practice the implementation of the hint loop makes this
 	// very unlikely in the first place.
-	hintedSlots := make(map[*graph.Node]bool)
+	hintedSlots := make(map[*node]bool)
 
 	for _, owlName := range owlNames {
 		for {
@@ -80,10 +79,10 @@ func (h *hinter) generate(src *rand.Rand, g graph.Graph,
 
 			// don't give hints about checks that are required to reach the owl
 			// in the first place, as dictated by the logic of the seed.
-			item.RemoveParent(slot)
-			g.ClearMarks()
-			required := g[owlName].GetMark() == graph.MarkFalse
-			item.AddParent(slot)
+			item.removeParent(slot)
+			g.clearMarks()
+			required := g[owlName].getMark() == markFalse
+			item.addParent(slot)
 
 			if !required {
 				hints[owlName] = h.format(slot, item)
@@ -98,11 +97,11 @@ func (h *hinter) generate(src *rand.Rand, g graph.Graph,
 
 // returns a message stating that an item is in an area, formatted for an owl
 // text box. this doesn't include control characters (except newlines).
-func (h *hinter) format(slot, item *graph.Node) string {
+func (h *hinter) format(slot, item *node) string {
 	// split message into words to be wrapped
-	words := strings.Split(h.areas[slot.Name], " ")
+	words := strings.Split(h.areas[slot.name], " ")
 	words = append(words, "holds")
-	words = append(words, strings.Split(h.items[item.Name], " ")...)
+	words = append(words, strings.Split(h.items[item.name], " ")...)
 	words[len(words)-1] = words[len(words)-1] + "."
 
 	// build message line by line
@@ -123,15 +122,15 @@ func (h *hinter) format(slot, item *graph.Node) string {
 	return msg.String()
 }
 
-// implement sort.Interface for []*graph.Node
-type nodeSlice []*graph.Node
+// implement sort.Interface for []*node
+type nodeSlice []*node
 
 func (ns nodeSlice) Len() int {
 	return len(ns)
 }
 
 func (ns nodeSlice) Less(i, j int) bool {
-	return ns[i].Name < ns[j].Name
+	return ns[i].name < ns[j].name
 }
 
 func (ns nodeSlice) Swap(i, j int) {
@@ -140,25 +139,25 @@ func (ns nodeSlice) Swap(i, j int) {
 
 // getShuffledSlots returns a randomly ordered slice of slot nodes.
 func getShuffledSlots(src *rand.Rand,
-	checks map[*graph.Node]*graph.Node) []*graph.Node {
+	checks map[*node]*node) []*node {
 	// make slice of check names
-	slots := make([]*graph.Node, len(checks))
+	slots := make([]*node, len(checks))
 	i := 0
 	for slot, item := range checks {
 		// don't include dungeon items, since dungeon item hints would be
 		// useless ("Level 7 holds a Boss Key")
-		if item.Name == "dungeon map" ||
-			item.Name == "compass" ||
-			strings.HasPrefix(item.Name, "slate") ||
-			strings.HasSuffix(item.Name, "small key") ||
-			strings.HasSuffix(item.Name, "boss key") {
+		if item.name == "dungeon map" ||
+			item.name == "compass" ||
+			strings.HasPrefix(item.name, "slate") ||
+			strings.HasSuffix(item.name, "small key") ||
+			strings.HasSuffix(item.name, "boss key") {
 			continue
 		}
 
 		// and don't include these checks, since they're dummy slots that
 		// aren't actually randomized, or seed trees that the player is
 		// guaranteed to know about if they're using seeds.
-		switch slot.Name {
+		switch slot.name {
 		case "shop, 20 rupees", "shop, 30 rupees",
 			"horon village seed tree", "south lynna tree":
 			continue

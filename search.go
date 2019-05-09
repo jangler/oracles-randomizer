@@ -5,14 +5,13 @@ import (
 	"math/rand"
 	"sort"
 
-	"github.com/jangler/oracles-randomizer/graph"
 	"github.com/jangler/oracles-randomizer/logic"
 )
 
 // returns true iff the node is in the list.
-func nodeInList(n *graph.Node, l *list.List) bool {
+func nodeInList(n *node, l *list.List) bool {
 	for e := l.Front(); e != nil; e = e.Next() {
-		if e.Value.(*graph.Node) == n {
+		if e.Value.(*node) == n {
 			return true
 		}
 	}
@@ -29,22 +28,22 @@ func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
 
 	// try placing an item in the first slot until one fits
 	for es := slotPool.Front(); es != nil; es = es.Next() {
-		slot := es.Value.(*graph.Node)
+		slot := es.Value.(*node)
 
-		r.Graph.ClearMarks()
-		if !fillUnused && (slot.GetMark() != graph.MarkTrue ||
+		r.Graph.clearMarks()
+		if !fillUnused && (slot.getMark() != markTrue ||
 			!canAffordSlot(r, slot, hard)) {
 			continue
 		}
 
 		for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
-			item := ei.Value.(*graph.Node)
+			item := ei.Value.(*node)
 
 			if !itemFitsInSlot(item, slot, src) {
 				continue
 			}
 
-			item.AddParent(slot)
+			item.addParent(slot)
 
 			return ei, es
 		}
@@ -56,7 +55,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
 // maps should be looped through based on a sorted set of keys (which can be
 // reordered before iteration, as long as it's ordered first); otherwise the
 // same random seed can yield different results.
-func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
+func getSortedKeys(g graph, src *rand.Rand) []string {
 	keys := make([]string, 0, len(g))
 	for k := range g {
 		keys = append(keys, k)
@@ -69,15 +68,15 @@ func getSortedKeys(g graph.Graph, src *rand.Rand) []string {
 // checks whether the item fits in the slot due to things like seeds only going
 // in trees, certain item slots not accomodating sub IDs. this doesn't check
 // for softlocks or the availability of the slot and item.
-func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
+func itemFitsInSlot(itemNode, slotNode *node, src *rand.Rand) bool {
 	// dummy shop slots 1 and 2 can only hold their vanilla items.
-	if slotNode.Name == "shop, 20 rupees" && itemNode.Name != "bombs, 10" {
+	if slotNode.name == "shop, 20 rupees" && itemNode.name != "bombs, 10" {
 		return false
 	}
-	if slotNode.Name == "shop, 30 rupees" && itemNode.Name != "wooden shield" {
+	if slotNode.name == "shop, 30 rupees" && itemNode.name != "wooden shield" {
 		return false
 	}
-	if itemNode.Name == "wooden shield" && slotNode.Name != "shop, 30 rupees" {
+	if itemNode.name == "wooden shield" && slotNode.name != "shop, 30 rupees" {
 		return false
 	}
 
@@ -85,8 +84,8 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	// TODO: maybe this can be worked around like with the temple of seasons
 	// item in seasons. not sure if it's super worth it but it'd be good to be
 	// consistent.
-	if itemNode.Name == "bomb flower" {
-		switch slotNode.Name {
+	if itemNode.name == "bomb flower" {
+		switch slotNode.name {
 		case "cheval's test", "cheval's invention", "wild tokay game",
 			"hidden tokay cave", "library present", "library past":
 			return false
@@ -94,15 +93,13 @@ func itemFitsInSlot(itemNode, slotNode *graph.Node, src *rand.Rand) bool {
 	}
 
 	// and only seeds can be slotted in seed trees, of course
-	switch itemNode.Name {
+	switch itemNode.name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
 		"pegasus tree seeds", "gale tree seeds":
-		return slotIsSeedTree(slotNode.Name)
+		return slotIsSeedTree(slotNode.name)
 	default:
-		return !slotIsSeedTree(slotNode.Name)
+		return !slotIsSeedTree(slotNode.name)
 	}
-
-	return true
 }
 
 func slotIsSeedTree(name string) bool {
@@ -118,25 +115,25 @@ func slotIsSeedTree(name string) bool {
 	return false
 }
 
-func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
+func canAffordSlot(r *Route, slot *node, hard bool) bool {
 	// if it doesn't cost anything, of course it's affordable
-	balance := logic.NodeValues[slot.Name]
+	balance := logic.NodeValues[slot.name]
 	if balance >= 0 {
 		return true
 	}
 
 	// in hard mode, 100 rupee manips with shovel are in logic
 	if hard {
-		if r.Graph["shovel"].GetMark() == graph.MarkTrue {
+		if r.Graph["shovel"].getMark() == markTrue {
 			return true
 		}
 	}
 
 	// otherwise, count the net rupees available to the player
 	balance += r.Rupees
-	for _, node := range r.Graph {
-		value := logic.NodeValues[node.Name]
-		if value != 0 && node != slot && node.GetMark() == graph.MarkTrue {
+	for _, n := range r.Graph {
+		value := logic.NodeValues[n.name]
+		if value != 0 && n != slot && n.getMark() == markTrue {
 			balance += value
 		}
 	}
