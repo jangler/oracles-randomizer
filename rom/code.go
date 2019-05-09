@@ -175,7 +175,7 @@ func makeCollectModeTable() string {
 
 // returns a byte table (group, room, ID, subID) entries for randomized small
 // key drops (and other falling items, but those entries won't be used).
-func makeKeyDropTable() string {
+func makeRoomTreasureTable() string {
 	b := new(strings.Builder)
 
 	for _, key := range getOrderedSlotKeys() {
