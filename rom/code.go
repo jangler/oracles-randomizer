@@ -21,18 +21,6 @@ func addrString(addr uint16) string {
 	return string([]byte{byte(addr), byte(addr >> 8)})
 }
 
-// return e.g. 0x792d for "\x2d\x79"
-func stringAddr(addr string) uint16 {
-	return uint16([]byte(addr)[0]) + uint16([]byte(addr)[1])<<8
-}
-
-// adds code at the given address, returning the length of the byte string.
-func addCode(name string, bank byte, offset uint16, code string) uint16 {
-	codeMutables[name] = MutableString(Addr{bank, offset},
-		string([]byte{bank}), code)
-	return uint16(len(code))
-}
-
 type romBanks struct {
 	endOfBank []uint16
 	assembler *assembler
@@ -85,19 +73,13 @@ func (r *romBanks) appendToBank(bank byte, name, data string) string {
 	return addrString(eob)
 }
 
-// appendAsm acts as appendToBank, but by compiling a block of asm. additional
-// arguments are formatted into `asm` by fmt.Sprintf. the returned address is
-// also given as a uint16 rather than a big-endian word in string form.
-func (r *romBanks) appendAsm(bank byte, name, asm string,
-	a ...interface{}) uint16 {
-	var err error
-	asm, err = r.assembler.compile(fmt.Sprintf(asm, a...))
-	if err != nil {
+// appendAsm acts as appendToBank, but by translating a block of asm.
+func (r *romBanks) appendAsm(bank byte, name, asm string) {
+	if data, err := r.assembler.compile(asm); err == nil {
+		r.appendToBank(bank, name, data)
+	} else {
 		exitWithAsmError(name, err)
 	}
-
-	as := r.appendToBank(bank, name, asm)
-	return stringAddr(as)
 }
 
 // replace replaces the old data at the given address with the new data, and
@@ -107,11 +89,9 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 	codeMutables[name] = MutableString(Addr{bank, offset}, old, new)
 }
 
-// replaceAsm acts as replace, but treating the old and new strings as asm
-// instead of machine code. additional arguments are formatted into `new` by
-// fmt.Sprintf.
-func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string,
-	a ...interface{}) {
+// replaceAsm acts as replace, but treating the old and new strings as assembly
+// code instead of machine code.
+func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string) {
 	name := fmt.Sprintf("replacement at %02x:%04x", bank, offset)
 
 	var err error
@@ -119,7 +99,7 @@ func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string,
 	if err != nil {
 		exitWithAsmError(name+" (old)", err)
 	}
-	new, err = r.assembler.compile(fmt.Sprintf(new, a...))
+	new, err = r.assembler.compile(new)
 	if err != nil {
 		exitWithAsmError(name+" (new)", err)
 	}
@@ -133,12 +113,7 @@ func exitWithAsmError(funcName string, err error) {
 	os.Exit(1)
 }
 
-// replaceMultiple acts as replace, but operates on multiple addresses.
-func (r *romBanks) replaceMultiple(addrs []Addr, name, old, new string) {
-	codeMutables[name] = MutableStrings(addrs, old, new)
-}
-
-// returns an ordered slice of keys for slot names, so that dentical seeds
+// returns an ordered slice of keys for slot names, so that identical seeds
 // produce identical checksums.
 func getOrderedSlotKeys() []string {
 	keys := make([]string, 0, len(ItemSlots))
@@ -391,7 +366,7 @@ func ShowAsm(symbol string, w io.Writer) error {
 }
 
 // returns the address and label components of a meta-label such as
-// "02/openRingList" or "02/56a1/". TODO: write a spec on this.
+// "02/openRingList" or "02/56a1/". see asm/README.md for details.
 func parseMetalabel(ml string) (addr Addr, label string) {
 	switch tokens := strings.Split(ml, "/"); len(tokens) {
 	case 1:
