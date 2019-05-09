@@ -664,8 +664,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 
 			// also enable removal of the stair tiles
 			mut := codeMutables["d2AltEntranceTileSubs"].(*MutableRange)
-			mut.New[0+2] = 0x00
-			mut.New[5+2] = 0x00
+			mut.New[0], mut.New[5] = 0x00, 0x00
 		}
 	}
 }
