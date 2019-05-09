@@ -41,10 +41,8 @@ type Route struct {
 	Rupees int
 }
 
-// NewRoute returns an initialized route with all nodes, and those nodes with
-// the names in start functioning as givens (always satisfied). If no names are
-// given, only the normal start node functions as a given.
-func NewRoute(game int, start ...string) *Route {
+// NewRoute returns an initialized route with all nodes.
+func NewRoute(game int) *Route {
 	g := graph.New()
 
 	var totalPrenodes map[string]*logic.Node
@@ -54,11 +52,6 @@ func NewRoute(game int, start ...string) *Route {
 		totalPrenodes = logic.GetAges()
 	}
 	addDefaultItemNodes(totalPrenodes)
-
-	// make start nodes given
-	for _, key := range start {
-		totalPrenodes[key] = logic.And()
-	}
 
 	addNodes(totalPrenodes, g)
 	addNodeParents(totalPrenodes, g)
@@ -88,22 +81,18 @@ func (r *Route) ClearParents(node string) {
 func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
-		case logic.AndType, logic.AndSlotType, logic.HardAndType:
-			isHard := pn.Type == logic.HardAndType
-
-			node := graph.NewNode(key, graph.AndType, isHard)
+		case logic.AndType, logic.AndSlotType:
+			node := graph.NewNode(key, graph.AndType)
 			g.AddNodes(node)
-		case logic.OrType, logic.OrSlotType, logic.RootType, logic.HardOrType:
+		case logic.OrType, logic.OrSlotType, logic.RootType:
 			nodeType := graph.OrType
 			if pn.Type == logic.RootType {
 				nodeType = graph.RootType
 			}
-			isHard := pn.Type == logic.HardOrType
-
-			node := graph.NewNode(key, nodeType, isHard)
+			node := graph.NewNode(key, nodeType)
 			g.AddNodes(node)
 		case logic.CountType:
-			node := graph.NewNode(key, graph.CountType, false)
+			node := graph.NewNode(key, graph.CountType)
 			node.MinCount = pn.MinCount
 			g.AddNodes(node)
 		default:
@@ -169,6 +158,9 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		logf("trying seed %08x", ri.Seed)
 
 		r := NewRoute(game)
+		if ropts.hard {
+			r.AddParent("hard", "start")
+		}
 		ri.Companion = rollAnimalCompanion(ri.Src, r, game)
 		ri.RingMap = rom.RandomizeRingPool(ri.Src, game)
 		itemList, slotList = initRouteInfo(ri.Src, r, ri.RingMap, game,
@@ -190,7 +182,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		done := r.Graph["done"]
 		success := true
 		r.Graph.ClearMarks()
-		for done.GetMark(done, ropts.hard) != graph.MarkTrue {
+		for done.GetMark(done) != graph.MarkTrue {
 			if verbose {
 				logf("searching; have %d more slots", slotList.Len())
 				logf("%d/%d iterations", i, maxIterations)
@@ -579,7 +571,7 @@ func canReachViaKeys(g graph.Graph, target *graph.Node,
 		}
 	}
 
-	return target.GetMark(target, hard) == graph.MarkTrue
+	return target.GetMark(target) == graph.MarkTrue
 }
 
 func emptyList(l *list.List) []*graph.Node {

@@ -24,7 +24,7 @@ var subrosiaNodes = map[string]*Node{
 		And("hide and seek", "jump 2", "bracelet",
 			Or("bomb jump 2", "magnet gloves")),
 		And("furnace", "bracelet", "jump 2"),
-		And("furnace", Or("jump 4", Hard("bomb jump 3"))),
+		And("furnace", Or("jump 4", And("hard", "bomb jump 3"))),
 		And("furnace", "jump 2", "magnet gloves"),
 		And("temple", "jump 2")),
 
@@ -36,7 +36,7 @@ var subrosiaNodes = map[string]*Node{
 		And("hide and seek", "jump 2")),
 
 	"furnace": Or("exit great furnace portal",
-		And("beach", Or("jump 4", Hard("bomb jump 3"))),
+		And("beach", Or("jump 4", And("hard", "bomb jump 3"))),
 		And("beach", "magnet gloves", "jump 2")),
 
 	"bridge": Or(

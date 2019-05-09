@@ -20,7 +20,7 @@ var seasonsItemNodes = map[string]*Node{
 	// expert's ring can do some things that fist ring can't, so this is for
 	// the lowest common denominator.
 	"punch object": Or("fist ring", "expert's ring"),
-	"punch enemy":  Or(Hard("fist ring"), "expert's ring"),
+	"punch enemy":  Or(And("hard", "fist ring"), "expert's ring"),
 
 	// progressives
 	"noble sword":     Count(2, "sword"),
@@ -31,19 +31,19 @@ var seasonsItemNodes = map[string]*Node{
 	// this of course doesn't apply to all trees, but trees won't have any
 	// seeds attached to them unless they can be harvested. so it works out.
 	"refill seeds": Or("harvest tree", "dimitri's flute", "dimitri",
-		Hard("remove bush")),
+		And("hard", "remove bush")),
 
 	"harvest ember seeds": And("seed item", Or(
-		And("ember tree seeds", "refill seeds"), Hard("d5 armos chest"),
-		HardAnd("harvest bush", Or("enter agunima", "enter d7")))),
+		And("ember tree seeds", "refill seeds"), And("hard", "d5 armos chest"),
+		And("hard", "harvest bush", Or("enter agunima", "enter d7")))),
 	"harvest mystery seeds": And("seed item", Or(
 		And("mystery tree seeds", "refill seeds"),
-		HardAnd("d8 armos chest", "harvest bush"))),
+		And("hard", "d8 armos chest", "harvest bush"))),
 	"harvest scent seeds": And("scent tree seeds",
 		"seed item", "refill seeds"),
 	"harvest pegasus seeds": And("seed item", Or(
 		And("pegasus tree seeds", "refill seeds"),
-		HardAnd("beach", "shield", "ore chunks"))), // market
+		And("hard", "beach", "shield", "ore chunks"))), // market
 	"harvest gale seeds": And("gale tree seeds",
 		"seed item", "refill seeds"),
 
@@ -78,10 +78,10 @@ var seasonsItemNodes = map[string]*Node{
 		And("beach", "ember seeds")),
 	"seed item": Or("satchel", "slingshot"),
 	"kill for bombs": Or("sword", "ember seeds",
-		Or("scent slingshot", Hard("scent seeds")), "fool's ore"),
+		Or("scent slingshot", And("hard", "scent seeds")), "fool's ore"),
 	"bombs": Or(
-		HardAnd("d2 blade chest", "bracelet"), // deku scrub, TODO: rupees
-		HardAnd("harvest bush", "d2 bracelet room"),
+		And("hard", "d2 blade chest", "bracelet"), // deku scrub, TODO: rupees
+		And("hard", "harvest bush", "d2 bracelet room"),
 		And("bombs, 10", Or("remove pot", "shovel", "remove flower", "flute",
 			And("kill for bombs", Or("suburbs", "fairy fountain",
 				And("mount cucco", Or("spring",
@@ -90,10 +90,10 @@ var seasonsItemNodes = map[string]*Node{
 	// jump x pit tiles
 	"jump 2":      And("feather"),
 	"jump 3":      Or(And("feather", "pegasus satchel"), "cape"),
-	"bomb jump 2": Or("jump 3", HardAnd("jump 2", "bombs")),
-	"bomb jump 3": Or("jump 4", HardAnd("jump 3", "bombs")),
+	"bomb jump 2": Or("jump 3", And("hard", "jump 2", "bombs")),
+	"bomb jump 3": Or("jump 4", And("hard", "jump 3", "bombs")),
 	"jump 4":      And("cape"),
-	"bomb jump 4": Or("jump 6", HardAnd("jump 4", "bombs")),
+	"bomb jump 4": Or("jump 6", And("hard", "jump 4", "bombs")),
 	"jump 6":      And("cape", "pegasus satchel"),
 
 	"harvest tree": Or("sword", "rod", "fool's ore", "punch object"),
@@ -101,5 +101,5 @@ var seasonsItemNodes = map[string]*Node{
 
 	// technically the player can always get ore chunks if they can make it to
 	// subrosia, but shovel is the only way that isn't annoying.
-	"ore chunks": Or("shovel", Hard()),
+	"ore chunks": Or("shovel", "hard"),
 }

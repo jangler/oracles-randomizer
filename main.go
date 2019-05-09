@@ -533,7 +533,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	checks := getChecks(ri)
 	spheres := getSpheres(ri.Route.Graph, checks, ropts.hard)
 	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
-		rom.GetOwlNames(game), ropts.hard)
+		rom.GetOwlNames(game))
 
 	checksum, err := setROMData(
 		romData, game, ri, owlHints, ropts, logf, verbose)

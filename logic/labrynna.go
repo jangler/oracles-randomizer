@@ -4,6 +4,8 @@ package logic
 // portals on the screens next to the maku tree are always active.
 
 var labrynnaNodes = map[string]*Node{
+	"hard": Root(),
+
 	// forest of time
 	"start":          And(),
 	"starting chest": AndSlot("start"),
@@ -16,7 +18,8 @@ var labrynnaNodes = map[string]*Node{
 	"maku tree": OrSlot("rescue nayru",
 		And("lynna village", "shovel", "kill normal")),
 	"south lynna tree": AndSlot("lynna city", "seed item",
-		Or("sword", "punch object", "dimitri's flute", Hard("break bush"))),
+		Or("sword", "punch object", "dimitri's flute",
+			And("hard", "break bush"))),
 	"lynna city chest": OrSlot("ember seeds", "currents"),
 	"shore present": Or("flute", "ricky's gloves",
 		And("break bush", "feather"), And("lynna city", "bracelet"),
@@ -27,7 +30,7 @@ var labrynnaNodes = map[string]*Node{
 	"balloon guy": And("feather", Or("sword", "boomerang"),
 		Or("currents", "ricky's gloves", "ricky's flute",
 			And("shore present", Or("any seed shooter",
-				HardAnd(Or("pegasus satchel", "bombs"), "boomerang"))))),
+				And("hard", Or("pegasus satchel", "bombs"), "boomerang"))))),
 	"balloon guy's gift": AndSlot("balloon guy"),
 	"balloon guy's upgrade": AndSlot("balloon guy", Or( // 3 types of seeds
 		And("ember seeds", Or(
@@ -45,7 +48,7 @@ var labrynnaNodes = map[string]*Node{
 	"ambi's palace tree": AndSlot("lynna village", Or("sword", "punch object"),
 		"seed item"),
 	"ambi's palace chest": AndSlot("lynna village", Or("ages",
-		HardAnd("satchel", "scent seeds", "pegasus seeds"),
+		And("hard", "satchel", "scent seeds", "pegasus seeds"),
 		And("break bush safe", "mermaid suit"))),
 	"rescue nayru": AndSlot("ambi's palace chest", "mystery seeds",
 		"switch hook", Or("sword", "punch enemy")),
@@ -82,7 +85,7 @@ var labrynnaNodes = map[string]*Node{
 		Or("feather", "switch hook", "ember seeds", "ages", "gale satchel")),
 	"deku forest tree": AndSlot("deku forest", Or("sword", "punch object"),
 		"seed item", Or("ember seeds", "ages", "switch hook", "gale satchel",
-			HardAnd("feather", Or("sword", "bombs")))),
+			And("hard", "feather", Or("sword", "bombs")))),
 	"deku forest owl":     And("mystery seeds", "deku forest tree"),
 	"deku forest soldier": AndSlot("deku forest", "mystery seeds"),
 	"d2 entrance":         And("deku forest", Or("bombs", "currents")),
@@ -100,7 +103,7 @@ var labrynnaNodes = map[string]*Node{
 	// pretty unintuitive.
 	"crescent island tree": AndSlot("crescent past", "scent seedling",
 		Or("sword", "punch object"), "seed item", Or("ages", And("bracelet",
-			Or("echoes", HardAnd("gale satchel", "mermaid suit"))))),
+			Or("echoes", And("hard", "gale satchel", "mermaid suit"))))),
 	"crescent present west": Or("dimitri's flute",
 		And("lynna city", "mermaid suit"),
 		And("crescent past", Or("currents", And("shovel", "echoes")))),
@@ -129,8 +132,8 @@ var labrynnaNodes = map[string]*Node{
 	"talus peaks owl":       And("mystery seeds", "symmetry past"),
 	"restoration wall": Or("ages",
 		And("symmetry past", "currents", "bracelet", "flippers")),
-	"patch": And("restoration wall", Or("sword",
-		HardOr("shield", "boomerang", "switch hook", "scent seeds", "shovel"))),
+	"patch": And("restoration wall", Or("sword", And("hard",
+		Or("shield", "boomerang", "switch hook", "scent seeds", "shovel")))),
 	"talus peaks chest": OrSlot("restoration wall"),
 	"d4 entrance":       And("symmetry present", "tuni nut", "patch"),
 
@@ -186,14 +189,14 @@ var labrynnaNodes = map[string]*Node{
 		And("ridge mid past", "feather", "brother emblem"),
 		"rolling ridge east tree",
 		And("ridge base present", "ages"),
-		And("ridge base past west", Or("flippers", Hard("jump 3")))),
+		And("ridge base past west", Or("flippers", And("hard", "jump 3")))),
 	"ridge base past west": Or(
 		And("ridge base present", Or("ages", And("break bush safe", "echoes"))),
-		And("ridge base past east", Or("flippers", Hard("bomb jump 2"))),
+		And("ridge base past east", Or("flippers", And("hard", "bomb jump 2"))),
 		"ridge mid past"), // Ledge added to prevent softlocks
 	"ridge base past": AndSlot("ridge base past west", "bombs"),
 	"d6 past entrance": And("mermaid key", "ridge base past west",
-		Or("flippers", And("ages", "feather"), Hard("bomb jump 2"))),
+		Or("flippers", And("ages", "feather"), And("hard", "bomb jump 2"))),
 	"ridge diamonds past": AndSlot("ridge base past west", "switch hook"),
 	"bomb goron head": AndSlot("bombs", Or(
 		And("ridge base past west", "switch hook"),
@@ -221,7 +224,7 @@ var labrynnaNodes = map[string]*Node{
 	"zora NW cave":         AndSlot("zora village", "bombs", "power glove"),
 	"fairies' coast chest": AndSlot("zora village"),
 	// in hard logic, farm kills and get a potion off maple
-	"king zora":       AndSlot("zora village", Or("syrup", Hard())),
+	"king zora":       AndSlot("zora village", Or("syrup", "hard")),
 	"library present": AndSlot("zora village", "library key"),
 	"library past": AndSlot("zora village", "library key",
 		Or("book of seals", "bomb jump 3")),
@@ -235,6 +238,6 @@ var labrynnaNodes = map[string]*Node{
 	"piratian captain":   AndSlot("lynna city", "mermaid suit", "zora scale"),
 	"sea of storms past": AndSlot("lynna city", "mermaid suit", "zora scale"),
 	"d8 entrance": And("crescent past", "tokay eyeball", "kill normal",
-		"break pot", "bombs", Or("cane", Hard()), "mermaid suit", "feather"),
+		"break pot", "bombs", Or("cane", "hard"), "mermaid suit", "feather"),
 	"sea of no return": AndSlot("d8 entrance", "power glove"),
 }

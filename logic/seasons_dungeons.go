@@ -29,18 +29,18 @@ var seasonsD1Nodes = map[string]*Node{
 	// 0 keys
 	"d1 stalfos drop": AndSlot("enter d1", Or("kill stalfos", "bracelet")),
 	"d1 floormaster room": AndSlot("enter d1",
-		Or("ember seeds", Hard("mystery seeds"))),
+		Or("ember seeds", And("hard", "mystery seeds"))),
 	"d1 boss": AndSlot("d1 floormaster room", "d1 boss key", "kill armored"),
 
 	// 1 key
 	"d1 stalfos chest": AndSlot("enter d1", "d1 small key", "kill stalfos"),
 	"d1 goriya chest": AndSlot("d1 stalfos chest",
-		Or("ember seeds", Hard("mystery seeds")), "kill normal (pit)"),
+		Or("ember seeds", And("hard", "mystery seeds")), "kill normal (pit)"),
 	"d1 lever room": AndSlot("d1 stalfos chest"),
 	"d1 block-pushing room": AndSlot("d1 stalfos chest",
-		Or("kill normal", Hard("bracelet"))),
+		Or("kill normal", And("hard", "bracelet"))),
 	"d1 railway chest": AndSlot("d1 stalfos chest",
-		Or("hit lever", Hard("bracelet"))),
+		Or("hit lever", And("hard", "bracelet"))),
 	"d1 button chest": AndSlot("d1 railway chest"),
 
 	// 2 keys
@@ -56,11 +56,11 @@ var seasonsD2Nodes = map[string]*Node{
 	"d2 left from entrance": AndSlot("d2 torch room"),
 	"d2 rope drop":          AndSlot("d2 torch room", "kill normal"),
 	"d2 arrow room": Or("d2 alt entrances",
-		And("d2 torch room", Or("ember seeds", Hard("mystery seeds")))),
+		And("d2 torch room", Or("ember seeds", And("hard", "mystery seeds")))),
 	"d2 rope chest": AndSlot("d2 arrow room", "kill normal"),
 	"d2 rupee room": And("d2 arrow room", "bombs"),
 	"d2 blade chest": OrSlot("d2 alt entrances",
-		And("d2 arrow room", Or("kill normal", Hard("bracelet")))),
+		And("d2 arrow room", Or("kill normal", And("hard", "bracelet")))),
 	"d2 roller chest": AndSlot("d2 bomb wall", "bombs", "bracelet"),
 	"d2 spiral chest": AndSlot("d2 roller chest"),
 
@@ -72,8 +72,9 @@ var seasonsD2Nodes = map[string]*Node{
 	// 3 keys
 	"d2 hardhat room": And("d2 arrow room", Count(3, "d2 small key")),
 	"d2 pot chest":    AndSlot("d2 hardhat room", "remove pot"),
-	"d2 moblin chest": AndSlot("d2 hardhat room",
-		Or(Hard("bracelet"), And("kill hardhat (pit)", "kill moblin (gap)"))),
+	"d2 moblin chest": AndSlot("d2 hardhat room", Or(
+		And("hard", "bracelet"),
+		And("kill hardhat (pit)", "kill moblin (gap)"))),
 	"d2 terrace chest": AndSlot("d2 spinner", Count(3, "d2 small key")),
 
 	// alias for external reference
@@ -144,8 +145,8 @@ var seasonsD4Nodes = map[string]*Node{
 		Count(5, "d4 small key")),
 	"gohma owl": And("mystery seeds", "d4 basement stairs"),
 	"enter gohma": And("d4 basement stairs", "d4 boss key",
-		Or("ember slingshot", Hard("mystery slingshot"), "jump 3",
-			HardAnd("jump 2", Or("ember seeds", "mystery seeds")))),
+		Or("ember slingshot", And("hard", "mystery slingshot"), "jump 3",
+			And("hard", "jump 2", Or("ember seeds", "mystery seeds")))),
 	"d4 boss": AndSlot("enter gohma", "kill gohma"),
 
 	// alias for external reference
@@ -159,7 +160,7 @@ var seasonsD5Nodes = map[string]*Node{
 	"d5 cart bay":   And("enter d5", Or("flippers", "bomb jump 2")),
 	"d5 cart chest": AndSlot("d5 cart bay", "hit lever from minecart"),
 	"d5 pot room": And("enter d5", Or(And("magnet gloves", "bombs", "jump 2"),
-		And("d5 cart bay", Or("jump 2", Hard("pegasus satchel"))))),
+		And("d5 cart bay", Or("jump 2", And("hard", "pegasus satchel"))))),
 	"d5 gibdo/zol chest": AndSlot("d5 pot room", "kill normal"),
 	"d5 left chest":      AndSlot("enter d5", Or("magnet gloves", "jump 4")),
 	"d5 terrace chest": AndSlot("enter d5", Or("magnet gloves",
@@ -176,12 +177,12 @@ var seasonsD5Nodes = map[string]*Node{
 
 	// 5 keys
 	"d5 post-syger": And("d5 stalfos room", "kill armored"),
-	"d5 magnet ball chest": AndSlot("d5 pot room",
-		Or("flippers", "jump 6", Hard("jump 4")), Count(5, "d5 small key")),
+	"d5 magnet ball chest": AndSlot("d5 pot room", Count(5, "d5 small key"),
+		Or("flippers", "jump 6", And("hard", "jump 4"))),
 	"d5 basement": AndSlot("d5 drop ball", "d5 post-syger", "magnet gloves",
-		Count(5, "d5 small key"), Or("kill magunesu", Hard("jump 2"))),
+		Count(5, "d5 small key"), Or("kill magunesu", And("hard", "jump 2"))),
 	"d5 boss": AndSlot("d5 post-syger", "magnet gloves", "d5 boss key",
-		Count(5, "d5 small key"), Or("jump 2", Hard())),
+		Count(5, "d5 small key"), Or("jump 2", "hard")),
 }
 
 var seasonsD6Nodes = map[string]*Node{
@@ -205,7 +206,7 @@ var seasonsD6Nodes = map[string]*Node{
 	"d6 2F armos chest": AndSlot("d6 2F gibdo chest", "bombs"),
 	"d6 armos hall":     AndSlot("d6 2F armos chest", "jump 2"),
 	"d6 spinner north": AndSlot("enter d6", "magnet gloves", "break crystal",
-		Or("jump 2", Hard()), Or(
+		Or("jump 2", "hard"), Or(
 			And("kill normal", Count(3, "d6 small key")),
 			And("bombs", "jump 2", Count(2, "d6 small key")))),
 	"enter vire":       And("d6 vire chest", Count(3, "d6 small key")),
@@ -226,10 +227,10 @@ var seasonsD7Nodes = map[string]*Node{
 
 	// 1 key
 	"enter poe A": And("enter d7", "d7 small key",
-		Or("ember slingshot", Hard("mystery slingshot"))),
+		Or("ember slingshot", And("hard", "mystery slingshot"))),
 	"d7 pot room": And("enter d7", "bracelet", Or(
 		And("enter poe A", "kill poe sister"),
-		HardAnd("bombs", "jump 2", "pegasus satchel"))),
+		And("hard", "bombs", "jump 2", "pegasus satchel"))),
 	"d7 zol button":   AndSlot("d7 pot room", "jump 2"),
 	"d7 armos puzzle": AndSlot("d7 pot room", Or("jump 3", "magnet gloves")),
 	"d7 magunesu chest": AndSlot("d7 armos puzzle", "jump 3", "kill magunesu",
@@ -241,7 +242,7 @@ var seasonsD7Nodes = map[string]*Node{
 
 	// 3 keys
 	"enter poe B": And("d7 pot room", "ember seeds", Count(3, "d7 small key"),
-		Or("pegasus satchel", "hyper slingshot", Hard())),
+		Or("pegasus satchel", "hyper slingshot", "hard")),
 	"d7 water stairs": And("enter poe B", "flippers"),
 	"d7 spike chest": AndSlot("d7 water stairs",
 		Or("jump 4",
@@ -252,14 +253,14 @@ var seasonsD7Nodes = map[string]*Node{
 	"d7 maze chest": AndSlot("d7 water stairs", "kill poe sister", "jump 4",
 		Count(4, "d7 small key")),
 	"d7 B2F drop": AndSlot("d7 maze chest",
-		Or("magnet gloves", Hard("jump 6"))),
+		Or("magnet gloves", And("hard", "jump 6"))),
 	"shining blue owl": And("mystery seeds", "d7 stalfos chest"),
 	"d7 boss":          AndSlot("d7 maze chest", "d7 boss key", "kill gleeok"),
 
 	// 5 keys
 	"d7 right of entrance": AndSlot("enter d7", Count(5, "d7 small key")),
 	"d7 stalfos chest": AndSlot("d7 maze chest", Count(5, "d7 small key"),
-		Or("pegasus satchel", Hard())),
+		Or("pegasus satchel", "hard")),
 }
 
 // HSS skip is out of logic and can lead to key-locks.
@@ -269,17 +270,17 @@ var seasonsD8Nodes = map[string]*Node{
 
 	// 0 keys
 	"d8 eye drop": AndSlot("enter d8", "remove pot", Or("any slingshot",
-		HardAnd("jump 2",
+		And("hard", "jump 2",
 			Or("ember satchel", "scent satchel", "mystery satchel")))),
 	"d8 three eyes chest": AndSlot("enter d8", "jump 2",
-		Or("any hyper slingshot",
-			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
+		Or("any hyper slingshot", And("hard",
+			Or("ember satchel", "scent satchel", "mystery satchel")))),
 	"d8 hardhat room": And("enter d8", "kill magunesu"),
 	"d8 hardhat drop": AndSlot("d8 hardhat room", "kill hardhat (magnet)"),
 
 	// 1 key
 	"d8 spike room": AndSlot("d8 hardhat room", "d8 small key",
-		Or("jump 4", Hard("jump 3"))),
+		Or("jump 4", And("hard", "jump 3"))),
 
 	// 2 keys
 	"d8 spinner":          And("d8 spike room", Count(2, "d8 small key")),
@@ -289,14 +290,14 @@ var seasonsD8Nodes = map[string]*Node{
 	"d8 spinner chest":    AndSlot("d8 armos chest"),
 	"frypolar owl":        And("mystery seeds", "d8 armos chest"),
 	"d8 darknut chest": AndSlot("d8 armos chest", "bombs", "kill armored",
-		Or("any hyper slingshot",
-			HardOr("ember satchel", "scent satchel", "mystery satchel"))),
+		Or("any hyper slingshot", And("hard",
+			Or("ember satchel", "scent satchel", "mystery satchel")))),
 
 	// 3 keys
 	"d8 ice puzzle room": And("d8 armos chest", Count(3, "d8 small key"),
 		"kill frypolar", "ember seeds", "hyper slingshot"),
 	"d8 pols voice chest": AndSlot("d8 ice puzzle room",
-		Or("jump 6", "magic boomerang", Hard())),
+		Or("jump 6", "magic boomerang", "hard")),
 
 	// 4 keys
 	"d8 crystal room":     And("d8 ice puzzle room", Count(4, "d8 small key")),

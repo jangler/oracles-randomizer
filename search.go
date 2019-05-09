@@ -32,7 +32,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
 		slot := es.Value.(*graph.Node)
 
 		r.Graph.ClearMarks()
-		if !fillUnused && (slot.GetMark(slot, hard) != graph.MarkTrue ||
+		if !fillUnused && (slot.GetMark(slot) != graph.MarkTrue ||
 			!canAffordSlot(r, slot, hard)) {
 			continue
 		}
@@ -128,7 +128,7 @@ func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	// in hard mode, 100 rupee manips with shovel are in logic
 	if hard {
 		shovel := r.Graph["shovel"]
-		if shovel.GetMark(shovel, hard) == graph.MarkTrue {
+		if shovel.GetMark(shovel) == graph.MarkTrue {
 			return true
 		}
 	}
@@ -138,7 +138,7 @@ func canAffordSlot(r *Route, slot *graph.Node, hard bool) bool {
 	for _, node := range r.Graph {
 		value := logic.NodeValues[node.Name]
 		if value != 0 && node != slot &&
-			node.GetMark(node, hard) == graph.MarkTrue {
+			node.GetMark(node) == graph.MarkTrue {
 			balance += value
 		}
 	}

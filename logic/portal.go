@@ -48,7 +48,7 @@ var portalNodes = map[string]*Node{
 	// pair 5
 
 	"enter horon village portal": And("horon village",
-		Or("magic boomerang", Hard("jump 6"))),
+		Or("magic boomerang", And("hard", "jump 6"))),
 	"exit horon village portal": Root(),
 
 	"enter house of pirates portal": And("pirate house", "hit lever"),
@@ -61,10 +61,10 @@ var portalNodes = map[string]*Node{
 		And(Or("temple remains default winter", "winter"), Or(
 			And("exit temple remains upper portal",
 				Or("temple remains default winter", "feather")),
-			HardAnd("shovel", "remove bush", "jump 6"),
-			HardAnd(Or("temple remains default spring", "spring"),
+			And("hard", "shovel", "remove bush", "jump 6"),
+			And("hard", Or("temple remains default spring", "spring"),
 				"remove flower", "remove bush", "jump 6", "winter"),
-			HardAnd(Or("temple remains default summer", "summer"),
+			And("hard", Or("temple remains default summer", "summer"),
 				"remove bush", "jump 6", "winter"),
 			And(Or("temple remains default autumn", "autumn"),
 				"remove bush", "jump 2", "winter"))))),

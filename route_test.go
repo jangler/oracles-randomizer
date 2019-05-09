@@ -21,10 +21,10 @@ func testSeasonsGraph(t *testing.T) {
 	// test basic start item
 	checkReach(t, g, map[string]string{
 		"d0 key chest": "feather",
-	}, "maku tree", false, false)
+	}, "maku tree", false)
 	checkReach(t, g, map[string]string{
 		"d0 key chest": "sword",
-	}, "maku tree", false, true)
+	}, "maku tree", true)
 
 	// test hard logic via bombs as weapon
 	testMap := map[string]string{
@@ -33,8 +33,9 @@ func testSeasonsGraph(t *testing.T) {
 		"horon village SE chest": "gnarled key",
 		"d1 entrance":            "enter d1",
 	}
-	checkReach(t, g, testMap, "d1 stalfos drop", false, false)
-	checkReach(t, g, testMap, "d1 stalfos drop", true, true)
+	checkReach(t, g, testMap, "d1 stalfos drop", false)
+	testMap["start"] = "hard"
+	checkReach(t, g, testMap, "d1 stalfos drop", true)
 
 	// test key counting
 	testMap = map[string]string{
@@ -44,9 +45,9 @@ func testSeasonsGraph(t *testing.T) {
 		"d1 stalfos drop":  "d1 small key",
 		"d1 stalfos chest": "bombs, 10",
 	}
-	checkReach(t, g, testMap, "d1 basement", false, false)
+	checkReach(t, g, testMap, "d1 basement", false)
 	testMap["d1 railway chest"] = "d1 small key"
-	checkReach(t, g, testMap, "d1 basement", false, true)
+	checkReach(t, g, testMap, "d1 basement", true)
 
 	// check a subrosia portal
 	testMap = map[string]string{
@@ -54,9 +55,9 @@ func testSeasonsGraph(t *testing.T) {
 		"d0 rupee chest": "boomerang",
 		"maku tree":      "boomerang",
 	}
-	checkReach(t, g, testMap, "suburbs", false, false)
+	checkReach(t, g, testMap, "suburbs", false)
 	testMap["enter horon village portal"] = "exit eastern suburbs portal"
-	checkReach(t, g, testMap, "suburbs", false, true)
+	checkReach(t, g, testMap, "suburbs", true)
 }
 
 // check that graph logic is working as expected
@@ -68,10 +69,10 @@ func testAgesGraph(t *testing.T) {
 	// test basic start item
 	checkReach(t, g, map[string]string{
 		"starting chest": "feather",
-	}, "black tower worker", false, false)
+	}, "black tower worker", false)
 	checkReach(t, g, map[string]string{
 		"starting chest": "sword",
-	}, "black tower worker", false, true)
+	}, "black tower worker", true)
 
 	// test hard logic via bombs as weapon
 	testMap := map[string]string{
@@ -80,8 +81,9 @@ func testAgesGraph(t *testing.T) {
 		"black tower worker": "shovel",
 		"d2 entrance":        "enter d2",
 	}
-	checkReach(t, g, testMap, "d2 bombed terrace", false, false)
-	checkReach(t, g, testMap, "d2 bombed terrace", true, true)
+	checkReach(t, g, testMap, "d2 bombed terrace", false)
+	testMap["start"] = "hard"
+	checkReach(t, g, testMap, "d2 bombed terrace", true)
 
 	// test key counting
 	testMap = map[string]string{
@@ -92,9 +94,9 @@ func testAgesGraph(t *testing.T) {
 		"d3 pols voice chest": "d3 small key",
 		"d3 statue drop":      "d3 small key",
 	}
-	checkReach(t, g, testMap, "d3 bush beetle room", false, false)
+	checkReach(t, g, testMap, "d3 bush beetle room", false)
 	testMap["d3 armos drop"] = "d3 small key"
-	checkReach(t, g, testMap, "d3 bush beetle room", false, true)
+	checkReach(t, g, testMap, "d3 bush beetle room", true)
 
 	// test bombs from head thwomp in hard logic
 	headThwompBombMap := map[string]string{
@@ -113,14 +115,15 @@ func testAgesGraph(t *testing.T) {
 		"d2 rope room":          "d2 small key",
 		"d2 statue puzzle":      "d2 boss key",
 	}
-	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", false, false)
-	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", true, true)
+	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", false)
+	headThwompBombMap["start"] = "hard"
+	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", true)
 }
 
 // helper function for testing whether a node is reachable given a certain
 // slotting
 func checkReach(t *testing.T, g graph.Graph, links map[string]string,
-	target string, hard, expect bool) {
+	target string, expect bool) {
 	t.Helper()
 
 	// add parents at the start of the function, and remove them at the end. if
@@ -144,7 +147,7 @@ func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 	}()
 	g.ClearMarks()
 
-	if (g[target].GetMark(g[target], hard) == graph.MarkTrue) != expect {
+	if (g[target].GetMark(g[target]) == graph.MarkTrue) != expect {
 		if expect {
 			t.Errorf("expected to reach %s, but could not", target)
 		} else {

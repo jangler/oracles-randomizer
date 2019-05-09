@@ -58,8 +58,7 @@ func newHinter(game int) *hinter {
 
 // returns a randomly generated map of owl names to owl messages.
 func (h *hinter) generate(src *rand.Rand, g graph.Graph,
-	checks map[*graph.Node]*graph.Node, owlNames []string,
-	hard bool) map[string]string {
+	checks map[*graph.Node]*graph.Node, owlNames []string) map[string]string {
 	// function body starts here lol
 	hints := make(map[string]string)
 	slots := getShuffledSlots(src, checks)
@@ -83,7 +82,7 @@ func (h *hinter) generate(src *rand.Rand, g graph.Graph,
 			// in the first place, as dictated by the logic of the seed.
 			item.RemoveParent(slot)
 			g.ClearMarks()
-			required := g[owlName].GetMark(g[owlName], hard) == graph.MarkFalse
+			required := g[owlName].GetMark(g[owlName]) == graph.MarkFalse
 			item.AddParents(slot)
 
 			if !required {

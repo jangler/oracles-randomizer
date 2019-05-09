@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+// TODO: do a final once-over / cleanup of this code before merging it into the
+// main package.
+
 // A Graph maps names to a set of (hopeully) connected nodes. The graph is
 // directed.
 type Graph map[string]*Node
@@ -82,8 +85,7 @@ const (
 type Node struct {
 	Name     string
 	Type     NodeType
-	GetMark  func(*Node, bool) Mark // TODO: make this not require a node arg
-	IsHard   bool
+	GetMark  func(*Node) Mark // TODO: make this not require a node arg
 	Mark     Mark
 	MinCount int
 	parents  []*Node
@@ -91,12 +93,11 @@ type Node struct {
 }
 
 // NewNode returns a new unconnected graph node, not yet part of any graph.
-func NewNode(name string, nodeType NodeType, isHard bool) *Node {
+func NewNode(name string, nodeType NodeType) *Node {
 	// create node
 	n := Node{
 		Name:     name,
 		Type:     nodeType,
-		IsHard:   isHard,
 		Mark:     MarkNone,
 		parents:  make([]*Node, 0),
 		children: make([]*Node, 0),
@@ -119,16 +120,11 @@ func NewNode(name string, nodeType NodeType, isHard bool) *Node {
 	return &n
 }
 
-func getAndMark(n *Node, hard bool) Mark {
+func getAndMark(n *Node) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
 		for _, parent := range n.parents {
-			if !hard && parent.IsHard {
-				n.Mark = MarkFalse
-				return n.Mark
-			}
-
-			switch parent.GetMark(parent, hard) {
+			switch parent.GetMark(parent) {
 			case MarkPending, MarkFalse:
 				n.Mark = MarkNone
 				return MarkFalse
@@ -142,7 +138,7 @@ func getAndMark(n *Node, hard bool) Mark {
 	return n.Mark
 }
 
-func getOrMark(n *Node, hard bool) Mark {
+func getOrMark(n *Node) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
 		allPending := true
@@ -150,10 +146,6 @@ func getOrMark(n *Node, hard bool) Mark {
 		// prioritize already satisfied nodes
 	OrPeekLoop:
 		for _, parent := range n.parents {
-			if !hard && parent.IsHard {
-				continue
-			}
-
 			switch parent.Mark {
 			case MarkTrue:
 				n.Mark = MarkTrue
@@ -168,11 +160,7 @@ func getOrMark(n *Node, hard bool) Mark {
 		if n.Mark == MarkPending {
 		OrGetLoop:
 			for _, parent := range n.parents {
-				if !hard && parent.IsHard {
-					continue
-				}
-
-				switch parent.GetMark(parent, hard) {
+				switch parent.GetMark(parent) {
 				case MarkTrue:
 					n.Mark = MarkTrue
 					allPending = false
@@ -194,18 +182,14 @@ func getOrMark(n *Node, hard bool) Mark {
 
 // in order for a count node to be true, at least x of its parent's parents
 // must also be true.
-func getCountMark(n *Node, hard bool) Mark {
+func getCountMark(n *Node) Mark {
 	count := 0
 
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
 
 		for _, parent := range n.parents[0].parents {
-			if !hard && parent.IsHard {
-				continue
-			}
-
-			switch parent.GetMark(parent, hard) {
+			switch parent.GetMark(parent) {
 			case MarkPending, MarkFalse:
 				continue
 			default:

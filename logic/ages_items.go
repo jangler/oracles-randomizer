@@ -4,7 +4,7 @@ var agesItemNodes = map[string]*Node{
 	"shield": Or("wooden shield", "iron shield"),
 
 	"bombs": Or(And("bombs, 10", Or("break bush", "flute", "shovel")),
-		HardOr("d2 boss", "goron shooting gallery")),
+		And("hard", Or("d2 boss", "goron shooting gallery"))),
 
 	"ricky's flute":   Root(),
 	"dimitri's flute": Root(),
@@ -14,7 +14,7 @@ var agesItemNodes = map[string]*Node{
 	// expert's ring can do some things that fist ring can't, so this is for
 	// the lowest common denominator.
 	"punch object": Or("fist ring", "expert's ring"),
-	"punch enemy":  Or(Hard("fist ring"), "expert's ring"),
+	"punch enemy":  Or(And("hard", "fist ring"), "expert's ring"),
 
 	// progressives
 	"noble sword":  Count(2, "sword"),
@@ -25,9 +25,9 @@ var agesItemNodes = map[string]*Node{
 	"power glove":  Count(2, "bracelet"),
 	"mermaid suit": Count(2, "flippers"),
 
-	"bomb jump 2": And("feather", Or("pegasus satchel", Hard("bombs"))),
+	"bomb jump 2": And("feather", Or("pegasus satchel", And("hard", "bombs"))),
 	"jump 3":      And("feather", "pegasus satchel"),
-	"bomb jump 3": HardAnd("feather", "pegasus satchel", "bombs"),
+	"bomb jump 3": And("hard", "feather", "pegasus satchel", "bombs"),
 
 	"seed item": Or("satchel", "seed shooter"),
 
@@ -35,7 +35,7 @@ var agesItemNodes = map[string]*Node{
 	// you can also get scent seeds from ramrock, but the requirements for
 	// those are a superset of the requirements for the D3 ones.
 	"scent seeds": Or("scent tree seeds",
-		HardAnd("d3 E crystal", "seed item")),
+		And("hard", "d3 E crystal", "seed item")),
 	"pegasus seeds": And("pegasus tree seeds"),
 	"gale seeds":    And("gale tree seeds"),
 	"mystery seeds": And("mystery tree seeds"),

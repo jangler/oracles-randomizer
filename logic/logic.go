@@ -16,10 +16,6 @@ type Type int
 // And, Or, and Root are pretty self-explanatory. One with a Slot suffix is an
 // item slot.
 //
-// "Hard" nodes are ones that players aren't expected to do because they're too
-// difficult or esoteric, but they're used to prevent softlocks by knowing that
-// players *can* do them.
-//
 // The following functions are half syntactic sugar for declaring large lists
 // of node relationships.
 const (
@@ -28,8 +24,6 @@ const (
 	OrType
 	AndSlotType
 	OrSlotType
-	HardAndType
-	HardOrType
 	CountType
 )
 
@@ -65,9 +59,6 @@ var (
 	AndSlot = CreateFunc(AndSlotType)
 	Or      = CreateFunc(OrType)
 	OrSlot  = CreateFunc(OrSlotType)
-	Hard    = CreateFunc(HardAndType) // for wrapping single nodes
-	HardAnd = CreateFunc(HardAndType)
-	HardOr  = CreateFunc(HardOrType)
 	Count   = CreateCountType
 )
 
