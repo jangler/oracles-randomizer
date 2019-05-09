@@ -82,8 +82,8 @@ func (h *hinter) generate(src *rand.Rand, g graph.Graph,
 			// in the first place, as dictated by the logic of the seed.
 			item.RemoveParent(slot)
 			g.ClearMarks()
-			required := g[owlName].GetMark(g[owlName]) == graph.MarkFalse
-			item.AddParents(slot)
+			required := g[owlName].GetMark() == graph.MarkFalse
+			item.AddParent(slot)
 
 			if !required {
 				hints[owlName] = h.format(slot, item)

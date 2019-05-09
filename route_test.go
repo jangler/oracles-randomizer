@@ -133,13 +133,13 @@ func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 		if parent == "" {
 			g[child].ClearParents()
 		} else {
-			g[child].AddParents(g[parent])
+			g[child].AddParent(g[parent])
 		}
 	}
 	defer func() {
 		for parent, child := range links {
 			if parent == "" {
-				g[child].AddParents(g["start"])
+				g[child].AddParent(g["start"])
 			} else {
 				g[child].ClearParents()
 			}
@@ -147,7 +147,7 @@ func checkReach(t *testing.T, g graph.Graph, links map[string]string,
 	}()
 	g.ClearMarks()
 
-	if (g[target].GetMark(g[target]) == graph.MarkTrue) != expect {
+	if (g[target].GetMark() == graph.MarkTrue) != expect {
 		if expect {
 			t.Errorf("expected to reach %s, but could not", target)
 		} else {

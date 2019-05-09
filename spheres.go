@@ -49,7 +49,7 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 
 		// get the set of newly reachable nodes
 		for _, node := range g {
-			if !reached[node] && node.GetMark(node) == graph.MarkTrue {
+			if !reached[node] && node.GetMark() == graph.MarkTrue {
 				if logic.NodeValues[node.Name] > 0 {
 					rupees += logic.NodeValues[node.Name]
 				}
@@ -65,7 +65,7 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 			reached[node] = true
 			delete(unreached, node)
 			if item := checks[node]; item != nil {
-				item.AddParents(node)
+				item.AddParent(node)
 				sphere = append(sphere, item)
 				reached[item] = true
 				rupees += logic.RupeeValues[item.Name]
@@ -84,7 +84,7 @@ func getSpheres(g graph.Graph, checks map[*graph.Node]*graph.Node,
 	}
 
 	for slot, item := range unreached {
-		item.AddParents(slot)
+		item.AddParent(slot)
 	}
 
 	return spheres

@@ -4,9 +4,6 @@ import (
 	"fmt"
 )
 
-// TODO: do a final once-over / cleanup of this code before merging it into the
-// main package.
-
 // A Graph maps names to a set of (hopeully) connected nodes. The graph is
 // directed.
 type Graph map[string]*Node
@@ -33,7 +30,7 @@ func (g Graph) AddParents(links map[string][]string) {
 		if child, ok := g[childName]; ok {
 			for _, parentName := range parentNames {
 				if parent, ok := g[parentName]; ok {
-					child.AddParents(parent)
+					child.AddParent(parent)
 				} else {
 					panic("no node named " + parentName)
 				}
@@ -52,31 +49,27 @@ func (g Graph) ClearMarks() {
 	}
 }
 
-// Mark is the current state of a Node in its evaluation. When a non-root Node
-// is evaluated, it is set to MarkFalse until proven otherwise. This is to
-// prevent evaluating (infinite) loops in the graph.
+// Mark is the current state of a Node in its evaluation. MarkNone means the
+// Node has not been evaludated, MarkTrue and MarkFalse mean that the value of
+// the node has been determined, and MarkPending is used temporarily to prevent
+// evaluating infinite loops in the graph.
 type Mark uint8
 
+const (
+	MarkNone Mark = iota
+	MarkTrue
+	MarkFalse
+	MarkPending
+)
+
 // NodeType determines how a node approaches GetMark(). And nodes return
-// MarkTrue only if all of their parents do, Or nodes return MarkTrue if any of
-// their parents do, and Root act as Or nodes, but conventionally start without
-// parents (Or nodes without parents return MarkFalse).
-//
-// An And node with no parents always returns MarkTrue.
+// MarkTrue iff all of their parents do, Or nodes return MarkTrue iff any of
+// their parents do, and Count nodes return true iff at least a certain number
+// of their parents do.
 type NodeType uint8
 
-// See Mark and NodeType comments for information.
 const (
-	MarkNone    Mark = iota // satisfied depending on parents
-	MarkTrue                // succeed an OrNode, continue an AndNode
-	MarkFalse               // continue an OrNode, fail an AndNode
-	MarkPending             // prevents circular dependencies
-
-	// nodes will not ever set themselves to MarkFalse, but they will return it
-	// if they are set to MarkNone and are not satisfied
-
-	RootType NodeType = iota
-	AndType
+	AndType NodeType = iota
 	OrType
 	CountType
 )
@@ -85,46 +78,41 @@ const (
 type Node struct {
 	Name     string
 	Type     NodeType
-	GetMark  func(*Node) Mark // TODO: make this not require a node arg
 	Mark     Mark
 	MinCount int
 	parents  []*Node
-	children []*Node
 }
 
 // NewNode returns a new unconnected graph node, not yet part of any graph.
 func NewNode(name string, nodeType NodeType) *Node {
 	// create node
-	n := Node{
-		Name:     name,
-		Type:     nodeType,
-		Mark:     MarkNone,
-		parents:  make([]*Node, 0),
-		children: make([]*Node, 0),
+	return &Node{
+		Name:    name,
+		Type:    nodeType,
+		Mark:    MarkNone,
+		parents: make([]*Node, 0),
 	}
-
-	// set node's GetMark function based on type
-	switch n.Type {
-	case RootType:
-		n.GetMark = getOrMark
-	case AndType:
-		n.GetMark = getAndMark
-	case OrType:
-		n.GetMark = getOrMark
-	case CountType:
-		n.GetMark = getCountMark
-	default:
-		panic("unknown node type for node " + name)
-	}
-
-	return &n
 }
 
+func (n *Node) GetMark() Mark {
+	switch n.Type {
+	case AndType:
+		return getAndMark(n)
+	case OrType:
+		return getOrMark(n)
+	case CountType:
+		return getCountMark(n)
+	default:
+		panic("unknown node type for node " + n.Name)
+	}
+}
+
+// returns true iff all parents are true (no parents == true).
 func getAndMark(n *Node) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
 		for _, parent := range n.parents {
-			switch parent.GetMark(parent) {
+			switch parent.GetMark() {
 			case MarkPending, MarkFalse:
 				n.Mark = MarkNone
 				return MarkFalse
@@ -134,10 +122,10 @@ func getAndMark(n *Node) Mark {
 			n.Mark = MarkTrue
 		}
 	}
-
 	return n.Mark
 }
 
+// returns true iff any parent is true (no parents == false).
 func getOrMark(n *Node) Mark {
 	if n.Mark == MarkNone {
 		n.Mark = MarkPending
@@ -160,7 +148,7 @@ func getOrMark(n *Node) Mark {
 		if n.Mark == MarkPending {
 		OrGetLoop:
 			for _, parent := range n.parents {
-				switch parent.GetMark(parent) {
+				switch parent.GetMark() {
 				case MarkTrue:
 					n.Mark = MarkTrue
 					allPending = false
@@ -180,8 +168,7 @@ func getOrMark(n *Node) Mark {
 	return n.Mark
 }
 
-// in order for a count node to be true, at least x of its parent's parents
-// must also be true.
+// returns true iff at least x parents are true.
 func getCountMark(n *Node) Mark {
 	count := 0
 
@@ -189,7 +176,7 @@ func getCountMark(n *Node) Mark {
 		n.Mark = MarkPending
 
 		for _, parent := range n.parents[0].parents {
-			switch parent.GetMark(parent) {
+			switch parent.GetMark() {
 			case MarkPending, MarkFalse:
 				continue
 			default:
@@ -211,82 +198,34 @@ func getCountMark(n *Node) Mark {
 	return n.Mark
 }
 
-// Parents returns a copy of the node's slice of parents.
-func (n *Node) Parents() []*Node {
-	parents := make([]*Node, 0, len(n.parents))
-	parents = append(parents, n.parents...)
-	return parents
-}
-
-// AddParents makes the given nodes parents of the node, and likewise adds this
-// node to each parent's list of children. If a given parent is already a
+// AddParent makes the given parent a parent of the node. If it is already a
 // parent of the node, nothing is done.
-func (n *Node) AddParents(parents ...*Node) {
-	for _, parent := range parents {
-		if !IsNodeInSlice(parent, n.parents) {
-			n.parents = append(n.parents, parent)
-			addChild(n, parent)
+func (n *Node) AddParent(parent *Node) {
+	for _, p := range n.parents {
+		if p == parent {
+			return
 		}
 	}
+	n.parents = append(n.parents, parent)
 }
 
 // RemoveParent removes the given node from this node's parents. It panics if
 // the given node isn't actually a parent of this node.
-// TODO: make this RemoveParents, or make AddParents AddParent.
 func (n *Node) RemoveParent(parent *Node) {
 	for i, p := range n.parents {
 		if p == parent {
 			n.parents = append(n.parents[:i], n.parents[i+1:]...)
-			removeChild(parent, n)
 			return
 		}
 	}
-
 	panic(fmt.Sprintf("RemoveParent: %v is not a parent of %v", parent, n))
 }
 
 // ClearParents makes the node into an effective root node (though not a Root
 // node).
 func (n *Node) ClearParents() {
-	removeChild(n, n.parents...)
 	n.parents = n.parents[:0]
 }
 
 // String satisfies the fmt.Stringer interface.
 func (n *Node) String() string { return n.Name }
-
-// -- helper functions --
-
-// IsNodeInSlice returns true iff the node is in the slice of nodes.
-func IsNodeInSlice(node *Node, slice []*Node) bool {
-	for _, match := range slice {
-		if node == match {
-			return true
-		}
-	}
-	return false
-}
-
-func addChild(child *Node, parents ...*Node) {
-	for _, parent := range parents {
-		if !IsNodeInSlice(child, parent.children) {
-			parent.children = append(parent.children, child)
-		}
-	}
-}
-
-func removeChild(child *Node, parents ...*Node) {
-	for _, parent := range parents {
-		removeNodeFromSlice(child, &parent.children)
-	}
-}
-
-func removeNodeFromSlice(node *Node, slice *[]*Node) {
-	// O(n)
-	for i, match := range *slice {
-		if match == node {
-			*slice = append((*slice)[:i], (*slice)[i+1:]...)
-			break
-		}
-	}
-}

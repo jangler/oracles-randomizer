@@ -71,7 +71,7 @@ func NewRoute(game int) *Route {
 }
 
 func (r *Route) AddParent(child, parent string) {
-	r.Graph[child].AddParents(r.Graph[parent])
+	r.Graph[child].AddParent(r.Graph[parent])
 }
 
 func (r *Route) ClearParents(node string) {
@@ -85,11 +85,7 @@ func addNodes(prenodes map[string]*logic.Node, g graph.Graph) {
 			node := graph.NewNode(key, graph.AndType)
 			g.AddNodes(node)
 		case logic.OrType, logic.OrSlotType, logic.RootType:
-			nodeType := graph.OrType
-			if pn.Type == logic.RootType {
-				nodeType = graph.RootType
-			}
-			node := graph.NewNode(key, nodeType)
+			node := graph.NewNode(key, graph.OrType)
 			g.AddNodes(node)
 		case logic.CountType:
 			node := graph.NewNode(key, graph.CountType)
@@ -182,7 +178,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		done := r.Graph["done"]
 		success := true
 		r.Graph.ClearMarks()
-		for done.GetMark(done) != graph.MarkTrue {
+		for done.GetMark() != graph.MarkTrue {
 			if verbose {
 				logf("searching; have %d more slots", slotList.Len())
 				logf("%d/%d iterations", i, maxIterations)
@@ -539,7 +535,7 @@ func placeItem(slotNode, itemNode *graph.Node,
 	usedItems.PushBack(itemNode)
 	itemList.Remove(itemElem)
 
-	itemNode.AddParents(slotNode)
+	itemNode.AddParent(slotNode)
 }
 
 // returns true iff the target node can be reached if the player has automatic
@@ -571,7 +567,7 @@ func canReachViaKeys(g graph.Graph, target *graph.Node,
 		}
 	}
 
-	return target.GetMark(target) == graph.MarkTrue
+	return target.GetMark() == graph.MarkTrue
 }
 
 func emptyList(l *list.List) []*graph.Node {
