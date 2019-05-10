@@ -438,6 +438,7 @@ appends:
       dw collectPoeSkipRoom
       dw collectMakuTree
       dw collectD4Pool
+      dw collectD5Armos
 
   # master diver's room has chest on the left and reward on the right.
   - collectDiverRoom: |
@@ -477,6 +478,16 @@ appends:
       ld e,COLLECT_FALL_KEY
       ret c
       ld e,COLLECT_DIVE
+      ret
+
+  # don't override mode for first three items in the d5 armos room, so that
+  # they don't set the "item obtained" room flag.
+  - collectD5Armos: |
+      ld a,(cfd8)
+      cp a,04
+      ld e,COLLECT_CHEST
+      ret z
+      ld e,COLLECT_CHEST_NOFLAG
       ret
 
   0x07:

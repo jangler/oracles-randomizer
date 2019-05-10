@@ -1,13 +1,7 @@
-# TODO: move this comment to a readme or something so it doesn't need to be
-# duplicated.
-#
 # - if `maptile` is not given, it is assumed to be the low byte of the room, or
 #   the item is on a map tile that has exclusive music (like dungeons).
 # - if `collect` is not specified, it uses the mode that the item has in the
 #   vanilla treasure table.
-#
-# TODO: order these by room instead of addr, since chests don't have addrs
-# anymore?
 
 # holodrum
 eyeglass lake, across bridge:
@@ -468,6 +462,7 @@ d5 armos chest:
   treasure: d5 small key
   room: 0x0491
   addr: {bank: 0x09, addr: 0x5051}
+  collect: d5 armos
 d5 gibdo/zol chest:
   treasure: dungeon map
   room: 0x048f
