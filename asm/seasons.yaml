@@ -12,10 +12,12 @@ defines:
   hMusicVar: 0xb5 # used in filterMusic
 
   # wram
+  wRickyState: 0xc643
   wAnimalTutorialFlags: 0xc646
   wInventoryB: 0xc680
   wShieldLevel: 0xc6a9
   wSwordLevel: 0xc6ac
+  wFluteIcon: 0xc6af
   wObtainedSeasons: 0xc6b0
   wFeatherLevel: 0xc6b4
   wEssencesObtained: 0xc6bb

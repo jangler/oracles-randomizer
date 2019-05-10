@@ -5,26 +5,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"link immediately actionable": MutableString(Addr{0x05, 0x4d98},
 		"\x3e\x08\xcd\x16", "\xcd\x16\x2a\xc9"),
 
-	// this all has to do with animals and flutes:
-	// this edits ricky's script so that he never gives his flute.
-	"ricky skip flute script":  MutableByte(Addr{0x0b, 0x6b7a}, 0x0b, 0x7f),
-	"don't give ricky's flute": MutableByte(Addr{0x09, 0x6e6c}, 0xc0, 0xc9),
-	// this prevents subrosian dancing from giving dimitri's flute.
-	"don't give dimitri's flute": MutableByte(Addr{0x09, 0x5e37}, 0xe6, 0xf6),
-	// this prevents holodrum plain from changing the animal region.
-	"don't change animal region": MutableWord(Addr{0x09, 0x6f79},
-		0x3804, 0x1808),
-	// this keeps ricky in his pen based on flute, not animal region.
-	"keep ricky in pen": MutableString(Addr{0x09, 0x4e77},
-		"\x10\xc6\xfe\x0b", "\xaf\xc6\xfe\x01"),
-	// and this does the same for saying goodbye once reaching spool swamp.
-	"ricky say goodbye": MutableString(Addr{0x09, 0x6ccd},
-		"\x10\xc6\xfe\x0b", "\xaf\xc6\xfe\x01"),
-	// spawn dimitri and kids in sunken city based on flute, not animal region.
-	"spawn dimitri in sunken city": MutableStrings(
-		[]Addr{{0x09, 0x4e4c}, {0x09, 0x6f08}, {0x09, 0x737e}},
-		"\x10\xc6\xfe\x0c", "\xaf\xc6\xfe\x02"),
-
 	// move sleeping talon and his mushroom so they don't block the chest
 	"move talon":    MutableWord(Addr{0x11, 0x6d2b}, 0x6858, 0x88a8),
 	"move mushroom": MutableWord(Addr{0x0b, 0x6080}, 0x6848, 0x78a8),
@@ -75,11 +55,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"master essence check 2":    MutableByte(Addr{0x0a, 0x4bea}, 0x40, 0x02),
 	"round jewel essence check": MutableByte(Addr{0x0a, 0x4f8b}, 0x05, 0x00),
 
-	// prevent leaving sunken city with dimitri unless you have his flute, in
-	// order to prevent a variety of softlocks.
-	"block dimitri exit": MutableString(Addr{0x09, 0x6f34},
-		"\xfa\x10\xc6\xfe\x0c", "\xfa\xaf\xc6\xfe\x02"),
-
 	// moosh won't spawn in the mountains if you have the wrong number of
 	// essences. bit 6 seems related to this, and needs to be zero too?
 	"skip moosh essence check 1": MutableByte(Addr{0x0f, 0x7429}, 0x03, 0x00),
@@ -98,9 +73,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"wooden sword second item": MutableByte(Addr{0x0a, 0x7bb9}, 0x05, 0x3f),
 
 	// bank 0b (scripts)
-
-	// don't set a ricky flag when buying the "flute".
-	"shop no set ricky flag": MutableByte(Addr{0x0b, 0x4826}, 0x20, 0x00),
 
 	// don't require rod to get items from season spirits.
 	"season spirit rod check": MutableByte(Addr{0x0b, 0x4eb2}, 0x07, 0x02),
@@ -121,12 +93,6 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// grow seeds in all seasons
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
-
-	// bank 11 (interactions)
-
-	// remove the moosh and dimitri events in spool swamp.
-	"prevent moosh cutscene":   MutableByte(Addr{0x11, 0x6572}, 0xf1, 0xff),
-	"prevent dimitri cutscene": MutableByte(Addr{0x11, 0x68d4}, 0xf1, 0xff),
 
 	// bank 14 (scripts loaded into c3xx block, also some OAM pointers?)
 

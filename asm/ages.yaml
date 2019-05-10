@@ -11,6 +11,7 @@ defines:
   hMusicVar: 0xb7 # used in filterMusic
 
   # wram
+  wRememberedCompanionId: 0xcc24
   wRickyState: 0xc647
   wDimitriState: 0xc647
   wAnimalTutorialFlags: 0xc649

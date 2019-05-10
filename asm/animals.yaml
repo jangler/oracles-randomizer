@@ -1,0 +1,45 @@
+# don't include essence and global flag checks in here; those can go in
+# asm/triggers.yaml.
+
+seasons:
+  # some of the ricky code here doesn't matter since ricky's flute isn't
+  # currently randomized (6cefde1), but it can stay in case things change.
+
+  # check flute icon instead of animal region for dimitri events:
+  09/4e4b/: ld a,(c6af); cp a,02 # spawning dimitri + kids in sunken
+  09/6f07/: ld a,(c6af); cp a,02 # ^
+  09/737d/: ld a,(c6af); cp a,02 # ^
+  09/6f34/: ld a,(c6af); cp a,02 # trying to leave sunken w/ dimitri
+
+  # check flute icon instead of animal region for ricky events:
+  09/4e76/: ld a,(wFluteIcon); cp a,01 # spawn ricky in pen
+  09/6ccc/: ld a,(wFluteIcon); cp a,01 # say goodbye when reaching spool
+
+  # prevent subrosian dancing from giving dimitri's flute.
+  09/5e37/: or a,20
+
+  # stop ricky from giving his flute.
+  09/6e6c/: ret
+  0b/6b77/: db jumpifmemoryeq; dw wAnimalRegion; db 7f
+
+  # prevent holodrum plain from changing the animal region when entered.
+  09/6f79/: jr 08
+
+  # don't set a ricky flag when buying 150-rupee shop item.
+  0b/4823/: db ormemory; dw wRickyState; db 00
+
+  # remove the moosh and dimitri events in spool swamp.
+  11/6572/: db ff
+  11/68d4/: db ff
+
+ages:
+  # allow exiting moosh/ghost screen without killing the ghosts.
+  0a/595a/: nop; nop; nop
+
+  # don't delete companion when picking up cheval's invention.
+  0c/7234/: db ormemory; dw wRememberedCompanionId; db 00
+  3f/6d00/: db 00
+
+  # vanilla bug(?): moosh appears on the screen south of cheval's grave after
+  # visiting the cheval's grave screen, whether you've obtained him or not.
+  12/5c5d/: db ff

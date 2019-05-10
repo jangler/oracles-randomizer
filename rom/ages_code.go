@@ -27,6 +27,7 @@ func newAgesRomBanks() *romBanks {
 			"/asm/ages.yaml",
 		},
 		[]string{
+			"/asm/animals.yaml",
 			"/asm/item_lookup.yaml",
 			"/asm/layouts.yaml",
 			"/asm/linked.yaml",
