@@ -1,0 +1,79 @@
+seasons:
+  # check fake treasure ids to track:
+  09/7754/: ld a,10 # subrosia market item 5
+  09/7dfc/: ld a,0a # maku tree drop
+  0b/72f0/: db jumpifitemobtained,11 # master diver
+
+  # stop hero's cave chest from giving a second sword that causes a spin slash.
+  0a/7bb8/: ld (hl),3f
+
+  # remove second sword (used to trigger spin slash) from lost woods script.
+  0b/641a/: db retscript
+  0b/6421/: db retscript
+
+  # skip shield + shield level checks for forging hard ore.
+  0b/75c6/: db jumpifitemobtained,TREASURE_PUNCH
+  15/62ac/: jr 05
+
+  # don't display normal fixed text for temple of seasons item.
+  15/70be/: nop; nop; nop
+
+ages:
+  # dig up item on south shore regardless of ricky state
+  04/6b76/: jr nz,00
+  04/6b7a/: jr z,00
+  0a/5e2e/: jr nz,00
+  0a/5e32/: jr z,00
+
+  # check fake ids to track:
+  04/6b7c/: ld a,TREASURE_MAGNET_GLOVES # south shore dirt
+  0a/5e34/: ld a,TREASURE_MAGNET_GLOVES # ^
+  09/42a4/: ld a,TREASURE_ROD_OF_SEASONS # shop, 150 rupees
+  09/4327/: ld a,TREASURE_ROD_OF_SEASONS # ^
+  0b/5489/: ld a,10 # king zora
+  0c/67d7/: db jumpifitemobtained,14 # goron dance w/ letter
+  0c/6851/: db jumpifitemobtained,14 # ^
+  0c/697a/: db jumpifitemobtained,14 # ^
+  0c/67df/: db jumpifitemobtained,12 # goron dance present
+  0c/6859/: db jumpifitemobtained,12 # ^
+  0c/6982/: db jumpifitemobtained,12 # ^
+  0c/7dff/: db jumpifitemobtained,TREASURE_SLINGSHOT # tingle 1
+  15/77ef/: ld a,TREASURE_FOOLS_ORE # symmetry city brother
+  15/78f5/: db jumpifitemobtained,TREASURE_FOOLS_ORE # ^
+
+  # change harp (nayru's house?) interaction to allow subid.
+  0b/6825/: |
+    push bc
+    ld bc,1100 # id/subid
+    call createTreasure
+    pop bc
+    ret nz
+
+  # ignore satchel level when talking to tingle for second item.
+  0b/75c5/: xor a
+
+  # stop tingle script from making ricky leave :(
+  0c/7e2a/: db enableinput; dw fe7d; db setdisabledobjectsto11 # ??
+  # or refilling seed satchel.
+  0c/7e7d/: db jumpalways; dw 7e80
+
+  # skip normal boomerang check in target carts, since EOB code handles it.
+  15/66ae/: jr 0b
+  # remove "boomerang" from random prizes (it's guaranteed second instead).
+  15/66e5/: db 03,03,03 # prize indexes in a table
+  # don't give boomerang as a shooting gallery prize either.
+  15/52b6/: db jumpalways,c3,52,scriptend
+
+  # make tokay who gives shield upgrade always give the same item, and in a
+  # format compatible with lookupItemSprite.
+  15/5b35/: |
+    ld bc,0101 # id/subid
+    ld a,b
+    ld b,c
+    ld c,a
+    scf
+    nop
+    nop
+
+  # trade lava juice without having the mermaid key.
+  15/6879/: jr nc,00

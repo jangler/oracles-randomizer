@@ -31,46 +31,10 @@ var seasonsFixedMutables = map[string]Mutable{
 	"remove prairie lever":   MutableByte(Addr{0x21, 0x6267}, 0xb1, 0x04),
 	"remove wasteland lever": MutableByte(Addr{0x23, 0x5cb7}, 0xb1, 0x04),
 
-	// skip shield check for forging hard ore
-	"skip iron shield check": MutableByte(Addr{0x0b, 0x75c7}, 0x01, 0x02),
-	// and skip the check for what level shield you currently have
-	"skip iron shield level check": MutableString(Addr{0x15, 0x62ac},
-		"\x38\x01", "\x18\x05"),
-
-	// check fake treasure ID 0a for maku tree item. this only matters if you
-	// leave the screen without picking up the item.
-	"maku tree check fake id": MutableByte(Addr{0x09, 0x7dfd}, 0x42, 0x0a),
-	// check fake treasure ID 10 for market item 5.
-	"market check fake id": MutableByte(Addr{0x09, 0x7755}, 0x53, 0x10),
-	// check fake treasure ID 11 for master diver.
-	"diver check fake id": MutableByte(Addr{0x0b, 0x72f1}, 0x2e, 0x11),
-
-	// banks 08-0a (most interaction-specific non-script behavior?)
-
-	// stop the hero's cave event from giving you a second wooden sword that
-	// you use to spin slash
-	"wooden sword second item": MutableByte(Addr{0x0a, 0x7bb9}, 0x05, 0x3f),
-
-	// bank 0b (scripts)
-
-	// don't require rod to get items from season spirits.
-	"season spirit rod check": MutableByte(Addr{0x0b, 0x4eb2}, 0x07, 0x02),
-
-	// getting the L-2 (or L-3) sword in the lost woods normally gives a second
-	// "spin slash" item. remove this from the script.
-	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0xde, 0xc1),
-	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0xde, 0xc1),
-
 	// bank 0d
 
 	// grow seeds in all seasons
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
-
-	// bank 14 (scripts loaded into c3xx block, also some OAM pointers?)
-
-	// change the noble sword's animation pointers to match regular items
-	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
-	"noble sword anim 2": MutableWord(Addr{0x14, 0x55a7}, 0xf36b, 0x4f68),
 
 	// bank 15 (script functions)
 
@@ -78,10 +42,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
 	"move d8 magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
-
-	// zero normal rod text.
-	"no rod text": MutableString(Addr{0x15, 0x70be},
-		"\xcd\x4b\x18", "\x00\x00\x00"),
 
 	// banks 1c-1f (text)
 
@@ -104,21 +64,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	"end warning text": MutableString(Addr{0x1f, 0x459f}, "\x01\x05",
 		"\x0c\x00\x43\x6f\x6e\x74\x69\x6e\x75\x65\x20\x61\x74\x01"+ // Continue at
 			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
-
-	// bank 3f
-
-	// give items that don't normally appear as treasure interactions entries
-	// in the treasure graphics table.
-	"member's card gfx": MutableString(Addr{0x3f, 0x67b4},
-		"\x00\x00\x00", "\x5d\x0c\x13"),
-	"treasure map gfx": MutableString(Addr{0x3f, 0x67b7},
-		"\x00\x00\x00", "\x65\x14\x33"),
-	"fool's ore gfx": MutableString(Addr{0x3f, 0x67ba},
-		"\x00\x00\x00", "\x60\x14\x00"),
-	"rare peach stone gfx": MutableString(Addr{0x3f, 0x67c6},
-		"\x00\x00\x00", "\x5d\x10\x26"),
-	"ribbon gfx": MutableString(Addr{0x3f, 0x67c9},
-		"\x00\x00\x00", "\x65\x0c\x23"),
 }
 
 var seasonsVarMutables = map[string]Mutable{

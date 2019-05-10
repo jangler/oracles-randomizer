@@ -14,12 +14,14 @@ seasons:
   0a/4be9/: ld a,TREASURE_PUNCH # master diver
   0a/4bf4/: cp a,00             # ^
   0a/4f8a/: cp a,00             # old man (round jewel)
-
   # dimitri also won't spawn normally if you have flippers.
   09/4e55/: ld a,TREASURE_CANE_OF_SOMARIA
 
   # maku seed: count number of essences, not highest numbered essence.
   09/7da3/: call getNumSetBits; jr 01
+
+  # don't require rod to get items from season spirits.
+  0b/4eb1/: db jumpifitemobtained,TREASURE_PUNCH
 
 ages:
   # initiate all these events without requiring essences:

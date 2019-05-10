@@ -13,11 +13,6 @@ var agesFixedMutables = map[string]Mutable{
 	"maku tree stairs": MutableString(Addr{0x15, 0x6bf3},
 		"\x84\x05\x00", "\xc4\x15\xc3"),
 
-	// change harp interaction to allow sub ID
-	"create harp with sub ID": MutableString(Addr{0x0b, 0x6825},
-		"\xcd\xef\x3a\xc0\x36\x60\x2c\x36\x11",
-		"\xc5\x01\x00\x11\xcd\xd4\x27\xc1\xc0"),
-
 	// never spawn hide and seek event in fairies' woods. apparently you're
 	// frozen if you enter on an animal?
 	"don't spawn fairies": MutableByte(Addr{0x0a, 0x52bf}, 0xc2, 0xc3),
@@ -36,26 +31,6 @@ var agesFixedMutables = map[string]Mutable{
 	// and remove the usual soldier event (taken to palace etc)
 	"remove soldier event": MutableByte(Addr{0x12, 0x58f5}, 0xcd, 0xc9),
 
-	// ricky shouldn't leave after talking to tingle
-	"end tingle script": MutableString(Addr{0x0c, 0x7e2a},
-		"\x91\x03\xd1\x02", "\xbe\x7d\xfe\xba"),
-	// and check fake treasure ID 13 (slingshot) instead of island chart
-	"tingle fake ID": MutableByte(Addr{0x0c, 0x7e00}, 0x54, 0x13),
-	// ignore satchel level when talking to tingle for second item
-	"tingle satchel check": MutableByte(Addr{0x0b, 0x75c5}, 0x3d, 0xaf),
-	// dig up item on south shore regardless of ricky state
-	"south shore ricky check 1": MutableByte(Addr{0x04, 0x6b77}, 0x0a, 0x00),
-	"south shore ricky check 2": MutableByte(Addr{0x04, 0x6b7b}, 0x06, 0x00),
-	"south shore ricky check 3": MutableByte(Addr{0x0a, 0x5e2f}, 0x12, 0x00),
-	"south shore ricky check 4": MutableByte(Addr{0x0a, 0x5e33}, 0x0e, 0x00),
-	// and check fake treasure ID 08 (magnet gloves) instead of ricky's gloves
-	"south shore fake ID": MutableStrings([]Addr{{0x04, 0x6b7d},
-		{0x0a, 0x5e35}}, "\x48", "\x08"),
-
-	// don't refill seeds when getting item from tingle
-	"tingle seed refill": MutableString(Addr{0x0c, 0x7e7d},
-		"\xe0\x0c\x18", "\xc4\x80\x7e"),
-
 	// remove storm event that washes link up on crescent island without raft,
 	// and the event where tokays steal link's items
 	"remove storm event": MutableByte(Addr{0x0b, 0x52e3}, 0xc2, 0xc3),
@@ -69,31 +44,10 @@ var agesFixedMutables = map[string]Mutable{
 	"tokay bomb hut": MutableString(Addr{0x12, 0x638f},
 		"\xf2\x6b\x0a\x28", "\xf3\x57\x41\xff"),
 
-	// check for fake treasure ID 07 (rod) so that non-unique items can be sold
-	"shop fake ID": MutableStrings([]Addr{{0x09, 0x4328}, {0x09, 0x42a5}},
-		"\x0e", "\x07"),
-
-	// remove flute item from shooting gallery prizes
-	"shooting gallery script": MutableString(Addr{0x15, 0x51d8},
-		"\xdf\x0e", "\xdf\x02"),
 	// prevent bridge-building foreman from setting flag 22 so that
 	// animal/flute event doesn't happen in fairies' woods
 	"bridge foreman script": MutableString(Addr{0x15, 0x75bf},
 		"\xb6\x22", "\xb6\xa2"),
-
-	// skip normal boomerang check in target carts, since EOB code handles it
-	"skip target carts boomerang check": MutableString(Addr{0x15, 0x66ae},
-		"\x20\x0b", "\x18\x0b"),
-	// and remove "boomerang" from random prizes
-	"target carts prize table": MutableString(Addr{0x15, 0x66e5},
-		"\x04\x04\x04", "\x03\x03\x03"),
-	// and don't give boomerang as a shooting gallery prize
-	"no goron gallery boomerang": MutableString(Addr{0x15, 0x52b6},
-		"\xdf\x06\xc3\x52", "\xc4\xc3\x52\x00"),
-
-	// trade lava juice without mermaid key
-	"trade lava juice without key": MutableString(Addr{0x15, 0x6879},
-		"\x30\x07", "\x30\x00"),
 
 	// stop d6 boss key chest from setting past boss key flag
 	"stop d6 boss key chest": MutableString(Addr{0x10, 0x793c},
@@ -120,32 +74,9 @@ var agesFixedMutables = map[string]Mutable{
 			"freely \x02\x77\x01"+ // freely through
 			"\x04\xdd!\x00"), // time!
 
-	// make tokay who gives iron shield always give the same item, and in a
-	// format compatible with lookupItemSpriteAddr.
-	"give hidden tokay item": MutableString(Addr{0x15, 0x5b35},
-		"\x06\x01\x0e\x01\xfa\xaf\xc6\xfe\x02",
-		"\x01\x01\x01\x78\x41\x4f\x37\x00\x00"),
-
 	// buy tokay trader's shield if you have scent seeds but not satchel
 	"tokay trader satchel check": MutableString(Addr{0x0a, 0x629c},
 		"\x30\x16", "\x30\x00"),
-
-	// game has zora scale palette in item gfx wrong for some reason
-	"fix zora scale palette": MutableByte(Addr{0x3f, 0x67d0}, 0x13, 0x43),
-
-	// check fake ID 1e (fool's ore) for symmetry city brother's item
-	"brother fake ID": MutableStrings([]Addr{{0x15, 0x77f0}, {0x15, 0x78f6}},
-		"\x4c", "\x1e"),
-
-	// check fake ID 10 (nothing) for king zora's item
-	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x46, 0x10),
-
-	// check fake ID 12 (nothing) for first goron dance
-	"check dance 1 fake ID": MutableStrings([]Addr{{0x0c, 0x67e0},
-		{0x0c, 0x685a}, {0x0c, 0x6983}}, "\x5b", "\x12"),
-	// check fake ID 14 (nothing) for goron dance with letter of introduction
-	"check dance 2 fake ID": MutableStrings([]Addr{{0x0c, 0x67d8},
-		{0x0c, 0x6852}, {0x0c, 0x697b}}, "\x44", "\x14"),
 
 	// add railing to ricky nuun screen and move worker off the "roof"
 	"ricky nuun railing": MutableString(Addr{0x23, 0x718e},

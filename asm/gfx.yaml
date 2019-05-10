@@ -1,0 +1,17 @@
+seasons:
+  # give the noble sword (lost woods pedestal) object OAM pointers compatible
+  # with normal treasure graphics.
+  14/53d7/: dw 5719
+  14/55a7/: dw 684f
+
+  # give items that don't normally appear as treasure interactions entries in
+  # the treasure graphics table.
+  3f/67b4/: db 5d,0c,13 # member's card
+  3f/67b7/: db 65,14,33 # treasure map
+  3f/67ba/: db 60,14,00 # fool's ore
+  3f/67c6/: db 5d,10,26 # rare peach stone
+  3f/67c9/: db 65,0c,23 # ribbon
+
+ages:
+  # fix the zora scale object palette (to match inventory?)
+  3f/67d0/: db 43

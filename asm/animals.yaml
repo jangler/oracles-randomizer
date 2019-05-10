@@ -40,6 +40,9 @@ ages:
   0c/7234/: db ormemory; dw wRememberedCompanionId; db 00
   3f/6d00/: db 00
 
+  # remove flute from lynna shooting gallery prizes.
+  15/51d8/: db jumpifitemobtained,TREASURE_PUNCH
+
   # vanilla bug(?): moosh appears on the screen south of cheval's grave after
   # visiting the cheval's grave screen, whether you've obtained him or not.
   12/5c5d/: db ff
