@@ -48,8 +48,7 @@ spool swamp cave:
   treasure: square jewel
   room: 0x04fa
   maptile: 0xc2
-  ids: [{bank: 0x0b, addr: 0x7395}] # not a real chest!
-  subids: [{bank: 0x0b, addr: 0x7399}]
+  chest: true
 moblin keep:
   treasure: piece of heart
   room: 0x005b
@@ -165,14 +164,12 @@ dry eyeglass lake, west cave:
   treasure: rupees, 100
   room: 0x04fb
   maptile: 0xa7
-  ids: [{bank: 0x0b, addr: 0x73a1}] # not a real chest!
-  subids: [{bank: 0x0b, addr: 0x73a5}]
+  chest: true
 woods of winter, 2nd cave:
   treasure: gasha seed
   room: 0x0512
   maptile: 0x7e
-  ids: [{bank: 0x0a, addr: 0x5003}] # not a real chest!
-  subids: [{bank: 0x0a, addr: 0x5008}]
+  chest: true
 shop, 20 rupees:
   treasure: bombs, 10
   room: 0x03a6

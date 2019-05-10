@@ -227,6 +227,9 @@ func Verify(b []byte, game int) []error {
 			"rare peach stone", "ribbon":
 		// seasons flutes
 		case "dimitri's flute", "moosh's flute":
+		// seasons linked chests
+		case "spool swamp cave", "woods of winter, 2nd cave",
+			"dry eyeglass lake, west cave":
 		// seasons misc.
 		case "temple of seasons", "blaino prize", "mt. cucco, platform cave",
 			"diving spot outside D4":
