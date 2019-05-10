@@ -1,0 +1,53 @@
+seasons:
+  # end maku seed cutscene as soon as link gets the seed.
+  0b/71ec/: db setglobalflag,19,enableinput,scriptend
+
+  # end northen peak cutscene as soon as the barrier is broken.
+  0b/79f1/: db setglobalflag,1d,enableinput,scriptend
+
+  # skip the great furnace dance. for some reason jumpalways doesn't work here.
+  14/4b15/: db jumpifc6xxset,92,ff; dw c33f
+
+  # change destination of initial transition in pirate cutscene.
+  15/5a1c/: db 80,e2,00,66 # wWarpDestVariables, in order?
+
+ages:
+  # skip ralph cutscene in front of palace.
+  08/6e61/: and a,00
+  09/5152/: jp interactionDelete # for the intangible guard
+
+  # delete cutscene in nayru's basement after it inits.
+  0b/684a/: jp objectDelete_useActiveObjectType
+
+  # edit out most of the nayru cutscene on maku tree screen.
+  0c/56e3/: dw e856 # reverse endian addr
+  0c/56e8/: db loadscript,15; dw 54f0
+  0c/771a/: dw 3a77 # reverse endian addr
+  0c/773e/: db writememory; dw wCutsceneState; db 0c; dw 6277
+  0c/570f/: db movedown,5c
+  12/7738/: db 36,02,48,50,ff # bye ralph
+  15/54f3/: db setdisabledobjectsto11,setanimation,02,delay30frames
+  15/54f8/: dw 0657 # reverse endian addr
+
+  # skip maku tree cutscene after moblin keep / bomb flower cutscene.
+  0c/77dc/: db orroomflag,40,enableinput,scriptend
+
+  # remove ralph cutscene in black tower.
+  12/6668/: db ff
+
+  # skip twinrova cutscene and additional dialouge after getting maku seed.
+  15/7298/: db setglobalflag,35,setglobalflag,13,enableinput,scriptend
+
+  # skip cutscene when talking to worker outside black tower.
+  15/601f/: db jumpalways; dw c322
+
+  # skip some of the maku tree's intro text (after saving her in the past).
+  15/7230/: db jumpalways; dw c376
+  15/7273/: db enableinput,enableinput,enableinput,enableinput # lol
+
+  # skip tokkey's dance.
+  15/7674/: db jumpalways; dw c360
+  15/76d5/: db jumpalways; dw c36e
+
+  # skip a text box in the symmetry city brothers' script
+  15/7910/: db showtext,04; dw 1c79 # reverse endian addr

@@ -21,30 +21,6 @@ var agesFixedMutables = map[string]Mutable{
 		"\xcd\xef\x3a\xc0\x36\x60\x2c\x36\x11",
 		"\xc5\x01\x00\x11\xcd\xd4\x27\xc1\xc0"),
 
-	// delete cutscene interaction in nayru's basement after it's done
-	// initializing
-	"delete harp cutscene": MutableString(Addr{0x0b, 0x684a},
-		"\xc3\xe0\x23", "\xc3\xe0\x21"),
-
-	// edit out most of nayru cutscene on maku tree scene
-	"remove ralph from maku screen": MutableString(Addr{0x12, 0x7738},
-		"\x37\x04\x56\x38\x36", "\x36\x02\x48\x50\xff"),
-	"nayru cut 1": MutableWord(Addr{0x0c, 0x56e3}, 0x91d0, 0x56e8),
-	"nayru cut 2": MutableWord(Addr{0x0c, 0x56ea}, 0xce54, 0xf054),
-	"nayru cut 3": MutableWord(Addr{0x15, 0x54f8}, 0x91d0, 0x5706),
-	"nayru cut 4": MutableWord(Addr{0x0c, 0x771a}, 0x8f01, 0x773a),
-	"nayru cut 5": MutableString(Addr{0x0c, 0x773e},
-		"\xd7\x50\xe1\x55\x51", "\x91\x03\xcc\x0c\x77\x62"),
-	"nayru walk distance": MutableByte(Addr{0x0c, 0x5710}, 0x4c, 0x5c),
-	"nayru disable objs": MutableString(Addr{0x15, 0x54f3},
-		"\x8f\x02\xf6\xba", "\xba\x8f\x02\xf6"),
-
-	// remove tokkey cutscene
-	"skip tokkey's dance": MutableString(Addr{0x15, 0x7674},
-		"\xe4\xf0\x8b", "\xc4\x60\xc3"),
-	"skip tokkey's reinit": MutableString(Addr{0x15, 0x76d5},
-		"\xe4\xff\x8d", "\xc4\x6e\xc3"),
-
 	// never spawn hide and seek event in fairies' woods. apparently you're
 	// frozen if you enter on an animal?
 	"don't spawn fairies": MutableByte(Addr{0x0a, 0x52bf}, 0xc2, 0xc3),
@@ -149,15 +125,6 @@ var agesFixedMutables = map[string]Mutable{
 	"stop d6 boss key chest": MutableString(Addr{0x10, 0x793c},
 		"\xc3\x0e\x02", "\xc9\x00\x00"),
 
-	// skip ralph cutscene entering palace
-	"skip ralph at palace": MutableString(Addr{0x08, 0x6e61},
-		"\xcb\x6f", "\xe6\x00"),
-	// and get rid of the intangible guard standing outside
-	"remove intangible guard": MutableByte(Addr{0x09, 0x5152}, 0xc2, 0xc3),
-
-	// remove ralph/veran cutscene outside veran fight
-	"skip ralph at veran": MutableByte(Addr{0x12, 0x6668}, 0xf2, 0xff),
-
 	// fix pickup text for harp tunes
 	"tune of echoes text": MutableString(Addr{0x1e, 0x4c3e}, "\x49",
 		"\x02\x06"+ // You got the
@@ -192,24 +159,6 @@ var agesFixedMutables = map[string]Mutable{
 	// game has zora scale palette in item gfx wrong for some reason
 	"fix zora scale palette": MutableByte(Addr{0x3f, 0x67d0}, 0x13, 0x43),
 
-	// skip some of the maku tree's intro text (after saving her in the past)
-	"abbreviate maku tree text": MutableString(Addr{0x15, 0x7230},
-		"\x98\x48\xf6", "\xc4\x76\xc3"),
-	"remove maku tree post-item text": MutableString(Addr{0x15, 0x7273},
-		"\x98\x61\xf6\xbe", "\xbe\xbe\xbe\xbe"),
-
-	// skip twinrova cutscene and additional dialouge after getting maku seed
-	"skip twinrova cutscene": MutableString(Addr{0x15, 0x7298},
-		"\xf6\x91\x04\xcc\x0e\xd5", "\xb6\x35\xb6\x13\xbe\x00"),
-
-	// remove maku tree cutscene after moblin keep / bomb flower cutscene
-	"remove moblin keep maku tree": MutableString(Addr{0x0c, 0x77dc},
-		"\xbd\x91\xae\xcb", "\xb1\x40\xbe\x00"),
-
-	// skip cutscene when talking to worker outside black tower
-	"skip first black tower cutscene": MutableString(Addr{0x15, 0x601f},
-		"\xe0\xa9\x5f", "\xc4\x22\xc3"),
-
 	// check fake ID 1e (fool's ore) for symmetry city brother's item
 	"brother fake ID": MutableStrings([]Addr{{0x15, 0x77f0}, {0x15, 0x78f6}},
 		"\x4c", "\x1e"),
@@ -219,10 +168,6 @@ var agesFixedMutables = map[string]Mutable{
 	// and change wives' state based on whether brother's item was obtained
 	"wife ignore flag": MutableString(Addr{0x15, 0x784f},
 		"\xb5\x29", "\xdf\x1e"),
-
-	// skip a text box in the symmetry city brothers' script
-	"skip brother text": MutableString(Addr{0x15, 0x7910},
-		"\x98\x02\xbd\xf6", "\x98\x04\x79\x1c"),
 
 	// check fake ID 10 (nothing) for king zora's item
 	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x46, 0x10),

@@ -50,6 +50,7 @@ defines:
   getThisRoomFlags: 0x197d
   openMenu: 0x1ab0
   lookupCollisionTable: 0x1e1f
+  objectDelete_useActiveObjectType: 0x21e0
   objectCopyPosition: 0x2242
   objectCreateInteraction: 0x24c5
   createTreasure: 0x27d4
@@ -57,6 +58,7 @@ defines:
   setGlobalFlag: 0x31f9
   fadeInFromWhite: 0x3299
   incMakuTreeState: 0x3e53
+  interactionDelete: 0x3b05
 
   # rom 02
   _closeMenu: 0x4fba

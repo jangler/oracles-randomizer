@@ -40,7 +40,9 @@ defines:
 
   # script commands
   scriptend: 0x00
+  loadscript: 0x83
   jumptable_memoryaddress: 0x87
+  setanimation: 0x8f
   writememory: 0x91
   ormemory: 0x92
   rungenericnpc: 0x97
@@ -53,6 +55,7 @@ defines:
   writec6xx: 0xb4
   setglobalflag: 0xb6
   setdisabledobjectsto00: 0xb9
+  setdisabledobjectsto11: 0xba
   disableinput: 0xbd
   enableinput: 0xbe
   callscript: 0xc0
@@ -66,6 +69,8 @@ defines:
   jumpifitemobtained: 0xdf
   asm15: 0xe0
   initcollisions: 0xeb
+  movedown: 0xee
+  delay30frames: 0xf6
 
   # hram
   hRomBank: 0x97
@@ -84,6 +89,7 @@ defines:
   wRingMenu_mode: 0xcbd3
   wIsLinkedGame: 0xcc01
   wMenuDisabled: 0xcc02
+  wCutsceneState: 0xcc03
   wCutsceneTrigger: 0xcc04
   wScreenOffsetY: 0xcd08
   wScreenShakeCounterY: 0xcd18

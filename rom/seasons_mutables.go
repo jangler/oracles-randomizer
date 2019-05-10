@@ -82,24 +82,12 @@ var seasonsFixedMutables = map[string]Mutable{
 	"noble sword second item":  MutableByte(Addr{0x0b, 0x641a}, 0xde, 0xc1),
 	"master sword second item": MutableByte(Addr{0x0b, 0x6421}, 0xde, 0xc1),
 
-	// end maku seed script as soon as link gets the seed.
-	"abbreviate maku seed cutscene": MutableString(Addr{0x0b, 0x71ec},
-		"\xe1\x23\x61\x01", "\xb6\x19\xbe\x00"),
-	// end northen peak barrier cutscene as soon as the barrier is broken.
-	"abbreviate barrier cutscene": MutableString(Addr{0x0b, 0x79f1},
-		"\x88\x18\x50\xf8", "\xb6\x1d\xbe\x00"),
-
 	// bank 0d
 
 	// grow seeds in all seasons
 	"seeds grow always": MutableByte(Addr{0x0d, 0x68b5}, 0xb8, 0xbf),
 
 	// bank 14 (scripts loaded into c3xx block, also some OAM pointers?)
-
-	// skip the great furnace dance. for some reason command c4 (jumpalways)
-	// doesn't work here, so a jump based on c6xx is used instead.
-	"skip furnace dance": MutableString(Addr{0x14, 0x4b15},
-		"\xe4\x31\xd7\x7d\x80", "\xb3\x92\xff\x3f\xc3"),
 
 	// change the noble sword's animation pointers to match regular items
 	"noble sword anim 1": MutableWord(Addr{0x14, 0x53d7}, 0x5959, 0x1957),
@@ -111,10 +99,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
 	"move d8 magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
-
-	// change destination of initial transition in pirate cutscene.
-	"pirate warp": MutableString(Addr{0x15, 0x5a1c},
-		"\x81\x74\x00\x42", "\x80\xe2\x00\x66"),
 
 	// zero normal rod text.
 	"no rod text": MutableString(Addr{0x15, 0x70be},
