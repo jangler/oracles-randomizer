@@ -1,0 +1,26 @@
+seasons:
+  # remove interactions from jewel caves so that they act as normal chests,
+  # meaning no linked changes. this also removes the vire event.
+  11/6ca2/: db ff # swamp
+  11/6ca8/: db ff # lake
+  11/6d0f/: db ff # woods
+
+  # allow screen transitions away from linked great moblin event, since seeds
+  # could be uncompleteable without a way to kill the moblins.
+  14/5247/: db writememory; dw wDisableTransitions; db 00
+
+ages:
+  # start linked games with shield instead of sword.
+  07/41c0/: db 8a,01,9a,06
+
+  # keep past zora guarding sea of storms in linked game.
+  0b/61cc/: nop; nop; nop
+  # and don't place a whirlpool on their tile.
+  04/63ab/: db 19
+
+  # move linked great fairy outside D2 present out of the entrance.
+  12/5d40/: db 38,68
+
+  # remove interaction from sea of storms past cave so that the chest acts as a
+  # normal chest, meaning no linked changes.
+  12/6421/: db ff
