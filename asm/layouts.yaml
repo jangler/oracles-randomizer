@@ -44,3 +44,8 @@ seasons:
   # remove some snow outside d7 for the same reason - but off the right ledge,
   # not in front of the stairs.
   24/7910/: db 2b,a0,b9,2b
+
+ages:
+  # put a "return bush" for long hook across from syrup's shop.
+  23/7ea0/: db 27,c8
+  23/7ead/: db 22

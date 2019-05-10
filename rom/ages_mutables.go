@@ -192,12 +192,6 @@ var agesFixedMutables = map[string]Mutable{
 	// game has zora scale palette in item gfx wrong for some reason
 	"fix zora scale palette": MutableByte(Addr{0x3f, 0x67d0}, 0x13, 0x43),
 
-	// put a bush on the other side of the syrup's shop screen so that long
-	// hook isn't a softlock
-	"syrup screen fix 1": MutableString(Addr{0x23, 0x7ea0},
-		"\x01\x27", "\x27\xc8"),
-	"syrup screen fix 2": MutableByte(Addr{0x23, 0x7ead}, 0x27, 0x22),
-
 	// skip some of the maku tree's intro text (after saving her in the past)
 	"abbreviate maku tree text": MutableString(Addr{0x15, 0x7230},
 		"\x98\x48\xf6", "\xc4\x76\xc3"),
