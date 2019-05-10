@@ -588,13 +588,21 @@ func initSeasonsEOB() {
 	collectModeD4Pool := r.appendToBank(0x15, "d4 pool collect mode",
 		"\x3e\x04\xb8\xc0\x3e\x75\xb9\xc0"+ // cp room
 			"\x1e\x54\x1a\xd6\x01\xd8\xaf\x3e\x49\xc9")
+	// use default mode for first three chests in the D5 armos room, so that
+	// room flag 5 doesn't get set.
+	collectModeD5Armos := r.appendToBank(0x15, "d5 armos collect mode",
+		"\x3e\x04\xb8\xc0\x3e\x91\xb9\xc0"+ // cp room
+			"\xfa\xd8\xcf\xfe\x04\x3e\x38\xc8"+ // cp chest number
+			"\xaf\x7b\xc9") // default
 	collectModeLookup := r.appendToBank(0x15, "collection mode lookup func",
 		"\x5f\xc5\xe5\xfa\x49\xcc\x47\xfa\x4c\xcc\x4f\x21"+collectModeTable+
-			"\x2a\xfe\xff\x28\x22\xb8\x20\x1b\x2a\xb9\x20\x18"+
-			"\xcd"+collectModeD4Pool+"\x28\x17\xcd"+collectModeDiver+"\x28\x12"+
+			"\x2a\xfe\xff\x28\x22\xb8\x20\x20\x2a\xb9\x20\x1d"+
+			"\xcd"+collectModeD5Armos+"\x28\x1c"+
+			"\xcd"+collectModeD4Pool+"\x28\x17"+
+			"\xcd"+collectModeDiver+"\x28\x12"+
 			"\xcd"+collectModeD7Key+"\x28\x0d"+
 			"\xcd"+collectModeMakuSeed+"\x28\x08"+
-			"\x2a\x18\x05\x23\x23\x18\xd9\x7b\xe1\xc1\xc9")
+			"\x2a\x18\x05\x23\x23\x18\xd4\x7b\xe1\xc1\xc9")
 
 	// upgrade normal items (interactions with ID 60) as necessary when they're
 	// created, and set collection mode.
