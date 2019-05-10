@@ -9,16 +9,16 @@ The format is:
 
 ```
 common:
-  (bank/)?address/label: code
+  bank/(address/)?label: code
   ...
 floating:
   label: code
   ...
 seasons:
-  (bank/)?address/label: code
+  bank/(address/)?label: code
   ...
 ages:
-  (bank/)?address/label: code
+  bank/(address/)?label: code
   ...
 ```
 
