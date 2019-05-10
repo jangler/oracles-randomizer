@@ -480,8 +480,8 @@ appends:
       ld e,COLLECT_DIVE
       ret
 
-  # don't override mode for first three items in the d5 armos room, so that
-  # they don't set the "item obtained" room flag.
+  # the first three chests opened in the d5 armos room shouldn't set the room's
+  # "item obtained" flag.
   - collectD5Armos: |
       ld a,(cfd8)
       cp a,04
