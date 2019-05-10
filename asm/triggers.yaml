@@ -1,0 +1,62 @@
+# this file is for removal of triggers that would arbitrarily restrict the
+# game, and in some cases even cause softlocks. essences are the biggest
+# culprit, but there are some other weird things, like not/having a certain
+# item or not/having a certain global flag set (that wouldn't logically cause
+# whatever event that it causes).
+
+seasons:
+  # initiate all these events without requiring essences:
+  09/4e36/: jp 4eab             # spawn moosh
+  0f/7428/: jr nz,00            # ^
+  09/4e40/: or a,57             # spawn dimitri
+  09/4e72/: or a,4f             # spawn ricky
+  09/7750/: or a,01             # stock member's card
+  0a/4be9/: ld a,TREASURE_PUNCH # master diver
+  0a/4bf4/: cp a,00             # ^
+  0a/4f8a/: cp a,00             # old man (round jewel)
+
+  # dimitri also won't spawn normally if you have flippers.
+  09/4e55/: ld a,TREASURE_CANE_OF_SOMARIA
+
+  # maku seed: count number of essences, not highest numbered essence.
+  09/7da3/: call getNumSetBits; jr 01
+
+ages:
+  # initiate all these events without requiring essences:
+  04/6a44/: nop        # clear rubble from rolling ridge base present
+  04/6a35/: nop        # open "new" rolling ridge present tunnel
+  09/5815/: jr z,00    # dimitri
+  0a/4bb2/: jr z,00    # ^
+  09/51f8/: xor a; ret # open palace
+  09/6567/: nop        # move impa out of the way to nayru's house
+  0a/4d7a/: jr 01      # rafton
+  15/6261/: jr c,00    # comedian (trade quest is gone now though)
+
+  # moosh (and ghinis) should appear in the graveyard without:
+  05/78b8/: xor a; xor a; xor a # not having cheval rope
+  0a/4b92/: xor a; xor a; xor a # ^
+  0a/4ba3/: xor a; xor a; xor a # ^
+  0a/4b85/: or a,01 # essences
+  0a/5943/: or a,01 # ^
+  0a/5dd5/: or a,01 # ^
+  0a/4b8c/: or a,01 # talking to cheval
+  0a/594b/: or a,01 # ^
+  0a/5ddc/: or a,01 # ^
+
+  # sell 150 rupee item from lynna city shop from the start
+  09/4333/: nop; nop
+
+  # skip essence checks for goron elder event.
+  0c/6b1d/: db jumpifmemoryset; dw cddb; db 00
+  0c/6b83/: db jumpifmemoryset; dw cddb; db 00
+  15/735d/: db jumpifmemoryset; dw cddb; db 00
+
+  # change conditions for rafton 2's script based on whether the player has the
+  # magic oar, not on essences. doesn't matter since trade quest is gone now.
+  15/6b42/: db jumpifmemoryeq; dw wTradeItem; db 09
+
+  # change symmetry city wives' state based on brother's item obtained, not
+  # global flag (fool's ore is used as a "dummy" item id set by the brothers.
+  15/784f/: db jumpifitemobtained,TREASURE_FOOLS_ORE
+  # don't change symmetry city brothers' state if the tuni nut has been placed.
+  15/78e5/: db jumpifroomflagset,02

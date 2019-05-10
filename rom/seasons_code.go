@@ -33,6 +33,7 @@ func newSeasonsRomBanks() *romBanks {
 			"/asm/layouts.yaml",
 			"/asm/linked.yaml",
 			"/asm/rings.yaml",
+			"/asm/triggers.yaml",
 
 			"/asm/text.yaml", // must go last
 		})

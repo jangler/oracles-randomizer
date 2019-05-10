@@ -47,27 +47,6 @@ var seasonsFixedMutables = map[string]Mutable{
 
 	// banks 08-0a (most interaction-specific non-script behavior?)
 
-	// initiate all these events without requiring essences
-	"ricky spawn check":         MutableByte(Addr{0x09, 0x4e72}, 0xcb, 0xf6),
-	"dimitri essence check":     MutableByte(Addr{0x09, 0x4e40}, 0xcb, 0xf6),
-	"dimitri flipper check":     MutableByte(Addr{0x09, 0x4e56}, 0x2e, 0x04),
-	"master essence check 1":    MutableByte(Addr{0x0a, 0x4bf5}, 0x02, 0x00),
-	"master essence check 2":    MutableByte(Addr{0x0a, 0x4bea}, 0x40, 0x02),
-	"round jewel essence check": MutableByte(Addr{0x0a, 0x4f8b}, 0x05, 0x00),
-
-	// moosh won't spawn in the mountains if you have the wrong number of
-	// essences. bit 6 seems related to this, and needs to be zero too?
-	"skip moosh essence check 1": MutableByte(Addr{0x0f, 0x7429}, 0x03, 0x00),
-	"skip moosh essence check 2": MutableByte(Addr{0x09, 0x4e36}, 0xca, 0xc3),
-
-	// sell member's card in subrosian market before completing d3
-	"member's card essence check": MutableWord(Addr{0x09, 0x7750},
-		0xcb57, 0xf601),
-
-	// count number of essences, not highest numbered essence.
-	"maku seed check 1": MutableByte(Addr{0x09, 0x7da4}, 0xea, 0x76),
-	"maku seed check 2": MutableByte(Addr{0x09, 0x7da6}, 0x30, 0x18),
-
 	// stop the hero's cave event from giving you a second wooden sword that
 	// you use to spin slash
 	"wooden sword second item": MutableByte(Addr{0x0a, 0x7bb9}, 0x05, 0x3f),

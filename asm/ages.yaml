@@ -20,6 +20,7 @@ defines:
   wSeedSatchelLevel: 0xc6b4
   wFluteIcon: 0xc6b5
   wEssencesObtained: 0xc6bf
+  wTradeItem: 0xc6c0
   wActiveRing: 0xc6cb
   wRingBoxLevel: 0xc6cc
   wMakuTreeState: 0xc6e8

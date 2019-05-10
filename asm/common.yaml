@@ -15,6 +15,7 @@ defines:
   SND_SOLVEPUZZLE_2: 0x5b
   TREASURE_SHIELD: 0x01
   TREASURE_PUNCH: 0x02
+  TREASURE_CANE_OF_SOMARIA: 0x04
   TREASURE_SWORD: 0x05
   TREASURE_BOOMERANG: 0x06
   TREASURE_MAGNET_GLOVES: 0x08
@@ -61,6 +62,7 @@ defines:
   callscript: 0xc0
   retscript: 0xc1
   jumpalways: 0xc4
+  jumpifmemoryset: 0xc7
   jumpifmemoryeq: 0xcb
   checkcollidedwithlink_onground: 0xd0
   setcounter1: 0xd7

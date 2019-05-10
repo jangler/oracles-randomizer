@@ -7,9 +7,6 @@ var agesFixedMutables = map[string]Mutable{
 	"second portal active": MutableString(Addr{0x10, 0x7d57},
 		"\x38\x05", "\x38\x00"),
 
-	// allow access to nayru's house check from start
-	"move impa": MutableByte(Addr{0x09, 0x6567}, 0xd0, 0x00),
-
 	// prevent stairs disappearing in event where maku tree is attacked by
 	// moblins, preventing softlock if player gets there with seed satchel and
 	// no sword or something stupid
@@ -31,11 +28,6 @@ var agesFixedMutables = map[string]Mutable{
 	// and center him on a tile so you can't get stuck in a currents loop
 	"d2 guy position": MutableByte(Addr{0x12, 0x611c}, 0x4e, 0x48),
 
-	// clear rubble from rolling ridge base present without d4 essence
-	"clear rubble": MutableByte(Addr{0x04, 0x6a44}, 0xc8, 0x00),
-	// open rolling ridge present tunnel without completing d5
-	"open tunnel": MutableByte(Addr{0x04, 0x6a35}, 0xc8, 0x00),
-
 	// cut off the end of deku forest soldier's text so it makes sense when
 	// giving item
 	"soldier text end": MutableByte(Addr{0x23, 0x6656}, 0x01, 0x00),
@@ -43,21 +35,6 @@ var agesFixedMutables = map[string]Mutable{
 	"soldier text position": MutableByte(Addr{0x23, 0x65d8}, 0x22, 0x00),
 	// and remove the usual soldier event (taken to palace etc)
 	"remove soldier event": MutableByte(Addr{0x12, 0x58f5}, 0xcd, 0xc9),
-
-	// skip essence checks for the following events:
-	"rafton essence check":    MutableByte(Addr{0x0a, 0x4d7a}, 0x20, 0x18),
-	"dimitri essence check 1": MutableByte(Addr{0x09, 0x5816}, 0x13, 0x00),
-	"dimitri essence check 2": MutableByte(Addr{0x0a, 0x4bb3}, 0xc8, 0x00),
-	"open palace": MutableString(Addr{0x09, 0x51f8},
-		"\x3e\x40", "\xaf\xc9"),
-
-	// moosh should always appear in the graveyard
-	"moosh essence checks": MutableStrings([]Addr{{0x0a, 0x5dd5},
-		{0x0a, 0x5943}, {0x0a, 0x4b85}}, "\xcb\x4f", "\xf6\x01"),
-	"moosh rope checks": MutableStrings([]Addr{{0x05, 0x78b8}, {0x0a, 0x4b92},
-		{0x0a, 0x4ba3}}, "\xcd\x48\x17", "\xaf\xaf\xaf"),
-	"moosh cheval checks": MutableStrings([]Addr{{0x0a, 0x5ddc},
-		{0x0a, 0x594b}, {0x0a, 0x4b8c}}, "\xcb\x77", "\xf6\x01"),
 
 	// ricky shouldn't leave after talking to tingle
 	"end tingle script": MutableString(Addr{0x0c, 0x7e2a},
@@ -92,9 +69,6 @@ var agesFixedMutables = map[string]Mutable{
 	"tokay bomb hut": MutableString(Addr{0x12, 0x638f},
 		"\xf2\x6b\x0a\x28", "\xf3\x57\x41\xff"),
 
-	// sell 150 rupee item from lynna city shop from the start
-	"shop flute flag check": MutableString(Addr{0x09, 0x4333},
-		"\x28\x04", "\x00\x00"),
 	// check for fake treasure ID 07 (rod) so that non-unique items can be sold
 	"shop fake ID": MutableStrings([]Addr{{0x09, 0x4328}, {0x09, 0x42a5}},
 		"\x0e", "\x07"),
@@ -162,12 +136,6 @@ var agesFixedMutables = map[string]Mutable{
 	// check fake ID 1e (fool's ore) for symmetry city brother's item
 	"brother fake ID": MutableStrings([]Addr{{0x15, 0x77f0}, {0x15, 0x78f6}},
 		"\x4c", "\x1e"),
-	// and don't change the brothers' state if the tuni nut has been placed
-	"brother ignore flag": MutableString(Addr{0x15, 0x78e5},
-		"\xb5\x29", "\xb0\x02"),
-	// and change wives' state based on whether brother's item was obtained
-	"wife ignore flag": MutableString(Addr{0x15, 0x784f},
-		"\xb5\x29", "\xdf\x1e"),
 
 	// check fake ID 10 (nothing) for king zora's item
 	"king zora fake ID": MutableByte(Addr{0x0b, 0x548a}, 0x46, 0x10),
@@ -179,11 +147,6 @@ var agesFixedMutables = map[string]Mutable{
 	"check dance 2 fake ID": MutableStrings([]Addr{{0x0c, 0x67d8},
 		{0x0c, 0x6852}, {0x0c, 0x697b}}, "\x44", "\x14"),
 
-	// skip essence checks for goron elder event
-	"skip goron elder essence checks": MutableStrings(
-		[]Addr{{0x0c, 0x6b1d}, {0x0c, 0x6b83}, {0x15, 0x735d}},
-		"\xc7\xdb\xcd\x80", "\xc7\xdb\xcd\x00"),
-
 	// add railing to ricky nuun screen and move worker off the "roof"
 	"ricky nuun railing": MutableString(Addr{0x23, 0x718e},
 		"\x69\x07\x07\x6a", "\x72\x50\x50\x73"),
@@ -194,15 +157,6 @@ var agesFixedMutables = map[string]Mutable{
 	"portal sign text": MutableString(Addr{0x23, 0x583f}, "\x0c\x20\x02\x18",
 		"\x0c\x00C\x04\x23s only.\x01"+ // Currents only.
 			" -\x04\x56Management\x00"), // -The Management
-
-	// skip essence check for comedian
-	"comedian essence check": MutableString(Addr{0x15, 0x6261},
-		"\x38\x02", "\x38\x00"),
-
-	// change conditions for rafton 2's script based on whether the player has
-	// the magic oar, not on essences.
-	"rafton script check": MutableString(Addr{0x15, 0x6b42},
-		"\xc7\xdb\xcd\x80", "\xcb\xc0\xc6\x09"),
 
 	// vanilla bug: compass doesn't show D6 boss key chest.
 	"fix d6 compass": MutableByte(Addr{0x01, 0x4eea}, 0x14, 0x34),
