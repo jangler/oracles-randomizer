@@ -41,6 +41,7 @@ defines:
   # script commands
   scriptend: 0x00
   jumptable_memoryaddress: 0x87
+  writememory: 0x91
   ormemory: 0x92
   rungenericnpc: 0x97
   showtext: 0x98

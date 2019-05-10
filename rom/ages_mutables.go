@@ -172,11 +172,6 @@ var agesFixedMutables = map[string]Mutable{
 	// remove ralph/veran cutscene outside veran fight
 	"skip ralph at veran": MutableByte(Addr{0x12, 0x6668}, 0xf2, 0xff),
 
-	// remove special interaction from cave in sea of storms past so that the
-	// chest can be a normal chest
-	"normalize sea of storms chest": MutableByte(Addr{0x12, 0x6421},
-		0xf1, 0xff),
-
 	// fix pickup text for harp tunes
 	"tune of echoes text": MutableString(Addr{0x1e, 0x4c3e}, "\x49",
 		"\x02\x06"+ // You got the
@@ -286,20 +281,6 @@ var agesFixedMutables = map[string]Mutable{
 
 	// vanilla bug: compass doesn't show D6 boss key chest.
 	"fix d6 compass": MutableByte(Addr{0x01, 0x4eea}, 0x14, 0x34),
-
-	// start linked games with shield instead of sword.
-	"start linked with shield": MutableString(Addr{0x07, 0x41c0},
-		"\x8a\x05\x9a\x24", "\x8a\x01\x9a\x06"),
-
-	// move linked great fairy outside D2 present out of the entrance.
-	"move linked great fairy": MutableString(Addr{0x12, 0x5d40},
-		"\x28\x58", "\x38\x68"),
-
-	// keep past zora guarding sea of storms in linked game.
-	"keep past zora guard": MutableString(Addr{0x0b, 0x61cc},
-		"\xc2\x05\x3b", "\x00\x00\x00"),
-	// and don't place a whirlpool on their tile.
-	"remove linked whirlpool": MutableByte(Addr{0x04, 0x63ab}, 0xe9, 0x19),
 }
 
 var agesVarMutables = map[string]Mutable{
