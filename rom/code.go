@@ -12,10 +12,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// this file is for mutables that go at the end of banks. each should be a
-// self-contained unit (i.e. don't jr to anywhere outside the byte string) so
-// that they can be appended automatically with respect to their size.
-
 var globalRomBanks *romBanks // TODO: get rid of this with the other globals
 
 // return e.g. "\x2d\x79" for 0x792d
@@ -51,64 +47,45 @@ type AsmReplacement struct {
 	Old, New string
 }
 
-var codeMutables = map[string]Mutable{}
+var codeMutables = map[string]*MutableRange{}
 
-// appendToBank appends the given data to the end of the given bank, associates
-// it with the given name, and returns the address of the data as a string such
-// as "\xc8\x3e" for 0x3ec8. it panics if the end of the bank is zero or if the
-// data would overflow the bank.
-func (r *romBanks) appendToBank(bank byte, name, data string) string {
-	eob := r.endOfBank[bank]
-
-	if eob == 0 {
-		panic(fmt.Sprintf("end of bank %02x undefined for %s", bank, name))
-	}
-
-	if eob+uint16(len(data)) > 0x8000 {
-		panic(fmt.Sprintf("not enough space for %s in bank %02x", name, bank))
-	}
-
-	codeMutables[name] = MutableString(Addr{bank, eob}, "", data)
-	r.assembler.define(name, eob)
-	r.endOfBank[bank] += uint16(len(data))
-
-	return addrString(eob)
-}
-
-// appendAsm acts as appendToBank, but by translating a block of asm.
-func (r *romBanks) appendAsm(bank byte, name, asm string) {
+// designates a position at which the translated asm will overwrite whatever
+// else is there, and associates it with a given label (or a generated label if
+// the given one is blank). if the replacement extends beyond the end of the
+// bank, the EOB point is moved to the end of the replacement. if the bank
+// offset of `addr` is zero, the replacement will start at the existing EOB
+// point.
+func (r *romBanks) replaceAsm(addr Addr, label, asm string) {
 	if data, err := r.assembler.compile(asm); err == nil {
-		r.appendToBank(bank, name, data)
+		r.replaceRaw(addr, label, data)
 	} else {
-		exitWithAsmError(name, err)
+		exitWithAsmError(label, err)
 	}
 }
 
-// replace replaces the old data at the given address with the new data, and
-// associates the change with the given name. actual replacement will fail at
-// runtime if the old data does not match the original data in the ROM.
-func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
-	codeMutables[name] = MutableString(Addr{bank, offset}, old, new)
-}
-
-// replaceAsm acts as replace, but treating the old and new strings as assembly
-// code instead of machine code.
-func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, new string) {
-	if name == "" {
-		name = fmt.Sprintf("replacement at %02x:%04x", bank, offset)
+// as replaceAsm, but interprets the data as a literal byte string.
+func (r *romBanks) replaceRaw(addr Addr, label, data string) {
+	if addr.offset == 0 {
+		addr.offset = r.endOfBank[addr.bank]
 	}
 
-	var err error
-	old, err = r.assembler.compile(old)
-	if err != nil {
-		exitWithAsmError(name+" (old)", err)
-	}
-	new, err = r.assembler.compile(new)
-	if err != nil {
-		exitWithAsmError(name+" (new)", err)
+	if label == "" {
+		label = fmt.Sprintf("replacement at %02x:%04x", addr.bank, addr.offset)
 	}
 
-	r.replace(bank, offset, name, old, new)
+	if end := addr.offset + uint16(len(data)); end > r.endOfBank[addr.bank] {
+		if end > 0x8000 {
+			panic(fmt.Sprintf("not enough space for %s in bank %02x",
+				label, addr.bank))
+		}
+		r.endOfBank[addr.bank] = end
+	}
+
+	codeMutables[label] = &MutableRange{
+		Addrs: []Addr{addr},
+		New:   []byte(data),
+	}
+	r.assembler.define(label, addr.offset)
 }
 
 // exit with an error code and an assembler error message.
@@ -282,14 +259,14 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 	// write EOB asm using placeholders for labels, in order to get real addrs
 	for item := range iterBankItems(ads) {
 		for name, body := range item.item {
-			r.appendAsm(item.bank, name, body)
+			r.replaceAsm(Addr{item.bank, 0}, name, body)
 		}
 	}
 	for _, slice := range slices {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
 			if addr, label := parseMetalabel(k); addr.offset == 0 {
-				r.appendAsm(addr.bank, label, v)
+				r.replaceAsm(Addr{addr.bank, 0}, label, v)
 			}
 		}
 	}
@@ -300,14 +277,14 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 	// rewrite EOB asm, using real addresses for labels
 	for item := range iterBankItems(ads) {
 		for name, body := range item.item {
-			r.appendAsm(item.bank, name, body)
+			r.replaceAsm(Addr{item.bank, 0}, name, body)
 		}
 	}
 	for _, slice := range slices {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
 			if addr, label := parseMetalabel(k); addr.offset == 0 {
-				r.appendAsm(addr.bank, label, v)
+				r.replaceAsm(addr, label, v)
 			}
 		}
 	}
@@ -316,7 +293,7 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 	for _, ad := range ads {
 		for bank, items := range ad.Replaces {
 			for _, item := range items {
-				r.replaceAsm(bank, item.Addr, "", item.Old, item.New)
+				r.replaceAsm(Addr{bank, item.Addr}, "", item.New)
 			}
 		}
 	}
@@ -324,7 +301,7 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
 			if addr, label := parseMetalabel(k); addr.offset != 0 {
-				r.replaceAsm(addr.bank, addr.offset, label, "", v)
+				r.replaceAsm(addr, label, v)
 			}
 		}
 	}
@@ -358,7 +335,7 @@ func (r *romBanks) applyAsmFiles(game int, oldPaths, newPaths []string) {
 // ShowAsm writes the disassembly of the specified symbol to the given
 // io.Writer.
 func ShowAsm(symbol string, w io.Writer) error {
-	m := codeMutables[symbol].(*MutableRange)
+	m := codeMutables[symbol]
 	s, err := globalRomBanks.assembler.decompile(string(m.New))
 	if err != nil {
 		return err
@@ -405,7 +382,7 @@ func applyText(b []byte, game string) {
 		panic(err)
 	}
 	for label, rawText := range textMap[game] {
-		if mut, ok := codeMutables[label].(*MutableRange); ok {
+		if mut, ok := codeMutables[label]; ok {
 			mut.New = processText(rawText)
 			mut.Mutate(b)
 		} else {

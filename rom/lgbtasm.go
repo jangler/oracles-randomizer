@@ -78,8 +78,3 @@ func (asm *assembler) decompile(s string) (string, error) {
 func (asm *assembler) define(symbol string, value uint16) {
 	asm.defs.RawSetString(symbol, lua.LNumber(value))
 }
-
-// retrieve a value from the defines table.
-func (asm *assembler) getDef(symbol string) uint16 {
-	return uint16(asm.defs.RawGetString(symbol).(lua.LNumber))
-}

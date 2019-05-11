@@ -403,7 +403,7 @@ func findVanillaROMs(
 		}
 
 		// check file data
-		if rom.IsUS(b) && rom.IsVanilla(b) {
+		if rom.IsNonJP(b) && rom.IsVanilla(b) {
 			if rom.IsAges(b) {
 				ages = info.Name()
 			} else {
@@ -439,7 +439,7 @@ func readGivenROM(filename string) ([]byte, int, error) {
 		return nil, rom.GameNil,
 			fmt.Errorf("%s is not an oracles ROM", filename)
 	}
-	if !rom.IsUS(b) {
+	if !rom.IsNonJP(b) {
 		return nil, rom.GameNil,
 			fmt.Errorf("%s is a JP ROM; only US is supported", filename)
 	}

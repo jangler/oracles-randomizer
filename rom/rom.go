@@ -42,9 +42,9 @@ func Init(b []byte, game int) {
 	ItemSlots = LoadSlots(b, game)
 
 	if game == GameAges {
-		initAgesEOB()
+		globalRomBanks = newAgesRomBanks()
 	} else {
-		initSeasonsEOB()
+		globalRomBanks = newSeasonsRomBanks()
 	}
 
 	for _, slot := range ItemSlots {
@@ -81,7 +81,7 @@ func IsSeasons(b []byte) bool {
 	return string(b[0x134:0x13d]) == "ZELDA DIN"
 }
 
-func IsUS(b []byte) bool {
+func IsNonJP(b []byte) bool {
 	return b[0x014a] != 0
 }
 
@@ -118,36 +118,36 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 
 	if game == GameSeasons {
 		northHoronSeason :=
-			codeMutables["northHoronSeason"].(*MutableRange).New[0]
-		codeMutables["initialSeason"].(*MutableRange).New =
+			codeMutables["northHoronSeason"].New[0]
+		codeMutables["initialSeason"].New =
 			[]byte{0x2d, northHoronSeason}
 		westernCoastSeason :=
-			codeMutables["westernCoastSeason"].(*MutableRange).New[0]
-		codeMutables["seasonAfterPirateCutscene"].(*MutableRange).New =
+			codeMutables["westernCoastSeason"].New[0]
+		codeMutables["seasonAfterPirateCutscene"].New =
 			[]byte{westernCoastSeason}
 
 		setTreasureMapData()
 
 		// explicitly set these addresses and IDs after their functions
-		codeAddr := codeMutables["setStarOreIds"].(*MutableRange).Addrs[0]
+		codeAddr := codeMutables["setStarOreIds"].Addrs[0]
 		ItemSlots["subrosia seaside"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["subrosia seaside"].subIDAddrs[0].offset = codeAddr.offset + 5
-		codeAddr = codeMutables["setHardOreIds"].(*MutableRange).Addrs[0]
+		codeAddr = codeMutables["setHardOreIds"].Addrs[0]
 		ItemSlots["great furnace"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["great furnace"].subIDAddrs[0].offset = codeAddr.offset + 5
-		codeAddr = codeMutables["script_diverGiveItem"].(*MutableRange).Addrs[0]
+		codeAddr = codeMutables["script_diverGiveItem"].Addrs[0]
 		ItemSlots["master diver's reward"].idAddrs[0].offset = codeAddr.offset + 1
 		ItemSlots["master diver's reward"].subIDAddrs[0].offset = codeAddr.offset + 2
-		codeAddr = codeMutables["createMtCuccoItem"].(*MutableRange).Addrs[0]
+		codeAddr = codeMutables["createMtCuccoItem"].Addrs[0]
 		ItemSlots["mt. cucco, platform cave"].idAddrs[0].offset = codeAddr.offset + 2
 		ItemSlots["mt. cucco, platform cave"].subIDAddrs[0].offset = codeAddr.offset + 1
 	} else {
 		// explicitly set these addresses and IDs after their functions
-		mut := codeMutables["script_soldierGiveItem"].(*MutableRange)
+		mut := codeMutables["script_soldierGiveItem"]
 		slot := ItemSlots["deku forest soldier"]
 		slot.idAddrs[0].offset = mut.Addrs[0].offset + 13
 		slot.subIDAddrs[0].offset = mut.Addrs[0].offset + 14
-		mut = codeMutables["script_giveTargetCartsSecondPrize"].(*MutableRange)
+		mut = codeMutables["script_giveTargetCartsSecondPrize"]
 		codeAddr := mut.Addrs[0]
 		ItemSlots["target carts 2"].idAddrs[1].offset = codeAddr.offset + 1
 		ItemSlots["target carts 2"].subIDAddrs[1].offset = codeAddr.offset + 2
@@ -259,18 +259,15 @@ func setSeedData(game int) {
 	if game == GameSeasons {
 		for _, name := range []string{"satchelInitialSeeds",
 			"seedTypeCheckedForCollection"} {
-			mut := codeMutables[name].(*MutableRange)
-			mut.New[0] = 0x20 + seedType
+			codeMutables[name].New[0] = 0x20 + seedType
 		}
 
 		// slingshot starting seeds
-		codeMutables["editGainLoseItemsTables"].(*MutableRange).New[1] =
-			0x20 + seedType
+		codeMutables["editGainLoseItemsTables"].New[1] = 0x20 + seedType
 
 		for _, name := range []string{
 			"satchelInitialSelection", "slingshotInitialSelection"} {
-			mut := codeMutables[name].(*MutableRange)
-			mut.New[1] = seedType
+			codeMutables[name].New[1] = seedType
 		}
 
 		for _, names := range [][]string{
@@ -281,9 +278,8 @@ func setSeedData(game int) {
 			{"sunken city seed tree", "sunkenCityTreeMapIcon"},
 			{"tarm ruins seed tree", "tarmRuinsTreeMapIcon"},
 		} {
-			mut := codeMutables[names[1]].(*MutableRange)
 			id := ItemSlots[names[0]].Treasure.id
-			mut.New[0] = 0x15 + id
+			codeMutables[names[1]].New[0] = 0x15 + id
 		}
 	} else {
 		// set high nybbles (seed types) of seed tree interactions
@@ -309,14 +305,11 @@ func setSeedData(game int) {
 			ItemSlots["zora village tree"])
 
 		// satchel and shooter come with south lynna tree seeds
-		mut := codeMutables["satchelInitialSeeds"].(*MutableRange)
-		mut.New[0] = 0x20 + seedType
-		mut = codeMutables["seedShooterGiveSeeds"].(*MutableRange)
-		mut.New[6] = 0x20 + seedType
+		codeMutables["satchelInitialSeeds"].New[0] = 0x20 + seedType
+		codeMutables["seedShooterGiveSeeds"].New[6] = 0x20 + seedType
 		for _, name := range []string{"satchelInitialSelection",
 			"shooterInitialSelection"} {
-			mut := codeMutables[name].(*MutableRange)
-			mut.New[1] = seedType
+			codeMutables[name].New[1] = seedType
 		}
 
 		// set map icons
@@ -327,12 +320,12 @@ func setSeedData(game int) {
 			codeName := inflictCamelCase(name) + "MapIcon"
 			if name == "south lynna tree" || name == "zora village tree" {
 				for _, n := range []string{"1", "2"} {
-					mut := codeMutables[codeName+n].(*MutableRange)
-					mut.New[0] = 0x15 + ItemSlots[name].Treasure.id
+					codeMutables[codeName+n].New[0] =
+						0x15 + ItemSlots[name].Treasure.id
 				}
 			} else {
-				mut := codeMutables[codeName].(*MutableRange)
-				mut.New[0] = 0x15 + ItemSlots[name].Treasure.id
+				codeMutables[codeName].New[0] =
+					0x15 + ItemSlots[name].Treasure.id
 			}
 		}
 	}
@@ -347,19 +340,18 @@ func inflictCamelCase(s string) string {
 // fill table. initial table is blank, since it's created before items are
 // placed.
 func setRoomTreasureData(game int) {
-	mut := codeMutables["roomTreasures"].(*MutableRange)
-	mut.New = []byte(makeRoomTreasureTable())
+	codeMutables["roomTreasures"].New = []byte(makeRoomTreasureTable())
 
 	if game == GameSeasons {
 		t := ItemSlots["d7 zol button"].Treasure
-		codeMutables["aboveD7ZolButtonId"].(*MutableRange).New = []byte{t.id}
-		codeMutables["aboveD7ZolButtonSubid"].(*MutableRange).New = []byte{t.subID}
+		codeMutables["aboveD7ZolButtonId"].New = []byte{t.id}
+		codeMutables["aboveD7ZolButtonSubid"].New = []byte{t.subID}
 	}
 }
 
 // regenerate collect mode table to accommodate changes based on contents.
 func setCollectModeData(game int) {
-	mut := codeMutables["collectModeTable"].(*MutableRange)
+	mut := codeMutables["collectModeTable"]
 	if game == GameSeasons {
 		mut.New = []byte(makeSeasonsCollectModeTable())
 	} else {
@@ -368,18 +360,16 @@ func setCollectModeData(game int) {
 }
 
 // sets the high nybble (seed type) of a seed tree interaction in ages.
-func setTreeNybble(subID Mutable, slot *MutableSlot) {
-	mut := subID.(*MutableRange)
-	mut.New[0] = (mut.New[0] & 0x0f) | (slot.Treasure.id << 4)
+func setTreeNybble(subid *MutableRange, slot *MutableSlot) {
+	subid.New[0] = (subid.New[0] & 0x0f) | (slot.Treasure.id << 4)
 }
 
 // set the locations of the sparkles for the jewels on the treasure map.
 func setTreasureMapData() {
 	for _, name := range []string{"round", "pyramid", "square", "x-shaped"} {
 		label := strings.ReplaceAll(name, "-s", "S") + "JewelCoords" // lol
-		mut := codeMutables[label].(*MutableRange)
 		slot := lookupItemSlot(name + " jewel")
-		mut.New[0] = slot.mapCoords
+		codeMutables[label].New[0] = slot.mapCoords
 	}
 }
 
@@ -516,7 +506,7 @@ func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 }
 
 func setBossItemAddrs() {
-	table := codeMutables["bossItemTable"].(*MutableRange)
+	table := codeMutables["bossItemTable"]
 
 	for i := uint16(1); i <= 8; i++ {
 		slot := ItemSlots[fmt.Sprintf("d%d boss", i)]
@@ -674,7 +664,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 			b[dest.exitOffset+1] = src.vanillaEntryData[1]
 
 			// also enable removal of the stair tiles
-			mut := codeMutables["d2AltEntranceTileSubs"].(*MutableRange)
+			mut := codeMutables["d2AltEntranceTileSubs"]
 			mut.New[0], mut.New[5] = 0x00, 0x00
 		}
 	}

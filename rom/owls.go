@@ -20,8 +20,8 @@ func getOwlIds(game int) map[string]byte {
 // updates the owl statue text data based on the given hints. does not mutate
 // anything.
 func SetOwlData(owlHints map[string]string, game int) {
-	table := codeMutables["owlTextOffsets"].(*MutableRange)
-	text := codeMutables["owlText"].(*MutableRange)
+	table := codeMutables["owlTextOffsets"]
+	text := codeMutables["owlText"]
 	builder := new(strings.Builder)
 	addr := text.Addrs[0].offset
 	owlTextIds := getOwlIds(game)

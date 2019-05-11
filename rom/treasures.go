@@ -47,11 +47,6 @@ func (t Treasure) ID() byte {
 	return t.id
 }
 
-// SubID returns the item sub ID of the treasure.
-func (t Treasure) SubID() byte {
-	return t.subID
-}
-
 // Bytes returns a slice of consecutive bytes of treasure data, as they would
 // appear in the ROM.
 func (t Treasure) Bytes() []byte {

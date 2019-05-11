@@ -1,7 +1,6 @@
 package rom
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 )
@@ -16,46 +15,6 @@ type Mutable interface {
 type MutableRange struct {
 	Addrs    []Addr
 	Old, New []byte
-}
-
-// MutableByte returns a special case of MutableRange with a range of a single
-// byte.
-func MutableByte(addr Addr, old, new byte) *MutableRange {
-	return &MutableRange{
-		Addrs: []Addr{addr},
-		Old:   []byte{old},
-		New:   []byte{new},
-	}
-}
-
-// MutableWord returns a special case of MutableRange with a range of a two
-// bytes.
-func MutableWord(addr Addr, old, new uint16) *MutableRange {
-	return &MutableRange{
-		Addrs: []Addr{addr},
-		Old:   []byte{byte(old >> 8), byte(old)},
-		New:   []byte{byte(new >> 8), byte(new)},
-	}
-}
-
-// MutableString returns a MutableRange constructed from the bytes in two
-// strings.
-func MutableString(addr Addr, old, new string) *MutableRange {
-	return &MutableRange{
-		Addrs: []Addr{addr},
-		Old:   bytes.NewBufferString(old).Bytes(),
-		New:   bytes.NewBufferString(new).Bytes(),
-	}
-}
-
-// MutableStrings returns a MutableRange constructed from the bytes in two
-// strings, at multiple addresses.
-func MutableStrings(addrs []Addr, old, new string) *MutableRange {
-	return &MutableRange{
-		Addrs: addrs,
-		Old:   bytes.NewBufferString(old).Bytes(),
-		New:   bytes.NewBufferString(new).Bytes(),
-	}
 }
 
 // Mutate replaces bytes in its range.
@@ -86,8 +45,7 @@ func (mr *MutableRange) Check(b []byte) error {
 // SetMusic sets music on or off in the modified ROM. By default, it is off.
 func SetMusic(music bool) {
 	if music {
-		mut := codeMutables["filterMusic"].(*MutableRange)
-		mut.New[3] = 0x18
+		codeMutables["filterMusic"].New[3] = 0x18
 	}
 }
 
@@ -95,23 +53,22 @@ func SetMusic(music bool) {
 // on.
 func SetTreewarp(treewarp bool) {
 	if !treewarp {
-		mut := codeMutables["treeWarp"].(*MutableRange)
-		mut.New[5] = 0x18
+		codeMutables["treeWarp"].New[5] = 0x18
 	}
 }
 
 // SetAnimal sets the flute type and Natzu region type based on a companion
 // number 1 to 3.
 func SetAnimal(companion int) {
-	codeMutables["animalRegion"].(*MutableRange).New =
+	codeMutables["animalRegion"].New =
 		[]byte{byte(companion + 0x0a)}
-	codeMutables["flutePalette"].(*MutableRange).New =
+	codeMutables["flutePalette"].New =
 		[]byte{byte(0x10*(4-companion) + 3)}
 }
 
 // key = area name (as in asm/vars.yaml), id = season index (spring -> winter).
 func SetSeason(key string, id byte) {
-	codeMutables[key].(*MutableRange).New[0] = id
+	codeMutables[key].New[0] = id
 }
 
 // get a collated map of all mutables, *except* for treasures which do not
@@ -120,6 +77,7 @@ func SetSeason(key string, id byte) {
 func getAllMutables() map[string]Mutable {
 	slotMutables := make(map[string]Mutable)
 	treasureMutables := make(map[string]Mutable)
+	otherMutables := make(map[string]Mutable, len(codeMutables))
 	for k, v := range ItemSlots {
 		if v.Treasure == nil {
 			log.Fatalf("treasure for %s is nil", k)
@@ -129,11 +87,14 @@ func getAllMutables() map[string]Mutable {
 		}
 		slotMutables[k] = v
 	}
+	for k, v := range codeMutables {
+		otherMutables[k] = v
+	}
 
 	mutableSets := []map[string]Mutable{
 		treasureMutables,
 		slotMutables,
-		codeMutables,
+		otherMutables,
 	}
 
 	// initialize master map w/ adequate capacity

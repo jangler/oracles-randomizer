@@ -17,9 +17,9 @@ func newAgesRomBanks() *romBanks {
 
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
-	r.appendToBank(0x06, "collectModeTable", makeAgesCollectModeTable())
-	r.appendToBank(0x38, "roomTreasures", makeRoomTreasureTable())
-	r.appendToBank(0x3f, "owlTextOffsets", string(make([]byte, 0x14*2)))
+	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeAgesCollectModeTable())
+	r.replaceRaw(Addr{0x38, 0}, "roomTreasures", makeRoomTreasureTable())
+	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets", string(make([]byte, 0x14*2)))
 
 	r.applyAsmFiles(GameAges,
 		[]string{
@@ -43,10 +43,6 @@ func newAgesRomBanks() *romBanks {
 		})
 
 	return &r
-}
-
-func initAgesEOB() {
-	globalRomBanks = newAgesRomBanks()
 }
 
 // makes ages-specific additions to the collection mode table.
