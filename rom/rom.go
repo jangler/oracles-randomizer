@@ -340,7 +340,7 @@ func inflictCamelCase(s string) string {
 // fill table. initial table is blank, since it's created before items are
 // placed.
 func setRoomTreasureData(game int) {
-	codeMutables["roomTreasures"].New = []byte(makeRoomTreasureTable())
+	codeMutables["roomTreasures"].New = []byte(makeRoomTreasureTable(game))
 
 	if game == GameSeasons {
 		t := ItemSlots["d7 zol button"].Treasure

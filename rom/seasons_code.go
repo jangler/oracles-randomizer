@@ -18,7 +18,7 @@ func newSeasonsRomBanks() *romBanks {
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
 	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeSeasonsCollectModeTable())
-	r.replaceRaw(Addr{0x3f, 0}, "roomTreasures", makeRoomTreasureTable())
+	r.replaceRaw(Addr{0x3f, 0}, "roomTreasures", makeRoomTreasureTable(GameSeasons))
 	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets", string(make([]byte, 0x1e*2)))
 
 	r.applyAsmFiles(GameSeasons,

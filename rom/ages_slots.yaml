@@ -501,6 +501,7 @@ d5 boss:
 d6 present vire chest:
   treasure: flippers
   room: 0x0513
+  collect: chest
 d6 present spinner chest:
   treasure: d6 present small key
   room: 0x0514
@@ -640,6 +641,7 @@ d8 1F chest:
 d8 floor puzzle:
   treasure: bracelet
   room: 0x05a6
+  collect: chest
 d8 tile room:
   treasure: gasha seed
   room: 0x0591

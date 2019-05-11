@@ -12,7 +12,7 @@ defines:
 
   # wram
   wRememberedCompanionId: 0xcc24
-  wRickyState: 0xc647
+  wRickyState: 0xc646
   wDimitriState: 0xc647
   wAnimalTutorialFlags: 0xc649
   wDungeonBossKeys: 0xc682
@@ -128,20 +128,31 @@ appends:
       ret
 
   # d2: exit into the present if the past entrance is closed.
+  # d7: reset water level when exiting (see logic comments).
   - handleSpecialExits: |
       ld (wWarpDestIndex),a
       cp a,83
-      ret nz
+      jr nz,.next
       ld a,(c883) # room flags for d2 past entrance
       and a,80
-      ret nz
+      jr nz,.next
       ld a,(wWarpDestGroup)
       and a,0f
       cp a,01
-      ret nz
+      jr nz,.next
       ld a,(wWarpDestGroup)
       and a,f0
       ld (wWarpDestGroup),a
+      ret
+      .next
+      push bc
+      ld bc,5605
+      call compareRoom
+      jr nz,.notJabu
+      ld a,21
+      ld (wJabuWaterLevel),a
+      .notJabu
+      pop bc
       ret
 
   0x01:
@@ -344,24 +355,14 @@ appends:
       db 00,83,00,44,d7 # portal outside D2 present
       db ff
 
-  # treat the d2 present entrance like the d2 past entrance, and reset the
-  # water level when entering jabu (see logic comments).
+  # treat the d2 present entrance like the d2 past entrance.
   - handleSpecialEntrances: |
       push bc
       ld bc,8300
       call compareRoom
-      jr nz,.notD2
       pop bc
       ld a,01
-      ret
-      .notD2
-      ld bc,9002
-      call compareRoom
-      pop bc
-      jr nz,.notJabu
-      ld a,21
-      ld (wJabuWaterLevel),a
-      .notJabu
+      ret z
       ld a,(wActiveGroup)
       ret
 

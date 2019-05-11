@@ -18,7 +18,7 @@ func newAgesRomBanks() *romBanks {
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
 	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeAgesCollectModeTable())
-	r.replaceRaw(Addr{0x38, 0}, "roomTreasures", makeRoomTreasureTable())
+	r.replaceRaw(Addr{0x38, 0}, "roomTreasures", makeRoomTreasureTable(GameAges))
 	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets", string(make([]byte, 0x14*2)))
 
 	r.applyAsmFiles(GameAges,
