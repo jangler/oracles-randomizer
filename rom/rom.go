@@ -53,10 +53,6 @@ func Init(b []byte, game int) {
 		initAgesEOB()
 	} else {
 		initSeasonsEOB()
-
-		for k, v := range Seasons {
-			varMutables[k] = v
-		}
 	}
 
 	for _, slot := range ItemSlots {
@@ -129,10 +125,14 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 	}
 
 	if game == GameSeasons {
-		varMutables["initial season"].(*MutableRange).New =
-			[]byte{0x2d, Seasons["north horon season"].New[0]}
+		northHoronSeason :=
+			codeMutables["northHoronSeason"].(*MutableRange).New[0]
+		codeMutables["initialSeason"].(*MutableRange).New =
+			[]byte{0x2d, northHoronSeason}
+		westernCoastSeason :=
+			codeMutables["westernCoastSeason"].(*MutableRange).New[0]
 		codeMutables["seasonAfterPirateCutscene"].(*MutableRange).New =
-			[]byte{Seasons["western coast season"].New[0]}
+			[]byte{westernCoastSeason}
 
 		setTreasureMapData()
 
@@ -264,33 +264,32 @@ func setSeedData(game int) {
 	}
 
 	if game == GameSeasons {
-		for _, name := range []string{"satchel initial seeds",
-			"carry seeds in slingshot"} {
-			mut := varMutables[name].(*MutableRange)
+		for _, name := range []string{"satchelInitialSeeds",
+			"seedTypeCheckedForCollection"} {
+			mut := codeMutables[name].(*MutableRange)
 			mut.New[0] = 0x20 + seedType
 		}
 
 		// slingshot starting seeds
-		varMutables["edit gain/lose items tables"].(*MutableRange).New[1] =
+		codeMutables["editGainLoseItemsTables"].(*MutableRange).New[1] =
 			0x20 + seedType
 
 		for _, name := range []string{
-			"satchel initial selection", "slingshot initial selection"} {
-			mut := varMutables[name].(*MutableRange)
+			"satchelInitialSelection", "slingshotInitialSelection"} {
+			mut := codeMutables[name].(*MutableRange)
 			mut.New[1] = seedType
 		}
 
-		for _, name := range []string{
-			"horon village seed tree map icon",
-			"north horon seed tree map icon",
-			"woods of winter seed tree map icon",
-			"spool swamp seed tree map icon",
-			"sunken city seed tree map icon",
-			"tarm ruins seed tree map icon",
+		for _, names := range [][]string{
+			{"horon village seed tree", "horonVillageTreeMapIcon"},
+			{"north horon seed tree", "northHoronTreeMapIcon"},
+			{"woods of winter seed tree", "woodsOfWinterTreeMapIcon"},
+			{"spool swamp seed tree", "spoolSwampTreeMapIcon"},
+			{"sunken city seed tree", "sunkenCityTreeMapIcon"},
+			{"tarm ruins seed tree", "tarmRuinsTreeMapIcon"},
 		} {
-			mut := varMutables[name].(*MutableRange)
-			slotName := strings.Replace(name, " map icon", "", 1)
-			id := ItemSlots[slotName].Treasure.id
+			mut := codeMutables[names[1]].(*MutableRange)
+			id := ItemSlots[names[0]].Treasure.id
 			mut.New[0] = 0x15 + id
 		}
 	} else {
@@ -345,8 +344,9 @@ func setRoomTreasureData(game int) {
 	mut.New = []byte(makeRoomTreasureTable())
 
 	if game == GameSeasons {
-		mut := varMutables["above d7 zol button"].(*MutableSlot)
-		mut.Treasure = ItemSlots["d7 zol button"].Treasure
+		t := ItemSlots["d7 zol button"].Treasure
+		codeMutables["aboveD7ZolButtonId"].(*MutableRange).New = []byte{t.id}
+		codeMutables["aboveD7ZolButtonSubid"].(*MutableRange).New = []byte{t.subID}
 	}
 }
 
@@ -369,7 +369,8 @@ func setTreeNybble(subID Mutable, slot *MutableSlot) {
 // set the locations of the sparkles for the jewels on the treasure map.
 func setTreasureMapData() {
 	for _, name := range []string{"round", "pyramid", "square", "x-shaped"} {
-		mut := varMutables[name+" jewel coords"].(*MutableRange)
+		label := strings.ReplaceAll(name, "-s", "S") + "JewelCoords" // lol
+		mut := codeMutables[label].(*MutableRange)
 		slot := lookupItemSlot(name + " jewel")
 		mut.New[0] = slot.mapCoords
 	}

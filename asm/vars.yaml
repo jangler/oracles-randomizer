@@ -1,0 +1,68 @@
+# the items in this file don't usually change data themselves; instead they
+# track the locations of data which will be changed after randomization.
+
+seasons:
+  # horon village is random, natzu and desert are summer only, and goron
+  # mountain is winter only. northern peak doesn't matter (it might become
+  # spring after you beat the game). note that these names don't correspond 1:1
+  # with the names used on the overworld map, which aren't delineated based on
+  # season boundaries.
+  01/7e60/northHoronSeason: db SEASON_WINTER
+  01/7e61/easternSuburbsSeason: db SEASON_AUTUMN
+  01/7e62/woodsOfWinterSeason: db SEASON_SUMMER
+  01/7e63/spoolSwampSeason: db SEASON_AUTUMN
+  01/7e64/holodrumPlainSeason: db SEASON_SPRING
+  01/7e65/sunkenCitySeason: db SEASON_SUMMER # also mt. cucco
+  01/7e67/lostWoodsSeason: db SEASON_AUTUMN
+  01/7e68/tarmRuinsSeason: db SEASON_SPRING # north of lost woods
+  01/7e6b/westernCoastSeason: db SEASON_WINTER
+  01/7e6c/templeRemainsSeason: db SEASON_WINTER
+
+  # locations of sparkles on treasure map
+  02/6663/roundJewelCoords: db b5
+  02/6664/pyramidJewelCoords: db 1d
+  02/6665/squareJewelCoords: db c2
+  02/6666/xShapedJewelCoords: db f4
+
+  # map pop-up icons for seed trees
+  02/6c51/tarmRuinsTreeMapIcon: db 18
+  02/6c54/sunkenCityTreeMapIcon: db 18
+  02/6c57/northHoronTreeMapIcon: db 16
+  02/6c5a/spoolSwampTreeMapIcon: db 17
+  02/6c5d/woodsOfWinterTreeMapIcon: db 19
+  02/6c60/horonVillageTreeMapIcon: db 15
+
+  # set initial season correctly in the init variables (second byte).
+  07/4188/initialSeason: db 2d,00
+
+  # overwrite a couple of unimportant items in file initialization to determine
+  # the initial seed selection. first byte is low c6xx address, second is index.
+  07/418e/satchelInitialSelection: db be,00
+  07/419a/slingshotInitialSelection: db bf,00
+
+  # determines natzu landscape: 0b for ricky, 0c for dimitri, 0d for moosh.
+  0a/7fff/animalRegion: db 0b
+
+  # check for initial seed type rather than satchel to allow seed collection,
+  # so that it's possible with slingshot. TODO: this is a false positive if you
+  # obtained seeds from a source like d5 ember seed chest, subrosia market,
+  # frypolar bushes, etc that happens to match the horon village tree!
+  10/4b19/seedTypeCheckedForCollection: db 20
+
+  # for the item dropped in the room *above* the trampoline.
+  15/55d8/aboveD7ZolButtonId: db TREASURE_SMALL_KEY
+  15/55db/aboveD7ZolButtonSubid: db 03
+
+  # initial seeds in satchel
+  3f/453b/satchelInitialSeeds: db TREASURE_EMBER_SEEDS
+
+  # give the player seeds when they get the slingshot, and don't take the
+  # player's: fool's ore when they get feather, star ore when they get ribbon,
+  # or red and blue ore when they get hard ore (just zero the whole "lose
+  # items" table). one byte of this is changed in setSeedData() to change what
+  # type of seeds the slingshot gives.
+  3f/4543/editGainLoseItemsTables: db 13,20,20,00,00,00,00
+  3f/44ce/: ld hl,4547 # shift lose items table pointer
+
+  # 33 for ricky, 23 for dimitri, 13 for moosh (03 is strange flute)
+  3f/6747/flutePalette: db 03

@@ -91,8 +91,10 @@ func (r *romBanks) replace(bank byte, offset uint16, name, old, new string) {
 
 // replaceAsm acts as replace, but treating the old and new strings as assembly
 // code instead of machine code.
-func (r *romBanks) replaceAsm(bank byte, offset uint16, old, new string) {
-	name := fmt.Sprintf("replacement at %02x:%04x", bank, offset)
+func (r *romBanks) replaceAsm(bank byte, offset uint16, name, old, new string) {
+	if name == "" {
+		name = fmt.Sprintf("replacement at %02x:%04x", bank, offset)
+	}
 
 	var err error
 	old, err = r.assembler.compile(old)
@@ -312,15 +314,15 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 	for _, ad := range ads {
 		for bank, items := range ad.Replaces {
 			for _, item := range items {
-				r.replaceAsm(bank, item.Addr, item.Old, item.New)
+				r.replaceAsm(bank, item.Addr, "", item.Old, item.New)
 			}
 		}
 	}
 	for _, slice := range slices {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
-			if addr, _ := parseMetalabel(k); addr.offset != 0 {
-				r.replaceAsm(addr.bank, addr.offset, "", v)
+			if addr, label := parseMetalabel(k); addr.offset != 0 {
+				r.replaceAsm(addr.bank, addr.offset, label, "", v)
 			}
 		}
 	}

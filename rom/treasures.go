@@ -185,10 +185,6 @@ func LoadTreasures(b []byte, game int) map[string]*Treasure {
 		t.param = 0x0d
 		t.text = 0x3a
 		t.sprite = 0x23
-
-		// need to set this before Verify() is called
-		varMutables["above d7 zol button"].(*MutableSlot).Treasure =
-			m["d7 small key"]
 	} else {
 		// give strange flute ricky's flute text
 		m["ricky's flute"].text = 0x38

@@ -66,83 +66,10 @@ var seasonsFixedMutables = map[string]Mutable{
 			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
 }
 
-var seasonsVarMutables = map[string]Mutable{
-	// set initial season correctly in the init variables. this replaces
-	// null-terminating whoever's son's name, which *should* be zeroed anyway.
-	"initial season": MutableWord(Addr{0x07, 0x4188}, 0x0e00, 0x2d00),
+// TODO: get rid of this once ages is ready to
+var seasonsVarMutables = map[string]Mutable{}
 
-	// map pop-up icons for seed trees
-	"tarm ruins seed tree map icon":      MutableByte(Addr{0x02, 0x6c51}, 0x18, 0x18),
-	"sunken city seed tree map icon":     MutableByte(Addr{0x02, 0x6c54}, 0x18, 0x18),
-	"north horon seed tree map icon":     MutableByte(Addr{0x02, 0x6c57}, 0x16, 0x16),
-	"spool swamp seed tree map icon":     MutableByte(Addr{0x02, 0x6c5a}, 0x17, 0x17),
-	"woods of winter seed tree map icon": MutableByte(Addr{0x02, 0x6c5d}, 0x19, 0x19),
-	"horon village seed tree map icon":   MutableByte(Addr{0x02, 0x6c60}, 0x15, 0x15),
-
-	// locations of sparkles on treasure map
-	"round jewel coords":    MutableByte(Addr{0x02, 0x6663}, 0xb5, 0xb5),
-	"pyramid jewel coords":  MutableByte(Addr{0x02, 0x6664}, 0x1d, 0x1d),
-	"square jewel coords":   MutableByte(Addr{0x02, 0x6665}, 0xc2, 0xc2),
-	"x-shaped jewel coords": MutableByte(Addr{0x02, 0x6666}, 0xf4, 0xf4),
-
-	// the satchel should contain the type of seeds that grow on the horon
-	// village tree.
-	"satchel initial seeds": MutableByte(Addr{0x3f, 0x453b}, 0x20, 0x20),
-
-	// give the player seeds when they get the slingshot, and don't take the
-	// player's: fool's ore when they get feather, star ore when they get
-	// ribbon, or red and blue ore when they get hard ore (just zero the whole
-	// "lose items" table). one byte of this is changed in setSeedData() to
-	// change what type of seeds the slingshot gives.
-	"edit gain/lose items tables": MutableString(Addr{0x3f, 0x4543},
-		"\x00\x46\x45\x00\x52\x50\x51",
-		"\x13\x20\x20\x00\x00\x00\x00"),
-	"edit lose items table pointer": MutableByte(Addr{0x3f, 0x44cf},
-		0x44, 0x47),
-
-	// the correct type of seed needs to be selected by default, otherwise the
-	// player may be unable to use seeds when they only have one type. there
-	// could also be serious problems with the submenu when they *do* obtain a
-	// second type if the selection isn't either of them.
-	//
-	// this works by overwriting a couple of unimportant bytes in file
-	// initialization.
-	"satchel initial selection":   MutableWord(Addr{0x07, 0x418e}, 0xa210, 0xbe00),
-	"slingshot initial selection": MutableWord(Addr{0x07, 0x419a}, 0x2e02, 0xbf00),
-
-	// allow seed collection if you have a slingshot, by checking for the given
-	// initial seed type
-	"carry seeds in slingshot": MutableByte(Addr{0x10, 0x4b19}, 0x19, 0x20),
-
-	// 33 for ricky, 23 for dimitri, 13 for moosh
-	"flute palette": MutableByte(Addr{0x3f, 0x6747}, 0x03, 0x03),
-	// 0b for ricky, 0c for dimitri, 0d for moosh
-	"animal region": MutableByte(Addr{0x0a, 0x7fff}, 0x0a, 0x0b),
-
-	// for the item dropped in the room *above* the trampoline
-	"above d7 zol button": &MutableSlot{
-		idAddrs:    []Addr{{0x15, 0x55d8}},
-		subIDAddrs: []Addr{{0x15, 0x55db}},
-	},
-}
-
-var Seasons = map[string]*MutableRange{
-	// randomize default seasons (before routing). sunken city also applies to
-	// mt. cucco; eastern suburbs applies to the vertical part of moblin road
-	// but not the horizontal part. note that "tarm ruins" here refers only to
-	// the part beyond the lost woods.
-	//
-	// horon village is random, natzu and desert can only be summer, and goron
-	// mountain can only be winter. not sure about northern peak but it doesn't
-	// matter.
-	"north horon season":     MutableByte(Addr{0x01, 0x7e60}, 0x03, 0x03),
-	"eastern suburbs season": MutableByte(Addr{0x01, 0x7e61}, 0x02, 0x02),
-	"woods of winter season": MutableByte(Addr{0x01, 0x7e62}, 0x01, 0x01),
-	"spool swamp season":     MutableByte(Addr{0x01, 0x7e63}, 0x02, 0x02),
-	"holodrum plain season":  MutableByte(Addr{0x01, 0x7e64}, 0x00, 0x00),
-	"sunken city season":     MutableByte(Addr{0x01, 0x7e65}, 0x01, 0x01),
-	"lost woods season":      MutableByte(Addr{0x01, 0x7e67}, 0x02, 0x02),
-	"tarm ruins season":      MutableByte(Addr{0x01, 0x7e68}, 0x00, 0x00),
-	"western coast season":   MutableByte(Addr{0x01, 0x7e6b}, 0x03, 0x03),
-	"temple remains season":  MutableByte(Addr{0x01, 0x7e6c}, 0x03, 0x03),
+// key = area name (as in asm/vars.yaml), id = season index (spring -> winter).
+func SetSeason(key string, id byte) {
+	codeMutables[key].(*MutableRange).New[0] = id
 }

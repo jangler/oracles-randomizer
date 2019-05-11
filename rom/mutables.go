@@ -103,9 +103,9 @@ func SetTreewarp(treewarp bool) {
 // SetAnimal sets the flute type and Natzu region type based on a companion
 // number 1 to 3.
 func SetAnimal(companion int) {
-	varMutables["animal region"].(*MutableRange).New =
+	codeMutables["animalRegion"].(*MutableRange).New =
 		[]byte{byte(companion + 0x0a)}
-	varMutables["flute palette"].(*MutableRange).New =
+	codeMutables["flutePalette"].(*MutableRange).New =
 		[]byte{byte(0x10*(4-companion) + 3)}
 }
 

@@ -605,9 +605,9 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- "-- default seasons --"
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
-			for name, area := range rom.Seasons {
+			for area, id := range ri.Seasons {
 				c <- fmt.Sprintf("%-15s <- %s",
-					name[:len(name)-7], seasonsByID[int(area.New[0])])
+					area[:len(area)-7], seasonsByID[id])
 			}
 			close(c)
 		})
@@ -679,7 +679,10 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 	// set season data
 	if game == rom.GameSeasons {
 		for area, id := range ri.Seasons {
-			rom.Seasons[fmt.Sprintf("%s season", area)].New = []byte{id}
+			// dumb camel case transformation
+			key := fmt.Sprintf("%c%sSeason", area[0],
+				strings.ReplaceAll(strings.Title(area)[1:], " ", ""))
+			rom.SetSeason(key, id)
 		}
 	}
 
