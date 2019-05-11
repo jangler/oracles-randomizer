@@ -40,10 +40,8 @@ var dungeonNameRegexp = regexp.MustCompile(`^d[1-8]$`)
 func Init(b []byte, game int) {
 	if game == GameAges {
 		fixedMutables = agesFixedMutables
-		varMutables = agesVarMutables
 	} else {
 		fixedMutables = seasonsFixedMutables
-		varMutables = seasonsVarMutables
 	}
 
 	Treasures = LoadTreasures(b, game)
@@ -294,35 +292,35 @@ func setSeedData(game int) {
 		}
 	} else {
 		// set high nybbles (seed types) of seed tree interactions
-		setTreeNybble(varMutables["symmetry city tree sub ID"],
+		setTreeNybble(codeMutables["symmetryCityTreeSubId"],
 			ItemSlots["symmetry city tree"])
-		setTreeNybble(varMutables["south lynna present tree sub ID"],
+		setTreeNybble(codeMutables["southLynnaPresentTreeSubId"],
 			ItemSlots["south lynna tree"])
-		setTreeNybble(varMutables["crescent island tree sub ID"],
+		setTreeNybble(codeMutables["crescentIslandTreeSubId"],
 			ItemSlots["crescent island tree"])
-		setTreeNybble(varMutables["zora village present tree sub ID"],
+		setTreeNybble(codeMutables["zoraVillagePresentTreeSubId"],
 			ItemSlots["zora village tree"])
-		setTreeNybble(varMutables["rolling ridge west tree sub ID"],
+		setTreeNybble(codeMutables["rollingRidgeWestTreeSubId"],
 			ItemSlots["rolling ridge west tree"])
-		setTreeNybble(varMutables["ambi's palace tree sub ID"],
+		setTreeNybble(codeMutables["ambisPalaceTreeSubId"],
 			ItemSlots["ambi's palace tree"])
-		setTreeNybble(varMutables["rolling ridge east tree sub ID"],
+		setTreeNybble(codeMutables["rollingRidgeEastTreeSubId"],
 			ItemSlots["rolling ridge east tree"])
-		setTreeNybble(varMutables["south lynna past tree sub ID"],
+		setTreeNybble(codeMutables["southLynnaPastTreeSubId"],
 			ItemSlots["south lynna tree"])
-		setTreeNybble(varMutables["deku forest tree sub ID"],
+		setTreeNybble(codeMutables["dekuForestTreeSubId"],
 			ItemSlots["deku forest tree"])
-		setTreeNybble(varMutables["zora village past tree sub ID"],
+		setTreeNybble(codeMutables["zoraVillagePastTreeSubId"],
 			ItemSlots["zora village tree"])
 
 		// satchel and shooter come with south lynna tree seeds
-		mut := varMutables["satchel initial seeds"].(*MutableRange)
+		mut := codeMutables["satchelInitialSeeds"].(*MutableRange)
 		mut.New[0] = 0x20 + seedType
 		mut = codeMutables["seedShooterGiveSeeds"].(*MutableRange)
 		mut.New[6] = 0x20 + seedType
-		for _, name := range []string{"satchel initial selection",
-			"shooter initial selection"} {
-			mut := varMutables[name].(*MutableRange)
+		for _, name := range []string{"satchelInitialSelection",
+			"shooterInitialSelection"} {
+			mut := codeMutables[name].(*MutableRange)
 			mut.New[1] = seedType
 		}
 
@@ -331,10 +329,24 @@ func setSeedData(game int) {
 			"symmetry city tree", "south lynna tree", "zora village tree",
 			"rolling ridge west tree", "ambi's palace tree",
 			"rolling ridge east tree", "deku forest tree"} {
-			mut := varMutables[name+" map icon"].(*MutableRange)
-			mut.New[0] = 0x15 + ItemSlots[name].Treasure.id
+			codeName := inflictCamelCase(name) + "MapIcon"
+			if name == "south lynna tree" || name == "zora village tree" {
+				for _, n := range []string{"1", "2"} {
+					mut := codeMutables[codeName+n].(*MutableRange)
+					mut.New[0] = 0x15 + ItemSlots[name].Treasure.id
+				}
+			} else {
+				mut := codeMutables[codeName].(*MutableRange)
+				mut.New[0] = 0x15 + ItemSlots[name].Treasure.id
+			}
 		}
 	}
+}
+
+// converts e.g. "hello world" to "helloWorld". disgusting tbh
+func inflictCamelCase(s string) string {
+	return fmt.Sprintf("%c%s", s[0], strings.ReplaceAll(
+		strings.Title(strings.ReplaceAll(s, "'", "")), " ", "")[1:])
 }
 
 // fill table. initial table is blank, since it's created before items are
@@ -363,7 +375,7 @@ func setCollectModeData(game int) {
 // sets the high nybble (seed type) of a seed tree interaction in ages.
 func setTreeNybble(subID Mutable, slot *MutableSlot) {
 	mut := subID.(*MutableRange)
-	mut.New[0] = (mut.Old[0] & 0x0f) | (slot.Treasure.id << 4)
+	mut.New[0] = (mut.New[0] & 0x0f) | (slot.Treasure.id << 4)
 }
 
 // set the locations of the sparkles for the jewels on the treasure map.

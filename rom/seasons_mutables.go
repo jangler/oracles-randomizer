@@ -66,9 +66,6 @@ var seasonsFixedMutables = map[string]Mutable{
 			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
 }
 
-// TODO: get rid of this once ages is ready to
-var seasonsVarMutables = map[string]Mutable{}
-
 // key = area name (as in asm/vars.yaml), id = season index (spring -> winter).
 func SetSeason(key string, id byte) {
 	codeMutables[key].(*MutableRange).New[0] = id

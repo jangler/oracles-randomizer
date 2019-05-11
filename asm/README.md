@@ -32,8 +32,8 @@ Any of the sections can be omitted.
   be attached to its translated value, which will be appended to bank `02`.
 - A key of the form `02/56a1/` will overwrite the data at `02:56a1` with its
   translated value. Its label is empty, so it is "anonymous" and cannot be
-  referenced by other code. Non-empty labels are allowed but rarely used for
-  this type of item.
+  referenced by other code. Non-empty labels are also allowed, as in
+  `01/7e63/spoolSwampSeason`.
 - A key of the form `removeGashaNutRingText` means that the entire string is a
   label attached to its untranslated value, which is not assigned a location in
   the ROM. Another item can `/include removeGashaNutRingText` in order to use

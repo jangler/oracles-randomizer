@@ -53,7 +53,7 @@ seasons:
   15/55d8/aboveD7ZolButtonId: db TREASURE_SMALL_KEY
   15/55db/aboveD7ZolButtonSubid: db 03
 
-  # initial seeds in satchel
+  # initial seeds in satchel (set to match horon village tree)
   3f/453b/satchelInitialSeeds: db TREASURE_EMBER_SEEDS
 
   # give the player seeds when they get the slingshot, and don't take the
@@ -66,3 +66,42 @@ seasons:
 
   # 33 for ricky, 23 for dimitri, 13 for moosh (03 is strange flute)
   3f/6747/flutePalette: db 03
+
+ages:
+  # map pop-up icons for seed trees
+  02/6d05/crescentIslandTreeMapIcon: db 16
+  02/6d08/symmetryCityTreeMapIcon: db 18
+  02/6d0b/southLynnaTreeMapIcon1: db 15  # idr which is present/past
+  02/6d29/southLynnaTreeMapIcon2: db 15  # ^
+  02/6d0e/zoraVillageTreeMapIcon1: db 18 # ^
+  02/6d2f/zoraVillageTreeMapIcon2: db 18 # ^
+  02/6d20/rollingRidgeWestTreeMapIcon: db 17
+  02/6d23/ambisPalaceTreeMapIcon: db 17
+  02/6d26/rollingRidgeEastTreeMapIcon: db 19
+  02/6d2c/dekuForestTreeMapIcon: db 19
+
+  # 0b for ricky, 0c for dimitri, 0d for moosh
+  03/7fff/animalRegion: db 0d
+
+  # set default satchel and shooter selection based on south lynna tree.
+  # see equivalent seasons labels.
+  07/418e/satchelInitialSelection: db c4,00
+  07/4190/shooterInitialSelection: db c5,00
+
+  # seed tree types (differentl from in seasons; see ages_slots.yaml)
+  12/59a1/symmetryCityTreeSubId: db 35
+  12/59b8/crescentIslandTreeSubId: db 17
+  12/59bf/zoraVillagePresentTreeSubId: db 38
+  12/5ca4/southLynnaPresentTreeSubId: db 06
+  12/5e4d/rollingRidgeWestTreeSubId: db 29
+  12/5e5b/ambisPalaceTreeSubId: db 1a
+  12/5e62/southLynnaPastTreeSubId: db 0c
+  12/5e6f/zoraVillagePastTreeSubId: db 3e
+  12/5f46/rollingRidgeEastTreeSubId: db 5b
+  12/6101/dekuForestTreeSubId: db 4d
+
+  # initial seeds in satchel (set to match south lynna tree)
+  3f/453b/satchelInitialSeeds: db TREASURE_EMBER_SEEDS
+
+  # 33 for ricky, 23 for dimitri, 13 for moosh (03 is strange flute)
+  3f/6746/flutePalette: db 03

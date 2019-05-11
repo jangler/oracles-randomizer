@@ -114,11 +114,6 @@ func SetAnimal(companion int) {
 // different banks makes more sense.
 var fixedMutables map[string]Mutable
 
-// like the item slots, these are (usually) no-ops until the randomizer touches
-// them. these are also fixed, but generally need to have their values set
-// elsewhere in order to do anything.
-var varMutables map[string]Mutable
-
 // get a collated map of all mutables, *except* for treasures which do not
 // appear in the seed. this allows things like the three seasons flutes having
 // different data but the same address.
@@ -139,7 +134,6 @@ func getAllMutables() map[string]Mutable {
 		fixedMutables,
 		treasureMutables,
 		slotMutables,
-		varMutables,
 		codeMutables,
 	}
 
