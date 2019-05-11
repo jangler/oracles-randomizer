@@ -43,11 +43,11 @@ ages:
 
   # change harp (nayru's house?) interaction to allow subid.
   0b/6825/: |
-    push bc
-    ld bc,1100 # id/subid
-    call createTreasure
-    pop bc
-    ret nz
+      push bc
+      ld bc,1100 # id/subid
+      call createTreasure
+      pop bc
+      ret nz
 
   # ignore satchel level when talking to tingle for second item.
   0b/75c5/: xor a
@@ -67,13 +67,13 @@ ages:
   # make tokay who gives shield upgrade always give the same item, and in a
   # format compatible with lookupItemSprite.
   15/5b35/: |
-    ld bc,0101 # id/subid
-    ld a,b
-    ld b,c
-    ld c,a
-    scf
-    nop
-    nop
+      ld bc,0101 # id/subid
+      ld a,b
+      ld b,c
+      ld c,a
+      scf
+      nop
+      nop
 
   # trade lava juice without having the mermaid key.
   15/6879/: jr nc,00

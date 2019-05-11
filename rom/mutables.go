@@ -109,10 +109,10 @@ func SetAnimal(companion int) {
 		[]byte{byte(0x10*(4-companion) + 3)}
 }
 
-// these mutables have fixed addresses and don't reference other mutables. try
-// to generally order them by address, unless a grouping between mutables in
-// different banks makes more sense.
-var fixedMutables map[string]Mutable
+// key = area name (as in asm/vars.yaml), id = season index (spring -> winter).
+func SetSeason(key string, id byte) {
+	codeMutables[key].(*MutableRange).New[0] = id
+}
 
 // get a collated map of all mutables, *except* for treasures which do not
 // appear in the seed. this allows things like the three seasons flutes having
@@ -131,7 +131,6 @@ func getAllMutables() map[string]Mutable {
 	}
 
 	mutableSets := []map[string]Mutable{
-		fixedMutables,
 		treasureMutables,
 		slotMutables,
 		codeMutables,

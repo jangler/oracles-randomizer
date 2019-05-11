@@ -34,6 +34,7 @@ func newSeasonsRomBanks() *romBanks {
 			"/asm/item_lookup.yaml",
 			"/asm/layouts.yaml",
 			"/asm/linked.yaml",
+			"/asm/misc.yaml",
 			"/asm/rings.yaml",
 			"/asm/triggers.yaml",
 			"/asm/vars.yaml",

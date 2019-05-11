@@ -76,6 +76,7 @@ defines:
   asm15: 0xe0
   initcollisions: 0xeb
   movedown: 0xee
+  delay1frame: 0xf0
   delay30frames: 0xf6
 
   # hram

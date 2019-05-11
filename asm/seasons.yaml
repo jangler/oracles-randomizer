@@ -60,6 +60,7 @@ defines:
   objectCopyPositionWithOffset: 0x221a
   interactionSetScript: 0x24fe
   createTreasure: 0x271b
+  setLinkIdOverride: 0x2a16
   checkGlobalFlag: 0x30c7
   setGlobalFlag: 0x30cd
   setTile: 0x3a52

@@ -1,0 +1,96 @@
+seasons:
+  # make link actionable as soon as he drops into the world.
+  05/4d98/: jp setLinkIdOverride
+
+  # move sleeping talon and his mushroom so they don't block the chest.
+  0b/6080/: db 78,a8 # mushroom
+  11/6d2b/: db 88,a8 # talon
+
+  # make all seeds grow in all seasons.
+  0d/68b5/: cp a
+
+  # move the hitbox for the bridge lever from holodrum plain to natzu to the
+  # top-left corner of the screen, where it can't be hit, and replace the lever
+  # tile as well. this prevents the bridge from blocking the waterway.
+  11/6737/: db 00,00 # object
+  21/6267/: db 04 # ricky tile
+  23/5cb7/: db 04 # moosh tile
+
+  # feather game: don't give fools ore, and don't return fools ore.
+  14/4881/: db delay1frame,delay1frame,delay1frame
+  # always give up feather at the end if the player doesn't have it.
+  15/5dcf/: |
+      ld a,TREASURE_FEATHER
+      call checkTreasureObtained
+      jr c,05
+  # and make the feather appear without needing to be dug up.
+  15/5335/: db 1a # treasure mode
+  # allow transition away from the screen once you have feather (not once the
+  # hole is dug).
+  09/65a0/: |
+      ld a,TREASURE_FEATHER
+      call checkTreasureObtained
+      nop
+      nop
+      ret nc
+
+  # move d8 magnet ball one tile to the left, so you don't get stuck if
+  # you go up the stairs without magnet glove.
+  15/4f62/: db 38
+
+ages:
+  # vanilla bug: compass doesn't show D6 boss key chest.
+  01/4eea/: db 34
+
+  # make guy in front of d2 go away if you have bombs.
+  09/5242/: |
+      ld a,03
+      call checkTreasureObtained
+      jp c,interactionDelete
+  # and center him on a tile so you can't get stuck in a currents loop.
+  12/611c/: db 48
+
+  # remove the entire crescent island storm / tokay theft sequence.
+  09/5731/: jp 582a              # tokays stealing items
+  09/5756/: jp 582a              # ^
+  09/57a5/: inc a; inc a         # ^
+  0a/4fe1/: jp interactionDelete # ^
+  0a/623a/: or a; or a; or a     # tokay trader stolen items
+  0a/62d7/: or a; or a; or a     # ^
+  0b/52e3/: jp interactionDelete # storm
+  12/638f/: db f3,57,41,ff       # item in chicken hut
+
+  # never spawn hide and seek event in fairies' woods. apparently you're frozen
+  # if you enter on an animal?
+  0a/52bf/: jp interactionDelete
+
+  # allow buying tokay trader's shield if you have scent seeds but not satchel.
+  0a/629c/: jr nc,00
+
+  # stop d6 boss key chest from setting past boss key flag.
+  10/793c/: ret; nop; nop
+
+  # first and second time portals (near maku tree) are always active.
+  10/7d4e/: jr nz,00 # present -> past
+  10/7d57/: jr c,00  # past -> present
+
+  # remove the usual deku soldier event (taken to palace etc).
+  12/58f5/: ret
+  # cut off end of soldier's text so it makes sense when giving item.
+  23/6656/: db 00
+  # position the "you may go now" text correctly on screen.
+  23/65d8/: db 00
+
+  # move worker on ricky nuun cave screen off the "roof", and seal of the roof
+  # with a railing, preventing a currents softlock.
+  12/5a9e/: db 68,48
+  23/718e/: db 72,50,50,73
+
+  # prevent stairs disappearing in event where maku tree is attacked by
+  # moblins, preventing softlock if player gets there with seed satchel and no
+  # sword or something stupid.
+  15/6bf3/: db jumpalways; dw c315
+
+  # prevent bridge-building foreman from setting flag 22 so that animal/flute
+  # event doesn't happen in fairies' woods.
+  15/75bf/: db setglobalflag,a2 # bit 7 = unset flag
