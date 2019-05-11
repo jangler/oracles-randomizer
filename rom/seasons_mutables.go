@@ -42,28 +42,6 @@ var seasonsFixedMutables = map[string]Mutable{
 	// can't move it, you don't have room to go back down the stairs. this
 	// moves the magnet ball's starting position one more tile away.
 	"move d8 magnet ball": MutableByte(Addr{0x15, 0x4f62}, 0x48, 0x38),
-
-	// banks 1c-1f (text)
-
-	// all this text overwrites the text from the initial rosa encounter, which
-	// runs from 1f:4533 to 1f:45c1 inclusive. the last entry is displayed at
-	// the end of any warning message.
-	"cliff warning text": MutableString(Addr{0x1f, 0x4533}, "\x0c\x21",
-		"\x0c\x00\x02\x3b\x67\x6f\x20\x05\x73\x01"+ // If you go down
-			"\x74\x68\x65\x72\x65\x2c\x04\x2d\x20\x77\x6f\x6e\x27\x74\x01"+ // there, you won't
-			"\x62\x65\x20\x02\xa4\x05\x0f\x01"+ // be able to get
-			"\x04\x9f\x20\x75\x70\x03\xa4"+ // back up.
-			"\x07\x03"), // jump to end text
-	"hss skip warning addr": MutableWord(Addr{0x1c, 0x6b52}, 0x1192, 0x0292),
-	"hss skip warning text": MutableString(Addr{0x1f, 0x4584}, "\x20\x05",
-		"\x0c\x00\x02\x3b\x73\x6b\x69\x70\x01"+ // If you skip
-			"\x6b\x65\x79\x73\x2c\x04\xaa\x03\x2c\x01"+ // keys, use them
-			"\x03\x70\x6c\x79\x03\xa4"+ // carefully.
-			"\x07\x03"), // jump to end text
-	"end warning addr": MutableWord(Addr{0x1c, 0x6b54}, 0x2592, 0x1d92),
-	"end warning text": MutableString(Addr{0x1f, 0x459f}, "\x01\x05",
-		"\x0c\x00\x43\x6f\x6e\x74\x69\x6e\x75\x65\x20\x61\x74\x01"+ // Continue at
-			"\x03\x0b\x6f\x77\x6e\x20\x72\x69\x73\x6b\x21\x00"), // your own risk!
 }
 
 // key = area name (as in asm/vars.yaml), id = season index (spring -> winter).

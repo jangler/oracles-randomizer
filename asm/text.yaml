@@ -1,8 +1,20 @@
-# this *MUST* be the last thing in the bank, since it's going to grow
-# dynamically later - so this file must be included last.
+# owl text *MUST* be the last thing in the bank, since it's going to grow
+# dynamically later - so this file must be included last. all of this is set
+# after being loaded; see the rom/text.yaml for the contents.
 
 seasons:
+  1f/4533/cliffWarningText: ''
+  1f/4584/hssSkipWarningText: ''
+  1c/6b52/: dw 9202 # pointer to above
+  1f/459f/warningEndText: ''
+  1c/6b54/: dw 921d # pointer to above
+
   3f/owlText: ''
 
 ages:
+  1e/4c3e/tuneOfEchoesText: ''
+  1d/7e48/tuneOfCurrentsText: ''
+  1d/7e8e/tuneOfAgesText: ''
+  23/583f/portalSignText: ''
+
   38/owlText: ''

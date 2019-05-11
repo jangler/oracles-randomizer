@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -393,4 +395,36 @@ func loadBankEnds(game string) []uint16 {
 		panic(err)
 	}
 	return eobs[game]
+}
+
+// loads text, processes it, and applies it to matching labels.
+func applyText(b []byte, game string) {
+	textMap := make(map[string]map[string]string)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/rom/text.yaml"), textMap); err != nil {
+		panic(err)
+	}
+	for label, rawText := range textMap[game] {
+		if mut, ok := codeMutables[label].(*MutableRange); ok {
+			mut.New = processText(rawText)
+			mut.Mutate(b)
+		} else {
+			println("no code label matches text label " + label)
+		}
+	}
+}
+
+var hashCommentRegexp = regexp.MustCompile(" #.+?\n")
+
+// processes a raw text string as a go string literal, converting escape
+// sequences to their actual values. "comments" and literal newlines are
+// stripped.
+func processText(s string) []byte {
+	var err error
+	s = hashCommentRegexp.ReplaceAllString(s, "")
+	s, err = strconv.Unquote("\"" + s + "\"")
+	if err != nil {
+		panic(err)
+	}
+	return []byte(s)
 }

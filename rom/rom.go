@@ -5,7 +5,7 @@ package rom
 
 // TODO: put all these yaml files in a folder together so that the folder can
 // be included, instead of every file individually.
-//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml ../rom/treasures.yaml ../rom/seasons_slots.yaml ../rom/ages_slots.yaml ../rom/music.yaml ../rom/owls.yaml ../rom/eob.yaml
+//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml ../rom/treasures.yaml ../rom/seasons_slots.yaml ../rom/ages_slots.yaml ../rom/music.yaml ../rom/owls.yaml ../rom/eob.yaml ../rom/text.yaml
 
 import (
 	"crypto/sha1"
@@ -208,6 +208,7 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 
 	setCompassData(b, game)
 	setLinkedData(b, game)
+	applyText(b, gameNames[game])
 
 	outSum := sha1.Sum(b)
 	return outSum[:], nil

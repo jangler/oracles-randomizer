@@ -53,27 +53,6 @@ var agesFixedMutables = map[string]Mutable{
 	"stop d6 boss key chest": MutableString(Addr{0x10, 0x793c},
 		"\xc3\x0e\x02", "\xc9\x00\x00"),
 
-	// fix pickup text for harp tunes
-	"tune of echoes text": MutableString(Addr{0x1e, 0x4c3e}, "\x49",
-		"\x02\x06"+ // You got the
-			"\x09\x01Tune\x04\xceE\x05\x0d\x04\x91"+ // Tune of Echoes!
-			"Play\x04\x0f\x01"+ // Play it to
-			"awaken \x04\xa8\x04\x5a"+ // awaken sleeping
-			"\x09\x03Time Portals\x09\x00!\x00"), // Time Portals!
-	"tune of currents text": MutableString(Addr{0x1d, 0x7e48}, "\x59",
-		"\x02\x06"+ // You got the
-			"\x09\x01Tune\x04\xce\x01"+ // Tune of
-			"Currents\x05\x95Play\x01"+ // Currents! Play
-			"it\x04\x57\x05\x5b\x03\x50"+ // it to move from
-			"\x02\x81 \x02\x64\x01"+ // the past to the
-			"\x03\x2e!\x00"), // the present!
-	"tune of ages text": MutableString(Addr{0x1d, 0x7e8e}, "\x59",
-		"\x02\x06"+ // You got the
-			"\x09\x01Tune \x03\x31\x04\x91"+ // Tune of Ages!
-			"Play\x04\x0f\x04\xdf"+ // Play it to move
-			"freely \x02\x77\x01"+ // freely through
-			"\x04\xdd!\x00"), // time!
-
 	// buy tokay trader's shield if you have scent seeds but not satchel
 	"tokay trader satchel check": MutableString(Addr{0x0a, 0x629c},
 		"\x30\x16", "\x30\x00"),
@@ -83,11 +62,6 @@ var agesFixedMutables = map[string]Mutable{
 		"\x69\x07\x07\x6a", "\x72\x50\x50\x73"),
 	"move nuun worker": MutableString(Addr{0x12, 0x5a9e},
 		"\x28\x50", "\x68\x48"),
-
-	// text for special crescent island present portal
-	"portal sign text": MutableString(Addr{0x23, 0x583f}, "\x0c\x20\x02\x18",
-		"\x0c\x00C\x04\x23s only.\x01"+ // Currents only.
-			" -\x04\x56Management\x00"), // -The Management
 
 	// vanilla bug: compass doesn't show D6 boss key chest.
 	"fix d6 compass": MutableByte(Addr{0x01, 0x4eea}, 0x14, 0x34),

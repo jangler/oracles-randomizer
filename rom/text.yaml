@@ -1,0 +1,53 @@
+# the text in this file is stored as *literal strings*, without evaluating the
+# escape sequences (used for control characters and dictionary compression),
+# since only valid utf-8 can be stored in yaml. the byte values are unescaped
+# in go after loading them. newlines and "comments" need to be stripped
+# manually.
+
+seasons:
+  # all this text overwrites the text from the initial rosa encounter, which
+  # runs from 1f:4533 to 1f:45c1 inclusive. the last entry is displayed at
+  # the end of any warning message.
+  cliffWarningText: |
+    \x0c\x00\x02\x3bgo \x05\x73\x01 # If you go down
+    there,\x04\x2d won't\x01 # there, you won't
+    be \x02\xa4\x05\x0f\x01 # be able to get
+    \x04\x9f up\x03\xa4 # back up.
+    \x07\x03 # (jump to end text)
+  hssSkipWarningText: |
+    \x0c\x00\x02\x3bskip\x01 # If you skip
+    keys,\x04\xaa\x03\x2c\x01 # keys, use them
+    \x03\x70ly\x03\xa4 # carefully.
+    \x07\x03 # (jump to end text)
+  warningEndText: |
+    \x0c\x00Continue at\x01 # Continue at
+    \x03\x0bown risk!\x00 # your own risk!
+
+ages:
+  # "fix" pickup text for harp tunes - it's all weird and calls things wrong
+  # names in vanilla and i don't like it.
+  tuneOfEchoesText: |
+    \x02\x06 # You got the
+    \x09\x01Tune\x04\xceE\x05\x0d\x04\x91 # Tune of Echoes!
+    Play\x04\x0f\x01 # Play it to
+    awaken \x04\xa8\x04\x5a # awaken sleeping
+    \x09\x03Time Portals\x09\x00!\x00 # Time Portals!
+  tuneOfCurrentsText: |
+    \x02\x06 # You got the
+    \x09\x01Tune\x04\xce\x01 # Tune of
+    Currents\x05\x95Play\x01 # Currents! Play
+    it\x04\x57\x05\x5b\x03\x50 # it to move from
+    \x02\x81 \x02\x64\x01 # the past to the
+    \x03\x2e!\x00 # present!
+  tuneOfAgesText: |
+    \x02\x06 # You got the
+    \x09\x01Tune \x03\x31\x04\x91 # Tune of Ages!
+    Play\x04\x0f\x04\xdf # Play it to move
+    freely \x02\x77\x01 # freely through
+    \x04\xdd!\x00 # time!
+
+  # text for special crescent island present portal that no one reads or
+  # understands
+  portalSignText: |
+    \x0c\x00C\x04\x23s only.\x01 # Currents only.
+     -\x04\x56Management\x00 # -The Management
