@@ -47,6 +47,11 @@ This document details tricks and obscurities that are in Seasons hard logic.
 - Cross the Moblin Keep pool using a bomb + cape jump. Position yourself above
   and to the right of the bomb, and hold right as you jump.
   [[Video]](https://streamable.com/wr5dy)
+- Cucco clip: reach the cave below the Spring Banana tree by grabbing the Cucco
+  through the corner – move straight right into the rock before the screen
+  transition so that the rock pushes you downward. This only matters if you
+  have gale seeds to warp out.
+  [[Video]](https://gfycat.com/negativeclumsyafricanfisheagle)
 - Jump to the vanilla Dragon Key location using only cape.
   [[Video]](https://streamable.com/8tpnt)
 - Jump to the Subrosia portal in Horon Village using seeds + cape.
