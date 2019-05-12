@@ -156,7 +156,7 @@ var agesD4Nodes = map[string]*Node{
 	"d4 minecart C": And("d4 minecart B", Count(3, "d4 small key")),
 	"d4 color tile drop": AndSlot("d4 minecart C",
 		Or("sword", "ember seeds", "scent shooter", "gale shooter",
-			And("hard", Or("scent satchel", And("peace ring", "bombs"))))),
+			And("hard", "scent satchel"))),
 
 	// 4 keys
 	"d4 minecart D": And("d4 minecart C", Count(4, "d4 small key")),

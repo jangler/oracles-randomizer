@@ -86,6 +86,7 @@ exception of:
 
 - Farming rupees, except by shovel RNG manips
 - Mystery seeds as a weapon
+- Bombs as a weapon, except versus enemies immune to sword
 - Text warps
 - Magic rings from non-randomized locations
 - Linked secrets

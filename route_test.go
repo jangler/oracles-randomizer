@@ -25,16 +25,17 @@ func testSeasonsGraph(t *testing.T) {
 		"d0 key chest": "sword",
 	}, "maku tree", true)
 
-	// test hard logic via bombs as weapon
+	// test hard logic via bracelet shenanigans in d1
 	testMap := map[string]string{
-		"d0 key chest":           "moosh's flute",
-		"d0 rupee chest":         "bombs, 10",
-		"horon village SE chest": "gnarled key",
+		"d0 key chest":           "bracelet",
+		"d0 rupee chest":         "gnarled key",
+		"horon village SW chest": "winter",
 		"d1 entrance":            "enter d1",
+		"d1 stalfos drop":        "d1 small key",
 	}
-	checkReach(t, g, testMap, "d1 stalfos drop", false)
+	checkReach(t, g, testMap, "d1 block-pushing room", false)
 	testMap["start"] = "hard"
-	checkReach(t, g, testMap, "d1 stalfos drop", true)
+	checkReach(t, g, testMap, "d1 block-pushing room", true)
 
 	// test key counting
 	testMap = map[string]string{
@@ -73,16 +74,20 @@ func testAgesGraph(t *testing.T) {
 		"starting chest": "sword",
 	}, "black tower worker", true)
 
-	// test hard logic via bombs as weapon
+	// test hard logic via d2 thwomp shelf
 	testMap := map[string]string{
-		"starting chest":     "bombs, 10",
-		"nayru's house":      "bracelet",
-		"black tower worker": "shovel",
-		"d2 entrance":        "enter d2",
+		"starting chest":        "bombs, 10",
+		"nayru's house":         "bracelet",
+		"black tower worker":    "shovel",
+		"deku forest cave east": "switch hook",
+		"deku forest cave west": "cane",
+		"d2 entrance":           "enter d2",
+		"d2 bombed terrace":     "d2 small key",
+		"d2 moblin drop":        "d2 small key",
 	}
-	checkReach(t, g, testMap, "d2 bombed terrace", false)
+	checkReach(t, g, testMap, "d2 thwomp shelf", false)
 	testMap["start"] = "hard"
-	checkReach(t, g, testMap, "d2 bombed terrace", true)
+	checkReach(t, g, testMap, "d2 thwomp shelf", true)
 
 	// test key counting
 	testMap = map[string]string{

@@ -86,6 +86,7 @@ exception of:
 - Farming rupees, except by shovel RNG manips
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
+- Bombs as a weapon, except versus enemies immune to sword
 - Magic rings from non-randomized locations
 - Linked secrets
 

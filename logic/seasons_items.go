@@ -77,15 +77,10 @@ var seasonsItemNodes = map[string]*Node{
 	"shield": Or("wooden shield", "iron shield",
 		And("beach", "ember seeds")),
 	"seed item": Or("satchel", "slingshot"),
-	"kill for bombs": Or("sword", "ember seeds",
-		Or("scent slingshot", And("hard", "scent seeds")), "fool's ore"),
 	"bombs": Or(
 		And("hard", "d2 blade chest", "bracelet"), // deku scrub, TODO: rupees
 		And("hard", "harvest bush", "d2 bracelet room"),
-		And("bombs, 10", Or("remove pot", "shovel", "remove flower", "flute",
-			And("kill for bombs", Or("suburbs", "fairy fountain",
-				And("mount cucco", Or("spring",
-					"sunken city default spring"))))))),
+		And("bombs, 10", Or("shovel", "remove flower", "flute"))),
 
 	// jump x pit tiles
 	"jump 2":      And("feather"),

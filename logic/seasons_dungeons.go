@@ -19,10 +19,10 @@ var seasonsD0Nodes = map[string]*Node{
 	"d0 sword chest": AndSlot("enter d0", "d0 small key"),
 }
 
-// bush-throwing is in hard logic for a few rooms. goriya one only matters if
-// you killed the stalfos with rod, and the lever one only matters if you
-// killed the stalfos with bombs. bush-throwing is *not* in logic for the
-// vanilla BK room, since you need to relight the torches every time you leave.
+// bush-throwing is in hard logic for a few rooms, but the goriya one only
+// matters if you killed the stalfos with rod. bush-throwing is *not* in logic
+// for the vanilla BK room, since you need to relight the torches every time
+// you leave.
 var seasonsD1Nodes = map[string]*Node{
 	"enter d1": Root(),
 

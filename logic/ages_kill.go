@@ -48,27 +48,26 @@ var agesKillNodes = map[string]*Node{
 
 	// most enemies are vulnerable to these items
 	"kill normal": Or("sword", "satchel weapon", "shooter weapon", "cane",
-		"punch enemy", And("hard", "bombs")),
-	"kill normal ranged": Or("shooter weapon", And("cane", "bracelet"),
-		And("hard", "bombs")),
-	"kill underwater":  Or("sword", "shooter weapon", "punch enemy"),
-	"kill switch hook": Or("kill normal", "switch hook"),
+		"punch enemy"),
+	"kill normal ranged": Or("shooter weapon", And("cane", "bracelet")),
+	"kill underwater":    Or("sword", "shooter weapon", "punch enemy"),
+	"kill switch hook":   Or("kill normal", "switch hook"),
 
 	"kill giant ghini": Or("sword", "scent shooter", "switch hook",
-		"punch enemy", And("hard", Or("bombs", "scent satchel"))),
+		"punch enemy", And("hard", "scent satchel")),
 	"kill pumpkin head": And("bracelet",
 		Or("sword", "punch enemy", "ember seeds", "scent shooter",
-			And("hard", Or("bombs", "scent satchel")))),
+			And("hard", "scent satchel"))),
 
 	// spiked beetles can't be punched for some reason
 	"kill spiked beetle": Or("gale shooter", And("hard", "gale satchel"),
 		And(Or("shield", "shovel"), Or("sword", "satchel weapon",
-			"shooter weapon", "cane", And("hard", "bombs"), "switch hook"))),
+			"shooter weapon", "cane", "switch hook"))),
 	"kill swoop": Or("sword", "scent shooter", "switch hook", "punch enemy",
-		And("hard", Or("bombs", "scent satchel"))),
+		And("hard", "scent satchel")),
 
 	"kill moldorm": Or("sword", "scent shooter", "cane", "switch hook",
-		"punch enemy", And("hard", Or("bombs", "scent satchel"))),
+		"punch enemy", And("hard", "scent satchel")),
 	"kill subterror": And("shovel", Or("sword", "switch hook", "scent seeds",
-		"punch enemy", And("hard", "bombs"))),
+		"punch enemy")),
 }
