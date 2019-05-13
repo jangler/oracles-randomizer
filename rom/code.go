@@ -411,3 +411,52 @@ func processText(s string) []byte {
 	}
 	return []byte(s)
 }
+
+// actually, set up all the pre-randomization changes, and track the state so
+// that the randomization changes can be applied later.
+func initRomBanks(game int) *romBanks {
+	asm, err := newAssembler()
+	if err != nil {
+		panic(err)
+	}
+
+	r := romBanks{
+		endOfBank: loadBankEnds(gameNames[game]),
+		assembler: asm,
+	}
+
+	// do this before loading asm files, since the sizes of the tables vary
+	// with the number of checks.
+	roomTreasureBank, numOwlIds := byte(0x3f), 0x1e // seasons
+	if game == GameAges {
+		roomTreasureBank, numOwlIds = 0x38, 0x14
+	}
+	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeCollectModeTable())
+	r.replaceRaw(Addr{roomTreasureBank, 0}, "roomTreasures",
+		makeRoomTreasureTable(game))
+	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets",
+		string(make([]byte, numOwlIds*2)))
+
+	r.applyAsmFiles(game,
+		[]string{
+			"/asm/common.yaml",
+			fmt.Sprintf("/asm/%s.yaml", gameNames[game]),
+		},
+		[]string{
+			"/asm/animals.yaml",
+			"/asm/cutscenes.yaml",
+			"/asm/gfx.yaml",
+			"/asm/item_events.yaml",
+			"/asm/item_lookup.yaml",
+			"/asm/layouts.yaml",
+			"/asm/linked.yaml",
+			"/asm/misc.yaml",
+			"/asm/rings.yaml",
+			"/asm/triggers.yaml",
+			"/asm/vars.yaml",
+
+			"/asm/text.yaml", // must go last
+		})
+
+	return &r
+}

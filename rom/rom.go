@@ -40,12 +40,7 @@ var dungeonNameRegexp = regexp.MustCompile(`^d[1-8]$`)
 func Init(b []byte, game int) {
 	Treasures = LoadTreasures(b, game)
 	ItemSlots = LoadSlots(b, game)
-
-	if game == GameAges {
-		globalRomBanks = newAgesRomBanks()
-	} else {
-		globalRomBanks = newSeasonsRomBanks()
-	}
+	globalRomBanks = initRomBanks(game)
 
 	for _, slot := range ItemSlots {
 		slot.Treasure = Treasures[slot.treasureName]
