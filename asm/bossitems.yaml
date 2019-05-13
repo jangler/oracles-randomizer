@@ -1,0 +1,40 @@
+# i.e. randomized heart containers.
+
+common:
+  # entries (ID, subID) and indexed by wDungeon Index. these are changed
+  # during randomization.
+  15/bossItemTable: |
+      db 00,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+      db 2a,00
+
+  # spawn items from bossItemTable in place of boss heart containers.
+  15/spawnBossItem: |
+      push hl
+      ld hl,bossItemTable
+      ld a,(wDungeonIndex)
+      cp a,0c # ages d6 past
+      jr nz,.next
+      ld a,06
+      .next
+      rst 18
+      ld b,(hl)
+      inc hl
+      ld c,(hl)
+      call createTreasure
+      call objectCopyPosition
+      pop hl
+      ret
+
+seasons:
+  0b/4b8f/: db asm15; dw spawnBossItem
+  0b/4bb1/: db asm15; dw spawnBossItem
+
+ages:
+  0c/4bd8/: db asm15; dw spawnBossItem

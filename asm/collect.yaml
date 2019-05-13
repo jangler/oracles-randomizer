@@ -1,0 +1,157 @@
+# see rom/treasures.go for an explanation of what this is.
+# TODO: that file won't be around for much longer. hopefully.
+
+common:
+  # calls lookupCollectMode_body in another bank.
+  00/lookupCollectMode: |
+      push bc
+      push de
+      push hl
+      ld e,06
+      ld hl,lookupCollectMode_body
+      call interBankCall
+      ld a,e
+      pop hl
+      cp a,ff
+      jr nz,.next
+      dec hl
+      ldi a,(hl)
+      .next
+      pop de
+      pop bc
+      ret
+
+  # return a spawning item's collection mode in a and e, based on current room.
+  # the table format is (group, room, mode), and modes 80+ are used to index a
+  # jump table for special cases. if no match is found, it returns the regular,
+  # non-overriden mode.
+  06/lookupCollectMode_body: |
+      ld a,(wActiveGroup)
+      ld b,a
+      ld a,(wActiveRoom)
+      ld c,a
+      ld e,01
+      ld hl,collectModeTable
+      call searchDoubleKey
+      ld e,a
+      ret nc
+      ld a,(hl)
+      ld e,a
+      cp a,80
+      ret c
+      ld hl,collectSpecialJumpTable
+      and a,7f
+      add a,a
+      rst 10
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      jp (hl)
+
+seasons:
+  # collect modes starting at 80 index this jump table to determine the actual
+  # mode.
+  06/collectSpecialJumpTable: |
+      dw collectDiverRoom
+      dw collectPoeSkipRoom
+      dw collectMakuTree
+      dw collectD4Pool
+      dw collectD5Armos
+
+  # master diver's room has chest on the left and reward on the right.
+  06/collectDiverRoom: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,80
+      ld e,COLLECT_CHEST
+      ret c
+      ld e,COLLECT_PICKUP_ALT
+      ret
+
+  # bombed wall chest in d7 has an item drop on the left side.
+  06/collectPoeSkipRoom: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,80
+      ld e,COLLECT_FALL_KEY
+      ret c
+      ld e,COLLECT_CHEST_MAP_OR_COMPASS
+      ret
+
+  # maku tree item drops at a specific script pos, otherwise use regular mode.
+  06/collectMakuTree: |
+      ld a,(d258) # script position
+      cp a,8e
+      ld e,COLLECT_FALL
+      ret z
+      ld e,COLLECT_PICKUP
+      ret
+
+  # when the falling item hits the water, it creates a new item interaction.
+  # that one should have the mode that requires diving to get the item.
+  06/collectD4Pool: |
+      ld e,54
+      ld a,(de) # object z position
+      sub a,01
+      ld e,COLLECT_FALL_KEY
+      ret c
+      ld e,COLLECT_DIVE
+      ret
+
+  # the first three chests opened in the d5 armos room shouldn't set the room's
+  # "item obtained" flag.
+  06/collectD5Armos: |
+      ld a,(cfd8)
+      cp a,04
+      ld e,COLLECT_CHEST
+      ret z
+      ld e,COLLECT_CHEST_NOFLAG
+      ret
+
+ages:
+  # collect modes starting at 80 index this jump table to determine the actual
+  # mode.
+  06/collectSpecialJumpTable: |
+      dw collectMakuTree
+      dw collectTargetCarts
+      dw collectBigBangGame
+      dw collectLavaJuiceRoom
+
+  # maku tree item drops at a specific script pos, otherwise use regular mode.
+  06/collectMakuTree: |
+      ld a,(d258) # script position
+      cp a,84
+      ld e,COLLECT_FALL
+      ret z
+      ld e,COLLECT_PICKUP
+      ret
+
+  # target carts prizes are displayed with a poof.
+  06/collectTargetCarts: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,78
+      ld e,COLLECT_POOF
+      ret z
+      ld e,COLLECT_PICKUP
+      ret
+
+  # big bang game prizes are displayed with a poof.
+  06/collectBigBangGame: |
+      ld e,4b
+      ld a,(de) # object y position
+      cp a,38
+      ld e,COLLECT_POOF
+      ret z
+      ld e,COLLECT_PICKUP
+      ret
+
+  # lava juice goron and chest both give items in this room.
+  06/collectLavaJuiceRoom: |
+      ld e,4d
+      ld a,(de) # object x position
+      cp a,68
+      ld e,COLLECT_PICKUP_ALT
+      ret c
+      ld e,COLLECT_CHEST
+      ret

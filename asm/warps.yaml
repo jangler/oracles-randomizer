@@ -1,0 +1,89 @@
+# as defined here, warp = transition from one room to another by any means
+# other than a screen scroll.
+
+ages:
+  # d2: exit into the present if the past entrance is closed.
+  # d7: reset water level when exiting (see logic comments).
+  00/handleSpecialExits: |
+      ld (wWarpDestIndex),a
+      cp a,83
+      jr nz,.next
+      ld a,(c883) # room flags for d2 past entrance
+      and a,80
+      jr nz,.next
+      ld a,(wWarpDestGroup)
+      and a,0f
+      cp a,01
+      jr nz,.next
+      ld a,(wWarpDestGroup)
+      and a,f0
+      ld (wWarpDestGroup),a
+      ret
+      .next
+      push bc
+      ld bc,5605
+      call compareRoom
+      jr nz,.notJabu
+      ld a,21
+      ld (wJabuWaterLevel),a
+      .notJabu
+      pop bc
+      ret
+  04/45e8/: call handleSpecialExits
+  0a/4738/: call handleSpecialExits
+
+  # invalid tiles to time warp onto if player doesn't have flippers. the
+  # vanilla game assumes you have flippers by the time you have currents, and
+  # only checks against deep water tiles.
+  01/noFlippersTable: |
+      db f3,00
+      db fe,00
+      db ff,00
+      db e4,00
+      db e5,00
+      db e6,00
+      db e7,00
+      db e8,00
+      db e9,00
+      db fc,01
+      db fa,00
+      db e0,00
+      db e1,00
+      db e2,00
+      db e3,00
+      db 00
+
+  # check against a different set of invalid time warp destination tiles if the
+  # player doesn't have flippers.
+  01/preventDrowningByTimeWarp: |
+      ld hl,6317
+      ld a,(c69f) # in wObtainedTreasureFlags
+      and a,40
+      ret nz
+      ld hl,noFlippersTable
+      ret
+  01/6301/: call preventDrowningByTimeWarp
+
+  # treat the d2 present entrance like the d2 past entrance.
+  04/handleSpecialEntrances: |
+      push bc
+      ld bc,8300
+      call compareRoom
+      pop bc
+      ld a,01
+      ret z
+      ld a,(wActiveGroup)
+      ret
+  04/4630/: call handleSpecialEntrances
+
+  # prevent surfacing from underwater without the mermaid suit. this is only
+  # relevant for the sea of no return if entrances are unrandomized.
+  05/checkPreventSurface: |
+      ld a,(wDisableTransitions)
+      or a
+      ret nz
+      ld a,(c6a3) # byte in wObtainedTreasureFlags
+      and a,04
+      cp a,04
+      ret
+  05/516c/: call checkPreventSurface; nop

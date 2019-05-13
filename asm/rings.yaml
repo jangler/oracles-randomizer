@@ -1,3 +1,5 @@
+# ring QoL changes.
+
 common:
   # allow ring list to be accessed through the ring box icon.
   02/openRingList: |
@@ -60,17 +62,47 @@ floating:
       ret
 
 seasons:
+  # blaino normally unequips rings by setting bit 6, which turns the friendship
+  # ring into the dev ring. don't do that.
+  00/2376/: ld (hl),ff
+
   02/5035/: call ringListGfxFix
   02/56a1/: call openRingList
   02/6f4a/: call autoEquipRing
+  3f/461a/: nop; jp autoAppraiseRing
+
+  # use expert's or fist ring with only one button unequipped.
+  06/490e/: nop
 
   0a/removeGashaNutRingText: /include removeGashaNutRingText
   0a/4863/: jp removeGashaNutRingText
+
+  # skip forced ring appraisal and ring list with vasu (prevents softlock).
+  0b/4a2b/: dw 394a
+
+  # replace ring appraisal text with "you got the {ring}".
+  1f/5d99/: db 02,03,0f,fd,21,00
 
 ages:
   02/5074/: call ringListGfxFix
   02/56dd/: call openRingList
   02/7019/: call autoEquipRing
+  3f/4614/: nop; jp autoAppraiseRing
 
+  # use expert's or fist ring with only one button unequipped.
+  06/4969/: nop
+
+  # remove generic "you got a ring" text for rings from shops
+  09/4580/: db 00
+  09/458a/: db 00
+  09/458b/: db 00
+
+  # TODO: is this really in the same bank in both games?
   0b/removeGashaNutRingText: /include removeGashaNutRingText
   0b/45bb/: jp removeGashaNutRingText
+
+  # skip forced ring appraisal and ring list with vasu (prevents softlock).
+  0c/4a27/: dw 354a
+
+  # replace ring appraisal text with "you got the {ring}".
+  21/76a0/: db 02,06,0f,fd,21,00

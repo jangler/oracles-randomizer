@@ -1,0 +1,65 @@
+# does not include dev warp code (see asm/devhacks.yaml).
+
+common:
+  # always treat starting seed tree as visited for warping purposes.
+  02/checkCursorVisited: |
+      ld a,(wMapMenu_cursorIndex) # falls through
+  02/checkTreeVisited: |
+      cp a,STARTING_TREE_MAP_INDEX
+      jp nz,_mapMenu_checkRoomVisited
+      or a
+      ret
+
+seasons:
+  # warp to horon village tree if holding start when closing the map screen.
+  02/treeWarp: |
+      ld a,(wKeysPressed)
+      and a,08
+      jr z,.done
+      ld a,(wAreaFlags)
+      and a,AREAFLAG_OUTDOORS
+      jr nz,.warp
+      ld a,SND_ERROR
+      jp playSound
+      .warp
+      ld hl,cbb7
+      ld (hl),05
+      xor a
+      call 5e7b
+      .done
+      jp _closeMenu
+
+  02/5ec8/: call checkTreeVisited
+  02/602c/: call nz,treeWarp
+  02/6089/: call nz,treeWarp
+  02/609b/: call checkCursorVisited
+  02/65e1/: call checkTreeVisited
+
+ages:
+  # warp to south lynna present tree if holding start when closing the map
+  # screen.
+  02/treeWarp: |
+      ld a,(wKeysPressed)
+      and a,08
+      jr z,.done
+      ld a,(wAreaFlags)
+      and a,AREAFLAG_OUTDOORS
+      jr nz,.warp
+      ld a,SND_ERROR
+      jp playSound
+      .warp
+      ld hl,wWarpDestGroup
+      ld (hl),80
+      inc hl
+      ld (hl),78
+      ld l,4a
+      ld (hl),55
+      call 5fbf
+      .done
+      jp 4fba
+
+  02/5ff9/: call checkTreeVisited
+  02/6133/: call nz,treeWarp
+  02/618b/: call nz,treeWarp
+  02/619d/: call checkCursorVisited
+  02/66a9/: call checkTreeVisited

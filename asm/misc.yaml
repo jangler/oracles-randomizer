@@ -1,6 +1,116 @@
+common:
+  # don't play any music. should only be called if the -nomusic flag is
+  # given.
+  00/filterMusic: |
+      ld h,a
+      cp a,49
+      jr nc,.sfx
+      ld a,08
+      ret
+      .sfx
+      ld a,(ff00+hMusicVar)
+      ret
+
+  # allow skipping the capcom screen after one second by pressing start.
+  03/skipCapcom: |
+      push hl
+      ld a,(cbb3)
+      cp a,94
+      jr nc,.noSkip
+      call forceEnableIntroInputs
+      .noSkip
+      pop hl
+      jp decHlRef16WithCap
+
+  # use different seed capacity table, so that level zero satchel can still
+  # hold 20 seeds.
+  3f/seedCapacityTable: |
+      db 20,20,50,99
+
 seasons:
+  00/0c76/: call filterMusic
+  03/4d6b/: call skipCapcom
+
+  # remove hard-coded d5 boss key room beep - it beeps just fine based on
+  # normal dungeon room properties.
+  01/4a09/: nop; nop
+
   # make link actionable as soon as he drops into the world.
   05/4d98/: jp setLinkIdOverride
+
+  # let link jump down the cliff outside d7, in case of winter sans shovel.
+  # also let link jump down the snow cliff added in woods of winter. also call
+  # devJump if applicable.
+  05/cliffLookup: |
+      call devJump
+      ret c
+      push af
+      ld a,(wActiveGroup)
+      or a
+      jr nz,.noJumpPopAf
+      ld a,(wActiveRoom)
+      cp a,d0
+      jr nz,.notD7Entrance
+      pop af
+      cp a,a8
+      jr nz,.noJump
+      ld a,08
+      scf
+      ret
+      .notD7Entrance
+      cp a,9d
+      jr nz,.noJumpPopAf
+      pop af
+      cp a,99
+      jr z,.snowJump
+      cp a,9b
+      jr nz,.noJump
+      .snowJump
+      ld a,10
+      scf
+      ret
+      .noJumpPopAf
+      pop af
+      .noJump
+      jp lookupCollisionTable
+  05/5fe8/: call cliffLookup
+
+  # replace a random item drop with gale seeds 1/4 of the time if the player is
+  # out of gale seeds. just to be nice since warping out of one-ways is in
+  # logic.
+  06/dropExtraGalesOnEmpty: |
+      ld a,TREASURE_GALE_SEEDS
+      call checkTreasureObtained
+      jr nc,.done
+      ld l,b8
+      or (hl)
+      jr nz,.done
+      call getRandomNumber
+      cp a,40
+      jr nc,.done
+      ld c,08
+      .done
+      call getFreePartSlot
+      ret
+  06/47f5/: call dropExtraGalesOnEmpty
+
+  # custom script command to use on d1 entrance screen: set ccaa to 01 until
+  # bit of cfc0 is set. fixes a vanilla bug where dismounting an animal on
+  # that screen allowed you to enter without the key.
+  0b/d1EntranceScriptCmd: |
+      pop hl
+      push bc
+      ld bc,9600
+      call compareRoom
+      pop bc
+      ret nz
+      ld a,01
+      ld (ccaa),a
+      xor a
+      jp 432d
+  # new script command address and id
+  0b/406d/: dw d1EntranceScriptCmd
+  0b/4dea/: db b2
 
   # move sleeping talon and his mushroom so they don't block the chest.
   0b/6080/: db 78,a8 # mushroom
@@ -38,9 +148,15 @@ seasons:
   # you go up the stairs without magnet glove.
   15/4f62/: db 38
 
+  3f/460d/: ld hl,seedCapacityTable
+
 ages:
+  00/0c9a/: call filterMusic
+
   # vanilla bug: compass doesn't show D6 boss key chest.
   01/4eea/: db 34
+
+  03/4d6b/: call skipCapcom
 
   # make guy in front of d2 go away if you have bombs.
   09/5242/: |
@@ -74,6 +190,14 @@ ages:
   10/7d4e/: jr nz,00 # present -> past
   10/7d57/: jr c,00  # past -> present
 
+  # allow harvesting seeds from trees with either shooter or satchel.
+  11/checkCanHarvestSeeds: |
+      call checkTreasureObtained
+      ret c
+      ld a,TREASURE_SHOOTER
+      jp checkTreasureObtained
+  11/4aba/: call checkCanHarvestSeeds
+
   # remove the usual deku soldier event (taken to palace etc).
   12/58f5/: ret
   # cut off end of soldier's text so it makes sense when giving item.
@@ -86,6 +210,20 @@ ages:
   12/5a9e/: db 68,48
   23/718e/: db 72,50,50,73
 
+  # don't equip sword in shooting gallery if link doesn't have it. it wouldn't
+  # work anyway.
+  15/setShootingGalleryEquips: |
+      ld a,TREASURE_SWORD
+      call checkTreasureObtained
+      ld a,00
+      ldi (hl),a
+      ret nc
+      dec hl
+      ld a,TREASURE_SWORD
+      ldi (hl),a
+      ret
+  15/50ae/: call setShootingGalleryEquips
+
   # prevent stairs disappearing in event where maku tree is attacked by
   # moblins, preventing softlock if player gets there with seed satchel and no
   # sword or something stupid.
@@ -94,3 +232,5 @@ ages:
   # prevent bridge-building foreman from setting flag 22 so that animal/flute
   # event doesn't happen in fairies' woods.
   15/75bf/: db setglobalflag,a2 # bit 7 = unset flag
+
+  3f/4607/: ld hl,seedCapacityTable

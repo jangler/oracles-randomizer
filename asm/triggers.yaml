@@ -5,17 +5,31 @@
 # whatever event that it causes).
 
 seasons:
+  # have horon village shop stock and sell its items from the start, and don't
+  # stop the flute appearing because of animal flags.
+  08/48d7/: nop; nop      # sword check
+  08/4adf/: nop; nop; nop # sword check
+  08/4afd/: jr 0c         # animal + essence + linked checks
+
   # initiate all these events without requiring essences:
-  09/4e36/: jp 4eab             # spawn moosh
-  0f/7428/: jr nz,00            # ^
-  09/4e40/: or a,57             # spawn dimitri
-  09/4e72/: or a,4f             # spawn ricky
-  09/7750/: or a,01             # stock member's card
-  0a/4be9/: ld a,TREASURE_PUNCH # master diver
-  0a/4bf4/: cp a,00             # ^
-  0a/4f8a/: cp a,00             # old man (round jewel)
+  08/5886/: ld a,02  # master diver
+  0a/4be9/: ld a,02  # ^
+  0a/4bf4/: cp a,00  # ^
+  08/6c31/: cp a,00  # piratian captain
+  08/7c40/: cp a,00  # subrosian at volcano
+  08/7cd2/: cp a,00  # ^
+  09/4e36/: jp 4eab  # spawn moosh
+  0f/7428/: jr nz,00 # ^
+  09/4e40/: or a,57  # spawn dimitri
+  09/4e72/: or a,4f  # spawn ricky
+  09/7750/: or a,01  # stock member's card
+
+  0a/4f8a/: cp a,00  # old man (round jewel)
   # dimitri also won't spawn normally if you have flippers.
   09/4e55/: ld a,TREASURE_CANE_OF_SOMARIA
+
+  # allow desert pits to work even if player has the actual bell already.
+  08/73a2/: nop; nop
 
   # maku seed: count number of essences, not highest numbered essence.
   09/7da3/: call getNumSetBits; jr 01
@@ -24,6 +38,56 @@ seasons:
   0b/4eb1/: db jumpifitemobtained,TREASURE_PUNCH
 
 ages:
+  # only increment the maku tree's state if on the maku tree screen, or if
+  # all essences are obtained, set it to the value it would normally have at
+  # that point in the game. this allows getting the maku tree's item as long
+  # as you haven't collected all essences.
+  00/checkMakuState: |
+      ld a,(wActiveGroup)
+      cp a,02
+      jr nc,.notAtMakuTree
+      ld a,(wActiveRoom)
+      cp a,38
+      jr nz,.notAtMakuTree
+      ld a,(wMakuTreeState)
+      inc a
+      cp a,11
+      ret
+      .notAtMakuTree
+      ld a,(wEssencesObtained)
+      inc a
+      scf
+      jr nz,.notAllEssences
+      ld a,0e
+      ret
+      .notAllEssences
+      ld a,(wMakuTreeState)
+      ret
+  00/3e56/: call checkMakuState
+
+  # make ricky appear if you have his gloves, even if rafton doesn't have rope.
+  0a/checkShouldRickyAppear: |
+      call checkGlobalFlag
+      ret nz
+      ld a,(c6a3) # byte in wObtainedTreasureFlags
+      bit 0,a
+      ret nz
+      ld a,(wRickyState)
+      or a
+      ret
+  0a/4bb8/: call checkShouldRickyAppear
+
+  # require giving rafton rope before the island chart.
+  0a/checkRaftonHasRope: |
+      call checkTreasureObtained
+      ret nc
+      ld a,15
+      call checkGlobalFlag
+      ret z
+      scf
+      ret
+  0a/4d5f/: call checkRaftonHasRope
+
   # initiate all these events without requiring essences:
   04/6a44/: nop        # clear rubble from rolling ridge base present
   04/6a35/: nop        # open "new" rolling ridge present tunnel
@@ -48,10 +112,48 @@ ages:
   # sell 150 rupee item from lynna city shop from the start
   09/4333/: nop; nop
 
+  # saving nayru without having saved the maku tree leads to weirdness, so just
+  # save the maku tree along with nayru.
+  0a/saveMakuTreeWithNayru: |
+      call setGlobalFlag
+      ld a,(wMakuTreeState)
+      cp a,0e
+      jr z,.next
+      ld a,02
+      .next
+      dec a
+      ld (wMakuTreeState),a
+      ld a,0c
+      call setGlobalFlag
+      ld a,12
+      call setGlobalFlag
+      ld a,3f
+      call setGlobalFlag
+      push hl
+      ld hl,c738
+      res 0,(hl)
+      inc h
+      set 7,(hl)
+      ld l,48
+      set 0,(hl)
+      pop hl
+      ret
+  0a/5541/: call saveMakuTreeWithNayru
+
   # skip essence checks for goron elder event.
   0c/6b1d/: db jumpifmemoryset; dw cddb; db 00
   0c/6b83/: db jumpifmemoryset; dw cddb; db 00
   15/735d/: db jumpifmemoryset; dw cddb; db 00
+
+  # keep black tower in initial state until the player gets the item from the
+  # worker.
+  10/checkBlackTowerState: |
+      ld hl,7927
+      ret z
+      ld a,(c9e1)
+      and a,20
+      ret
+  10/7914/: call checkBlackTowerState
 
   # change conditions for rafton 2's script based on whether the player has the
   # magic oar, not on essences. doesn't matter since trade quest is gone now.

@@ -1,5 +1,127 @@
+# static and dynamic changes to tile layouts for rooms.
+
+common:
+  # look up tiles in custom replacement table after loading a room. the format
+  # is (group, room, bitmask, YX, tile ID), with ff ending the table. if the
+  # bitmask AND the current room flags is nonzero, the replacement is not made.
+  04/applyExtraTileSubstitutions: |
+      push bc
+      push de
+      call getThisRoomFlags
+      ld e,a
+      ld hl,tileSubTable
+      ld a,(wActiveGroup)
+      ld b,a
+      ld a,(wActiveRoom)
+      ld c,a
+      .loop
+      ldi a,(hl)
+      cp a,ff
+      jr z,.done
+      cp b
+      jr nz,.groupMismatch
+      ldi a,(hl)
+      cp c
+      jr nz,.roomMismatch
+      ldi a,(hl)
+      and e
+      jr nz,.flagMismatch
+      push de
+      ld d,cf
+      ldi a,(hl)
+      ld e,a
+      ldi a,(hl)
+      ld (de),a
+      pop de
+      jr .loop
+      .groupMismatch
+      inc hl
+      .roomMismatch
+      inc hl
+      .flagMismatch
+      inc hl
+      inc hl
+      jr .loop
+      .done
+      pop de
+      pop bc
+      call applyAllTileSubstitutions
+      ret
+
 # bank 21 = spring, 22 = summer, 23 = autumn, 24 = winter.
 seasons:
+  # override room layout with bank 02's winterLayout when appropriate.
+  00/loadWinterLayout: |
+      push de
+      ld a,(wRoomStateModifier)
+      cp a,03 # winter
+      jr nz,.done
+      push bc
+      ld bc,9d00
+      call compareRoom
+      pop bc
+      jr nz,.done
+      ld a,02 # bank
+      ld (ff00+8c),a
+      ld hl,winterLayout
+      .done
+      ld a,(ff00+8c)
+      jp 39e2 # can't just ret, idr why
+  00/39df/: jp loadWinterLayout
+
+  # custom room layout for the problematic woods of winter screen in winter.
+  # the code here is one 8-tile compression block per line.
+  02/winterLayout: |
+      db 55,80,81,81,81,81
+      db 7c,16,80,82,17
+      db f0,1b,c4,c4,70,72
+      db 00,01,0d,17,c4,80,81,70,71
+      db 60,04,70,71,1a,1b,1c,f7
+      db 05,80,81,81,70,71,9e,9e
+      db 1c,16,04,15,17,80,81
+      db 30,1b,99,9b,d9,1a,01,19
+      db 00,70,71,15,16,17,f7,7a,8c
+      db 11,18,19,80,81,01,19,70
+
+  # data for applyAllTileSubstitutions: group,room,flags,yx,tile
+  04/tileSubTable: |
+      db 00,01,01,52,04 # permanently remove flower outside D6 when cut
+      db 00,5c,00,64,48 # extend moblin keep railing as chokept for warning
+      db 00,5c,00,74,53 # cont.
+      db 00,9a,00,14,12 # remove rock across pit blocking exit from D5
+      db 00,8a,00,66,64 # ^ but add rock at bottom of cliff to block ricky
+      db 00,9a,00,34,04 # remove bush next to rosa portal
+      db 00,b0,00,21,13 # remove spool swamp pits to prevent winter softlock
+      db 00,b0,00,51,13 # cont.
+  04/d2AltEntranceTileSubs: |
+      # these are enabled only if entrances are randomized
+      db fe,8d,00,18,04 # remove left stairs
+      db fe,8e,00,12,04 # remove right stairs
+  04/endTileSubTable: |
+      db ff
+
+  # unset a room flag when the flower outside D6 is broken. see tileSubTable.
+  06/checkBreakD6Flower: |
+      push af
+      push bc
+      ld bc,0100
+      call compareRoom
+      pop bc
+      jr nz,.done
+      ld a,(ff00+hBrokenTilePosition)
+      cp a,52
+      jr nz,.done
+      push hl
+      ld hl,c701
+      res 0,(hl)
+      pop hl
+      .done
+      pop af
+      jp setTile
+  06/4774/: call checkBreakD6Flower
+
+  00/3854/: call applyExtraTileSubstitutions
+
   # change water tiles outside d4 from deep to shallow, to prevent softlock
   # from entering without flippers or default summer.
   21/54a9/: db fa,6b,6b,53,fa,3f,fa
@@ -46,6 +168,80 @@ seasons:
   24/7910/: db 2b,a0,b9,2b
 
 ages:
+  00/38c0/: call applyExtraTileSubstitutions
+
+  # data for applyAllTileSubstitutions: group,room,flags,yx,tile
+  04/tileSubTable: |
+      db 01,48,00,45,d7 # portal south of past maku tree
+      db 00,39,00,63,f0 # open chest on intro screen
+      db 00,39,20,63,f1 # closed chest on intro screen
+      db 00,6b,00,42,3a # removed tree in yoll graveyard
+      db 00,6b,02,42,ce # not removed tree in yoll graveyard
+      db 00,83,00,43,a4 # rock outside D2
+      db 03,0f,00,66,f9 # water in d6 past entrance
+      db 01,13,00,61,d7 # portal in symmetry city past
+      db 00,25,00,37,d7 # portal in nuun highlands
+      db 05,da,01,a4,b2 # tunnel to moblin keep
+      db 05,da,01,a5,b2 # cont.
+      db 05,da,01,a6,b2 # cont.
+      db 00,24,02,49,63 # other side of symmetry city bridge
+      db 00,24,02,59,63 # cont.
+      db 00,24,02,69,63 # cont.
+      db 00,24,02,79,73 # cont.
+      db 01,2c,00,70,69 # ledge in rolling ridge east past
+      db 01,2c,00,71,06 # cont.
+      db 01,2c,00,72,67 # cont.
+      db 00,a9,00,67,f2 # portal sign on crescent island
+      db 01,a5,00,35,48 # ledge by library past
+      db 01,a5,00,45,0b # cont.
+      db 01,a5,00,55,6c # cont.
+      db 00,83,00,44,d7 # portal outside D2 present
+      db ff
+
+  # burning the first tree in yoll graveyard should set room flag 1 so that it
+  # can be gone for good (see tileSubTable).
+  06/removeYollTreeWhenBurned: |
+      push af
+      ld a,(ff00+8f)
+      cp a,0c
+      jr nz,.done
+      push bc
+      ld bc,6b00
+      call compareRoom
+      jr nz,.next
+      ld hl,c76b
+      set 1,(hl)
+      .next
+      pop bc
+      .done
+      pop af
+      ld hl,wTotalSignsDestroyed
+      ret
+  06/47aa/: call removeYollTreeWhenBurned
+
+  # set room flag for tunnel behind keep when defeating great moblin (see
+  # tileSubTable).
+  0f/openMoblinKeepTunnel: |
+      ld hl,c709
+      set 0,(hl)
+      ld hl,cada
+      ret
+  0f/7f3e/: call openMoblinKeepTunnel
+
+  # set room flag for other side of symmetry city bridge at end of building
+  # cutscene (see tileSubTable).
+  15/setBridgeFlag: |
+      push hl
+      xor a
+      ld (wDisabledObjects),a
+      ld a,25
+      call setGlobalFlag
+      ld hl,c724
+      set 1,(hl)
+      pop hl
+      ret
+  0c/7a6f/: db asm15; dw setBridgeFlag
+
   # put a "return bush" for long hook across from syrup's shop.
   23/7ea0/: db 27,c8
   23/7ead/: db 22

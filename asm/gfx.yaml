@@ -1,4 +1,227 @@
+# see doc/technical/object_gfx.md for an explanation of how object graphics in
+# general work. most of the code here has to do with interactions other than
+# the id $60 "treasure" interaction that must use treasure interaction
+# graphics.
+
+common:
+  # overrides the sprite data loaded for certain interactions. this is mostly
+  # used for "non-item" interactions that depict items, like the ones in shops.
+  3f/checkLoadCustomSprite: |
+      call _interactionGetData
+      push af
+      push bc
+      push hl
+      ld e,41
+      ld a,(de)
+      ld b,a
+      inc e
+      ld a,(de)
+      ld c,a
+      ld e,02
+      ld hl,customSpriteJumpTable
+      call searchDoubleKey
+      jr nc,.done
+      ldi a,(hl)
+      ld b,a
+      ld a,(hl)
+      pop hl
+      ld h,a
+      ld l,b
+      pop bc
+      jp (hl)
+      .done
+      pop hl
+      pop bc
+      pop af
+      ret
+
+  # set hl = the address of the sprite for treasure with ID b and subID c.
+  # it's usually most convenient to call this through lookupItemSprite or
+  # lookupItemSpriteReverse.
+  3f/lookupItemSprite_body: |
+      ld e,BANK_TREASURE_DATA
+      ld hl,getTreasureDataSprite
+      call interBankCall
+      ld a,e
+      ld hl,interaction60SubidData
+      add a,a
+      rst 10
+      ld a,e
+      rst 10
+      ret
+
+  # used if item at e:hl is stored in (ID,subID) order.
+  3f/lookupItemSprite: |
+      push bc
+      call readWord
+      call lookupItemSprite_body
+      pop bc
+      ret
+
+  # used if item at e:hl is stored in (subID,ID) order.
+  3f/lookupItemSpriteReverse: |
+      push bc
+      call readWord
+      ld a,b
+      ld b,c
+      ld c,a
+      call lookupItemSprite_body
+      pop bc
+      ret
+
+  # copy three bytes at hl to a temporary buffer and set hl = the address of
+  # the last byte, with a as its value.
+  3f/copySpriteData: |
+      push bc
+      push de
+      ld b,3
+      ld de,cff0
+      call copyMemory
+      push de
+      pop hl
+      dec hl
+      pop de
+      pop bc
+      ret
+
 seasons:
+  # make the rod of seasons interaction behave like a regular item,
+  # graphically. otherwise asymmetric wide items can't go there.
+  14/overrideAnimationId: |
+      ld e,41
+      ld a,(de) # ID
+      cp a,e6
+      ret nz
+      ld e,42
+      ld a,(de) # sub ID
+      cp a,02
+      ld a,e6
+      ret nz
+      ld a,60
+      ret
+  00/25d9/: call overrideAnimationId
+  00/2600/: call overrideAnimationId
+
+  # format (ID, subID, jump address). these functions *must* pop af as the last
+  # instruction before returning.
+  3f/customSpriteJumpTable: |
+      db 47,00; dw setMembersShop1Sprite
+      db 47,02; dw setMembersShop2Sprite
+      db 47,05; dw setMembersShop3Sprite
+      db 47,0d; dw setShopSprite
+      db 59,00; dw setPedestalSprite
+      db 60,16; dw setFeatherSprite
+      db 6e,00; dw setStolenFeatherSprite
+      db 81,00; dw setMarket1Sprite
+      db 81,04; dw setMarket2Sprite
+      db 81,0d; dw setMarket5Sprite
+      db c6,00; dw setHerosCaveSprite
+      db e6,02; dw setTempleOfSeasonsSprite
+      db ff
+
+  3f/setMembersShop1Sprite: |
+      ld e,08
+      ld hl,4cce
+      jp setGenericSprite
+
+  3f/setMembersShop2Sprite: |
+      ld e,08
+      ld hl,4cd2
+      jp setGenericSprite
+
+  3f/setMembersShop3Sprite: |
+      ld e,08
+      ld hl,4cd8
+      jp setGenericSprite
+
+  3f/setShopSprite: |
+      ld e,08
+      ld hl,4ce8
+      jp setGenericSprite
+
+  3f/setPedestalSprite: |
+      ld e,0b
+      ld hl,6418
+      jp setGenericSprite
+
+  3f/setFeatherSprite: |
+      ld e,43
+      ld a,(de) # treasure sub ID
+      cp a,02
+      jp z,setStolenFeatherSprite
+      ld hl,671e
+      ld a,(wFeatherLevel)
+      or a
+      jr z,.feather
+      ld hl,6721
+      .feather
+      pop af
+      ret
+
+  3f/setStolenFeatherSprite: |
+      ld hl,671e
+      ld a,(wFeatherLevel)
+      cp a,02
+      jr nz,.next
+      ld hl,6721
+      .next
+      pop af
+      ret
+
+  3f/setMarket1Sprite: |
+      ld e,09
+      ld hl,77da
+      jp setGenericSprite
+
+  3f/setMarket2Sprite: |
+      ld e,09
+      ld hl,77e2
+      jp setGenericSprite
+
+  3f/setMarket5Sprite: |
+      ld e,09
+      ld hl,77f4
+      jp setGenericSprite
+
+  3f/setGenericSprite: |
+      call lookupItemSprite
+      pop af
+      ret
+
+  # ID and subID not adjacent.
+  3f/setHerosCaveSprite: |
+      ld e,0a
+      ld hl,7b90
+      push bc
+      call readByte
+      ld b,e
+      inc hl
+      inc hl
+      ld e,0a
+      call readByte
+      ld c,e
+      call lookupItemSprite_body
+      pop bc
+      pop af
+      ret
+
+  # ID and subID not adjacent.
+  3f/setTempleOfSeasonsSprite: |
+      ld e,15
+      ld hl,70ce
+      push bc
+      call readByte
+      ld b,e
+      dec hl
+      dec hl
+      ld e,15
+      call readByte
+      ld c,e
+      call lookupItemSprite_body
+      pop bc
+      pop af
+      ret
+
   # give the noble sword (lost woods pedestal) object OAM pointers compatible
   # with normal treasure graphics.
   14/53d7/: dw 5719
@@ -12,6 +235,120 @@ seasons:
   3f/67c6/: db 5d,10,26 # rare peach stone
   3f/67c9/: db 65,0c,23 # ribbon
 
+  3f/4356/: call checkLoadCustomSprite
+
 ages:
+  # format (ID, subID, jump address). these functions *must* pop af as the last
+  # action before returning.
+  3f/customSpriteJumpTable: |
+      db 40,00; dw setSoldierSprite
+      db 47,0d; dw setShopItemSprite
+      db 63,14; dw setHiddenTokaySprite
+      db 63,15; dw setHiddenTokaySprite
+      db 63,3e; dw setWildTokaySprite
+      db 6b,0b; dw setChevalsInventionSprite
+      db 6b,0c; dw setChevalsTestSprite
+      db 77,31; dw setD8StalfosItemSprite
+      db 80,07; dw setLibraryPastSprite
+      db 80,08; dw setLibraryPresentSprite
+      db ff
+
+  # red soldier sprite data for deku forest soldier check.
+  3f/soldierSpriteData: |
+      db 4d,00,22
+
+  3f/setSoldierSprite: |
+      ld hl,soldierSpriteData
+      pop af
+      ret
+
+  3f/setShopItemSprite: |
+      ld e,09
+      ld hl,4511
+      call lookupItemSprite
+      pop af
+      ret
+
+  3f/setHiddenTokaySprite: |
+      ld e,15
+      ld hl,5b36
+      call lookupItemSprite
+      pop af
+      ret
+
+  3f/setWildTokaySprite: |
+      ld e,15
+      ld hl,5bbb
+      call lookupItemSprite
+      pop af
+      ret
+
+  3f/setChevalsInventionSprite: |
+      ld e,0c
+      ld hl,7232
+      jp setInteraction6bSprite
+
+  3f/setChevalsTestSprite: |
+      ld e,0c
+      ld hl,723b
+      jp setInteraction6bSprite
+
+  3f/setD8StalfosItemSprite: |
+      ld e,0a
+      ld hl,6077
+      call lookupItemSpriteReverse
+      pop af
+      ret
+
+  3f/setLibraryPresentSprite: |
+      ld e,15
+      ld hl,5db9
+      jp setInteraction80Sprite
+
+  3f/setLibraryPastSprite: |
+      ld e,15
+      ld hl,5dd8
+      jp setInteraction80Sprite
+
+  # needs flags changed, can't be bomb flower
+  3f/setInteraction6bSprite: |
+      call lookupItemSprite
+      call copySpriteData
+      bit 0,(hl)
+      jr nz,.next
+      inc (hl)
+      jr .next2
+      .next
+      dec (hl)
+      .next2
+      dec hl
+      dec hl
+      pop af
+      ret
+
+  # needs flags changed, can't be bomb flower
+  3f/setInteraction80Sprite: |
+      call lookupItemSprite
+      call copySpriteData
+      ld e,a
+      and a,0f
+      jr nz,.next
+      ld a,e
+      add a,03
+      jr .next2
+      .next
+      cp a,02
+      ld a,e
+      jr z,.next2
+      inc a
+      .next2
+      ld (hl),a
+      dec hl
+      dec hl
+      pop af
+      ret
+
   # fix the zora scale object palette (to match inventory?)
   3f/67d0/: db 43
+
+  3f/4356/: call checkLoadCustomSprite

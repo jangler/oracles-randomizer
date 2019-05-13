@@ -1,0 +1,79 @@
+# normal rings are 00-3f; dev ring is 40 and enables some features that save
+# time when testing in-game.
+
+common:
+  # warp to room under cursor if using tree warp with developer ring.
+  02/devWarp: |
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      jr nz,.noWarp
+      ld a,(wActiveGroup)
+      cp a,02
+      jr nc,.noWarp
+      or a,80
+      ld (wWarpDestGroup),a
+      ld a,(wMapMenu_cursorIndex)
+      ld (wWarpDestIndex),a
+      .noWarp
+      ld a,03
+      call setMusicVolume
+      ret
+
+  # treat all rooms on the map as visited when wearing the dev ring.
+  02/devRingCheckRoomVisited: |
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      jr nz,.next
+      or a
+      ret
+      .next
+      ld a,(hl)
+      bit 4,a
+      ret
+
+  # if wearing dev ring, jump over any tile like a ledge by pressing B with no
+  # B item equipped.
+  05/devJump: |
+      push af
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      jr nz,.next
+      ld a,(wInventoryB)
+      or a
+      jr nz,.next
+      ld a,(wKeysPressed)
+      and a,02
+      jr z,.next
+      pop af
+      ld a,(w1Link.angle)
+      scf
+      ret
+      .next
+      pop af
+      ret
+
+seasons:
+  02/5e9a/: call devWarp
+  02/6578/: call devRingCheckRoomVisited
+
+  # if wearing dev ring, change season regardless of where link is standing.
+  07/devChangeSeason: |
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      ret z
+      ld a,(wActiveTileType)
+      cp a,08
+      ret
+  07/5b75/: call devChangeSeason; nop; nop
+
+ages:
+  02/5fcb/: call devWarp
+  02/6649/: call devRingCheckRoomVisited
+
+  # check whether a dev jump should happen, then check whether a normal cliff
+  # jump should happen.
+  05/cliffLookup: |
+      call devJump
+      ret c
+      jp lookupCollisionTable
+  05/6083/: call cliffLookup

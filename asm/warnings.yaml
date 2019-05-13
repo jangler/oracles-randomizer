@@ -1,0 +1,229 @@
+# seasons interrupts the player to display warnings in situations where the
+# player could softlock themselves by doing something "dumb" and out of logic,
+# like jumping down a ledge with no way back up and setting a save point at the
+# bottom.
+
+seasons:
+  # takes b = high byte of season addr, returns season in b.
+  01/readDefaultSeason: |
+      ld h,7e
+      ld l,b
+      ld a,(hl)
+      ld b,a
+      ret
+
+  08/5663/: dw script_checkDisplayWarning
+
+  0b/script_warnCliffText: |
+      db showtext; dw 0026
+      db enableinput
+      db scriptend
+
+  0b/script_warnBushText: |
+      db scriptend # impossible since 2.2.0?
+
+  0b/script_warnKeySkipText: |
+      db showtext; dw 0226
+      db enableinput
+      db scriptend
+
+  0b/script_checkDisplayWarning: |
+      db jumpifmemoryeq; dw wActiveRoom; db d9; dw 4e87 # use vanilla script
+      db checkcollidedwithlink_onground
+      db asm15; dw checkDisplayWarning
+      db checkcfc0_bit0
+      db disableinput
+      db setcounter1,3c
+      db jumptable_memoryaddress; dw cfe0 # value set by warning function
+      dw script_warnCliffText
+      dw script_warnBushText
+      dw script_warnKeySkipText
+
+  # moblin keep -> sunken city ledge (add warning)
+  11/moblinKeepStaticObjects: |
+      db f2
+      db ab,00,40,70
+      db 22,0a,58,44
+      db f8
+      db 2d,00,33
+      db fe
+  11/650b/: db f3; dw moblinKeepStaticObjects; db ff
+
+  # natzu / woods of winter cliff (add warning)
+  11/flowerCliffStaticObjects: |
+      db f2
+      db 9c,00,58,58
+      db 22,0a,30,58
+      db fe
+  11/6568/: db f3; dw flowerCliffStaticObjects; db ff
+
+  # sunken city diving spot (add warning)
+  11/divingSpotStaticObjects: |
+      db f2
+      db 1f,0d,68,68
+      db 3e,31,18,68
+      db 22,0a,64,68
+      db fe
+  11/69cc/: db f3; dw divingSpotStaticObjects; db ff
+
+  # mount cucco waterfall/vine screen (add warning)
+  11/waterfallStaticObjects: |
+      db f2
+      db 1f,08,68,68
+      db 22,0a,20,18
+      db fe
+  11/6c10/: db f3; dw waterfallStaticObjects; db ff
+
+  # hss skip room (add warning)
+  11/hssSkipStaticObjects: |
+      db f2
+      db 22,0a,88,98
+      db f3; dw 5593
+      db fe
+  11/7ada/: db f3; dw hssSkipStaticObjects
+
+  # ORs the default season in the given area (low byte b in bank 1) with the
+  # seasons the rod has (c), then ANDs and compares the results with d.
+  15/checkSeasonAccessInArea: |
+      ld e,01
+      ld hl,readDefaultSeason
+      call interBankCall
+      ld a,b
+      or a
+      ld a,01
+      jr z,.next
+      .loop
+      sla a
+      dec b
+      jr nz,.loop
+      .next
+      or c
+      and d
+      cp d
+      ret
+
+  # returns c if the player has gale seeds and the seed satchel. used for
+  # warnings for cliffs and diving.
+  15/checkGaleSatchel: |
+      push bc
+      ld b,a
+      ld a,TREASURE_SEED_SATCHEL
+      call checkTreasureObtained
+      jr nc,.next
+      ld a,TREASURE_GALE_SEEDS
+      call checkTreasureObtained
+      .next
+      ld a,b
+      pop bc
+      ret
+
+  # all other warning functions jump here.
+  15/warnGeneric: |
+      call getFreeInteractionSlot
+      ret nz
+      ld (hl),9f
+      ld l,46
+      ld (hl),3c
+      ld bc,f100
+      ld de,w1Link.yh
+      call objectCopyPositionWithOffset
+      ld a,SND_CLINK
+      call playSound
+      ld hl,cfc0
+      set 0,(hl)
+      ret
+
+  # set cfe0 to the cliff warning text, then display the warning.
+  15/warnCliff: |
+      xor a
+      ld (cfe0),a
+      jp warnGeneric
+
+  # warning for the ledge from natzu to eastern suburbs.
+  15/warnFlowerCliff: |
+      call checkGaleSatchel
+      ret c
+      ld b,61 # eastern suburbs
+      ld d,01 # spring
+      call checkSeasonAccessInArea
+      ret z
+      jp warnCliff
+
+  # warning for the diving spot from sunken city to woods of winter.
+  15/warnDivingSpot: |
+      ld a,b
+      cp a,03 # winter
+      ret z
+      call checkGaleSatchel
+      ret c
+      ld b,61 # eastern suburbs
+      ld d,09 # spring + winter
+      call checkSeasonAccessInArea
+      ret z
+      jp warnCliff
+
+  # warning for the ledge from mt. cucco to sunken city.
+  15/warnWaterfallCliff: |
+      call checkGaleSatchel
+      ret c
+      ld b,65 # sunken city / mt. cucco
+      ld d,02 # summer
+      call checkSeasonAccessInArea
+      ret z
+      jp warnCliff
+
+  # warning for the ledge from moblin keep to sunken city.
+  15/warnMoblinKeep: |
+      call checkGaleSatchel
+      ret c
+      ld a,(wAnimalRegion)
+      cp a,0c # dimitri
+      ret nz
+      ld a,TREASURE_FEATHER
+      call checkTreasureObtained
+      ret c
+      jp warnCliff
+
+  # warning for small key softlock with HSS skip. checks and sets room flags so
+  # as not to display the warning more than once, ever.
+  15/warnHssSkip: |
+      ld a,(ca86) # check if ice puzzle room is visited?
+      or a
+      ret nz
+      call getThisRoomFlags
+      bit 6,(hl)
+      ret nz
+      set 6,(hl)
+      ld a,02
+      ld (cfe0),a # warning text jump table index
+      jp warnGeneric
+
+  # wraps checkDisplayWarning.
+  15/checkDisplayWarning: |
+      push bc
+      push de
+      call checkDisplayWarning_body
+      pop de
+      pop bc
+      ret
+
+  # this communicates with the warning script by setting bit zero of $cfc0
+  # if the warning needs to be displayed (based on room, season, etc), and
+  # also displays the exclamation mark if so.
+  15/checkDisplayWarning_body: |
+      ld a,(wRoomStateModifier)
+      ld b,a
+      ld a,(wObtainedSeasons)
+      ld c,a
+      ld a,(wActiveRoom)
+      cp a,7c
+      jp z,warnFlowerCliff
+      cp a,6e
+      jp z,warnDivingSpot
+      cp a,3d
+      jp z,warnWaterfallCliff
+      cp a,5c
+      jp z,warnMoblinKeep
+      cp a,78
+      jp z,warnHssSkip
+      jp warnGeneric

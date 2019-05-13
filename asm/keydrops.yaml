@@ -1,7 +1,8 @@
+# randomize small key drops in dungeons.
+
 common:
   # return treasure id and subid in bc for an item in the current room. this is
-  # used for small key drops and heart pieces, which are different instances of
-  # the same event/object.
+  # used for small key drops, which are different instances of the same event.
   00/lookupRoomTreasure: |
       push de
       push hl

@@ -1,20 +1,55 @@
-# owl text *MUST* be the last thing in the bank, since it's going to grow
-# dynamically later - so this file must be included last. all of this is set
-# after being loaded; see the rom/text.yaml for the contents.
+# all of the text itself is set after being loaded; see rom/text.yaml for the
+# contents. TODO: that file will probably move soon?
+
+common:
+  # override addresses for owl statue text.
+  3f/useOwlText: |
+      ld (w7ActiveBank),a
+      ld a,(wTextIndexH)
+      cp a,3d
+      ret nz
+      ld hl,owlTextOffsets
+      ld a,(wTextIndexL)
+      rst 18
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      ld a,BANK_OWL_TEXT
+      ld (w7ActiveBank),a
+      ret
 
 seasons:
+  3f/owlText: ''
+
+  # remove generic text from shops so that replacement text can be displayed.
+  08/4d46/: db 00,4c,00,1f,4d,00,4b,6d,4b,6d,4b,32,00,00,4b,00,00
+
+  0a/7b9e/: ret; nop; nop # ??
+
   1f/4533/cliffWarningText: ''
   1f/4584/hssSkipWarningText: ''
   1c/6b52/: dw 9202 # pointer to above
   1f/459f/warningEndText: ''
   1c/6b54/: dw 921d # pointer to above
 
-  3f/owlText: ''
+  3f/4fd9/: call useOwlText
 
 ages:
+  # set text index for portal sign on crescent island.
+  06/setSignTextIndex: |
+      ld bc,a900
+      call compareRoom
+      ld bc,0901
+      ret nz
+      ld bc,5601
+      ret
+  06/40e7/: call setSignTextIndex
+
+  38/owlText: ''
+
   1e/4c3e/tuneOfEchoesText: ''
   1d/7e48/tuneOfCurrentsText: ''
   1d/7e8e/tuneOfAgesText: ''
   23/583f/portalSignText: ''
 
-  38/owlText: ''
+  3f/4faa/: call useOwlText

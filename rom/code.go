@@ -24,27 +24,13 @@ type romBanks struct {
 	assembler *assembler
 }
 
-// used for unmarshaling asm data from yaml.
+// loaded from yaml, then converted to asm.
 type asmData struct {
-	filename string
-	Defines  map[string]uint16
-	Appends  map[byte][]map[string]string
-	Replaces map[byte][]AsmReplacement
-	FreeCode map[string]string `yaml:"freeCode"`
-}
-
-// also loaded from yaml, then converted to yaml.
-type metaAsmData struct {
 	filename string
 	Common   yaml.MapSlice
 	Floating yaml.MapSlice
 	Seasons  yaml.MapSlice
 	Ages     yaml.MapSlice
-}
-
-type AsmReplacement struct {
-	Addr     uint16
-	Old, New string
 }
 
 var codeMutables = map[string]*MutableRange{}
@@ -169,68 +155,30 @@ func makeRoomTreasureTable(game int) string {
 	return b.String()
 }
 
-// used by iterBankItems.
-type bankItem struct {
-	bank byte
-	item map[string]string
+// that's correct
+type eobThing struct {
+	addr         Addr
+	label, thing string
 }
 
-// sends the items in the banks of the asmData list in sequence.
-func iterBankItems(ads []*asmData) chan bankItem {
-	c := make(chan bankItem)
-
-	go func() {
-		for _, ad := range ads {
-			for bank, items := range ad.Appends {
-				for _, item := range items {
-					c <- bankItem{bank, item}
-				}
-			}
-		}
-		close(c)
-	}()
-
-	return c
-}
-
-// applies the labels and EOB declarations in the given asmData sets.
-func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) {
-	// get preset addrs and defines
-	for _, ad := range ads {
-		for k, v := range ad.Defines {
-			r.assembler.define(k, v)
-		}
-	}
-
+// applies the labels and EOB declarations in the asm data sets.
+func (r *romBanks) applyAsmData(game int, asmFiles []*asmData) {
 	// preprocess map slices
 	slices := make([]yaml.MapSlice, 0)
-	for _, meta := range metas {
+	for _, asmFile := range asmFiles {
 		if game == GameSeasons {
-			slices = append(slices, meta.Common, meta.Seasons)
+			slices = append(slices, asmFile.Common, asmFile.Seasons)
 		} else {
-			slices = append(slices, meta.Common, meta.Ages)
+			slices = append(slices, asmFile.Common, asmFile.Ages)
 		}
 	}
 
 	// include free code
 	freeCode := make(map[string]string)
-	for _, ad := range ads {
-		for k, v := range ad.FreeCode {
-			freeCode[k] = v
-		}
-	}
-	for _, meta := range metas {
-		for _, item := range meta.Floating {
+	for _, asmFile := range asmFiles {
+		for _, item := range asmFile.Floating {
 			k, v := item.Key.(string), item.Value.(string)
 			freeCode[k] = v
-		}
-	}
-	for item := range iterBankItems(ads) {
-		for name, body := range item.item {
-			if strings.HasPrefix(body, "/include") {
-				funcName := strings.Split(body, " ")[1]
-				item.item[name] = freeCode[funcName]
-			}
 		}
 	}
 	for _, slice := range slices {
@@ -244,11 +192,6 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 	}
 
 	// make placeholders for EOB labels
-	for item := range iterBankItems(ads) {
-		for name := range item.item {
-			r.assembler.define(name, 0)
-		}
-	}
 	for _, slice := range slices {
 		for _, item := range slice {
 			k := item.Key.(string)
@@ -262,47 +205,47 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 	originalEOBs := make([]uint16, 0x40)
 	copy(originalEOBs, r.endOfBank)
 
-	// write EOB asm using placeholders for labels, in order to get real addrs
-	for item := range iterBankItems(ads) {
-		for name, body := range item.item {
-			r.replaceAsm(Addr{item.bank, 0}, name, body)
-		}
-	}
+	// i'm not in the mood
+	allEobThings := make([]eobThing, 0, 3000) // 3000 is definitely fine
+
+	// put all the E O B Things in the E O B Things thing
 	for _, slice := range slices {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
 			if addr, label := parseMetalabel(k); addr.offset == 0 {
-				r.replaceAsm(Addr{addr.bank, 0}, label, v)
+				allEobThings = append(allEobThings,
+					eobThing{Addr{addr.bank, 0}, label, v})
 			}
 		}
+	}
+
+	// defines (which have no labels, by convention) must go first
+	sort.Slice(allEobThings, func(i, j int) bool {
+		return allEobThings[i].label == ""
+	})
+	// owl text must go last
+	for i, thing := range allEobThings {
+		if thing.label == "owlText" {
+			allEobThings = append(allEobThings[:i], allEobThings[i+1:]...)
+			allEobThings = append(allEobThings, thing)
+			break
+		}
+	}
+
+	// write EOB asm using placeholders for labels, in order to get real addrs
+	for _, thing := range allEobThings {
+		r.replaceAsm(thing.addr, thing.label, thing.thing)
 	}
 
 	// reset EOB boundaries
 	copy(r.endOfBank, originalEOBs)
 
 	// rewrite EOB asm, using real addresses for labels
-	for item := range iterBankItems(ads) {
-		for name, body := range item.item {
-			r.replaceAsm(Addr{item.bank, 0}, name, body)
-		}
-	}
-	for _, slice := range slices {
-		for _, item := range slice {
-			k, v := item.Key.(string), item.Value.(string)
-			if addr, label := parseMetalabel(k); addr.offset == 0 {
-				r.replaceAsm(addr, label, v)
-			}
-		}
+	for _, thing := range allEobThings {
+		r.replaceAsm(thing.addr, thing.label, thing.thing)
 	}
 
 	// make non-EOB asm replacements
-	for _, ad := range ads {
-		for bank, items := range ad.Replaces {
-			for _, item := range items {
-				r.replaceAsm(Addr{bank, item.Addr}, "", item.New)
-			}
-		}
-	}
 	for _, slice := range slices {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
@@ -314,28 +257,24 @@ func (r *romBanks) applyAsmData(game int, ads []*asmData, metas []*metaAsmData) 
 }
 
 // applies the labels and EOB declarations in the given asm data files.
-func (r *romBanks) applyAsmFiles(game int, oldPaths, newPaths []string) {
-	ads := make([]*asmData, len(oldPaths))
-	for i, path := range oldPaths {
-		ads[i] = new(asmData)
-		ads[i].filename = path
+func (r *romBanks) applyAsmFiles(game int, infos []os.FileInfo) {
+	asmFiles := make([]*asmData, len(infos))
+	for i, info := range infos {
+		asmFiles[i] = new(asmData)
+		asmFiles[i].filename = info.Name()
+
+		// readme etc
+		if !strings.HasSuffix(info.Name(), ".yaml") {
+			continue
+		}
+
+		path := "/asm/" + info.Name()
 		if err := yaml.Unmarshal(
-			FSMustByte(false, path), ads[i]); err != nil {
+			FSMustByte(false, path), asmFiles[i]); err != nil {
 			panic(err)
 		}
 	}
-
-	metas := make([]*metaAsmData, len(newPaths))
-	for i, path := range newPaths {
-		metas[i] = new(metaAsmData)
-		metas[i].filename = path
-		if err := yaml.Unmarshal(
-			FSMustByte(false, path), metas[i]); err != nil {
-			panic(err)
-		}
-	}
-
-	r.applyAsmData(game, ads, metas)
+	r.applyAsmData(game, asmFiles)
 }
 
 // ShowAsm writes the disassembly of the specified symbol to the given
@@ -431,32 +370,23 @@ func initRomBanks(game int) *romBanks {
 	if game == GameAges {
 		roomTreasureBank, numOwlIds = 0x38, 0x14
 	}
-	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeCollectModeTable())
+	r.replaceRaw(Addr{0x06, 0}, "collectModeTable",
+		makeCollectModeTable())
 	r.replaceRaw(Addr{roomTreasureBank, 0}, "roomTreasures",
 		makeRoomTreasureTable(game))
 	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets",
 		string(make([]byte, numOwlIds*2)))
 
-	r.applyAsmFiles(game,
-		[]string{
-			"/asm/common.yaml",
-			fmt.Sprintf("/asm/%s.yaml", gameNames[game]),
-		},
-		[]string{
-			"/asm/animals.yaml",
-			"/asm/cutscenes.yaml",
-			"/asm/gfx.yaml",
-			"/asm/item_events.yaml",
-			"/asm/item_lookup.yaml",
-			"/asm/layouts.yaml",
-			"/asm/linked.yaml",
-			"/asm/misc.yaml",
-			"/asm/rings.yaml",
-			"/asm/triggers.yaml",
-			"/asm/vars.yaml",
-
-			"/asm/text.yaml", // must go last
-		})
+	// load all asm files in the asm/ directory.
+	dir, err := FS(false).Open("/asm/")
+	if err != nil {
+		panic(err)
+	}
+	fi, err := dir.Readdir(-1)
+	if err != nil {
+		panic(err)
+	}
+	r.applyAsmFiles(game, fi)
 
 	return &r
 }

@@ -1,0 +1,301 @@
+# using a "magic number" once in asm is fine with a comment, but if it's likely
+# to be used more then once then it's probably better to define it here. the
+# items in this file don't have any actual instructions, just assembler
+# directives, so they're zero length.
+#
+# names usually match those from ages-disasm.
+
+common:
+  00/: |
+    # constants
+    define AREAFLAG_OUTDOORS,01
+    define COLLECT_PICKUP_ALT,02
+    define COLLECT_PICKUP,0a
+    define COLLECT_POOF,1a
+    define COLLECT_FALL_KEY,28
+    define COLLECT_FALL,29
+    define COLLECT_CHEST_NOFLAG,30
+    define COLLECT_CHEST,38
+    define COLLECT_DIVE,49
+    define COLLECT_CHEST_MAP_OR_COMPASS,68
+    define SND_GETITEM,4c
+    define SND_CLINK,50
+    define SND_ERROR,5a
+    define SND_SOLVEPUZZLE_2,5b
+    define TREASURE_SHIELD,01
+    define TREASURE_PUNCH,02
+    define TREASURE_CANE_OF_SOMARIA,04
+    define TREASURE_SWORD,05
+    define TREASURE_BOOMERANG,06
+    define TREASURE_ROD_OF_SEASONS,07
+    define TREASURE_MAGNET_GLOVES,08
+    define TREASURE_FLUTE,0e
+    define TREASURE_SHOOTER,0f
+    define TREASURE_SLINGSHOT,13
+    define TREASURE_FEATHER,17
+    define TREASURE_SEED_SATCHEL,19
+    define TREASURE_FOOLS_ORE,1e
+    define TREASURE_EMBER_SEEDS,20
+    define TREASURE_GALE_SEEDS,23
+    define TREASURE_MYSTERY_SEEDS,24
+    define TREASURE_TUNE_OF_ECHOES,25
+    define TREASURE_TUNE_OF_CURRENTS,26
+    define TREASURE_HEART_CONTAINER,2a
+    define TREASURE_RING,2d
+    define TREASURE_FLIPPERS,2e
+    define TREASURE_SMALL_KEY,30
+    define TREASURE_BOSS_KEY,31
+    define TREASURE_MAKU_SEED,36
+    define TREASURE_ESSENCE,40
+    define TREASURE_STAR_ORE,45
+    define TREASURE_GORON_LETTER,59
+    define DEV_RING,40
+
+    # script commands
+    define scriptend,00
+    define loadscript,83
+    define jumptable_memoryaddress,87
+    define setanimation,8f
+    define writememory,91
+    define ormemory,92
+    define rungenericnpc,97
+    define showtext,98
+    define checkabutton,9e
+    define checkcfc0_bit0,a0
+    define jumpifroomflagset,b0
+    define orroomflag,b1
+    define jumpifc6xxset,b3
+    define writec6xx,b4
+    define setglobalflag,b6
+    define setdisabledobjectsto00,b9
+    define setdisabledobjectsto11,ba
+    define disableinput,bd
+    define enableinput,be
+    define callscript,c0
+    define retscript,c1
+    define jumpalways,c4
+    define jumpifmemoryset,c7
+    define jumpifmemoryeq,cb
+    define checkcollidedwithlink_onground,d0
+    define setcounter1,d7
+    define spawnitem,dd
+    define giveitem,de
+    define jumpifitemobtained,df
+    define asm15,e0
+    define initcollisions,eb
+    define movedown,ee
+    define delay1frame,f0
+    define delay30frames,f6
+
+    # hram
+    define hRomBank,97
+
+    # wram
+    define wKeysPressed,c481
+    define wAnimalRegion,c610
+    define wRingsObtained,c616
+    define wTotalSignsDestroyed,c626
+    define wTextIndexL,cba2
+    define wTextIndexH,cba3
+    define wMapMenu_mode,cbb3
+    define wMapMenu_cursorIndex,cbb6
+    define wInventorySubmenu1CursorPos,cbd1
+    define wRingMenu_mode,cbd3
+    define wIsLinkedGame,cc01
+    define wMenuDisabled,cc02
+    define wCutsceneState,cc03
+    define wCutsceneTrigger,cc04
+    define wScreenOffsetY,cd08
+    define wScreenShakeCounterY,cd18
+    define w1Link.angle,d009
+    define w1Link.yh,d00b
+    define w1Link.xh,d00d
+    define w7ActiveBank,d0d4
+
+    # rom 00
+    define interBankCall,008a
+    define setFlag,020e
+    define getNumSetBits,0176
+    define compareHlToBc,01d6
+    define decHlRef16WithCap,0237
+
+    # rom 3f
+    define _interactionGetData,4437
+    define giveTreasure_body,44c8
+
+seasons:
+  00/: |
+    # constants
+    define BANK_TREASURE_DATA,15
+    define BANK_OWL_TEXT,3f
+    define BANK_ROOM_TREASURES,3f
+    define SEASON_SPRING,00
+    define SEASON_SUMMER,01
+    define SEASON_AUTUMN,02 # ages-disasm calls this SEASON_FALL but i refuse
+    define SEASON_WINTER,03
+    define STARTING_TREE_MAP_INDEX,f8
+
+    # hram
+    define hBrokenTilePosition,93
+    define hCameraY,a8
+    define hCameraX,aa
+    define hMusicVar,b5 # used in filterMusic
+
+    # wram
+    define wRickyState,c643
+    define wAnimalTutorialFlags,c646
+    define wInventoryB,c680
+    define wShieldLevel,c6a9
+    define wSwordLevel,c6ac
+    define wFluteIcon,c6af
+    define wObtainedSeasons,c6b0
+    define wFeatherLevel,c6b4
+    define wEssencesObtained,c6bb
+    define wActiveRing,c6c5
+    define wRingBoxLevel,c6c6
+    define wRememberedCompanionRoom,cc42
+    define wActiveGroup,cc49
+    define wActiveRoom,cc4c
+    define wRoomStateModifier,cc4e
+    define wAreaFlags,cc50
+    define wDungeonIndex,cc55
+    define wWarpDestGroup,cc63
+    define wWarpDestIndex,cc64
+    define wWarpTransition2,cc67
+    define wDisableTransitions,ccab
+    define wActiveTileType,ccb6
+
+    # rom 00
+    define multiplyABy4,01c3
+    define getRandomNumber,041a
+    define copyMemory,0462
+    define forceEnableIntroInputs,0862
+    define playSound,0c74
+    define setMusicVolume,0c89
+    define giveTreasure,16eb
+    define checkTreasureObtained,1717
+    define getRandomRingOfGivenTier,17b9
+    define refillSeedSatchel,17e5
+    define showText,184b
+    define getThisRoomFlags,1956
+    define openMenu,1a76
+    define lookupCollisionTable,1ddd
+    define convertShortToLongPosition,2089
+    define objectDelete_useActiveObjectType,219e
+    define objectCopyPosition,21fd
+    define objectCopyPositionWithOffset,221a
+    define interactionSetScript,24fe
+    define createTreasure,271b
+    define setLinkIdOverride,2a16
+    define checkGlobalFlag,30c7
+    define setGlobalFlag,30cd
+    define setTile,3a52
+    define getFreeInteractionSlot,3ac6
+    define interactionDelete,3ad9
+    define getFreePartSlot,3ea7
+
+    # rom 02
+    define _closeMenu,4f7b
+    define clearMenu,5072
+    define _mapMenu_checkCursorRoomVisited,655d
+    define _mapMenu_checkRoomVisited,6560
+    define _ringMenu_updateSelectedRingFromList,716c
+
+    # rom 04
+    define applyAllTileSubstitutions,5d94
+
+    # rom 05
+    define _specialObjectGetRelativeTileWithDirectionTable,44aa
+
+    # rom 0b
+    define scriptEnd,4103
+
+    # rom 15
+    define treasureObjectData,5129
+
+    # rom 3f
+    define applyParameter,454e
+    define realignUnappraisedRings,4675
+    define interaction60SubidData,66dc
+
+ages:
+  00/: |
+    # constants
+    define BANK_TREASURE_DATA,16
+    define BANK_OWL_TEXT,38
+    define BANK_ROOM_TREASURES,38
+    define STARTING_TREE_MAP_INDEX,78
+
+    # hram
+    define hCameraY,aa
+    define hCameraX,ac
+    define hMusicVar,b7 # used in filterMusic
+
+    # wram
+    define wRememberedCompanionId,cc24
+    define wRickyState,c646
+    define wDimitriState,c647
+    define wAnimalTutorialFlags,c649
+    define wDungeonBossKeys,c682
+    define wInventoryB,c688
+    define wObtainedTreasureFlags,c69a
+    define wSeedSatchelLevel,c6b4
+    define wFluteIcon,c6b5
+    define wEssencesObtained,c6bf
+    define wTradeItem,c6c0
+    define wActiveRing,c6cb
+    define wRingBoxLevel,c6cc
+    define wMakuTreeState,c6e8
+    define wJabuWaterLevel,c6e9
+    define wStatusBarNeedsRefresh,cbe9
+    define wActiveGroup,cc2d
+    define wActiveRoom,cc30
+    define wAreaFlags,cc34
+    define wDungeonIndex,cc39
+    define wWarpDestGroup,cc47
+    define wWarpDestIndex,cc48
+    define wWarpTransition,cc49
+    define wWarpTransition2,cc4b
+    define wDisableTransitions,cc91
+    define wDisabledObjects,cc8a
+    define wPlayingInstrument1,cc8d
+
+    # rom 00
+    define getRandomNumber,043e
+    define copyMemory,0486
+    define forceEnableIntroInputs,0886
+    define playSound,0c98
+    define setMusicVolume,0cad
+    define giveTreasure,171c
+    define checkTreasureObtained,1748
+    define refillSeedSatchel,180c
+    define showText,1872
+    define getThisRoomFlags,197d
+    define openMenu,1ab0
+    define lookupCollisionTable,1e1f
+    define objectDelete_useActiveObjectType,21e0
+    define objectCopyPosition,2242
+    define objectCreateInteraction,24c5
+    define createTreasure,27d4
+    define checkGlobalFlag,31f3
+    define setGlobalFlag,31f9
+    define fadeInFromWhite,3299
+    define incMakuTreeState,3e53
+    define interactionDelete,3b05
+
+    # rom 02
+    define _closeMenu,4fba
+    define clearMenu,50b1
+    define _mapMenu_checkCursorRoomVisited,6636
+    define _mapMenu_checkRoomVisited,6639
+    define _ringMenu_updateSelectedRingFromList,723b
+
+    # rom 04
+    define applyAllTileSubstitutions,5fef
+
+    # rom 16
+    define treasureObjectData,5332
+
+    # rom 3f
+    define realignUnappraisedRings,466f
+    define interaction60SubidData,66db

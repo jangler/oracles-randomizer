@@ -1,0 +1,196 @@
+# by default, all randomized items are L-1. they are dynamically upgraded when
+# appropriate.
+
+floating:
+  # given a treasure id & subid in b & c, if the treasure needs to be upgraded,
+  # set hl = the start of the upgraded treasure data + 1 and b = the new
+  # treasure ID.
+  getUpgradedTreasure: |
+      ld a,b
+      cp a,TREASURE_SWORD
+      jr nz,.notSpinSlash
+      ld a,c
+      cp a,03
+      ld a,b
+      ret nc
+      .notSpinSlash
+      call checkTreasureObtained
+      ld c,a
+      ld a,b
+      ret nc
+      cp a,TREASURE_TUNE_OF_ECHOES
+      jr nz,.harpDone
+      ld a,TREASURE_TUNE_OF_CURRENTS
+      ld e,a
+      call checkTreasureObtained
+      jr nc,.harpDone
+      ld b,e
+      .harpDone
+      push hl
+      ld hl,progressiveUpgrades
+      ld e,03
+      call searchDoubleKey
+      jr nc,.done
+      ldi a,(hl)
+      ld b,a
+      ldi a,(hl)
+      ld e,(hl)
+      pop hl
+      ld h,e
+      ld l,a
+      inc hl
+      ret
+      .done
+      pop hl
+      ret
+
+  # set hl = the address of the treasure with ID b and sub ID c, accounting for
+  # progressive upgrades. call through getTreasureDataBCE or
+  # getTreasureDataSprite!
+  getTreasureData_body: |
+      ld hl,treasureObjectData
+      ld a,b
+      add a,a
+      rst 10
+      ld a,b
+      add a,a
+      rst 10
+      bit 7,(hl)
+      jr z,.next
+      inc hl
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      .next
+      ld a,c
+      add a,a
+      add a,a
+      rst 10
+      inc hl
+      jp getUpgradedTreasure
+
+  # load fianl treasure ID, param, and text into b, c, and e.
+  getTreasureDataBCE: |
+      call getTreasureData_body
+      ld c,(hl)
+      inc hl
+      ld e,(hl)
+      ret
+
+  # load final treasure sprite into e.
+  getTreasureDataSprite: |
+      call getTreasureData_body
+      inc hl
+      inc hl
+      ld e,(hl)
+      ret
+
+  # return treasure data address and collect mode modified as necessary, given
+  # a treasure ID in dx42.
+  modifyTreasure: |
+      call upgradeTreasure
+      call lookupCollectMode
+      ld b,a
+      swap a
+      ret
+
+  # given a treasure at dx40, return hl = the start of the treasure data + 1,
+  # accounting for progressive upgrades. also writes the new treasure ID to
+  # d070, which is used to set the treasure obtained flag.
+  upgradeTreasure: |
+      ld e,42
+      ld a,(de)
+      ld b,a
+      inc de
+      ld a,(de)
+      ld c,a
+      call getUpgradedTreasure
+      ld e,70
+      ld a,b
+      ld (de),a
+      ret
+
+seasons:
+  # this is a replacement for giveTreasure that accounts for item progression.
+  # call through giveTreasureCustom or giveTreasureCustomSilent, since this
+  # function doesn't xor the a that it returns. importantly, this replacement
+  # treats c as a subID, not a param, so this should *not* be called by
+  # non-randomized whatevers.
+  00/giveTreasureCustom_body: |
+      ld b,a
+      push hl
+      ld e,BANK_TREASURE_DATA
+      ld hl,getTreasureDataBCE
+      call interBankCall
+      pop hl
+      ld a,b
+      jp giveTreasure
+
+  # just gives the treasure, no sound or text.
+  00/giveTreasureCustomSilent: |
+      call giveTreasureCustom_body
+      xor a
+      ret
+
+  # gives the treasure, plays its sound, and shows its text.
+  00/giveTreasureCustom: |
+      call giveTreasureCustom_body
+      jr z,.noSound
+      push hl
+      call playSound
+      pop hl
+      .noSound
+      ld a,e
+      cp a,ff
+      ret z
+      ld b,00
+      ld c,e
+      call showText
+      xor a
+      ret
+
+  # progressive item upgrade data (old ID, old related var, new ID, new addr)
+  15/progressiveUpgrades: |
+      db 01,02,01; dw 52c5 # mirror shield
+      db 05,01,05; dw 52dd # noble sword
+      db 05,02,05; dw 52e1 # master sword
+      db 06,01,06; dw 52f5 # magic boomerang
+      db 13,01,13; dw 5329 # hyper slingshot
+      db 17,01,17; dw 5331 # roc's cape
+      db 19,01,19; dw 52b9 # satchel upgrade 1
+      db 19,02,19; dw 52b9 # satchel upgrade 2 (same deal)
+      db ff
+
+  15/getUpgradedTreasure: /include getUpgradedTreasure
+  15/getTreasureData_body: /include getTreasureData_body
+  15/getTreasureDataBCE: /include getTreasureDataBCE
+  15/getTreasureDataSprite: /include getTreasureDataSprite
+  15/modifyTreasure: /include modifyTreasure
+  15/upgradeTreasure: /include upgradeTreasure
+
+  0a/7b93/: call giveTreasureCustom
+  15/465a/: call modifyTreasure
+
+ages:
+  # progressive item upgrade data (old ID, old related var, new ID, new addr)
+  16/progressiveUpgrades: |
+      db 01,02,01; dw 54c6 # mirror shield
+      db 05,01,05; dw 54ea # noble sword
+      db 05,02,05; dw 54ee # master sword
+      db 0a,01,0a; dw 5512 # long switch
+      db 16,01,16; dw 5552 # power glove
+      db 19,01,19; dw 5576 # satchel upgrade 1
+      db 19,02,19; dw 5576 # satchel upgrade 2 (same deal)
+      db 25,00,26; dw 53ca # tune of currents
+      db 26,00,27; dw 53ce # tune of ages
+      db 2e,00,4a; dw 545a # mermaid suit
+      db ff
+
+  16/getUpgradedTreasure: /include getUpgradedTreasure
+  16/getTreasureData_body: /include getTreasureData_body
+  16/getTreasureDataBCE: /include getTreasureDataBCE
+  16/getTreasureDataSprite: /include getTreasureDataSprite
+  16/modifyTreasure: /include modifyTreasure
+  16/upgradeTreasure: /include upgradeTreasure
+
+  16/4539/: call modifyTreasure

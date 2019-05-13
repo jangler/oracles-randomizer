@@ -2,6 +2,107 @@
 # asm/triggers.yaml.
 
 seasons:
+  # data for checkSetAnimalSavePoint:
+  # entered group, entered room, animal room, saved y, saved x.
+  04/animalSavePointTable: |
+      db 04,fa,c2,18,68 # spool swamp cave
+      db 05,cc,2a,38,18 # goron mountain east cave
+      db 05,b3,8e,58,88 # cave outside d2
+      db 04,e1,86,48,68 # cave north of d1
+      db 05,c9,2a,38,18 # goron mountain main
+      db 05,ba,2f,18,68 # spring banana cave
+      db 05,bb,2f,18,68 # cave below spring banana cave
+      db 01,05,9a,38,48 # rosa portal
+      db 04,39,8d,38,38 # d2 entrance
+      db ff
+
+  # if entering certain warps blocked by snow piles, mushrooms, or bushes, set
+  # the animal companion to appear right outside the entrance instead of where
+  # you left them.
+  04/checkSetAnimalSavePoint: |
+      push bc
+      push de
+      ld b,a
+      ld a,(wWarpDestIndex)
+      ld c,a
+      ld e,03
+      ld hl,animalSavePointTable
+      call searchDoubleKey
+      jr nz,.done
+      ld de,wRememberedCompanionRoom
+      ld a,(de)
+      cp (hl)
+      jr nz,.done
+      ld b,02
+      inc hl
+      inc de
+      call copyMemory
+      .done
+      ld a,c
+      pop de
+      pop bc
+      ret
+  04/461e/: call checkSetAnimalSavePoint
+
+  # vanilla game doesn't save non-natzu animal positions when it thinks you
+  # won't need them anymore. stop that.
+  05/45c9/: jr 28
+
+  # do this so that animals don't immediately stop walking onscreen when called
+  # on a bridge, namely the one to/from d1.
+  05/animalEntryIgnoreBridges: |
+      call _specialObjectGetRelativeTileWithDirectionTable
+      or a
+      ret z
+      cp a,1a
+      ret z
+      cp a,1b
+      ret
+  05/493b/: call animalEntryIgnoreBridges; nop
+  05/71ea/: call animalEntryIgnoreBridges; nop
+
+  # this is called to make moosh unrideable on mt cucco in the case of not
+  # having flute in a moosh seed.
+  05/checkFlute: |
+      ld a,0e
+      jp checkTreasureObtained
+  05/776b/: call checkFlute
+  05/7a65/: call checkFlute
+
+  # animals called by flute normally veto any nonzero collision value for the
+  # purposes of entering a screen, but this allows double-wide bridges (1a and
+  # 1b) as well. this specifically fixes the problem of not being able to call
+  # an animal on the d1 screen, or on the bridge to the screen to the right.
+  # the vertical collision check isn't modified, since bridges only run
+  # horizontally.
+  09/checkFluteCollisions: |
+      ld b,01
+      ld a,(hl)
+      cp a,1a
+      jr z,.firstTileMatched
+      cp a,1b
+      jr z,.firstTileMatched
+      or a
+      ret nz
+      .firstTileMatched
+      ld a,l
+      add a,b
+      ld l,a
+      ld a,(hl)
+      cp a,1a
+      jr z,.secondTileMatched
+      cp a,1b
+      jr z,.secondTileMatched
+      or a
+      .secondTileMatched
+      ld a,l
+      ret nz
+      call convertShortToLongPosition
+      xor a
+      ret
+  09/4d9a/: call checkFluteCollisions
+  09/4dad/: call checkFluteCollisions
+
   # some of the ricky code here doesn't matter since ricky's flute isn't
   # currently randomized (6cefde1), but it can stay in case things change.
 

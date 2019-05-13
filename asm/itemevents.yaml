@@ -1,0 +1,646 @@
+# basically anything that has to do with determining whether an item should be
+# created/give, how to create/give the item, and what happens when the item is
+# obtained.
+
+seasons:
+  # check room flags to determine whether to create star ore instead of
+  # whatever global flag 0e is. this also fixes a vanilla bug causing star ore
+  # to be infinitely rediggable (but only when the first screen is rolled? or
+  # that getting it on the first screen doesn't count? something). this is here
+  # since there's no room in bank 8.
+  00/starOreRooms: db 65,66,75,76,ff
+  00/checkBeachItemObtained: |
+      push de
+      push hl
+      ld de,starOreRooms
+      ld h,c8
+      .loop
+      ld a,(de)
+      cp a,ff
+      jr z,.done
+      ld l,a
+      bit 5,(hl)
+      jr nz,.done
+      inc de
+      jr .loop
+      .done
+      pop hl
+      pop de
+      ret
+  08/62a7/: call checkBeachItemObtained
+
+  # star ore and maku tree both need fake treasure ids to check instead of the
+  # vanilla ones.
+  02/makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
+  02/setFakeIdsForStarOreAndMakuTree_body: |
+      ld a,(wActiveGroup)
+      cp a,01
+      jr z,.subrosia
+      cp a,02
+      jr z,.indoors
+      ret
+      .subrosia
+      ld a,(wActiveRoom)
+      ld hl,starOreRooms
+      call searchValue
+      ret nz
+      ld hl,c694
+      set 2,(hl)
+      ret
+      .indoors
+      ld a,(wActiveRoom)
+      ld hl,makuTreeRooms
+      call searchValue
+      ret nz
+      ld hl,c693
+      set 2,(hl)
+      ret
+
+  # call giveTreasureCustom instead of giveTreasure in the shop iff the given
+  # item is randomized. also set fake treasure id 0f when buying the "flute",
+  # so that that id can be checked instead of the flute's to determine whether
+  # to stock the item.
+  08/shopGiveTreasure: |
+      push bc
+      ld b,a
+      ld a,l
+      push hl
+      ld hl,randomizedShopItemLowAddrs
+      call searchValue
+      pop hl
+      ld a,b
+      pop bc
+      jr z,.next
+      call giveTreasure
+      ret
+      .next
+      call giveTreasureCustom
+      ld e,42
+      ld a,(de) # subid
+      cp a,0d
+      ret nz
+      ld hl,c693 # in wObtainedTreasureFlags
+      set 7,(hl)
+      ret
+  08/4bfb/: call shopGiveTreasure
+
+  # these are the low bytes of randomized shop item data addresses.
+  08/randomizedShopItemLowAddrs: |
+      db e9,cf,d3,d9
+
+  # don't refill seeds when getting the first member's shop item.
+  08/4c02/: nop; nop; nop
+
+  # star ore item doesn't normally get a subid. values are replaced at
+  # randomization.
+  08/setStarOreIds: |
+      inc l
+      ld (hl),TREASURE_STAR_ORE
+      inc l
+      ld (hl),00
+      ret
+  08/62f2/: call setStarOreIds
+
+  # ignore sword level for lost woods pedestal.
+  08/7e62/: ld a,01
+
+  # see function in bank 02.
+  09/setFakeIdsForStarOreAndMakuTree: |
+      push af
+      push hl
+      ld hl,setFakeIdsForStarOreAndMakuTree_body
+      call callBank2
+      pop hl
+      pop af
+      call giveTreasure
+      ret
+  09/42e0/: call setFakeIdsForStarOreAndMakuTree
+
+  # mt. cucco platform cave item is normally created using ring-specific code.
+  # values are replaced at randomization.
+  09/createMtCuccoItem: |
+      ld bc,0000
+      call createTreasure
+      jp 6421
+  09/641a/: jp createMtCuccoItem
+
+  # remove star ore from inventory when buying the first subrosian market
+  # item. this can't go in the gain/lose items table, since the given item
+  # doesn't necessarily have a unique ID.
+  09/tradeStarOre: |
+      or a
+      jr nz,.next
+      push hl
+      ld hl,c69a
+      res 5,(hl)
+      pop hl
+      .next
+      rst 18
+      ldi a,(hl)
+      ld c,(hl)
+      ret
+  09/7887/: call tradeStarOre
+
+  # use giveTreasureCustom in the subrosian market when appropriate.
+  09/marketGiveTreasure: |
+      push af
+      ld a,l
+      cp a,db
+      jr z,.custom
+      cp a,e3
+      jr z,.custom
+      cp a,f5 # trade star ore
+      jr z,.customFakeId
+      pop af
+      cp a,TREASURE_RING
+      jr nz,.next
+      call getRandomRingOfGivenTier
+      .next
+      call giveTreasure
+      ld e,42
+      ret
+      .customFakeId
+      push hl
+      ld hl,c694
+      set 0,(hl)
+      pop hl
+      .custom
+      pop af
+      call giveTreasureCustom
+      pop de
+      scf
+      ret
+  09/788a/: |
+      call marketGiveTreasure
+      jr c,12
+      jr 05
+
+  # check treasure id 0a to determine whether the maku tree gives its intro
+  # speech and item instead of checking essences.
+  09/makuTreeCheckItem: |
+      ld a,0a
+      call checkTreasureObtained
+      ld a,(wEssencesObtained)
+      ret
+  09/7d95/: call makuTreeCheckItem
+
+  # check fake treasure ids to track:
+  08/4a89/: ld a,0f # shop, 150 rupees
+  08/4af1/: ld a,0f # ^
+  08/62fd/: ld a,12 # subrosia seaside
+  09/7754/: ld a,10 # subrosia market item 5
+  09/7dfc/: ld a,0a # maku tree drop
+  0b/72f0/: db jumpifitemobtained,11 # master diver
+
+  # stop hero's cave chest from giving a second sword that causes a spin slash.
+  0a/7bb8/: ld (hl),3f
+
+  # remove second sword (used to trigger spin slash) from lost woods script.
+  0b/641a/: db retscript
+  0b/6421/: db retscript
+
+  # give a fake item id for the master diver to check instead of flippers. the
+  # item id and subid at the beginning of this script are changed during
+  # randomization.
+  0b/script_diverGiveItem: |
+      db giveitem; db TREASURE_FLIPPERS; db 00
+      db ormemory; dw c694; db 02 # in wObtainedTreasureFlags
+      db retscript
+  0b/730d/: db callscript; dw script_diverGiveItem
+
+  # skip shield + shield level checks for forging hard ore.
+  0b/75c6/: db jumpifitemobtained,TREASURE_PUNCH
+  15/62ac/: jr 05
+
+  # hard ore item doesn't normally get a subid. values are replaced at
+  # randomization.
+  15/setHardOreIds: |
+      inc l
+      ld (hl),52
+      inc l
+      ld (hl),00
+      ret
+  15/5b83/: call setHardOreIds
+
+  # don't display normal fixed text for temple of seasons item.
+  15/70be/: nop; nop; nop
+
+  # rod cutscene
+  15/70cf/: call giveTreasureCustom
+
+  # have seed satchel inherently refill all seeds.
+  3f/satchelRefillSeeds: |
+      push bc
+      call giveTreasure_body
+      ld a,b
+      pop bc
+      push af
+      ld a,b
+      cp a,TREASURE_SEED_SATCHEL
+      jr nz,.notSatchel
+      push bc
+      push de
+      call refillSeedSatchel
+      pop de
+      pop bc
+      .notSatchel
+      pop af
+      ld b,a
+      ret
+  00/16f6/: call satchelRefillSeeds
+
+  # setting a flute's icon and song when obtained. also makes the corresponding
+  # animal companion rideable, etc.
+  3f/activateFlute: |
+      push af
+      push de
+      push hl
+      ld a,b
+      cp a,TREASURE_FLUTE
+      jr nz,.done
+      ld e,af
+      ld a,c
+      sub a,0a # get animal index item parameter
+      ld (de),a
+      add a,42
+      ld h,c6
+      ld l,a # hl = flags for relevant animal
+      cp a,45
+      jr nz,.moosh
+      set 5,(hl)
+      jr .done
+      .moosh
+      set 7,(hl)
+      .done
+      pop hl
+      pop de
+      pop af
+      call applyParameter
+      ret
+  3f/452b/: call activateFlute
+
+ages:
+  # set treasure ID 07 (rod of seasons) when buying the 150 rupee shop item, so
+  # that the shop can check this specific ID.
+  09/shopSetFakeId: |
+      cp a,0d
+      jr nz,.next
+      ld hl,wObtainedTreasureFlags
+      set 7,(hl)
+      .next
+      ld hl,44f7
+      ret
+  09/4418/: call shopSetFakeId
+
+  # give correct ID and param for shop item, play sound, and load correct text
+  # index into temp wram address.
+  09/shopGiveTreasure: |
+      ld b,a
+      ld a,(de)
+      cp a,0d
+      ld a,b
+      jr nz,.next
+      call getTreasureDataBCE
+      ld a,e
+      ld (cf0d),a
+      ld a,b
+      .next
+      call handleGetItem
+      jp nz,playSound
+      ld a,SND_GETITEM
+      jp playSound
+  09/4425/: call shopGiveTreasure
+
+  # display text based on wram address set in shopGiveTreasure.
+  09/shopShowText: |
+      ld a,(de)
+      cp a,0d
+      jp nz,showText
+      ld a,(cf0d)
+      ld b,00
+      ld c,a
+      ld a,c
+      cp a,ff # ring text (or non-text, really)
+      ret z
+      jp showText
+  09/4443/: jp nz,shopShowText
+
+  # don't set room's item flag if it's nayru's item on the maku tree screen,
+  # since link still might not have taken the maku tree's item.
+  09/ignoreNayruItemForRoomFlag: |
+      call getThisRoomFlags
+      push bc
+      ld bc,c738
+      call compareHlToBc
+      pop bc
+      jr nz,.next
+      ld a,(w1Link.xh)
+      cp a,50
+      ret z
+      .next
+      set 5,(hl)
+      ret
+  09/4c82/: jp ignoreNayruItemForRoomFlag
+
+  # run certain actions depending on what item was picked up and where. this
+  # has to be explicitly called if an item is given by an interaction other
+  # than ID 60.
+  09/handleGetItem: |
+      ld e,a
+      call satchelRefillSeeds
+      call seedShooterGiveSeeds
+      call activateFlute
+      call setD6BossKey
+      call dirtSetFakeId
+      call tingleSetFakeId
+      call symmetryBrotherSetFakeId
+      call goronDanceSetFakeId
+      call kingZoraSetFakeId
+      call makuSeedResetTreeState
+      ld a,e
+      jp giveTreasure
+  09/4c4e/: call handleGetItem
+
+  # make satchel refill seeds inherently, not as part of a scripted event.
+  09/satchelRefillSeeds: |
+      ld a,e
+      cp a,TREASURE_SEED_SATCHEL
+      ret nz
+      push bc
+      push de
+      push hl
+      ld hl,wSeedSatchelLevel
+      inc (hl) # needed since this is run *before* the satchel is given
+      call refillSeedSatchel
+      dec (hl)
+      pop hl
+      pop de
+      pop bc
+      ret
+
+  # give 20 of the starting seeds along with the seed shooter.
+  09/seedShooterGiveSeeds: |
+      ld a,e
+      cp a,TREASURE_SHOOTER
+      ret nz
+      push bc
+      ld a,00 # item ID set by randomization
+      ld c,20
+      call giveTreasure
+      pop bc
+      ret
+
+  # sets flute icon and animal flags based on flute param.
+  09/activateFlute: |
+      ld a,e
+      cp a,TREASURE_FLUTE
+      ret nz
+      ld a,c
+      sub a,0a
+      ld (wFluteIcon),a
+      push hl
+      ld h,c6
+      add a,45
+      ld l,a
+      ld (hl),c3
+      pop hl
+      ret
+
+  # make boss key in D6 present also give it in D6 past.
+  09/setD6BossKey: |
+      ld a,e
+      cp a,TREASURE_BOSS_KEY
+      ret nz
+      ld a,(wDungeonIndex)
+      cp a,06
+      jr z,.next
+      cp a,0c
+      ret nz
+      .next
+      push hl
+      ld hl,wDungeonBossKeys
+      set 6,(hl)
+      inc hl
+      set 4,(hl)
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "gloves" from south short dirt.
+  09/dirtSetFakeId: |
+      push bc
+      ld bc,9800
+      call compareRoom
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,TREASURE_MAGNET_GLOVES
+      call setFlag
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "island chart" from tingle.
+  09/tingleSetFakeId: |
+      push bc
+      ld bc,7900
+      call compareRoom
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,TREASURE_SLINGSHOT
+      call setFlag
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "tuni nut" from a brother.
+  09/symmetryBrotherSetFakeId: |
+      push bc
+      ld bc,6e03
+      call compareRoom
+      jr z,.next
+      inc b
+      call compareRoom
+      .next
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,TREASURE_FOOLS_ORE
+      call setFlag
+      pop hl
+      ret
+
+  # set treasure ID 12 (nothing) for first goron dance, and 14 (nothing) for
+  # the second. if you're in the present, it's always 12. if you're in the
+  # past, it's 12 iff you don't have letter of introduction.
+  09/goronDanceSetFakeId: |
+      push bc
+      ld bc,ed02 # present
+      call compareRoom
+      pop bc
+      jr z,.next
+      push bc
+      ld bc,ef02 # past
+      call compareRoom
+      pop bc
+      ret nz
+      ld a,TREASURE_GORON_LETTER
+      call checkTreasureObtained
+      ld a,14 # nil treasure
+      jr c,.next2
+      .next
+      ld a,12 # nil treasure
+      .next2
+      push hl
+      ld hl,wObtainedTreasureFlags
+      call setFlag
+      pop hl
+      ret
+
+  # set fake item ID to track getting the "library key" from king zora.
+  09/kingZoraSetFakeId: |
+      push bc
+      ld bc,ab05
+      call compareRoom
+      pop bc
+      ret nz
+      push hl
+      ld hl,wObtainedTreasureFlags
+      ld a,10 # nil treasure
+      call setFlag
+      pop hl
+      ret
+
+  # reset maku tree to state 02 after getting the maku seed. i think so that
+  # you can still get the "satchel" item afterward if you haven't already.
+  09/makuSeedResetTreeState: |
+      ld a,e
+      cp a,TREASURE_MAKU_SEED
+      ret nz
+      ld a,02
+      ld (wMakuTreeState),a
+      ret
+
+
+  # dig up item on south shore regardless of ricky state
+  04/6b76/: jr nz,00
+  04/6b7a/: jr z,00
+  0a/5e2e/: jr nz,00
+  0a/5e32/: jr z,00
+
+  # check fake ids to track:
+  04/6b7c/: ld a,TREASURE_MAGNET_GLOVES # south shore dirt
+  0a/5e34/: ld a,TREASURE_MAGNET_GLOVES # ^
+  09/42a4/: ld a,TREASURE_ROD_OF_SEASONS # shop, 150 rupees
+  09/4327/: ld a,TREASURE_ROD_OF_SEASONS # ^
+  0b/5489/: ld a,10 # king zora
+  0c/67d7/: db jumpifitemobtained,14 # goron dance w/ letter
+  0c/6851/: db jumpifitemobtained,14 # ^
+  0c/697a/: db jumpifitemobtained,14 # ^
+  0c/67df/: db jumpifitemobtained,12 # goron dance present
+  0c/6859/: db jumpifitemobtained,12 # ^
+  0c/6982/: db jumpifitemobtained,12 # ^
+  0c/7dff/: db jumpifitemobtained,TREASURE_SLINGSHOT # tingle 1
+  15/77ef/: ld a,TREASURE_FOOLS_ORE # symmetry city brother
+  15/78f5/: db jumpifitemobtained,TREASURE_FOOLS_ORE # ^
+
+  # use createTreasure to allow subid for south short dirt item, set by caller.
+  0a/southShortDirtSpawnItem: |
+      call createTreasure
+      ret nz
+      call objectCopyPosition
+      xor a
+      ret
+  0a/5e3e/: call southShortDirtSpawnItem
+
+  # king zora should give the item first, *then* give permission to enter jabu
+  # (on another visit (as in vanilla)).
+  0b/checkKingZoraSequence: |
+      call checkGlobalFlag
+      ret z
+      ld a,10 # set by kingZoraSetFakeId
+      call checkTreasureObtained
+      ld a,00
+      ret nc
+      inc a
+      ret
+  0b/5464/: call checkKingZoraSequence
+
+  # change harp (nayru's house?) interaction to allow subid.
+  0b/6825/: |
+      push bc
+      ld bc,1100 # id/subid
+      call createTreasure
+      pop bc
+      ret nz
+
+  # ignore satchel level when talking to tingle for second item.
+  0b/75c5/: xor a
+
+  # use custom script for soldier in deku forest with sub ID 0; they should
+  # give an item in exchange for mystery seeds.
+  0c/script_soldierDone: |
+      db rungenericnpc; dw 0859
+      db scriptend
+  0c/script_soldierGiveItem: |
+      db initcollisions
+      db checkabutton
+      db showtext; dw 0b59
+      db writec6xx,bd,00
+      db ormemory; dw wStatusBarNeedsRefresh; db 02
+      db giveitem,00,00 # item set at randomization
+      db orroomflag,20
+      db jumpalways; dw script_soldierDone
+  0c/script_soldierCheckSeeds: |
+      db jumpifc6xxset,bd,ff; dw script_soldierGiveItem
+      db 5d,ee # jump
+  0c/script_dekuForestSoldier: |
+      db jumpifroomflagset,20; dw script_soldierDone
+      db jumpifitemobtained,TREASURE_MYSTERY_SEEDS; dw script_soldierCheckSeeds
+      db 5d,ee # jump
+  09/5207/: dw script_dekuForestSoldier
+
+  # set room flag 6 when "boomerang" item is given in script.
+  0c/script_giveTargetCartsSecondPrize: |
+      db giveitem,TREASURE_BOOMERANG,02 # set during randomization
+      db orroomflag,40
+      db retscript
+  0c/6e6e/: dw script_giveTargetCartsSecondPrize
+
+  # stop tingle script from making ricky leave :(
+  0c/7e2a/: db enableinput; dw fe7d; db setdisabledobjectsto11 # ??
+  # or refilling seed satchel.
+  0c/7e7d/: db jumpalways; dw 7e80
+
+  # always make "boomerang" second prize for target carts, checking room flag 6
+  # to track it.
+  15/getTargetCartsPrize: |
+      call getThisRoomFlags
+      bit 6,a
+      ld a,04
+      jp z,66bb
+      call getRandomNumber
+      jp 66a5
+  15/66a2/: jp getTargetCartsPrize
+
+  # skip normal boomerang check in target carts, since EOB code handles it.
+  15/66ae/: jr 0b
+  # remove "boomerang" from random prizes (it's guaranteed second instead).
+  15/66e5/: db 03,03,03 # prize indexes in a table
+  # don't give boomerang as a shooting gallery prize either.
+  15/52b6/: db jumpalways,c3,52,scriptend
+
+  # make tokay who gives shield upgrade always give the same item, and in a
+  # format compatible with lookupItemSprite.
+  15/5b35/: |
+      ld bc,0101 # id/subid
+      ld a,b
+      ld b,c
+      ld c,a
+      scf
+      nop
+      nop
+
+  # trade lava juice without having the mermaid key.
+  15/6879/: jr nc,00

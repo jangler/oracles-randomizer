@@ -1,4 +1,21 @@
+# linked games should be playable, but secrets etc aren't randomized.
+
 seasons:
+  # start linked games without sword
+  07/41ac/: db a2,10,92,04
+
+  # in linked, start with the item that *would* be in the d0 sword chest
+  # instead of the sword.
+  0a/giveLinkedStartItem: |
+      ld a,(7ffe)
+      ld c,a
+      ld a,(7ffd)
+      ld (c682),a
+      call giveTreasureCustomSilent
+      xor a
+      ld (wInventoryB),a
+      ret
+
   # remove interactions from jewel caves so that they act as normal chests,
   # meaning no linked changes. this also removes the vire event.
   11/6ca2/: db ff # swamp
@@ -9,6 +26,21 @@ seasons:
   # could be uncompleteable without a way to kill the moblins.
   14/5247/: db writememory; dw wDisableTransitions; db 00
 
+  # don't play item fanfare for the item given at the start of a linked game.
+  # this doesn't actually check for linked, just for the room.
+  3f/playSoundExceptForLinkedStartItem: |
+      ld e,a
+      push bc
+      push de
+      ld bc,a700
+      call compareRoom
+      pop de
+      pop bc
+      ld a,e
+      ret z
+      jp playSound
+  3f/4535/: call playSoundExceptForLinkedStartItem
+
 ages:
   # start linked games with shield instead of sword.
   07/41c0/: db 8a,01,9a,06
@@ -17,6 +49,18 @@ ages:
   0b/61cc/: nop; nop; nop
   # and don't place a whirlpool on their tile.
   04/63ab/: db 19
+
+  # check either zora guard's flag for the two in sea of storms, so that either
+  # can be accessed after losing the zora scale in a linked game.
+  0b/checkZoraGuards: |
+      ld a,(c7d7)
+      push bc
+      ld b,a
+      ld a,(c8d6)
+      or b
+      pop bc
+      ret
+  0b/61d7/: call checkZoraGuards
 
   # move linked great fairy outside D2 present out of the entrance.
   12/5d40/: db 38,68
