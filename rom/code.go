@@ -114,7 +114,7 @@ func makeCollectModeTable() string {
 	for _, key := range getOrderedSlotKeys() {
 		slot := ItemSlots[key]
 
-		// use no animation / text box if item is a key outside a chest
+		// use no pickup animation if item is a key outside a chest
 		mode := slot.collectMode
 		if mode < 0x80 && slot.Treasure != nil && slot.Treasure.id == 0x30 {
 			mode &= 0xf8
@@ -122,6 +122,12 @@ func makeCollectModeTable() string {
 
 		if _, err := b.Write([]byte{slot.group, slot.room, mode}); err != nil {
 			panic(err)
+		}
+		for _, groupRoom := range slot.moreRooms {
+			group, room := byte(groupRoom>>8), byte(groupRoom)
+			if _, err := b.Write([]byte{group, room, mode}); err != nil {
+				panic(err)
+			}
 		}
 	}
 

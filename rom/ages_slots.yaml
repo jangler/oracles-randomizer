@@ -155,7 +155,8 @@ under moblin keep:
   maptile: 0x09
 nuun highlands cave:
   treasure: light ring L-1
-  room: 0x02f4
+  room: 0x02f4 # moosh
+  morerooms: [0x02ec, 0x05b8] # ricky, dimitri
   maptile: 0x37 # correct for 2 out of 3 animals
   ids: [{bank: 0x16, addr: 0x5150}, {bank: 0x16, addr: 0x5154}, {bank: 0x16, addr: 0x5327}]
   subids: [{bank: 0x16, addr: 0x5151}, {bank: 0x16, addr: 0x5155}, {bank: 0x16, addr: 0x5328}]
@@ -226,7 +227,8 @@ hidden tokay cave:
   addr: {bank: 0x15, addr: 0x5b36}
 symmetry city brother:
   treasure: tuni nut
-  room: 0x036e
+  room: 0x036e # west
+  morerooms: [0x036f] # east
   maptile: 0x13
   addr: {bank: 0x15, addr: 0x7929}
 tokkey's composition:

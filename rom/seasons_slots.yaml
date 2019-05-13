@@ -9,7 +9,8 @@ eyeglass lake, across bridge:
   room: 0x00b8
 maku tree:
   treasure: gnarled key
-  room: 0x020b
+  room: 0x020b # for zero essences. other rooms are for more
+  morerooms: [0x020c, 0x022b, 0x022c, 0x022d, 0x025b, 0x025c, 0x025d, 0x027b]
   ids: [{bank: 0x15, addr: 0x613a}, {bank: 0x09, addr: 0x7e16}]
   subids: [{bank: 0x15, addr: 0x613d}, {bank: 0x09, addr: 0x7e19}]
   collect: maku tree (seasons)
@@ -244,6 +245,7 @@ temple of seasons:
 subrosia seaside:
   treasure: star ore
   room: 0x0166
+  morerooms: [0x0176, 0x0175, 0x0165]
   maptile: 0xb0
   addr: {bank: 0x08} # addr set at EOB
 subrosian wilds chest:
@@ -302,6 +304,7 @@ d0 sword chest:
 d0 rupee chest:
   treasure: rupees, 30
   room: 0x0405
+  morerooms: [0x052c] # linked equivalent
 
 # d1
 d1 stalfos drop:

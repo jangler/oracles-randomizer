@@ -156,7 +156,9 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 	setBossItemAddrs()
 	setSeedData(game)
 	setRoomTreasureData(game)
-	setCollectModeData(game)
+
+	// regenerate collect mode table to accommodate changes based on contents.
+	codeMutables["collectModeTable"].New = []byte(makeCollectModeTable())
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
 	// with text
@@ -346,16 +348,6 @@ func setRoomTreasureData(game int) {
 		t := ItemSlots["d7 zol button"].Treasure
 		codeMutables["aboveD7ZolButtonId"].New = []byte{t.id}
 		codeMutables["aboveD7ZolButtonSubid"].New = []byte{t.subID}
-	}
-}
-
-// regenerate collect mode table to accommodate changes based on contents.
-func setCollectModeData(game int) {
-	mut := codeMutables["collectModeTable"]
-	if game == GameSeasons {
-		mut.New = []byte(makeSeasonsCollectModeTable())
-	} else {
-		mut.New = []byte(makeAgesCollectModeTable())
 	}
 }
 

@@ -1,9 +1,5 @@
 package rom
 
-import (
-	"strings"
-)
-
 func newAgesRomBanks() *romBanks {
 	asm, err := newAssembler()
 	if err != nil {
@@ -17,7 +13,7 @@ func newAgesRomBanks() *romBanks {
 
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
-	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeAgesCollectModeTable())
+	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeCollectModeTable())
 	r.replaceRaw(Addr{0x38, 0}, "roomTreasures", makeRoomTreasureTable(GameAges))
 	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets", string(make([]byte, 0x14*2)))
 
@@ -43,21 +39,4 @@ func newAgesRomBanks() *romBanks {
 		})
 
 	return &r
-}
-
-// makes ages-specific additions to the collection mode table.
-func makeAgesCollectModeTable() string {
-	b := new(strings.Builder)
-	table := makeCollectModeTable()
-	b.WriteString(table[:len(table)-1]) // strip final ff
-
-	// add eatern symmetry city brother
-	b.Write([]byte{0x03, 0x6f, collectModes["touch"]})
-
-	// add ricky and dimitri nuun caves
-	b.Write([]byte{0x02, 0xec, collectModes["chest"],
-		0x05, 0xb8, collectModes["chest"]})
-
-	b.Write([]byte{0xff})
-	return b.String()
 }

@@ -1,9 +1,6 @@
 package rom
 
-import (
-	"strings"
-)
-
+// TODO: combine this and newAgesRomBanks into newRomBanks.
 func newSeasonsRomBanks() *romBanks {
 	asm, err := newAssembler()
 	if err != nil {
@@ -17,7 +14,7 @@ func newSeasonsRomBanks() *romBanks {
 
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
-	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeSeasonsCollectModeTable())
+	r.replaceRaw(Addr{0x06, 0}, "collectModeTable", makeCollectModeTable())
 	r.replaceRaw(Addr{0x3f, 0}, "roomTreasures", makeRoomTreasureTable(GameSeasons))
 	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets", string(make([]byte, 0x1e*2)))
 
@@ -43,34 +40,4 @@ func newSeasonsRomBanks() *romBanks {
 		})
 
 	return &r
-}
-
-// for some reason the maku tree has a different room for every number of
-// essences you have.
-var (
-	makuTreeRooms = []byte{0x0b, 0x0c, 0x7b, 0x2b, 0x2c, 0x2d, 0x5b, 0x5c, 0x5d}
-	starOreRooms  = []byte{0x66, 0x76, 0x75, 0x65}
-)
-
-// makes seasons-specific additions to the collection mode table.
-func makeSeasonsCollectModeTable() string {
-	b := new(strings.Builder)
-	table := makeCollectModeTable()
-	b.WriteString(table[:len(table)-1]) // strip final ff
-
-	// add other three star ore screens
-	for _, room := range starOreRooms[1:] {
-		b.Write([]byte{0x01, room, collectModes["dig"]})
-	}
-
-	// add other eight maku tree screens
-	for _, room := range makuTreeRooms[1:] {
-		b.Write([]byte{0x02, room, collectModes["maku tree (seasons)"]})
-	}
-
-	// add linked hero's cave chest
-	b.Write([]byte{0x05, 0x2c, collectModes["chest"]})
-
-	b.Write([]byte{0xff})
-	return b.String()
 }

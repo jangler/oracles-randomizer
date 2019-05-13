@@ -14,6 +14,7 @@ type MutableSlot struct {
 	treasureName             string
 	idAddrs, subIDAddrs      []Addr
 	group, room, collectMode byte
+	moreRooms                []uint16
 	mapCoords                byte // overworld map coords, yx
 }
 
@@ -75,6 +76,9 @@ type rawSlot struct {
 
 	// optional override
 	Collect string
+
+	// optional additional rooms
+	MoreRooms []uint16
 }
 
 // has exported fields for loading from yaml.
@@ -117,6 +121,7 @@ func LoadSlots(b []byte, game int) map[string]*MutableSlot {
 			treasureName: raw.Treasure,
 			group:        byte(raw.Room >> 8),
 			room:         byte(raw.Room),
+			moreRooms:    raw.MoreRooms,
 		}
 
 		// unspecified map tile = assume overworld
