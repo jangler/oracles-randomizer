@@ -254,12 +254,8 @@ func setSeedData(game int) {
 	}
 
 	if game == GameSeasons {
-		for _, name := range []string{"satchelInitialSeeds",
-			"seedTypeCheckedForCollection"} {
-			codeMutables[name].New[0] = 0x20 + seedType
-		}
-
-		// slingshot starting seeds
+		// satchel/slingshot starting seeds
+		codeMutables["satchelInitialSeeds"].New[0] = 0x20 + seedType
 		codeMutables["editGainLoseItemsTables"].New[1] = 0x20 + seedType
 
 		for _, name := range []string{

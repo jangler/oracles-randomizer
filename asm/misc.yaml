@@ -119,6 +119,14 @@ seasons:
   # make all seeds grow in all seasons.
   0d/68b5/: cp a
 
+  # allow harvesting seeds from trees with either slingshot or satchel.
+  10/checkCanHarvestSeeds: |
+      call checkTreasureObtained
+      ret c
+      ld a,TREASURE_SLINGSHOT
+      jp checkTreasureObtained
+  10/4b1a/: call checkCanHarvestSeeds
+
   # move the hitbox for the bridge lever from holodrum plain to natzu to the
   # top-left corner of the screen, where it can't be hit, and replace the lever
   # tile as well. this prevents the bridge from blocking the waterway.
