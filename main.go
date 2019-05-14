@@ -72,11 +72,11 @@ type randomizerOptions struct {
 func initFlags() {
 	flag.Usage = usage
 	flag.StringVar(&flagDevCmd, "devcmd", "",
-		"subcommands are 'findmut', 'showasm', and 'stats'")
+		"subcommands are 'findaddr', 'showasm', and 'stats'")
 	flag.BoolVar(&flagDungeons, "dungeons", false,
 		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
-		"require some plays outside normal logic")
+		"enable more difficult logic")
 	flag.BoolVar(&flagNoMusic, "nomusic", false,
 		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
