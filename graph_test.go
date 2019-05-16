@@ -141,3 +141,23 @@ func TestNodeGetMark(t *testing.T) {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 }
+
+func TestCountNodes(t *testing.T) {
+	count := newNode("count", countNode)
+	count.minCount = 2
+	child := newNode("child", andNode)
+	parent := newNode("parent", andNode)
+	count.addParent(child)
+
+	// if child has only one parent, count should be 1 (< 2)
+	child.addParent(parent)
+	if mark := count.getMark(); mark != markFalse {
+		t.Fatalf("want %d, got %d", markFalse, mark)
+	}
+
+	// two parents should suffice
+	child.addParent(parent)
+	if mark := count.getMark(); mark != markTrue {
+		t.Fatalf("want %d, got %d", markTrue, mark)
+	}
+}

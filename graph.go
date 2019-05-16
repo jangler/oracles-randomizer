@@ -157,7 +157,7 @@ func getOrMark(n *node) nodeMark {
 	return n.mark
 }
 
-// returns true iff at least x parents are true.
+// returns true iff at least x parents of the parent are true.
 func getCountMark(n *node) nodeMark {
 	count := 0
 
