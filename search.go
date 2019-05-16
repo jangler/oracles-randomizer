@@ -4,8 +4,6 @@ import (
 	"container/list"
 	"math/rand"
 	"sort"
-
-	"github.com/jangler/oracles-randomizer/logic"
 )
 
 // returns true iff the node is in the list.
@@ -18,34 +16,40 @@ func nodeInList(n *node, l *list.List) bool {
 	return false
 }
 
-func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
-	slotPool *list.List, numUsedSlots int,
-	hard, fillUnused bool) (usedItem, usedSlot *list.Element) {
+func trySlotRandomItem(r *Route, src *rand.Rand,
+	itemPool, slotPool *list.List) (usedItem, usedSlot *list.Element) {
 	// we're dead
 	if slotPool.Len() == 0 || itemPool.Len() == 0 {
 		return nil, nil
 	}
 
-	// try placing an item in the first slot until one fits
-	for es := slotPool.Front(); es != nil; es = es.Next() {
-		slot := es.Value.(*node)
-
-		r.Graph.clearMarks()
-		if !fillUnused && (slot.getMark() != markTrue ||
-			!canAffordSlot(r, slot, hard)) {
-			continue
-		}
-
+	// try placing the first item in a slot until it fits
+	for _, progressionItemsOnly := range []bool{true, false} {
 		for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*node)
-
-			if !itemFitsInSlot(item, slot, src) {
+			if progressionItemsOnly && itemIsJunk(item.name) {
 				continue
 			}
+			item.removeParent(r.Graph["start"])
 
-			item.addParent(slot)
+			for es := slotPool.Front(); es != nil; es = es.Next() {
+				slot := es.Value.(*node)
 
-			return ei, es
+				if !itemFitsInSlot(item, slot, src) {
+					continue
+				}
+
+				r.Graph.clearMarks()
+				item.addParent(slot)
+				if r.Graph["done"].getMark() != markTrue {
+					item.removeParent(slot)
+					continue
+				}
+
+				return ei, es
+			}
+
+			item.addParent(r.Graph["start"])
 		}
 	}
 
@@ -113,30 +117,4 @@ func slotIsSeedTree(name string) bool {
 		return true
 	}
 	return false
-}
-
-func canAffordSlot(r *Route, slot *node, hard bool) bool {
-	// if it doesn't cost anything, of course it's affordable
-	balance := logic.NodeValues[slot.name]
-	if balance >= 0 {
-		return true
-	}
-
-	// in hard mode, 100 rupee manips with shovel are in logic
-	if hard {
-		if r.Graph["shovel"].getMark() == markTrue {
-			return true
-		}
-	}
-
-	// otherwise, count the net rupees available to the player
-	balance += r.Rupees
-	for _, n := range r.Graph {
-		value := logic.NodeValues[n.name]
-		if value != 0 && n != slot && n.getMark() == markTrue {
-			balance += value
-		}
-	}
-
-	return balance >= 0
 }

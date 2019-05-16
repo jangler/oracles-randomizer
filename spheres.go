@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"sort"
-
-	"github.com/jangler/oracles-randomizer/logic"
 )
 
 // getChecks converts a route info into a map of checks.
@@ -40,7 +38,6 @@ func getSpheres(g graph, checks map[*node]*node, hard bool) [][]*node {
 		}
 	}
 
-	rupees := 0
 	for {
 		sphere := make([]*node, 0)
 		g.clearMarks()
@@ -48,15 +45,9 @@ func getSpheres(g graph, checks map[*node]*node, hard bool) [][]*node {
 		// get the set of newly reachable nodes
 		for _, n := range g {
 			if !reached[n] && n.getMark() == markTrue {
-				if logic.NodeValues[n.name] > 0 {
-					rupees += logic.NodeValues[n.name]
-				}
 				sphere = append(sphere, n)
 			}
 		}
-
-		// remove the most expensive nodes that can't be afforded
-		sphere, rupees = filterUnaffordableNodes(sphere, rupees)
 
 		// mark nodes as reached and add item checks into the next iteration
 		for _, n := range sphere {
@@ -66,12 +57,6 @@ func getSpheres(g graph, checks map[*node]*node, hard bool) [][]*node {
 				item.addParent(n)
 				sphere = append(sphere, item)
 				reached[item] = true
-				rupees += logic.RupeeValues[item.name]
-
-				// shovel is worth infinite rupees in hard difficulty
-				if hard && item.name == "shovel" {
-					rupees += 2000
-				}
 			}
 		}
 
@@ -119,32 +104,4 @@ func logSpheres(summary chan string, checks map[*node]*node,
 			summary <- ""
 		}
 	}
-}
-
-// filterUnaffordableNodes removes nodes that the player can't currently afford
-// from the slice, starting with the most expensive ones. it also sorts the
-// slice from least to most expensive.
-func filterUnaffordableNodes(sphere []*node, rupees int) ([]*node, int) {
-	// sort first by name (to break ties), then by cost
-	sort.Slice(sphere, func(i, j int) bool {
-		return sphere[i].name < sphere[j].name
-	})
-	sort.Slice(sphere, func(i, j int) bool {
-		return logic.NodeValues[sphere[i].name] >
-			logic.NodeValues[sphere[j].name]
-	})
-
-	for i := 0; i < len(sphere); i++ {
-		value := logic.NodeValues[sphere[i].name]
-		if value < 0 {
-			rupees += value
-			if rupees < 0 {
-				rupees -= value
-				sphere = sphere[:i]
-				break
-			}
-		}
-	}
-
-	return sphere, rupees
 }

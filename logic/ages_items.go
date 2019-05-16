@@ -11,6 +11,10 @@ var agesItemNodes = map[string]*Node{
 	"moosh's flute":   Root(),
 	"flute":           Or("ricky's flute", "dimitri's flute", "moosh's flute"),
 
+	// TODO: this is a dumb placeholder for until new fill is more developed
+	"rupees": Or("rupees, 200", And("rupees, 100", "rupees, 50"),
+		Count(2, "rupees, 100"), Count(3, "rupees, 50"), And("hard", "shovel")),
+
 	// expert's ring can do some things that fist ring can't, so this is for
 	// the lowest common denominator.
 	"punch object": Or("fist ring", "expert's ring"),

@@ -17,6 +17,10 @@ var seasonsItemNodes = map[string]*Node{
 	"dimitri's flute": Root(),
 	"moosh's flute":   Root(),
 
+	// TODO: this is a dumb placeholder for until new fill is more developed
+	"rupees": Or("rupees, 30", "rupees, 50", "rupees, 100", "ember seeds",
+		And("hard", "shovel")),
+
 	// expert's ring can do some things that fist ring can't, so this is for
 	// the lowest common denominator.
 	"punch object": Or("fist ring", "expert's ring"),

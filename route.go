@@ -156,6 +156,19 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		itemList, slotList = initRouteInfo(ri.Src, r, ri.RingMap, game,
 			ri.Companion)
 
+		// attach free items to start node - just assume we have them, until
+		// they're placed
+		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
+			item := ei.Value.(*node)
+			// for now, make an exeption for dungeon items
+			if !(item.name == "dungeon map" || item.name == "compass" ||
+				item.name == "slate" ||
+				strings.HasSuffix(item.name, "small key") ||
+				strings.HasSuffix(item.name, "boss key")) {
+				r.AddParent(item.name, "start")
+			}
+		}
+
 		// slot initial nodes before algorithm slots progression items
 		if game == rom.GameSeasons {
 			ri.Seasons = rollSeasons(ri.Src, r)
@@ -168,18 +181,14 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		slotRecord := 0
 		i, maxIterations := 0, 1+itemList.Len()
 
-		// slot progression items
-		done := r.Graph["done"]
-		success := true
-		r.Graph.clearMarks()
-		for done.getMark() != markTrue {
+		// place "regular" items
+		for slotList.Len() > 0 {
 			if verbose {
-				logf("searching; have %d more slots", slotList.Len())
+				logf("searching; filling %d more slots", slotList.Len())
 				logf("%d/%d iterations", i, maxIterations)
 			}
 
-			eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
-				ri.UsedSlots.Len(), ropts.hard, false)
+			eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList)
 
 			if eItem != nil {
 				item := itemList.Remove(eItem).(*node)
@@ -187,6 +196,9 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 				slot := slotList.Remove(eSlot).(*node)
 				ri.UsedSlots.PushBack(slot)
 				r.Rupees += logic.RupeeValues[item.name]
+				if verbose {
+					logf("placing: %s <- %s", slot.name, item.name)
+				}
 
 				if ri.UsedSlots.Len() > slotRecord {
 					slotRecord = ri.UsedSlots.Len()
@@ -199,62 +211,27 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 				itemList.PushBack(item)
 				slotList.PushBack(slot)
 				item.removeParent(slot)
+				item.addParent(r.Graph["start"])
+				if verbose {
+					logf("displacing: %s -> %s", slot.name, item.name)
+				}
 			}
-
-			r.Graph.clearMarks()
 
 			i++
 			if i > maxIterations {
-				success = false
 				if verbose {
 					logf("maximum iterations reached")
+					logf("unplaced items:")
+					for ei := itemList.Front(); ei != nil; ei = ei.Next() {
+						logf(ei.Value.(*node).name)
+					}
+					panic("-verbose given")
 				}
 				break
 			}
 		}
 
-		if success {
-			// fill unused slots
-			for slotList.Len() > 0 {
-				if verbose {
-					logf("done; filling %d more slots", slotList.Len())
-					logf("%d/%d iterations", i, maxIterations)
-				}
-
-				eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList,
-					ri.UsedSlots.Len(), ropts.hard, true)
-
-				if eItem != nil {
-					item := itemList.Remove(eItem).(*node)
-					ri.UsedItems.PushBack(item)
-					slot := slotList.Remove(eSlot).(*node)
-					ri.UsedSlots.PushBack(slot)
-					r.Rupees += logic.RupeeValues[item.name]
-
-					if ri.UsedSlots.Len() > slotRecord {
-						slotRecord = ri.UsedSlots.Len()
-						i, maxIterations = 0, 1+itemList.Len()
-					}
-				} else {
-					item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*node)
-					slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*node)
-					r.Rupees -= logic.RupeeValues[item.name]
-					itemList.PushBack(item)
-					slotList.PushBack(slot)
-					item.removeParent(slot)
-				}
-
-				i++
-				if i > maxIterations {
-					if verbose {
-						logf("maximum iterations reached")
-					}
-					break
-				}
-			}
-		}
-
-		if success && slotList.Len() == 0 {
+		if slotList.Len() == 0 {
 			// and we're done
 			ri.Route = r
 			ri.AttemptCount = tries + 1
