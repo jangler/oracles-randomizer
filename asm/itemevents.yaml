@@ -201,11 +201,16 @@ seasons:
 
   # give a fake item id for the master diver to check instead of flippers. the
   # item id and subid at the beginning of this script are changed during
-  # randomization.
+  # randomization. also - remove master's plaque from inventory to prevent
+  # confusion.
   0b/script_diverGiveItem: |
       db giveitem; db TREASURE_FLIPPERS; db 00
       db ormemory; dw c694; db 02 # in wObtainedTreasureFlags
+      db asm15; dw loseMastersPlaque
       db retscript
+  15/loseMastersPlaque: |
+      ld a,TREASURE_MASTERS_PLAQUE
+      jp loseTreasure
   0b/730d/: db callscript; dw script_diverGiveItem
 
   # skip shield + shield level checks for forging hard ore.

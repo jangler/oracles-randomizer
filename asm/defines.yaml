@@ -48,6 +48,7 @@ common:
     define TREASURE_MAKU_SEED,36
     define TREASURE_ESSENCE,40
     define TREASURE_STAR_ORE,45
+    define TREASURE_MASTERS_PLAQUE,54
     define TREASURE_GORON_LETTER,59
     define DEV_RING,40
 
@@ -173,6 +174,7 @@ seasons:
     define playSound,0c74
     define setMusicVolume,0c89
     define giveTreasure,16eb
+    define loseTreasure,1702
     define checkTreasureObtained,1717
     define getRandomRingOfGivenTier,17b9
     define refillSeedSatchel,17e5
