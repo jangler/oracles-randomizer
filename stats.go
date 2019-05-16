@@ -20,8 +20,14 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 	for i := 0; i < threads; i++ {
 		go func() {
 			for i := 0; i < n/threads; i++ {
-				seed := uint32(rand.Int())
-				routeChan <- findRoute(game, seed, ropts, false, dummyLogf)
+				for {
+					seed := uint32(rand.Int())
+					route := findRoute(game, seed, ropts, false, dummyLogf)
+					if route != nil {
+						routeChan <- route
+						break
+					}
+				}
 			}
 		}()
 	}
@@ -53,6 +59,7 @@ func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
 				stringChecks[i][area] = seasonsByID[int(seasonId)]
 			}
 		}
+		stringChecks[i]["_seed"] = fmt.Sprintf("%08x", ri.Seed)
 	}
 
 	// encode to stdout
