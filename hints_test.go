@@ -14,6 +14,11 @@ func TestHintCoverage(t *testing.T) {
 		hinter := newHinter(game)
 
 		for name := range rom.Treasures {
+			// dungeon items aren't hinted and don't need names
+			if getDungeonName(name) != "" {
+				continue
+			}
+
 			if _, ok := hinter.items[name]; !ok {
 				t.Errorf("%s missing name for item %q",
 					gameName(game), name)

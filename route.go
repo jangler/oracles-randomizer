@@ -159,54 +159,28 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		// they're placed
 		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*node)
-			// for now, make an exeption for dungeon items
-			if !(item.name == "dungeon map" || item.name == "compass" ||
-				item.name == "slate" ||
-				strings.HasSuffix(item.name, "small key") ||
-				strings.HasSuffix(item.name, "boss key")) {
-				r.AddParent(item.name, "start")
-			}
+			r.AddParent(item.name, "start")
 		}
 
-		// slot initial nodes before algorithm slots progression items
+		// slot "world" nodes before items
 		if game == rom.GameSeasons {
 			ri.Seasons = rollSeasons(ri.Src, r)
 			ri.Portals = setPortals(ri.Src, r, ropts.portals)
 		}
 		ri.Entrances = setDungeonEntrances(ri.Src, r, game, ropts.dungeons)
-		placeDungeonItems(ri.Src, r, game, ropts.hard,
-			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
-		// place "regular" items
-		for slotList.Len() > 0 {
-			if verbose {
-				logf("searching; filling %d more slots", slotList.Len())
-			}
-
-			eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList)
-
-			if eItem != nil {
-				item := itemList.Remove(eItem).(*node)
-				ri.UsedItems.PushBack(item)
-				slot := slotList.Remove(eSlot).(*node)
-				ri.UsedSlots.PushBack(slot)
-				if verbose {
-					logf("placing: %s <- %s", slot.name, item.name)
-				}
+		// place dungeon-specific items, then "regular" items
+		dungeonItems, nonDungeonItems := list.New(), list.New()
+		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
+			item := ei.Value.(*node)
+			if getDungeonName(item.name) != "" {
+				dungeonItems.PushBack(item)
 			} else {
-				if verbose {
-					logf("maximum iterations reached")
-					logf("unplaced items:")
-					for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-						logf(ei.Value.(*node).name)
-					}
-					panic("-verbose given")
-				}
-				break
+				nonDungeonItems.PushBack(item)
 			}
 		}
-
-		if slotList.Len() == 0 {
+		if tryPlaceItems(ri, r, dungeonItems, slotList, verbose, logf) &&
+			tryPlaceItems(ri, r, nonDungeonItems, slotList, verbose, logf) {
 			// and we're done
 			ri.Route = r
 			ri.AttemptCount = tries + 1
@@ -367,153 +341,6 @@ func rollAnimalCompanion(src *rand.Rand, r *Route, game int) int {
 	return companion
 }
 
-// place maps, compasses, small keys, boss keys, and slates in chests in
-// dungeons (before attempting to slot the other items).
-func placeDungeonItems(src *rand.Rand, r *Route, game int, hard bool,
-	itemList, usedItems, slotList, usedSlots *list.List) {
-	g := r.Graph
-
-	prefixes := []string{"d0", "d1", "d2", "d3", "d4", "d5"}
-	if game == rom.GameSeasons {
-		prefixes = append(prefixes, "d6")
-	} else {
-		prefixes = append(prefixes[1:], "d6 present", "d6 past")
-	}
-	prefixes = append(prefixes, "d7", "d8")
-
-	// place small keys first
-	for _, prefix := range prefixes {
-		itemName := prefix + " small key"
-
-		for {
-			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
-			if itemNode == nil {
-				// no more small keys to place for this dungeon
-				break
-			}
-
-			placeItem(slotNode, itemNode, slotElem, itemElem,
-				usedSlots, slotList, usedItems, itemList)
-		}
-	}
-
-	// then place boss keys
-	for i := 1; i < 9; i++ {
-		prefix := fmt.Sprintf("d%d", i)
-		itemName := prefix + " boss key"
-
-		slotElem, itemElem, slotNode, itemNode :=
-			getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
-		placeItem(slotNode, itemNode, slotElem, itemElem,
-			usedSlots, slotList, usedItems, itemList)
-	}
-
-	// place slates in ages
-	if game == rom.GameAges {
-		for i := 1; i <= 4; i++ {
-			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem("d8", "slate", slotList, itemList, g, hard)
-			placeItem(slotNode, itemNode, slotElem, itemElem,
-				usedSlots, slotList, usedItems, itemList)
-		}
-	}
-
-	// then place maps and compasses
-	if game == rom.GameSeasons {
-		prefixes = prefixes[1:] // no map/compass in hero's cave
-	}
-	for _, prefix := range prefixes {
-		for _, itemName := range []string{"dungeon map", "compass"} {
-			slotElem, itemElem, slotNode, itemNode :=
-				getDungeonItem(prefix, itemName, slotList, itemList, g, hard)
-			placeItem(slotNode, itemNode, slotElem, itemElem,
-				usedSlots, slotList, usedItems, itemList)
-		}
-	}
-}
-
-// find a valid position for a dungeon item
-func getDungeonItem(prefix, itemName string, slotList, itemList *list.List,
-	g graph, hard bool) (slotElem, itemElem *list.Element, slotNode, itemNode *node) {
-	for es := slotList.Front(); es != nil; es = es.Next() {
-		slot := es.Value.(*node)
-		if !strings.HasPrefix(slot.name, prefix) {
-			continue
-		}
-		if (strings.HasSuffix(itemName, "boss key") || itemName == "slate") &&
-			strings.HasSuffix(slot.name, "boss") {
-			continue
-		}
-		if (strings.HasSuffix(itemName, "small key") ||
-			strings.HasSuffix(itemName, "boss key") ||
-			itemName == "slate") &&
-			!canReachViaKeys(g, slot, hard,
-				strings.HasSuffix(itemName, "small key")) {
-			continue
-		}
-
-		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-			item := ei.Value.(*node)
-			if item.name != itemName {
-				continue
-			}
-
-			return es, ei, slot, item
-		}
-
-		// return nil when there are no more small keys to place, since this is
-		// how the caller determines whether it needs to place more keys.
-		if slot != nil && strings.HasSuffix(itemName, "small key") {
-			return nil, nil, nil, nil
-		}
-	}
-
-	panic("could not place dungeon-specific item: " + itemName)
-}
-
-// place item in the given slot, and remove it from the pool
-func placeItem(slotNode, itemNode *node,
-	slotElem, itemElem *list.Element,
-	usedSlots, slotList, usedItems, itemList *list.List) {
-	usedSlots.PushBack(slotNode)
-	slotList.Remove(slotElem)
-	usedItems.PushBack(itemNode)
-	itemList.Remove(itemElem)
-
-	itemNode.addParent(slotNode)
-}
-
-// returns true iff the target node can be reached if the player has automatic
-// access to every item that isn't a small key or boss key. optionally, this
-// can also assume boss keys and slates.
-func canReachViaKeys(g graph, target *node, hard, assumeBKs bool) bool {
-	g.clearMarks()
-
-	for _, itemSlot := range rom.ItemSlots {
-		treasureName := rom.FindTreasureName(itemSlot.Treasure)
-		if !strings.HasSuffix(treasureName, "small key") &&
-			(assumeBKs ||
-				(!strings.HasSuffix(treasureName, "boss key") &&
-					treasureName != "slate")) {
-			g[treasureName].mark = markTrue
-		}
-	}
-
-	// progressive items
-	for _, name := range []string{
-		"iron shield", "noble sword", "magic boomerang", "long hook",
-		"hyper slingshot", "power glove", "cape", "echoes", "currents", "ages",
-		"mermaid suit",
-	} {
-		if item, ok := g[name]; ok {
-			item.mark = markTrue
-		}
-	}
-
-	return target.getMark() == markTrue
-}
-
 var seedNames = []string{"ember tree seeds", "scent tree seeds",
 	"pegasus tree seeds", "gale tree seeds", "mystery tree seeds"}
 
@@ -597,4 +424,37 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 	}
 
 	return itemList, slotList
+}
+
+// returns true iff successful
+func tryPlaceItems(ri *RouteInfo, r *Route, itemList, slotList *list.List,
+	verbose bool, logf logFunc) bool {
+	for itemList.Len() > 0 {
+		if verbose {
+			logf("searching; filling %d more slots", slotList.Len())
+			logf("(%d more items)", itemList.Len())
+		}
+
+		eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList)
+
+		if eItem != nil {
+			item := itemList.Remove(eItem).(*node)
+			ri.UsedItems.PushBack(item)
+			slot := slotList.Remove(eSlot).(*node)
+			ri.UsedSlots.PushBack(slot)
+			if verbose {
+				logf("placing: %s <- %s", slot.name, item.name)
+			}
+		} else {
+			if verbose {
+				logf("search failed. unplaced items:")
+				for ei := itemList.Front(); ei != nil; ei = ei.Next() {
+					logf(ei.Value.(*node).name)
+				}
+			}
+			return false
+		}
+	}
+
+	return true
 }

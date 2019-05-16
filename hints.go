@@ -146,11 +146,7 @@ func getShuffledSlots(src *rand.Rand,
 	for slot, item := range checks {
 		// don't include dungeon items, since dungeon item hints would be
 		// useless ("Level 7 holds a Boss Key")
-		if item.name == "dungeon map" ||
-			item.name == "compass" ||
-			strings.HasPrefix(item.name, "slate") ||
-			strings.HasSuffix(item.name, "small key") ||
-			strings.HasSuffix(item.name, "boss key") {
+		if getDungeonName(item.name) != "" {
 			continue
 		}
 

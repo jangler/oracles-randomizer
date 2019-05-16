@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"math/rand"
 	"sort"
+	"strings"
 )
 
 // returns true iff the node is in the list.
@@ -98,6 +99,14 @@ func itemFitsInSlot(itemNode, slotNode *node, src *rand.Rand) bool {
 		}
 	}
 
+	// dungeons can only hold their respective dungeon-specific items. the
+	// HasPrefix is specifically for ages d6 boss key.
+	dungeonName := getDungeonName(itemNode.name)
+	if dungeonName != "" &&
+		!strings.HasPrefix(getDungeonName(slotNode.name), dungeonName) {
+		return false
+	}
+
 	// and only seeds can be slotted in seed trees, of course
 	switch itemNode.name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
@@ -119,4 +128,23 @@ func slotIsSeedTree(name string) bool {
 		return true
 	}
 	return false
+}
+
+// return the name of a dungeon associated with a given item or slot name. ages
+// d6 boss key returns "d6". non-dungeon names return "".
+func getDungeonName(name string) string {
+	if strings.HasPrefix(name, "d6 present") {
+		return "d6 present"
+	} else if strings.HasPrefix(name, "d6 past") {
+		return "d6 past"
+	} else if name == "slate" {
+		return "d8"
+	}
+
+	switch name[:2] {
+	case "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8":
+		return name[:2]
+	default:
+		return ""
+	}
 }

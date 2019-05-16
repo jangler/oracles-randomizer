@@ -48,8 +48,20 @@ common:
   d6 boss key: 0x3103
   d7 boss key: 0x3103
   d8 boss key: 0x3103
-  compass: 0x3202
-  dungeon map: 0x3302
+  d1 compass: 0x3202
+  d2 compass: 0x3202
+  d3 compass: 0x3202
+  d4 compass: 0x3202
+  d5 compass: 0x3202
+  d7 compass: 0x3202
+  d8 compass: 0x3202
+  d1 dungeon map: 0x3302
+  d2 dungeon map: 0x3302
+  d3 dungeon map: 0x3302
+  d4 dungeon map: 0x3302
+  d5 dungeon map: 0x3302
+  d7 dungeon map: 0x3302
+  d8 dungeon map: 0x3302
 
   # common page 2
   flippers: 0x2e00
@@ -75,6 +87,8 @@ seasons:
   # dungeon items
   d0 small key: 0x3003
   d6 small key: 0x3003
+  d6 compass: 0x3202
+  d6 dungeon map: 0x3302
 
   # rings
   green joy ring: 0x2d01
@@ -136,6 +150,10 @@ ages:
   # dungeon items
   d6 present small key: 0x3003
   d6 past small key: 0x3003
+  d6 present compass: 0x3202
+  d6 past compass: 0x3202
+  d6 present dungeon map: 0x3302
+  d6 past dungeon map: 0x3302
 
   # page 2
   graveyard key: 0x4200
