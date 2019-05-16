@@ -86,6 +86,9 @@ exception of:
 - Farming rupees, except by shovel RNG manips
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
+- Double damage boosts
+- Capeless button before D7 miniboss
+- Trading seeds in Subrosia Market without having a seed item
 - Magic rings from non-randomized locations
 - Linked secrets
 

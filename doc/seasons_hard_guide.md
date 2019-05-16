@@ -1,6 +1,9 @@
 # Seasons Hard Logic Strategy Guide
 
 This document details tricks and obscurities that are in Seasons hard logic.
+See
+[seasons_notes.md](https://github.com/jangler/oracles-randomizer/blob/doc/seasons_notes.md)
+for a list of things that are out of logic even in hard.
 
 ## General
 
