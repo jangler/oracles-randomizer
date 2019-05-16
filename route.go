@@ -35,9 +35,8 @@ func addDefaultItemNodes(nodes map[string]*logic.Node) {
 
 // A Route is a set of information needed for finding an item placement route.
 type Route struct {
-	Graph  graph
-	Slots  map[string]*node
-	Rupees int
+	Graph graph
+	Slots map[string]*node
 }
 
 // NewRoute returns an initialized route with all nodes.
@@ -178,14 +177,10 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		placeDungeonItems(ri.Src, r, game, ropts.hard,
 			itemList, ri.UsedItems, slotList, ri.UsedSlots)
 
-		slotRecord := 0
-		i, maxIterations := 0, 1+itemList.Len()
-
 		// place "regular" items
 		for slotList.Len() > 0 {
 			if verbose {
 				logf("searching; filling %d more slots", slotList.Len())
-				logf("%d/%d iterations", i, maxIterations)
 			}
 
 			eItem, eSlot := trySlotRandomItem(r, ri.Src, itemList, slotList)
@@ -195,30 +190,10 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 				ri.UsedItems.PushBack(item)
 				slot := slotList.Remove(eSlot).(*node)
 				ri.UsedSlots.PushBack(slot)
-				r.Rupees += logic.RupeeValues[item.name]
 				if verbose {
 					logf("placing: %s <- %s", slot.name, item.name)
 				}
-
-				if ri.UsedSlots.Len() > slotRecord {
-					slotRecord = ri.UsedSlots.Len()
-					i, maxIterations = 0, 1+itemList.Len()
-				}
 			} else {
-				item := ri.UsedItems.Remove(ri.UsedItems.Back()).(*node)
-				slot := ri.UsedSlots.Remove(ri.UsedSlots.Back()).(*node)
-				r.Rupees -= logic.RupeeValues[item.name]
-				itemList.PushBack(item)
-				slotList.PushBack(slot)
-				item.removeParent(slot)
-				item.addParent(r.Graph["start"])
-				if verbose {
-					logf("displacing: %s -> %s", slot.name, item.name)
-				}
-			}
-
-			i++
-			if i > maxIterations {
 				if verbose {
 					logf("maximum iterations reached")
 					logf("unplaced items:")

@@ -18,19 +18,20 @@ func nodeInList(n *node, l *list.List) bool {
 
 func trySlotRandomItem(r *Route, src *rand.Rand,
 	itemPool, slotPool *list.List) (usedItem, usedSlot *list.Element) {
-	// we're dead
-	if slotPool.Len() == 0 || itemPool.Len() == 0 {
-		return nil, nil
-	}
-
 	// try placing the first item in a slot until it fits
+	triedProgression := false
 	for _, progressionItemsOnly := range []bool{true, false} {
+		if !progressionItemsOnly && triedProgression {
+			return nil, nil
+		}
+
 		for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*node)
 			if progressionItemsOnly && itemIsJunk(item.name) {
 				continue
 			}
 			item.removeParent(r.Graph["start"])
+			triedProgression = true
 
 			for es := slotPool.Front(); es != nil; es = es.Next() {
 				slot := es.Value.(*node)
@@ -39,6 +40,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 					continue
 				}
 
+				// test whether seed is still beatable w/ item placement
 				r.Graph.clearMarks()
 				item.addParent(slot)
 				if r.Graph["done"].getMark() != markTrue {
