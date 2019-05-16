@@ -155,7 +155,7 @@ var labrynnaNodes = map[string]*Node{
 	"rolling ridge owl": And("mystery seeds",
 		Or("defeat great moblin", And("ridge upper present", "feather"))),
 	"ridge upper present": Or("ridge mid present",
-		And("ridge base present", Or("jump 3", And("hard", "jump 2", "cane"))),
+		And("ridge base present", Or("jump 3", And("hard", "feather", "cane"))),
 		And("defeat great moblin", "feather")),
 	"d5 entrance": And("crown key", "ridge upper present"),
 	"ridge base present": Or("ridge upper present",
