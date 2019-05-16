@@ -69,6 +69,10 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 	hintedSlots := make(map[*node]bool)
 
 	for _, owlName := range owlNames {
+		// sometimes owls are just unreachable, so anything goes, i guess
+		g.clearMarks()
+		owlUnreachable := g[owlName].getMark() == markFalse
+
 		for {
 			slot, item := slots[i], checks[slots[i]]
 			i = (i + 1) % len(slots)
@@ -84,7 +88,7 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 			required := g[owlName].getMark() == markFalse
 			item.addParent(slot)
 
-			if !required {
+			if !required || owlUnreachable {
 				hints[owlName] = h.format(slot, item)
 				hintedSlots[slot] = true
 				break
