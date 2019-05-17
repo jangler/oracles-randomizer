@@ -110,11 +110,7 @@ func loadNode(v interface{}) *prenode {
 	n := new(prenode)
 
 	switch v := v.(type) {
-	case string:
-		n.nType = andNode
-		n.parents = make([]interface{}, 1)
-		n.parents = append(n.parents, v)
-	case []interface{}:
+	case []interface{}: // and node
 		n.nType = andNode
 		n.parents = make([]interface{}, len(v))
 		for i, parent := range v {
@@ -125,7 +121,7 @@ func loadNode(v interface{}) *prenode {
 				n.parents[i] = loadNode(parent)
 			}
 		}
-	case map[interface{}]interface{}:
+	case map[interface{}]interface{}: // or/count node
 		if v["or"] != nil {
 			n.nType = orNode
 			n.parents = loadParents(v["or"])
@@ -147,10 +143,7 @@ func loadParents(v interface{}) []interface{} {
 	var parents []interface{}
 
 	switch v := v.(type) {
-	case string:
-		parents = make([]interface{}, 1)
-		parents[0] = v
-	case []interface{}:
+	case []interface{}: // and node
 		parents = make([]interface{}, len(v))
 		for i, parent := range v {
 			switch parent.(type) {
@@ -160,7 +153,7 @@ func loadParents(v interface{}) []interface{} {
 				parents[i] = loadNode(parent)
 			}
 		}
-	default:
+	default: // single parent, or/count node
 		parents = make([]interface{}, 1)
 		parents[0] = loadNode(v)
 	}
