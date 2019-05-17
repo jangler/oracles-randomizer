@@ -31,6 +31,10 @@ code. The download also contains a rudimentary location checklist and item
 tracker. If you're looking for a more detailed item and map tracker,
 [EmoTracker](https://emotracker.net/) has a pack developed by Herreteman.
 
+See
+[contributing.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/contributing.md)
+for instructions on building the randomizer from source.
+
 
 ## Randomization notes
 
