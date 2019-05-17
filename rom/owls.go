@@ -11,7 +11,7 @@ import (
 func getOwlIds(game int) map[string]byte {
 	owls := make(map[string]map[string]byte)
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/owls.yaml"), owls); err != nil {
+		FSMustByte(false, "/romdata/owls.yaml"), owls); err != nil {
 		panic(err)
 	}
 	return owls[gameNames[game]]

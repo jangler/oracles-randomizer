@@ -3,10 +3,6 @@
 // are specified, Ages comes first.
 package rom
 
-// TODO: put all these yaml files in a folder together so that the folder can
-// be included, instead of every file individually.
-//go:generate esc -o embed.go -pkg rom -prefix .. ../lgbtasm/lgbtasm.lua ../asm/ ../rom/warps.yaml ../rom/rings.yaml ../rom/treasures.yaml ../rom/seasons_slots.yaml ../rom/ages_slots.yaml ../rom/music.yaml ../rom/owls.yaml ../rom/eob.yaml ../rom/text.yaml
-
 import (
 	"crypto/sha1"
 	"fmt"
@@ -47,7 +43,7 @@ func Init(b []byte, game int) {
 	}
 
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/rings.yaml"), &rings); err != nil {
+		FSMustByte(false, "/romdata/rings.yaml"), &rings); err != nil {
 		panic(err)
 	}
 }
@@ -559,7 +555,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 	// load yaml data
 	wd := make(map[string](map[string]*WarpData))
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/warps.yaml"), wd); err != nil {
+		FSMustByte(false, "/romdata/warps.yaml"), wd); err != nil {
 		panic(err)
 	}
 	var warps map[string]*WarpData

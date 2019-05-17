@@ -97,7 +97,7 @@ type musicData struct {
 func LoadSlots(b []byte, game int) map[string]*MutableSlot {
 	raws := make(map[string]*rawSlot)
 
-	filename := fmt.Sprintf("/rom/%s_slots.yaml", gameNames[game])
+	filename := fmt.Sprintf("/romdata/%s_slots.yaml", gameNames[game])
 	if err := yaml.Unmarshal(
 		FSMustByte(false, filename), raws); err != nil {
 		panic(err)
@@ -105,7 +105,7 @@ func LoadSlots(b []byte, game int) map[string]*MutableSlot {
 
 	allMusic := make(map[string](map[byte]musicData))
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/music.yaml"), allMusic); err != nil {
+		FSMustByte(false, "/romdata/music.yaml"), allMusic); err != nil {
 		panic(err)
 	}
 	musicMap := allMusic[gameNames[game]]

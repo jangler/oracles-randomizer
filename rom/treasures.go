@@ -115,7 +115,7 @@ func getTreasureAddr(b []byte, game int, id, subid byte) Addr {
 func LoadTreasures(b []byte, game int) map[string]*Treasure {
 	allRawIds := make(map[string]map[string]uint16)
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/treasures.yaml"), allRawIds); err != nil {
+		FSMustByte(false, "/romdata/treasures.yaml"), allRawIds); err != nil {
 		panic(err)
 	}
 

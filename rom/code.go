@@ -313,7 +313,7 @@ func parseMetalabel(ml string) (addr Addr, label string) {
 func loadBankEnds(game string) []uint16 {
 	eobs := make(map[string][]uint16)
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/eob.yaml"), eobs); err != nil {
+		FSMustByte(false, "/romdata/eob.yaml"), eobs); err != nil {
 		panic(err)
 	}
 	return eobs[game]
@@ -323,7 +323,7 @@ func loadBankEnds(game string) []uint16 {
 func applyText(b []byte, game string) {
 	textMap := make(map[string]map[string]string)
 	if err := yaml.Unmarshal(
-		FSMustByte(false, "/rom/text.yaml"), textMap); err != nil {
+		FSMustByte(false, "/romdata/text.yaml"), textMap); err != nil {
 		panic(err)
 	}
 	for label, rawText := range textMap[game] {
