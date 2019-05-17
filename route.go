@@ -55,11 +55,8 @@ func NewRoute(game int) *Route {
 	addNodeParents(totalPrenodes, g)
 
 	openSlots := make(map[string]*node, 0)
-	for name, pn := range totalPrenodes {
-		switch pn.Type {
-		case logic.AndSlotType, logic.OrSlotType:
-			openSlots[name] = g[name]
-		}
+	for name := range rom.ItemSlots {
+		openSlots[name] = g[name]
 	}
 
 	return &Route{
@@ -79,9 +76,9 @@ func (r *Route) ClearParents(node string) {
 func addNodes(prenodes map[string]*logic.Node, g graph) {
 	for key, pn := range prenodes {
 		switch pn.Type {
-		case logic.AndType, logic.AndSlotType:
+		case logic.AndType:
 			g[key] = newNode(key, andNode)
-		case logic.OrType, logic.OrSlotType, logic.RootType:
+		case logic.OrType, logic.RootType:
 			g[key] = newNode(key, orNode)
 		case logic.CountType:
 			g[key] = newNode(key, countNode)

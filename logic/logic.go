@@ -13,17 +13,12 @@ import (
 // an item slot, and whether it is a non-item slot milestone.
 type Type int
 
-// And, Or, and Root are pretty self-explanatory. One with a Slot suffix is an
-// item slot.
-//
 // The following functions are half syntactic sugar for declaring large lists
 // of node relationships.
 const (
 	RootType Type = iota
 	AndType
 	OrType
-	AndSlotType
-	OrSlotType
 	CountType
 )
 
@@ -56,9 +51,9 @@ func CreateCountType(count int, parents ...interface{}) *Node {
 var (
 	Root    = CreateFunc(RootType)
 	And     = CreateFunc(AndType)
-	AndSlot = CreateFunc(AndSlotType)
+	AndSlot = CreateFunc(AndType) // TODO: get rid of this
 	Or      = CreateFunc(OrType)
-	OrSlot  = CreateFunc(OrSlotType)
+	OrSlot  = CreateFunc(OrType) // TODO: get rid of this
 	Count   = CreateCountType
 )
 
