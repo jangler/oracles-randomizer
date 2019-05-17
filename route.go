@@ -7,7 +7,6 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/jangler/oracles-randomizer/logic"
 	"github.com/jangler/oracles-randomizer/rom"
 )
 
@@ -27,9 +26,9 @@ var subrosianPortalNames = map[string]string{
 }
 
 // adds nodes to the map based on default contents of item slots.
-func addDefaultItemNodes(nodes map[string]*logic.Node) {
+func addDefaultItemNodes(nodes map[string]*prenode) {
 	for _, slot := range rom.ItemSlots {
-		nodes[rom.FindTreasureName(slot.Treasure)] = logic.Root()
+		nodes[rom.FindTreasureName(slot.Treasure)] = rootPrenode()
 	}
 }
 
@@ -43,12 +42,7 @@ type Route struct {
 func NewRoute(game int) *Route {
 	g := newGraph()
 
-	var totalPrenodes map[string]*logic.Node
-	if game == rom.GameSeasons {
-		totalPrenodes = logic.GetSeasons()
-	} else {
-		totalPrenodes = logic.GetAges()
-	}
+	totalPrenodes := getPrenodes(game)
 	addDefaultItemNodes(totalPrenodes)
 
 	addNodes(totalPrenodes, g)
@@ -73,28 +67,28 @@ func (r *Route) ClearParents(node string) {
 	r.Graph[node].clearParents()
 }
 
-func addNodes(prenodes map[string]*logic.Node, g graph) {
+func addNodes(prenodes map[string]*prenode, g graph) {
 	for key, pn := range prenodes {
-		switch pn.Type {
-		case logic.AndType:
+		switch pn.nType {
+		case andNode:
 			g[key] = newNode(key, andNode)
-		case logic.OrType:
+		case orNode:
 			g[key] = newNode(key, orNode)
-		case logic.CountType:
+		case countNode:
 			g[key] = newNode(key, countNode)
-			g[key].minCount = pn.MinCount
+			g[key].minCount = pn.minCount
 		default:
 			panic("unknown logic type for " + key)
 		}
 	}
 }
 
-func addNodeParents(prenodes map[string]*logic.Node, g graph) {
+func addNodeParents(prenodes map[string]*prenode, g graph) {
 	for k, pn := range prenodes {
 		if g[k] == nil {
 			continue
 		}
-		for _, parent := range pn.Parents {
+		for _, parent := range pn.parents {
 			if g[parent.(string)] == nil {
 				continue
 			}

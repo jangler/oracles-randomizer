@@ -1,8 +1,7 @@
 package main
 
 //go:generate bash scripts/generate.sh
-//go:generate esc -o embed.go hints/
-//go:generate esc -o logic/embed.go -pkg logic logic/
+//go:generate esc -o embed.go hints/ logic/
 //go:generate esc -o rom/embed.go -pkg rom asm/ romdata/ lgbtasm/lgbtasm.lua
 
 import (
@@ -18,7 +17,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jangler/oracles-randomizer/logic"
 	"github.com/jangler/oracles-randomizer/rom"
 )
 
@@ -107,22 +105,6 @@ func main() {
 	}
 
 	switch flagDevCmd {
-	case "dumplogic": // TODO: temporary command!
-		sLogicMap, aLogicMap := logic.GetSeasons(), logic.GetAges()
-
-		for _, m := range []map[string]*logic.Node{sLogicMap, aLogicMap} {
-			a := make([]string, 0, 10000)
-
-			for k, v := range m {
-				a = append(a, fmt.Sprintf("%q: (%q, %q, %q)",
-					k, v.Type, v.MinCount, v.Parents))
-			}
-
-			sort.Strings(a)
-			for _, s := range a {
-				fmt.Println(s)
-			}
-		}
 	case "findaddr":
 		// print the name of the mutable/etc that modifies an address
 		var game int

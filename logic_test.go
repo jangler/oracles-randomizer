@@ -1,4 +1,4 @@
-package logic
+package main
 
 import (
 	"regexp"
@@ -12,8 +12,8 @@ var dungeonEntranceRegexp = regexp.MustCompile(`d[1-8].* entrance`)
 var portalEntranceRegexp = regexp.MustCompile(`enter .+ portal`)
 
 // returns true iff p1 is a parent of p2.
-func isParent(p1Name string, p2 *Node) bool {
-	for _, parent := range p2.Parents {
+func isParent(p1Name string, p2 *prenode) bool {
+	for _, parent := range p2.parents {
 		if parent == p1Name {
 			return true
 		}
@@ -22,17 +22,19 @@ func isParent(p1Name string, p2 *Node) bool {
 }
 
 func TestLinks(t *testing.T) {
-	// need to be changed manually for now
-	nodes := GetSeasons()
-	rom.Init(nil, rom.GameSeasons)
+	// TODO: needs to be changed manually for now
+	game := rom.GameSeasons
+
+	nodes := getPrenodes(game)
+	rom.Init(nil, game)
 
 	for key, slot := range rom.ItemSlots {
 		treasureName := rom.FindTreasureName(slot.Treasure)
 		if node, ok := nodes[treasureName]; ok {
-			node.Parents = append(node.Parents, key)
+			node.parents = append(node.parents, key)
 		} else {
-			n := &Node{Type: AndType, Parents: make([]interface{}, 1)}
-			n.Parents[0] = key
+			n := &prenode{nType: andNode, parents: make([]interface{}, 1)}
+			n.parents[0] = key
 			nodes[treasureName] = n
 		}
 	}
@@ -41,7 +43,7 @@ func TestLinks(t *testing.T) {
 	// referenced.
 	referenced := make(map[string]bool)
 	for name, node := range nodes {
-		for _, parentName := range node.Parents {
+		for _, parentName := range node.parents {
 			if _, ok := nodes[parentName.(string)]; !ok {
 				t.Errorf("node %s references nonexistent node %s",
 					name, parentName)
