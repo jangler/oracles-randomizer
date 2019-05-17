@@ -1,0 +1,47 @@
+break crystal: {or: [sword, bombs, bracelet, ember seeds, expert's ring]}
+break pot: {or: [bracelet, switch hook, noble sword]}
+
+# obviously this only works on standard enemies
+push enemy: {or: [shield, [shovel, or: [boomerang, pegasus shooter]]]}
+
+# unlike in seasons, shovel doesn't hit levers.
+hit lever: {or: [sword, ember seeds, scent seeds, mystery seeds,
+    any seed shooter, switch hook, boomerang, punch object]}
+# and seeds from minecart don't hit levers. not sure if this is because
+# the ones in seasons are horizontal and the one in ages D2 is vertical.
+hit lever from minecart: {or: [sword, any seed shooter, boomerang]}
+hit switch: {or: [sword, bombs, punch object, ember seeds, scent seeds,
+    mystery seeds, any seed shooter, switch hook, boomerang]}
+hit switch ranged: {or: [bombs, any seed shooter, switch hook, boomerang,
+    [sword, energy ring]]}
+
+# flute isn't included here since it's only available in some places.
+break bush safe: {
+    or: [sword, switch hook, bracelet, bombs, ember seeds, gale shooter]}
+break bush: {or: [sword, switch hook, bracelet]}
+
+satchel weapon: [satchel,
+    or: [ember seeds, [hard, or: [scent seeds, gale seeds]]]]
+shooter weapon: [seed shooter, or: [ember seeds, scent seeds, gale seeds]]
+
+# most enemies are vulnerable to these items
+kill normal: {or: [sword, satchel weapon, shooter weapon, cane, punch enemy]}
+kill normal ranged: {or: [shooter weapon, [cane, bracelet]]}
+kill underwater: {or: [sword, shooter weapon, punch enemy]}
+kill switch hook: {or: [kill normal, switch hook]}
+
+kill giant ghini: {
+    or: [sword, scent shooter, switch hook, punch enemy, [hard, scent satchel]]}
+kill pumpkin head: [bracelet,
+    or: [sword, punch enemy, ember seeds, scent shooter, [hard, scent satchel]]]
+
+# spiked beetles can't be punched for some reason
+kill spiked beetle: {or: [gale shooter, [hard, gale satchel],
+    [or: [shield, shovel],
+        or: [sword, satchel weapon, shooter weapon, cane, switch hook]]]}
+kill swoop: {
+    or: [sword, scent shooter, switch hook, punch enemy, [hard, scent satchel]]}
+
+kill moldorm: {or: [sword, scent shooter, cane, switch hook, punch enemy,
+    [hard, scent satchel]]}
+kill subterror: [shovel, or: [sword, switch hook, scent seeds, punch enemy]]

@@ -1,0 +1,222 @@
+# this all assumes that you start in the forest of time and that the time
+# portals on the screens next to the maku tree are always active.
+
+start: [] # parent for nodes reachable by default
+hard: {or: []}
+
+# forest of time
+starting chest: [start]
+nayru's house: [start]
+
+# lynna / south shore / palace
+lynna city: {or: [break bush, flute, echoes]}
+lynna village: {or: [lynna city, echoes]}
+black tower worker: [lynna village]
+maku tree: {or: [rescue nayru, [lynna village, shovel, kill normal]]}
+south lynna tree: [lynna city, seed item,
+    or: [sword, punch object, dimitri's flute, [hard, break bush]]]
+lynna city chest: {or: [ember seeds, currents]}
+shore present: {or: [flute, ricky's gloves, [break bush, feather],
+    [lynna city, bracelet], [currents, or: [feather, flippers, raft]],
+    [ages, break bush], [lynna city, mermaid suit]]}
+south shore dirt: [shore present, or: [shovel, flute]]
+balloon guy: [feather, or: [sword, boomerang],
+    or: [currents, ricky's gloves, ricky's flute,
+        [shore present, or: [any seed shooter,
+            [hard, or: [pegasus satchel, bombs], boomerang]]]]]
+balloon guy's gift: [balloon guy]
+# TODO: this could be stated in terms of a count node
+balloon guy's upgrade: [balloon guy, or: [ # 3 types of seeds
+    [ember seeds, or: [
+        [scent seeds,
+            or: [pegasus seeds, gale seeds, mystery seeds]],
+        [pegasus seeds, or: [gale seeds, mystery seeds]],
+        [gale seeds, mystery seeds]]],
+    [scent seeds, or: [
+        [pegasus seeds, or: [gale seeds, mystery seeds]],
+        [gale seeds, mystery seeds]]],
+    [pegasus seeds, gale seeds, mystery seeds]]]
+raft: [lynna village, cheval rope, island chart]
+shop, 30 rupees: [lynna city, rupees]
+shop, 150 rupees: [lynna city, rupees]
+ambi's palace tree: [lynna village, or: [sword, punch object], seed item]
+ambi's palace chest: [lynna village, or: [
+    ages,
+    [hard, satchel, scent seeds, pegasus seeds],
+    [break bush safe, mermaid suit]]]
+rescue nayru: [ambi's palace chest, mystery seeds, switch hook,
+    or: [sword, punch enemy]]
+mayor plen's house: [long hook]
+maku seed: [
+    d1 boss, d2 boss, d3 boss, d4 boss, d5 boss, d6 boss, d7 boss, d8 boss]
+
+# yoll graveyard
+yoll graveyard: [ember seeds]
+cheval's grave: [yoll graveyard, or: [kill switch hook, bomb jump 3]]
+cheval's test: [cheval's grave, bracelet, or: [feather, flippers]]
+cheval's invention: [cheval's grave, flippers]
+grave under tree: [yoll graveyard]
+syrup: [yoll graveyard, graveyard key, rupees,
+    or: [flippers, bomb jump 2, dimitri's flute, long hook]]
+graveyard poe: [yoll graveyard, graveyard key, bracelet]
+d1 entrance: [yoll graveyard, graveyard key]
+
+# western woods
+# it's possible to switch hook the octorok through the boulder to enter
+# fairies' woods [easier if you have scent seeds], but it's not in logic for
+# the same reason that cucco clip isn't in seasons logic.
+fairies' woods: {or: [bracelet, dimitri's flute, ages,
+    [lynna city, flippers],
+    [currents, or: [hit lever, ricky's flute, moosh's flute]]]}
+fairies' woods chest: {or: [[deku forest, currents],
+    [fairies' woods, or: [feather, ricky's flute, moosh's flute, switch hook]]]}
+deku forest: {or: [bracelet, ages]}
+deku forest cave east: [deku forest]
+deku forest cave west: [deku forest, bracelet,
+    or: [feather, switch hook, ember seeds, ages, gale satchel]]
+deku forest tree: [deku forest, or: [sword, punch object], seed item,
+    or: [ember seeds, ages, switch hook, gale satchel,
+        [hard, feather, or: [sword, bombs]]]]
+deku forest owl: [mystery seeds, deku forest tree]
+deku forest soldier: [deku forest, mystery seeds]
+d2 entrance: [deku forest, or: [bombs, currents]]
+
+# crescent island
+# the western present portal responds to currents only, in order to prevent
+# softlocks.
+crescent past: {or: [raft, [lynna city, mermaid suit],
+    [crescent present west, currents]]}
+tokay crystal cave: [crescent past, or: [shovel, break crystal], feather]
+tokay bomb cave: [crescent past, bracelet, bombs]
+wild tokay game: [crescent past, bombs, bracelet]
+# can get the warp point by swimming under crescent island, but that's pretty
+# unintuitive.
+crescent island tree: [crescent past, scent seedling,
+    or: [sword, punch object], seed item, or: [ages, [bracelet,
+        or: [echoes, [hard, gale satchel, mermaid suit]]]]]
+crescent present west: {or: [dimitri's flute, [lynna city, mermaid suit],
+    [crescent past, or: [currents, [shovel, echoes]]]]}
+d3 entrance: [crescent present west]
+hidden tokay cave: [lynna city, mermaid suit]
+under crescent island: [lynna city, mermaid suit]
+tokay pot cave: [crescent past, long hook]
+
+# nuun / symmetry city / talus peaks
+ricky nuun: {or: []}
+dimitri nuun: {or: []}
+moosh nuun: {or: [start]}
+nuun: [lynna city, or: [currents, [fairies' woods, ember shooter]]]
+nuun highlands cave: [nuun, or: [
+    dimitri's flute,
+    [ricky nuun, or: [flute, currents]],
+    [moosh nuun, or: [flute, currents, [break bush, jump 3]]]]]
+symmetry present: [nuun, or: [currents, flute]]
+symmetry city tree: [seed item, symmetry present,
+    or: [sword, punch object, [dimitri's flute, d4 entrance]]]
+symmetry past: [symmetry present, or: [ages, [break bush safe, echoes]]]
+symmetry city brother: [symmetry past]
+tokkey's composition: [symmetry past, flippers]
+talus peaks owl: [mystery seeds, symmetry past]
+restoration wall: {or: [ages, [symmetry past, currents, bracelet, flippers]]}
+patch: [restoration wall, or: [sword,
+    [hard, or: [shield, boomerang, switch hook, scent seeds, shovel]]]]
+talus peaks chest: {or: [restoration wall]}
+d4 entrance: [symmetry present, tuni nut, patch]
+
+# rolling ridge. what a nightmare
+goron elder: [bomb flower, switch hook, or: [feather, ages]]
+ridge west past: {or: [
+    goron elder,
+    [ridge west present, or: [ages, [bracelet, echoes]]]]}
+ridge west present: {or: [
+    ridge upper present,
+    [switch hook, currents, or: [feather, ages]],
+    [currents, ridge west past]]}
+ridge west cave: [ridge west present]
+rolling ridge west tree: [or: [sword, punch object], seed item, ridge west past]
+under moblin keep: [ridge west present, feather, flippers]
+defeat great moblin: [ridge west present, pegasus satchel, bracelet]
+rolling ridge owl: [mystery seeds,
+    or: [defeat great moblin, [ridge upper present, feather]]]
+ridge upper present: {or: [
+    ridge mid present,
+    [ridge base present, or: [jump 3, [hard, feather, cane]]],
+    [defeat great moblin, feather]]}
+d5 entrance: [crown key, ridge upper present]
+ridge base present: {or: [ridge upper present, ridge mid present,
+    [currents, or: [ridge base past east, ridge base past west]]]}
+mermaid legend owl: [ridge base present]
+d6 present entrance: [old mermaid key, ridge base present]
+pool in d6 entrance: [ridge base present, mermaid suit]
+goron dance present: [ridge base present]
+goron dance, with letter: [ridge base past, goron letter]
+ridge mid past: {or: [
+    [ridge base past west, switch hook],
+    [ridge upper present, ages],
+    [ridge mid present, ages],
+    [ridge base past east, brother emblem, feather]]}
+ridge mid present: {or: [
+    [ridge mid past, currents],
+    [ridge base present, brother emblem, or: [switch hook, jump 3]]]}
+target carts: [ridge mid past, switch hook, ridge mid present]
+target carts 1: [target carts]
+target carts 2: [target carts]
+goron gallery entrance: [target carts, or: [ages, [bracelet, echoes]]]
+goron shooting gallery: [goron gallery entrance, sword]
+rolling ridge east tree: [or: [sword, punch object], seed item,
+    or: [goron gallery entrance,
+        [ridge mid present, ages],
+        [ridge mid past, gale satchel]]]
+ridge base past east: {or: [
+    goron gallery entrance,
+    [lynna city, or: [feather, ages], mermaid suit],
+    [ridge mid past, feather, brother emblem],
+    rolling ridge east tree,
+    [ridge base present, ages],
+    [ridge base past west, or: [flippers, [hard, jump 3]]]]}
+ridge base past west: {or: [
+    [ridge base present, or: [ages, [break bush safe, echoes]]],
+    [ridge base past east, or: [flippers, [hard, bomb jump 2]]],
+    ridge mid past]} # ledge added to prevent softlocks
+ridge base past: [ridge base past west, bombs]
+d6 past entrance: [mermaid key, ridge base past west,
+    or: [flippers, [ages, feather], [hard, bomb jump 2]]]
+ridge diamonds past: [ridge base past west, switch hook]
+bomb goron head: [bombs, or: [
+    [ridge base past west, switch hook],
+    [ridge upper present, ages]]]
+big bang game: [goronade, ridge mid present]
+ridge NE cave present: [ridge mid present]
+trade rock brisket: [brother emblem, rock brisket, ridge base present]
+trade goron vase: [brother emblem, goron vase, ridge base past east]
+trade lava juice: [lava juice, ridge mid past]
+goron's hiding place: [ridge west present, bombs]
+ridge base chest: [ridge west present]
+goron diamond cave: [ridge mid present, or: [switch hook, jump 3]]
+ridge bush cave: [ridge mid past, switch hook]
+
+# zora village / zora seas. only accessible with tune of ages, so no
+# distinctions between past and present are necessary.
+zora village: [mermaid suit, ages, switch hook]
+zora village tree: [zora village, seed item,
+    or: [sword, punch object, [dimitri's flute, clean seas]]]
+zora village present: [zora village]
+zora palace chest: [zora village]
+zora NW cave: [zora village, bombs, power glove]
+fairies' coast chest: [zora village]
+# in hard logic, farm kills and get a potion off maple
+king zora: [zora village, or: [syrup, hard]]
+library present: [zora village, library key]
+library past: [zora village, library key, or: [book of seals, bomb jump 3]]
+clean seas: [zora village, fairy powder]
+zora seas chest: [clean seas]
+d7 entrance: [king zora, clean seas]
+fisher's island cave: [mermaid suit, ages, long hook]
+zora's reward: [d7 boss]
+
+# sea of storms / sea of no return
+piratian captain: [lynna city, mermaid suit, zora scale]
+sea of storms past: [lynna city, mermaid suit, zora scale]
+d8 entrance: [crescent past, tokay eyeball, kill normal, break pot, bombs,
+    or: [cane, hard], mermaid suit, feather]
+sea of no return: [d8 entrance, power glove]

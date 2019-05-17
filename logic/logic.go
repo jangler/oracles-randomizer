@@ -2,6 +2,8 @@ package logic
 
 import (
 	"fmt"
+
+	"gopkg.in/yaml.v2"
 )
 
 // This package contains definitions of nodes and node relationships before
@@ -9,15 +11,14 @@ import (
 // relationships can't be made until the nodes are added first (and it's nice
 // not to clutter the other packages with all these definitions).
 
-// A Type identifies whether a node is an And, Or, or Root node, whether it is
+// A Type identifies whether a node is an And, Or, or Count node, whether it is
 // an item slot, and whether it is a non-item slot milestone.
 type Type int
 
 // The following functions are half syntactic sugar for declaring large lists
 // of node relationships.
 const (
-	RootType Type = iota
-	AndType
+	AndType Type = iota
 	OrType
 	CountType
 )
@@ -30,50 +31,26 @@ type Node struct {
 	MinCount int
 }
 
-// CreateFunc returns a function that creates graph nodes from a list of key
-// strings or sub-nodes, based on the given node type.
-func CreateFunc(nodeType Type) func(parents ...interface{}) *Node {
-	return func(parents ...interface{}) *Node {
-		return &Node{Parents: parents, Type: nodeType}
-	}
+// Root returns a new root node - one which does not have parents, and remains
+// false until it does.
+func Root(parents ...interface{}) *Node {
+	return &Node{Parents: parents, Type: OrType}
 }
-
-// CreateCountType creates a CountType node.
-func CreateCountType(count int, parents ...interface{}) *Node {
-	if len(parents) > 1 {
-		panic("Count nodes do not support multiple parents")
-	}
-	return &Node{Parents: parents, Type: CountType, MinCount: count}
-}
-
-// Convenience functions for creating nodes succinctly. See the Type const
-// comment for information on the various types.
-var (
-	Root    = CreateFunc(RootType)
-	And     = CreateFunc(AndType)
-	AndSlot = CreateFunc(AndType) // TODO: get rid of this
-	Or      = CreateFunc(OrType)
-	OrSlot  = CreateFunc(OrType) // TODO: get rid of this
-	Count   = CreateCountType
-)
 
 var seasonsNodes, agesNodes map[string]*Node
 
 func init() {
 	seasonsNodes = make(map[string]*Node)
-	appendNodes(seasonsNodes, ringNodes,
-		seasonsItemNodes, seasonsBaseItemNodes, seasonsKillNodes,
-		holodrumNodes, subrosiaNodes, portalNodes, seasonNodes,
-		seasonsD0Nodes, seasonsD1Nodes, seasonsD2Nodes, seasonsD3Nodes,
-		seasonsD4Nodes, seasonsD5Nodes, seasonsD6Nodes, seasonsD7Nodes,
-		seasonsD8Nodes, seasonsD9Nodes)
+	appendNodes(seasonsNodes, loadLogic("rings.yaml"),
+		loadLogic("seasons_items.yaml"), loadLogic("seasons_kill.yaml"),
+		loadLogic("holodrum.yaml"), loadLogic("subrosia.yaml"),
+		loadLogic("portals.yaml"), loadLogic("seasons_dungeons.yaml"))
 	flattenNestedNodes(seasonsNodes)
 
 	agesNodes = make(map[string]*Node)
-	appendNodes(agesNodes, ringNodes,
-		agesItemNodes, agesKillNodes, labrynnaNodes,
-		agesD1Nodes, agesD2Nodes, agesD3Nodes, agesD4Nodes,
-		agesD5Nodes, agesD6Nodes, agesD7Nodes, agesD8Nodes, agesD9Nodes)
+	appendNodes(agesNodes, loadLogic("rings.yaml"),
+		loadLogic("ages_items.yaml"), loadLogic("ages_kill.yaml"),
+		loadLogic("labrynna.yaml"), loadLogic("ages_dungeons.yaml"))
 	flattenNestedNodes(agesNodes)
 }
 
@@ -99,12 +76,6 @@ func flattenNestedNodes(nodes map[string]*Node) {
 	if !done {
 		flattenNestedNodes(nodes)
 	}
-}
-
-// SeasonsExtraItems returns a map of item nodes that may be assigned to slots,
-// in addition to the ones that are generated from default slot contents.
-func SeasonsExtraItems() map[string]*Node {
-	return copyMap(seasonsBaseItemNodes)
 }
 
 // GetSeasons returns a copy of all seasons nodes.
@@ -136,4 +107,82 @@ func copyMap(src map[string]*Node) map[string]*Node {
 		dst[k] = v
 	}
 	return dst
+}
+
+// loads a logic map from yaml.
+func loadLogic(filename string) map[string]*Node {
+	raw := make(map[string]interface{})
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/logic/"+filename), raw); err != nil {
+		panic(err)
+	}
+
+	m := make(map[string]*Node)
+	for k, v := range raw {
+		m[k] = loadNode(v)
+	}
+	return m
+}
+
+// loads a node (and any of its explicit parents, recursively) from yaml.
+func loadNode(v interface{}) *Node {
+	n := new(Node)
+
+	switch v := v.(type) {
+	case string:
+		n.Type = AndType
+		n.Parents = make([]interface{}, 1)
+		n.Parents = append(n.Parents, v)
+	case []interface{}:
+		n.Type = AndType
+		n.Parents = make([]interface{}, len(v))
+		for i, parent := range v {
+			switch parent.(type) {
+			case string:
+				n.Parents[i] = parent
+			default:
+				n.Parents[i] = loadNode(parent)
+			}
+		}
+	case map[interface{}]interface{}:
+		if v["or"] != nil {
+			n.Type = OrType
+			n.Parents = loadParents(v["or"])
+		} else if v["count"] != nil {
+			n.Type = CountType
+			n.MinCount = v["count"].([]interface{})[0].(int)
+			n.Parents = make([]interface{}, 1)
+			n.Parents[0] = v["count"].([]interface{})[1].(string)
+		} else {
+			println("unknown map type")
+		}
+	}
+
+	return n
+}
+
+// loads a node's parents from yaml.
+func loadParents(v interface{}) []interface{} {
+	var parents []interface{}
+
+	switch v := v.(type) {
+	case string:
+		parents = make([]interface{}, 1)
+		parents[0] = v
+	case []interface{}:
+		parents = make([]interface{}, len(v))
+		for i, parent := range v {
+			switch parent.(type) {
+			case string:
+				parents[i] = parent
+			default:
+				parents[i] = loadNode(parent)
+			}
+		}
+	default:
+		parents = make([]interface{}, 1)
+		parents[0] = loadNode(v)
+	}
+
+	return parents
 }

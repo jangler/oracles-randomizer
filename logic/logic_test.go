@@ -31,7 +31,9 @@ func TestLinks(t *testing.T) {
 		if node, ok := nodes[treasureName]; ok {
 			node.Parents = append(node.Parents, key)
 		} else {
-			nodes[treasureName] = And(key)
+			n := &Node{Type: AndType, Parents: make([]interface{}, 1)}
+			n.Parents[0] = key
+			nodes[treasureName] = n
 		}
 	}
 

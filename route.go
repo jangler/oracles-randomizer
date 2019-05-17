@@ -78,7 +78,7 @@ func addNodes(prenodes map[string]*logic.Node, g graph) {
 		switch pn.Type {
 		case logic.AndType:
 			g[key] = newNode(key, andNode)
-		case logic.OrType, logic.RootType:
+		case logic.OrType:
 			g[key] = newNode(key, orNode)
 		case logic.CountType:
 			g[key] = newNode(key, countNode)
@@ -347,8 +347,9 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 	// get slices of names
 	var itemNames []string
 	if game == rom.GameSeasons {
-		itemNames = make([]string, 0,
-			len(rom.ItemSlots)+len(logic.SeasonsExtraItems()))
+		// TODO: do this differently. like put it in a regular slot. also does
+		// this actually work like it's supposed to?
+		itemNames = make([]string, 0, len(rom.ItemSlots)+1) // +1 for fool's ore
 	} else {
 		itemNames = make([]string, 0, len(rom.ItemSlots))
 	}
@@ -391,9 +392,7 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 		}
 	}
 	if game == rom.GameSeasons {
-		for key := range logic.SeasonsExtraItems() {
-			itemNames = append(itemNames, key)
-		}
+		itemNames = append(itemNames, "fool's ore")
 	}
 	for key := range r.Slots {
 		slotNames = append(slotNames, key)

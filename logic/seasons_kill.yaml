@@ -1,0 +1,75 @@
+# these nodes do not define items, only which items can kill which enemies
+# under what circumstances, assuming that you've arrived in the room containing
+# the enemy.
+#
+# anything that can be destroyed in more than one way is also included in here.
+# bushes, flowers, mushrooms, etc.
+#
+# animal companions are not included in this logic, since they're only
+# available in certain areas.
+
+satchel kill normal: [satchel,
+    or: [ember seeds, [hard, or: [scent seeds, gale seeds]]]]
+slingshot kill normal: [slingshot,
+    or: [ember seeds, scent seeds, gale seeds]]
+jump kill normal: [jump 2, kill normal]
+jump pit normal: [jump 2, pit kill normal]
+
+# enemies vulnerable to scent seeds are always vulnerable to sword and fool's
+# ore (and punches?).
+kill armored: {or: [sword, fool's ore, punch enemy,
+    [scent seeds, or: [slingshot, [hard, satchel]]]]}
+
+# the safe version is for areas where you can't possibly get stuck from being
+# on the wrong side of a bush.
+remove bush safe: {or: [sword, magic boomerang, bracelet, ember seeds,
+    gale slingshot, bombs]}
+remove bush: {or: [sword, magic boomerang, bracelet]}
+
+kill normal: {or: [sword, satchel kill normal, slingshot kill normal,
+    fool's ore, punch enemy]}
+pit kill normal: {or: [sword, shield, rod, fool's ore,
+    kill armored]}
+kill stalfos: {or: [kill normal, rod]}
+hit lever from minecart: {or: [sword, boomerang, rod, scent seeds,
+    mystery seeds, any slingshot, fool's ore, punch object]}
+hit lever: {or: [shovel, hit lever from minecart]}
+kill normal (pit): {or: [kill normal, pit kill normal]}
+hit far switch: {or: [boomerang, bombs, any slingshot, [sword, energy ring]]}
+kill hardhat (pit): {or: [sword, boomerang, shield, rod, fool's ore,
+    [or: [slingshot, [hard, satchel]], or: [scent seeds, gale seeds]]]}
+kill moblin (gap): {or: [sword, scent seeds, slingshot kill normal, fool's ore,
+    jump kill normal, jump pit normal, [hard, or: [punch enemy, ember seeds]]]}
+remove pot: {or: [noble sword, bracelet]}
+flip spiked beetle: {or: [shield, shovel]}
+# spiked beetles can't be punched for some reason
+flip kill spiked beetle: [flip spiked beetle,
+    or: [sword, fool's ore, satchel kill normal, slingshot kill normal]]
+kill spiked beetle: {
+    or: [flip kill spiked beetle, gale slingshot, [hard, gale seeds]]}
+kill omuai: [kill armored, bracelet]
+remove flower: {or: [sword, magic boomerang]}
+kill agunima: [ember seeds, kill armored]
+hit very far lever: {or: [magic boomerang, any slingshot]}
+hit far lever: {or: [boomerang, any slingshot,
+    [hard, jump 2, or: [sword, rod, fool's ore]]]}
+kill gohma: {or: [scent seeds, ember seeds]}
+remove mushroom: {or: [magic boomerang, bracelet]}
+kill moldorm: {or: [kill armored]}
+kill armored (pit): {or: [kill armored, shield]}
+break crystal: {or: [sword, bombs, bracelet, expert's ring]}
+kill hardhat (magnet): {
+    or: [magnet gloves, gale slingshot, [hard, gale satchel]]}
+kill vire: {or: [sword, fool's ore, expert's ring]}
+finish manhandla: {or: [sword, any slingshot, fool's ore, expert's ring]}
+kill manhandla: [magic boomerang, finish manhandla]
+kill poe sister: {or: [kill armored, rod, ember seeds]}
+kill magunesu: {or: [sword, fool's ore, expert's ring]}
+kill armored (across pit): {or: [scent slingshot, magnet gloves,
+    [jump 4, kill armored (pit)], [sword, energy ring]]}
+kill gleeok: {or: [sword, fool's ore, punch enemy]}
+kill frypolar: {or: [[bracelet,
+    or: [mystery slingshot, [hard, mystery satchel]]],
+    or: [ember slingshot, [hard, ember satchel]]]}
+kill medusa head: {or: [sword, fool's ore]}
+kill onox: [sword, jump 2]

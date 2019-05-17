@@ -1,0 +1,292 @@
+# dungeons should rely on overworld information as little as possible.
+# ideally enter <dungeon> is the only overworld item the dungeon nodes
+# reference [and that node should not be defined here].
+#
+# bush- and pot-throwing is in hard logic, but with an arbitrary limit of
+# three screen transitions per carry, and no more than two enemies can be
+# required to be killed with one throw.
+
+# d0
+enter d0: [d0 entrance] # not randomized
+
+# 0 keys
+d0 key chest: [enter d0]
+d0 rupee chest: {or: [remove bush safe, flute]}
+
+# 1 key
+d0 sword chest: [enter d0, d0 small key]
+
+# d1
+# bush-throwing is in hard logic for a few rooms, but the goriya one only
+# matters if you killed the stalfos with rod. bush-throwing is *not* in logic
+# for the vanilla BK room, since you need to relight the torches every time
+# you leave.
+enter d1: {or: []}
+
+# 0 keys
+d1 stalfos drop: [enter d1, or: [kill stalfos, bracelet]]
+d1 floormaster room: [enter d1, or: [ember seeds, [hard, mystery seeds]]]
+d1 boss: [d1 floormaster room, d1 boss key, kill armored]
+
+# 1 key
+d1 stalfos chest: [enter d1, d1 small key, kill stalfos]
+d1 goriya chest: [d1 stalfos chest,
+    or: [ember seeds, [hard, mystery seeds]], kill normal (pit)]
+d1 lever room: [d1 stalfos chest]
+d1 block-pushing room: [d1 stalfos chest, or: [kill normal, [hard, bracelet]]]
+d1 railway chest: [d1 stalfos chest, or: [hit lever, [hard, bracelet]]]
+d1 button chest: [d1 railway chest]
+
+# 2 keys
+d1 basement: [d1 railway chest, bombs, count: [2, d1 small key], kill armored]
+
+# d2
+enter d2: {or: []}
+
+# 0 keys
+d2 torch room: {or: [enter d2, d2 rope chest]}
+d2 left from entrance: [d2 torch room]
+d2 rope drop: [d2 torch room, kill normal]
+d2 arrow room: {or: [d2 alt entrances,
+    [d2 torch room, or: [ember seeds, [hard, mystery seeds]]]]}
+d2 rope chest: [d2 arrow room, kill normal]
+d2 rupee room: [d2 arrow room, bombs]
+d2 blade chest: {or: [d2 alt entrances,
+    [d2 arrow room, or: [kill normal, [hard, bracelet]]]]}
+d2 roller chest: [d2 bomb wall, bombs, bracelet]
+d2 spiral chest: [d2 roller chest]
+
+# 2 keys
+d2 spinner: [d2 roller chest, count: [2, d2 small key]]
+dodongo owl: [mystery seeds, d2 spinner]
+d2 boss: [d2 spinner, d2 boss key]
+
+# 3 keys
+d2 hardhat room: [d2 arrow room, count: [3, d2 small key]]
+d2 pot chest: [d2 hardhat room, remove pot]
+d2 moblin chest: [d2 hardhat room, or: [
+    [hard, bracelet],
+    [kill hardhat (pit), kill moblin (gap)]]]
+d2 terrace chest: [d2 spinner, count: [3, d2 small key]]
+
+# alias for external reference
+d2 bomb wall: [d2 blade chest]
+d2 bracelet room: [d2 moblin chest]
+
+# d3
+enter d3: {or: []}
+
+# 0 keys
+spiked beetles owl: [mystery seeds, enter d3]
+d3 center: [enter d3,
+    or: [kill spiked beetle, [flip spiked beetle, bracelet]]]
+d3 mimic stairs: {or: [d3 water room, [d3 center, bracelet]]}
+d3 roller chest: [d3 mimic stairs, bracelet]
+d3 water room: {or: [d3 mimic stairs, [d3 center, jump 2]]}
+d3 quicksand terrace: [d3 mimic stairs, jump 2]
+omuai owl: [mystery seeds, d3 mimic stairs, jump 2]
+d3 moldorm chest: [d3 mimic stairs, kill armored]
+d3 bombed wall chest: [d3 moldorm chest, bombs]
+trampoline owl: [mystery seeds, d3 center, jump 2]
+d3 trampoline chest: [d3 center, jump 2]
+d3 zol chest: [d3 center, jump 2]
+
+# 2 keys
+d3 mimic chest: [d3 water room, kill normal, count: [2, d3 small key]]
+d3 omuai stairs: [d3 mimic stairs, jump 2, kill omuai, count: [2, d3 small key]]
+d3 giant blade room: [d3 omuai stairs]
+d3 boss: [d3 omuai stairs, d3 boss key]
+
+# d4
+enter d4: {or: []}
+
+# 0 keys
+d4 north of entrance: [enter d4, or: [flippers, jump 4]]
+d4 pot puzzle: [d4 north of entrance, bombs, bracelet]
+d4 maze chest: [d4 north of entrance, hit lever from minecart]
+d4 dark room: [d4 maze chest, jump 2]
+
+# 1 key
+d4 water ring room: [enter d4, or: [flippers, jump 4], bombs, d4 small key,
+    or: [bracelet, kill normal, [rod, boomerang]]]
+d4 roller minecart: [enter d4, flippers, jump 2, d4 small key]
+d4 pool: [d4 roller minecart, hit lever from minecart,
+    or: [kill normal, bracelet]]
+
+# 2 keys
+greater distance owl: [mystery seeds, d4 roller minecart,
+    count: [2, d4 small key]]
+d4 stalfos stairs: [d4 roller minecart, count: [2, d4 small key],
+    or: [kill stalfos, bracelet]]
+d4 terrace: [d4 stalfos stairs]
+d4 final minecart: [d4 stalfos stairs, kill agunima]
+d4 torch chest: [d4 stalfos stairs, ember slingshot]
+
+# 5 keys
+d4 cracked floor room: [d4 final minecart, count: [5, d4 small key]]
+d4 dive spot: [d4 final minecart, hit very far lever, count: [5, d4 small key]]
+d4 basement stairs: [d4 final minecart, hit far lever, count: [5, d4 small key]]
+gohma owl: [mystery seeds, d4 basement stairs]
+enter gohma: [d4 basement stairs, d4 boss key,
+    or: [ember slingshot, [hard, mystery slingshot], jump 3,
+        [hard, jump 2, or: [ember seeds, mystery seeds]]]]
+d4 boss: [enter gohma, kill gohma]
+
+# alias for external reference
+enter agunima: [d4 terrace]
+
+# d5
+enter d5: {or: []}
+
+# 0 keys
+d5 cart bay: [enter d5, or: [flippers, bomb jump 2]]
+d5 cart chest: [d5 cart bay, hit lever from minecart]
+d5 pot room: [enter d5, or: [[magnet gloves, bombs, jump 2],
+    [d5 cart bay, or: [jump 2, [hard, pegasus satchel]]]]]
+d5 gibdo/zol chest: [d5 pot room, kill normal]
+d5 left chest: [enter d5, or: [magnet gloves, jump 4]]
+d5 terrace chest: [enter d5, or: [magnet gloves, [d5 cart bay, jump 2, bombs]]]
+armos knights owl: [mystery seeds, d5 terrace chest]
+d5 spiral chest: [enter d5, or: [shield, kill armored]]
+# if you can kill the moldorms, you can kill the armos
+d5 armos chest: [d5 terrace chest, kill armored]
+d5 spinner chest: [d5 cart bay, or: [magnet gloves, jump 6]]
+d5 drop ball: [d5 cart bay, hit lever from minecart, kill armored (pit)]
+# stalfos room means right side [where the chest is]
+d5 stalfos room: [d5 cart bay, or: [magnet gloves, jump 4]]
+
+# 5 keys
+d5 post-syger: [d5 stalfos room, kill armored]
+d5 magnet ball chest: [d5 pot room, count: [5, d5 small key],
+    or: [flippers, jump 6, [hard, jump 4]]]
+d5 basement: [d5 drop ball, d5 post-syger, magnet gloves,
+    count: [5, d5 small key], or: [kill magunesu, [hard, jump 2]]]
+d5 boss: [d5 post-syger, magnet gloves, d5 boss key,
+    count: [5, d5 small key], or: [jump 2, hard]]
+
+# d6
+enter d6: {or: []}
+
+# 0 keys
+d6 1F east: [enter d6]
+d6 rupee room: [enter d6, bombs]
+d6 magnet ball drop: [enter d6, or: [[magnet gloves, jump 2], jump 4]]
+d6 1F terrace: [enter d6]
+d6 crystal trap room: [enter d6]
+d6 U-room: [enter d6, break crystal, magic boomerang]
+d6 torch stairs: [d6 U-room, ember seeds]
+d6 escape room: [d6 torch stairs, jump 2]
+d6 vire chest: [d6 escape room, kill stalfos]
+
+# 3 keys
+d6 beamos room: [enter d6, count: [3, d6 small key]]
+d6 2F gibdo chest: [d6 beamos room]
+d6 2F armos chest: [d6 2F gibdo chest, bombs]
+d6 armos hall: [d6 2F armos chest, jump 2]
+d6 spinner north: [enter d6, magnet gloves, break crystal,
+    or: [jump 2, hard], or: [
+        [kill normal, count: [3, d6 small key]],
+        [bombs, jump 2, count: [2, d6 small key]]]]
+enter vire: [d6 vire chest, count: [3, d6 small key]]
+d6 pre-boss room: [enter vire, kill vire, kill hardhat (magnet)]
+d6 boss: [d6 pre-boss room, d6 boss key, kill manhandla]
+
+# d7
+# the chest to the right of the entrance is locked behind all keys in logic
+# because of poe skip, but the poe fight itself is only locked behind one.
+enter d7: {or: []}
+
+# 0 keys
+poe curse owl: [mystery seeds, enter d7]
+d7 wizzrobe chest: [enter d7, kill normal]
+d7 bombed wall chest: [enter d7, bombs]
+
+# 1 key
+enter poe A: [enter d7, d7 small key,
+    or: [ember slingshot, [hard, mystery slingshot]]]
+d7 pot room: [enter d7, bracelet, or: [
+    [enter poe A, kill poe sister],
+    [hard, bombs, jump 2, pegasus satchel]]]
+d7 zol button: [d7 pot room, jump 2]
+d7 armos puzzle: [d7 pot room, or: [jump 3, magnet gloves]]
+d7 magunesu chest: [d7 armos puzzle, jump 3, kill magunesu, magnet gloves]
+
+# 2 keys
+d7 quicksand chest: [d7 pot room, jump 2, count: [2, d7 small key]]
+
+# 3 keys
+enter poe B: [d7 pot room, ember seeds, count: [3, d7 small key],
+    or: [pegasus satchel, hyper slingshot, hard]]
+d7 water stairs: [enter poe B, flippers]
+d7 spike chest: [d7 water stairs,
+    or: [jump 4,
+        [jump 3, kill armored (across pit)],
+        [jump 2, magnet gloves]]]
+
+# 4 keys
+d7 maze chest: [d7 water stairs, kill poe sister, jump 4,
+    count: [4, d7 small key]]
+d7 B2F drop: [d7 maze chest, or: [magnet gloves, [hard, jump 6]]]
+shining blue owl: [mystery seeds, d7 stalfos chest]
+d7 boss: [d7 maze chest, d7 boss key, kill gleeok]
+
+# 5 keys
+d7 right of entrance: [enter d7, count: [5, d7 small key]]
+d7 stalfos chest: [d7 maze chest, count: [5, d7 small key],
+    or: [pegasus satchel, hard]]
+
+# d8
+# HSS skip is out of logic and can lead to key-locks.
+# pots don't hurt magunesu, thank goodness.
+enter d8: {or: []}
+
+# 0 keys
+d8 eye drop: [enter d8, remove pot, or: [any slingshot,
+    [hard, jump 2, or: [ember satchel, scent satchel, mystery satchel]]]]
+d8 three eyes chest: [enter d8, jump 2,
+    or: [any hyper slingshot,
+        [hard, or: [ember satchel, scent satchel, mystery satchel]]]]
+d8 hardhat room: [enter d8, kill magunesu]
+d8 hardhat drop: [d8 hardhat room, kill hardhat (magnet)]
+
+# 1 key
+d8 spike room: [d8 hardhat room, d8 small key, or: [jump 4, [hard, jump 3]]]
+
+# 2 keys
+d8 spinner: [d8 spike room, count: [2, d8 small key]]
+silent watch owl: [mystery seeds, d8 spinner]
+d8 magnet ball room: [d8 spinner]
+d8 armos chest: [d8 spinner, magnet gloves]
+d8 spinner chest: [d8 armos chest]
+frypolar owl: [mystery seeds, d8 armos chest]
+d8 darknut chest: [d8 armos chest, bombs, kill armored,
+    or: [any hyper slingshot,
+        [hard, or: [ember satchel, scent satchel, mystery satchel]]]]
+
+# 3 keys
+d8 ice puzzle room: [d8 armos chest, count: [3, d8 small key], kill frypolar,
+    ember seeds, hyper slingshot]
+d8 pols voice chest: [d8 ice puzzle room,
+    or: [jump 6, magic boomerang, hard]]
+
+# 4 keys
+d8 crystal room: [d8 ice puzzle room, count: [4, d8 small key]]
+magical ice owl: [mystery seeds, d8 crystal room]
+d8 ghost armos drop: [d8 crystal room, bombs]
+d8 NE crystal: [d8 crystal room, bracelet, hit lever]
+d8 SE crystal: [d8 crystal room, bracelet]
+d8 SE lava chest: [d8 SE crystal]
+d8 spark chest: [d8 SE crystal, d8 NE crystal, remove pot]
+d8 SW lava chest: [d8 crystal room]
+
+# 6 keys
+d8 NW crystal: [d8 crystal room, bracelet, count: [6, d8 small key]]
+d8 SW crystal: [d8 crystal room, bracelet, count: [6, d8 small key]]
+
+# 7 keys
+d8 boss: [d8 SW crystal, d8 NW crystal,
+    count: [7, d8 small key], d8 boss key, kill medusa head]
+
+# onox's castle
+enter d9: [d9 entrance] # not randomized
+done: [enter d9, kill armored, bombs, kill onox]

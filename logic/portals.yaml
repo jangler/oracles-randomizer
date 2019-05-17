@@ -1,0 +1,83 @@
+# to enter a portal means to walk into it; to exit means to walk out.
+# exits are root nodes since portal connections can be randomized.
+# pair 1
+
+enter eastern suburbs portal: [suburbs, or: [remove bush, flute]]
+exit eastern suburbs portal: {or: []}
+
+enter volcanoes east portal: [temple]
+exit volcanoes east portal: {or: []}
+
+# pair 2
+
+enter spool swamp portal: [south swamp, bracelet, or: [
+    flute, spool swamp default summer, spool swamp default autumn,
+    [spool stump, or: [summer, autumn]],
+    [or: [spool swamp default winter, [spool stump, winter]], shovel],
+    [or: [spool swamp default spring, [spool stump, spring]], remove flower]]]
+exit spool swamp portal: {or: []}
+
+enter subrosia market portal: [beach]
+exit subrosia market portal: {or: []}
+
+# pair 3
+
+enter mt. cucco portal: [mount cucco]
+exit mt. cucco portal: {or: []}
+
+enter strange brothers portal: [feather, hide and seek]
+exit strange brothers portal: {or: []}
+
+# pair 4
+
+enter eyeglass lake portal: [north horon stump, or: [
+    [wet eyeglass lake, or: [jump 2, ricky's flute, moosh's flute],
+        or: [flippers, [dimitri's flute, bracelet]]],
+    [or: [north horon default winter, winter],
+        or: [jump 6, [jump 2, dimitri's flute]]]]]
+exit eyeglass lake portal: {or: []}
+
+enter great furnace portal: [furnace]
+exit great furnace portal: {or: []}
+
+# pair 5
+
+enter horon village portal: [horon village,
+    or: [magic boomerang, [hard, jump 6]]]
+exit horon village portal: {or: []}
+
+enter house of pirates portal: [pirate house, hit lever]
+exit house of pirates portal: {or: []}
+
+# pair 6
+
+enter temple remains lower portal: [temple remains lower stump, or: [
+    [bomb temple remains, feather],
+    [or: [temple remains default winter, winter], or: [
+        [exit temple remains upper portal,
+            or: [temple remains default winter, feather]],
+        [hard, shovel, remove bush, jump 6],
+        [hard, or: [temple remains default spring, spring],
+            remove flower, remove bush, jump 6, winter],
+        [hard, or: [temple remains default summer, summer],
+            remove bush, jump 6, winter],
+        [or: [temple remains default autumn, autumn],
+            remove bush, jump 2, winter]]]]]
+exit temple remains lower portal: {or: []}
+
+enter volcanoes west portal: {or: []} # not possible without exiting first
+exit volcanoes west portal: {or: []}
+
+# pair 7
+
+enter temple remains upper portal: [
+    temple remains lower stump, bomb temple remains,
+    or: [temple remains default summer, summer],
+    or: [jump 6, [bomb jump 2, magnet gloves]]]
+exit temple remains upper portal: {or: []}
+
+enter D8 entrance portal: [d8 entrance]
+exit D8 entrance portal: {or: []}
+
+# idk where to put this
+bomb temple remains: [exit volcanoes west portal, bombs]

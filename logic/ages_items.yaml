@@ -1,0 +1,56 @@
+shield: {or: [wooden shield, iron shield]}
+
+bombs: {or: [
+    ["bombs, 10", or: [break bush, flute, shovel]],
+    [hard, or: [d2 boss, goron shooting gallery]]]}
+
+ricky's flute: {or: []}
+dimitri's flute: {or: []}
+moosh's flute: {or: []}
+flute: {or: [ricky's flute, dimitri's flute, moosh's flute]}
+
+# TODO: this is a dumb placeholder for until new fill is more developed
+rupees: {or: ["rupees, 200", ["rupees, 100", "rupees, 50"],
+    count: [2, "rupees, 100"], count: [3, "rupees, 50"], [hard, shovel]]}
+
+# expert's ring can do some things that fist ring can't, so this is for the
+# lowest common denominator.
+punch object: {or: [fist ring, expert's ring]}
+punch enemy: {or: [[hard, fist ring], expert's ring]}
+
+# progressives
+noble sword: {count: [2, sword]}
+long hook: {count: [2, switch hook]}
+echoes: {count: [1, harp]}
+currents: {count: [2, harp]}
+ages: {count: [3, harp]}
+power glove: {count: [2, bracelet]}
+mermaid suit: {count: [2, flippers]}
+
+bomb jump 2: [feather, or: [pegasus satchel, [hard, bombs]]]
+jump 3: [feather, pegasus satchel]
+bomb jump 3: [hard, feather, pegasus satchel, bombs]
+
+seed item: {or: [satchel, seed shooter]}
+
+ember seeds: [ember tree seeds]
+# you can also get scent seeds from ramrock, but the requirements for those are
+# a superset of the requirements for the D3 ones.
+scent seeds: {or: [scent tree seeds, [hard, d3 E crystal, seed item]]}
+pegasus seeds: [pegasus tree seeds]
+gale seeds: [gale tree seeds]
+mystery seeds: [mystery tree seeds]
+
+ember satchel: [ember seeds, satchel]
+scent satchel: [scent seeds, satchel]
+pegasus satchel: [pegasus seeds, satchel]
+gale satchel: [gale seeds, satchel]
+mystery satchel: [mystery seeds, satchel]
+
+ember shooter: [ember seeds, seed shooter]
+scent shooter: [scent seeds, seed shooter]
+pegasus shooter: [pegasus seeds, seed shooter]
+gale shooter: [gale seeds, seed shooter]
+mystery shooter: [mystery seeds, seed shooter]
+any seed shooter: [seed shooter,
+    or: [ember seeds, scent seeds, pegasus seeds, gale seeds, mystery seeds]]
