@@ -97,7 +97,6 @@ ages:
   09/458a/: db 00
   09/458b/: db 00
 
-  # TODO: is this really in the same bank in both games?
   0b/removeGashaNutRingText: /include removeGashaNutRingText
   0b/45bb/: jp removeGashaNutRingText
 
