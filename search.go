@@ -4,8 +4,7 @@ import (
 	"container/list"
 	"math/rand"
 	"sort"
-
-	"github.com/jangler/oracles-randomizer/logic"
+	"strings"
 )
 
 // returns true iff the node is in the list.
@@ -18,34 +17,42 @@ func nodeInList(n *node, l *list.List) bool {
 	return false
 }
 
-func trySlotRandomItem(r *Route, src *rand.Rand, itemPool,
-	slotPool *list.List, numUsedSlots int,
-	hard, fillUnused bool) (usedItem, usedSlot *list.Element) {
-	// we're dead
-	if slotPool.Len() == 0 || itemPool.Len() == 0 {
-		return nil, nil
-	}
-
-	// try placing an item in the first slot until one fits
-	for es := slotPool.Front(); es != nil; es = es.Next() {
-		slot := es.Value.(*node)
-
-		r.Graph.clearMarks()
-		if !fillUnused && (slot.getMark() != markTrue ||
-			!canAffordSlot(r, slot, hard)) {
-			continue
+func trySlotRandomItem(r *Route, src *rand.Rand,
+	itemPool, slotPool *list.List) (usedItem, usedSlot *list.Element) {
+	// try placing the first item in a slot until it fits
+	triedProgression := false
+	for _, progressionItemsOnly := range []bool{true, false} {
+		if !progressionItemsOnly && triedProgression {
+			return nil, nil
 		}
 
 		for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*node)
-
-			if !itemFitsInSlot(item, slot, src) {
+			if progressionItemsOnly && itemIsJunk(item.name) {
 				continue
 			}
+			item.removeParent(r.Graph["start"])
+			triedProgression = true
 
-			item.addParent(slot)
+			for es := slotPool.Front(); es != nil; es = es.Next() {
+				slot := es.Value.(*node)
 
-			return ei, es
+				if !itemFitsInSlot(item, slot, src) {
+					continue
+				}
+
+				// test whether seed is still beatable w/ item placement
+				r.Graph.clearMarks()
+				item.addParent(slot)
+				if r.Graph["done"].getMark() != markTrue {
+					item.removeParent(slot)
+					continue
+				}
+
+				return ei, es
+			}
+
+			item.addParent(r.Graph["start"])
 		}
 	}
 
@@ -92,6 +99,14 @@ func itemFitsInSlot(itemNode, slotNode *node, src *rand.Rand) bool {
 		}
 	}
 
+	// dungeons can only hold their respective dungeon-specific items. the
+	// HasPrefix is specifically for ages d6 boss key.
+	dungeonName := getDungeonName(itemNode.name)
+	if dungeonName != "" &&
+		!strings.HasPrefix(getDungeonName(slotNode.name), dungeonName) {
+		return false
+	}
+
 	// and only seeds can be slotted in seed trees, of course
 	switch itemNode.name {
 	case "ember tree seeds", "mystery tree seeds", "scent tree seeds",
@@ -115,28 +130,21 @@ func slotIsSeedTree(name string) bool {
 	return false
 }
 
-func canAffordSlot(r *Route, slot *node, hard bool) bool {
-	// if it doesn't cost anything, of course it's affordable
-	balance := logic.NodeValues[slot.name]
-	if balance >= 0 {
-		return true
+// return the name of a dungeon associated with a given item or slot name. ages
+// d6 boss key returns "d6". non-dungeon names return "".
+func getDungeonName(name string) string {
+	if strings.HasPrefix(name, "d6 present") {
+		return "d6 present"
+	} else if strings.HasPrefix(name, "d6 past") {
+		return "d6 past"
+	} else if name == "slate" {
+		return "d8"
 	}
 
-	// in hard mode, 100 rupee manips with shovel are in logic
-	if hard {
-		if r.Graph["shovel"].getMark() == markTrue {
-			return true
-		}
+	switch name[:2] {
+	case "d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8":
+		return name[:2]
+	default:
+		return ""
 	}
-
-	// otherwise, count the net rupees available to the player
-	balance += r.Rupees
-	for _, n := range r.Graph {
-		value := logic.NodeValues[n.name]
-		if value != 0 && n != slot && n.getMark() == markTrue {
-			balance += value
-		}
-	}
-
-	return balance >= 0
 }

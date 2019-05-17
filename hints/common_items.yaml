@@ -18,25 +18,6 @@ shovel: the Shovel
 sword: a sword
 wooden shield: a shield
 
-# dungeon items
-compass: a Compass
-d1 boss key: the Level 1 Boss Key
-d1 small key: a Level 1 Small Key
-d2 boss key: the Level 2 Boss Key
-d2 small key: a Level 2 Small Key
-d3 boss key: the Level 3 Boss Key
-d3 small key: a Level 3 Small Key
-d4 boss key: the Level 4 Boss Key
-d4 small key: a Level 4 Small Key
-d5 boss key: the Level 5 Boss Key
-d5 small key: a Level 5 Small Key
-d6 boss key: the Level 6 Boss Key
-d7 boss key: the Level 7 Boss Key
-d7 small key: a Level 7 Small Key
-d8 boss key: the Level 8 Boss Key
-d8 small key: a Level 8 Small Key
-dungeon map: a Dungeon Map
-
 # rupees - don't give specific amounts lest it imply a total
 rupees, 10: Rupees
 rupees, 20: Rupees

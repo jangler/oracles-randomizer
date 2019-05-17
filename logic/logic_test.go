@@ -50,7 +50,7 @@ func TestLinks(t *testing.T) {
 	for name := range nodes {
 		switch name {
 		case "done", "gasha seed", "piece of heart", "rare peach stone",
-			"treasure map", "dungeon map", "compass", "heart container":
+			"treasure map", "heart container":
 			continue
 		case "pegasus seeds", "any satchel":
 			// defined for consistency but unused
@@ -61,6 +61,8 @@ func TestLinks(t *testing.T) {
 		if strings.Contains(name, "rupee") ||
 			strings.HasSuffix(name, "old man") ||
 			strings.HasSuffix(name, " ring") ||
+			strings.HasSuffix(name, " compass") ||
+			strings.HasSuffix(name, " dungeon map") ||
 			strings.Contains(name, " ring L-") ||
 			strings.Contains(name, " default ") ||
 			strings.HasSuffix(name, " owl") {

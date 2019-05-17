@@ -325,10 +325,10 @@ d1 floormaster room:
   treasure: discovery ring
   room: 0x0417
 d1 lever room:
-  treasure: compass
+  treasure: d1 compass
   room: 0x040f
 d1 stalfos chest:
-  treasure: dungeon map
+  treasure: d1 dungeon map
   room: 0x0419
 d1 button chest:
   treasure: d1 small key
@@ -356,10 +356,10 @@ d2 left from entrance:
   treasure: rupees, 5
   room: 0x0438
 d2 pot chest:
-  treasure: dungeon map
+  treasure: d2 dungeon map
   room: 0x042b
 d2 rope chest:
-  treasure: compass
+  treasure: d2 compass
   room: 0x0436
 d2 blade chest:
   treasure: d2 small key
@@ -395,10 +395,10 @@ d3 moldorm chest:
   treasure: bombs, 10
   room: 0x0454
 d3 trampoline chest:
-  treasure: compass
+  treasure: d3 compass
   room: 0x044d
 d3 bombed wall chest:
-  treasure: dungeon map
+  treasure: d3 dungeon map
   room: 0x0451
 d3 giant blade room:
   treasure: d3 boss key
@@ -420,13 +420,13 @@ d4 north of entrance:
   treasure: bombs, 10
   room: 0x047f
 d4 maze chest:
-  treasure: dungeon map
+  treasure: d4 dungeon map
   room: 0x0469
 d4 dark room:
   treasure: d4 small key
   room: 0x046d
 d4 water ring room:
-  treasure: compass
+  treasure: d4 compass
   room: 0x0483
 d4 pool:
   treasure: d4 small key
@@ -467,10 +467,10 @@ d5 armos chest:
   addr: {bank: 0x09, addr: 0x5051}
   collect: d5 armos
 d5 gibdo/zol chest:
-  treasure: dungeon map
+  treasure: d5 dungeon map
   room: 0x048f
 d5 spiral chest:
-  treasure: compass
+  treasure: d5 compass
   room: 0x049d
 d5 spinner chest:
   treasure: d5 small key
@@ -513,10 +513,10 @@ d6 2F armos chest:
   treasure: rupees, 5
   room: 0x04c3
 d6 beamos room:
-  treasure: compass
+  treasure: d6 compass
   room: 0x04ad
 d6 1F terrace:
-  treasure: dungeon map
+  treasure: d6 dungeon map
   room: 0x04b0
 d6 escape room:
   treasure: d6 boss key
@@ -543,7 +543,7 @@ d7 right of entrance:
   treasure: power ring L-1
   room: 0x055a
 d7 bombed wall chest:
-  treasure: compass
+  treasure: d7 compass
   room: 0x0552
   collect: poe skip room
 d7 zol button:
@@ -559,7 +559,7 @@ d7 magunesu chest:
   treasure: d7 small key
   room: 0x0547
 d7 quicksand chest:
-  treasure: dungeon map
+  treasure: d7 dungeon map
   room: 0x0558
 d7 B2F drop:
   treasure: d7 small key
@@ -592,13 +592,13 @@ d8 hardhat drop:
   room: 0x0575
   keydrop: true
 d8 spike room:
-  treasure: compass
+  treasure: d8 compass
   room: 0x058b
 d8 spinner chest:
   treasure: d8 small key
   room: 0x0570
 d8 magnet ball room:
-  treasure: dungeon map
+  treasure: d8 dungeon map
   room: 0x058e
 d8 darknut chest:
   treasure: d8 small key

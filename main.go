@@ -531,7 +531,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	}
 
 	checks := getChecks(ri)
-	spheres := getSpheres(ri.Route.Graph, checks, ropts.hard)
+	spheres, extra := getSpheres(ri.Route.Graph, checks, ropts.hard)
 	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
 		rom.GetOwlNames(game))
 
@@ -564,17 +564,17 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	summary <- ""
 	summary <- "-- progression items --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, game, func(name string) bool {
+	logSpheres(summary, checks, spheres, extra, game, func(name string) bool {
 		return !keyRegexp.MatchString(name) && !itemIsJunk(name)
 	})
 	summary <- ""
 	summary <- "-- small keys and boss keys --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, game, keyRegexp.MatchString)
+	logSpheres(summary, checks, spheres, extra, game, keyRegexp.MatchString)
 	summary <- ""
 	summary <- "-- other items --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, game, itemIsJunk)
+	logSpheres(summary, checks, spheres, extra, game, itemIsJunk)
 	if ropts.dungeons {
 		summary <- ""
 		summary <- "-- dungeon entrances --"
@@ -606,8 +606,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for area, id := range ri.Seasons {
-				c <- fmt.Sprintf("%-15s <- %s",
-					area[:len(area)-7], seasonsByID[id])
+				c <- fmt.Sprintf("%-15s <- %s", area, seasonsByID[id])
 			}
 			close(c)
 		})

@@ -314,7 +314,7 @@ d1 crystal room:
   treasure: power ring L-1
   room: 0x041c
 d1 crossroads:
-  treasure: compass
+  treasure: d1 compass
   room: 0x041d
 d1 west terrace:
   treasure: discovery ring
@@ -323,7 +323,7 @@ d1 pot chest:
   treasure: d1 boss key
   room: 0x0423
 d1 east terrace:
-  treasure: dungeon map
+  treasure: d1 dungeon map
   room: 0x0425
 d1 ghini drop:
   treasure: d1 small key
@@ -346,13 +346,13 @@ d2 color room:
   treasure: d2 boss key
   room: 0x043e
 d2 bombed terrace:
-  treasure: dungeon map
+  treasure: d2 dungeon map
   room: 0x0440
 d2 moblin platform:
   treasure: gasha seed
   room: 0x0441
 d2 rope room:
-  treasure: compass
+  treasure: d2 compass
   room: 0x0445
 d2 ladder chest:
   treasure: d2 small key
@@ -394,7 +394,7 @@ d3 torch chest:
   treasure: gasha seed
   room: 0x0455
 d3 conveyor belt room:
-  treasure: compass
+  treasure: d3 compass
   room: 0x0456
 d3 mimic room:
   treasure: seed shooter
@@ -406,7 +406,7 @@ d3 crossroads:
   treasure: gasha seed
   room: 0x0460
 d3 pols voice chest:
-  treasure: dungeon map
+  treasure: d3 dungeon map
   room: 0x0465
 d3 moldorm drop:
   treasure: d3 small key
@@ -443,10 +443,10 @@ d4 small floor puzzle:
   treasure: switch hook
   room: 0x0487
 d4 first chest:
-  treasure: compass
+  treasure: d4 compass
   room: 0x048b
 d4 minecart chest:
-  treasure: dungeon map
+  treasure: d4 dungeon map
   room: 0x048f
 d4 cube chest:
   treasure: d4 small key
@@ -483,7 +483,7 @@ d5 six-statue puzzle:
   treasure: cane
   room: 0x04a5
 d5 diamond chest:
-  treasure: compass
+  treasure: d5 compass
   room: 0x04ad
 d5 eyes chest:
   treasure: d5 small key
@@ -492,7 +492,7 @@ d5 three-statue puzzle:
   treasure: d5 small key
   room: 0x04bc
 d5 blue peg chest:
-  treasure: dungeon map
+  treasure: d5 dungeon map
   room: 0x04be
 d5 boss:
   treasure: heart container
@@ -514,7 +514,7 @@ d6 present RNG chest:
   treasure: d6 boss key
   room: 0x051c
 d6 present diamond chest:
-  treasure: dungeon map
+  treasure: d6 present dungeon map
   room: 0x051d
 d6 present beamos chest:
   treasure: rupees, 10
@@ -523,7 +523,7 @@ d6 present cube chest:
   treasure: d6 present small key
   room: 0x0521
 d6 present channel chest:
-  treasure: compass
+  treasure: d6 present compass
   room: 0x0525
 
 # d6 past
@@ -540,10 +540,10 @@ d6 past stalfos chest:
   treasure: d6 past small key
   room: 0x053c
 d6 past color room:
-  treasure: compass
+  treasure: d6 past compass
   room: 0x053f
 d6 past pool chest:
-  treasure: dungeon map
+  treasure: d6 past dungeon map
   room: 0x0541
 d6 past wizzrobe chest:
   treasure: gasha seed
@@ -567,7 +567,7 @@ d7 cane/diamond puzzle:
   treasure: d7 small key
   room: 0x0553
 d7 crab chest:
-  treasure: compass
+  treasure: d7 compass
   room: 0x0554
 d7 left wing:
   treasure: d7 small key
@@ -576,7 +576,7 @@ d7 right wing:
   treasure: d7 small key
   room: 0x0564
 d7 spike chest:
-  treasure: dungeon map
+  treasure: d7 dungeon map
   room: 0x0565
 d7 hallway chest:
   treasure: gasha seed
@@ -617,7 +617,7 @@ d8 NE slate chest:
   treasure: slate
   room: 0x057e
 d8 ghini chest:
-  treasure: dungeon map
+  treasure: d8 dungeon map
   room: 0x0585
 d8 SE slate chest:
   treasure: slate
@@ -635,7 +635,7 @@ d8 blade trap chest:
   treasure: d8 small key
   room: 0x05a3
 d8 blue peg chest:
-  treasure: compass
+  treasure: d8 compass
   room: 0x05a4
 d8 1F chest:
   treasure: d8 small key

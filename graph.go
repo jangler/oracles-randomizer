@@ -157,7 +157,7 @@ func getOrMark(n *node) nodeMark {
 	return n.mark
 }
 
-// returns true iff at least x parents are true.
+// returns true iff at least x parents of the parent are true.
 func getCountMark(n *node) nodeMark {
 	count := 0
 
@@ -187,19 +187,15 @@ func getCountMark(n *node) nodeMark {
 	return n.mark
 }
 
-// makes a node a parent of another node. if it's already a parent of the node,
-// nothing is done.
+// makes a node a parent of another node. a node can be a parent of another
+// node multiple times; i.e. it can appear twice or more in the child's list of
+// parents.
 func (n *node) addParent(parent *node) {
-	for _, p := range n.parents {
-		if p == parent {
-			return
-		}
-	}
 	n.parents = append(n.parents, parent)
 }
 
-// removes the given node from this node's parents. it panics if the given node
-// isn't actually a parent of this node.
+// removes the given node from this node's parents, once. it panics if the
+// given node isn't actually a parent of this node.
 func (n *node) removeParent(parent *node) {
 	for i, p := range n.parents {
 		if p == parent {

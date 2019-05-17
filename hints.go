@@ -69,6 +69,10 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 	hintedSlots := make(map[*node]bool)
 
 	for _, owlName := range owlNames {
+		// sometimes owls are just unreachable, so anything goes, i guess
+		g.clearMarks()
+		owlUnreachable := g[owlName].getMark() == markFalse
+
 		for {
 			slot, item := slots[i], checks[slots[i]]
 			i = (i + 1) % len(slots)
@@ -84,7 +88,7 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 			required := g[owlName].getMark() == markFalse
 			item.addParent(slot)
 
-			if !required {
+			if !required || owlUnreachable {
 				hints[owlName] = h.format(slot, item)
 				hintedSlots[slot] = true
 				break
@@ -146,11 +150,7 @@ func getShuffledSlots(src *rand.Rand,
 	for slot, item := range checks {
 		// don't include dungeon items, since dungeon item hints would be
 		// useless ("Level 7 holds a Boss Key")
-		if item.name == "dungeon map" ||
-			item.name == "compass" ||
-			strings.HasPrefix(item.name, "slate") ||
-			strings.HasSuffix(item.name, "small key") ||
-			strings.HasSuffix(item.name, "boss key") {
+		if getDungeonName(item.name) != "" {
 			continue
 		}
 
