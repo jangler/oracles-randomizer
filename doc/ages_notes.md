@@ -87,7 +87,10 @@ exception of:
 - Farming rupees, except by shovel RNG manips
 - Mystery seeds as a weapon
 - Bombs as a weapon, except versus enemies immune to sword
+- Double damage boosts
 - Text warps
+- Clipping into fairies' woods by switch hooking the Octorok
+- Trading scent seeds for a shield without having a seed item
 - Magic rings from non-randomized locations
 - Linked secrets
 

@@ -1,6 +1,9 @@
 # Ages Hard Logic Strategy Guide
 
 This document details tricks and obscurities that are in Ages hard logic.
+See
+[ages_notes.md.md](https://github.com/jangler/oracles-randomizer/blob/doc/ages_notes.md)
+for a list of things that are out of logic even in hard.
 
 ## General
 

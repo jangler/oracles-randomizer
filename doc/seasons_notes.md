@@ -87,6 +87,10 @@ exception of:
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
 - Bombs as a weapon, except versus enemies immune to sword
+- Double damage boosts
+- Capeless button before D7 miniboss
+- Trading seeds in Subrosia Market without having a seed item
+- Swimming against currents without Swimmer's Ring
 - Magic rings from non-randomized locations
 - Linked secrets
 
