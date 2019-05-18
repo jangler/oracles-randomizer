@@ -25,17 +25,9 @@ balloon guy: [feather, or: [sword, boomerang],
         [shore present, or: [any seed shooter,
             [hard, or: [pegasus satchel, bombs], boomerang]]]]]
 balloon guy's gift: [balloon guy]
-# TODO: this could be stated in terms of a count node
-balloon guy's upgrade: [balloon guy, or: [ # 3 types of seeds
-    [ember seeds, or: [
-        [scent seeds,
-            or: [pegasus seeds, gale seeds, mystery seeds]],
-        [pegasus seeds, or: [gale seeds, mystery seeds]],
-        [gale seeds, mystery seeds]]],
-    [scent seeds, or: [
-        [pegasus seeds, or: [gale seeds, mystery seeds]],
-        [gale seeds, mystery seeds]]],
-    [pegasus seeds, gale seeds, mystery seeds]]]
+seed type: {
+    or: [ember seeds, scent seeds, pegasus seeds, gale seeds, mystery seeds]}
+balloon guy's upgrade: [balloon guy, count: [3, seed type]]
 raft: [lynna village, cheval rope, island chart]
 shop, 30 rupees: [lynna city, rupees]
 shop, 150 rupees: [lynna city, rupees]
