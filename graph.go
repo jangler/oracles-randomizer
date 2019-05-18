@@ -100,6 +100,17 @@ func (n *node) getMark() nodeMark {
 func getAndMark(n *node) nodeMark {
 	if n.mark == markNone {
 		n.mark = markPending
+
+		// prioritize already pending/false nodes
+		for _, parent := range n.parents {
+			switch parent.mark {
+			case markPending, markFalse:
+				n.mark = markNone
+				return markFalse
+			}
+		}
+
+		// then actually check them otherwise
 		for _, parent := range n.parents {
 			switch parent.getMark() {
 			case markPending, markFalse:
@@ -107,6 +118,7 @@ func getAndMark(n *node) nodeMark {
 				return markFalse
 			}
 		}
+
 		if n.mark == markPending {
 			n.mark = markTrue
 		}
