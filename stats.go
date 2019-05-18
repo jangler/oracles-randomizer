@@ -17,6 +17,7 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 
 	// search for routes
 	routeChan := make(chan *RouteInfo)
+	attempts := 0
 	for i := 0; i < threads; i++ {
 		go func() {
 			for i := 0; i < n/threads; i++ {
@@ -24,6 +25,7 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 					seed := uint32(rand.Int())
 					route := findRoute(game, seed, ropts, false, dummyLogf)
 					if route != nil {
+						attempts += route.AttemptCount
 						routeChan <- route
 						break
 					}
@@ -38,6 +40,8 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 		routes[i] = <-routeChan
 		fmt.Fprintf(os.Stderr, "%d routes found\n", i+1)
 	}
+	fmt.Fprintf(os.Stderr, "%.01f%% of seeds succeeded\n",
+		100*float64(n)/float64(attempts))
 
 	return routes
 }

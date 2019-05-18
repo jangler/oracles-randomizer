@@ -49,6 +49,12 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 					continue
 				}
 
+				// make sure item didn't cause a forward-wise dead end
+				if isDeadEnd(r.Graph, ei, es, itemPool, slotPool) {
+					item.removeParent(slot)
+					break
+				}
+
 				return ei, es
 			}
 
@@ -147,4 +153,38 @@ func getDungeonName(name string) string {
 	default:
 		return ""
 	}
+}
+
+// returns true iff no open slots beyond curSlot are reachable if all the items
+// left in the pool, except for curItem, are assumed to be unreachable. returns
+// false if only one item remains in the pool, since it is assumed to be
+// curItem.
+func isDeadEnd(g graph, curItem, curSlot *list.Element,
+	itemPool, slotPool *list.List) bool {
+	if itemPool.Len() == 1 {
+		return false
+	}
+
+	for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
+		if ei != curItem {
+			ei.Value.(*node).removeParent(g["start"])
+		}
+	}
+	g.clearMarks()
+
+	dead := true
+	for es := slotPool.Front(); es != nil; es = es.Next() {
+		if es != curSlot && es.Value.(*node).getMark() == markTrue {
+			dead = false
+			break
+		}
+	}
+
+	for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
+		if ei != curItem {
+			ei.Value.(*node).addParent(g["start"])
+		}
+	}
+
+	return dead
 }
