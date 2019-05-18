@@ -2,7 +2,7 @@
 # exits are root nodes since portal connections can be randomized.
 # pair 1
 
-enter eastern suburbs portal: [suburbs, or: [remove bush, flute]]
+enter eastern suburbs portal: [suburbs, or: [break bush, flute]]
 exit eastern suburbs portal: {or: []}
 
 enter volcanoes east portal: [temple]
@@ -14,7 +14,7 @@ enter spool swamp portal: [south swamp, bracelet, or: [
     flute, spool swamp default summer, spool swamp default autumn,
     [spool stump, or: [summer, autumn]],
     [or: [spool swamp default winter, [spool stump, winter]], shovel],
-    [or: [spool swamp default spring, [spool stump, spring]], remove flower]]]
+    [or: [spool swamp default spring, [spool stump, spring]], break flower]]]
 exit spool swamp portal: {or: []}
 
 enter subrosia market portal: [beach]
@@ -31,10 +31,10 @@ exit strange brothers portal: {or: []}
 # pair 4
 
 enter eyeglass lake portal: [north horon stump, or: [
-    [wet eyeglass lake, or: [jump 2, ricky's flute, moosh's flute],
+    [wet eyeglass lake, or: [feather, ricky's flute, moosh's flute],
         or: [flippers, [dimitri's flute, bracelet]]],
     [or: [north horon default winter, winter],
-        or: [jump 6, [jump 2, dimitri's flute]]]]]
+        or: [jump 6, [feather, dimitri's flute]]]]]
 exit eyeglass lake portal: {or: []}
 
 enter great furnace portal: [furnace]
@@ -56,13 +56,13 @@ enter temple remains lower portal: [temple remains lower stump, or: [
     [or: [temple remains default winter, winter], or: [
         [exit temple remains upper portal,
             or: [temple remains default winter, feather]],
-        [hard, shovel, remove bush, jump 6],
+        [hard, shovel, break bush, jump 6],
         [hard, or: [temple remains default spring, spring],
-            remove flower, remove bush, jump 6, winter],
+            break flower, break bush, jump 6, winter],
         [hard, or: [temple remains default summer, summer],
-            remove bush, jump 6, winter],
+            break bush, jump 6, winter],
         [or: [temple remains default autumn, autumn],
-            remove bush, jump 2, winter]]]]]
+            break bush, feather, winter]]]]]
 exit temple remains lower portal: {or: []}
 
 enter volcanoes west portal: {or: []} # not possible without exiting first

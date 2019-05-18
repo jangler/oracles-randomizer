@@ -12,8 +12,8 @@ satchel kill normal: [satchel,
     or: [ember seeds, [hard, or: [scent seeds, gale seeds]]]]
 slingshot kill normal: [slingshot,
     or: [ember seeds, scent seeds, gale seeds]]
-jump kill normal: [jump 2, kill normal]
-jump pit normal: [jump 2, pit kill normal]
+jump kill normal: [feather, kill normal]
+jump pit normal: [feather, pit kill normal]
 
 # enemies vulnerable to scent seeds are always vulnerable to sword and fool's
 # ore (and punches?).
@@ -22,9 +22,9 @@ kill armored: {or: [sword, fool's ore, punch enemy,
 
 # the safe version is for areas where you can't possibly get stuck from being
 # on the wrong side of a bush.
-remove bush safe: {or: [sword, magic boomerang, bracelet, ember seeds,
+break bush safe: {or: [sword, magic boomerang, bracelet, ember seeds,
     gale slingshot, bombs]}
-remove bush: {or: [sword, magic boomerang, bracelet]}
+break bush: {or: [sword, magic boomerang, bracelet]}
 
 kill normal: {or: [sword, satchel kill normal, slingshot kill normal,
     fool's ore, punch enemy]}
@@ -40,7 +40,7 @@ kill hardhat (pit): {or: [sword, boomerang, shield, rod, fool's ore,
     [or: [slingshot, [hard, satchel]], or: [scent seeds, gale seeds]]]}
 kill moblin (gap): {or: [sword, scent seeds, slingshot kill normal, fool's ore,
     jump kill normal, jump pit normal, [hard, or: [punch enemy, ember seeds]]]}
-remove pot: {or: [noble sword, bracelet]}
+break pot: {or: [noble sword, bracelet]}
 flip spiked beetle: {or: [shield, shovel]}
 # spiked beetles can't be punched for some reason
 flip kill spiked beetle: [flip spiked beetle,
@@ -48,13 +48,13 @@ flip kill spiked beetle: [flip spiked beetle,
 kill spiked beetle: {
     or: [flip kill spiked beetle, gale slingshot, [hard, gale seeds]]}
 kill omuai: [kill armored, bracelet]
-remove flower: {or: [sword, magic boomerang]}
+break flower: {or: [sword, magic boomerang]}
 kill agunima: [ember seeds, kill armored]
 hit very far lever: {or: [magic boomerang, any slingshot]}
 hit far lever: {or: [boomerang, any slingshot,
-    [hard, jump 2, or: [sword, rod, fool's ore]]]}
+    [hard, feather, or: [sword, rod, fool's ore]]]}
 kill gohma: {or: [scent seeds, ember seeds]}
-remove mushroom: {or: [magic boomerang, bracelet]}
+break mushroom: {or: [magic boomerang, bracelet]}
 kill moldorm: {or: [kill armored]}
 kill armored (pit): {or: [kill armored, shield]}
 break crystal: {or: [sword, bombs, bracelet, expert's ring]}
@@ -66,10 +66,10 @@ kill manhandla: [magic boomerang, finish manhandla]
 kill poe sister: {or: [kill armored, rod, ember seeds]}
 kill magunesu: {or: [sword, fool's ore, expert's ring]}
 kill armored (across pit): {or: [scent slingshot, magnet gloves,
-    [jump 4, kill armored (pit)], [sword, energy ring]]}
+    [cape, kill armored (pit)], [sword, energy ring]]}
 kill gleeok: {or: [sword, fool's ore, punch enemy]}
 kill frypolar: {or: [[bracelet,
     or: [mystery slingshot, [hard, mystery satchel]]],
     or: [ember slingshot, [hard, ember satchel]]]}
 kill medusa head: {or: [sword, fool's ore]}
-kill onox: [sword, jump 2]
+kill onox: [sword, feather]

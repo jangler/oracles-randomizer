@@ -11,7 +11,7 @@ enter d0: [d0 entrance] # not randomized
 
 # 0 keys
 d0 key chest: [enter d0]
-d0 rupee chest: {or: [remove bush safe, flute]}
+d0 rupee chest: {or: [break bush safe, flute]}
 
 # 1 key
 d0 sword chest: [enter d0, d0 small key]
@@ -63,7 +63,7 @@ d2 boss: [d2 spinner, d2 boss key]
 
 # 3 keys
 d2 hardhat room: [d2 arrow room, count: [3, d2 small key]]
-d2 pot chest: [d2 hardhat room, remove pot]
+d2 pot chest: [d2 hardhat room, break pot]
 d2 moblin chest: [d2 hardhat room, or: [
     [hard, bracelet],
     [kill hardhat (pit), kill moblin (gap)]]]
@@ -82,18 +82,19 @@ d3 center: [enter d3,
     or: [kill spiked beetle, [flip spiked beetle, bracelet]]]
 d3 mimic stairs: {or: [d3 water room, [d3 center, bracelet]]}
 d3 roller chest: [d3 mimic stairs, bracelet]
-d3 water room: {or: [d3 mimic stairs, [d3 center, jump 2]]}
-d3 quicksand terrace: [d3 mimic stairs, jump 2]
-omuai owl: [mystery seeds, d3 mimic stairs, jump 2]
+d3 water room: {or: [d3 mimic stairs, [d3 center, feather]]}
+d3 quicksand terrace: [d3 mimic stairs, feather]
+omuai owl: [mystery seeds, d3 mimic stairs, feather]
 d3 moldorm chest: [d3 mimic stairs, kill armored]
 d3 bombed wall chest: [d3 moldorm chest, bombs]
-trampoline owl: [mystery seeds, d3 center, jump 2]
-d3 trampoline chest: [d3 center, jump 2]
-d3 zol chest: [d3 center, jump 2]
+trampoline owl: [mystery seeds, d3 center, feather]
+d3 trampoline chest: [d3 center, feather]
+d3 zol chest: [d3 center, feather]
 
 # 2 keys
 d3 mimic chest: [d3 water room, kill normal, count: [2, d3 small key]]
-d3 omuai stairs: [d3 mimic stairs, jump 2, kill omuai, count: [2, d3 small key]]
+d3 omuai stairs: [d3 mimic stairs, feather, kill omuai,
+    count: [2, d3 small key]]
 d3 giant blade room: [d3 omuai stairs]
 d3 boss: [d3 omuai stairs, d3 boss key]
 
@@ -101,15 +102,15 @@ d3 boss: [d3 omuai stairs, d3 boss key]
 enter d4: {or: []}
 
 # 0 keys
-d4 north of entrance: [enter d4, or: [flippers, jump 4]]
+d4 north of entrance: [enter d4, or: [flippers, cape]]
 d4 pot puzzle: [d4 north of entrance, bombs, bracelet]
 d4 maze chest: [d4 north of entrance, hit lever from minecart]
-d4 dark room: [d4 maze chest, jump 2]
+d4 dark room: [d4 maze chest, feather]
 
 # 1 key
-d4 water ring room: [enter d4, or: [flippers, jump 4], bombs, d4 small key,
+d4 water ring room: [enter d4, or: [flippers, cape], bombs, d4 small key,
     or: [bracelet, kill normal, [rod, boomerang]]]
-d4 roller minecart: [enter d4, flippers, jump 2, d4 small key]
+d4 roller minecart: [enter d4, flippers, feather, d4 small key]
 d4 pool: [d4 roller minecart, hit lever from minecart,
     or: [kill normal, bracelet]]
 
@@ -129,7 +130,7 @@ d4 basement stairs: [d4 final minecart, hit far lever, count: [5, d4 small key]]
 gohma owl: [mystery seeds, d4 basement stairs]
 enter gohma: [d4 basement stairs, d4 boss key,
     or: [ember slingshot, [hard, mystery slingshot], jump 3,
-        [hard, jump 2, or: [ember seeds, mystery seeds]]]]
+        [hard, feather, or: [ember seeds, mystery seeds]]]]
 d4 boss: [enter gohma, kill gohma]
 
 # alias for external reference
@@ -141,11 +142,11 @@ enter d5: {or: []}
 # 0 keys
 d5 cart bay: [enter d5, or: [flippers, bomb jump 2]]
 d5 cart chest: [d5 cart bay, hit lever from minecart]
-d5 pot room: [enter d5, or: [[magnet gloves, bombs, jump 2],
-    [d5 cart bay, or: [jump 2, [hard, pegasus satchel]]]]]
+d5 pot room: [enter d5, or: [[magnet gloves, bombs, feather],
+    [d5 cart bay, or: [feather, [hard, pegasus satchel]]]]]
 d5 gibdo/zol chest: [d5 pot room, kill normal]
-d5 left chest: [enter d5, or: [magnet gloves, jump 4]]
-d5 terrace chest: [enter d5, or: [magnet gloves, [d5 cart bay, jump 2, bombs]]]
+d5 left chest: [enter d5, or: [magnet gloves, cape]]
+d5 terrace chest: [enter d5, or: [magnet gloves, [d5 cart bay, feather, bombs]]]
 armos knights owl: [mystery seeds, d5 terrace chest]
 d5 spiral chest: [enter d5, or: [shield, kill armored]]
 # if you can kill the moldorms, you can kill the armos
@@ -153,16 +154,16 @@ d5 armos chest: [d5 terrace chest, kill armored]
 d5 spinner chest: [d5 cart bay, or: [magnet gloves, jump 6]]
 d5 drop ball: [d5 cart bay, hit lever from minecart, kill armored (pit)]
 # stalfos room means right side [where the chest is]
-d5 stalfos room: [d5 cart bay, or: [magnet gloves, jump 4]]
+d5 stalfos room: [d5 cart bay, or: [magnet gloves, cape]]
 
 # 5 keys
 d5 post-syger: [d5 stalfos room, kill armored]
 d5 magnet ball chest: [d5 pot room, count: [5, d5 small key],
-    or: [flippers, jump 6, [hard, jump 4]]]
+    or: [flippers, jump 6, [hard, cape]]]
 d5 basement: [d5 drop ball, d5 post-syger, magnet gloves,
-    count: [5, d5 small key], or: [kill magunesu, [hard, jump 2]]]
+    count: [5, d5 small key], or: [kill magunesu, [hard, feather]]]
 d5 boss: [d5 post-syger, magnet gloves, d5 boss key,
-    count: [5, d5 small key], or: [jump 2, hard]]
+    count: [5, d5 small key], or: [feather, hard]]
 
 # d6
 enter d6: {or: []}
@@ -170,23 +171,23 @@ enter d6: {or: []}
 # 0 keys
 d6 1F east: [enter d6]
 d6 rupee room: [enter d6, bombs]
-d6 magnet ball drop: [enter d6, or: [[magnet gloves, jump 2], jump 4]]
+d6 magnet ball drop: [enter d6, or: [[magnet gloves, feather], cape]]
 d6 1F terrace: [enter d6]
 d6 crystal trap room: [enter d6]
 d6 U-room: [enter d6, break crystal, magic boomerang]
 d6 torch stairs: [d6 U-room, ember seeds]
-d6 escape room: [d6 torch stairs, jump 2]
+d6 escape room: [d6 torch stairs, feather]
 d6 vire chest: [d6 escape room, kill stalfos]
 
 # 3 keys
 d6 beamos room: [enter d6, count: [3, d6 small key]]
 d6 2F gibdo chest: [d6 beamos room]
 d6 2F armos chest: [d6 2F gibdo chest, bombs]
-d6 armos hall: [d6 2F armos chest, jump 2]
+d6 armos hall: [d6 2F armos chest, feather]
 d6 spinner north: [enter d6, magnet gloves, break crystal,
-    or: [jump 2, hard], or: [
+    or: [feather, hard], or: [
         [kill normal, count: [3, d6 small key]],
-        [bombs, jump 2, count: [2, d6 small key]]]]
+        [bombs, feather, count: [2, d6 small key]]]]
 enter vire: [d6 vire chest, count: [3, d6 small key]]
 d6 pre-boss room: [enter vire, kill vire, kill hardhat (magnet)]
 d6 boss: [d6 pre-boss room, d6 boss key, kill manhandla]
@@ -206,25 +207,25 @@ enter poe A: [enter d7, d7 small key,
     or: [ember slingshot, [hard, mystery slingshot]]]
 d7 pot room: [enter d7, bracelet, or: [
     [enter poe A, kill poe sister],
-    [hard, bombs, jump 2, pegasus satchel]]]
-d7 zol button: [d7 pot room, jump 2]
+    [hard, bombs, feather, pegasus satchel]]]
+d7 zol button: [d7 pot room, feather]
 d7 armos puzzle: [d7 pot room, or: [jump 3, magnet gloves]]
 d7 magunesu chest: [d7 armos puzzle, jump 3, kill magunesu, magnet gloves]
 
 # 2 keys
-d7 quicksand chest: [d7 pot room, jump 2, count: [2, d7 small key]]
+d7 quicksand chest: [d7 pot room, feather, count: [2, d7 small key]]
 
 # 3 keys
 enter poe B: [d7 pot room, ember seeds, count: [3, d7 small key],
     or: [pegasus satchel, hyper slingshot, hard]]
 d7 water stairs: [enter poe B, flippers]
 d7 spike chest: [d7 water stairs,
-    or: [jump 4,
+    or: [cape,
         [jump 3, kill armored (across pit)],
-        [jump 2, magnet gloves]]]
+        [feather, magnet gloves]]]
 
 # 4 keys
-d7 maze chest: [d7 water stairs, kill poe sister, jump 4,
+d7 maze chest: [d7 water stairs, kill poe sister, cape,
     count: [4, d7 small key]]
 d7 B2F drop: [d7 maze chest, or: [magnet gloves, [hard, jump 6]]]
 shining blue owl: [mystery seeds, d7 stalfos chest]
@@ -241,16 +242,16 @@ d7 stalfos chest: [d7 maze chest, count: [5, d7 small key],
 enter d8: {or: []}
 
 # 0 keys
-d8 eye drop: [enter d8, remove pot, or: [any slingshot,
-    [hard, jump 2, or: [ember satchel, scent satchel, mystery satchel]]]]
-d8 three eyes chest: [enter d8, jump 2,
+d8 eye drop: [enter d8, break pot, or: [any slingshot,
+    [hard, feather, or: [ember satchel, scent satchel, mystery satchel]]]]
+d8 three eyes chest: [enter d8, feather,
     or: [any hyper slingshot,
         [hard, or: [ember satchel, scent satchel, mystery satchel]]]]
 d8 hardhat room: [enter d8, kill magunesu]
 d8 hardhat drop: [d8 hardhat room, kill hardhat (magnet)]
 
 # 1 key
-d8 spike room: [d8 hardhat room, d8 small key, or: [jump 4, [hard, jump 3]]]
+d8 spike room: [d8 hardhat room, d8 small key, or: [cape, [hard, jump 3]]]
 
 # 2 keys
 d8 spinner: [d8 spike room, count: [2, d8 small key]]
@@ -276,7 +277,7 @@ d8 ghost armos drop: [d8 crystal room, bombs]
 d8 NE crystal: [d8 crystal room, bracelet, hit lever]
 d8 SE crystal: [d8 crystal room, bracelet]
 d8 SE lava chest: [d8 SE crystal]
-d8 spark chest: [d8 SE crystal, d8 NE crystal, remove pot]
+d8 spark chest: [d8 SE crystal, d8 NE crystal, break pot]
 d8 SW lava chest: [d8 crystal room]
 
 # 6 keys

@@ -24,8 +24,7 @@ cape: {count: [2, feather]}
 
 # this of course doesn't apply to all trees, but trees won't have any seeds
 # attached to them unless they can be harvested. so it works out.
-refill seeds: {or: [harvest tree, dimitri's flute, dimitri,
-    [hard, remove bush]]}
+refill seeds: {or: [harvest tree, dimitri's flute, dimitri, [hard, break bush]]}
 
 harvest ember seeds: [seed item, or: [
     [ember tree seeds, refill seeds], [hard, d5 armos chest],
@@ -62,7 +61,7 @@ scent seeds: [harvest scent seeds, seed item]
 pegasus seeds: [harvest pegasus seeds, seed item]
 gale seeds: [harvest gale seeds, seed item]
 
-bomb flower: [furnace, jump 2, bracelet]
+bomb flower: [furnace, feather, bracelet]
 
 flute: {or: [ricky's flute, moosh's flute, dimitri's flute]}
 
@@ -71,15 +70,13 @@ seed item: {or: [satchel, slingshot]}
 bombs: {or: [
     [hard, d2 blade chest, bracelet], # deku scrub, TODO: rupees
     [hard, harvest bush, d2 bracelet room],
-    ["bombs, 10", or: [shovel, remove flower, flute]]]}
+    ["bombs, 10", or: [shovel, break flower, flute]]]}
 
 # jump x pit tiles
-jump 2: [feather]
 jump 3: {or: [[feather, pegasus satchel], cape]}
-bomb jump 2: {or: [jump 3, [hard, jump 2, bombs]]}
-bomb jump 3: {or: [jump 4, [hard, jump 3, bombs]]}
-jump 4: [cape]
-bomb jump 4: {or: [jump 6, [hard, jump 4, bombs]]}
+bomb jump 2: {or: [jump 3, [hard, feather, bombs]]}
+bomb jump 3: {or: [cape, [hard, jump 3, bombs]]}
+bomb jump 4: {or: [jump 6, [hard, cape, bombs]]}
 jump 6: [cape, pegasus satchel]
 
 harvest tree: {or: [sword, rod, fool's ore, punch object]}
