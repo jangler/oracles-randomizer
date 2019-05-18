@@ -437,9 +437,12 @@ func tryPlaceItems(ri *RouteInfo, r *Route, itemList, slotList *list.List,
 			}
 		} else {
 			if verbose {
-				logf("search failed. unplaced items:")
+				logf("search failed. unplaced non-junk items:")
 				for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-					logf(ei.Value.(*node).name)
+					item := ei.Value.(*node)
+					if !itemIsJunk(item.name) {
+						logf(item.name)
+					}
 				}
 			}
 			return false
