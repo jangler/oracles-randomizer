@@ -70,6 +70,7 @@ type node struct {
 	mark     nodeMark
 	minCount int
 	parents  []*node
+	nChecked uint64
 }
 
 // returns a new unconnected graph node, not yet part of any graph.
@@ -84,6 +85,8 @@ func newNode(name string, nType nodeType) *node {
 }
 
 func (n *node) getMark() nodeMark {
+	n.nChecked++
+
 	switch n.nType {
 	case andNode:
 		return getAndMark(n)
@@ -123,6 +126,7 @@ func getAndMark(n *node) nodeMark {
 			n.mark = markTrue
 		}
 	}
+
 	return n.mark
 }
 
