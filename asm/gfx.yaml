@@ -238,6 +238,9 @@ seasons:
   3f/4356/: call checkLoadCustomSprite
 
 ages:
+  # make tune of echoes treasure use harp graphics.
+  15/53c9/: db 68
+
   # format (ID, subID, jump address). these functions *must* pop af as the last
   # action before returning.
   3f/customSpriteJumpTable: |
