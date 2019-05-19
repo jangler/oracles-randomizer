@@ -12,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime/pprof"
 	"sort"
 	"strconv"
 	"strings"
@@ -51,6 +52,7 @@ func fatal(err error, logf logFunc) {
 
 // options specified on the command line or via the TUI
 var (
+	flagCpuProf  string
 	flagDevCmd   string
 	flagDungeons bool
 	flagHard     bool
@@ -72,6 +74,8 @@ type randomizerOptions struct {
 // initFlags initializes the CLI/TUI option values and variables.
 func initFlags() {
 	flag.Usage = usage
+	flag.StringVar(&flagCpuProf, "cpuprofile", "",
+		"write CPU profile to file")
 	flag.StringVar(&flagDevCmd, "devcmd", "",
 		"subcommands are 'findaddr', 'showasm', and 'stats'")
 	flag.BoolVar(&flagDungeons, "dungeons", false,
@@ -96,6 +100,15 @@ func initFlags() {
 // main is the program's entry point.
 func main() {
 	initFlags()
+
+	if flagCpuProf != "" {
+		f, err := os.Create(flagCpuProf)
+		if err != nil {
+			panic(err)
+		}
+		pprof.StartCPUProfile(f)
+		defer pprof.StopCPUProfile()
+	}
 
 	ropts := randomizerOptions{
 		dungeons: flagDungeons,
