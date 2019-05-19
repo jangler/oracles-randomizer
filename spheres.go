@@ -23,7 +23,7 @@ func getChecks(ri *RouteInfo) map[*node]*node {
 // start with no items; sphere 1 is the nodes that can be reached using the
 // items from sphere 0, and so on. each node only belongs to one sphere. it
 // also returns a separate slice of nodes that aren't reachable at all.
-func getSpheres(g graph, checks map[*node]*node, hard bool) ([][]*node, []*node) {
+func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 	reached := make(map[*node]bool)
 	spheres := make([][]*node, 0)
 
@@ -91,7 +91,7 @@ func logSpheres(summary chan string, checks map[*node]*node,
 		// this sphere.
 		lines := make([]string, 0)
 		for slot, item := range checks {
-			if !filter(item.name) {
+			if filter != nil && !filter(item.name) {
 				continue
 			}
 			for _, n := range sphere {

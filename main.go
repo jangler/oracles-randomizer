@@ -545,7 +545,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	}
 
 	checks := getChecks(ri)
-	spheres, extra := getSpheres(ri.Route.Graph, checks, ropts.hard)
+	spheres, extra := getSpheres(ri.Route.Graph, checks)
 	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
 		rom.GetOwlNames(game))
 
@@ -578,9 +578,14 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	summary <- ""
 	summary <- "-- progression items --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, extra, game, func(name string) bool {
-		return !keyRegexp.MatchString(name) && !itemIsJunk(name)
-	})
+	nonKeyChecks := make(map[*node]*node)
+	for slot, item := range checks {
+		if !keyRegexp.MatchString(item.name) {
+			nonKeyChecks[slot] = item
+		}
+	}
+	prog, junk := filterJunk(ri.Route.Graph, nonKeyChecks)
+	logSpheres(summary, prog, spheres, extra, game, nil)
 	summary <- ""
 	summary <- "-- small keys and boss keys --"
 	summary <- ""
@@ -588,7 +593,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	summary <- ""
 	summary <- "-- other items --"
 	summary <- ""
-	logSpheres(summary, checks, spheres, extra, game, itemIsJunk)
+	logSpheres(summary, junk, spheres, extra, game, nil)
 	if ropts.dungeons {
 		summary <- ""
 		summary <- "-- dungeon entrances --"
