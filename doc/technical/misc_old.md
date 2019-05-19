@@ -362,10 +362,10 @@ see ages-disasm/text/ for text IDs and dictionary entries.
 two further tables for "text offsets" at 3f:4fe2 and 3f:4ffa, the first for
 text IDs less than 2c00 and the second for those greater or equal.
 
-0:184b is showText, and 0:1936 reads a byte from the text table. watching this
-function is probably the easiest way to determine where particular text data is
-in the rom. watching 3f:4fa4 lets you determine the location of text *address*
-data (stored in hl).
+0:184b is showText, and 0:1936 reads a byte from the text table. watching
+3f:5028/4ff9 is probably the easiest way to determine where particular text
+data is in the rom. watching 3f:4fa4 lets you determine the location of text
+*address* data (stored in hl).
 
 
 ## simulated input

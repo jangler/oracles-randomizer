@@ -2,7 +2,7 @@ package main
 
 //go:generate bash scripts/generate.sh
 //go:generate esc -o embed.go hints/ logic/
-//go:generate esc -o rom/embed.go -pkg rom asm/ romdata/ lgbtasm/lgbtasm.lua
+//go:generate esc -o rom/embed.go -pkg rom asm/ hints/ romdata/ lgbtasm/lgbtasm.lua
 
 import (
 	"flag"

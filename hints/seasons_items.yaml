@@ -1,10 +1,8 @@
 autumn: the Rod of Autumn
 blue ore: Blue Ore
-boomerang: a boomerang
 bracelet: the Power Bracelet
 dragon key: the Dragon Key
-feather: a feather
-flippers: Zora's Flippers
+feather: a Roc's Feather
 floodgate key: the Floodgate Key
 fool's ore: Fool's Ore
 gnarled key: the Gnarled Key
@@ -17,10 +15,10 @@ rare peach stone: a Piece of Heart
 red ore: Red Ore
 ribbon: a Ribbon
 round jewel: the Round Jewel
-rupees, 1: Rupees # not present in ages
-rupees, 5: Rupees # ^
+rupees, 1: 1 Rupee # not present in ages
+rupees, 5: 5 Rupees # ^
 rusty bell: the Rusty Bell
-slingshot: a slingshot
+slingshot: a Slingshot
 spring: the Rod of Spring
 spring banana: a Spring Banana
 square jewel: the Square Jewel

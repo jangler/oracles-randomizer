@@ -1,11 +1,13 @@
 # misc common items
 bombs, 10: Bombs
+boomerang: a Boomerang
 dimitri's flute: Dimitri's Flute
 ember tree seeds: Ember Seeds
+flippers: Zora's Flippers
 gale tree seeds: Gale Seeds
 gasha seed: a Gasha Seed
 heart container: a Heart Container
-iron shield: a shield
+iron shield: an Iron Shield
 moosh's flute: Moosh's Flute
 mystery tree seeds: Mystery Seeds
 pegasus tree seeds: Pegasus Seeds
@@ -15,15 +17,15 @@ ricky's gloves: Ricky's Gloves
 satchel: a Seed Satchel
 scent tree seeds: Scent Seeds
 shovel: the Shovel
-sword: a sword
-wooden shield: a shield
+sword: a Sword
+wooden shield: a Shield
 
-# rupees - don't give specific amounts lest it imply a total
-rupees, 10: Rupees
-rupees, 20: Rupees
-rupees, 30: Rupees
-rupees, 50: Rupees
-rupees, 100: Rupees
+# rupees
+rupees, 10: 10 Rupees
+rupees, 20: 20 Rupees
+rupees, 30: 30 Rupees
+rupees, 50: 50 Rupees
+rupees, 100: 100 Rupees
 
 # rings
 100th ring: the 100th Ring

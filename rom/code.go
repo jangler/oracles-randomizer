@@ -321,6 +321,7 @@ func loadBankEnds(game string) []uint16 {
 
 // loads text, processes it, and applies it to matching labels.
 func applyText(b []byte, game string) {
+	// load initial text
 	textMap := make(map[string]map[string]string)
 	if err := yaml.Unmarshal(
 		FSMustByte(false, "/romdata/text.yaml"), textMap); err != nil {
@@ -329,10 +330,34 @@ func applyText(b []byte, game string) {
 	for label, rawText := range textMap[game] {
 		if mut, ok := codeMutables[label]; ok {
 			mut.New = processText(rawText)
-			mut.Mutate(b)
 		} else {
 			println("no code label matches text label " + label)
 		}
+	}
+
+	// insert randomized item names into shop text
+	shopNames := loadShopNames(game)
+	shopMap := map[string]string{
+		"shopFluteText": "shop, 150 rupees",
+	}
+	if game == "seasons" {
+		shopMap["membersShopSatchelText"] = "member's shop 1"
+		shopMap["membersShopGashaText"] = "member's shop 2"
+		shopMap["membersShopMapText"] = "member's shop 3"
+		shopMap["marketRibbonText"] = "subrosia market, 1st item"
+		shopMap["marketPeachStoneText"] = "subrosia market, 2nd item"
+		shopMap["marketCardText"] = "subrosia market, 5th item"
+	}
+	for cName, sName := range shopMap {
+		code := codeMutables[cName]
+		itemName := shopNames[ItemSlots[sName].Treasure.displayName]
+		code.New = append(code.New[:2],
+			append([]byte(itemName), code.New[2:]...)...)
+	}
+
+	// apply changes
+	for label := range textMap[game] {
+		codeMutables[label].Mutate(b)
 	}
 }
 
@@ -349,6 +374,33 @@ func processText(s string) []byte {
 		panic(err)
 	}
 	return []byte(s)
+}
+
+var articleRegexp = regexp.MustCompile("^(an?|the) ")
+
+// return a map of internal item names to text that should be displayed for the
+// item in shops.
+func loadShopNames(game string) map[string]string {
+	m := make(map[string]string)
+
+	// load names used for owl hints
+	itemFiles := []string{
+		"/hints/common_items.yaml",
+		fmt.Sprintf("/hints/%s_items.yaml", game),
+	}
+	for _, filename := range itemFiles {
+		if err := yaml.Unmarshal(
+			FSMustByte(false, filename), m); err != nil {
+			panic(err)
+		}
+	}
+
+	// remove articles
+	for k, v := range m {
+		m[k] = articleRegexp.ReplaceAllString(v, "")
+	}
+
+	return m
 }
 
 // actually, set up all the pre-randomization changes, and track the state so

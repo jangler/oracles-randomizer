@@ -23,6 +23,50 @@ seasons:
     \x0c\x00Continue at\x01 # Continue at
     \x03\x0bown risk!\x00 # your own risk!
 
+  emberSeedText: |
+    \x02\x12\x04\x79\x01 # You got Ember
+    \x02\x53! \x05\xa9\x01 # Seeds! Open
+    y\x02\x65 # your Seed
+    \x02\x6e\x05\xda\x04\xaa\x01 # Satchel to use
+    them.\x00 # them.
+
+  shopFluteText: |
+    \x09\x01\x03\xe2 # (insert item name)
+     15\x02\x1d\x01 # 150 Rupees
+    \x02\x00\x00 # OK / No thanks
+  membersShopSatchelText: |
+    \x09\x01\x03\xe2 # (insert item name)
+     30\x02\x1d\x01 # 300 Rupees
+    \x02\x00\x00 # OK / No thanks
+  membersShopGashaText: |
+    \x09\x01\x03\xe2 # (insert item name)
+     30\x02\x1d\x01 # 300 Rupees
+    \x02\x00\x00 # OK / No thanks
+  membersShopMapText: |
+    \x09\x01\x03\xe2 # (insert item name)
+     20\x02\x1d\x01 # 200 Rupees
+    \x02\x00\x00 # OK / No thanks
+  marketRibbonText: |
+    \x09\x01\x09\x00\x01 # (insert item name)
+    \x02\x08 # I'll trade for
+    \x02\x8e.\x01 # Star-Shaped Ore.
+    \x07\x2b # (jump to end text)
+  marketPeachStoneText: |
+    \x09\x01\x09\x00\x01 # (insert item name)
+    \x02\x08 # I'll trade for
+    \x09\x01\x0c\x08 \x02\x09\x01 # (number) Ore Chunks
+    \x05\xa1\x01 # and
+    \x09\x0110 \x04\x79 \x02\x53.\x01 # 10 Ember Seeds.
+    \x07\x2b # (jump to end text)
+  marketCardText: |
+    \x09\x01\x09\x00\x01 # (insert item name)
+    \x02\x08 # I'll trade for
+    \x09\x01\x0c\x08 \x02\x09.\x01 # (number) Ore Chunks
+    \x07\x2b # (jump to end text)
+  marketEndText: |
+    \x04\xfc\x02\x8b\x04\xb7 # How about it?
+    \x02\xfe\x03\xbf\x00 # Sure / No
+
 ages:
   # "fix" pickup text for harp tunes - it's all weird and calls things wrong
   # names in vanilla and i don't like it.
@@ -51,3 +95,15 @@ ages:
   portalSignText: |
     \x0c\x00C\x04\x23s only.\x01 # Currents only.
      -\x04\x56Management\x00 # -The Management
+
+  emberSeedText: |
+    \x02\x1f\x04\x80\x01 # You got Ember
+    \x02\x79! Open\x01 # Seeds! Open
+    \x03\x47\x03\x6a # your Seed
+    \x02\xa0 to\x05\xfb\x01 # Satchel to use
+    \x05\x58.\x00 # them.
+
+  shopFluteText: |
+    \x09\x01\x09\x00\x0c\x18\x01 # (insert item name)
+     15\x02\x2c\x01 # 150 Rupees
+    \x02\x00\x00 # OK / No thanks

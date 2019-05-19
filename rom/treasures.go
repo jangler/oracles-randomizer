@@ -32,8 +32,9 @@ var collectModes = map[string]byte{
 
 // A Treasure is data associated with a particular item ID and sub ID.
 type Treasure struct {
-	id, subID byte
-	addr      Addr
+	displayName string // this can change based on ring replacement etc
+	id, subID   byte
+	addr        Addr
 
 	// in order, starting at addr
 	mode   byte // collection mode
@@ -135,8 +136,9 @@ func LoadTreasures(b []byte, game int) map[string]*Treasure {
 		}
 
 		t := &Treasure{
-			id:    byte(rawId >> 8),
-			subID: byte(rawId),
+			displayName: name,
+			id:          byte(rawId >> 8),
+			subID:       byte(rawId),
 		}
 
 		if b != nil {

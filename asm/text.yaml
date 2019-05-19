@@ -18,6 +18,23 @@ common:
       ld (w7ActiveBank),a
       ret
 
+floating:
+  # replace text in script command 9a (showtextnonexitable) using
+  # scriptTextReplacements: four-byte entries, first two bytes are old text
+  # index, second two bytes are new text index.
+  scriptShowTextNonExitableCustom: |
+      push de
+      ld e,2
+      ld hl,scriptTextReplacements
+      call searchDoubleKey
+      pop de
+      jr nc,.done
+      ldi a,(hl)
+      ld b,a
+      ld c,(hl)
+      .done
+      jp showTextNonExitable
+
 seasons:
   3f/owlText: ''
 
@@ -26,6 +43,36 @@ seasons:
 
   0a/7b9e/: ret; nop; nop # ??
 
+  # overwritten in-place
+  1e/5375/membersShopSatchelText: ''
+  1e/53a0/membersShopMapText: ''
+
+  # overwrites maku tree text
+  1e/6265/emberSeedText: '' # 1704, cutscene after d1
+  10/useEmberSeedText: |
+      cp a,e5
+      jr nz,.done
+      ld bc,1704
+      .done
+      jp showText
+  10/4ade/: call useEmberSeedText
+  1e/6361/shopFluteText: '' # 1707, cutscene after d2
+  1e/63e0/membersShopGashaText: '' # 1709, cutscene after d3
+  1e/6699/marketRibbonText: '' # 1726, cutscene after d4 if d4 < d5
+  1e/66f6/marketPeachStoneText: '' # 1728, cutscene after d5 if d5 < d4
+  1e/6777/marketCardText: '' # 172a, cutscene after d5 if d4 < d5
+  1e/67ba/marketEndText: '' # 172b, cutscene after d4 is d5 < d4
+  0b/scriptShowTextNonExitableCustom: /include scriptShowTextNonExitableCustom
+  0b/scriptTextReplacements: |
+      db 0e,1b,17,07
+      db 0e,1d,17,09
+      db 2b,00,17,26
+      db 2b,01,17,28
+      db 2b,10,17,2a
+      db ff
+  0b/42e8/: call scriptShowTextNonExitableCustom
+
+  # overwrites rosa hide and seek preamble
   1f/4533/cliffWarningText: ''
   1f/4584/hssSkipWarningText: ''
   1c/6b52/: dw 9202 # pointer to above
@@ -47,9 +94,26 @@ ages:
 
   38/owlText: ''
 
+  # overwritten in-place
   1e/4c3e/tuneOfEchoesText: ''
   1d/7e48/tuneOfCurrentsText: ''
   1d/7e8e/tuneOfAgesText: ''
   23/583f/portalSignText: ''
+
+  # overwrites maku tree text
+  1e/683f/emberSeedText: '' # 05b0, cutscene after d1
+  11/useEmberSeedText: |
+      cp a,85
+      jr nz,.done
+      ld bc,05b0
+      .done
+      jp showText
+  11/4a7e/: call useEmberSeedText
+  1e/6871/shopFluteText: '' # 05b1, cutscene when breaking d2?
+  0c/scriptShowTextNonExitableCustom: /include scriptShowTextNonExitableCustom
+  0c/scriptTextReplacements: |
+      db 0e,1b,05,b1
+      db ff
+  0c/4300/: call scriptShowTextNonExitableCustom
 
   3f/4faa/: call useOwlText

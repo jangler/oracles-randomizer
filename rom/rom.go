@@ -477,7 +477,8 @@ func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 				}
 			}
 
-			nameMap[oldName] = rings[slot.Treasure.param]
+			slot.Treasure.displayName = rings[slot.Treasure.param]
+			nameMap[oldName] = slot.Treasure.displayName
 		}
 	}
 

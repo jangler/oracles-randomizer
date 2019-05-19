@@ -178,9 +178,11 @@ seasons:
     define checkTreasureObtained,1717
     define getRandomRingOfGivenTier,17b9
     define refillSeedSatchel,17e5
+    define showTextNonExitable,1847
     define showText,184b
     define getThisRoomFlags,1956
     define openMenu,1a76
+    define lookupKey,1dc4
     define lookupCollisionTable,1ddd
     define convertShortToLongPosition,2089
     define objectDelete_useActiveObjectType,219e
@@ -271,9 +273,11 @@ ages:
     define giveTreasure,171c
     define checkTreasureObtained,1748
     define refillSeedSatchel,180c
+    define showTextNonExitable,186e
     define showText,1872
     define getThisRoomFlags,197d
     define openMenu,1ab0
+    define lookupKey,1e06
     define lookupCollisionTable,1e1f
     define objectDelete_useActiveObjectType,21e0
     define objectCopyPosition,2242
