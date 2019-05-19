@@ -84,6 +84,7 @@ exception of:
 
 - Warnings
 - Farming rupees, except by shovel RNG manips
+- Farming ore chunks with bombs or ember seeds
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
 - Bombs as a weapon, except versus enemies immune to sword

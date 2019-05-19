@@ -56,6 +56,8 @@ subrosia village chest: {or: [
     [furnace, feather, or: [cape, magnet gloves]]]}
 subrosia, open cave: [bridge]
 subrosia, locked cave: [beach, ribbon, feather]
+ore chunks: {or: [shovel,
+  [hard, or: [sword, bracelet, magic boomerang, subrosian dance hall]]]}
 subrosia market, 1st item: [beach, star ore]
 subrosia market, 2nd item: [beach, ore chunks, ember seeds]
 subrosia market, 5th item: [beach, ore chunks]

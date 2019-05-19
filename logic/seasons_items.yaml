@@ -81,7 +81,3 @@ jump 6: [cape, pegasus satchel]
 
 harvest tree: {or: [sword, rod, fool's ore, punch object]}
 harvest bush: {or: [sword, bombs, fool's ore]}
-
-# technically the player can always get ore chunks if they can make it to
-# subrosia, but shovel is the only way that isn't annoying.
-ore chunks: {or: [shovel, hard]}
