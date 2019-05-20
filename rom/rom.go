@@ -462,7 +462,7 @@ func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 					"slayer's ring", "rupee ring", "victory ring", "sign ring",
 					"100th ring":
 					break
-				case "rang ring L-1", "rang ring L-2":
+				case "rang ring L-1", "rang ring L-2", "green joy ring":
 					// these rings are literally useless in ages.
 					if game == GameAges {
 						break
