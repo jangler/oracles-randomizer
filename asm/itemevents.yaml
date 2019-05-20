@@ -305,7 +305,11 @@ ages:
       cp a,0d
       ld a,b
       jr nz,.next
-      call getTreasureDataBCE
+      push hl
+      ld e,BANK_TREASURE_DATA
+      ld hl,getTreasureDataBCE
+      call interBankCall
+      pop hl
       ld a,e
       ld (cf0d),a
       ld a,b
