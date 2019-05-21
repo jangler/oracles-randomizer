@@ -189,7 +189,7 @@ d6 spinner north: [enter d6, magnet gloves, break crystal,
         [kill normal, count: [3, d6 small key]],
         [bombs, feather, count: [2, d6 small key]]]]
 enter vire: [d6 vire chest, count: [3, d6 small key]]
-d6 pre-boss room: [enter vire, kill vire, kill hardhat (magnet)]
+d6 pre-boss room: [enter vire, kill vire, kill hardhat (magnet), feather]
 d6 boss: [d6 pre-boss room, d6 boss key, kill manhandla]
 
 # d7
