@@ -7,6 +7,8 @@ ricky's flute: {or: []}
 dimitri's flute: {or: []}
 moosh's flute: {or: []}
 
+# TODO: seqbreak logic
+
 # TODO: this is a dumb placeholder for until new fill is more developed
 rupees: {or: ["rupees, 30", "rupees, 50", "rupees, 100", ember seeds,
     [hard, shovel]]}

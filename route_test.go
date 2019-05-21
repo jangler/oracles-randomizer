@@ -49,6 +49,22 @@ func testSeasonsGraph(t *testing.T) {
 	testMap["d1 railway chest"] = "d1 small key"
 	checkReach(t, g, testMap, "d1 basement", true)
 
+	// test negated nodes via vanilla d2 bracelet
+	testMap = map[string]string{
+		"d0 key chest":            "sword",
+		"d0 rupee chest":          "satchel",
+		"horon village seed tree": "ember tree seeds",
+		"maku tree":               "gnarled key",
+		"d1 entrance":             "enter d2",
+		"d2 rope drop":            "d2 small key",
+		"d2 rope chest":           "bracelet",
+		"d2 moblin chest":         "bombs, 10",
+	}
+	checkReach(t, g, testMap, "d2 moblin chest", false)
+	delete(testMap, "d2 rope chest")
+	testMap["horon village SE chest"] = "bracelet"
+	checkReach(t, g, testMap, "d2 moblin chest", true)
+
 	// check a subrosia portal
 	testMap = map[string]string{
 		"d0 key chest":   "sword",

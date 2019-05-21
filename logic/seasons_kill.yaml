@@ -8,35 +8,38 @@
 # animal companions are not included in this logic, since they're only
 # available in certain areas.
 
-satchel kill normal: [satchel,
-    or: [ember seeds, [hard, or: [scent seeds, gale seeds]]]]
+satchel kill normal: [satchel, or: [ember seeds,
+    [hard, or: [scent seeds, gale seeds], [seqbreak, mystery seeds]]]]
 slingshot kill normal: [slingshot,
-    or: [ember seeds, scent seeds, gale seeds]]
+    or: [ember seeds, scent seeds, gale seeds, [seqbreak, mystery seeds]]]
 jump kill normal: [feather, kill normal]
 jump pit normal: [feather, pit kill normal]
 
 # enemies vulnerable to scent seeds are always vulnerable to sword and fool's
 # ore (and punches?).
-kill armored: {or: [sword, fool's ore, punch enemy,
+kill armored: {or: [sword, fool's ore, punch enemy, [seqbreak, bombs],
     [scent seeds, or: [slingshot, [hard, satchel]]]]}
 
 # the safe version is for areas where you can't possibly get stuck from being
 # on the wrong side of a bush.
-break bush safe: {or: [sword, magic boomerang, bracelet, ember seeds,
-    gale slingshot, bombs]}
-break bush: {or: [sword, magic boomerang, bracelet]}
+break bush safe: {or: [
+    sword, magic boomerang, bracelet, ember seeds, gale slingshot, bombs]}
+break bush: {or: [
+    sword, magic boomerang, bracelet, [seqbreak, break bush safe]]}
 
 kill normal: {or: [sword, satchel kill normal, slingshot kill normal,
-    fool's ore, punch enemy]}
-pit kill normal: {or: [sword, shield, rod, fool's ore,
-    kill armored]}
+    fool's ore, punch enemy, [seqbreak, bombs]]}
+pit kill normal: {or: [
+    sword, shield, rod, fool's ore, kill armored, [seqbreak, shovel]]}
 kill stalfos: {or: [kill normal, rod]}
 hit lever from minecart: {or: [sword, boomerang, rod, scent seeds,
     mystery seeds, any slingshot, fool's ore, punch object]}
 hit lever: {or: [shovel, hit lever from minecart]}
 kill normal (pit): {or: [kill normal, pit kill normal]}
-hit far switch: {or: [boomerang, bombs, any slingshot, [sword, energy ring]]}
+hit far switch: {or: [boomerang, bombs, any slingshot,
+    [sword, energy ring], [seqbreak, noble sword]]}
 kill hardhat (pit): {or: [sword, boomerang, shield, rod, fool's ore,
+    [hard, shovel], [seqbreak, bombs],
     [or: [slingshot, [hard, satchel]], or: [scent seeds, gale seeds]]]}
 kill moblin (gap): {or: [sword, scent seeds, slingshot kill normal, fool's ore,
     jump kill normal, jump pit normal, [hard, or: [punch enemy, ember seeds]]]}
@@ -44,30 +47,34 @@ break pot: {or: [noble sword, bracelet]}
 flip spiked beetle: {or: [shield, shovel]}
 # spiked beetles can't be punched for some reason
 flip kill spiked beetle: [flip spiked beetle,
-    or: [sword, fool's ore, satchel kill normal, slingshot kill normal]]
+    or: [sword, fool's ore, satchel kill normal, slingshot kill normal,
+        [seqbreak, bombs]]]
 kill spiked beetle: {
     or: [flip kill spiked beetle, gale slingshot, [hard, gale seeds]]}
 kill omuai: [kill armored, bracelet]
-break flower: {or: [sword, magic boomerang]}
+break flower: {or: [sword, magic boomerang,
+    [seqbreak, or: [bombs, ember seeds, gale slingshot]]]}
 kill agunima: [ember seeds, kill armored]
 hit very far lever: {or: [magic boomerang, any slingshot]}
 hit far lever: {or: [boomerang, any slingshot,
     [hard, feather, or: [sword, rod, fool's ore]]]}
-kill gohma: {or: [scent seeds, ember seeds]}
+kill gohma: {or: [scent seeds, ember seeds, [seqbreak, mystery seeds]]}
 break mushroom: {or: [magic boomerang, bracelet]}
-kill moldorm: {or: [kill armored]}
-kill armored (pit): {or: [kill armored, shield]}
+kill armored (pit): {or: [kill armored, shield, [seqbreak, shovel]]}
 break crystal: {or: [sword, bombs, bracelet, expert's ring]}
 kill hardhat (magnet): {
     or: [magnet gloves, gale slingshot, [hard, gale satchel]]}
 kill vire: {or: [sword, fool's ore, expert's ring]}
-finish manhandla: {or: [sword, any slingshot, fool's ore, expert's ring]}
+finish manhandla: {or: [
+    sword, any slingshot, fool's ore, expert's ring, [seqbreak, bombs]]}
 kill manhandla: [magic boomerang, finish manhandla]
-kill poe sister: {or: [kill armored, rod, ember seeds]}
+kill poe sister: {or: [
+    kill armored, rod, ember seeds, [seqbreak, mystery seeds]]}
 kill magunesu: {or: [sword, fool's ore, expert's ring]}
 kill armored (across pit): {or: [scent slingshot, magnet gloves,
-    [cape, kill armored (pit)], [sword, energy ring]]}
-kill gleeok: {or: [sword, fool's ore, punch enemy]}
+    [cape, kill armored (pit)], [sword, energy ring], [seqbreak, noble sword]]}
+kill gleeok: {or: [sword, fool's ore, punch enemy,
+    [seqbreak, bombs, "subrosia market, 1st item"]]}
 kill frypolar: {or: [[bracelet,
     or: [mystery slingshot, [hard, mystery satchel]]],
     or: [ember slingshot, [hard, ember satchel]]]}

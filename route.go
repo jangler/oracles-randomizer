@@ -74,6 +74,10 @@ func addNodes(prenodes map[string]*prenode, g graph) {
 			g[key] = newNode(key, andNode)
 		case orNode:
 			g[key] = newNode(key, orNode)
+		case nandNode:
+			g[key] = newNode(key, nandNode)
+		case norNode:
+			g[key] = newNode(key, norNode)
 		case countNode:
 			g[key] = newNode(key, countNode)
 			g[key].minCount = pn.minCount

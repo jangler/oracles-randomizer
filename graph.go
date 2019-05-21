@@ -51,6 +51,17 @@ const (
 	markPending
 )
 
+func negateMark(mark nodeMark) nodeMark {
+	switch mark {
+	case markTrue:
+		return markFalse
+	case markFalse, markPending:
+		return markTrue
+	default:
+		return mark
+	}
+}
+
 // determines how a node approaches getMark(). an andNode returns markTrue iff
 // all of its parents do, an orNode returns markTrue iff any of its parents do,
 // and a countNode returns true iff at least a certain number of its parents
@@ -60,6 +71,8 @@ type nodeType uint8
 const (
 	andNode nodeType = iota
 	orNode
+	nandNode
+	norNode
 	countNode
 )
 
@@ -92,6 +105,10 @@ func (n *node) getMark() nodeMark {
 		return getAndMark(n)
 	case orNode:
 		return getOrMark(n)
+	case nandNode:
+		return negateMark(getAndMark(n))
+	case norNode:
+		return negateMark(getOrMark(n))
 	case countNode:
 		return getCountMark(n)
 	default:

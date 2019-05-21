@@ -46,7 +46,7 @@ enter d2: {or: []}
 # 0 keys
 d2 torch room: {or: [enter d2, d2 rope chest]}
 d2 left from entrance: [d2 torch room]
-d2 rope drop: [d2 torch room, kill normal]
+d2 rope drop: [d2 torch room, or: [kill normal, [seqbreak, bracelet]]]
 d2 arrow room: {or: [d2 alt entrances,
     [d2 torch room, or: [ember seeds, [hard, mystery seeds]]]]}
 d2 rope chest: [d2 arrow room, kill normal]
@@ -57,17 +57,23 @@ d2 roller chest: [d2 bomb wall, bombs, bracelet]
 d2 spiral chest: [d2 roller chest]
 
 # 2 keys
-d2 spinner: [d2 roller chest, count: [2, d2 small key]]
+d2 spinner: [d2 roller chest,
+    or: [count: [2, d2 small key], [seqbreak, d2 small key]]]
 dodongo owl: [mystery seeds, d2 spinner]
 d2 boss: [d2 spinner, d2 boss key]
 
 # 3 keys
-d2 hardhat room: [d2 arrow room, count: [3, d2 small key]]
+d2 hardhat room: [d2 arrow room, or: [
+    [seqbreak, d2 small key],
+    count: [3, d2 small key],
+    [d2 small key, not: [bracelet]]]]
 d2 pot chest: [d2 hardhat room, break pot]
 d2 moblin chest: [d2 hardhat room, or: [
     [hard, bracelet],
     [kill hardhat (pit), kill moblin (gap)]]]
-d2 terrace chest: [d2 spinner, count: [3, d2 small key]]
+d2 terrace chest: [d2 spinner, or: [
+    count: [3, d2 small key],
+    [seqbreak, count: [2, d2 small key]]]]
 
 # alias for external reference
 d2 bomb wall: [d2 blade chest]
@@ -92,9 +98,12 @@ d3 trampoline chest: [d3 center, feather]
 d3 zol chest: [d3 center, feather]
 
 # 2 keys
-d3 mimic chest: [d3 water room, kill normal, count: [2, d3 small key]]
+d3 mimic chest: [d3 water room, kill normal, or: [
+    count: [2, d3 small key],
+    [d3 small key, not: [feather]],
+    [seqbreak, d3 small key]]]
 d3 omuai stairs: [d3 mimic stairs, feather, kill omuai,
-    count: [2, d3 small key]]
+    or: [count: [2, d3 small key], [seqbreak, d3 small key]]]
 d3 giant blade room: [d3 omuai stairs]
 d3 boss: [d3 omuai stairs, d3 boss key]
 
@@ -124,9 +133,12 @@ d4 final minecart: [d4 stalfos stairs, kill agunima]
 d4 torch chest: [d4 stalfos stairs, ember slingshot]
 
 # 5 keys
-d4 cracked floor room: [d4 final minecart, count: [5, d4 small key]]
+d4 cracked floor room: [d4 final minecart, or: [
+    count: [5, d4 small key],
+    [count: [4, d4 small key], not: [hit very far lever]],
+    [seqbreak, count: [3, d4 small key]]]]
 d4 dive spot: [d4 final minecart, hit very far lever, count: [5, d4 small key]]
-d4 basement stairs: [d4 final minecart, hit far lever, count: [5, d4 small key]]
+d4 basement stairs: [d4 cracked floor room, hit far lever]
 gohma owl: [mystery seeds, d4 basement stairs]
 enter gohma: [d4 basement stairs, d4 boss key,
     or: [ember slingshot, [hard, mystery slingshot], jump 3,
@@ -158,12 +170,16 @@ d5 stalfos room: [d5 cart bay, or: [magnet gloves, cape]]
 
 # 5 keys
 d5 post-syger: [d5 stalfos room, kill armored]
-d5 magnet ball chest: [d5 pot room, count: [5, d5 small key],
-    or: [flippers, jump 6, [hard, cape]]]
+d5 magnet ball chest: [d5 pot room, or: [flippers, jump 6, [hard, cape]], or: [
+    count: [5, d5 small key],
+    [count: [2, d5 small key], not: [d5 post-syger]],
+    [d5 small key, not: [d5 stalfos room]],
+    [seqbreak, d5 small key]]]
 d5 basement: [d5 drop ball, d5 post-syger, magnet gloves,
-    count: [5, d5 small key], or: [kill magunesu, [hard, feather]]]
-d5 boss: [d5 post-syger, magnet gloves, d5 boss key,
-    count: [5, d5 small key], or: [feather, hard]]
+    or: [kill magunesu, [hard, feather]],
+    or: [count: [5, d5 small key], [seqbreak, count: [3, d5 small key]]]]
+d5 boss: [d5 post-syger, magnet gloves, d5 boss key, or: [feather, hard],
+    or: [count: [5, d5 small key], [seqbreak, count: [3, d5 small key]]]]
 
 # d6
 enter d6: {or: []}
@@ -180,19 +196,27 @@ d6 escape room: [d6 torch stairs, feather]
 d6 vire chest: [d6 escape room, kill stalfos]
 
 # 3 keys
-d6 beamos room: [enter d6, count: [3, d6 small key]]
+d6 beamos room: [enter d6, or: [
+    count: [3, d6 small key],
+    [count: [2, d6 small key], not: [d6 vire chest]],
+    [seqbreak, d6 small key]]]
 d6 2F gibdo chest: [d6 beamos room]
 d6 2F armos chest: [d6 2F gibdo chest, bombs]
 d6 armos hall: [d6 2F armos chest, feather]
 d6 spinner north: [enter d6, magnet gloves, break crystal,
     or: [feather, hard], or: [
-        [kill normal, count: [3, d6 small key]],
+        [kill normal, or: [
+            count: [3, d6 small key],
+            [count: [2, d6 small key], not: [d6 vire chest]],
+            [seqbreak, d6 small key]]],
         [bombs, feather, count: [2, d6 small key]]]]
-enter vire: [d6 vire chest, count: [3, d6 small key]]
+enter vire: [d6 vire chest,
+    or: [count: [3, d6 small key], [seqbreak, d6 small key]]]
 d6 pre-boss room: [enter vire, kill vire, kill hardhat (magnet)]
 d6 boss: [d6 pre-boss room, d6 boss key, kill manhandla]
 
 # d7
+# TODO: seqbreak logic
 # the chest to the right of the entrance is locked behind all keys in logic
 # because of poe skip, but the poe fight itself is only locked behind one.
 enter d7: {or: []}
@@ -237,6 +261,7 @@ d7 stalfos chest: [d7 maze chest, count: [5, d7 small key],
     or: [pegasus satchel, hard]]
 
 # d8
+# TODO: seqbreak logic
 # HSS skip is out of logic and can lead to key-locks.
 # pots don't hurt magunesu, thank goodness.
 enter d8: {or: []}

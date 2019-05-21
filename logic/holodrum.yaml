@@ -2,8 +2,11 @@
 # in their designated regions [e.g. dimitri in sunken city]. x's flute means
 # being able to call the animal in general.
 
+# TODO: seqbreak logic
+
 start: [] # parent for nodes reachable by default
 hard: {or: []}
+seqbreak: {or: []}
 
 # horon village
 horon village: {or: [start, # portal included in case something changes
@@ -23,7 +26,7 @@ member's shop 3: [member's card, or: [ember seeds, [hard, shovel]]]
 # western coast
 black beast's chest: [horon village,
     or: [ember slingshot, [hard, mystery slingshot]],
-    mystery seeds, kill moldorm]
+    mystery seeds, kill armored]
 d0 entrance: [horon village]
 pirate ship: [pirate's bell, pirate house]
 coast stump: [pirate ship, bombs, or: [feather, hard]]
