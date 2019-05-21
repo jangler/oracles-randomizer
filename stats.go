@@ -23,7 +23,7 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 			for i := 0; i < n/threads; i++ {
 				for {
 					seed := uint32(rand.Int())
-					route := findRoute(game, seed, ropts, false, dummyLogf)
+					route, _ := findRoute(game, seed, ropts, false, dummyLogf)
 					if route != nil {
 						attempts += route.AttemptCount
 						routeChan <- route

@@ -434,7 +434,8 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 
 // RandomizeRingPool randomizes the types of rings in the item pool, returning
 // a map of vanilla ring names to the randomized ones.
-func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
+func RandomizeRingPool(src *rand.Rand, game int,
+	planValues []string) map[string]string {
 	nameMap := make(map[string]string)
 	usedRings := make([]bool, 0x40)
 
@@ -446,39 +447,64 @@ func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 	}
 	sort.Strings(keys)
 
-	for _, key := range keys {
-		slot := ItemSlots[key]
-
+	nRings := 0
+	for _, slot := range ItemSlots {
 		if slot.Treasure.id == 0x2d {
-			oldName := FindTreasureName(slot.Treasure)
+			nRings++
+		}
+	}
+	ringValues, i := make([]int, nRings), 0
 
-			// loop until we get a ring that's not literally useless, and which
-			// we haven't used before.
-			done := false
-			for !done {
-				param := byte(src.Intn(0x40))
-				switch rings[param] {
-				case "friendship ring", "GBA time ring", "GBA nature ring",
-					"slayer's ring", "rupee ring", "victory ring", "sign ring",
-					"100th ring":
+	// load planned values first
+	for _, v := range planValues {
+		for id, name := range rings {
+			if v == name {
+				ringValues[i] = id
+				i++
+				break
+			}
+		}
+	}
+
+	// then roll random ones for the rest
+	for i < len(ringValues) {
+		// loop until we get a ring that's not literally useless, and which
+		// we haven't used before.
+		done := false
+		for !done {
+			param := src.Intn(0x40)
+			switch rings[param] {
+			case "friendship ring", "GBA time ring", "GBA nature ring",
+				"slayer's ring", "rupee ring", "victory ring", "sign ring",
+				"100th ring":
+				break
+			case "rang ring L-1", "rang ring L-2", "green joy ring":
+				// these rings are literally useless in ages.
+				if game == GameAges {
 					break
-				case "rang ring L-1", "rang ring L-2", "green joy ring":
-					// these rings are literally useless in ages.
-					if game == GameAges {
-						break
-					}
-					fallthrough
-				default:
-					if !usedRings[param] {
-						slot.Treasure.param = param
-						usedRings[param] = true
-						done = true
-					}
+				}
+				fallthrough
+			default:
+				if !usedRings[param] {
+					usedRings[param] = true
+					ringValues[i] = param
+					done = true
+					i++
 				}
 			}
+		}
+	}
+	sort.Ints(ringValues)
 
-			slot.Treasure.displayName = rings[slot.Treasure.param]
+	i = 0
+	for _, key := range keys {
+		slot := ItemSlots[key]
+		if slot.Treasure.id == 0x2d {
+			oldName := FindTreasureName(slot.Treasure)
+			slot.Treasure.param = byte(ringValues[i])
+			slot.Treasure.displayName = rings[ringValues[i]]
 			nameMap[oldName] = slot.Treasure.displayName
+			i++
 		}
 	}
 

@@ -22,7 +22,7 @@ var subrosianPortalNames = map[string]string{
 	"eyeglass lake":        "great furnace",
 	"horon village":        "house of pirates",
 	"temple remains lower": "volcanoes west",
-	"temple remains upper": "D8 entrance",
+	"temple remains upper": "d8 entrance",
 }
 
 // adds nodes to the map based on default contents of item slots.
@@ -117,9 +117,9 @@ const (
 )
 
 // attempts to create a path to the given targets by placing different items in
-// slots. returns nils if no route is found.
+// slots.
 func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
-	logf logFunc) *RouteInfo {
+	logf logFunc) (*RouteInfo, error) {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
@@ -141,10 +141,11 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		if ropts.hard {
 			r.AddParent("hard", "start")
 		}
-		ri.Companion = rollAnimalCompanion(ri.Src, r, game)
-		ri.RingMap = rom.RandomizeRingPool(ri.Src, game)
+		ri.Companion = rollAnimalCompanion(ri.Src, r, game, ropts.plan.items)
+		ri.RingMap = rom.RandomizeRingPool(ri.Src, game,
+			ropts.plan.items.orderedValues())
 		itemList, slotList = initRouteInfo(ri.Src, r, ri.RingMap, game,
-			ri.Companion)
+			ri.Companion, ropts.plan.items)
 
 		// attach free items to start node - just assume we have them, until
 		// they're placed
@@ -155,10 +156,19 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 
 		// slot "world" nodes before items
 		if game == rom.GameSeasons {
-			ri.Seasons = rollSeasons(ri.Src, r)
-			ri.Portals = setPortals(ri.Src, r, ropts.portals)
+			ri.Seasons = rollSeasons(ri.Src, r, ropts.plan.seasons)
+			ri.Portals = setPortals(ri.Src, r, ropts.portals,
+				ropts.plan.portals)
 		}
-		ri.Entrances = setDungeonEntrances(ri.Src, r, game, ropts.dungeons)
+		ri.Entrances = setDungeonEntrances(ri.Src, r, game, ropts.dungeons,
+			ropts.plan.dungeons)
+
+		// load planned item configuration, if present
+		err := applyPlannedItems(ropts.plan.items, ri, r.Graph, slotList,
+			itemList, game)
+		if err != nil {
+			return nil, err
+		}
 
 		// place dungeon-specific items, then "regular" items
 		dungeonItems, nonDungeonItems := list.New(), list.New()
@@ -185,11 +195,10 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 	}
 
 	if tries >= maxTries {
-		logf("abort; could not find route after %d tries", maxTries)
-		return nil
+		return nil, fmt.Errorf("could not find route after %d tries", maxTries)
 	}
 
-	return ri
+	return ri, nil
 }
 
 var (
@@ -203,17 +212,18 @@ var (
 
 // set the default seasons for all the applicable areas in the game, and return
 // a mapping of area name to season value.
-func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
+func rollSeasons(src *rand.Rand, r *Route, plan dict) map[string]byte {
 	seasonMap := make(map[string]byte, len(seasonAreas))
 
 	for _, area := range seasonAreas {
-		// reset default seasons
-		for _, season := range seasonsByID {
-			r.ClearParents(fmt.Sprintf("%s default %s", area, season))
-		}
-
-		// roll new default season
 		id := src.Intn(len(seasonsByID))
+		if season, ok := plan[area]; ok {
+			for i, name := range seasonsByID {
+				if name == season {
+					id = i
+				}
+			}
+		}
 		season := seasonsByID[id]
 		r.AddParent(fmt.Sprintf("%s default %s", area, season), "start")
 		seasonMap[area] = byte(id)
@@ -223,8 +233,8 @@ func rollSeasons(src *rand.Rand, r *Route) map[string]byte {
 }
 
 // connect dungeon entrances, randomly or vanilla-ly.
-func setDungeonEntrances(src *rand.Rand,
-	r *Route, game int, shuffle bool) map[string]string {
+func setDungeonEntrances(src *rand.Rand, r *Route, game int, shuffle bool,
+	plan map[string]string) map[string]string {
 	dungeonEntranceMap := make(map[string]string)
 	var dungeons []string
 
@@ -253,6 +263,11 @@ func setDungeonEntrances(src *rand.Rand,
 		})
 	}
 
+	for k, v := range plan {
+		moveStringToBack(entrances, strings.Replace(k, " entrance", "", 1))
+		moveStringToBack(dungeons, v)
+	}
+
 	for i := 0; i < len(dungeons); i++ {
 		entranceName := fmt.Sprintf("%s entrance", entrances[i])
 		dungeonEntranceMap[entrances[i]] = dungeons[i]
@@ -263,7 +278,8 @@ func setDungeonEntrances(src *rand.Rand,
 }
 
 // connect subrosia portals, randomly or vanilla-ly.
-func setPortals(src *rand.Rand, r *Route, shuffle bool) map[string]string {
+func setPortals(src *rand.Rand, r *Route, shuffle bool,
+	plan map[string]string) map[string]string {
 	portalMap := make(map[string]string)
 	var portals = []string{
 		"eastern suburbs", "spool swamp", "mt. cucco", "eyeglass lake",
@@ -286,6 +302,15 @@ func setPortals(src *rand.Rand, r *Route, shuffle bool) map[string]string {
 		})
 	}
 
+	for k, v := range plan {
+		moveStringToBack(portals, k)
+		for holodrum, subrosia := range subrosianPortalNames {
+			if subrosia == v {
+				moveStringToBack(connects, holodrum)
+			}
+		}
+	}
+
 	for i := 0; i < len(portals); i++ {
 		portalMap[portals[i]] = connects[i]
 		r.AddParent(fmt.Sprintf("exit %s portal", subrosianPortalNames[connects[i]]),
@@ -298,8 +323,24 @@ func setPortals(src *rand.Rand, r *Route, shuffle bool) map[string]string {
 }
 
 // randomly determines animal companion and returns its ID (1 to 3)
-func rollAnimalCompanion(src *rand.Rand, r *Route, game int) int {
+func rollAnimalCompanion(src *rand.Rand, r *Route, game int,
+	plan map[string]string) int {
 	companion := src.Intn(3) + 1
+
+	// plan might specify which flute is in the seed
+	for _, v := range plan {
+		switch v {
+		case "ricky's flute":
+			companion = ricky
+			break
+		case "dimitri's flute":
+			companion = dimitri
+			break
+		case "moosh's flute":
+			companion = moosh
+			break
+		}
+	}
 
 	if game == rom.GameSeasons {
 		r.ClearParents("natzu prairie")
@@ -336,8 +377,8 @@ var seedNames = []string{"ember tree seeds", "scent tree seeds",
 	"pegasus tree seeds", "gale tree seeds", "mystery tree seeds"}
 
 // return shuffled lists of item and slot nodes
-func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
-	game, companion int) (itemList, slotList *list.List) {
+func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
+	companion int, plan map[string]string) (itemList, slotList *list.List) {
 	// get slices of names
 	var itemNames []string
 	if game == rom.GameSeasons {
@@ -350,6 +391,23 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 	slotNames := make([]string, 0, len(r.Slots))
 	thisSeedNames := make([]string, len(seedNames))
 	copy(thisSeedNames, seedNames)
+
+	// TODO: this is a dumb way to do this
+	plannedTreeCounts := make(map[string]int)
+	for _, v := range plan {
+		for _, name := range seedNames {
+			if name == v {
+				plannedTreeCounts[v]++
+			}
+		}
+	}
+	plannedDupTrees := make([]string, 0)
+	for tree, count := range plannedTreeCounts {
+		for i := 0; i < count-1; i++ {
+			plannedDupTrees = append(plannedDupTrees, tree)
+		}
+	}
+
 	for key, slot := range rom.ItemSlots {
 		switch key {
 		case "temple of seasons": // don't slot vanilla, seasonless rod
@@ -359,6 +417,13 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string,
 			// use random duplicate seed types, but only duplicate a seed type
 			// once
 			index := src.Intn(len(thisSeedNames))
+			if len(plannedDupTrees) > 0 {
+				// TODO: this is a dumb way to do this
+				for thisSeedNames[index] != plannedDupTrees[0] {
+					index = src.Intn(len(thisSeedNames))
+				}
+				plannedDupTrees = plannedDupTrees[1:]
+			}
 			treasureName := thisSeedNames[index]
 			itemNames = append(itemNames, treasureName)
 			thisSeedNames = append(thisSeedNames[:index],
@@ -450,4 +515,54 @@ func tryPlaceItems(ri *RouteInfo, r *Route, itemList, slotList *list.List,
 	}
 
 	return true
+}
+
+// applies the items in `plan` to the initial route. returns an error if any
+// name is invalid.
+func applyPlannedItems(plan dict, ri *RouteInfo, g graph,
+	slotList, itemList *list.List, game int) error {
+planLoop:
+	for k, v := range plan {
+		// try to match an item slot
+		for es := slotList.Front(); es != nil; es = es.Next() {
+			slot := es.Value.(*node)
+			if slot.name == k {
+				// try to match an item
+				for ei := itemList.Front(); ei != nil; ei = ei.Next() {
+					item := ei.Value.(*node)
+					if item.name == v {
+						slotList.Remove(es)
+						itemList.Remove(ei)
+						ri.UsedSlots.PushBack(slot)
+						ri.UsedItems.PushBack(item)
+						item.removeParent(g["start"])
+						item.addParent(slot)
+						continue planLoop
+					}
+				}
+				return fmt.Errorf("unknown plan item: %q", v)
+			}
+		}
+		return fmt.Errorf("unknown plan slot: %q", k)
+	}
+	return nil
+}
+
+// returns a sorted slice of string values in a map.
+func orderedStringMapValues(m map[string]string) []string {
+	values := make([]string, 0, len(m))
+	for _, v := range m {
+		values = append(values, v)
+	}
+	sort.Strings(values)
+	return values
+}
+
+// moves the first matching string in the slice to the end of the slice.
+func moveStringToBack(a []string, s string) {
+	for i, s2 := range a {
+		if s2 == s {
+			a = append(a[:i], append(a[i+1:], s)...)
+		}
+	}
 }

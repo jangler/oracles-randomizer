@@ -57,7 +57,7 @@ func newHinter(game int) *hinter {
 
 // returns a randomly generated map of owl names to owl messages.
 func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
-	owlNames []string) map[string]string {
+	owlNames []string, plan map[string]string) map[string]string {
 	// function body starts here lol
 	hints := make(map[string]string)
 	slots := getShuffledSlots(src, checks)
@@ -69,6 +69,12 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 	hintedSlots := make(map[*node]bool)
 
 	for _, owlName := range owlNames {
+		// use planned hints if given
+		if v, ok := plan[owlName]; ok {
+			hints[owlName] = h.format(strings.Replace(v, `"`, "", 2))
+			continue
+		}
+
 		// sometimes owls are just unreachable, so anything goes, i guess
 		g.clearMarks()
 		owlUnreachable := g[owlName].getMark() == markFalse
@@ -89,7 +95,8 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 			item.addParent(slot)
 
 			if !required || owlUnreachable {
-				hints[owlName] = h.format(slot, item)
+				hints[owlName] = h.format(fmt.Sprintf("%s holds %s.",
+					h.areas[slot.name], h.items[item.name]))
 				hintedSlots[slot] = true
 				break
 			}
@@ -99,14 +106,11 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 	return hints
 }
 
-// returns a message stating that an item is in an area, formatted for an owl
-// text box. this doesn't include control characters (except newlines).
-func (h *hinter) format(slot, item *node) string {
+// formats a string for a text box. text box. this doesn't include control
+// characters, except for newlines.
+func (h *hinter) format(s string) string {
 	// split message into words to be wrapped
-	words := strings.Split(h.areas[slot.name], " ")
-	words = append(words, "holds")
-	words = append(words, strings.Split(h.items[item.name], " ")...)
-	words[len(words)-1] = words[len(words)-1] + "."
+	words := strings.Split(s, " ")
 
 	// build message line by line
 	msg := new(strings.Builder)

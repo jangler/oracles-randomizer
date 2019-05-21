@@ -2,8 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
+	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -108,4 +110,85 @@ func spheresToText(spheres [][]*node, checks map[*node]*node, except *node) stri
 		}
 	}
 	return b.String()
+}
+
+type summary struct {
+	items    dict
+	dungeons dict
+	portals  dict
+	seasons  dict
+	hints    dict
+}
+
+func newSummary() *summary {
+	return &summary{
+		items:    newDict(),
+		dungeons: newDict(),
+		portals:  newDict(),
+		seasons:  newDict(),
+		hints:    newDict(),
+	}
+}
+
+type dict map[string]string
+
+func newDict() dict {
+	return make(map[string]string)
+}
+
+func (d dict) orderedValues() []string {
+	a, i := make([]string, len(d)), 0
+	for _, v := range d {
+		a[i] = v
+		i++
+	}
+	sort.Strings(a)
+	return a
+}
+
+var conditionRegexp = regexp.MustCompile(`(.+?) +<- (.+)`)
+
+// loads conditions from a log file.
+func parseSummary(path string, game int) (*summary, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+
+	b, err := ioutil.ReadAll(f)
+	if err != nil {
+		return nil, err
+	}
+
+	sum := newSummary()
+	section := sum.items
+	for _, line := range strings.Split(string(b), "\n") {
+		line = strings.Replace(line, "\r", "", 1)
+		if strings.HasPrefix(line, "--") {
+			switch line {
+			case "-- items --", "-- progression items --",
+				"-- small keys and boss keys --", "-- other items --":
+				section = sum.items
+			case "-- dungeon entrances --":
+				section = sum.dungeons
+			case "-- subrosia portals --":
+				section = sum.portals
+			case "-- default seasons --":
+				section = sum.seasons
+			case "-- hints --":
+				section = sum.hints
+			default:
+				return nil, fmt.Errorf("unknown section: %q", line)
+			}
+		} else {
+			submatches := conditionRegexp.FindStringSubmatch(line)
+			if submatches != nil {
+				section[ungetNiceName(submatches[1], game)] =
+					ungetNiceName(submatches[2], game)
+			}
+		}
+	}
+
+	return sum, nil
 }

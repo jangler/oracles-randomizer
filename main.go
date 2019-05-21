@@ -58,6 +58,7 @@ var (
 	flagHard     bool
 	flagNoMusic  bool
 	flagNoUI     bool
+	flagPlan     string
 	flagPortals  bool
 	flagSeed     string
 	flagTreewarp bool
@@ -67,6 +68,7 @@ var (
 type randomizerOptions struct {
 	dungeons bool
 	hard     bool
+	plan     *summary
 	portals  bool
 	seed     string // given seed, not necessarily final seed
 }
@@ -86,6 +88,8 @@ func initFlags() {
 		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
 		"use command line output without option prompts")
+	flag.StringVar(&flagPlan, "plan", "",
+		"use fixed 'randomization' from a file")
 	flag.BoolVar(&flagPortals, "portals", false,
 		"shuffle subrosia portal connections (seasons)")
 	flag.StringVar(&flagSeed, "seed", "",
@@ -306,6 +310,18 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 
 		rom.SetMusic(!flagNoMusic)
 		rom.SetTreewarp(flagTreewarp)
+
+		if flagPlan != "" {
+			var err error
+			ropts.plan, err = parseSummary(flagPlan, game)
+			if err != nil {
+				fatal(err, logf)
+			}
+			ropts.dungeons = ropts.dungeons || len(ropts.plan.dungeons) > 0
+			ropts.portals = ropts.portals || len(ropts.plan.portals) > 0
+		} else {
+			ropts.plan = newSummary()
+		}
 
 		if err := randomizeFile(
 			b, game, dirName, outfile, ropts, flagVerbose, logf); err != nil {
@@ -539,15 +555,15 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	}
 
 	// search for route
-	ri := findRoute(game, seed, ropts, verbose, logf)
-	if ri == nil {
-		return 0, nil, "", fmt.Errorf("no route found")
+	ri, err := findRoute(game, seed, ropts, verbose, logf)
+	if err != nil {
+		return 0, nil, "", err
 	}
 
 	checks := getChecks(ri)
 	spheres, extra := getSpheres(ri.Route.Graph, checks)
 	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
-		rom.GetOwlNames(game))
+		rom.GetOwlNames(game), ropts.plan.hints)
 
 	checksum, err := setROMData(
 		romData, game, ri, owlHints, ropts, logf, verbose)
@@ -613,7 +629,8 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for in, out := range ri.Portals {
-				c <- fmt.Sprintf("%-20s <- %s", in, subrosianPortalNames[out])
+				c <- fmt.Sprintf("%-20s <- %s", getNiceName(in, game),
+					getNiceName(subrosianPortalNames[out], game))
 			}
 			close(c)
 		})
