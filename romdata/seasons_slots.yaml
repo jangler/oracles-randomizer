@@ -622,27 +622,27 @@ d8 boss:
   addr: {bank: 0x15} # addr set at EOB
 
 # seed trees; semi-fake in that they don't slot real treasures
-horon village seed tree:
+horon village tree:
   treasure: ember tree seeds
   room: 0x00f8
   ids: [{bank: 0x0d, addr: 0x68fb}]
-woods of winter seed tree:
+woods of winter tree:
   treasure: mystery tree seeds
   room: 0x009e
   ids: [{bank: 0x0d, addr: 0x68fe}]
-north horon seed tree:
+north horon tree:
   treasure: scent tree seeds
   room: 0x0067
   ids: [{bank: 0x0d, addr: 0x6901}]
-spool swamp seed tree:
+spool swamp tree:
   treasure: pegasus tree seeds
   room: 0x0072
   ids: [{bank: 0x0d, addr: 0x6904}]
-sunken city seed tree:
+sunken city tree:
   treasure: gale tree seeds
   room: 0x005f
   ids: [{bank: 0x0d, addr: 0x6907}]
-tarm ruins seed tree:
+tarm ruins tree:
   treasure: gale tree seeds
   room: 0x0010
   ids: [{bank: 0x0d, addr: 0x690a}]

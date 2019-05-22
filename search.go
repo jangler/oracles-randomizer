@@ -125,12 +125,11 @@ func itemFitsInSlot(itemNode, slotNode *node, src *rand.Rand) bool {
 
 func slotIsSeedTree(name string) bool {
 	switch name {
-	case "horon village seed tree", "woods of winter seed tree",
-		"north horon seed tree", "spool swamp seed tree",
-		"sunken city seed tree", "tarm ruins seed tree", "south lynna tree",
-		"deku forest tree", "crescent island tree", "symmetry city tree",
-		"rolling ridge west tree", "rolling ridge east tree",
-		"ambi's palace tree", "zora village tree":
+	case "horon village tree", "woods of winter tree", "north horon tree",
+		"spool swamp tree", "sunken city tree", "tarm ruins tree",
+		"south lynna tree", "deku forest tree", "crescent island tree",
+		"symmetry city tree", "rolling ridge west tree",
+		"rolling ridge east tree", "ambi's palace tree", "zora village tree":
 		return true
 	}
 	return false

@@ -244,7 +244,7 @@ func Verify(b []byte, game int) []error {
 func setSeedData(game int) {
 	var seedType byte
 	if game == GameSeasons {
-		seedType = ItemSlots["horon village seed tree"].Treasure.id
+		seedType = ItemSlots["horon village tree"].Treasure.id
 	} else {
 		seedType = ItemSlots["south lynna tree"].Treasure.id
 	}
@@ -260,12 +260,12 @@ func setSeedData(game int) {
 		}
 
 		for _, names := range [][]string{
-			{"horon village seed tree", "horonVillageTreeMapIcon"},
-			{"north horon seed tree", "northHoronTreeMapIcon"},
-			{"woods of winter seed tree", "woodsOfWinterTreeMapIcon"},
-			{"spool swamp seed tree", "spoolSwampTreeMapIcon"},
-			{"sunken city seed tree", "sunkenCityTreeMapIcon"},
-			{"tarm ruins seed tree", "tarmRuinsTreeMapIcon"},
+			{"horon village tree", "horonVillageTreeMapIcon"},
+			{"north horon tree", "northHoronTreeMapIcon"},
+			{"woods of winter tree", "woodsOfWinterTreeMapIcon"},
+			{"spool swamp tree", "spoolSwampTreeMapIcon"},
+			{"sunken city tree", "sunkenCityTreeMapIcon"},
+			{"tarm ruins tree", "tarmRuinsTreeMapIcon"},
 		} {
 			id := ItemSlots[names[0]].Treasure.id
 			codeMutables[names[1]].New[0] = 0x15 + id

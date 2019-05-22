@@ -163,7 +163,7 @@ func getShuffledSlots(src *rand.Rand,
 		// guaranteed to know about if they're using seeds.
 		switch slot.name {
 		case "shop, 20 rupees", "shop, 30 rupees",
-			"horon village seed tree", "south lynna tree":
+			"horon village tree", "south lynna tree":
 			continue
 		}
 

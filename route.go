@@ -389,45 +389,44 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
 		itemNames = make([]string, 0, len(rom.ItemSlots))
 	}
 	slotNames := make([]string, 0, len(r.Slots))
-	thisSeedNames := make([]string, len(seedNames))
-	copy(thisSeedNames, seedNames)
 
-	// TODO: this is a dumb way to do this
-	plannedTreeCounts := make(map[string]int)
+	// get number of each seed tree from a combination of plan and RNG
+	nTrees := 6
+	if game == rom.GameAges {
+		nTrees = 8
+	}
+	thisSeeds := make([]int, 0, nTrees)
+	seedCounts := make(map[int]int)
 	for _, v := range plan {
-		for _, name := range seedNames {
+		for id, name := range seedNames {
 			if name == v {
-				plannedTreeCounts[v]++
+				thisSeeds = append(thisSeeds, id)
+				seedCounts[id]++
 			}
 		}
 	}
-	plannedDupTrees := make([]string, 0)
-	for tree, count := range plannedTreeCounts {
-		for i := 0; i < count-1; i++ {
-			plannedDupTrees = append(plannedDupTrees, tree)
+	for len(thisSeeds) < cap(thisSeeds) {
+		id := src.Intn(len(seedNames))
+		for seedCounts[id] > 1 {
+			id = src.Intn(len(seedNames))
 		}
+		thisSeeds = append(thisSeeds, id)
+		seedCounts[id]++
 	}
 
 	for key, slot := range rom.ItemSlots {
 		switch key {
 		case "temple of seasons": // don't slot vanilla, seasonless rod
 			break
-		case "tarm ruins seed tree", "ambi's palace tree",
-			"rolling ridge east tree", "zora village tree":
-			// use random duplicate seed types, but only duplicate a seed type
-			// once
-			index := src.Intn(len(thisSeedNames))
-			if len(plannedDupTrees) > 0 {
-				// TODO: this is a dumb way to do this
-				for thisSeedNames[index] != plannedDupTrees[0] {
-					index = src.Intn(len(thisSeedNames))
-				}
-				plannedDupTrees = plannedDupTrees[1:]
-			}
-			treasureName := thisSeedNames[index]
-			itemNames = append(itemNames, treasureName)
-			thisSeedNames = append(thisSeedNames[:index],
-				thisSeedNames[index+1:]...)
+		case "horon village tree", "woods of winter tree", "north horon tree",
+			"spool swamp tree", "sunken city tree", "tarm ruins tree",
+			"south lynna tree", "deku forest tree", "crescent island tree",
+			"symmetry city tree", "rolling ridge west tree",
+			"rolling ridge east tree", "ambi's palace tree",
+			"zora village tree":
+			id := thisSeeds[0]
+			thisSeeds = thisSeeds[1:]
+			itemNames = append(itemNames, seedNames[id])
 		default:
 			// substitute identified flute for strange flute
 			treasureName := rom.FindTreasureName(slot.Treasure)
