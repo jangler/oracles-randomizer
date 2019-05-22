@@ -157,11 +157,11 @@ func getDungeonName(name string) string {
 
 // returns true iff no open slots beyond curSlot are reachable if all the items
 // left in the pool, except for curItem, are assumed to be unreachable. returns
-// false if only one item remains in the pool, since it is assumed to be
-// curItem.
+// false if only one slot remains in the pool, since that slot is assumed to be
+// curSlot.
 func isDeadEnd(g graph, curItem, curSlot *list.Element,
 	itemPool, slotPool *list.List) bool {
-	if itemPool.Len() == 1 {
+	if slotPool.Len() == 1 {
 		return false
 	}
 

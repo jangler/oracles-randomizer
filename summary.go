@@ -184,8 +184,19 @@ func parseSummary(path string, game int) (*summary, error) {
 		} else {
 			submatches := conditionRegexp.FindStringSubmatch(line)
 			if submatches != nil {
-				section[ungetNiceName(submatches[1], game)] =
-					ungetNiceName(submatches[2], game)
+				if submatches[1] == "null" {
+					var nullKey string
+					for i := 0; true; i++ {
+						nullKey = fmt.Sprintf("null %d", i)
+						if section[nullKey] == "" {
+							break
+						}
+					}
+					section[nullKey] = ungetNiceName(submatches[2], game)
+				} else {
+					section[ungetNiceName(submatches[1], game)] =
+						ungetNiceName(submatches[2], game)
+				}
 			}
 		}
 	}

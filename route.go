@@ -484,7 +484,7 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
 // returns true iff successful
 func tryPlaceItems(ri *RouteInfo, r *Route, itemList, slotList *list.List,
 	verbose bool, logf logFunc) bool {
-	for itemList.Len() > 0 {
+	for itemList.Len() > 0 && slotList.Len() > 0 {
 		if verbose {
 			logf("searching; filling %d more slots", slotList.Len())
 			logf("(%d more items)", itemList.Len())
@@ -502,12 +502,13 @@ func tryPlaceItems(ri *RouteInfo, r *Route, itemList, slotList *list.List,
 			}
 		} else {
 			if verbose {
-				logf("search failed. unplaced non-junk items:")
+				logf("search failed. unplaced items:")
 				for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-					item := ei.Value.(*node)
-					if !itemIsJunk(item.name) {
-						logf(item.name)
-					}
+					logf(ei.Value.(*node).name)
+				}
+				logf("unfilled slots:")
+				for es := slotList.Front(); es != nil; es = es.Next() {
+					logf(es.Value.(*node).name)
 				}
 			}
 			return false
@@ -526,19 +527,31 @@ planLoop:
 		// try to match an item slot
 		for es := slotList.Front(); es != nil; es = es.Next() {
 			slot := es.Value.(*node)
-			if slot.name == k {
+			if slot.name == k || strings.HasPrefix(k, "null") {
 				// try to match an item
 				for ei := itemList.Front(); ei != nil; ei = ei.Next() {
 					item := ei.Value.(*node)
 					if item.name == v {
 						slotList.Remove(es)
 						itemList.Remove(ei)
+						item.removeParent(g["start"])
+						if strings.HasPrefix(k, "null") {
+							item = g["gasha seed"]
+						}
 						ri.UsedSlots.PushBack(slot)
 						ri.UsedItems.PushBack(item)
-						item.removeParent(g["start"])
 						item.addParent(slot)
 						continue planLoop
 					}
+				}
+				// no existing match, try just adding a new item
+				if rom.Treasures[v] != nil {
+					item := g[v]
+					slotList.Remove(es)
+					ri.UsedSlots.PushBack(slot)
+					ri.UsedItems.PushBack(item)
+					item.addParent(slot)
+					continue planLoop
 				}
 				return fmt.Errorf("unknown plan item: %q", v)
 			}
