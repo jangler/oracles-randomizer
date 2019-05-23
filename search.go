@@ -125,12 +125,11 @@ func itemFitsInSlot(itemNode, slotNode *node, src *rand.Rand) bool {
 
 func slotIsSeedTree(name string) bool {
 	switch name {
-	case "horon village seed tree", "woods of winter seed tree",
-		"north horon seed tree", "spool swamp seed tree",
-		"sunken city seed tree", "tarm ruins seed tree", "south lynna tree",
-		"deku forest tree", "crescent island tree", "symmetry city tree",
-		"rolling ridge west tree", "rolling ridge east tree",
-		"ambi's palace tree", "zora village tree":
+	case "horon village tree", "woods of winter tree", "north horon tree",
+		"spool swamp tree", "sunken city tree", "tarm ruins tree",
+		"south lynna tree", "deku forest tree", "crescent island tree",
+		"symmetry city tree", "rolling ridge west tree",
+		"rolling ridge east tree", "ambi's palace tree", "zora village tree":
 		return true
 	}
 	return false
@@ -157,11 +156,11 @@ func getDungeonName(name string) string {
 
 // returns true iff no open slots beyond curSlot are reachable if all the items
 // left in the pool, except for curItem, are assumed to be unreachable. returns
-// false if only one item remains in the pool, since it is assumed to be
-// curItem.
+// false if only one slot remains in the pool, since that slot is assumed to be
+// curSlot.
 func isDeadEnd(g graph, curItem, curSlot *list.Element,
 	itemPool, slotPool *list.List) bool {
-	if itemPool.Len() == 1 {
+	if slotPool.Len() == 1 {
 		return false
 	}
 

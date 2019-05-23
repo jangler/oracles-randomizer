@@ -244,7 +244,7 @@ func Verify(b []byte, game int) []error {
 func setSeedData(game int) {
 	var seedType byte
 	if game == GameSeasons {
-		seedType = ItemSlots["horon village seed tree"].Treasure.id
+		seedType = ItemSlots["horon village tree"].Treasure.id
 	} else {
 		seedType = ItemSlots["south lynna tree"].Treasure.id
 	}
@@ -260,12 +260,12 @@ func setSeedData(game int) {
 		}
 
 		for _, names := range [][]string{
-			{"horon village seed tree", "horonVillageTreeMapIcon"},
-			{"north horon seed tree", "northHoronTreeMapIcon"},
-			{"woods of winter seed tree", "woodsOfWinterTreeMapIcon"},
-			{"spool swamp seed tree", "spoolSwampTreeMapIcon"},
-			{"sunken city seed tree", "sunkenCityTreeMapIcon"},
-			{"tarm ruins seed tree", "tarmRuinsTreeMapIcon"},
+			{"horon village tree", "horonVillageTreeMapIcon"},
+			{"north horon tree", "northHoronTreeMapIcon"},
+			{"woods of winter tree", "woodsOfWinterTreeMapIcon"},
+			{"spool swamp tree", "spoolSwampTreeMapIcon"},
+			{"sunken city tree", "sunkenCityTreeMapIcon"},
+			{"tarm ruins tree", "tarmRuinsTreeMapIcon"},
 		} {
 			id := ItemSlots[names[0]].Treasure.id
 			codeMutables[names[1]].New[0] = 0x15 + id
@@ -434,7 +434,8 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 
 // RandomizeRingPool randomizes the types of rings in the item pool, returning
 // a map of vanilla ring names to the randomized ones.
-func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
+func RandomizeRingPool(src *rand.Rand, game int,
+	planValues []string) (map[string]string, error) {
 	nameMap := make(map[string]string)
 	usedRings := make([]bool, 0x40)
 
@@ -446,43 +447,71 @@ func RandomizeRingPool(src *rand.Rand, game int) map[string]string {
 	}
 	sort.Strings(keys)
 
-	for _, key := range keys {
-		slot := ItemSlots[key]
-
+	nRings := 0
+	for _, slot := range ItemSlots {
 		if slot.Treasure.id == 0x2d {
-			oldName := FindTreasureName(slot.Treasure)
+			nRings++
+		}
+	}
+	ringValues, i := make([]int, nRings), 0
 
-			// loop until we get a ring that's not literally useless, and which
-			// we haven't used before.
-			done := false
-			for !done {
-				param := byte(src.Intn(0x40))
-				switch rings[param] {
-				case "friendship ring", "GBA time ring", "GBA nature ring",
-					"slayer's ring", "rupee ring", "victory ring", "sign ring",
-					"100th ring":
-					break
-				case "rang ring L-1", "rang ring L-2", "green joy ring":
-					// these rings are literally useless in ages.
-					if game == GameAges {
-						break
-					}
-					fallthrough
-				default:
-					if !usedRings[param] {
-						slot.Treasure.param = param
-						usedRings[param] = true
-						done = true
-					}
+	// load planned values first
+	for _, v := range planValues {
+		for id, name := range rings {
+			if v == name {
+				if i >= len(ringValues) {
+					return nil, fmt.Errorf("too many rings in plan")
 				}
+				ringValues[i] = id
+				i++
+				break
 			}
-
-			slot.Treasure.displayName = rings[slot.Treasure.param]
-			nameMap[oldName] = slot.Treasure.displayName
 		}
 	}
 
-	return nameMap
+	// then roll random ones for the rest
+	for i < len(ringValues) {
+		// loop until we get a ring that's not literally useless, and which
+		// we haven't used before.
+		done := false
+		for !done {
+			param := src.Intn(0x40)
+			switch rings[param] {
+			case "friendship ring", "GBA time ring", "GBA nature ring",
+				"slayer's ring", "rupee ring", "victory ring", "sign ring",
+				"100th ring":
+				break
+			case "rang ring L-1", "rang ring L-2", "green joy ring":
+				// these rings are literally useless in ages.
+				if game == GameAges {
+					break
+				}
+				fallthrough
+			default:
+				if !usedRings[param] {
+					usedRings[param] = true
+					ringValues[i] = param
+					done = true
+					i++
+				}
+			}
+		}
+	}
+	sort.Ints(ringValues)
+
+	i = 0
+	for _, key := range keys {
+		slot := ItemSlots[key]
+		if slot.Treasure.id == 0x2d {
+			oldName := FindTreasureName(slot.Treasure)
+			slot.Treasure.param = byte(ringValues[i])
+			slot.Treasure.displayName = rings[ringValues[i]]
+			nameMap[oldName] = slot.Treasure.displayName
+			i++
+		}
+	}
+
+	return nameMap, nil
 }
 
 func setBossItemAddrs() {

@@ -66,8 +66,6 @@ def make_checklist(game, infiles, outfile):
                         name = names[name]
                     if name[0] == 'd' and name[2] == ' ':
                             name = "D" + name[1:]
-                    name = name.replace("map chest", "dungeon map chest")
-                    name = name.replace("gasha chest", "gasha seed chest")
 
                     slots.append(name)
 
