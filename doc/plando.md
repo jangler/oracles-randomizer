@@ -15,12 +15,12 @@ option.
 ## `-- items --` (or any of the usual item section names)
 
 The distribution of items need not match the vanilla distribution, although due
-to technical limitations there may not be more rings than usual. Instances of
-items can be removed from the pool altogether by placing them in slots named
-`null`, although this does *not* apply to seed trees and rings. If there are
-fewer items in the pool than there are slots, the remainder are filled with
-Gasha Seeds. Spheres and divisions between progression items / keys / etc do
-not need to be specified.
+to technical limitations there may not be more rings than usual, and there can
+be only one type of flute. Instances of items can be removed from the pool
+altogether by placing them in slots named `null`, although this does *not*
+apply to seed trees and rings. If there are fewer items in the pool than there
+are slots, the remainder are filled with Gasha Seeds. Spheres and divisions
+between progression items / keys / etc do not need to be specified.
 
 
 ## `-- dungeon entrances --`
