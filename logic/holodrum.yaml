@@ -258,7 +258,15 @@ samasa desert chest: [desert, flippers]
 
 # temple remains. this is a mess now that portals can be randomized.
 temple remains lower stump: {or: [
-    exit temple remains lower portal, # ledge added to prevent softlock
+    # lower portal is all about whether you can get back up
+    [exit temple remains lower portal, or: [
+        gale satchel,
+        [feather, bomb temple remains],
+        [feather, break bush, or: [
+            autumn,
+            [hard, jump 6, or: [summer, temple remains default summer]],
+            [hard, break flower, jump 6,
+                or: [spring, temple remains default spring]]]]]],
     [exit temple remains upper portal, feather,
         # make sure you can get down
         or: [bomb temple remains, winter, temple remains default winter,
