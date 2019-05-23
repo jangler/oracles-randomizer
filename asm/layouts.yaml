@@ -86,7 +86,10 @@ seasons:
   # data for applyAllTileSubstitutions: group,room,flags,yx,tile
   04/tileSubTable: |
       db 00,01,01,52,04 # permanently remove flower outside D6 when cut
-      db 00,5c,00,64,48 # extend moblin keep railing as chokept for warning
+      db 00,25,00,32,3a # add ledge down from temple remains lower portal
+      db 00,25,00,33,cf # ^
+      db 00,25,00,34,4b # ^
+      db 00,5c,00,64,48 # extend moblin keep railing as chokepoint for warning
       db 00,5c,00,74,53 # cont.
       db 00,9a,00,14,12 # remove rock across pit blocking exit from D5
       db 00,8a,00,66,64 # ^ but add rock at bottom of cliff to block ricky
