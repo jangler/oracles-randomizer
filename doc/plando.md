@@ -12,7 +12,7 @@ option.
 
 ## Sections
 
-## `-- items --` (or any of the usual item section names)
+### `-- items --` (or any of the usual item section names)
 
 The distribution of items need not match the vanilla distribution, although due
 to technical limitations there may not be more rings than usual, and there can
@@ -23,27 +23,27 @@ are slots, the remainder are filled with Gasha Seeds. Spheres and divisions
 between progression items / keys / etc do not need to be specified.
 
 
-## `-- dungeon entrances --`
+### `-- dungeon entrances --`
 
 Dungeon shuffle is automatically enabled if any randomized dungeon entrances
 are specified.
 
 
-## `-- subrosia portals --`
+### `-- subrosia portals --`
 
 Seasons only. Subrosia portal shuffle is automatically enabled if any
 randomized portals are specified.
 
 
-## `-- default seasons --`
+### `-- default seasons --`
 
 Seasons only. No special notes.
 
 
-## `-- hints --`
+### `-- hints --`
 
-Owl text may consist only of printable ASCII characters in the range ` ` to
-`z`.  Not all puntuation characters will actually print correctly in-game.
+Owl text may consist only of printable ASCII characters in the range ' ' to
+'z'.  Not all puntuation characters will actually print correctly in-game.
 There is no specific limit on the length of a hint, but words may not be longer
 than 16 characters, and the cumulative length may not exceed the available bank
 space.
