@@ -34,7 +34,7 @@ enter eyeglass lake portal: [north horon stump, or: [
     [wet eyeglass lake, or: [feather, ricky's flute, moosh's flute],
         or: [flippers, [dimitri's flute, bracelet]]],
     [or: [north horon default winter, winter],
-        or: [jump 6, [feather, dimitri's flute]]]]]
+        or: [jump 6, [feather, dimitri's flute], [seqbreak, bombs, cape]]]]]
 exit eyeglass lake portal: {or: []}
 
 enter great furnace portal: [furnace]

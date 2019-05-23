@@ -7,10 +7,8 @@ ricky's flute: {or: []}
 dimitri's flute: {or: []}
 moosh's flute: {or: []}
 
-# TODO: seqbreak logic
-
 # TODO: this is a dumb placeholder for until new fill is more developed
-rupees: {or: ["rupees, 30", "rupees, 50", "rupees, 100", ember seeds,
+rupees: {or: ["rupees, 30", "rupees, 50", "rupees, 100", ember seeds, seqbreak,
     [hard, shovel]]}
 
 # expert's ring can do some things that fist ring can't, so this is for the
@@ -26,7 +24,8 @@ cape: {count: [2, feather]}
 
 # this of course doesn't apply to all trees, but trees won't have any seeds
 # attached to them unless they can be harvested. so it works out.
-refill seeds: {or: [harvest tree, dimitri's flute, dimitri, [hard, break bush]]}
+refill seeds: {or: [harvest tree, dimitri's flute, dimitri, seqbreak,
+    [hard, break bush]]}
 
 harvest ember seeds: [seed item, or: [
     [ember tree seeds, refill seeds], [hard, d5 armos chest],
@@ -72,7 +71,7 @@ seed item: {or: [satchel, slingshot]}
 bombs: {or: [
     [hard, d2 blade chest, bracelet], # deku scrub, TODO: rupees
     [hard, harvest bush, d2 bracelet room],
-    ["bombs, 10", or: [shovel, break flower, flute]]]}
+    ["bombs, 10", or: [shovel, break flower, flute, seqbreak]]]}
 
 # jump x pit tiles
 jump 3: {or: [[feather, pegasus satchel], cape]}
@@ -80,6 +79,10 @@ bomb jump 2: {or: [jump 3, [hard, feather, bombs]]}
 bomb jump 3: {or: [cape, [hard, jump 3, bombs]]}
 bomb jump 4: {or: [jump 6, [hard, cape, bombs]]}
 jump 6: [cape, pegasus satchel]
+bomb jump 6: [hard, cape, pegasus satchel, bombs]
+
+# jump 4, but only orthogonally
+bomber's jump: [seqbreak, bomber's ring, bombs, jump 3]
 
 harvest tree: {or: [sword, rod, fool's ore, punch object]}
 harvest bush: {or: [sword, bombs, fool's ore]}

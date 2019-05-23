@@ -69,11 +69,11 @@ func TestNodeGetMark(t *testing.T) {
 	and1, or1 := makeAndNode(), makeOrNode()
 
 	// orphan AndNodes are true
-	if mark := and1.getMark(); mark != markTrue {
+	if mark := and1.getMark(false); mark != markTrue {
 		t.Fatalf("want %d, got %d", markTrue, mark)
 	}
 	// orphan OrNodes are false
-	if mark := or1.getMark(); mark != markFalse {
+	if mark := or1.getMark(false); mark != markFalse {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 
@@ -83,7 +83,7 @@ func TestNodeGetMark(t *testing.T) {
 	clearMarks(and1, or1)
 
 	// AndNodes need all parents to succeed
-	if mark := and1.getMark(); mark != markFalse {
+	if mark := and1.getMark(false); mark != markFalse {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 
@@ -93,12 +93,12 @@ func TestNodeGetMark(t *testing.T) {
 	clearMarks(and1, or1, and2)
 
 	// OrNodes need one
-	if mark := or1.getMark(); mark != markFalse {
+	if mark := or1.getMark(false); mark != markFalse {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 	// make sure the OrNode gets the same results by peeking
 	or1.mark = markNone
-	if mark := or1.getMark(); mark != markFalse {
+	if mark := or1.getMark(false); mark != markFalse {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 
@@ -111,16 +111,16 @@ func TestNodeGetMark(t *testing.T) {
 	clearMarks(and1, or1, and2, or2)
 
 	// and only one
-	if mark := or1.getMark(); mark != markTrue {
+	if mark := or1.getMark(false); mark != markTrue {
 		t.Fatalf("want %d, got %d", markTrue, mark)
 	}
 	// make sure the OrNode gets the same results by peeking
 	or1.mark = markNone
-	if mark := or1.getMark(); mark != markTrue {
+	if mark := or1.getMark(false); mark != markTrue {
 		t.Fatalf("want %d, got %d", markTrue, mark)
 	}
 	// and now the AndNode should be satisfied
-	if mark := and1.getMark(); mark != markTrue {
+	if mark := and1.getMark(false); mark != markTrue {
 		t.Fatalf("want %d, got %d", markTrue, mark)
 	}
 
@@ -134,10 +134,10 @@ func TestNodeGetMark(t *testing.T) {
 	or1.addParent(or2)
 	or2.addParent(or1)
 	clearMarks(and1, and2, or1, or2)
-	if mark := and1.getMark(); mark != markFalse {
+	if mark := and1.getMark(false); mark != markFalse {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
-	if mark := or1.getMark(); mark != markFalse {
+	if mark := or1.getMark(false); mark != markFalse {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 }
@@ -151,13 +151,37 @@ func TestCountNodes(t *testing.T) {
 
 	// if child has only one parent, count should be 1 (< 2)
 	child.addParent(parent)
-	if mark := count.getMark(); mark != markFalse {
+	if mark := count.getMark(false); mark != markFalse {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 
 	// two parents should suffice
 	child.addParent(parent)
-	if mark := count.getMark(); mark != markTrue {
+	if mark := count.getMark(false); mark != markTrue {
 		t.Fatalf("want %d, got %d", markTrue, mark)
+	}
+}
+
+func TestNegatedNodes(t *testing.T) {
+	and := newNode("tn", andNode)
+	or := newNode("fn", orNode)
+	not := newNode("not", nandNode)
+	nor := newNode("nor", norNode)
+
+	not.addParent(or)
+	if mark := not.getMark(false); mark != markTrue {
+		t.Fatalf("want %d, got %d", markTrue, mark)
+	}
+	nor.addParent(or)
+	if mark := nor.getMark(false); mark != markTrue {
+		t.Fatalf("want %d, got %d", markTrue, mark)
+	}
+	not.addParent(and)
+	if mark := not.getMark(false); mark != markTrue {
+		t.Fatalf("want %d, got %d", markTrue, mark)
+	}
+	nor.addParent(and)
+	if mark := nor.getMark(false); mark != markFalse {
+		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 }

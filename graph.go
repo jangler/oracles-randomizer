@@ -38,6 +38,9 @@ func (g graph) clearMarks() {
 	}
 }
 
+// node names to always consider true when checking for sequence breaks.
+var seqbreakNames = map[string]bool{"hard": true, "seqbreak": true}
+
 // the current state of a node in its evaluation. markNone means the node has
 // not been evaludated, markTrue and markFalse mean that the value of the node
 // has been determined, and markPending is used temporarily to prevent
@@ -97,108 +100,112 @@ func newNode(name string, nType nodeType) *node {
 	}
 }
 
-func (n *node) getMark() nodeMark {
+func (n *node) getMark(seqbreak bool) nodeMark {
 	n.nChecked++
 
 	switch n.nType {
 	case andNode:
-		return getAndMark(n)
+		return getAndMark(n, seqbreak)
 	case orNode:
-		return getOrMark(n)
+		return getOrMark(n, seqbreak)
 	case nandNode:
-		return negateMark(getAndMark(n))
+		return negateMark(getAndMark(n, true))
 	case norNode:
-		return negateMark(getOrMark(n))
+		return negateMark(getOrMark(n, true))
 	case countNode:
-		return getCountMark(n)
+		return getCountMark(n, seqbreak)
 	default:
 		panic("unknown node type for node " + n.name)
 	}
 }
 
 // returns true iff all parents are true (no parents == true).
-func getAndMark(n *node) nodeMark {
+func getAndMark(n *node, seqbreak bool) nodeMark {
 	if n.mark == markNone {
+		if seqbreak {
+			defer func() { n.mark = markNone }()
+		}
 		n.mark = markPending
 
 		// prioritize already pending/false nodes
 		for _, parent := range n.parents {
-			switch parent.mark {
-			case markPending, markFalse:
-				n.mark = markNone
-				return markFalse
+			if !(seqbreak && seqbreakNames[parent.name]) {
+				switch parent.mark {
+				case markPending, markFalse:
+					n.mark = markNone
+					return markFalse
+				}
 			}
 		}
 
 		// then actually check them otherwise
 		for _, parent := range n.parents {
-			switch parent.getMark() {
-			case markPending, markFalse:
-				n.mark = markNone
-				return markFalse
+			if !(seqbreak && seqbreakNames[parent.name]) {
+				switch parent.getMark(seqbreak) {
+				case markPending, markFalse:
+					n.mark = markNone
+					return markFalse
+				}
 			}
 		}
 
-		if n.mark == markPending {
-			n.mark = markTrue
-		}
+		n.mark = markTrue
+		return markTrue
 	}
 
 	return n.mark
 }
 
 // returns true iff any parent is true (no parents == false).
-func getOrMark(n *node) nodeMark {
+func getOrMark(n *node, seqbreak bool) nodeMark {
 	if n.mark == markNone {
+		if seqbreak {
+			defer func() { n.mark = markNone }()
+		}
 		n.mark = markPending
-		allPending := true
 
 		// prioritize already satisfied nodes
-	OrPeekLoop:
 		for _, parent := range n.parents {
-			switch parent.mark {
-			case markTrue:
+			if seqbreak && seqbreakNames[parent.name] {
+				return markTrue
+			}
+			if parent.mark == markTrue {
 				n.mark = markTrue
-				allPending = false
-				break OrPeekLoop
-			case markFalse:
-				allPending = false
+				return markTrue
 			}
 		}
 
 		// then actually check them otherwise
 		if n.mark == markPending {
-		OrGetLoop:
 			for _, parent := range n.parents {
-				switch parent.getMark() {
-				case markTrue:
+				if seqbreak && seqbreakNames[parent.name] {
+					return markTrue
+				}
+				if parent.getMark(seqbreak) == markTrue {
 					n.mark = markTrue
-					allPending = false
-					break OrGetLoop
-				case markFalse:
-					allPending = false
+					return markTrue
 				}
 			}
 		}
 
-		if (allPending && len(n.parents) > 0) || n.mark == markPending {
-			n.mark = markNone
-			return markFalse
-		}
+		n.mark = markNone
+		return markFalse
 	}
 
 	return n.mark
 }
 
 // returns true iff at least x parents of the parent are true.
-func getCountMark(n *node) nodeMark {
+func getCountMark(n *node, seqbreak bool) nodeMark {
 	count := 0
-
 	if n.mark == markNone {
+		if seqbreak {
+			defer func() { n.mark = markNone }()
+		}
 		n.mark = markPending
 
 		for _, parent := range n.parents[0].parents {
-			switch parent.getMark() {
+			switch parent.getMark(seqbreak) {
 			case markPending, markFalse:
 				continue
 			default:
@@ -207,14 +214,12 @@ func getCountMark(n *node) nodeMark {
 
 			if count >= n.minCount {
 				n.mark = markTrue
-				return n.mark
+				return markTrue
 			}
 		}
 
-		if n.mark == markPending {
-			n.mark = markNone
-			return markFalse
-		}
+		n.mark = markNone
+		return markFalse
 	}
 
 	return n.mark

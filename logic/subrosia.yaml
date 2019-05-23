@@ -5,7 +5,7 @@
 # 2. beach: swamp portal, market, beach
 # 3. hide and seek: H&S, mountain portal, spring tower
 # 4. pirate house: village portal, pirates
-# 5. bridge: bridge area [large but not visited in any%]
+# 5. bridge: bridge area (large but not visited in any%)
 #
 # furnace used to be on this list, but you can get there using an animal
 # companion to jump over the holes at eyeglass lake, so you won't necessarily
@@ -22,7 +22,7 @@ beach: {or: [
     exit subrosia market portal,
     [hide and seek, feather, bracelet, or: [bomb jump 2, magnet gloves]],
     [furnace, bracelet, feather],
-    [furnace, or: [cape, [hard, bomb jump 3]]],
+    [furnace, or: [cape, [hard, bomb jump 3], [seqbreak, jump 3]]],
     [furnace, feather, magnet gloves],
     [temple, feather]]}
 
@@ -34,7 +34,7 @@ pirate house: {or: [exit house of pirates portal, [hide and seek, feather]]}
 
 furnace: {or: [
     exit great furnace portal,
-    [beach, or: [cape, [hard, bomb jump 3]]],
+    [beach, or: [cape, [hard, bomb jump 3], [seqbreak, jump 3]]],
     [beach, magnet gloves, feather]]}
 
 bridge: {or: [
@@ -50,14 +50,14 @@ tower of winter: [temple, or: [hit far switch, feather]]
 tower of summer: [beach, ribbon, bracelet]
 tower of spring: [hide and seek, feather]
 tower of autumn: [temple, feather, bomb flower]
-subrosian wilds chest: [hide and seek, or: [cape, magnet gloves]]
+subrosian wilds chest: [hide and seek, or: [cape, magnet gloves, bomber's jump]]
 subrosia village chest: {or: [
     [beach, magnet gloves],
-    [furnace, feather, or: [cape, magnet gloves]]]}
+    [furnace, feather, or: [cape, magnet gloves, bomber's jump]]]}
 subrosia, open cave: [bridge]
 subrosia, locked cave: [beach, ribbon, feather]
-ore chunks: {or: [shovel,
-  [hard, or: [sword, bracelet, magic boomerang, subrosian dance hall]]]}
+ore chunks: {or: [shovel, seqbreak,
+    [hard, or: [sword, bracelet, magic boomerang, subrosian dance hall]]]}
 subrosia market, 1st item: [beach, star ore]
 subrosia market, 2nd item: [beach, ore chunks, ember seeds]
 subrosia market, 5th item: [beach, ore chunks]

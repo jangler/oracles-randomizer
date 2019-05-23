@@ -44,7 +44,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 				// test whether seed is still beatable w/ item placement
 				r.Graph.clearMarks()
 				item.addParent(slot)
-				if r.Graph["done"].getMark() != markTrue {
+				if r.Graph["done"].getMark(false) != markTrue {
 					item.removeParent(slot)
 					continue
 				}
@@ -173,7 +173,7 @@ func isDeadEnd(g graph, curItem, curSlot *list.Element,
 
 	dead := true
 	for es := slotPool.Front(); es != nil; es = es.Next() {
-		if es != curSlot && es.Value.(*node).getMark() == markTrue {
+		if es != curSlot && es.Value.(*node).getMark(false) == markTrue {
 			dead = false
 			break
 		}

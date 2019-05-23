@@ -76,7 +76,7 @@ func filterJunk(g graph, checks map[*node]*node) (prog, junk map[*node]*node) {
 func itemIsRequired(g graph, slot, item *node) bool {
 	g.clearMarks()
 	item.removeParent(slot)
-	mark := g["done"].getMark()
+	mark := g["done"].getMark(false)
 	item.addParent(slot)
 	return mark != markTrue
 }

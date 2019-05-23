@@ -187,8 +187,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 			return nil, err
 		}
 		r.Graph.clearMarks()
-		if r.Graph["done"].getMark() != markTrue {
-			fmt.Println(ri.Companion)
+		if r.Graph["done"].getMark(false) != markTrue {
 			return nil, fmt.Errorf("impossible plando configuration")
 		}
 

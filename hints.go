@@ -94,7 +94,7 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 
 		// sometimes owls are just unreachable, so anything goes, i guess
 		g.clearMarks()
-		owlUnreachable := g[owlName].getMark() == markFalse
+		owlUnreachable := g[owlName].getMark(false) == markFalse
 
 		for {
 			slot, item := slots[i], checks[slots[i]]
@@ -108,7 +108,7 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 			// in the first place, as dictated by the logic of the seed.
 			item.removeParent(slot)
 			g.clearMarks()
-			required := g[owlName].getMark() == markFalse
+			required := g[owlName].getMark(false) == markFalse
 			item.addParent(slot)
 
 			if !required || owlUnreachable {
