@@ -325,7 +325,8 @@ large rooms (i.e. dungeons) use a different kind of compression.
 
 the address of a small room's layout can be viewed in function 0:393e,
 loadSmallRoomLayout. banks 21, 22, 23, and 24 are used for spring, summer,
-autumn, and winter layouts, respectively.
+autumn, and winter layouts, respectively. specifically, the byte written to
+ce00 is from the beginning of the room layout data in the orginal bank?
 
 tiles common to different tilesets usually have the same IDs.
 

@@ -58,6 +58,7 @@ var (
 	flagHard     bool
 	flagNoMusic  bool
 	flagNoUI     bool
+	flagPlan     string
 	flagPortals  bool
 	flagSeed     string
 	flagTreewarp bool
@@ -67,6 +68,7 @@ var (
 type randomizerOptions struct {
 	dungeons bool
 	hard     bool
+	plan     *summary
 	portals  bool
 	seed     string // given seed, not necessarily final seed
 }
@@ -86,6 +88,8 @@ func initFlags() {
 		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
 		"use command line output without option prompts")
+	flag.StringVar(&flagPlan, "plan", "",
+		"use fixed 'randomization' from a file")
 	flag.BoolVar(&flagPortals, "portals", false,
 		"shuffle subrosia portal connections (seasons)")
 	flag.StringVar(&flagSeed, "seed", "",
@@ -306,6 +310,19 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 
 		rom.SetMusic(!flagNoMusic)
 		rom.SetTreewarp(flagTreewarp)
+
+		if flagPlan != "" {
+			var err error
+			ropts.plan, err = parseSummary(flagPlan, game)
+			if err != nil {
+				fatal(err, logf)
+				return
+			}
+			ropts.dungeons = ropts.dungeons || len(ropts.plan.dungeons) > 0
+			ropts.portals = ropts.portals || len(ropts.plan.portals) > 0
+		} else {
+			ropts.plan = newSummary()
+		}
 
 		if err := randomizeFile(
 			b, game, dirName, outfile, ropts, flagVerbose, logf); err != nil {
@@ -539,15 +556,18 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	}
 
 	// search for route
-	ri := findRoute(game, seed, ropts, verbose, logf)
-	if ri == nil {
-		return 0, nil, "", fmt.Errorf("no route found")
+	ri, err := findRoute(game, seed, ropts, verbose, logf)
+	if err != nil {
+		return 0, nil, "", err
 	}
 
 	checks := getChecks(ri)
 	spheres, extra := getSpheres(ri.Route.Graph, checks)
-	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
-		rom.GetOwlNames(game))
+	owlHints, err := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
+		rom.GetOwlNames(game), ropts.plan.hints)
+	if err != nil {
+		return 0, nil, "", err
+	}
 
 	checksum, err := setROMData(
 		romData, game, ri, owlHints, ropts, logf, verbose)
@@ -613,7 +633,8 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for in, out := range ri.Portals {
-				c <- fmt.Sprintf("%-20s <- %s", in, subrosianPortalNames[out])
+				c <- fmt.Sprintf("%-20s <- %s",
+					getNiceName(in, game), getNiceName(out, game))
 			}
 			close(c)
 		})
@@ -625,7 +646,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for area, id := range ri.Seasons {
-				c <- fmt.Sprintf("%-15s <- %s", area, seasonsByID[id])
+				c <- fmt.Sprintf("%-15s <- %s", area, seasonsById[id])
 			}
 			close(c)
 		})
@@ -715,7 +736,9 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 	}
 	if ropts.portals {
 		for k, v := range ri.Portals {
-			warps[fmt.Sprintf("%s portal", k)] = fmt.Sprintf("%s portal", v)
+			holodrumV, _ := reverseLookup(subrosianPortalNames, v)
+			warps[fmt.Sprintf("%s portal", k)] =
+				fmt.Sprintf("%s portal", holodrumV)
 		}
 	}
 

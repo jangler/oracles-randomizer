@@ -76,8 +76,8 @@ enter temple remains upper portal: [
     or: [jump 6, [bomb jump 2, magnet gloves]]]
 exit temple remains upper portal: {or: []}
 
-enter D8 entrance portal: [d8 entrance]
-exit D8 entrance portal: {or: []}
+enter d8 entrance portal: [d8 entrance]
+exit d8 entrance portal: {or: []}
 
 # idk where to put this
 bomb temple remains: [exit volcanoes west portal, bombs]

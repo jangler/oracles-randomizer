@@ -23,7 +23,7 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 			for i := 0; i < n/threads; i++ {
 				for {
 					seed := uint32(rand.Int())
-					route := findRoute(game, seed, ropts, false, dummyLogf)
+					route, _ := findRoute(game, seed, ropts, false, dummyLogf)
 					if route != nil {
 						attempts += route.AttemptCount
 						routeChan <- route
@@ -60,7 +60,7 @@ func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
 		}
 		if game == rom.GameSeasons {
 			for area, seasonId := range ri.Seasons {
-				stringChecks[i][area] = seasonsByID[int(seasonId)]
+				stringChecks[i][area] = seasonsById[int(seasonId)]
 			}
 		}
 		stringChecks[i]["_seed"] = fmt.Sprintf("%08x", ri.Seed)

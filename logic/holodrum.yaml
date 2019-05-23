@@ -12,7 +12,7 @@ seqbreak: {or: []}
 horon village: {or: [start, # portal included in case something changes
     [exit horon village portal, or: [hit lever, [hard, jump 6]]]]}
 maku tree: [horon village, sword]
-horon village seed tree: [horon village, seed item,
+horon village tree: [horon village, seed item,
     or: [harvest tree, dimitri's flute, [hard, break bush]]]
 horon village SE chest: [horon village, bombs]
 horon village SW chest: [horon village, or: [break mushroom, dimitri's flute]]
@@ -69,7 +69,7 @@ central woods of winter: [fairy fountain, or: [
         eastern suburbs default summer,
         eastern suburbs default autumn]]]]
 woods of winter owl: [mystery seeds, central woods of winter]
-woods of winter seed tree: [central woods of winter, seed item,
+woods of winter tree: [central woods of winter, seed item,
     or: [harvest tree, dimitri's flute]]
 d2 entrance: [central woods of winter, or: [break bush, flute]]
 d2 alt entrances enabled: {or: []} # not enabled in entrance rando
@@ -111,7 +111,7 @@ blaino's gym: {or: [
         [or: [break bush, flute], or: [flippers, dimitri's flute]]]],
     [temple remains lower stump, jump 3],
     [goron mountain, flippers]]}
-north horon seed tree: [blaino's gym, seed item,
+north horon tree: [blaino's gym, seed item,
     or: [harvest tree, dimitri's flute]]
 blaino prize: [blaino's gym, rupees]
 ricky: {or: [ricky's flute]}
@@ -124,7 +124,7 @@ cave north of D1: [blaino's gym, flippers,
 # spool swamp
 north swamp: [ghastly stump,
     or: [holodrum plain default summer, summer, cape, ricky, moosh's flute]]
-spool swamp seed tree: [north swamp, seed item,
+spool swamp tree: [north swamp, seed item,
     or: [harvest tree, dimitri's flute]]
 floodgate keeper's house: [north swamp, hit lever]
 floodgate keeper owl: [mystery seeds, floodgate keeper's house]
@@ -208,7 +208,7 @@ sunken city: {or: [
             [or: [flippers, flute], feather],
             [or: [flute, swimmer's ring], flippers, gale satchel]]],
         [natzu wasteland, or: [flute, [break bush, bomb jump 3]]]]]]}
-sunken city seed tree: [sunken city, seed item,
+sunken city tree: [sunken city, seed item,
     or: [harvest tree, dimitri],
     or: [feather, flippers, dimitri's flute, sunken city default winter]]
 dimitri: [sunken city, or: [dimitri's flute,
@@ -246,7 +246,7 @@ chest in goron mountain: [goron mountain, bombs, bomb jump 3]
 tarm ruins: [north swamp,
     square jewel, pyramid jewel, round jewel, x-shaped jewel]
 lost woods: [tarm ruins, break mushroom, winter, autumn, spring, summer]
-tarm ruins seed tree: [lost woods, seed item, harvest tree]
+tarm ruins tree: [lost woods, seed item, harvest tree]
 d6 entrance: [lost woods, break flower,
     or: [tarm ruins default winter, winter],
     or: [tarm ruins default spring, spring],
@@ -261,14 +261,15 @@ samasa desert chest: [desert, flippers]
 
 # temple remains. this is a mess now that portals can be randomized.
 temple remains lower stump: {or: [
-    [exit temple remains lower portal, feather,
-        or: [bomb temple remains,
-            [temple remains default winter, or: [
-                gale satchel,
-                [break bush, or: [
-                    [hard, spring, break flower, jump 6],
-                    [hard, summer, jump 6],
-                    autumn]]]]]],
+    # lower portal is all about whether you can get back up
+    [exit temple remains lower portal, or: [
+        gale satchel,
+        [feather, bomb temple remains],
+        [feather, break bush, or: [
+            autumn,
+            [hard, jump 6, or: [summer, temple remains default summer]],
+            [hard, break flower, jump 6,
+                or: [spring, temple remains default spring]]]]]],
     [exit temple remains upper portal, feather,
         # make sure you can get down
         or: [bomb temple remains, winter, temple remains default winter,
