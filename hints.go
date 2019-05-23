@@ -57,11 +57,25 @@ func newHinter(game int) *hinter {
 
 // returns a randomly generated map of owl names to owl messages.
 func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
-	owlNames []string, plan map[string]string) map[string]string {
+	owlNames []string, plan map[string]string) (map[string]string, error) {
 	// function body starts here lol
 	hints := make(map[string]string)
 	slots := getShuffledSlots(src, checks)
 	i := 0
+
+	// check for invalid plando owl names
+	for k := range plan {
+		found := false
+		for _, name := range owlNames {
+			if k == name {
+				found = true
+				break
+			}
+		}
+		if !found {
+			return nil, fmt.Errorf("unknown owl name: %s", k)
+		}
+	}
 
 	// keep track of which slots have been hinted at in order to avoid
 	// duplicates. in practice the implementation of the hint loop makes this
@@ -71,6 +85,9 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 	for _, owlName := range owlNames {
 		// use planned hints if given
 		if v, ok := plan[owlName]; ok {
+			if !isValidGameText(v) {
+				return nil, fmt.Errorf("invalid hint text: %s", v)
+			}
 			hints[owlName] = h.format(strings.Replace(v, `"`, "", 2))
 			continue
 		}
@@ -103,7 +120,7 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 		}
 	}
 
-	return hints
+	return hints, nil
 }
 
 // formats a string for a text box. text box. this doesn't include control
@@ -179,4 +196,14 @@ func getShuffledSlots(src *rand.Rand,
 	})
 
 	return slots
+}
+
+// returns truee iff all the characters in s are in the printable range.
+func isValidGameText(s string) bool {
+	for _, c := range s {
+		if c < ' ' || c > 'z' {
+			return false
+		}
+	}
+	return true
 }

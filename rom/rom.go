@@ -435,7 +435,7 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 // RandomizeRingPool randomizes the types of rings in the item pool, returning
 // a map of vanilla ring names to the randomized ones.
 func RandomizeRingPool(src *rand.Rand, game int,
-	planValues []string) map[string]string {
+	planValues []string) (map[string]string, error) {
 	nameMap := make(map[string]string)
 	usedRings := make([]bool, 0x40)
 
@@ -459,6 +459,9 @@ func RandomizeRingPool(src *rand.Rand, game int,
 	for _, v := range planValues {
 		for id, name := range rings {
 			if v == name {
+				if i >= len(ringValues) {
+					return nil, fmt.Errorf("too many rings in plan")
+				}
 				ringValues[i] = id
 				i++
 				break
@@ -508,7 +511,7 @@ func RandomizeRingPool(src *rand.Rand, game int,
 		}
 	}
 
-	return nameMap
+	return nameMap, nil
 }
 
 func setBossItemAddrs() {

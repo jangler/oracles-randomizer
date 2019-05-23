@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"fmt"
 	"math/rand"
+	"reflect"
 	"sort"
 	"strings"
 
@@ -13,8 +14,7 @@ import (
 // give up completely if routing fails too many times
 const maxTries = 50
 
-// names of portals from the subrosia side. log and logic care about these, but
-// rom code doesn't.
+// names of portals from the subrosia side.
 var subrosianPortalNames = map[string]string{
 	"eastern suburbs":      "volcanoes east",
 	"spool swamp":          "subrosia market",
@@ -122,6 +122,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 	logf logFunc) (*RouteInfo, error) {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
+	var err error
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
@@ -142,8 +143,11 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 			r.AddParent("hard", "start")
 		}
 		ri.Companion = rollAnimalCompanion(ri.Src, r, game, ropts.plan.items)
-		ri.RingMap = rom.RandomizeRingPool(ri.Src, game,
+		ri.RingMap, err = rom.RandomizeRingPool(ri.Src, game,
 			ropts.plan.items.orderedValues())
+		if err != nil {
+			return nil, err
+		}
 		itemList, slotList = initRouteInfo(ri.Src, r, ri.RingMap, game,
 			ri.Companion, ropts.plan.items)
 
@@ -156,18 +160,32 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 
 		// slot "world" nodes before items
 		if game == rom.GameSeasons {
-			ri.Seasons = rollSeasons(ri.Src, r, ropts.plan.seasons)
-			ri.Portals = setPortals(ri.Src, r, ropts.portals,
+			ri.Seasons, err = rollSeasons(ri.Src, r, ropts.plan.seasons)
+			if err != nil {
+				return nil, err
+			}
+			ri.Portals, err = setPortals(ri.Src, r, ropts.portals,
 				ropts.plan.portals)
+			if err != nil {
+				return nil, err
+			}
 		}
-		ri.Entrances = setDungeonEntrances(ri.Src, r, game, ropts.dungeons,
+		ri.Entrances, err = setDungeonEntrances(ri.Src, r, game, ropts.dungeons,
 			ropts.plan.dungeons)
+		if err != nil {
+			return nil, err
+		}
 
 		// load planned item configuration, if present
-		err := applyPlannedItems(ropts.plan.items, ri, r.Graph, slotList,
+		err = applyPlannedItems(ropts.plan.items, ri, r.Graph, slotList,
 			itemList, game)
 		if err != nil {
 			return nil, err
+		}
+		r.Graph.clearMarks()
+		if r.Graph["done"].getMark() != markTrue {
+			fmt.Println(ri.Companion)
+			return nil, fmt.Errorf("impossible plando configuration")
 		}
 
 		// place dungeon-specific items, then "regular" items
@@ -202,7 +220,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 }
 
 var (
-	seasonsByID = []string{"spring", "summer", "autumn", "winter"}
+	seasonsById = []string{"spring", "summer", "autumn", "winter"}
 	seasonAreas = []string{
 		"north horon", "eastern suburbs", "woods of winter", "spool swamp",
 		"holodrum plain", "sunken city", "lost woods", "tarm ruins",
@@ -212,36 +230,45 @@ var (
 
 // set the default seasons for all the applicable areas in the game, and return
 // a mapping of area name to season value.
-func rollSeasons(src *rand.Rand, r *Route, plan dict) map[string]byte {
+func rollSeasons(src *rand.Rand, r *Route, plan dict) (map[string]byte, error) {
 	seasonMap := make(map[string]byte, len(seasonAreas))
 
+	// check for invalid plan
+	for k, v := range plan {
+		if !sliceContains(seasonAreas, k) {
+			return nil, fmt.Errorf("invalid season area: %s", k)
+		}
+		if !sliceContains(seasonsById, v) {
+			return nil, fmt.Errorf("invalid season: %s", v)
+		}
+	}
+
 	for _, area := range seasonAreas {
-		id := src.Intn(len(seasonsByID))
+		id := src.Intn(len(seasonsById))
 		if season, ok := plan[area]; ok {
-			for i, name := range seasonsByID {
+			for i, name := range seasonsById {
 				if name == season {
 					id = i
 				}
 			}
 		}
-		season := seasonsByID[id]
+		season := seasonsById[id]
 		r.AddParent(fmt.Sprintf("%s default %s", area, season), "start")
 		seasonMap[area] = byte(id)
 	}
 
-	return seasonMap
+	return seasonMap, nil
 }
 
 // connect dungeon entrances, randomly or vanilla-ly.
 func setDungeonEntrances(src *rand.Rand, r *Route, game int, shuffle bool,
-	plan map[string]string) map[string]string {
+	plan map[string]string) (map[string]string, error) {
 	dungeonEntranceMap := make(map[string]string)
 	var dungeons []string
 
 	if game == rom.GameSeasons {
 		dungeons = []string{"d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"}
 		if !shuffle {
-			r.ClearParents("d2 alt entrances enabled")
 			r.AddParent("d2 alt entrances enabled", "start")
 		}
 	} else {
@@ -249,9 +276,14 @@ func setDungeonEntrances(src *rand.Rand, r *Route, game int, shuffle bool,
 			"d6 present", "d6 past", "d7", "d8"}
 	}
 
-	// reset entrances
-	for _, dungeon := range dungeons {
-		r.ClearParents(fmt.Sprintf("enter %s", dungeon))
+	// check for invalid plan
+	for k, v := range plan {
+		if !sliceContains(dungeons, strings.Replace(k, " entrance", "", 1)) {
+			return nil, fmt.Errorf("invalid dungeon entrance: %s", k)
+		}
+		if !sliceContains(dungeons, v) {
+			return nil, fmt.Errorf("invalid dungeon: %s", v)
+		}
 	}
 
 	var entrances = make([]string, len(dungeons))
@@ -274,27 +306,31 @@ func setDungeonEntrances(src *rand.Rand, r *Route, game int, shuffle bool,
 		r.AddParent(fmt.Sprintf("enter %s", dungeons[i]), entranceName)
 	}
 
-	return dungeonEntranceMap
+	return dungeonEntranceMap, nil
 }
 
 // connect subrosia portals, randomly or vanilla-ly.
 func setPortals(src *rand.Rand, r *Route, shuffle bool,
-	plan map[string]string) map[string]string {
+	plan map[string]string) (map[string]string, error) {
 	portalMap := make(map[string]string)
 	var portals = []string{
 		"eastern suburbs", "spool swamp", "mt. cucco", "eyeglass lake",
 		"horon village", "temple remains lower", "temple remains upper",
 	}
-
-	// reset exits
-	for _, portal := range portals {
-		r.ClearParents(fmt.Sprintf("exit %s portal", portal))
-		r.ClearParents(fmt.Sprintf("exit %s portal",
-			subrosianPortalNames[portal]))
+	var connects = make([]string, len(portals))
+	for i, portal := range portals {
+		connects[i] = subrosianPortalNames[portal]
 	}
 
-	var connects = make([]string, len(portals))
-	copy(connects, portals)
+	// check for invalid plan
+	for k, v := range plan {
+		if subrosianPortalNames[k] == "" {
+			return nil, fmt.Errorf("invalid portal name: %s", k)
+		}
+		if !sliceContains(connects, v) {
+			return nil, fmt.Errorf("invalid portal name: %s", v)
+		}
+	}
 
 	if shuffle {
 		src.Shuffle(len(connects), func(i, j int) {
@@ -304,22 +340,18 @@ func setPortals(src *rand.Rand, r *Route, shuffle bool,
 
 	for k, v := range plan {
 		moveStringToBack(portals, k)
-		for holodrum, subrosia := range subrosianPortalNames {
-			if subrosia == v {
-				moveStringToBack(connects, holodrum)
-			}
-		}
+		moveStringToBack(connects, v)
 	}
 
 	for i := 0; i < len(portals); i++ {
 		portalMap[portals[i]] = connects[i]
-		r.AddParent(fmt.Sprintf("exit %s portal", subrosianPortalNames[connects[i]]),
+		r.AddParent(fmt.Sprintf("exit %s portal", connects[i]),
 			fmt.Sprintf("enter %s portal", portals[i]))
 		r.AddParent(fmt.Sprintf("exit %s portal", portals[i]),
-			fmt.Sprintf("enter %s portal", subrosianPortalNames[connects[i]]))
+			fmt.Sprintf("enter %s portal", connects[i]))
 	}
 
-	return portalMap
+	return portalMap, nil
 }
 
 // randomly determines animal companion and returns its ID (1 to 3)
@@ -343,10 +375,6 @@ func rollAnimalCompanion(src *rand.Rand, r *Route, game int,
 	}
 
 	if game == rom.GameSeasons {
-		r.ClearParents("natzu prairie")
-		r.ClearParents("natzu river")
-		r.ClearParents("natzu wasteland")
-
 		switch companion {
 		case ricky:
 			r.AddParent("natzu prairie", "start")
@@ -356,10 +384,6 @@ func rollAnimalCompanion(src *rand.Rand, r *Route, game int,
 			r.AddParent("natzu wasteland", "start")
 		}
 	} else {
-		r.ClearParents("ricky nuun")
-		r.ClearParents("dimitri nuun")
-		r.ClearParents("moosh nuun")
-
 		switch companion {
 		case ricky:
 			r.AddParent("ricky nuun", "start")
@@ -407,7 +431,7 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
 	}
 	for len(thisSeeds) < cap(thisSeeds) {
 		id := src.Intn(len(seedNames))
-		for seedCounts[id] > 1 {
+		for seedCounts[id] > len(seedCounts)/len(seedNames) {
 			id = src.Intn(len(seedNames))
 		}
 		thisSeeds = append(thisSeeds, id)
@@ -577,4 +601,17 @@ func moveStringToBack(a []string, s string) {
 			a = append(a[:i], append(a[i+1:], s)...)
 		}
 	}
+}
+
+// returns true iff a is a slice and v is a value in that slice. panics if a is
+// not a slice.
+func sliceContains(a interface{}, v interface{}) bool {
+	aValue := reflect.ValueOf(a)
+	for i := 0; i < aValue.Len(); i++ {
+		v2 := aValue.Index(i).Interface()
+		if reflect.DeepEqual(v, v2) {
+			return true
+		}
+	}
+	return false
 }

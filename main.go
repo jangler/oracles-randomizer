@@ -316,6 +316,7 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			ropts.plan, err = parseSummary(flagPlan, game)
 			if err != nil {
 				fatal(err, logf)
+				return
 			}
 			ropts.dungeons = ropts.dungeons || len(ropts.plan.dungeons) > 0
 			ropts.portals = ropts.portals || len(ropts.plan.portals) > 0
@@ -562,8 +563,11 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 
 	checks := getChecks(ri)
 	spheres, extra := getSpheres(ri.Route.Graph, checks)
-	owlHints := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
+	owlHints, err := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
 		rom.GetOwlNames(game), ropts.plan.hints)
+	if err != nil {
+		return 0, nil, "", err
+	}
 
 	checksum, err := setROMData(
 		romData, game, ri, owlHints, ropts, logf, verbose)
@@ -629,8 +633,8 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for in, out := range ri.Portals {
-				c <- fmt.Sprintf("%-20s <- %s", getNiceName(in, game),
-					getNiceName(subrosianPortalNames[out], game))
+				c <- fmt.Sprintf("%-20s <- %s",
+					getNiceName(in, game), getNiceName(out, game))
 			}
 			close(c)
 		})
@@ -642,7 +646,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		summary <- ""
 		sendSorted(summary, func(c chan string) {
 			for area, id := range ri.Seasons {
-				c <- fmt.Sprintf("%-15s <- %s", area, seasonsByID[id])
+				c <- fmt.Sprintf("%-15s <- %s", area, seasonsById[id])
 			}
 			close(c)
 		})
@@ -732,7 +736,9 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 	}
 	if ropts.portals {
 		for k, v := range ri.Portals {
-			warps[fmt.Sprintf("%s portal", k)] = fmt.Sprintf("%s portal", v)
+			holodrumV, _ := reverseLookup(subrosianPortalNames, v)
+			warps[fmt.Sprintf("%s portal", k)] =
+				fmt.Sprintf("%s portal", holodrumV)
 		}
 	}
 

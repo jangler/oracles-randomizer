@@ -60,7 +60,7 @@ func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
 		}
 		if game == rom.GameSeasons {
 			for area, seasonId := range ri.Seasons {
-				stringChecks[i][area] = seasonsByID[int(seasonId)]
+				stringChecks[i][area] = seasonsById[int(seasonId)]
 			}
 		}
 		stringChecks[i]["_seed"] = fmt.Sprintf("%08x", ri.Seed)
