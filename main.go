@@ -119,6 +119,7 @@ func main() {
 		hard:     flagHard,
 		portals:  flagPortals,
 		seed:     flagSeed,
+		plan:     newSummary(),
 	}
 
 	switch flagDevCmd {
@@ -320,8 +321,6 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			}
 			ropts.dungeons = ropts.dungeons || len(ropts.plan.dungeons) > 0
 			ropts.portals = ropts.portals || len(ropts.plan.portals) > 0
-		} else {
-			ropts.plan = newSummary()
 		}
 
 		if err := randomizeFile(
