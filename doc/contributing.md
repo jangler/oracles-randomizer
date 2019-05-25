@@ -22,11 +22,13 @@ git submodule init
 git submodule update
 ```
 
-Install Go dependencies:
+Install Go dependencies (this should only be required if you `git clone` the
+repository instead of using `go get` as described above):
 
 ```
 go get github.com/mjibson/esc
 go get github.com/nsf/termbox-go
+go get github.com/yuin/gopher-lua
 go get gopkg.in/yaml.v2
 ```
 
