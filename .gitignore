@@ -1,12 +1,14 @@
 oracles-randomizer
 oracles-randomizer.exe
 embed.go
+main.go
 version.go
 checklist/
 dist/
 gbc/
 notes/
 ref/
+*.gbc
 *.out
 *.prof
 *log*.txt

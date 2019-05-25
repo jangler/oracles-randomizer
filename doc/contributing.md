@@ -6,15 +6,16 @@ things to know:
 
 ## Building
 
-An environment with Git, Bash, and Go is required to build the randomizer.
-Python 3 is used for some auxiliary scripts, like the one that generates the
-HTML checklists, but isn't required. The following instructions are for
-building the dev branch.
+An environment with Git and Go is required to build the randomizer. Python 3 is
+used for some auxiliary scripts, like the one that generates the HTML
+checklists, but isn't required. The following instructions are for building the
+dev branch.
 
 Clone and set up the repository:
 
 ```
-git clone https://github.com/jangler/oracles-randomizer.git
+go get github.com/jangler/oracles-randomizer
+cd $GOPATH/src/github.com/jangler/oracles-randomizer
 git fetch
 git checkout dev
 git submodule init
@@ -51,15 +52,6 @@ There are three main branches in the repository:
 Other branches for specific features may branch off **dev** to be merged back
 into **dev** later. If you intend to make a pull request, make sure to base
 your changes on the appropriate branch.
-
-
-## Forking
-
-Go has no notion of relative imports, and `main.go` in the `main` package (the
-top-level one) refers to the
-`"src/github.com/jangler/oracles-randomizer/randomizer"` package. You'll have
-to change this to refer to your fork, but make sure not to commit your changes
-to the file if you plan to make a PR.
 
 
 ## Code style
