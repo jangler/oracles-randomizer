@@ -36,6 +36,8 @@ go generate
 go build
 ```
 
+To `go test`, you must `cd` to the `randomizer/` directory first.
+
 
 ## Branches
 
@@ -53,15 +55,17 @@ your changes on the appropriate branch.
 
 ## Forking
 
-Forking multi-package Go repositories is pretty much a mess, because Go has no
-notion of relative imports. The plan is for oracles-randomizer to merge its
-"subpackages" into its main package so that this is not a problem, but not all
-packages have been merged yet.
+Go has no notion of relative imports, and `main.go` in the `main` package (the
+top-level one) refers to the
+`"src/github.com/jangler/oracles-randomizer/randomizer"` package. You'll have
+to change this to refer to your fork, but make sure not to commit your changes
+to the file if you plan to make a PR.
 
 
 ## Code style
 
-Always run `go fmt` on each package that has been changed (note that `go fmt`
-coerces all line-initial indentation to tabs). Wrap lines longer than 80
+Always run `go fmt` in the `randomizer` package before commits (note that `go
+fmt` coerces all line-initial indentation to tabs). Wrap lines longer than 80
 characters when possible, assuming 8-space tabs. YAML should also be wrapped at
-80 characters when possible and usually indented with 2 spaces.
+80 characters when possible and indented with 2 or 4 spaces, depending on the
+conventions of the directory it's in.

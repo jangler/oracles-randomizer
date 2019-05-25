@@ -1,4 +1,4 @@
-package rom
+package randomizer
 
 import (
 	"sort"
@@ -19,14 +19,14 @@ func getOwlIds(game int) map[string]byte {
 
 // updates the owl statue text data based on the given hints. does not mutate
 // anything.
-func SetOwlData(owlHints map[string]string, game int) {
+func romSetOwlData(owlHints map[string]string, game int) {
 	table := codeMutables["owlTextOffsets"]
 	text := codeMutables["owlText"]
 	builder := new(strings.Builder)
 	addr := text.Addrs[0].offset
 	owlTextIds := getOwlIds(game)
 
-	for _, owlName := range GetOwlNames(game) {
+	for _, owlName := range getOwlNames(game) {
 		hint := owlHints[owlName]
 		textID := owlTextIds[owlName]
 		str := "\x0c\x00" + strings.ReplaceAll(hint, "\n", "\x01") + "\x00"
@@ -44,7 +44,7 @@ func SetOwlData(owlHints map[string]string, game int) {
 
 // returns a sorted array of owl statue names for the given game (matching
 // those in the logic package).
-func GetOwlNames(game int) []string {
+func getOwlNames(game int) []string {
 	src := getOwlIds(game)
 
 	a := make([]string, len(src))

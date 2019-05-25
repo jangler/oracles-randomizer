@@ -1,9 +1,5 @@
 package randomizer
 
-import (
-	"github.com/jangler/oracles-randomizer/rom"
-)
-
 // map internal names to descriptive names for log file
 
 var commonNiceNames = map[string]string{
@@ -58,7 +54,7 @@ var agesNiceNames = map[string]string{
 }
 
 func getGameNiceNames(game int) map[string]string {
-	if game == rom.GameSeasons {
+	if game == gameSeasons {
 		return seasonsNiceNames
 	}
 	return agesNiceNames

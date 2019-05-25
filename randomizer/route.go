@@ -7,8 +7,6 @@ import (
 	"reflect"
 	"sort"
 	"strings"
-
-	"github.com/jangler/oracles-randomizer/rom"
 )
 
 // give up completely if routing fails too many times
@@ -27,8 +25,8 @@ var subrosianPortalNames = map[string]string{
 
 // adds nodes to the map based on default contents of item slots.
 func addDefaultItemNodes(nodes map[string]*prenode) {
-	for _, slot := range rom.ItemSlots {
-		nodes[rom.FindTreasureName(slot.Treasure)] = rootPrenode()
+	for _, slot := range ItemSlots {
+		nodes[findTreasureName(slot.Treasure)] = rootPrenode()
 	}
 }
 
@@ -49,7 +47,7 @@ func NewRoute(game int) *Route {
 	addNodeParents(totalPrenodes, g)
 
 	openSlots := make(map[string]*node, 0)
-	for name := range rom.ItemSlots {
+	for name := range ItemSlots {
 		openSlots[name] = g[name]
 	}
 
@@ -141,7 +139,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 			r.AddParent("hard", "start")
 		}
 		ri.Companion = rollAnimalCompanion(ri.Src, r, game, ropts.plan.items)
-		ri.RingMap, err = rom.RandomizeRingPool(ri.Src, game,
+		ri.RingMap, err = randomizeRingPool(ri.Src, game,
 			ropts.plan.items.orderedValues())
 		if err != nil {
 			return nil, err
@@ -156,7 +154,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		}
 
 		// slot "world" nodes before items
-		if game == rom.GameSeasons {
+		if game == gameSeasons {
 			ri.Seasons, err = rollSeasons(ri.Src, r, ropts.plan.seasons)
 			if err != nil {
 				return nil, err
@@ -267,7 +265,7 @@ func setDungeonEntrances(src *rand.Rand, r *Route, game int, shuffle bool,
 	dungeonEntranceMap := make(map[string]string)
 	var dungeons []string
 
-	if game == rom.GameSeasons {
+	if game == gameSeasons {
 		dungeons = []string{"d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"}
 		if !shuffle {
 			r.AddParent("d2 alt entrances enabled", "start")
@@ -375,7 +373,7 @@ func rollAnimalCompanion(src *rand.Rand, r *Route, game int,
 		}
 	}
 
-	if game == rom.GameSeasons {
+	if game == gameSeasons {
 		switch companion {
 		case ricky:
 			r.AddParent("natzu prairie", "start")
@@ -406,18 +404,18 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
 	companion int, plan map[string]string) (itemList, slotList *list.List) {
 	// get slices of names
 	var itemNames []string
-	if game == rom.GameSeasons {
+	if game == gameSeasons {
 		// TODO: do this differently. like put it in a regular slot. also does
 		// this actually work like it's supposed to?
-		itemNames = make([]string, 0, len(rom.ItemSlots)+1) // +1 for fool's ore
+		itemNames = make([]string, 0, len(ItemSlots)+1) // +1 for fool's ore
 	} else {
-		itemNames = make([]string, 0, len(rom.ItemSlots))
+		itemNames = make([]string, 0, len(ItemSlots))
 	}
 	slotNames := make([]string, 0, len(r.Slots))
 
 	// get number of each seed tree from a combination of plan and RNG
 	nTrees := 6
-	if game == rom.GameAges {
+	if game == gameAges {
 		nTrees = 8
 	}
 	thisSeeds := make([]int, 0, nTrees)
@@ -439,7 +437,7 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
 		seedCounts[id]++
 	}
 
-	for key, slot := range rom.ItemSlots {
+	for key, slot := range ItemSlots {
 		switch key {
 		case "temple of seasons": // don't slot vanilla, seasonless rod
 			break
@@ -454,7 +452,7 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
 			itemNames = append(itemNames, seedNames[id])
 		default:
 			// substitute identified flute for strange flute
-			treasureName := rom.FindTreasureName(slot.Treasure)
+			treasureName := findTreasureName(slot.Treasure)
 			if strings.HasSuffix(treasureName, " flute") {
 				switch companion {
 				case ricky:
@@ -474,7 +472,7 @@ func initRouteInfo(src *rand.Rand, r *Route, ringMap map[string]string, game,
 			itemNames = append(itemNames, treasureName)
 		}
 	}
-	if game == rom.GameSeasons {
+	if game == gameSeasons {
 		itemNames = append(itemNames, "fool's ore")
 	}
 	for key := range r.Slots {
@@ -568,7 +566,7 @@ planLoop:
 					}
 				}
 				// no existing match, try just adding a new item
-				if rom.Treasures[v] != nil {
+				if Treasures[v] != nil {
 					item := g[v]
 					slotList.Remove(es)
 					ri.UsedSlots.PushBack(slot)

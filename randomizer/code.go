@@ -1,4 +1,4 @@
-package rom
+package randomizer
 
 import (
 	"fmt"
@@ -130,7 +130,7 @@ func makeRoomTreasureTable(game int) string {
 		slot := ItemSlots[key]
 
 		if slot.collectMode != collectModes["drop"] &&
-			(game == GameAges || slot.collectMode != collectModes["d4 pool"]) {
+			(game == gameAges || slot.collectMode != collectModes["d4 pool"]) {
 			continue
 		}
 
@@ -166,7 +166,7 @@ func (r *romBanks) applyAsmData(game int, asmFiles []*asmData) {
 	// preprocess map slices
 	slices := make([]yaml.MapSlice, 0)
 	for _, asmFile := range asmFiles {
-		if game == GameSeasons {
+		if game == gameSeasons {
 			slices = append(slices, asmFile.Common, asmFile.Seasons)
 		} else {
 			slices = append(slices, asmFile.Common, asmFile.Ages)
@@ -277,9 +277,9 @@ func (r *romBanks) applyAsmFiles(game int, infos []os.FileInfo) {
 	r.applyAsmData(game, asmFiles)
 }
 
-// ShowAsm writes the disassembly of the specified symbol to the given
+// showAsm writes the disassembly of the specified symbol to the given
 // io.Writer.
-func ShowAsm(symbol string, w io.Writer) error {
+func showAsm(symbol string, w io.Writer) error {
 	m := codeMutables[symbol]
 	s, err := globalRomBanks.assembler.decompile(string(m.New))
 	if err != nil {
@@ -406,6 +406,7 @@ func loadShopNames(game string) map[string]string {
 // actually, set up all the pre-randomization changes, and track the state so
 // that the randomization changes can be applied later.
 func initRomBanks(game int) *romBanks {
+	codeMutables = make(map[string]*MutableRange)
 	asm, err := newAssembler()
 	if err != nil {
 		panic(err)
@@ -419,7 +420,7 @@ func initRomBanks(game int) *romBanks {
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
 	roomTreasureBank, numOwlIds := byte(0x3f), 0x1e // seasons
-	if game == GameAges {
+	if game == gameAges {
 		roomTreasureBank, numOwlIds = 0x38, 0x14
 	}
 	r.replaceRaw(Addr{0x06, 0}, "collectModeTable",

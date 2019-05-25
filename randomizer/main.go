@@ -13,20 +13,31 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/jangler/oracles-randomizer/rom"
 )
 
 type logFunc func(string, ...interface{})
 
 var keyRegexp = regexp.MustCompile("(slate|(small|boss) key)$")
 
+const (
+	gameNil = iota
+	gameAges
+	gameSeasons
+)
+
+var gameNames = map[int]string{
+	gameNil:     "nil",
+	gameAges:    "ages",
+	gameSeasons: "seasons",
+}
+
 // gameName returns the short name associated with a game number.
+// TODO: rename this to something more specific.
 func gameName(game int) string {
 	switch game {
-	case rom.GameAges:
+	case gameAges:
 		return "ooa"
-	case rom.GameSeasons:
+	case gameSeasons:
 		return "oos"
 	default:
 		return "UNKNOWN"
@@ -130,9 +141,9 @@ func Main() {
 
 		switch tokens[0] {
 		case "seasons":
-			game = rom.GameSeasons
+			game = gameSeasons
 		case "ages":
-			game = rom.GameAges
+			game = gameAges
 		default:
 			panic("invalid game name: " + tokens[0])
 		}
@@ -148,7 +159,7 @@ func Main() {
 
 		// optionall specify path of rom to load
 		if flag.Arg(1) == "" {
-			rom.Init(nil, game)
+			initRom(nil, game)
 		} else {
 			f, err := os.Open(flag.Arg(1))
 			if err != nil {
@@ -159,19 +170,19 @@ func Main() {
 			if err != nil {
 				panic(err)
 			}
-			rom.Init(b, game)
+			initRom(b, game)
 		}
 
-		fmt.Println(rom.FindAddr(byte(bank), uint16(addr)))
+		fmt.Println(findAddr(byte(bank), uint16(addr)))
 	case "stats":
 		// do stats instead of randomizing
 		var game int
 
 		switch flag.Arg(0) {
 		case "seasons":
-			game = rom.GameSeasons
+			game = gameSeasons
 		case "ages":
-			game = rom.GameAges
+			game = gameAges
 		default:
 			panic("invalid game: " + flag.Arg(0))
 		}
@@ -181,7 +192,7 @@ func Main() {
 			panic(err)
 		}
 
-		rom.Init(nil, game)
+		initRom(nil, game)
 		rand.Seed(time.Now().UnixNano())
 		logStats(game, numTrials, ropts, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
@@ -198,15 +209,15 @@ func Main() {
 
 		switch tokens[0] {
 		case "seasons":
-			game = rom.GameSeasons
+			game = gameSeasons
 		case "ages":
-			game = rom.GameAges
+			game = gameAges
 		default:
 			panic("invalid game name: " + tokens[0])
 		}
 
-		rom.Init(nil, game)
-		if err := rom.ShowAsm(tokens[1], os.Stdout); err != nil {
+		initRom(nil, game)
+		if err := showAsm(tokens[1], os.Stdout); err != nil {
 			panic(err)
 		}
 	case "":
@@ -295,7 +306,7 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			fatal(err, logf)
 			return
 		} else {
-			rom.Init(b, game)
+			initRom(b, game)
 		}
 		logf("randomizing %s.", infile)
 
@@ -305,8 +316,8 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			logf("")
 		}
 
-		rom.SetMusic(!flagNoMusic)
-		rom.SetTreewarp(flagTreewarp)
+		romSetMusic(!flagNoMusic)
+		romSetTreewarp(flagTreewarp)
 
 		if flagPlan != "" {
 			var err error
@@ -429,8 +440,8 @@ func findVanillaROMs(
 		}
 
 		// check file data
-		if rom.IsNonJP(b) && rom.IsVanilla(b) {
-			if rom.IsAges(b) {
+		if romIsNonJp(b) && romIsVanilla(b) {
+			if romIsAges(b) {
 				ages = info.Name()
 			} else {
 				seasons = info.Name()
@@ -452,31 +463,31 @@ func readGivenROM(filename string) ([]byte, int, error) {
 	// read file
 	f, err := os.Open(filename)
 	if err != nil {
-		return nil, rom.GameNil, err
+		return nil, gameNil, err
 	}
 	defer f.Close()
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
-		return nil, rom.GameNil, err
+		return nil, gameNil, err
 	}
 
 	// check file data
-	if !rom.IsAges(b) && !rom.IsSeasons(b) {
-		return nil, rom.GameNil,
+	if !romIsAges(b) && !romIsSeasons(b) {
+		return nil, gameNil,
 			fmt.Errorf("%s is not an oracles ROM", filename)
 	}
-	if !rom.IsNonJP(b) {
-		return nil, rom.GameNil,
+	if !romIsNonJp(b) {
+		return nil, gameNil,
 			fmt.Errorf("%s is a JP ROM; only US is supported", filename)
 	}
-	if !rom.IsVanilla(b) {
-		return nil, rom.GameNil,
+	if !romIsVanilla(b) {
+		return nil, gameNil,
 			fmt.Errorf("%s is an unrecognized oracles ROM", filename)
 	}
 
-	game := rom.GameAges
-	if rom.IsSeasons(b) {
-		game = rom.GameSeasons
+	game := gameAges
+	if romIsSeasons(b) {
+		game = gameSeasons
 	}
 	return b, game, nil
 }
@@ -488,7 +499,7 @@ func randomizeFile(romData []byte, game int, dirName, outfile string,
 	var err error
 	var logFilename string
 
-	if ropts.portals && game == rom.GameAges {
+	if ropts.portals && game == gameAges {
 		return fmt.Errorf("portal randomization does not apply to ages")
 	}
 
@@ -536,7 +547,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	ropts randomizerOptions, verbose bool,
 	logf logFunc) (uint32, []byte, string, error) {
 	// sanity check beforehand
-	if errs := rom.Verify(romData, game); errs != nil {
+	if errs := verifyRom(romData, game); errs != nil {
 		if verbose {
 			for _, err := range errs {
 				logf(err.Error())
@@ -559,7 +570,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	checks := getChecks(ri)
 	spheres, extra := getSpheres(ri.Route.Graph, checks)
 	owlHints, err := newHinter(game).generate(ri.Src, ri.Route.Graph, checks,
-		rom.GetOwlNames(game), ropts.plan.hints)
+		getOwlNames(game), ropts.plan.hints)
 	if err != nil {
 		return 0, nil, "", err
 	}
@@ -635,7 +646,7 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 		})
 		summary <- ""
 	}
-	if game == rom.GameSeasons {
+	if game == gameSeasons {
 		summary <- ""
 		summary <- "-- default seasons --"
 		summary <- ""
@@ -680,21 +691,21 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 		if ringName, ok := reverseLookup(ri.RingMap, item.name); ok {
 			romItemName = ringName
 		}
-		rom.ItemSlots[slot.name].Treasure = rom.Treasures[romItemName]
+		ItemSlots[slot.name].Treasure = Treasures[romItemName]
 	}
 
 	// set season data
-	if game == rom.GameSeasons {
+	if game == gameSeasons {
 		for area, id := range ri.Seasons {
 			// dumb camel case transformation
 			key := fmt.Sprintf("%c%sSeason", area[0],
 				strings.ReplaceAll(strings.Title(area)[1:], " ", ""))
-			rom.SetSeason(key, id)
+			romSetSeason(key, id)
 		}
 	}
 
-	rom.SetAnimal(ri.Companion)
-	rom.SetOwlData(owlHints, game)
+	romSetAnimal(ri.Companion)
+	romSetOwlData(owlHints, game)
 
 	warps := make(map[string]string)
 	if ropts.dungeons {
@@ -711,7 +722,7 @@ func setROMData(romData []byte, game int, ri *RouteInfo,
 	}
 
 	// do it! (but don't write anything)
-	return rom.Mutate(romData, game, warps, ropts.dungeons)
+	return mutateRom(romData, game, warps, ropts.dungeons)
 }
 
 // reverseLookup looks up the key for a given map value. Note that this is only

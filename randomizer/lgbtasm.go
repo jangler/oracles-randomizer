@@ -1,4 +1,4 @@
-package rom
+package randomizer
 
 import (
 	"github.com/yuin/gopher-lua"

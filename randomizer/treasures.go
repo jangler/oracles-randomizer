@@ -1,4 +1,4 @@
-package rom
+package randomizer
 
 import (
 	"bytes"
@@ -81,9 +81,9 @@ func (t Treasure) Check(b []byte) error {
 // Treasures maps item names to associated treasure data.
 var Treasures map[string]*Treasure
 
-// FindTreasureName does a reverse lookup of the treasure in the map to return
+// findTreasureName does a reverse lookup of the treasure in the map to return
 // its name. It returns an empty string if not found.
-func FindTreasureName(t *Treasure) string {
+func findTreasureName(t *Treasure) string {
 	for k, v := range Treasures {
 		if v == t {
 			return k
@@ -95,7 +95,7 @@ func FindTreasureName(t *Treasure) string {
 // returns the full offset of the treasure's four-byte entry in the rom.
 func getTreasureAddr(b []byte, game int, id, subid byte) Addr {
 	var ptr Addr
-	if game == GameSeasons {
+	if game == gameSeasons {
 		ptr = Addr{0x15, 0x5129}
 	} else {
 		ptr = Addr{0x16, 0x5332}
@@ -152,7 +152,7 @@ func LoadTreasures(b []byte, game int) map[string]*Treasure {
 		m[name] = t
 	}
 
-	if game == GameSeasons {
+	if game == gameSeasons {
 		// these treasures don't exist as treasure interactions in the vanilla
 		// game, so they're missing some data.
 		m["fool's ore"].text = 0x36

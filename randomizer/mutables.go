@@ -1,4 +1,4 @@
-package rom
+package randomizer
 
 import (
 	"fmt"
@@ -42,24 +42,24 @@ func (mr *MutableRange) Check(b []byte) error {
 	return nil
 }
 
-// SetMusic sets music on or off in the modified ROM. By default, it is off.
-func SetMusic(music bool) {
+// romSetMusic sets music on or off in the modified ROM. By default, it is off.
+func romSetMusic(music bool) {
 	if music {
 		codeMutables["filterMusic"].New[3] = 0x18
 	}
 }
 
-// SetTreewarp sets treewarp on or off in the modified ROM. By default, it is
-// on.
-func SetTreewarp(treewarp bool) {
+// romSetTreewarp sets treewarp on or off in the modified ROM. By default, it
+// is on.
+func romSetTreewarp(treewarp bool) {
 	if !treewarp {
 		codeMutables["treeWarp"].New[5] = 0x18
 	}
 }
 
-// SetAnimal sets the flute type and Natzu region type based on a companion
+// romSetAnimal sets the flute type and Natzu region type based on a companion
 // number 1 to 3.
-func SetAnimal(companion int) {
+func romSetAnimal(companion int) {
 	codeMutables["animalRegion"].New =
 		[]byte{byte(companion + 0x0a)}
 	codeMutables["flutePalette"].New =
@@ -67,7 +67,7 @@ func SetAnimal(companion int) {
 }
 
 // key = area name (as in asm/vars.yaml), id = season index (spring -> winter).
-func SetSeason(key string, id byte) {
+func romSetSeason(key string, id byte) {
 	codeMutables[key].New[0] = id
 }
 
@@ -83,7 +83,7 @@ func getAllMutables() map[string]Mutable {
 			log.Fatalf("treasure for %s is nil", k)
 		}
 		if v.Treasure.addr.offset != 0 {
-			treasureMutables[FindTreasureName(v.Treasure)] = v.Treasure
+			treasureMutables[findTreasureName(v.Treasure)] = v.Treasure
 		}
 		slotMutables[k] = v
 	}
@@ -117,9 +117,9 @@ func getAllMutables() map[string]Mutable {
 	return allMutables
 }
 
-// FindAddr returns the name of a mutable that covers the given address, or an
+// findAddr returns the name of a mutable that covers the given address, or an
 // empty string if none is found.
-func FindAddr(bank byte, addr uint16) string {
+func findAddr(bank byte, addr uint16) string {
 	muts := getAllMutables()
 	offset := (&Addr{bank, addr}).fullOffset()
 

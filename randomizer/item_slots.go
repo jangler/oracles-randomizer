@@ -1,4 +1,4 @@
-package rom
+package randomizer
 
 import (
 	"fmt"
@@ -204,7 +204,7 @@ func LoadSlots(b []byte, game int) map[string]*MutableSlot {
 // returns a zero addr if no chest data is found.
 func getChestAddr(b []byte, game int, group, room byte) Addr {
 	var ptr Addr
-	if game == GameSeasons {
+	if game == gameSeasons {
 		ptr = Addr{0x15, 0x4f6c}
 	} else {
 		ptr = Addr{0x16, 0x5108}
@@ -235,7 +235,7 @@ func getChestAddr(b []byte, game int, group, room byte) Addr {
 // returns the music index for the given room.
 func getMusicIndex(b []byte, game int, group, room byte) byte {
 	var ptr Addr
-	if game == GameSeasons {
+	if game == gameSeasons {
 		ptr = Addr{0x04, 0x483c}
 	} else {
 		ptr = Addr{0x04, 0x495c}

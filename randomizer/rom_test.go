@@ -1,11 +1,12 @@
-package rom
+package randomizer
 
 import (
 	"testing"
 )
 
 func init() {
-	Init(nil, GameSeasons) // XXX have to change this manually to test each game
+	// XXX have to change this manually to test each game
+	initRom(nil, gameSeasons)
 }
 
 func TestMutableOverlap(t *testing.T) {

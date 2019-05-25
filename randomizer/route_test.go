@@ -2,8 +2,6 @@ package randomizer
 
 import (
 	"testing"
-
-	"github.com/jangler/oracles-randomizer/rom"
 )
 
 func TestGraph(t *testing.T) {
@@ -13,8 +11,8 @@ func TestGraph(t *testing.T) {
 
 // check that graph logic is working as expected
 func testSeasonsGraph(t *testing.T) {
-	rom.Init(nil, rom.GameSeasons)
-	r := NewRoute(rom.GameSeasons)
+	initRom(nil, gameSeasons)
+	r := NewRoute(gameSeasons)
 	g := r.Graph
 
 	// test basic start item
@@ -96,8 +94,8 @@ func testSeasonsGraph(t *testing.T) {
 
 // check that graph logic is working as expected
 func testAgesGraph(t *testing.T) {
-	rom.Init(nil, rom.GameAges)
-	r := NewRoute(rom.GameAges)
+	initRom(nil, gameAges)
+	r := NewRoute(gameAges)
 	g := r.Graph
 
 	// test basic start item

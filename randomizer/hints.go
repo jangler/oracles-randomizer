@@ -9,9 +9,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// names corresponding to the constant indices from the rom package.
-var gameNames = []string{"", "ages", "seasons"}
-
 type hinter struct {
 	areas map[string]string
 	items map[string]string

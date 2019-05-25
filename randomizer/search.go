@@ -5,8 +5,6 @@ import (
 	"math/rand"
 	"sort"
 	"strings"
-
-	"github.com/jangler/oracles-randomizer/rom"
 )
 
 // returns true iff the node is in the list.
@@ -201,7 +199,7 @@ func itemIsInert(name string) bool {
 	}
 
 	// non-default junk rings
-	if rom.Treasures[name] == nil {
+	if Treasures[name] == nil {
 		return true
 	}
 
@@ -210,7 +208,7 @@ func itemIsInert(name string) bool {
 		return true
 	}
 
-	switch rom.Treasures[name].ID() {
+	switch Treasures[name].ID() {
 	// heart refill, PoH, HC, ring, compass, dungeon map, gasha seed
 	case 0x29, 0x2a, 0x2b, 0x2d, 0x32, 0x33, 0x34:
 		return true

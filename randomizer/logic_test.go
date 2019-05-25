@@ -4,8 +4,6 @@ import (
 	"regexp"
 	"strings"
 	"testing"
-
-	"github.com/jangler/oracles-randomizer/rom"
 )
 
 var dungeonEntranceRegexp = regexp.MustCompile(`d[1-8].* entrance`)
@@ -23,13 +21,13 @@ func isParent(p1Name string, p2 *prenode) bool {
 
 func TestLinks(t *testing.T) {
 	// TODO: needs to be changed manually for now
-	game := rom.GameSeasons
+	game := gameSeasons
 
 	nodes := getPrenodes(game)
-	rom.Init(nil, game)
+	initRom(nil, game)
 
-	for key, slot := range rom.ItemSlots {
-		treasureName := rom.FindTreasureName(slot.Treasure)
+	for key, slot := range ItemSlots {
+		treasureName := findTreasureName(slot.Treasure)
 		if node, ok := nodes[treasureName]; ok {
 			node.parents = append(node.parents, key)
 		} else {

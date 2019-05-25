@@ -1,7 +1,7 @@
 // Package rom deals with the structure of the oracles ROM files themselves.
 // The given addresses are for the English versions of the games, and if two
 // are specified, Ages comes first.
-package rom
+package randomizer
 
 import (
 	"crypto/sha1"
@@ -16,24 +16,12 @@ import (
 
 const bankSize = 0x4000
 
-const (
-	GameNil = iota
-	GameAges
-	GameSeasons
-)
-
-var gameNames = map[int]string{
-	GameNil:     "nil",
-	GameAges:    "ages",
-	GameSeasons: "seasons",
-}
-
 var rings []string
 
 // only applies to seasons! used for warps
 var dungeonNameRegexp = regexp.MustCompile(`^d[1-8]$`)
 
-func Init(b []byte, game int) {
+func initRom(b []byte, game int) {
 	Treasures = LoadTreasures(b, game)
 	ItemSlots = LoadSlots(b, game)
 	globalRomBanks = initRomBanks(game)
@@ -64,22 +52,22 @@ func (a *Addr) fullOffset() int {
 	return bankOffset + int(a.offset)
 }
 
-func IsAges(b []byte) bool {
+func romIsAges(b []byte) bool {
 	return string(b[0x134:0x13f]) == "ZELDA NAYRU"
 }
 
-func IsSeasons(b []byte) bool {
+func romIsSeasons(b []byte) bool {
 	return string(b[0x134:0x13d]) == "ZELDA DIN"
 }
 
-func IsNonJP(b []byte) bool {
+func romIsNonJp(b []byte) bool {
 	return b[0x014a] != 0
 }
 
-func IsVanilla(b []byte) bool {
+func romIsVanilla(b []byte) bool {
 	knownSum := "\x88\x03\x74\xfb\x97\x8b\x18\xaf\x4a\xa5\x29\xe2\xe3\x2f\x7f" +
 		"\xfb\x4d\x7d\xd2\xf4"
-	if IsSeasons(b) {
+	if romIsSeasons(b) {
 		knownSum = "\xba\x12\x68\x29\x0f\xb2\xb1\xb7\x05\x05\xd2\xd7\xb5\x82" +
 			"\x5f\xc8\xa4\x81\x6a\x4b"
 	}
@@ -98,16 +86,16 @@ func orderedKeys(m map[string]Mutable) []string {
 	return keys
 }
 
-// Mutate changes the contents of loaded ROM bytes in place. It returns a
+// mutateRom changes the contents of loaded ROM bytes in place. It returns a
 // checksum of the result or an error.
-func Mutate(b []byte, game int, warpMap map[string]string,
+func mutateRom(b []byte, game int, warpMap map[string]string,
 	dungeons bool) ([]byte, error) {
 	// need to set this *before* treasure map data
 	if len(warpMap) != 0 {
 		setWarps(b, game, warpMap, dungeons)
 	}
 
-	if game == GameSeasons {
+	if game == gameSeasons {
 		northHoronSeason :=
 			codeMutables["northHoronSeason"].New[0]
 		codeMutables["initialSeason"].New =
@@ -170,7 +158,7 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 
 	// explicitly set these items after their functions are written
 	writeBossItems(b)
-	if game == GameSeasons {
+	if game == gameSeasons {
 		ItemSlots["subrosia seaside"].Mutate(b)
 		ItemSlots["great furnace"].Mutate(b)
 		ItemSlots["master diver's reward"].Mutate(b)
@@ -201,9 +189,9 @@ func Mutate(b []byte, game int, warpMap map[string]string,
 	return outSum[:], nil
 }
 
-// Verify checks all the package's data against the ROM to see if it matches.
-// It returns a slice of errors describing each mismatch.
-func Verify(b []byte, game int) []error {
+// verifyRom checks all the package's data against the ROM to see if it
+// matches. It returns a slice of errors describing each mismatch.
+func verifyRom(b []byte, game int) []error {
 	errors := make([]error, 0)
 	for k, m := range getAllMutables() {
 		// ignore special cases that would error even when correct
@@ -243,13 +231,13 @@ func Verify(b []byte, game int) []error {
 // the seed type.
 func setSeedData(game int) {
 	var seedType byte
-	if game == GameSeasons {
+	if game == gameSeasons {
 		seedType = ItemSlots["horon village tree"].Treasure.id
 	} else {
 		seedType = ItemSlots["south lynna tree"].Treasure.id
 	}
 
-	if game == GameSeasons {
+	if game == gameSeasons {
 		// satchel/slingshot starting seeds
 		codeMutables["satchelInitialSeeds"].New[0] = 0x20 + seedType
 		codeMutables["editGainLoseItemsTables"].New[1] = 0x20 + seedType
@@ -331,7 +319,7 @@ func inflictCamelCase(s string) string {
 func setRoomTreasureData(game int) {
 	codeMutables["roomTreasures"].New = []byte(makeRoomTreasureTable(game))
 
-	if game == GameSeasons {
+	if game == gameSeasons {
 		t := ItemSlots["d7 zol button"].Treasure
 		codeMutables["aboveD7ZolButtonId"].New = []byte{t.id}
 		codeMutables["aboveD7ZolButtonSubid"].New = []byte{t.subID}
@@ -356,7 +344,7 @@ func setTreasureMapData() {
 // containing small keys and boss keys.
 func setCompassData(b []byte, game int) {
 	var prefixes []string
-	if game == GameSeasons {
+	if game == gameSeasons {
 		prefixes = []string{"d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7",
 			"d8"}
 	} else {
@@ -421,7 +409,7 @@ func lookupAllItemSlots(itemName string) []*MutableSlot {
 // get the location of the dungeon properties byte for a specific room.
 func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 	offset := uint16(room)
-	if game == GameSeasons {
+	if game == gameSeasons {
 		offset += 0x4d41
 	} else {
 		offset += 0x4dce
@@ -432,9 +420,9 @@ func getDungeonPropertiesAddr(game int, group, room byte) *Addr {
 	return &Addr{0x01, offset}
 }
 
-// RandomizeRingPool randomizes the types of rings in the item pool, returning
+// randomizeRingPool randomizes the types of rings in the item pool, returning
 // a map of vanilla ring names to the randomized ones.
-func RandomizeRingPool(src *rand.Rand, game int,
+func randomizeRingPool(src *rand.Rand, game int,
 	planValues []string) (map[string]string, error) {
 	nameMap := make(map[string]string)
 	usedRings := make([]bool, 0x40)
@@ -483,7 +471,7 @@ func RandomizeRingPool(src *rand.Rand, game int,
 				break
 			case "rang ring L-1", "rang ring L-2", "green joy ring":
 				// these rings are literally useless in ages.
-				if game == GameAges {
+				if game == gameAges {
 					break
 				}
 				fallthrough
@@ -503,7 +491,7 @@ func RandomizeRingPool(src *rand.Rand, game int,
 	for _, key := range keys {
 		slot := ItemSlots[key]
 		if slot.Treasure.id == 0x2d {
-			oldName := FindTreasureName(slot.Treasure)
+			oldName := findTreasureName(slot.Treasure)
 			slot.Treasure.param = byte(ringValues[i])
 			slot.Treasure.displayName = rings[ringValues[i]]
 			nameMap[oldName] = slot.Treasure.displayName
@@ -532,7 +520,7 @@ func writeBossItems(b []byte) {
 
 // set data to make linked playthroughs isomorphic to unlinked ones.
 func setLinkedData(b []byte, game int) {
-	if game == GameSeasons {
+	if game == gameSeasons {
 		// set linked starting / hero's cave terrace items based on which items
 		// in unlinked hero's cave aren't keys. order matters.
 		var tStart, tCave *Treasure
@@ -589,7 +577,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 		panic(err)
 	}
 	var warps map[string]*WarpData
-	if game == GameSeasons {
+	if game == gameSeasons {
 		warps = wd["seasons"]
 	} else {
 		warps = wd["ages"]
@@ -599,7 +587,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 	for name, warp := range warps {
 		if strings.HasSuffix(name, "essence") {
 			warp.len = 4
-			if game == GameSeasons {
+			if game == gameSeasons {
 				warp.bank = 0x09
 			} else {
 				warp.bank = 0x0a
@@ -621,7 +609,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 
 	// ages needs essence warp data to d6 present entrance, even though it
 	// doesn't exist in vanilla.
-	if game == GameAges {
+	if game == gameAges {
 		warps["d6 present essence"] = &WarpData{
 			vanillaExitData: []byte{0x81, 0x0e, 0x16, 0x01},
 		}
@@ -645,7 +633,7 @@ func setWarps(b []byte, game int, warpMap map[string]string, dungeons bool) {
 		}
 	}
 
-	if game == GameSeasons {
+	if game == gameSeasons {
 		// set treasure map data. because of d8, portals go first, then dungeon
 		// entrances.
 		conditions := [](func(string) bool){
