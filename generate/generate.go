@@ -15,6 +15,8 @@ import (
 const (
 	mainTemplate = `package main
 
+// Code generated - DO NOT EDIT.
+
 import "github.com/{{username}}/oracles-randomizer/randomizer"
 
 func main() {
