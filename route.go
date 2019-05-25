@@ -70,14 +70,8 @@ func (r *Route) ClearParents(node string) {
 func addNodes(prenodes map[string]*prenode, g graph) {
 	for key, pn := range prenodes {
 		switch pn.nType {
-		case andNode:
-			g[key] = newNode(key, andNode)
-		case orNode:
-			g[key] = newNode(key, orNode)
-		case nandNode:
-			g[key] = newNode(key, nandNode)
-		case norNode:
-			g[key] = newNode(key, norNode)
+		case andNode, orNode, nandNode, norNode, eitherNode:
+			g[key] = newNode(key, pn.nType)
 		case countNode:
 			g[key] = newNode(key, countNode)
 			g[key].minCount = pn.minCount
@@ -155,11 +149,10 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		itemList, slotList = initRouteInfo(ri.Src, r, ri.RingMap, game,
 			ri.Companion, ropts.plan.items)
 
-		// attach free items to start node - just assume we have them, until
-		// they're placed
+		// attach free items to the "unknown" node until placed.
 		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*node)
-			r.AddParent(item.name, "start")
+			r.AddParent(item.name, "unknown")
 		}
 
 		// slot "world" nodes before items
@@ -187,7 +180,7 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 			return nil, err
 		}
 		r.Graph.clearMarks()
-		if r.Graph["done"].getMark(false) != markTrue {
+		if !r.Graph["done"].getMark(false).reachable() {
 			return nil, fmt.Errorf("impossible plando configuration")
 		}
 
@@ -203,10 +196,15 @@ func findRoute(game int, seed uint32, ropts randomizerOptions, verbose bool,
 		}
 		if tryPlaceItems(ri, r, dungeonItems, slotList, verbose, logf) &&
 			tryPlaceItems(ri, r, nonDungeonItems, slotList, verbose, logf) {
-			// and we're done
-			ri.Route = r
-			ri.AttemptCount = tries + 1
-			break
+			r.Graph.clearMarks()
+			if r.Graph["done"].getMark(false) == markTrue {
+				// and we're done
+				ri.Route = r
+				ri.AttemptCount = tries + 1
+				break
+			} else if verbose {
+				logf("all items placed but seed not completable")
+			}
 		}
 
 		ri.UsedItems, ri.UsedSlots = list.New(), list.New()
@@ -540,7 +538,6 @@ func tryPlaceItems(ri *RouteInfo, r *Route, itemList, slotList *list.List,
 			return false
 		}
 	}
-
 	return true
 }
 
@@ -560,7 +557,7 @@ planLoop:
 					if item.name == v {
 						slotList.Remove(es)
 						itemList.Remove(ei)
-						item.removeParent(g["start"])
+						item.removeParent(g["unknown"])
 						if strings.HasPrefix(k, "null") {
 							item = g["gasha seed"]
 						}

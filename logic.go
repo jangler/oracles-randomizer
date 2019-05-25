@@ -137,6 +137,9 @@ func loadNode(v interface{}) *prenode {
 			n.minCount = v["count"].([]interface{})[0].(int)
 			n.parents = make([]interface{}, 1)
 			n.parents[0] = v["count"].([]interface{})[1].(string)
+		case v["either"] != nil:
+			n.nType = eitherNode
+			n.parents = make([]interface{}, 0)
 		default:
 			println("unknown map type")
 		}

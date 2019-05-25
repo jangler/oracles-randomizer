@@ -78,7 +78,7 @@ func itemIsRequired(g graph, slot, item *node) bool {
 	item.removeParent(slot)
 	mark := g["done"].getMark(false)
 	item.addParent(slot)
-	return mark != markTrue
+	return !mark.reachable()
 }
 
 // returns true iff removing the slot/item combination from the graph would

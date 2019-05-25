@@ -185,3 +185,52 @@ func TestNegatedNodes(t *testing.T) {
 		t.Fatalf("want %d, got %d", markFalse, mark)
 	}
 }
+
+func TestEitherNodes(t *testing.T) {
+	either := newNode("either", eitherNode)
+	start := newNode("start", andNode)
+	root := newNode("root", orNode)
+
+	and := newNode("and", andNode)
+	and.addParent(either)
+	checkMark(t, and, markEither)
+	and.addParent(start)
+	checkMark(t, and, markEither)
+	and.addParent(root)
+	checkMark(t, and, markFalse)
+
+	or := newNode("or", orNode)
+	or.addParent(either)
+	checkMark(t, or, markEither)
+	or.addParent(root)
+	checkMark(t, or, markEither)
+	or.addParent(start)
+	checkMark(t, or, markTrue)
+
+	count := newNode("count", countNode)
+	count.minCount = 2
+	counted := newNode("counted", orNode)
+	count.addParent(counted)
+	counted.addParent(either)
+	checkMark(t, count, markFalse)
+	counted.addParent(start)
+	checkMark(t, count, markEither)
+	counted.addParent(or)
+	checkMark(t, count, markTrue)
+
+	nand := newNode("nand", nandNode)
+	nand.addParent(either)
+	checkMark(t, nand, markEither)
+	nand.addParent(start)
+	checkMark(t, nand, markEither)
+	nand.addParent(root)
+	checkMark(t, nand, markTrue)
+}
+
+func checkMark(t *testing.T, n *node, expected nodeMark) {
+	t.Helper()
+	n.mark = markNone
+	if actual := n.getMark(false); expected != actual {
+		t.Fatalf("want %s, got %s", expected, actual)
+	}
+}

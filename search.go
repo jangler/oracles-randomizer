@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"sort"
 	"strings"
+
+	"github.com/jangler/oracles-randomizer/rom"
 )
 
 // returns true iff the node is in the list.
@@ -28,10 +30,11 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 
 		for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*node)
-			if progressionItemsOnly && itemIsJunk(item.name) {
+
+			if progressionItemsOnly && itemIsInert(item.name) {
 				continue
 			}
-			item.removeParent(r.Graph["start"])
+			item.removeParent(r.Graph["unknown"])
 			triedProgression = true
 
 			for es := slotPool.Front(); es != nil; es = es.Next() {
@@ -44,7 +47,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 				// test whether seed is still beatable w/ item placement
 				r.Graph.clearMarks()
 				item.addParent(slot)
-				if r.Graph["done"].getMark(false) != markTrue {
+				if !r.Graph["done"].getMark(false).reachable() {
 					item.removeParent(slot)
 					continue
 				}
@@ -58,7 +61,7 @@ func trySlotRandomItem(r *Route, src *rand.Rand,
 				return ei, es
 			}
 
-			item.addParent(r.Graph["start"])
+			item.addParent(r.Graph["unknown"])
 		}
 	}
 
@@ -166,7 +169,7 @@ func isDeadEnd(g graph, curItem, curSlot *list.Element,
 
 	for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 		if ei != curItem {
-			ei.Value.(*node).removeParent(g["start"])
+			ei.Value.(*node).removeParent(g["unknown"])
 		}
 	}
 	g.clearMarks()
@@ -181,9 +184,36 @@ func isDeadEnd(g graph, curItem, curSlot *list.Element,
 
 	for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 		if ei != curItem {
-			ei.Value.(*node).addParent(g["start"])
+			ei.Value.(*node).addParent(g["unknown"])
 		}
 	}
 
 	return dead
+}
+
+// itemIsInert returns true iff the item with the given name can never be
+// progression, regardless of context.
+func itemIsInert(name string) bool {
+	switch name {
+	case "fist ring", "expert's ring", "energy ring", "toss ring",
+		"swimmer's ring":
+		return false
+	}
+
+	// non-default junk rings
+	if rom.Treasures[name] == nil {
+		return true
+	}
+
+	// not part of next switch since the ID is only junk in seasons
+	if name == "treasure map" {
+		return true
+	}
+
+	switch rom.Treasures[name].ID() {
+	// heart refill, PoH, HC, ring, compass, dungeon map, gasha seed
+	case 0x29, 0x2a, 0x2b, 0x2d, 0x32, 0x33, 0x34:
+		return true
+	}
+	return false
 }

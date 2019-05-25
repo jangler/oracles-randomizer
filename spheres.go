@@ -45,7 +45,7 @@ func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 
 		// get the set of newly reachable nodes
 		for _, n := range g {
-			if !reached[n] && n.getMark(false) == markTrue {
+			if !reached[n] && n.getMark(false).reachable() {
 				sphere = append(sphere, n)
 			}
 		}

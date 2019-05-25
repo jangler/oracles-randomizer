@@ -3,6 +3,7 @@
 # being able to call the animal in general.
 
 start: [] # parent for nodes reachable by default
+unknown: [] # parent for unplaced items, etc.
 hard: {or: []}
 seqbreak: {or: []}
 

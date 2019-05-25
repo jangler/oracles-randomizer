@@ -44,7 +44,8 @@ var seqbreakNames = map[string]bool{"hard": true, "seqbreak": true}
 // the current state of a node in its evaluation. markNone means the node has
 // not been evaludated, markTrue and markFalse mean that the value of the node
 // has been determined, and markPending is used temporarily to prevent
-// evaluating infinite loops in the graph.
+// evaluating infinite loops in the graph. markEither is like a markTrue that
+// isn't negated by negation nodes.
 type nodeMark uint8
 
 const (
@@ -52,8 +53,33 @@ const (
 	markTrue
 	markFalse
 	markPending
+	markEither
 )
 
+// implements fmt.Stringer.
+func (nm nodeMark) String() string {
+	switch nm {
+	case markNone:
+		return "markNone"
+	case markTrue:
+		return "markTrue"
+	case markFalse:
+		return "markFalse"
+	case markPending:
+		return "markPending"
+	case markEither:
+		return "markEither"
+	}
+	return "UNKNOWN"
+}
+
+// includes "definitely reachable" and "possibly reachable, depending on
+// unknowns".
+func (nm nodeMark) reachable() bool {
+	return nm == markTrue || nm == markEither
+}
+
+// reverses false and true; leaves other marks untouched.
 func negateMark(mark nodeMark) nodeMark {
 	switch mark {
 	case markTrue:
@@ -65,10 +91,10 @@ func negateMark(mark nodeMark) nodeMark {
 	}
 }
 
-// determines how a node approaches getMark(). an andNode returns markTrue iff
-// all of its parents do, an orNode returns markTrue iff any of its parents do,
-// and a countNode returns true iff at least a certain number of its parents
-// do.
+// determines how a node approaches getMark(). an andNode is reachable iff all
+// of its parents are, an orNode is reachableiff any of its parents are, and a
+// countNode is reachable iff at least a certain number of its parents do. an
+// eitherNode always returns markEither.
 type nodeType uint8
 
 const (
@@ -77,6 +103,7 @@ const (
 	nandNode
 	norNode
 	countNode
+	eitherNode
 )
 
 // a single vertex in the graph.
@@ -114,6 +141,8 @@ func (n *node) getMark(seqbreak bool) nodeMark {
 		return negateMark(getOrMark(n, true))
 	case countNode:
 		return getCountMark(n, seqbreak)
+	case eitherNode:
+		return markEither
 	default:
 		panic("unknown node type for node " + n.name)
 	}
@@ -126,6 +155,7 @@ func getAndMark(n *node, seqbreak bool) nodeMark {
 			defer func() { n.mark = markNone }()
 		}
 		n.mark = markPending
+		eitherFound := false
 
 		// prioritize already pending/false nodes
 		for _, parent := range n.parents {
@@ -134,6 +164,8 @@ func getAndMark(n *node, seqbreak bool) nodeMark {
 				case markPending, markFalse:
 					n.mark = markNone
 					return markFalse
+				case markEither:
+					eitherFound = true
 				}
 			}
 		}
@@ -145,12 +177,17 @@ func getAndMark(n *node, seqbreak bool) nodeMark {
 				case markPending, markFalse:
 					n.mark = markNone
 					return markFalse
+				case markEither:
+					eitherFound = true
 				}
 			}
 		}
 
 		n.mark = markTrue
-		return markTrue
+		if eitherFound {
+			n.mark = markEither
+		}
+		return n.mark
 	}
 
 	return n.mark
@@ -163,15 +200,19 @@ func getOrMark(n *node, seqbreak bool) nodeMark {
 			defer func() { n.mark = markNone }()
 		}
 		n.mark = markPending
+		eitherFound := false
 
 		// prioritize already satisfied nodes
 		for _, parent := range n.parents {
 			if seqbreak && seqbreakNames[parent.name] {
 				return markTrue
 			}
-			if parent.mark == markTrue {
+			switch parent.mark {
+			case markTrue:
 				n.mark = markTrue
 				return markTrue
+			case markEither:
+				eitherFound = true
 			}
 		}
 
@@ -181,13 +222,20 @@ func getOrMark(n *node, seqbreak bool) nodeMark {
 				if seqbreak && seqbreakNames[parent.name] {
 					return markTrue
 				}
-				if parent.getMark(seqbreak) == markTrue {
+				switch parent.getMark(seqbreak) {
+				case markTrue:
 					n.mark = markTrue
 					return markTrue
+				case markEither:
+					eitherFound = true
 				}
 			}
 		}
 
+		if eitherFound {
+			n.mark = markEither
+			return markEither
+		}
 		n.mark = markNone
 		return markFalse
 	}
@@ -203,11 +251,14 @@ func getCountMark(n *node, seqbreak bool) nodeMark {
 			defer func() { n.mark = markNone }()
 		}
 		n.mark = markPending
+		eithers := 0
 
 		for _, parent := range n.parents[0].parents {
 			switch parent.getMark(seqbreak) {
 			case markPending, markFalse:
 				continue
+			case markEither:
+				eithers++
 			default:
 				count++
 			}
@@ -218,6 +269,10 @@ func getCountMark(n *node, seqbreak bool) nodeMark {
 			}
 		}
 
+		if count+eithers >= n.minCount {
+			n.mark = markEither
+			return markEither
+		}
 		n.mark = markNone
 		return markFalse
 	}

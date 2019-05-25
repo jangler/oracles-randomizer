@@ -185,7 +185,7 @@ func checkReach(t *testing.T, g graph, links map[string]string, target string,
 	}()
 	g.clearMarks()
 
-	if (g[target].getMark(false) == markTrue) != expect {
+	if (g[target].getMark(false).reachable()) != expect {
 		if expect {
 			t.Errorf("expected to reach %s, but could not", target)
 		} else {

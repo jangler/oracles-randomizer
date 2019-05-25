@@ -669,33 +669,6 @@ func randomize(romData []byte, game int, dirName, logFilename string,
 	return ri.Seed, checksum, logFilename, nil
 }
 
-// itemIsJunk returns true iff the item with the given name can never be
-// progression, regardless of context.
-func itemIsJunk(name string) bool {
-	switch name {
-	case "fist ring", "expert's ring", "energy ring", "toss ring",
-		"swimmer's ring":
-		return false
-	}
-
-	// non-default junk rings
-	if rom.Treasures[name] == nil {
-		return true
-	}
-
-	// not part of next switch since the ID is only junk in seasons
-	if name == "treasure map" {
-		return true
-	}
-
-	switch rom.Treasures[name].ID() {
-	// heart refill, PoH, HC, ring, compass, dungeon map, gasha seed
-	case 0x29, 0x2a, 0x2b, 0x2d, 0x32, 0x33, 0x34:
-		return true
-	}
-	return false
-}
-
 // setROMData mutates the ROM data in-place based on the given route.
 func setROMData(romData []byte, game int, ri *RouteInfo,
 	owlHints map[string]string, ropts randomizerOptions, logf logFunc,
