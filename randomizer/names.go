@@ -1,4 +1,4 @@
-package main
+package randomizer
 
 import (
 	"github.com/jangler/oracles-randomizer/rom"
