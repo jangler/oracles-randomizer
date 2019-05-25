@@ -3,7 +3,6 @@ package randomizer
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"regexp"
 	"sort"
@@ -19,7 +18,7 @@ func getSummaryChannel(filename string) (chan string, chan int) {
 	go func() {
 		logFile, err := os.Create(filename)
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
 		}
 		defer logFile.Close()
 
@@ -37,6 +36,7 @@ func getSummaryChannel(filename string) (chan string, chan int) {
 }
 
 // separates a map of checks into progression checks and junk checks.
+// TODO: this is really, really slow for seasons.
 func filterJunk(g graph, checks map[*node]*node) (prog, junk map[*node]*node) {
 	prog, junk = make(map[*node]*node), make(map[*node]*node)
 
@@ -47,7 +47,7 @@ func filterJunk(g graph, checks map[*node]*node) (prog, junk map[*node]*node) {
 
 	done := false
 	for !done {
-		spheres, _ := getSpheres(g, prog)
+		spheres, _ := getSpheres(g, prog) // this is the main slow part
 		done = true
 
 		// create a copy to pass to functions so that the map we're iterating
@@ -113,32 +113,26 @@ func spheresToText(spheres [][]*node, checks map[*node]*node, except *node) stri
 }
 
 type summary struct {
-	items    dict
-	dungeons dict
-	portals  dict
-	seasons  dict
-	hints    dict
+	items    map[string]string
+	dungeons map[string]string
+	portals  map[string]string
+	seasons  map[string]string
+	hints    map[string]string
 }
 
 func newSummary() *summary {
 	return &summary{
-		items:    newDict(),
-		dungeons: newDict(),
-		portals:  newDict(),
-		seasons:  newDict(),
-		hints:    newDict(),
+		items:    make(map[string]string),
+		dungeons: make(map[string]string),
+		portals:  make(map[string]string),
+		seasons:  make(map[string]string),
+		hints:    make(map[string]string),
 	}
 }
 
-type dict map[string]string
-
-func newDict() dict {
-	return make(map[string]string)
-}
-
-func (d dict) orderedValues() []string {
-	a, i := make([]string, len(d)), 0
-	for _, v := range d {
+func orderedValues(m map[string]string) []string {
+	a, i := make([]string, len(m)), 0
+	for _, v := range m {
 		a[i] = v
 		i++
 	}
@@ -202,4 +196,107 @@ func parseSummary(path string, game int) (*summary, error) {
 	}
 
 	return sum, nil
+}
+
+// write a "spoiler log" to a file.
+func writeSummary(path string, checksum []byte, ropts randomizerOptions,
+	rom *romState, ri *routeInfo, checks map[*node]*node, spheres [][]*node,
+	extra []*node, owlHints map[string]string) {
+	summary, summaryDone := getSummaryChannel(path)
+
+	// header
+	summary <- fmt.Sprintf("seed: %08x", ri.seed)
+	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
+	summary <- fmt.Sprintf("difficulty: %s",
+		ternary(ropts.hard, "hard", "normal"))
+	summary <- ""
+
+	// items
+	sendSectionHeader(summary, "progression items")
+	nonKeyChecks := make(map[*node]*node)
+	for slot, item := range checks {
+		if !keyRegexp.MatchString(item.name) {
+			nonKeyChecks[slot] = item
+		}
+	}
+	prog, junk := filterJunk(ri.graph, nonKeyChecks)
+	logSpheres(summary, prog, spheres, extra, rom.game, nil)
+	sendSectionHeader(summary, "small keys and boss keys")
+	logSpheres(summary, checks, spheres, extra, rom.game, keyRegexp.MatchString)
+	sendSectionHeader(summary, "other items")
+	logSpheres(summary, junk, spheres, extra, rom.game, nil)
+
+	// warps
+	if ropts.dungeons {
+		sendSectionHeader(summary, "dungeon entrances")
+		sendSorted(summary, func(c chan string) {
+			for entrance, dungeon := range ri.entrances {
+				c <- fmt.Sprintf("%s entrance <- %s",
+					"D"+entrance[1:], "D"+dungeon[1:])
+			}
+			close(c)
+		})
+		summary <- ""
+	}
+	if ropts.portals {
+		sendSectionHeader(summary, "subrosia portals")
+		sendSorted(summary, func(c chan string) {
+			for in, out := range ri.portals {
+				c <- fmt.Sprintf("%-20s <- %s",
+					getNiceName(in, rom.game), getNiceName(out, rom.game))
+			}
+			close(c)
+		})
+		summary <- ""
+	}
+
+	// default seasons (oos only)
+	if rom.game == gameSeasons {
+		sendSectionHeader(summary, "default seasons")
+		sendSorted(summary, func(c chan string) {
+			for area, id := range ri.seasons {
+				c <- fmt.Sprintf("%-15s <- %s", area, seasonsById[id])
+			}
+			close(c)
+		})
+		summary <- ""
+	}
+
+	// owl hints
+	sendSectionHeader(summary, "hints")
+	sendSorted(summary, func(c chan string) {
+		for owlName, hint := range owlHints {
+			oneLineHint := strings.ReplaceAll(hint, "\n", " ")
+			oneLineHint = strings.ReplaceAll(oneLineHint, "  ", " ")
+			c <- fmt.Sprintf("%-20s <- \"%s\"", owlName, oneLineHint)
+		}
+		close(c)
+	})
+
+	close(summary)
+	<-summaryDone
+}
+
+// get the output of a function that sends strings to a given channel, sort
+// those strings, and send them to the `out` channel.
+func sendSorted(out chan string, generate func(chan string)) {
+	in := make(chan string)
+	lines := make([]string, 0, 20) // should be enough capacity for most cases
+
+	go generate(in)
+	for s := range in {
+		lines = append(lines, s)
+	}
+
+	sort.Strings(lines)
+	for _, line := range lines {
+		out <- line
+	}
+}
+
+// sends a section delimiter to the channel.
+func sendSectionHeader(c chan string, name string) {
+	c <- ""
+	c <- fmt.Sprintf("-- %s --", name)
+	c <- ""
 }

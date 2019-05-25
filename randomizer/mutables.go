@@ -2,148 +2,120 @@ package randomizer
 
 import (
 	"fmt"
-	"log"
 )
 
-// A Mutable is a memory data that can be changed by the randomizer.
-type Mutable interface {
-	Mutate([]byte) error // change ROM bytes
-	Check([]byte) error  // verify that the mutable matches the ROM
+// an instance of ROM data that can be changed by the randomizer.
+type mutable interface {
+	mutate([]byte) error // change ROM bytes
+	check([]byte) error  // verify that the mutable matches the ROM
 }
 
-// A MutableRange is a length of mutable bytes starting at a given address.
-type MutableRange struct {
-	Addrs    []Addr
-	Old, New []byte
+// a length of mutable bytes starting at a given address.
+type mutableRange struct {
+	addr     address
+	old, new []byte
 }
 
-// Mutate replaces bytes in its range.
-func (mr *MutableRange) Mutate(b []byte) error {
-	for _, addr := range mr.Addrs {
-		offset := addr.fullOffset()
-		for i, value := range mr.New {
-			b[offset+i] = value
+// implements `mutate()` from the `mutable` interface.
+func (mut *mutableRange) mutate(b []byte) error {
+	offset := mut.addr.fullOffset()
+	for i, value := range mut.new {
+		b[offset+i] = value
+	}
+	return nil
+}
+
+// implements `check()` from the `mutable` interface.
+func (mut *mutableRange) check(b []byte) error {
+	offset := mut.addr.fullOffset()
+	for i, value := range mut.old {
+		if b[offset+i] != value {
+			return fmt.Errorf("expected %x at %x; found %x",
+				mut.old[i], offset+i, b[offset+i])
 		}
 	}
 	return nil
 }
 
-// Check verifies that the range matches the given ROM data.
-func (mr *MutableRange) Check(b []byte) error {
-	for _, addr := range mr.Addrs {
-		offset := addr.fullOffset()
-		for i, value := range mr.Old {
-			if b[offset+i] != value {
-				return fmt.Errorf("expected %x at %x; found %x",
-					mr.Old[i], offset+i, b[offset+i])
-			}
-		}
-	}
-	return nil
+// sets music on or off in the modified ROM. By default, it is off.
+func (rom *romState) setMusic(music bool) {
+	mut := rom.codeMutables["filterMusic"]
+	mut.new[3] = byte(ternary(music, 0x18, 0x30).(int)) // jr / jr nc
 }
 
-// romSetMusic sets music on or off in the modified ROM. By default, it is off.
-func romSetMusic(music bool) {
-	if music {
-		codeMutables["filterMusic"].New[3] = 0x18
-	}
+// sets treewarp on or off in the modified ROM. By default, it is on.
+func (rom *romState) setTreewarp(treewarp bool) {
+	mut := rom.codeMutables["treeWarp"]
+	mut.new[5] = byte(ternary(treewarp, 0x28, 0x18).(int)) // jr z / jr
 }
 
-// romSetTreewarp sets treewarp on or off in the modified ROM. By default, it
-// is on.
-func romSetTreewarp(treewarp bool) {
-	if !treewarp {
-		codeMutables["treeWarp"].New[5] = 0x18
-	}
-}
-
-// romSetAnimal sets the flute type and Natzu region type based on a companion
-// number 1 to 3.
-func romSetAnimal(companion int) {
-	codeMutables["animalRegion"].New =
+// sets the flute type and natzu region type based on a companion number 1 to
+// 3.
+func (rom *romState) setAnimal(companion int) {
+	rom.codeMutables["animalRegion"].new =
 		[]byte{byte(companion + 0x0a)}
-	codeMutables["flutePalette"].New =
+	rom.codeMutables["flutePalette"].new =
 		[]byte{byte(0x10*(4-companion) + 3)}
 }
 
 // key = area name (as in asm/vars.yaml), id = season index (spring -> winter).
-func romSetSeason(key string, id byte) {
-	codeMutables[key].New[0] = id
+func (rom *romState) setSeason(key string, id byte) {
+	rom.codeMutables[key].new[0] = id
 }
 
 // get a collated map of all mutables, *except* for treasures which do not
 // appear in the seed. this allows things like the three seasons flutes having
 // different data but the same address.
-func getAllMutables() map[string]Mutable {
-	slotMutables := make(map[string]Mutable)
-	treasureMutables := make(map[string]Mutable)
-	otherMutables := make(map[string]Mutable, len(codeMutables))
-	for k, v := range ItemSlots {
-		if v.Treasure == nil {
-			log.Fatalf("treasure for %s is nil", k)
+func (rom *romState) getAllMutables() map[string]mutable {
+	allMutables := make(map[string]mutable)
+	for k, v := range rom.itemSlots {
+		if v.treasure == nil {
+			panic(fmt.Sprintf("treasure for %s is nil", k))
 		}
-		if v.Treasure.addr.offset != 0 {
-			treasureMutables[findTreasureName(v.Treasure)] = v.Treasure
+		if v.treasure.addr.offset != 0 {
+			// treasures are allowed to have duplicates
+			tName, _ := reverseLookup(rom.treasures, v.treasure)
+			allMutables[tName.(string)] = v.treasure
 		}
-		slotMutables[k] = v
+		addMutOrPanic(allMutables, k, v)
 	}
-	for k, v := range codeMutables {
-		otherMutables[k] = v
+	for k, v := range rom.codeMutables {
+		addMutOrPanic(allMutables, k, v)
 	}
-
-	mutableSets := []map[string]Mutable{
-		treasureMutables,
-		slotMutables,
-		otherMutables,
-	}
-
-	// initialize master map w/ adequate capacity
-	count := 0
-	for _, set := range mutableSets {
-		count += len(set)
-	}
-	allMutables := make(map[string]Mutable, count)
-
-	// add mutables to master map
-	for _, set := range mutableSets {
-		for k, v := range set {
-			if _, ok := allMutables[k]; ok {
-				log.Fatalf("duplicate mutable key: %s", k)
-			}
-			allMutables[k] = v
-		}
-	}
-
 	return allMutables
 }
 
-// findAddr returns the name of a mutable that covers the given address, or an
-// empty string if none is found.
-func findAddr(bank byte, addr uint16) string {
-	muts := getAllMutables()
-	offset := (&Addr{bank, addr}).fullOffset()
+// if the mutable does not exist in the map, add it. if it already exists,
+// panic.
+func addMutOrPanic(m map[string]mutable, k string, v mutable) {
+	if _, ok := m[k]; ok {
+		panic("duplicate mutable key: " + k)
+	}
+	m[k] = v
+}
+
+// returns the name of a mutable that covers the given address, or an empty
+// string if none is found.
+func (rom *romState) findAddr(bank byte, addr uint16) string {
+	muts := rom.getAllMutables()
+	offset := (&address{bank, addr}).fullOffset()
 
 	for name, mut := range muts {
 		switch mut := mut.(type) {
-		case *MutableRange:
-			for _, addr := range mut.Addrs {
-				if offset >= addr.fullOffset() &&
-					offset < addr.fullOffset()+len(mut.New) {
-					return name
+		case *mutableRange:
+			if offset >= mut.addr.fullOffset() &&
+				offset < mut.addr.fullOffset()+len(mut.new) {
+				return name
+			}
+		case *itemSlot:
+			for _, addrs := range [][]address{mut.idAddrs, mut.subidAddrs} {
+				for _, addr := range addrs {
+					if offset == addr.fullOffset() {
+						return name
+					}
 				}
 			}
-		case *MutableSlot:
-			for _, addr := range mut.idAddrs {
-				if offset == addr.fullOffset() {
-					return name
-				}
-			}
-			for _, addr := range mut.subIDAddrs {
-				if offset == addr.fullOffset() {
-					return name
-				}
-			}
-		case *Treasure:
+		case *treasure:
 			if offset >= mut.addr.fullOffset() &&
 				offset < mut.addr.fullOffset()+4 {
 				return name

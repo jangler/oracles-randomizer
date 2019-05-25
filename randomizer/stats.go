@@ -10,21 +10,24 @@ import (
 )
 
 // generate a bunch of seeds.
-func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
+func generateSeeds(n, game int, ropts randomizerOptions) []*routeInfo {
 	threads := runtime.NumCPU()
 	dummyLogf := func(string, ...interface{}) {}
 
 	// search for routes
-	routeChan := make(chan *RouteInfo)
+	routeChan := make(chan *routeInfo)
 	attempts := 0
 	for i := 0; i < threads; i++ {
 		go func() {
 			for i := 0; i < n/threads; i++ {
 				for {
+					// TODO: idk if a new romState actually needs to be created
+					//       for each iteration.
 					seed := uint32(rand.Int())
-					route, _ := findRoute(game, seed, ropts, false, dummyLogf)
+					rom := newRomState(nil, game)
+					route, _ := findRoute(rom, seed, ropts, false, dummyLogf)
 					if route != nil {
-						attempts += route.AttemptCount
+						attempts += route.attemptCount
 						routeChan <- route
 						break
 					}
@@ -34,7 +37,7 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*RouteInfo {
 	}
 
 	// receive found routes
-	routes := make([]*RouteInfo, n/threads*threads)
+	routes := make([]*routeInfo, n/threads*threads)
 	for i := 0; i < len(routes); i++ {
 		routes[i] = <-routeChan
 		fmt.Fprintf(os.Stderr, "%d routes found\n", i+1)
@@ -54,15 +57,15 @@ func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
 	stringChecks := make([]map[string]string, len(routes))
 	for i, ri := range routes {
 		stringChecks[i] = make(map[string]string)
-		for k, v := range getChecks(ri) {
+		for k, v := range getChecks(ri.usedItems, ri.usedSlots) {
 			stringChecks[i][k.name] = v.name
 		}
 		if game == gameSeasons {
-			for area, seasonId := range ri.Seasons {
+			for area, seasonId := range ri.seasons {
 				stringChecks[i][area] = seasonsById[int(seasonId)]
 			}
 		}
-		stringChecks[i]["_seed"] = fmt.Sprintf("%08x", ri.Seed)
+		stringChecks[i]["_seed"] = fmt.Sprintf("%08x", ri.seed)
 	}
 
 	// encode to stdout
