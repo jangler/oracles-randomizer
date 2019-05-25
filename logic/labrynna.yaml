@@ -2,7 +2,9 @@
 # portals on the screens next to the maku tree are always active.
 
 start: [] # parent for nodes reachable by default
+unknown: [] # parent for unplaced items, etc.
 hard: {or: []}
+seqbreak: {or: []}
 
 # forest of time
 starting chest: [start]

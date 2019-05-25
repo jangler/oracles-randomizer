@@ -10,7 +10,7 @@ moosh's flute: {or: []}
 flute: {or: [ricky's flute, dimitri's flute, moosh's flute]}
 
 # TODO: this is a dumb placeholder for until new fill is more developed
-rupees: {or: ["rupees, 200", ["rupees, 100", "rupees, 50"],
+rupees: {or: ["rupees, 200", ["rupees, 100", "rupees, 50"], seqbreak,
     count: [2, "rupees, 100"], count: [3, "rupees, 50"], [hard, shovel]]}
 
 # expert's ring can do some things that fist ring can't, so this is for the
@@ -30,6 +30,10 @@ mermaid suit: {count: [2, flippers]}
 bomb jump 2: [feather, or: [pegasus satchel, [hard, bombs]]]
 jump 3: [feather, pegasus satchel]
 bomb jump 3: [hard, feather, pegasus satchel, bombs]
+
+# jump 4, but only orthogonally
+# TODO: actually use this i guess
+bomber's jump: [seqbreak, bomber's ring, bomb jump 3]
 
 seed item: {or: [satchel, seed shooter]}
 
