@@ -1,0 +1,100 @@
+# enemies have index zero and get their whatever from an hram variable.
+# crystals don't drop anything.
+
+grass/bush:
+  index: 0x1
+  droprate: 0.125
+  drops:
+    heart: 0.40625
+    1 rupee: 0.25
+    scent seeds: 0.125
+    ember seeds: 0.09375
+    5 rupees: 0.0625
+    fairy: 0.03125
+    mystery seeds: 0.03125
+pot:
+  index: 0x2
+  droprate: 0.375
+  drops:
+    bombs: 0.25
+    heart: 0.21875
+    1 rupee: 0.125
+    5 rupees: 0.125
+    pegasus seeds: 0.0625
+    ember seeds: 0.0625
+    scent seeds: 0.0625
+    fairy: 0.03125
+    gale seeds: 0.03125
+    mystery seeds: 0.03125
+leaves:
+  index: 0x3
+  droprate: 0.25
+  drops:
+    ember seeds: 0.21875
+    pegasus seeds: 0.21875
+    scent seeds: 0.1875
+    mystery seeds: 0.1875
+    gale seeds: 0.1875
+snow/rock/flowers:
+  index: 0x4
+  droprate: 0.375
+  drops:
+    bombs: 0.3125
+    heart: 0.3125
+    1 rupee: 0.28125
+    5 rupees: 0.0625
+    fairy: 0.03125
+sign/tree:
+  index: 0x7
+  droprate: 0.5
+  drops:
+    heart: 0.5
+    1 rupee: 0.375
+    5 rupees: 0.125
+mushroom:
+  index: 0x8
+  droprate: 0.5
+  drops:
+    heart: 1.0
+dig:
+  index: 0x9
+  droprate: 0.25
+  drops:
+    1 rupee: 0.40625
+    heart: 0.3125
+    5 rupees: 0.125
+    enemy: 0.09375
+    fairy: 0.0625
+subrosia grass:
+  index: 0x1
+  droprate: 0.125
+  drops:
+    1 ore: 0.8125
+    5 ores: 0.15625
+    heart: 0.03125
+subrosia pot:
+  index: 0x2
+  droprate: 0.375
+  drops:
+    1 ore: 0.875
+    5 ores: 0.09375
+    heart: 0.03125
+subrosia rock:
+  index: 0x4
+  droprate: 0.375
+  drops:
+    1 ore: 0.96875
+    heart: 0.03125
+subrosia sign:
+  index: 0x7
+  droprate: 0.5
+  drops:
+    1 ore: 1.0
+subrosia dig:
+  index: 0xa
+  droprate: 0.25
+  drops:
+    1 ore: 0.71875
+    5 ores: 0.1875
+    enemy: 0.0625
+    heart: 0.03125
