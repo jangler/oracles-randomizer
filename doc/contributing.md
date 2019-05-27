@@ -39,7 +39,7 @@ go generate
 go build
 ```
 
-To `go test`, you must `cd` to the `randomizer/` directory first.
+Test by running `go test ./randomizer`.
 
 
 ## Branches
