@@ -69,13 +69,9 @@ func TestNodeGetMark(t *testing.T) {
 	and1, or1 := makeAndNode(), makeOrNode()
 
 	// orphan AndNodes are true
-	if mark := and1.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, and1, markTrue)
 	// orphan OrNodes are false
-	if mark := or1.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
+	checkMark(t, or1, markFalse)
 
 	and2 := makeAndNode()
 	and1.addParent(or1)
@@ -83,9 +79,7 @@ func TestNodeGetMark(t *testing.T) {
 	clearMarks(and1, or1)
 
 	// AndNodes need all parents to succeed
-	if mark := and1.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
+	checkMark(t, and1, markFalse)
 
 	or2 := makeOrNode()
 	or1.addParent(and1)
@@ -93,14 +87,10 @@ func TestNodeGetMark(t *testing.T) {
 	clearMarks(and1, or1, and2)
 
 	// OrNodes need one
-	if mark := or1.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
+	checkMark(t, or1, markFalse)
 	// make sure the OrNode gets the same results by peeking
 	or1.mark = markNone
-	if mark := or1.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
+	checkMark(t, or1, markFalse)
 
 	// (clear and re-add w/ true child in front to make sure breaks in switch
 	// statements are breaking to loop labels)
@@ -111,18 +101,12 @@ func TestNodeGetMark(t *testing.T) {
 	clearMarks(and1, or1, and2, or2)
 
 	// and only one
-	if mark := or1.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, or1, markTrue)
 	// make sure the OrNode gets the same results by peeking
 	or1.mark = markNone
-	if mark := or1.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, or1, markTrue)
 	// and now the AndNode should be satisfied
-	if mark := and1.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, and1, markTrue)
 
 	// but make sure loops don't satisfy nodes
 	and1.clearParents()
@@ -134,12 +118,8 @@ func TestNodeGetMark(t *testing.T) {
 	or1.addParent(or2)
 	or2.addParent(or1)
 	clearMarks(and1, and2, or1, or2)
-	if mark := and1.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
-	if mark := or1.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
+	checkMark(t, and1, markFalse)
+	checkMark(t, or1, markFalse)
 }
 
 func TestCountNodes(t *testing.T) {
@@ -151,15 +131,11 @@ func TestCountNodes(t *testing.T) {
 
 	// if child has only one parent, count should be 1 (< 2)
 	child.addParent(parent)
-	if mark := count.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
+	checkMark(t, count, markFalse)
 
 	// two parents should suffice
 	child.addParent(parent)
-	if mark := count.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, count, markTrue)
 }
 
 func TestNegatedNodes(t *testing.T) {
@@ -169,21 +145,13 @@ func TestNegatedNodes(t *testing.T) {
 	nor := newNode("nor", norNode)
 
 	not.addParent(or)
-	if mark := not.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, not, markTrue)
 	nor.addParent(or)
-	if mark := nor.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, nor, markTrue)
 	not.addParent(and)
-	if mark := not.getMark(false); mark != markTrue {
-		t.Fatalf("want %d, got %d", markTrue, mark)
-	}
+	checkMark(t, not, markTrue)
 	nor.addParent(and)
-	if mark := nor.getMark(false); mark != markFalse {
-		t.Fatalf("want %d, got %d", markFalse, mark)
-	}
+	checkMark(t, nor, markFalse)
 }
 
 func TestEitherNodes(t *testing.T) {

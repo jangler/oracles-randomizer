@@ -1,15 +1,16 @@
 package randomizer
 
 import (
+	"container/list"
 	"fmt"
 	"sort"
 )
 
 // getChecks converts a route info into a map of checks.
-func getChecks(ri *RouteInfo) map[*node]*node {
+func getChecks(usedItems, usedSlots *list.List) map[*node]*node {
 	checks := make(map[*node]*node)
 
-	ei, es := ri.UsedItems.Front(), ri.UsedSlots.Front()
+	ei, es := usedItems.Front(), usedSlots.Front()
 	for ei != nil {
 		checks[es.Value.(*node)] = ei.Value.(*node)
 		ei, es = ei.Next(), es.Next()
@@ -31,7 +32,7 @@ func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 	// have their parents restored even if they're not reachable yet.
 	unreachedChecks := make(map[*node]*node)
 	for slot, item := range checks {
-		// don't delimit spheres by intra-dungeon keys -- it obscured "actual"
+		// don't delimit spheres by intra-dungeon keys -- it obscures "actual"
 		// progression in the log file.
 		if !keyRegexp.MatchString(item.name) {
 			unreachedChecks[slot] = item

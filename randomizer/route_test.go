@@ -6,14 +6,13 @@ import (
 
 func TestGraph(t *testing.T) {
 	testSeasonsGraph(t)
-	// testAgesGraph(t)
+	testAgesGraph(t)
 }
 
 // check that graph logic is working as expected
 func testSeasonsGraph(t *testing.T) {
-	initRom(nil, gameSeasons)
-	r := NewRoute(gameSeasons)
-	g := r.Graph
+	rom := newRomState(nil, gameSeasons)
+	g := newRouteGraph(rom)
 
 	// test basic start item
 	checkReach(t, g, map[string]string{
@@ -94,9 +93,8 @@ func testSeasonsGraph(t *testing.T) {
 
 // check that graph logic is working as expected
 func testAgesGraph(t *testing.T) {
-	initRom(nil, gameAges)
-	r := NewRoute(gameAges)
-	g := r.Graph
+	rom := newRomState(nil, gameAges)
+	g := newRouteGraph(rom)
 
 	// test basic start item
 	checkReach(t, g, map[string]string{
@@ -162,23 +160,13 @@ func checkReach(t *testing.T, g graph, links map[string]string, target string,
 	expect bool) {
 	t.Helper()
 
-	// add parents at the start of the function, and remove them at the end. if
-	// a parent is blank, remove it at the start and add it at the end (only
-	// useful for default seasons).
+	// add parents at the start of the function, and remove them at the end.
 	for parent, child := range links {
-		if parent == "" {
-			g[child].clearParents()
-		} else {
-			g[child].addParent(g[parent])
-		}
+		g[child].addParent(g[parent])
 	}
 	defer func() {
 		for parent, child := range links {
-			if parent == "" {
-				g[child].addParent(g["start"])
-			} else {
-				g[child].clearParents()
-			}
+			g[child].removeParent(g[parent])
 		}
 	}()
 	g.clearMarks()

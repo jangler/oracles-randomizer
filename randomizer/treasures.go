@@ -30,11 +30,11 @@ var collectModes = map[string]byte{
 	"lava juice room":     0x83,
 }
 
-// A Treasure is data associated with a particular item ID and sub ID.
-type Treasure struct {
+// data associated with a particular item ID and sub ID.
+type treasure struct {
 	displayName string // this can change based on ring replacement etc
-	id, subID   byte
-	addr        Addr
+	id, subid   byte
+	addr        address
 
 	// in order, starting at addr
 	mode   byte // collection mode
@@ -43,34 +43,29 @@ type Treasure struct {
 	sprite byte
 }
 
-// ID returns the item ID of the treasure.
-func (t Treasure) ID() byte {
-	return t.id
-}
-
-// Bytes returns a slice of consecutive bytes of treasure data, as they would
-// appear in the ROM.
-func (t Treasure) Bytes() []byte {
+// returns a slice of consecutive bytes of treasure data, as they would appear
+// in the ROM.
+func (t treasure) bytes() []byte {
 	return []byte{t.mode, t.param, t.text, t.sprite}
 }
 
-// Mutate replaces the associated treasure in the given ROM data with this one.
-func (t Treasure) Mutate(b []byte) error {
+// implements `mutate()` from the `mutable` interface.
+func (t treasure) mutate(b []byte) error {
 	// fake treasure
 	if t.addr.offset == 0 {
 		return nil
 	}
 
-	addr, data := t.addr.fullOffset(), t.Bytes()
+	addr, data := t.addr.fullOffset(), t.bytes()
 	for i := 0; i < 4; i++ {
 		b[addr+i] = data[i]
 	}
 	return nil
 }
 
-// Check verifies that the treasure's data matches the given ROM data.
-func (t Treasure) Check(b []byte) error {
-	addr, data := t.addr.fullOffset(), t.Bytes()
+// implements `check()` from the `mutable` interface.
+func (t treasure) check(b []byte) error {
+	addr, data := t.addr.fullOffset(), t.bytes()
 	if bytes.Compare(b[addr:addr+4], data) != 0 {
 		return fmt.Errorf("expected %x at %x; found %x",
 			data, addr, b[addr:addr+4])
@@ -78,28 +73,9 @@ func (t Treasure) Check(b []byte) error {
 	return nil
 }
 
-// Treasures maps item names to associated treasure data.
-var Treasures map[string]*Treasure
-
-// findTreasureName does a reverse lookup of the treasure in the map to return
-// its name. It returns an empty string if not found.
-func findTreasureName(t *Treasure) string {
-	for k, v := range Treasures {
-		if v == t {
-			return k
-		}
-	}
-	return ""
-}
-
 // returns the full offset of the treasure's four-byte entry in the rom.
-func getTreasureAddr(b []byte, game int, id, subid byte) Addr {
-	var ptr Addr
-	if game == gameSeasons {
-		ptr = Addr{0x15, 0x5129}
-	} else {
-		ptr = Addr{0x16, 0x5332}
-	}
+func getTreasureAddr(b []byte, game int, id, subid byte) address {
+	ptr := sora(game, address{0x15, 0x5129}, address{0x16, 0x5332}).(address)
 
 	ptr.offset += uint16(id) * 4
 	if b[ptr.fullOffset()]&0x80 != 0 {
@@ -113,7 +89,7 @@ func getTreasureAddr(b []byte, game int, id, subid byte) Addr {
 
 // return a map of treasure names to treasure data. if b is nil, only "static"
 // data is loaded.
-func LoadTreasures(b []byte, game int) map[string]*Treasure {
+func loadTreasures(b []byte, game int) map[string]*treasure {
 	allRawIds := make(map[string]map[string]uint16)
 	if err := yaml.Unmarshal(
 		FSMustByte(false, "/romdata/treasures.yaml"), allRawIds); err != nil {
@@ -128,21 +104,16 @@ func LoadTreasures(b []byte, game int) map[string]*Treasure {
 		rawIds[k] = v
 	}
 
-	m := make(map[string]*Treasure)
-
+	m := make(map[string]*treasure)
 	for name, rawId := range rawIds {
-		if m[name] != nil {
-			panic("duplicate treasure name: " + name)
-		}
-
-		t := &Treasure{
+		t := &treasure{
 			displayName: name,
 			id:          byte(rawId >> 8),
-			subID:       byte(rawId),
+			subid:       byte(rawId),
 		}
 
 		if b != nil {
-			t.addr = getTreasureAddr(b, game, t.id, t.subID)
+			t.addr = getTreasureAddr(b, game, t.id, t.subid)
 			t.mode = b[t.addr.fullOffset()]
 			t.param = b[t.addr.fullOffset()+1]
 			t.text = b[t.addr.fullOffset()+2]
@@ -171,13 +142,13 @@ func LoadTreasures(b []byte, game int) map[string]*Treasure {
 		t.text = 0x38
 		t.sprite = 0x23
 		t = m["dimitri's flute"]
-		t.subID = 0x00
+		t.subid = 0x00
 		t.addr = m["ricky's flute"].addr
 		t.param = 0x0c
 		t.text = 0x39
 		t.sprite = 0x23
 		t = m["moosh's flute"]
-		t.subID = 0x00
+		t.subid = 0x00
 		t.addr = m["ricky's flute"].addr
 		t.param = 0x0d
 		t.text = 0x3a
@@ -188,11 +159,11 @@ func LoadTreasures(b []byte, game int) map[string]*Treasure {
 	}
 
 	// add dummy treasures for seed trees
-	m["ember tree seeds"] = &Treasure{id: 0x00}
-	m["scent tree seeds"] = &Treasure{id: 0x01}
-	m["pegasus tree seeds"] = &Treasure{id: 0x02}
-	m["gale tree seeds"] = &Treasure{id: 0x03}
-	m["mystery tree seeds"] = &Treasure{id: 0x04}
+	m["ember tree seeds"] = &treasure{id: 0x00}
+	m["scent tree seeds"] = &treasure{id: 0x01}
+	m["pegasus tree seeds"] = &treasure{id: 0x02}
+	m["gale tree seeds"] = &treasure{id: 0x03}
+	m["mystery tree seeds"] = &treasure{id: 0x04}
 
 	return m
 }

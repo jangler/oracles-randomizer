@@ -53,19 +53,13 @@ var agesNiceNames = map[string]string{
 	"ridge base past":     "ridge base west past",
 }
 
-func getGameNiceNames(game int) map[string]string {
-	if game == gameSeasons {
-		return seasonsNiceNames
-	}
-	return agesNiceNames
-}
-
 // get a user-friendly equivalent of the given internal item or slot name.
 func getNiceName(name string, game int) string {
 	if name := commonNiceNames[name]; name != "" {
 		return name
 	}
-	if name := getGameNiceNames(game)[name]; name != "" {
+	niceNames := sora(game, seasonsNiceNames, agesNiceNames).(map[string]string)
+	if name := niceNames[name]; name != "" {
 		return name
 	}
 
@@ -86,10 +80,11 @@ func ungetNiceName(name string, game int) string {
 	for k, v := range commonNiceNames {
 		reverseNiceNames[v] = k
 	}
-	for k, v := range getGameNiceNames(game) {
+	gameNiceNames := sora(
+		game, seasonsNiceNames, agesNiceNames).(map[string]string)
+	for k, v := range gameNiceNames {
 		reverseNiceNames[v] = k
 	}
-
 	if v, ok := reverseNiceNames[name]; ok {
 		return v
 	}

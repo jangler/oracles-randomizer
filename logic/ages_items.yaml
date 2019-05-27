@@ -32,8 +32,8 @@ jump 3: [feather, pegasus satchel]
 bomb jump 3: [hard, feather, pegasus satchel, bombs]
 
 # jump 4, but only orthogonally
-# TODO: actually use this i guess
-bomber's jump: [seqbreak, bomber's ring, bomb jump 3]
+# TODO: not used yet
+# bomber's jump: [seqbreak, bomber's ring, bomb jump 3]
 
 seed item: {or: [satchel, seed shooter]}
 

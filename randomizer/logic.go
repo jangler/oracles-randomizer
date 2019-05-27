@@ -6,10 +6,10 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// A prenode is the precursor to a graph node; its parents can be either
-// strings (the names of other prenodes) or other prenodes. The main difference
+// a prenode is the precursor to a graph node; its parents can be either
+// strings (the names of other prenodes) or other prenodes. the main difference
 // between a prenode and a graph node is that prenodes are trees, not graphs.
-// String references to other prenodes become pointers when converting from
+// string references to other prenodes become pointers when converting from
 // prenodes to nodes, thus forming the graph.
 type prenode struct {
 	parents  []interface{}
@@ -17,14 +17,16 @@ type prenode struct {
 	minCount int
 }
 
-// rootPrenode returns a new prenode which does not have parents, and which
-// will remain false until it does.
+// returns a new prenode which does not have parents, and which will remain
+// false until it does.
 func rootPrenode(parents ...interface{}) *prenode {
 	return &prenode{parents: parents, nType: orNode}
 }
 
 var seasonsPrenodes, agesPrenodes map[string]*prenode
 
+// TODO: now that this isn't strictly logic stuff, it should probably go in
+// another file. can there be multiple init() functions in one package??
 func init() {
 	seasonsPrenodes = make(map[string]*prenode)
 	appendPrenodes(seasonsPrenodes, loadLogic("rings.yaml"),
@@ -38,19 +40,25 @@ func init() {
 		loadLogic("ages_items.yaml"), loadLogic("ages_kill.yaml"),
 		loadLogic("labrynna.yaml"), loadLogic("ages_dungeons.yaml"))
 	flattenNestedPrenodes(agesPrenodes)
+
+	err := yaml.Unmarshal(FSMustByte(false, "/romdata/rings.yaml"), &rings)
+	if err != nil {
+		panic(err)
+	}
 }
 
-// add nested nodes to the map and turn their references into strings.
+// add nested nodes to the map and turn their references into strings, adding
+// an interger suffix to the successive parents of a node.
 func flattenNestedPrenodes(nodes map[string]*prenode) {
 	done := true
 
 	for name, pn := range nodes {
-		subID := 0
+		suffix := 0
 		for i, parent := range pn.parents {
 			switch parent := parent.(type) {
 			case *prenode:
-				subID++
-				subName := fmt.Sprintf("%s %d", name, subID)
+				suffix++
+				subName := fmt.Sprintf("%s %d", name, suffix)
 				pn.parents[i] = subName
 				nodes[subName] = parent
 				done = false
@@ -66,11 +74,7 @@ func flattenNestedPrenodes(nodes map[string]*prenode) {
 
 // returns a copy of all prenodes for the given game.
 func getPrenodes(game int) map[string]*prenode {
-	src := seasonsPrenodes
-	if gameNames[game] == "ages" {
-		src = agesPrenodes
-	}
-
+	src := sora(game, seasonsPrenodes, agesPrenodes).(map[string]*prenode)
 	dst := make(map[string]*prenode, len(src))
 	for k, v := range src {
 		dst[k] = v
@@ -83,7 +87,7 @@ func appendPrenodes(total map[string]*prenode, maps ...map[string]*prenode) {
 	for _, nodeMap := range maps {
 		for k, v := range nodeMap {
 			if _, ok := total[k]; ok {
-				panic("fatal: duplicate logic key: " + k)
+				panic("duplicate logic key: " + k)
 			}
 			total[k] = v
 		}
@@ -97,7 +101,6 @@ func loadLogic(filename string) map[string]*prenode {
 		FSMustByte(false, "/logic/"+filename), raw); err != nil {
 		panic(err)
 	}
-
 	m := make(map[string]*prenode)
 	for k, v := range raw {
 		m[k] = loadNode(v)

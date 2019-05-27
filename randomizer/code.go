@@ -12,18 +12,6 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-var globalRomBanks *romBanks // TODO: get rid of this with the other globals
-
-// return e.g. "\x2d\x79" for 0x792d
-func addrString(addr uint16) string {
-	return string([]byte{byte(addr), byte(addr >> 8)})
-}
-
-type romBanks struct {
-	endOfBank []uint16
-	assembler *assembler
-}
-
 // loaded from yaml, then converted to asm.
 type asmData struct {
 	filename string
@@ -33,76 +21,59 @@ type asmData struct {
 	Ages     yaml.MapSlice
 }
 
-var codeMutables = map[string]*MutableRange{}
-
 // designates a position at which the translated asm will overwrite whatever
 // else is there, and associates it with a given label (or a generated label if
 // the given one is blank). if the replacement extends beyond the end of the
 // bank, the EOB point is moved to the end of the replacement. if the bank
 // offset of `addr` is zero, the replacement will start at the existing EOB
 // point.
-func (r *romBanks) replaceAsm(addr Addr, label, asm string) {
-	if data, err := r.assembler.compile(asm); err == nil {
-		r.replaceRaw(addr, label, data)
+func (rom *romState) replaceAsm(addr address, label, asm string) {
+	if data, err := rom.assembler.compile(asm); err == nil {
+		rom.replaceRaw(addr, label, data)
 	} else {
-		exitWithAsmError(label, err)
+		fmt.Fprintf(os.Stderr, "assembler error in %s:\n%v\n", label, err)
+		os.Exit(1)
 	}
 }
 
 // as replaceAsm, but interprets the data as a literal byte string.
-func (r *romBanks) replaceRaw(addr Addr, label, data string) {
+func (rom *romState) replaceRaw(addr address, label, data string) {
 	if addr.offset == 0 {
-		addr.offset = r.endOfBank[addr.bank]
+		addr.offset = rom.bankEnds[addr.bank]
 	}
 
 	if label == "" {
 		label = fmt.Sprintf("replacement at %02x:%04x", addr.bank, addr.offset)
 	}
 
-	if end := addr.offset + uint16(len(data)); end > r.endOfBank[addr.bank] {
+	end := addr.offset + uint16(len(data))
+	if end > rom.bankEnds[addr.bank] {
 		if end > 0x8000 {
 			panic(fmt.Sprintf("not enough space for %s in bank %02x",
 				label, addr.bank))
 		}
-		r.endOfBank[addr.bank] = end
+		rom.bankEnds[addr.bank] = end
 	}
 
-	codeMutables[label] = &MutableRange{
-		Addrs: []Addr{addr},
-		New:   []byte(data),
+	rom.codeMutables[label] = &mutableRange{
+		addr: addr,
+		new:  []byte(data),
 	}
-	r.assembler.define(label, addr.offset)
-}
-
-// exit with an error code and an assembler error message.
-func exitWithAsmError(funcName string, err error) {
-	fmt.Fprintf(os.Stderr, "assembler error in %s:\n%v\n", funcName, err)
-	os.Exit(1)
-}
-
-// returns an ordered slice of keys for slot names, so that identical seeds
-// produce identical checksums.
-func getOrderedSlotKeys() []string {
-	keys := make([]string, 0, len(ItemSlots))
-	for k := range ItemSlots {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
+	rom.assembler.define(label, addr.offset)
 }
 
 // returns a byte table of (group, room, collect mode) entries for randomized
 // items. a mode >7f means to use &7f as an index to a jump table for special
 // cases.
-func makeCollectModeTable() string {
+func makeCollectModeTable(itemSlots map[string]*itemSlot) string {
 	b := new(strings.Builder)
 
-	for _, key := range getOrderedSlotKeys() {
-		slot := ItemSlots[key]
+	for _, key := range orderedKeys(itemSlots) {
+		slot := itemSlots[key]
 
 		// use no pickup animation if item is a key outside a chest
 		mode := slot.collectMode
-		if mode < 0x80 && slot.Treasure != nil && slot.Treasure.id == 0x30 {
+		if mode < 0x80 && slot.treasure != nil && slot.treasure.id == 0x30 {
 			mode &= 0xf8
 		}
 
@@ -121,13 +92,13 @@ func makeCollectModeTable() string {
 	return b.String()
 }
 
-// returns a byte table (group, room, ID, subID) entries for randomized small
+// returns a byte table (group, room, id, subid) entries for randomized small
 // key drops (and other falling items, but those entries won't be used).
-func makeRoomTreasureTable(game int) string {
+func makeRoomTreasureTable(game int, itemSlots map[string]*itemSlot) string {
 	b := new(strings.Builder)
 
-	for _, key := range getOrderedSlotKeys() {
-		slot := ItemSlots[key]
+	for _, key := range orderedKeys(itemSlots) {
+		slot := itemSlots[key]
 
 		if slot.collectMode != collectModes["drop"] &&
 			(game == gameAges || slot.collectMode != collectModes["d4 pool"]) {
@@ -137,14 +108,14 @@ func makeRoomTreasureTable(game int) string {
 		// accommodate nil treasures when creating the dummy table before
 		// treasures have actually been assigned.
 		var err error
-		if slot.Treasure == nil {
+		if slot.treasure == nil {
 			_, err = b.Write([]byte{slot.group, slot.room, 0x00, 0x00})
-		} else if slot.Treasure.id == 0x30 {
+		} else if slot.treasure.id == 0x30 {
 			// make small keys the normal falling variety, with no text box.
 			_, err = b.Write([]byte{slot.group, slot.room, 0x30, 0x01})
 		} else {
 			_, err = b.Write([]byte{slot.group, slot.room,
-				slot.Treasure.id, slot.Treasure.subID})
+				slot.treasure.id, slot.treasure.subid})
 		}
 		if err != nil {
 			panic(err)
@@ -157,16 +128,16 @@ func makeRoomTreasureTable(game int) string {
 
 // that's correct
 type eobThing struct {
-	addr         Addr
+	addr         address
 	label, thing string
 }
 
 // applies the labels and EOB declarations in the asm data sets.
-func (r *romBanks) applyAsmData(game int, asmFiles []*asmData) {
-	// preprocess map slices
+func (rom *romState) applyAsmData(asmFiles []*asmData) {
+	// preprocess map slices (keys = labels, values = asm blocks)
 	slices := make([]yaml.MapSlice, 0)
 	for _, asmFile := range asmFiles {
-		if game == gameSeasons {
+		if rom.game == gameSeasons {
 			slices = append(slices, asmFile.Common, asmFile.Seasons)
 		} else {
 			slices = append(slices, asmFile.Common, asmFile.Ages)
@@ -191,35 +162,27 @@ func (r *romBanks) applyAsmData(game int, asmFiles []*asmData) {
 		}
 	}
 
-	// make placeholders for EOB labels
-	for _, slice := range slices {
-		for _, item := range slice {
-			k := item.Key.(string)
-			if _, label := parseMetalabel(k); label != "" {
-				r.assembler.define(label, 0)
-			}
-		}
-	}
-
 	// save original EOB boundaries
-	originalEOBs := make([]uint16, 0x40)
-	copy(originalEOBs, r.endOfBank)
+	originalBankEnds := make([]uint16, 0x40)
+	copy(originalBankEnds, rom.bankEnds)
 
-	// i'm not in the mood
-	allEobThings := make([]eobThing, 0, 3000) // 3000 is definitely fine
-
-	// put all the E O B Things in the E O B Things thing
+	// make placeholders for labels and accumulate EOB items
+	allEobThings := make([]eobThing, 0, 3000) // 3000 is probably fine
 	for _, slice := range slices {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
-			if addr, label := parseMetalabel(k); addr.offset == 0 {
+			addr, label := parseMetalabel(k)
+			if label != "" {
+				rom.assembler.define(label, 0)
+			}
+			if addr.offset == 0 {
 				allEobThings = append(allEobThings,
-					eobThing{Addr{addr.bank, 0}, label, v})
+					eobThing{address{addr.bank, 0}, label, v})
 			}
 		}
 	}
 
-	// defines (which have no labels, by convention) must go first
+	// defines (which have no labels, by convention) must be processed first
 	sort.Slice(allEobThings, func(i, j int) bool {
 		return allEobThings[i].label == ""
 	})
@@ -234,15 +197,15 @@ func (r *romBanks) applyAsmData(game int, asmFiles []*asmData) {
 
 	// write EOB asm using placeholders for labels, in order to get real addrs
 	for _, thing := range allEobThings {
-		r.replaceAsm(thing.addr, thing.label, thing.thing)
+		rom.replaceAsm(thing.addr, thing.label, thing.thing)
 	}
 
 	// reset EOB boundaries
-	copy(r.endOfBank, originalEOBs)
+	copy(rom.bankEnds, originalBankEnds)
 
 	// rewrite EOB asm, using real addresses for labels
 	for _, thing := range allEobThings {
-		r.replaceAsm(thing.addr, thing.label, thing.thing)
+		rom.replaceAsm(thing.addr, thing.label, thing.thing)
 	}
 
 	// make non-EOB asm replacements
@@ -250,14 +213,14 @@ func (r *romBanks) applyAsmData(game int, asmFiles []*asmData) {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
 			if addr, label := parseMetalabel(k); addr.offset != 0 {
-				r.replaceAsm(addr, label, v)
+				rom.replaceAsm(addr, label, v)
 			}
 		}
 	}
 }
 
 // applies the labels and EOB declarations in the given asm data files.
-func (r *romBanks) applyAsmFiles(game int, infos []os.FileInfo) {
+func (rom *romState) applyAsmFiles(infos []os.FileInfo) {
 	asmFiles := make([]*asmData, len(infos))
 	for i, info := range infos {
 		asmFiles[i] = new(asmData)
@@ -274,26 +237,26 @@ func (r *romBanks) applyAsmFiles(game int, infos []os.FileInfo) {
 			panic(err)
 		}
 	}
-	r.applyAsmData(game, asmFiles)
+	rom.applyAsmData(asmFiles)
 }
 
 // showAsm writes the disassembly of the specified symbol to the given
 // io.Writer.
-func showAsm(symbol string, w io.Writer) error {
-	m := codeMutables[symbol]
-	s, err := globalRomBanks.assembler.decompile(string(m.New))
+func (rom *romState) showAsm(symbol string, w io.Writer) error {
+	mut := rom.codeMutables[symbol]
+	s, err := rom.assembler.decompile(string(mut.new))
 	if err != nil {
 		return err
 	}
-	_, err = fmt.Fprintf(os.Stderr, "%02x:%04x: %s\n",
-		m.Addrs[0].bank, m.Addrs[0].offset, symbol)
+	fmt.Fprintf(os.Stderr, "%02x:%04x: %s\n",
+		mut.addr.bank, mut.addr.offset, symbol)
 	_, err = fmt.Fprintln(w, s)
 	return err
 }
 
 // returns the address and label components of a meta-label such as
 // "02/openRingList" or "02/56a1/". see asm/README.md for details.
-func parseMetalabel(ml string) (addr Addr, label string) {
+func parseMetalabel(ml string) (addr address, label string) {
 	switch tokens := strings.Split(ml, "/"); len(tokens) {
 	case 1:
 		fmt.Sscanf(ml, "%s", &label)
@@ -304,7 +267,6 @@ func parseMetalabel(ml string) (addr Addr, label string) {
 	default:
 		panic("invalid metalabel: " + ml)
 	}
-
 	return
 }
 
@@ -319,28 +281,29 @@ func loadBankEnds(game string) []uint16 {
 	return eobs[game]
 }
 
-// loads text, processes it, and applies it to matching labels.
-func applyText(b []byte, game string) {
+// loads text, processes it, and attaches it to matching labels.
+func (rom *romState) attachText() {
 	// load initial text
 	textMap := make(map[string]map[string]string)
 	if err := yaml.Unmarshal(
 		FSMustByte(false, "/romdata/text.yaml"), textMap); err != nil {
 		panic(err)
 	}
-	for label, rawText := range textMap[game] {
-		if mut, ok := codeMutables[label]; ok {
-			mut.New = processText(rawText)
+	for label, rawText := range textMap[gameNames[rom.game]] {
+		if mut, ok := rom.codeMutables[label]; ok {
+			mut.new = processText(rawText)
 		} else {
+			// TODO: there shouldn't be printlns anywhere. unit test instead?
 			println("no code label matches text label " + label)
 		}
 	}
 
 	// insert randomized item names into shop text
-	shopNames := loadShopNames(game)
+	shopNames := loadShopNames(gameNames[rom.game])
 	shopMap := map[string]string{
 		"shopFluteText": "shop, 150 rupees",
 	}
-	if game == "seasons" {
+	if rom.game == gameSeasons {
 		shopMap["membersShopSatchelText"] = "member's shop 1"
 		shopMap["membersShopGashaText"] = "member's shop 2"
 		shopMap["membersShopMapText"] = "member's shop 3"
@@ -348,16 +311,11 @@ func applyText(b []byte, game string) {
 		shopMap["marketPeachStoneText"] = "subrosia market, 2nd item"
 		shopMap["marketCardText"] = "subrosia market, 5th item"
 	}
-	for cName, sName := range shopMap {
-		code := codeMutables[cName]
-		itemName := shopNames[ItemSlots[sName].Treasure.displayName]
-		code.New = append(code.New[:2],
-			append([]byte(itemName), code.New[2:]...)...)
-	}
-
-	// apply changes
-	for label := range textMap[game] {
-		codeMutables[label].Mutate(b)
+	for codeName, slotName := range shopMap {
+		code := rom.codeMutables[codeName]
+		itemName := shopNames[rom.itemSlots[slotName].treasure.displayName]
+		code.new = append(code.new[:2],
+			append([]byte(itemName), code.new[2:]...)...)
 	}
 }
 
@@ -403,31 +361,26 @@ func loadShopNames(game string) map[string]string {
 	return m
 }
 
-// actually, set up all the pre-randomization changes, and track the state so
-// that the randomization changes can be applied later.
-func initRomBanks(game int) *romBanks {
-	codeMutables = make(map[string]*MutableRange)
+// set up all the pre-randomization asm changes, and track the state so that
+// the randomization changes can be applied later.
+func (rom *romState) initBanks() {
+	rom.codeMutables = make(map[string]*mutableRange)
+	rom.bankEnds = loadBankEnds(gameNames[rom.game])
 	asm, err := newAssembler()
 	if err != nil {
 		panic(err)
 	}
-
-	r := romBanks{
-		endOfBank: loadBankEnds(gameNames[game]),
-		assembler: asm,
-	}
+	rom.assembler = asm
 
 	// do this before loading asm files, since the sizes of the tables vary
 	// with the number of checks.
-	roomTreasureBank, numOwlIds := byte(0x3f), 0x1e // seasons
-	if game == gameAges {
-		roomTreasureBank, numOwlIds = 0x38, 0x14
-	}
-	r.replaceRaw(Addr{0x06, 0}, "collectModeTable",
-		makeCollectModeTable())
-	r.replaceRaw(Addr{roomTreasureBank, 0}, "roomTreasures",
-		makeRoomTreasureTable(game))
-	r.replaceRaw(Addr{0x3f, 0}, "owlTextOffsets",
+	roomTreasureBank := byte(sora(rom.game, 0x3f, 0x38).(int))
+	numOwlIds := sora(rom.game, 0x1e, 0x14).(int)
+	rom.replaceRaw(address{0x06, 0}, "collectModeTable",
+		makeCollectModeTable(rom.itemSlots))
+	rom.replaceRaw(address{roomTreasureBank, 0}, "roomTreasures",
+		makeRoomTreasureTable(rom.game, rom.itemSlots))
+	rom.replaceRaw(address{0x3f, 0}, "owlTextOffsets",
 		string(make([]byte, numOwlIds*2)))
 
 	// load all asm files in the asm/ directory.
@@ -439,7 +392,5 @@ func initRomBanks(game int) *romBanks {
 	if err != nil {
 		panic(err)
 	}
-	r.applyAsmFiles(game, fi)
-
-	return &r
+	rom.applyAsmFiles(fi)
 }

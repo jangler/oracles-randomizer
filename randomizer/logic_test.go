@@ -9,31 +9,24 @@ import (
 var dungeonEntranceRegexp = regexp.MustCompile(`d[1-8].* entrance`)
 var portalEntranceRegexp = regexp.MustCompile(`enter .+ portal`)
 
-// returns true iff p1 is a parent of p2.
-func isParent(p1Name string, p2 *prenode) bool {
-	for _, parent := range p2.parents {
-		if parent == p1Name {
-			return true
-		}
+func TestLinks(t *testing.T) {
+	for _, game := range []int{gameSeasons, gameAges} {
+		testLinksForGame(t, game)
 	}
-	return false
 }
 
-func TestLinks(t *testing.T) {
-	// TODO: needs to be changed manually for now
-	game := gameSeasons
-
+func testLinksForGame(t *testing.T, game int) {
 	nodes := getPrenodes(game)
-	initRom(nil, game)
+	rom := newRomState(nil, game)
 
-	for key, slot := range ItemSlots {
-		treasureName := findTreasureName(slot.Treasure)
-		if node, ok := nodes[treasureName]; ok {
+	for key, slot := range rom.itemSlots {
+		treasureName, _ := reverseLookup(rom.treasures, slot.treasure)
+		if node, ok := nodes[treasureName.(string)]; ok {
 			node.parents = append(node.parents, key)
 		} else {
 			n := &prenode{nType: andNode, parents: make([]interface{}, 1)}
 			n.parents[0] = key
-			nodes[treasureName] = n
+			nodes[treasureName.(string)] = n
 		}
 	}
 

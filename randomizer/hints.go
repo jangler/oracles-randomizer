@@ -9,6 +9,41 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+// returns a map of owl names to text indexes for the given game.
+func getOwlIds(game int) map[string]byte {
+	owls := make(map[string]map[string]byte)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/romdata/owls.yaml"), owls); err != nil {
+		panic(err)
+	}
+	return owls[gameNames[game]]
+}
+
+// updates the owl statue text data based on the given hints. does not mutate
+// anything.
+func (rom *romState) setOwlData(owlHints map[string]string) {
+	table := rom.codeMutables["owlTextOffsets"]
+	text := rom.codeMutables["owlText"]
+	builder := new(strings.Builder)
+	addr := text.addr.offset
+	owlTextIds := getOwlIds(rom.game)
+
+	for _, owlName := range orderedKeys(owlTextIds) {
+		hint := owlHints[owlName]
+		textId := owlTextIds[owlName]
+		str := "\x0c\x00" + strings.ReplaceAll(hint, "\n", "\x01") + "\x00"
+		table.new[textId*2] = byte(addr)
+		table.new[textId*2+1] = byte(addr >> 8)
+		addr += uint16(len(str))
+		builder.WriteString(str)
+	}
+
+	text.new = []byte(builder.String())
+
+	rom.codeMutables["owlTextOffsets"] = table
+	rom.codeMutables["owlText"] = text
+}
+
 type hinter struct {
 	areas map[string]string
 	items map[string]string
@@ -57,19 +92,12 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 	owlNames []string, plan map[string]string) (map[string]string, error) {
 	// function body starts here lol
 	hints := make(map[string]string)
-	slots := getShuffledSlots(src, checks)
+	slots := getShuffledHintSlots(src, checks)
 	i := 0
 
 	// check for invalid plando owl names
 	for k := range plan {
-		found := false
-		for _, name := range owlNames {
-			if k == name {
-				found = true
-				break
-			}
-		}
-		if !found {
+		if !sliceContains(owlNames, k) {
 			return nil, fmt.Errorf("unknown owl name: %s", k)
 		}
 	}
@@ -159,19 +187,16 @@ func (ns nodeSlice) Swap(i, j int) {
 	ns[i], ns[j] = ns[j], ns[i]
 }
 
-// getShuffledSlots returns a randomly ordered slice of slot nodes.
-func getShuffledSlots(src *rand.Rand,
-	checks map[*node]*node) []*node {
+// getShuffledHintSlots returns a randomly ordered slice of slot nodes.
+func getShuffledHintSlots(src *rand.Rand, checks map[*node]*node) []*node {
 	// make slice of check names
-	slots := make([]*node, len(checks))
-	i := 0
+	slots, i := make([]*node, len(checks)), 0
 	for slot, item := range checks {
 		// don't include dungeon items, since dungeon item hints would be
 		// useless ("Level 7 holds a Boss Key")
 		if getDungeonName(item.name) != "" {
 			continue
 		}
-
 		// and don't include these checks, since they're dummy slots that
 		// aren't actually randomized, or seed trees that the player is
 		// guaranteed to know about if they're using seeds.
@@ -180,9 +205,7 @@ func getShuffledSlots(src *rand.Rand,
 			"horon village tree", "south lynna tree":
 			continue
 		}
-
-		slots[i] = slot
-		i++
+		slots[i], i = slot, i+1
 	}
 	slots = slots[:i] // trim to the number of actually hintable checks
 
