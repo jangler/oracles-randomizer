@@ -7,30 +7,27 @@
 
 -- TODO: ages addrs
 local bank_offset = (0x3f - 1) * 0x4000
-local seek_table = {DIN = 0x4a75, NAY = nil}
-local prob_table = {DIN = 0x481d, NAY = nil}
-local drop_table = {DIN = 0x47dd, NAY = nil}
-local grp1_table = {DIN = 0x4865, NAY = nil}
+local seek_table = {DIN = 0x4a75, NAY = 0x4a46}
+local prob_table = {DIN = 0x481d, NAY = 0x47fe}
+local drop_table = {DIN = 0x47dd, NAY = 0x47be}
+local grp1_table = {DIN = 0x4865, NAY = nil} -- idk when this applies for ages
 local name_table = {
-    DIN = {
-        'fairy',         -- 0
-        'heart',         -- 1
-        '1 rupee',       -- 2
-        '5 rupees',      -- 3
-        'bombs',         -- 4
-        'ember seeds',   -- 5
-        'scent seeds',   -- 6
-        'pegasus seeds', -- 7
-        'gale seeds',    -- 8
-        'mystery seeds', -- 9
-        nil,             -- a
-        nil,             -- b
-        '1 ore',         -- c
-        '5 ores',        -- d
-        nil,             -- e
-        'podoboo',       -- f
-    },
-    NAYRU = {}
+    'fairy',         -- 0
+    'heart',         -- 1
+    '1 rupee',       -- 2
+    '5 rupees',      -- 3
+    'bombs',         -- 4
+    'ember seeds',   -- 5
+    'scent seeds',   -- 6
+    'pegasus seeds', -- 7
+    'gale seeds',    -- 8
+    'mystery seeds', -- 9
+    nil,             -- a
+    nil,             -- b
+    '1 ore',         -- c
+    '5 ores',        -- d
+    nil,             -- e
+    'enemy',         -- f
 }
 
 local rom = io.open(arg[1], 'rb')
@@ -112,7 +109,7 @@ local named_probs = {}
 for i = 1, 0x20 do
     if drop_probs[i-1] ~= nil then
         named_probs[i] = {
-            name = name_table[game][i] or i-1,
+            name = name_table[i] or i-1,
             prob = drop_probs[i-1] / 0x20
         }
     else
