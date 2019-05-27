@@ -1,7 +1,7 @@
 shield: {or: [wooden shield, iron shield]}
 
 bombs: {or: [
-    ["bombs, 10", or: [break bush, flute, shovel]],
+    ["bombs, 10", or: [bracelet, break pot, flute, shovel, seqbreak]],
     [hard, or: [d2 boss, goron shooting gallery]]]}
 
 ricky's flute: {or: []}

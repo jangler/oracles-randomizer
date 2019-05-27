@@ -25,7 +25,7 @@ cape: {count: [2, feather]}
 # this of course doesn't apply to all trees, but trees won't have any seeds
 # attached to them unless they can be harvested. so it works out.
 refill seeds: {or: [harvest tree, dimitri's flute, dimitri, seqbreak,
-    [hard, break bush]]}
+    [hard, or: [sword, flute, magic boomerang]]]}
 
 harvest ember seeds: [seed item, or: [
     [ember tree seeds, refill seeds], [hard, d5 armos chest],
@@ -71,7 +71,7 @@ seed item: {or: [satchel, slingshot]}
 bombs: {or: [
     [hard, d2 blade chest, bracelet], # deku scrub, TODO: rupees
     [hard, harvest bush, d2 bracelet room],
-    ["bombs, 10", or: [shovel, break flower, flute, seqbreak]]]}
+    ["bombs, 10", or: [shovel, bracelet, break flower, flute, seqbreak]]]}
 
 # jump x pit tiles
 jump 3: {or: [[feather, pegasus satchel], cape]}
