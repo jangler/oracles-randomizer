@@ -50,6 +50,7 @@ var (
 	flagCpuProf  string
 	flagDevCmd   string
 	flagDungeons bool
+	flagFastLog  bool
 	flagHard     bool
 	flagNoMusic  bool
 	flagNoUI     bool
@@ -77,6 +78,8 @@ func initFlags() {
 		"subcommands are 'findaddr', 'showasm', and 'stats'")
 	flag.BoolVar(&flagDungeons, "dungeons", false,
 		"shuffle dungeon entrances")
+	flag.BoolVar(&flagFastLog, "fastlog", false,
+		"don't split log file items into sections")
 	flag.BoolVar(&flagHard, "hard", false,
 		"enable more difficult logic")
 	flag.BoolVar(&flagNoMusic, "nomusic", false,
@@ -534,7 +537,7 @@ func randomize(rom *romState, dirName, logFilename string,
 			gamePrefix, version, ri.seed, hardString)
 	}
 	writeSummary(filepath.Join(dirName, logFilename), checksum,
-		ropts, rom, ri, checks, spheres, extra, owlHints)
+		ropts, rom, ri, checks, spheres, extra, owlHints, flagFastLog)
 
 	return ri.seed, checksum, logFilename, nil
 }
