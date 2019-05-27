@@ -529,7 +529,6 @@ func randomize(rom *romState, dirName, logFilename string,
 	}
 
 	// write spoiler log
-	logf("route found; generating log file")
 	if logFilename == "" {
 		gamePrefix := sora(rom.game, "oos", "ooa")
 		hardString := ternary(ropts.hard, "hard_", "")

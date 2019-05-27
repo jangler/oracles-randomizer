@@ -19,11 +19,11 @@ func getChecks(usedItems, usedSlots *list.List) map[*node]*node {
 	return checks
 }
 
-// getSpheres returns successive slices of nodes that can be reached at a step
-// in item collection. sphere 0 is the nodes that can be reached from the
-// start with no items; sphere 1 is the nodes that can be reached using the
-// items from sphere 0, and so on. each node only belongs to one sphere. it
-// also returns a separate slice of nodes that aren't reachable at all.
+// getSpheres returns successive slices of checks that can be reached at a step
+// in item collection. sphere 0 is the checks that can be reached from the
+// start with no items; sphere 1 is the checks that can be reached using the
+// items from sphere 0, and so on. each checks only belongs to one sphere. it
+// also returns a separate slice of checks that aren't reachable at all.
 func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 	reached := make(map[*node]bool)
 	spheres := make([][]*node, 0)
@@ -45,7 +45,7 @@ func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 		g.clearMarks()
 
 		// get the set of newly reachable nodes
-		for _, n := range g {
+		for n, _ := range checks {
 			if !reached[n] && n.getMark(false).reachable() {
 				sphere = append(sphere, n)
 			}

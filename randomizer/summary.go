@@ -36,18 +36,18 @@ func getSummaryChannel(filename string) (chan string, chan int) {
 }
 
 // separates a map of checks into progression checks and junk checks.
-// TODO: this is really, really slow for seasons.
-func filterJunk(g graph, checks map[*node]*node) (prog, junk map[*node]*node) {
+func filterJunk(g graph, checks map[*node]*node,
+	treasures map[string]*treasure) (prog, junk map[*node]*node) {
 	prog, junk = make(map[*node]*node), make(map[*node]*node)
 
-	// start by assuming everything is progression
+	// start by assuming every item is progression
 	for k, v := range checks {
 		prog[k] = v
 	}
 
 	done := false
 	for !done {
-		spheres, _ := getSpheres(g, prog) // this is the main slow part
+		spheres, _ := getSpheres(g, prog)
 		done = true
 
 		// create a copy to pass to functions so that the map we're iterating
@@ -59,8 +59,9 @@ func filterJunk(g graph, checks map[*node]*node) (prog, junk map[*node]*node) {
 
 		// if item isn't required, move it to junk and reset iteration
 		for slot, item := range prog {
-			if !itemIsRequired(g, slot, item) &&
-				!itemChangesProgression(g, progCopy, spheres, slot, item) {
+			if itemIsInert(treasures, item.name) ||
+				(!itemIsRequired(g, slot, item) &&
+					!itemChangesProgression(g, progCopy, spheres, slot, item)) {
 				delete(prog, slot)
 				junk[slot] = item
 				done = false
@@ -223,7 +224,7 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 				nonKeyChecks[slot] = item
 			}
 		}
-		prog, junk := filterJunk(ri.graph, nonKeyChecks)
+		prog, junk := filterJunk(ri.graph, nonKeyChecks, rom.treasures)
 		logSpheres(summary, prog, spheres, extra, rom.game, nil)
 		sendSectionHeader(summary, "small keys and boss keys")
 		logSpheres(summary, checks, spheres, extra, rom.game, keyRegexp.MatchString)
