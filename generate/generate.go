@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -32,7 +33,9 @@ const version = {{version}}
 )
 
 var (
-	usernameRegexp = regexp.MustCompile(`github.com/(.+)/oracles-randomizer`)
+	usernamePattern = strings.ReplaceAll(
+		filepath.FromSlash(`github.com/(.+)/oracles-randomizer`), `\`, `\\`)
+	usernameRegexp = regexp.MustCompile(usernamePattern)
 	versionRegexp  = regexp.MustCompile(`/(.+)-\d+-g(.+)`)
 )
 
