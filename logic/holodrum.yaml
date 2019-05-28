@@ -183,7 +183,7 @@ dry eyeglass lake, west cave: [
         [d5 entrance, north horon default summer]]]
 
 # natzu
-natzu prairie: {or: [start]}
+natzu prairie: {or: []}
 natzu river: {or: []}
 natzu wasteland: {or: []}
 moblin keep: [or: [flippers, bomb jump 4], bracelet, or: [
@@ -308,39 +308,39 @@ holodrum plain west old man: [ghastly stump, ember seeds]
 north horon default spring: {or: []}
 north horon default summer: {or: []}
 north horon default autumn: {or: []}
-north horon default winter: {or: [start]}
+north horon default winter: {or: []}
 
 eastern suburbs default spring: {or: []}
 eastern suburbs default summer: {or: []}
-eastern suburbs default autumn: {or: [start]}
+eastern suburbs default autumn: {or: []}
 eastern suburbs default winter: {or: []}
 
 woods of winter default spring: {or: []}
-woods of winter default summer: {or: [start]}
+woods of winter default summer: {or: []}
 woods of winter default autumn: {or: []}
 woods of winter default winter: {or: []}
 
 spool swamp default spring: {or: []}
 spool swamp default summer: {or: []}
-spool swamp default autumn: {or: [start]}
+spool swamp default autumn: {or: []}
 spool swamp default winter: {or: []}
 
-holodrum plain default spring: {or: [start]}
+holodrum plain default spring: {or: []}
 holodrum plain default summer: {or: []}
 holodrum plain default autumn: {or: []}
 holodrum plain default winter: {or: []}
 
 sunken city default spring: {or: []}
-sunken city default summer: {or: [start]}
+sunken city default summer: {or: []}
 sunken city default autumn: {or: []}
 sunken city default winter: {or: []}
 
 lost woods default spring: {or: []}
 lost woods default summer: {or: []}
-lost woods default autumn: {or: [start]}
+lost woods default autumn: {or: []}
 lost woods default winter: {or: []}
 
-tarm ruins default spring: {or: [start]}
+tarm ruins default spring: {or: []}
 tarm ruins default summer: {or: []}
 tarm ruins default autumn: {or: []}
 tarm ruins default winter: {or: []}
@@ -348,9 +348,9 @@ tarm ruins default winter: {or: []}
 western coast default spring: {or: []}
 western coast default summer: {or: []}
 western coast default autumn: {or: []}
-western coast default winter: {or: [start]}
+western coast default winter: {or: []}
 
 temple remains default spring: {or: []}
 temple remains default summer: {or: []}
 temple remains default autumn: {or: []}
-temple remains default winter: {or: [start]}
+temple remains default winter: {or: []}
