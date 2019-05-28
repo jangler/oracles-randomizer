@@ -1,6 +1,7 @@
 package randomizer
 
 import (
+	"container/list"
 	"testing"
 )
 
@@ -177,5 +178,27 @@ func checkReach(t *testing.T, g graph, links map[string]string, target string,
 		} else {
 			t.Errorf("expected not to reach %s, but could", target)
 		}
+	}
+}
+
+func TestDungeonsOverfilled(t *testing.T) {
+	game := gameSeasons
+	items, slots := list.New(), list.New()
+	if dungeonsOverfilled(game, nil, nil, items, slots) {
+		t.Fatal("list is not overfilled")
+	}
+	item := items.PushBack(newNode("d1 item 1", 0))
+	if !dungeonsOverfilled(game, nil, nil, items, slots) {
+		t.Fatal("list is overfilled")
+	}
+	slot := slots.PushBack(newNode("d1 slot 1", 0))
+	if dungeonsOverfilled(game, nil, nil, items, slots) {
+		t.Fatal("list is not overfilled")
+	}
+	if dungeonsOverfilled(game, item, nil, items, slots) {
+		t.Fatal("list is not overfilled")
+	}
+	if !dungeonsOverfilled(game, nil, slot, items, slots) {
+		t.Fatal("list is overfilled")
 	}
 }

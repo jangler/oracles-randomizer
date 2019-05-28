@@ -23,6 +23,13 @@ var subrosianPortalNames = map[string]string{
 	"temple remains upper": "d8 entrance",
 }
 
+var dungeonNames = map[int][]string{
+	gameSeasons: []string{
+		"d0", "d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"},
+	gameAges: []string{
+		"d1", "d2", "d3", "d4", "d5", "d6 present", "d6 past", "d7", "d8"},
+}
+
 // adds nodes to the map based on default contents of item slots.
 func addDefaultItemNodes(rom *romState, nodes map[string]*prenode) {
 	for _, slot := range rom.itemSlots {
@@ -160,18 +167,8 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			return nil, fmt.Errorf("impossible plando configuration")
 		}
 
-		// place dungeon-specific items, then "regular" items
-		dungeonItems, nonDungeonItems := list.New(), list.New()
-		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-			item := ei.Value.(*node)
-			if getDungeonName(item.name) != "" {
-				dungeonItems.PushBack(item)
-			} else {
-				nonDungeonItems.PushBack(item)
-			}
-		}
-		if tryPlaceItems(ri, dungeonItems, slotList, rom.treasures, verbose, logf) &&
-			tryPlaceItems(ri, nonDungeonItems, slotList, rom.treasures, verbose, logf) {
+		if tryPlaceItems(
+			ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
 			ri.graph.clearMarks()
 			if ri.graph["done"].getMark(false) == markTrue {
 				// and we're done
@@ -241,16 +238,14 @@ func rollSeasons(src *rand.Rand, g graph,
 func setDungeonEntrances(src *rand.Rand, g graph, game int, shuffle bool,
 	plan map[string]string) (map[string]string, error) {
 	dungeonEntranceMap := make(map[string]string)
-	var dungeons []string
-
+	dungeons := make([]string, len(dungeonNames[game]))
+	copy(dungeons, dungeonNames[game])
 	if game == gameSeasons {
-		dungeons = []string{"d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8"}
-		if !shuffle {
-			g["d2 alt entrances enabled"].addParent(g["start"])
-		}
-	} else {
-		dungeons = []string{"d1", "d2", "d3", "d4", "d5",
-			"d6 present", "d6 past", "d7", "d8"}
+		dungeons = dungeons[1:]
+	}
+
+	if game == gameSeasons && !shuffle {
+		g["d2 alt entrances enabled"].addParent(g["start"])
 	}
 
 	// check for invalid plan
@@ -263,7 +258,7 @@ func setDungeonEntrances(src *rand.Rand, g graph, game int, shuffle bool,
 		}
 	}
 
-	var entrances = make([]string, len(dungeons))
+	entrances := make([]string, len(dungeons))
 	copy(entrances, dungeons)
 
 	if shuffle {
@@ -489,7 +484,7 @@ func initRouteInfo(ri *routeInfo, rom *romState,
 
 // returns true iff successful
 func tryPlaceItems(ri *routeInfo, itemList, slotList *list.List,
-	treasures map[string]*treasure, verbose bool, logf logFunc) bool {
+	treasures map[string]*treasure, game int, verbose bool, logf logFunc) bool {
 	for itemList.Len() > 0 && slotList.Len() > 0 {
 		if verbose {
 			logf("searching; filling %d more slots", slotList.Len())
@@ -497,7 +492,7 @@ func tryPlaceItems(ri *routeInfo, itemList, slotList *list.List,
 		}
 
 		eItem, eSlot := trySlotRandomItem(
-			ri.graph, ri.src, itemList, slotList, treasures)
+			ri.graph, ri.src, itemList, slotList, treasures, game)
 
 		if eItem != nil {
 			item := itemList.Remove(eItem).(*node)
@@ -568,7 +563,7 @@ planLoop:
 }
 
 func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
-	treasures map[string]*treasure) (usedItem, usedSlot *list.Element) {
+	treasures map[string]*treasure, game int) (usedItem, usedSlot *list.Element) {
 	// try placing the first item in a slot until it fits
 	triedProgression := false
 	for _, progressionItemsOnly := range []bool{true, false} {
@@ -589,6 +584,11 @@ func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
 				slot := es.Value.(*node)
 
 				if !itemFitsInSlot(item, slot, src) {
+					continue
+				}
+
+				// make sure enough space is left for remaining dungeon items
+				if dungeonsOverfilled(game, ei, es, itemPool, slotPool) {
 					continue
 				}
 
@@ -711,6 +711,37 @@ func isDeadEnd(g graph, curItem, curSlot *list.Element,
 	}
 
 	return dead
+}
+
+// returns true iff there are more items specific to any dungeon than there are
+// slots remaining in that dungeon. elements item and slot are not counted.
+func dungeonsOverfilled(game int, item, slot *list.Element,
+	itemPool, slotPool *list.List) bool {
+	for _, name := range dungeonNames[game] {
+		// ages d6 boss key isn't correctly accounted for here. oh well.
+		nItems := countList(itemPool, func(e *list.Element) bool {
+			return e != item && getDungeonName(e.Value.(*node).name) == name
+		})
+		nSlots := countList(slotPool, func(e *list.Element) bool {
+			return e != slot && getDungeonName(e.Value.(*node).name) == name
+		})
+		if nItems > nSlots {
+			return true
+		}
+	}
+	return false
+}
+
+// returns the number of elements in the list for which the given function
+// returns true.
+func countList(l *list.List, f func(*list.Element) bool) int {
+	n := 0
+	for e := l.Front(); e != nil; e = e.Next() {
+		if f(e) {
+			n++
+		}
+	}
+	return n
 }
 
 // itemIsInert returns true iff the item with the given name can never be
