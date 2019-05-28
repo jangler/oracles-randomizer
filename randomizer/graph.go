@@ -34,7 +34,7 @@ func (g graph) addParents(links map[string][]string) {
 // time relationships in the graph change.
 func (g graph) clearMarks() {
 	for _, n := range g {
-		n.mark = markNone
+		n.mark, n.sbMark = markNone, markNone
 	}
 }
 
@@ -111,6 +111,7 @@ type node struct {
 	name     string
 	nType    nodeType
 	mark     nodeMark
+	sbMark   nodeMark // essentially a parallel graph for sequence breaks
 	minCount int
 	parents  []*node
 	nChecked uint64
@@ -123,6 +124,7 @@ func newNode(name string, nType nodeType) *node {
 		name:    name,
 		nType:   nType,
 		mark:    markNone,
+		sbMark:  markNone,
 		parents: make([]*node, 0),
 	}
 }
@@ -150,32 +152,17 @@ func (n *node) getMark(seqbreak bool) nodeMark {
 
 // returns true iff all parents are true (no parents == true).
 func getAndMark(n *node, seqbreak bool) nodeMark {
-	if n.mark == markNone {
-		if seqbreak {
-			defer func() { n.mark = markNone }()
-		}
-		n.mark = markPending
+	mark := ternary(seqbreak, &n.sbMark, &n.mark).(*nodeMark)
+
+	if *mark == markNone {
+		*mark = markPending
 		eitherFound := false
 
-		// prioritize already pending/false nodes
-		for _, parent := range n.parents {
-			if !(seqbreak && seqbreakNames[parent.name]) {
-				switch parent.mark {
-				case markPending, markFalse:
-					n.mark = markNone
-					return markFalse
-				case markEither:
-					eitherFound = true
-				}
-			}
-		}
-
-		// then actually check them otherwise
 		for _, parent := range n.parents {
 			if !(seqbreak && seqbreakNames[parent.name]) {
 				switch parent.getMark(seqbreak) {
 				case markPending, markFalse:
-					n.mark = markNone
+					*mark = markNone
 					return markFalse
 				case markEither:
 					eitherFound = true
@@ -183,48 +170,33 @@ func getAndMark(n *node, seqbreak bool) nodeMark {
 			}
 		}
 
-		n.mark = markTrue
+		*mark = markTrue
 		if eitherFound {
-			n.mark = markEither
+			*mark = markEither
 		}
-		return n.mark
+		return *mark
 	}
 
-	return n.mark
+	return *mark
 }
 
 // returns true iff any parent is true (no parents == false).
 func getOrMark(n *node, seqbreak bool) nodeMark {
-	if n.mark == markNone {
-		if seqbreak {
-			defer func() { n.mark = markNone }()
-		}
-		n.mark = markPending
+	mark := ternary(seqbreak, &n.sbMark, &n.mark).(*nodeMark)
+
+	if *mark == markNone {
+		*mark = markPending
 		eitherFound := false
 
-		// prioritize already satisfied nodes
-		for _, parent := range n.parents {
-			if seqbreak && seqbreakNames[parent.name] {
-				return markTrue
-			}
-			switch parent.mark {
-			case markTrue:
-				n.mark = markTrue
-				return markTrue
-			case markEither:
-				eitherFound = true
-			}
-		}
-
-		// then actually check them otherwise
-		if n.mark == markPending {
+		if *mark == markPending {
 			for _, parent := range n.parents {
 				if seqbreak && seqbreakNames[parent.name] {
+					*mark = markTrue
 					return markTrue
 				}
 				switch parent.getMark(seqbreak) {
 				case markTrue:
-					n.mark = markTrue
+					*mark = markTrue
 					return markTrue
 				case markEither:
 					eitherFound = true
@@ -233,24 +205,23 @@ func getOrMark(n *node, seqbreak bool) nodeMark {
 		}
 
 		if eitherFound {
-			n.mark = markEither
+			*mark = markEither
 			return markEither
 		}
-		n.mark = markNone
+		*mark = markNone
 		return markFalse
 	}
 
-	return n.mark
+	return *mark
 }
 
 // returns true iff at least x parents of the parent are true.
 func getCountMark(n *node, seqbreak bool) nodeMark {
+	mark := ternary(seqbreak, &n.sbMark, &n.mark).(*nodeMark)
 	count := 0
-	if n.mark == markNone {
-		if seqbreak {
-			defer func() { n.mark = markNone }()
-		}
-		n.mark = markPending
+
+	if *mark == markNone {
+		*mark = markPending
 		eithers := 0
 
 		for _, parent := range n.parents[0].parents {
@@ -264,20 +235,20 @@ func getCountMark(n *node, seqbreak bool) nodeMark {
 			}
 
 			if count >= n.minCount {
-				n.mark = markTrue
+				*mark = markTrue
 				return markTrue
 			}
 		}
 
 		if count+eithers >= n.minCount {
-			n.mark = markEither
+			*mark = markEither
 			return markEither
 		}
-		n.mark = markNone
+		*mark = markNone
 		return markFalse
 	}
 
-	return n.mark
+	return *mark
 }
 
 // makes a node a parent of another node. a node can be a parent of another

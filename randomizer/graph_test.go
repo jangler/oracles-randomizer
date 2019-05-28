@@ -197,7 +197,7 @@ func TestEitherNodes(t *testing.T) {
 
 func checkMark(t *testing.T, n *node, expected nodeMark) {
 	t.Helper()
-	n.mark = markNone
+	n.mark, n.sbMark = markNone, markNone
 	if actual := n.getMark(false); expected != actual {
 		t.Fatalf("want %s, got %s", expected, actual)
 	}
