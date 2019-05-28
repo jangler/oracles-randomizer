@@ -1,5 +1,4 @@
-# all of the text itself is set after being loaded; see rom/text.yaml for the
-# contents. TODO: that file will probably move soon?
+# all of the text itself is set after being loaded; see romdata/text.yaml.
 
 common:
   # override addresses for owl statue text.

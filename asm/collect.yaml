@@ -1,5 +1,4 @@
-# see rom/treasures.go for an explanation of what this is.
-# TODO: that file won't be around for much longer. hopefully.
+# see randomizer/treasures.go for an explanation of what this is.
 
 common:
   # calls lookupCollectMode_body in another bank.
