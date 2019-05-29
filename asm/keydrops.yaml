@@ -32,6 +32,9 @@ floating:
       ret
 
 seasons:
+  # stop d4 pool item from incrementing subindex when it hits the water.
+  09/40fb/: nop
+
   0b/lookupKeyDropBank0b: |
       ld (hl),60
       inc l
