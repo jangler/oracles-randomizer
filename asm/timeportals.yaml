@@ -93,8 +93,18 @@ ages:
       ret
   10/7d88/: call checkActivateEchoesPortal
 
-  # add one to nuun highlands too. (actually, the portal is in the replacement.
-  # these are the normal objects, which are jumped to.)
+  # add a second dormant portal to the first dormant portal screen in talus
+  # peaks past, to prevent a softlock if the player doesn't have flippers or
+  # ages.
+  12/talusPeaksStaticObjects: |
+      db f2
+      db e1,00,68,18
+      db f6
+      db 20,08,00
+      db fe
+  12/5a62/: dw talusPeaksStaticObjects
+
+  # and in nuun highlands, by the bridge.
   12/nuunPortalStaticObjects: |
       db f2
       db 9a,00,68,48 # all carpenter stuff
@@ -117,8 +127,7 @@ ages:
       db fe
   12/5d42/: db f3; dw d2PresentPortalStaticObjects; db ff
 
-  # add time portal interaction in symmetry city past, to avoid softlock if
-  # player only has echoes.
+  # and symmetry city past.
   12/symmetryPortalStaticObjects: |
       db f1
       db dc,05
