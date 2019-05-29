@@ -106,6 +106,7 @@ common:
     define wMenuDisabled,cc02
     define wCutsceneState,cc03
     define wCutsceneTrigger,cc04
+    define wScreenTransitionDirection,cd02
     define wScreenOffsetY,cd08
     define wScreenShakeCounterY,cd18
     define w1Link.angle,d009

@@ -166,6 +166,24 @@ ages:
 
   03/4d6b/: call skipCapcom
 
+  # don't spawn maku path skeletons when entering from the right.
+  # this prevents softlocking by running out of ammunition.
+  02/despawnMakuPathSkeletons: |
+      ld a,(wScreenTransitionDirection)
+      cp a,03
+      jr nz,.done
+      push bc
+      ld bc,0604
+      call compareRoom
+      pop bc
+      jr nz,.done
+      ld a,06
+      jp 77f0
+      .done
+      ld a,(wActiveRoom)
+      jp 77c9
+  02/77c6/: jp despawnMakuPathSkeletons
+
   # make guy in front of d2 go away if you have bombs.
   09/5242/: |
       ld a,03
