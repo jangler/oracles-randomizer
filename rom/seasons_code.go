@@ -392,6 +392,9 @@ func initSeasonsEOB() {
 
 	// bank 09
 
+	// prevent d4 pool from incrementing item subindex.
+	r.replace(0x09, 0x40fb, "d4 pool nop", "\x34", "\x00")
+
 	// shared by maku tree and star-shaped ore.
 	starOreRoomTable := r.appendToBank(0x02, "star ore room table",
 		string(starOreRooms)+"\xff")

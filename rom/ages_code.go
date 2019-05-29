@@ -149,6 +149,14 @@ func initAgesEOB() {
 	r.replace(0x02, 0x5074, "call ring list gfx fix",
 		"\xcd\xad\x0c", "\xcd"+ringListGfxFix)
 
+	// always treat maku path skeletons as dead if the next room has been
+	// visited
+	permakillMakuSkeletons := r.appendToBank(0x02, "permakill maku skeletons",
+		"\xc5\x01\x04\x06\xcd"+compareRoom+"\xc1\xfa\x30\xcc\xc2\xc9\x77"+
+			"\xfa\x07\xc9\xb7\xfa\x30\xcc\xca\xc9\x77\x3e\x06\xc3\xf0\x77")
+	r.replace(0x02, 0x77c6, "jp permakill maku skeletons",
+		"\xfa\x30\xcc", "\xc3"+permakillMakuSkeletons)
+
 	// bank 03
 
 	// allow skipping the capcom screen after one second by pressing start
