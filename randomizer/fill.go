@@ -603,7 +603,7 @@ func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
 				// make sure item didn't cause a forward-wise dead end
 				if isDeadEnd(g, ei, es, itemPool, slotPool) {
 					item.removeParent(slot)
-					break
+					continue
 				}
 
 				return ei, es
