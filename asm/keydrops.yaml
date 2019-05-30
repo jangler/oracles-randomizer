@@ -35,29 +35,29 @@ seasons:
   # stop d4 pool item from incrementing subindex when it hits the water.
   09/40fb/: nop
 
-  0b/lookupKeyDropBank0b: |
+  0b/lookupRoomTreasureBank0b: |
       ld (hl),60
       inc l
       jp lookupRoomTreasure
-  0b/4416/: call lookupKeyDropBank0b
+  0b/4416/: call lookupRoomTreasureBank0b
 
   3f/lookupRoomTreasure_body: /include lookupRoomTreasure_body
 
 ages:
-  08/lookupKeyDropBank08: |
+  08/lookupRoomTreasureBank08: |
       ld bc,3001
       jp lookupRoomTreasure
-  08/5087/: call lookupKeyDropBank08
+  08/5087/: call lookupRoomTreasureBank08
 
-  0a/lookupKeyDropBank0a: |
+  0a/lookupRoomTreasureBank0a: |
       ld bc,3001
       jp lookupRoomTreasure
-  0a/7075/: call lookupKeyDropBank0a
+  0a/7075/: call lookupRoomTreasureBank0a
 
-  0c/lookupKeyDropBank0c: |
+  0c/lookupRoomTreasureBank0c: |
       ld (hl),60
       inc l
       jp lookupRoomTreasure
-  0c/442e/: call lookupKeyDropBank0c
+  0c/442e/: call lookupRoomTreasureBank0c
 
   38/lookupRoomTreasure_body: /include lookupRoomTreasure_body

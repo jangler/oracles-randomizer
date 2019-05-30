@@ -300,6 +300,14 @@ tokay pot cave:
   room: 0x05f7
   maptile: 0xdc
 
+# maku path
+maku path basement:
+  treasure: rupees, 30
+  room: 0x0605
+  maptile: 0x48
+  keydrop: true # uses the same code
+  collect: touch
+
 # d1
 d1 one-button chest:
   treasure: gasha seed

@@ -137,7 +137,9 @@ func (rom *romState) loadSlots() map[string]*itemSlot {
 		}
 
 		if raw.KeyDrop {
-			slot.collectMode = collectModes["drop"]
+			if raw.Collect == "" {
+				slot.collectMode = collectModes["drop"]
+			}
 		} else if raw.Addr != (rawAddr{}) {
 			slot.idAddrs = []address{{raw.Addr.Bank, raw.Addr.Offset}}
 			slot.subidAddrs = []address{{raw.Addr.Bank, raw.Addr.Offset + 1}}

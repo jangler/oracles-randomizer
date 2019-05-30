@@ -1,3 +1,7 @@
+# maku path
+maku path basement: {or: [
+    maku tree, [lynna village, shovel]]} # shovel kills gels
+
 # d1
 enter d1: {or: []}
 
