@@ -41,7 +41,7 @@ seasons:
   07/419a/slingshotInitialSelection: db bf,00
 
   # determines natzu landscape: 0b for ricky, 0c for dimitri, 0d for moosh.
-  0a/7fff/animalRegion: db 0b
+  0a/romAnimalRegion: db 0b
 
   # for the item dropped in the room *above* the trampoline.
   15/55d8/aboveD7ZolButtonId: db TREASURE_SMALL_KEY
@@ -75,7 +75,7 @@ ages:
   02/6d2c/dekuForestTreeMapIcon: db 19
 
   # 0b for ricky, 0c for dimitri, 0d for moosh
-  03/7fff/animalRegion: db 0d
+  03/romAnimalRegion: db 0d
 
   # set default satchel and shooter selection based on south lynna tree.
   # see equivalent seasons labels.

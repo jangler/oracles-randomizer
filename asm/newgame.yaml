@@ -24,7 +24,7 @@ seasons:
       pop hl
 
       # animal vars
-      ld a,(7fff)
+      ld a,(romAnimalRegion)
       ld (wAnimalRegion),a
       ld a,ff
       ld (wAnimalTutorialFlags),a
@@ -109,8 +109,13 @@ ages:
       .unlinked
 
       # animal vars
-      ld a,(7fff)
+      ld a,(romAnimalRegion)
       ld (wAnimalRegion),a
+      cp a,0c
+      jr nz,.notDimitri
+      ld a,02
+      ld (c737),a # disable SE nuun portal
+      .notDimitri
       ld a,03
       ld (wDimitriState),a
       ld a,ff

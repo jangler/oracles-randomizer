@@ -177,6 +177,7 @@ ages:
   04/tileSubTable: |
       db 00,20,00,61,d7 # portal in talus peaks
       db 01,48,00,45,d7 # portal south of past maku tree
+      db 00,37,02,43,d7 # portal in southeast ricky/moosh nuun
       db 00,39,00,63,f0 # open chest on intro screen
       db 00,39,20,63,f1 # closed chest on intro screen
       db 00,6b,00,42,3a # removed tree in yoll graveyard

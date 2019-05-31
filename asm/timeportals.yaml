@@ -105,7 +105,7 @@ ages:
   12/5a62/: dw talusPeaksStaticObjects
 
   # and in nuun highlands, by the bridge.
-  12/nuunPortalStaticObjects: |
+  12/nuunWestPortalStaticObjects: |
       db f2
       db 9a,00,68,48 # all carpenter stuff
       db 9a,01,58,58
@@ -116,7 +116,18 @@ ages:
   12/5a7b/: |
       db f2
       db e1,00,38,78
-      db f3; dw nuunPortalStaticObjects
+      db f3; dw nuunWestPortalStaticObjects
+      db ff
+
+  # and in nuun highlands, southeast corner.
+  12/nuunEastPortalStaticObjects: |
+      db f2
+      db d0,03,25,20
+      db e1,00,48,38
+      db fe
+  12/5af0/: |
+      db f3; dw nuunEastPortalStaticObjects
+      db f3; dw 4383
       db ff
 
   # and outside D2 present.

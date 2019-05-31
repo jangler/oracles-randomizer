@@ -52,7 +52,7 @@ func (rom *romState) setTreewarp(treewarp bool) {
 // sets the flute type and natzu region type based on a companion number 1 to
 // 3.
 func (rom *romState) setAnimal(companion int) {
-	rom.codeMutables["animalRegion"].new =
+	rom.codeMutables["romAnimalRegion"].new =
 		[]byte{byte(companion + 0x0a)}
 	rom.codeMutables["flutePalette"].new =
 		[]byte{byte(0x10*(4-companion) + 3)}
