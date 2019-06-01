@@ -533,7 +533,7 @@ func (rom *romState) setLinkedData() {
 
 // -- dungeon entrance / subrosia portal connections --
 
-type WarpData struct {
+type warpData struct {
 	// loaded from yaml
 	Entry, Exit uint16
 	MapTile     byte
@@ -547,12 +547,12 @@ type WarpData struct {
 
 func (rom *romState) setWarps(warpMap map[string]string, dungeons bool) {
 	// load yaml data
-	wd := make(map[string](map[string]*WarpData))
+	wd := make(map[string](map[string]*warpData))
 	if err := yaml.Unmarshal(
 		FSMustByte(false, "/romdata/warps.yaml"), wd); err != nil {
 		panic(err)
 	}
-	warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*WarpData)
+	warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
 
 	// read vanilla data
 	for name, warp := range warps {
@@ -577,7 +577,7 @@ func (rom *romState) setWarps(warpMap map[string]string, dungeons bool) {
 	// ages needs essence warp data to d6 present entrance, even though it
 	// doesn't exist in vanilla.
 	if rom.game == gameAges {
-		warps["d6 present essence"] = &WarpData{
+		warps["d6 present essence"] = &warpData{
 			vanillaExitData: []byte{0x81, 0x0e, 0x16, 0x01},
 		}
 	}
