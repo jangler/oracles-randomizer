@@ -172,9 +172,6 @@ func (rom *romState) loadSlots() map[string]*itemSlot {
 			}
 		}
 
-		// TODO: have a Dx small key (drop) treasure or something??
-		// TODO: even better, just have a small key (drop) treasure (etc) and
-		// get dungeon automatically based on music or something
 		if slot.collectMode != collectModes["drop"] { // drops already set
 			if raw.Collect != "" {
 				if mode, ok := collectModes[raw.Collect]; ok {

@@ -630,10 +630,9 @@ func itemFitsInSlot(itemNode, slotNode *node, src *rand.Rand) bool {
 		return false
 	}
 
-	// bomb flower has special graphics something
-	// TODO: maybe this can be worked around like with the temple of seasons
-	// item in seasons. not sure if it's super worth it but it'd be good to be
-	// consistent.
+	// bomb flower has special graphics something. this could probably be
+	// worked around like with the temple of seasons, but i'm not super
+	// interested in doing that.
 	if itemNode.name == "bomb flower" {
 		switch slotNode.name {
 		case "cheval's test", "cheval's invention", "wild tokay game",

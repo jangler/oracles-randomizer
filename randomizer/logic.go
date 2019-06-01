@@ -25,8 +25,6 @@ func rootPrenode(parents ...interface{}) *prenode {
 
 var seasonsPrenodes, agesPrenodes map[string]*prenode
 
-// TODO: now that this isn't strictly logic stuff, it should probably go in
-// another file. can there be multiple init() functions in one package??
 func init() {
 	seasonsPrenodes = make(map[string]*prenode)
 	appendPrenodes(seasonsPrenodes, loadLogic("rings.yaml"),

@@ -21,8 +21,8 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*routeInfo {
 		go func() {
 			for i := 0; i < n/threads; i++ {
 				for {
-					// TODO: idk if a new romState actually needs to be created
-					//       for each iteration.
+					// i don't know if a new romState actually *needs* to be
+					// created for each iteration.
 					seed := uint32(rand.Int())
 					rom := newRomState(nil, game)
 					route, _ := findRoute(rom, seed, ropts, false, dummyLogf)
