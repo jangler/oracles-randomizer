@@ -24,7 +24,9 @@ ages:
 Any of the sections can be omitted.
 
 - A key of the form `02/openRingList` means that the label `openRingList` will
-  be attached to its translated value, which will be appended to bank `02`.
+  be attached to its translated value, which will be appended to bank `02`. If
+  the label starts with `dma_`, the address will be aligned with the next
+  $10-byte block so that it can be DMA transferred accurately.
 - A key of the form `02/56a1/` will overwrite the data at `02:56a1` with its
   translated value. Its label is empty, so it is "anonymous" and cannot be
   referenced by other code. Non-empty labels are also allowed, as in

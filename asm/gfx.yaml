@@ -4,6 +4,38 @@
 # graphics.
 
 common:
+  # queues a DMA transfer for the custom string to be displayed at the top of
+  # the file select string.
+  02/displayFileSelectString: |
+      call loadUncompressedGfxHeader
+      # first load custom font
+      ld b,19 # 26*16 bytes
+      ld c,BANK_FONT
+      ld de,8e21
+      ld hl,dma_CustomFontLetters
+      call queueDmaTransfer
+      ld b,3 # 4*16 bytes
+      ld c,BANK_FONT
+      ld de,8fc1
+      ld hl,dma_CustomFontPunct
+      call queueDmaTransfer
+      ld b,1 # 32 bytes
+      ld c,02
+      ld de,9c01
+      ld hl,dma_FileSelectStringAttrs
+      call queueDmaTransfer
+      ld b,1 # 32 bytes
+      ld c,02
+      ld de,9c00
+      ld hl,dma_FileSelectStringTiles
+      jp queueDmaTransfer
+  02/dma_FileSelectStringAttrs: |
+      db 0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a
+      db 0a,0a,0a,0a
+  02/dma_FileSelectStringTiles: |
+      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
+      db 00,00,00,00
+
   # overrides the sprite data loaded for certain interactions. this is mostly
   # used for "non-item" interactions that depict items, like the ones in shops.
   3f/checkLoadCustomSprite: |
@@ -85,6 +117,8 @@ common:
       ret
 
 seasons:
+  02/4a54/: jp displayFileSelectString
+
   # make the rod of seasons interaction behave like a regular item,
   # graphically. otherwise asymmetric wide items can't go there.
   14/overrideAnimationId: |
@@ -238,6 +272,8 @@ seasons:
   3f/4356/: call checkLoadCustomSprite
 
 ages:
+  02/4a94/: jp displayFileSelectString
+
   # make tune of echoes treasure use harp graphics.
   15/53c9/: db 68
 

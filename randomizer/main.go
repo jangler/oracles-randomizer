@@ -62,10 +62,11 @@ var (
 )
 
 type randomizerOptions struct {
-	dungeons bool
+	treewarp bool
 	hard     bool
-	plan     *summary
+	dungeons bool
 	portals  bool
+	plan     *summary
 	seed     string // given seed, not necessarily final seed
 }
 
@@ -113,8 +114,9 @@ func Main() {
 	}
 
 	ropts := randomizerOptions{
-		dungeons: flagDungeons,
+		treewarp: flagTreewarp,
 		hard:     flagHard,
+		dungeons: flagDungeons,
 		portals:  flagPortals,
 		seed:     flagSeed,
 		plan:     newSummary(),
@@ -461,11 +463,10 @@ func randomizeFile(rom *romState, dirName, outfile string,
 	if err != nil {
 		return err
 	}
-	hardString := ternary(ropts.hard, "_hard", "").(string)
 	if outfile == "" {
 		gamePrefix := sora(rom.game, "oos", "ooa")
 		outfile = fmt.Sprintf("%srando_%s_%08x%s.gbc",
-			gamePrefix, version, seed, hardString)
+			gamePrefix, version, seed, optString(ropts))
 	}
 
 	// write to file
@@ -531,9 +532,8 @@ func randomize(rom *romState, dirName, logFilename string,
 	// write spoiler log
 	if logFilename == "" {
 		gamePrefix := sora(rom.game, "oos", "ooa")
-		hardString := ternary(ropts.hard, "hard_", "")
-		logFilename = fmt.Sprintf("%srando_%s_%08x_%slog.txt",
-			gamePrefix, version, ri.seed, hardString)
+		logFilename = fmt.Sprintf("%srando_%s_%08x%s_log.txt",
+			gamePrefix, version, ri.seed, optString(ropts))
 	}
 	writeSummary(filepath.Join(dirName, logFilename), checksum,
 		ropts, rom, ri, checks, spheres, extra, owlHints, flagFastLog)
@@ -587,7 +587,30 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 	}
 
 	// do it! (but don't write anything)
-	return rom.mutate(warps, ropts.dungeons)
+	return rom.mutate(warps, ri.seed, ropts)
+}
+
+// returns a string representing the randomizer options that affect the
+// generated seed or how it's played - so not including things like music
+// on/off.
+func optString(ropts randomizerOptions) string {
+	s := ""
+	if ropts.treewarp || ropts.hard || ropts.dungeons || ropts.portals {
+		s += "+"
+		if ropts.treewarp {
+			s += "t"
+		}
+		if ropts.hard {
+			s += "h"
+		}
+		if ropts.dungeons {
+			s += "d"
+		}
+		if ropts.portals {
+			s += "p"
+		}
+	}
+	return s
 }
 
 // reverseLookup looks up the key for a given map value. If multiple keys are

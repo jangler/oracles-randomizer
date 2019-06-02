@@ -97,11 +97,11 @@ func newRomState(data []byte, game int) *romState {
 
 // changes the contents of loaded ROM bytes in place. returns a checksum of the
 // result or an error.
-func (rom *romState) mutate(
-	warpMap map[string]string, dungeons bool) ([]byte, error) {
+func (rom *romState) mutate(warpMap map[string]string, seed uint32,
+	ropts randomizerOptions) ([]byte, error) {
 	// need to set this *before* treasure map data
 	if len(warpMap) != 0 {
-		rom.setWarps(warpMap, dungeons)
+		rom.setWarps(warpMap, ropts.dungeons)
 	}
 
 	if rom.game == gameSeasons {
@@ -144,6 +144,7 @@ func (rom *romState) mutate(
 	rom.setBossItemAddrs()
 	rom.setSeedData()
 	rom.setRoomTreasureData()
+	rom.setFileSelectText(seed, ropts)
 	rom.attachText()
 
 	// regenerate collect mode table to accommodate changes based on contents.
@@ -677,4 +678,54 @@ func changeTreasureMapTiles(slots map[string]*itemSlot,
 	for slot, tile := range pendingTiles {
 		slot.mapTile = tile
 	}
+}
+
+// set the string to display on the file select screen.
+func (rom *romState) setFileSelectText(seed uint32, ropts randomizerOptions) {
+	// construct ascii  string
+	fileSelectText := []byte(strings.ToUpper(
+		fmt.Sprintf("%s %08x%s", shortVersion(), seed, optString(ropts))))
+
+	// convert to tile indexes
+	for i, c := range fileSelectText {
+		fileSelectText[i] = func() byte {
+			switch {
+			case c >= '0' && c <= '9':
+				return c - 0x20
+			case c >= 'A' && c <= 'Z':
+				return c + 0xa1
+			case c == ' ':
+				return '\xfc'
+			case c == '+':
+				return '\xfd'
+			case c == '-':
+				return '\xfe'
+			case c == '.':
+				return '\xff'
+			default:
+				panic("invalid byte in file select text: " + string(c))
+			}
+		}()
+	}
+
+	// pad with zeroes
+	maxlen := len(rom.codeMutables["dma_FileSelectStringTiles"].new)
+	for len(fileSelectText) < maxlen {
+		fileSelectText = append([]byte{'\xfc'},
+			append(fileSelectText, '\xfc')...)
+	}
+	if len(fileSelectText) > maxlen {
+		fileSelectText = fileSelectText[1:]
+	}
+
+	rom.codeMutables["dma_FileSelectStringTiles"].new = fileSelectText
+}
+
+// return a shortened version string for display on the title screen. release
+// tags are preserved in full.
+func shortVersion() string {
+	if index := strings.IndexRune(version, '-'); index != -1 {
+		return version[0:1] + version[index-1:index+4]
+	}
+	return version
 }

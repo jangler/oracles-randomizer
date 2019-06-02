@@ -44,6 +44,8 @@ func (rom *romState) replaceRaw(addr address, label, data string) {
 
 	if label == "" {
 		label = fmt.Sprintf("replacement at %02x:%04x", addr.bank, addr.offset)
+	} else if strings.HasPrefix(label, "dma_") && addr.offset%0x10 != 0 {
+		addr.offset += 0x10 - (addr.offset % 0x10) // align to $xxx0
 	}
 
 	end := addr.offset + uint16(len(data))
@@ -199,6 +201,16 @@ func (rom *romState) applyAsmData(asmFiles []*asmData) {
 	// write EOB asm using placeholders for labels, in order to get real addrs
 	for _, thing := range allEobThings {
 		rom.replaceAsm(thing.addr, thing.label, thing.thing)
+	}
+
+	// also get labels for labeled replacements
+	for _, slice := range slices {
+		for _, item := range slice {
+			addr, label := parseMetalabel(item.Key.(string))
+			if addr.offset != 0 && label != "" {
+				rom.assembler.define(label, addr.offset)
+			}
+		}
 	}
 
 	// reset EOB boundaries

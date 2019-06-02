@@ -128,6 +128,7 @@ common:
 seasons:
   00/: |
     # constants
+    define BANK_FONT,14
     define BANK_TREASURE_DATA,15
     define BANK_OWL_TEXT,3f
     define BANK_ROOM_TREASURES,3f
@@ -171,6 +172,8 @@ seasons:
     define multiplyABy4,01c3
     define getRandomNumber,041a
     define copyMemory,0462
+    define queueDmaTransfer,0566
+    define loadUncompressedGfxHeader,05b6
     define forceEnableIntroInputs,0862
     define playSound,0c74
     define setMusicVolume,0c89
@@ -227,6 +230,7 @@ ages:
   00/: |
     # constants
     define BANK_TREASURE_DATA,16
+    define BANK_FONT,38
     define BANK_OWL_TEXT,38
     define BANK_ROOM_TREASURES,38
     define STARTING_TREE_MAP_INDEX,78
@@ -268,6 +272,8 @@ ages:
     # rom 00
     define getRandomNumber,043e
     define copyMemory,0486
+    define queueDmaTransfer,058a
+    define loadUncompressedGfxHeader,05da
     define forceEnableIntroInputs,0886
     define playSound,0c98
     define setMusicVolume,0cad
