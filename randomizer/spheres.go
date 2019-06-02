@@ -42,11 +42,12 @@ func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 
 	for {
 		sphere := make([]*node, 0)
-		g.clearMarks()
+		g.reset()
+		g["start"].explore()
 
 		// get the set of newly reachable nodes
 		for n, _ := range checks {
-			if !reached[n] && n.getMark(false).reachable() {
+			if !reached[n] && n.reached {
 				sphere = append(sphere, n)
 			}
 		}

@@ -44,8 +44,8 @@ func testLinksForGame(t *testing.T, game int) {
 	}
 	for name := range nodes {
 		switch name {
-		case "done", "unknown", "gasha seed", "piece of heart",
-			"rare peach stone", "treasure map", "heart container":
+		case "done", "gasha seed", "piece of heart", "rare peach stone",
+			"treasure map", "heart container":
 			continue
 		case "pegasus seeds", "any satchel":
 			// defined for consistency but unused

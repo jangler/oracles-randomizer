@@ -127,20 +127,11 @@ func loadNode(v interface{}) *prenode {
 		case v["or"] != nil:
 			n.nType = orNode
 			n.parents = loadParents(v["or"])
-		case v["not"] != nil:
-			n.nType = nandNode
-			n.parents = loadParents(v["not"])
-		case v["nor"] != nil:
-			n.nType = norNode
-			n.parents = loadParents(v["nor"])
 		case v["count"] != nil:
 			n.nType = countNode
 			n.minCount = v["count"].([]interface{})[0].(int)
 			n.parents = make([]interface{}, 1)
 			n.parents[0] = v["count"].([]interface{})[1].(string)
-		case v["either"] != nil:
-			n.nType = eitherNode
-			n.parents = make([]interface{}, 0)
 		default:
 			println("unknown map type")
 		}

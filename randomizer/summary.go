@@ -75,11 +75,11 @@ func filterJunk(g graph, checks map[*node]*node,
 // returns true iff removing the slot/item combination from the graph would
 // make the seed unbeatable.
 func itemIsRequired(g graph, slot, item *node) bool {
-	g.clearMarks()
+	g.reset()
 	item.removeParent(slot)
-	mark := g["done"].getMark(false)
+	g["start"].explore()
 	item.addParent(slot)
-	return !mark.reachable()
+	return !g["done"].reached
 }
 
 // returns true iff removing the slot/item combination from the graph would

@@ -3,9 +3,7 @@
 # being able to call the animal in general.
 
 start: [] # parent for nodes reachable by default
-unknown: [] # parent for unplaced items, etc.
 hard: {or: []}
-seqbreak: {or: []}
 
 # horon village
 horon village: {or: [start, # portal included in case something changes
@@ -17,10 +15,10 @@ horon village SE chest: [horon village, bombs]
 horon village SW chest: [horon village, or: [break mushroom, dimitri's flute]]
 shop, 20 rupees: [start, rupees]
 shop, 30 rupees: [start, rupees]
-shop, 150 rupees: [start, or: [ember seeds, [hard, shovel], seqbreak]]
-member's shop 1: [member's card, or: [ember seeds, [hard, shovel], seqbreak]]
-member's shop 2: [member's card, or: [ember seeds, [hard, shovel], seqbreak]]
-member's shop 3: [member's card, or: [ember seeds, [hard, shovel], seqbreak]]
+shop, 150 rupees: [start, or: [ember seeds, [hard, shovel]]]
+member's shop 1: [member's card, or: [ember seeds, [hard, shovel]]]
+member's shop 2: [member's card, or: [ember seeds, [hard, shovel]]]
+member's shop 3: [member's card, or: [ember seeds, [hard, shovel]]]
 
 # western coast
 black beast's chest: [horon village,
@@ -47,7 +45,7 @@ suburbs: {or: [ # this is the area south of the pool by sokra's stump
         flippers, feather, ricky's flute, dimitri's flute]]]}
 fairy fountain: {or: [
     [sunken city,
-        or: [eastern suburbs default spring, spring, gale satchel, seqbreak]],
+        or: [eastern suburbs default spring, spring, gale satchel]],
     [suburbs, or: [eastern suburbs default winter, winter,
         flippers, feather, ricky's flute, dimitri's flute]]]}
 moblin road: {or: [
@@ -56,7 +54,7 @@ moblin road: {or: [
         sunken city default spring, spring,
         sunken city default summer, summer,
         sunken city default autumn, autumn],
-        or: [gale satchel, seqbreak, [
+        or: [gale satchel, [
             or: [eastern suburbs default winter, winter],
             or: [eastern suburbs default spring, spring]]]]]}
 holly's house: [moblin road,
@@ -80,7 +78,7 @@ d2 roof: {or: [d2 alt entrances,
 chest on top of D2: [d2 roof]
 cave outside D2: [central woods of winter,
     or: [break mushroom, dimitri's flute],
-    or: [cape, magnet gloves, bomber's jump],
+    or: [cape, magnet gloves],
     or: [woods of winter default autumn, [autumn, d2 roof]]]
 woods of winter, 1st cave: [moblin road,
     or: [bombs, ricky's flute], break bush safe,
@@ -199,7 +197,7 @@ natzu region, across water: {or: [
 # sunken city
 sunken city: {or: [
     [mount cucco, flippers,
-        or: [summer, sunken city default summer, gale satchel, seqbreak]],
+        or: [summer, sunken city default summer, gale satchel]],
     [fairy fountain, or: [eastern suburbs default spring, spring]],
     [blaino's gym, or: [
         [natzu prairie, flute],
@@ -223,10 +221,10 @@ mount cucco: {or: [exit mt. cucco portal,
     [sunken city, flippers, or: [sunken city default summer, summer]],
     [goron mountain, bracelet, shovel]]}
 spring banana tree: [mount cucco, bracelet, feather,
-    or: [break flower, moosh, [hard, gale satchel], seqbreak],
+    or: [break flower, moosh, [hard, gale satchel]],
     or: [sunken city default spring, spring], or: [sword, fool's ore]]
 mt. cucco, platform cave: [mount cucco, bracelet, or: [
-    [hard, gale satchel], seqbreak,
+    [hard, gale satchel],
     [or: [break flower, moosh], or: [sunken city default spring, spring]]]]
 moosh: [mount cucco, spring banana]
 goron mountain, across pits: [mount cucco, or: [moosh, jump 6, [hard, cape]]]
@@ -263,7 +261,7 @@ samasa desert chest: [desert, flippers]
 temple remains lower stump: {or: [
     # lower portal is all about whether you can get back up
     [exit temple remains lower portal, or: [
-        gale satchel, seqbreak,
+        gale satchel,
         [feather, bomb temple remains],
         [feather, break bush, or: [
             autumn,
@@ -276,7 +274,7 @@ temple remains lower stump: {or: [
             [break bush, or: [autumn, [hard, jump 6,
                 or: [temple remains not spring, break flower]]]]],
         # then make sure you can get back up
-        or: [gale satchel, seqbreak,
+        or: [gale satchel,
             [bomb temple remains,
                 or: [summer, temple remains default summer],
                 or: [jump 6, [bomb jump 2, magnet gloves]]]]],

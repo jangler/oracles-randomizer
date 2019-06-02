@@ -13,39 +13,36 @@ hit lever from minecart: {or: [sword, any seed shooter, boomerang]}
 hit switch: {or: [sword, bombs, punch object, ember seeds, scent seeds,
     mystery seeds, any seed shooter, switch hook, boomerang]}
 hit switch ranged: {or: [bombs, any seed shooter, switch hook, boomerang,
-    [sword, energy ring], [seqbreak, noble sword]]}
+    [sword, energy ring]]}
 
 # flute isn't included here since it's only available in some places.
 break bush safe: {or: [
     sword, switch hook, bracelet, bombs, ember seeds, gale shooter]}
-break bush: {or: [sword, switch hook, bracelet, [seqbreak, break bush safe]]}
+break bush: {or: [
+    sword, switch hook, bracelet, [gale satchel, break bush safe]]}
 
-satchel weapon: [satchel, or: [ember seeds,
-    [hard, or: [scent seeds, gale seeds]], [seqbreak, mystery seeds]]]
-shooter weapon: [seed shooter,
-    or: [ember seeds, scent seeds, gale seeds, [seqbreak, mystery seeds]]]
+satchel weapon: [satchel,
+    or: [ember seeds, [hard, or: [scent seeds, gale seeds]]]]
+shooter weapon: [seed shooter, or: [ember seeds, scent seeds, gale seeds]]
 
 # most enemies are vulnerable to these items
-kill normal: {or: [sword, satchel weapon, shooter weapon, cane, punch enemy,
-    [seqbreak, bombs]]}
-kill normal ranged: {or: [shooter weapon, [cane, bracelet], [seqbreak, bombs]]}
+kill normal: {or: [sword, satchel weapon, shooter weapon, cane, punch enemy]}
+kill normal ranged: {or: [shooter weapon, [cane, bracelet]]}
 kill underwater: {or: [sword, shooter weapon, punch enemy]}
 kill switch hook: {or: [kill normal, switch hook]}
 
 kill giant ghini: {or: [
-    sword, scent shooter, switch hook, punch enemy, [hard, scent satchel],
-    [seqbreak, or: [bombs, mystery seeds]]]}
+    sword, scent shooter, switch hook, punch enemy, [hard, scent satchel]]}
 kill pumpkin head: [bracelet, kill giant ghini]
 
 # spiked beetles can't be punched for some reason
 kill spiked beetle: {or: [
-    gale shooter, [hard, gale satchel], [seqbreak, mystery seeds],
-    [or: [shield, shovel], or: [[seqbreak, bombs],
+    gale shooter, [hard, gale satchel],
+    [or: [shield, shovel], or: [
         sword, satchel weapon, shooter weapon, cane, switch hook]]]}
-kill swoop: {or: [sword, scent shooter, switch hook, punch enemy,
-    [hard, scent satchel], [seqbreak, or: [mystery seeds, bombs]]]}
+kill swoop: {or: [
+    sword, scent shooter, switch hook, punch enemy, [hard, scent satchel]]}
 
 kill moldorm: {or: [sword, scent shooter, cane, switch hook, punch enemy,
-    [hard, scent satchel], [seqbreak, or: [mystery seeds, bombs]]]}
-kill subterror: [shovel, or: [sword, switch hook, scent seeds, punch enemy,
-    [seqbreak, or: [mystery seeds, bombs]]]]
+    [hard, scent satchel]]}
+kill subterror: [shovel, or: [sword, switch hook, scent seeds, punch enemy]]

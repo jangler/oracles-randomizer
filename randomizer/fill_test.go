@@ -47,40 +47,6 @@ func testSeasonsGraph(t *testing.T) {
 	testMap["d1 railway chest"] = "d1 small key"
 	checkReach(t, g, testMap, "d1 basement", true)
 
-	// test negated nodes via vanilla d2 bracelet
-	testMap = map[string]string{
-		"d0 key chest":       "sword",
-		"d0 rupee chest":     "satchel",
-		"horon village tree": "ember tree seeds",
-		"maku tree":          "gnarled key",
-		"d1 entrance":        "enter d2",
-		"d2 rope drop":       "d2 small key",
-		"d2 rope chest":      "bracelet",
-		"d2 moblin chest":    "dimitri's flute",
-	}
-	checkReach(t, g, testMap, "d2 moblin chest", false)
-	delete(testMap, "d2 rope chest")
-	testMap["subrosia seaside"] = "bracelet"
-	checkReach(t, g, testMap, "d2 moblin chest", true)
-
-	// test negated sequence break
-	testMap = map[string]string{
-		"d0 key chest":         "dimitri's flute",
-		"d0 rupee chest":       "satchel",
-		"horon village tree":   "ember tree seeds",
-		"woods of winter tree": "pegasus tree seeds",
-		"d2 entrance":          "enter d2",
-		"d2 rope drop":         "d2 small key",
-		"d2 rope chest":        "sword",
-		"shop, 20 rupees":      "bombs, 10",
-		"start":                "woods of winter default autumn",
-		"maku tree":            "feather",
-		"cave outside D2":      "bracelet",
-	}
-	checkReach(t, g, testMap, "d2 moblin chest", true)
-	testMap["d2 left from entrance"] = "bomber's ring"
-	checkReach(t, g, testMap, "d2 moblin chest", false)
-
 	// check a subrosia portal
 	testMap = map[string]string{
 		"d0 key chest":   "sword",
@@ -170,9 +136,11 @@ func checkReach(t *testing.T, g graph, links map[string]string, target string,
 			g[child].removeParent(g[parent])
 		}
 	}()
-	g.clearMarks()
 
-	if (g[target].getMark(false).reachable()) != expect {
+	g.reset()
+	g["start"].explore()
+
+	if g[target].reached != expect {
 		if expect {
 			t.Errorf("expected to reach %s, but could not", target)
 		} else {

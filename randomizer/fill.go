@@ -41,7 +41,7 @@ func addDefaultItemNodes(rom *romState, nodes map[string]*prenode) {
 func addNodes(prenodes map[string]*prenode, g graph) {
 	for key, pn := range prenodes {
 		switch pn.nType {
-		case andNode, orNode, nandNode, norNode, eitherNode:
+		case andNode, orNode:
 			g[key] = newNode(key, pn.nType)
 		case countNode:
 			g[key] = newNode(key, countNode)
@@ -133,10 +133,10 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		}
 		itemList, slotList = initRouteInfo(ri, rom, ropts.plan.items)
 
-		// attach free items to the "unknown" node until placed.
+		// attach free items to the "start" node until placed.
 		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
 			item := ei.Value.(*node)
-			ri.graph[item.name].addParent(ri.graph["unknown"])
+			ri.graph[item.name].addParent(ri.graph["start"])
 		}
 
 		// slot "world" nodes before items
@@ -162,15 +162,17 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		if err != nil {
 			return nil, err
 		}
-		ri.graph.clearMarks()
-		if !ri.graph["done"].getMark(false).reachable() {
+		ri.graph.reset()
+		ri.graph["start"].explore()
+		if !ri.graph["done"].reached {
 			return nil, fmt.Errorf("impossible plando configuration")
 		}
 
 		if tryPlaceItems(
 			ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
-			ri.graph.clearMarks()
-			if ri.graph["done"].getMark(false) == markTrue {
+			ri.graph.reset()
+			ri.graph["start"].explore()
+			if ri.graph["done"].reached {
 				// and we're done
 				ri.attemptCount = tries + 1
 				break
@@ -535,7 +537,7 @@ planLoop:
 					if item.name == v {
 						slotList.Remove(es)
 						itemList.Remove(ei)
-						item.removeParent(ri.graph["unknown"])
+						item.removeParent(ri.graph["start"])
 						if strings.HasPrefix(k, "null") {
 							item = ri.graph["gasha seed"]
 						}
@@ -577,7 +579,7 @@ func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
 			if progressionItemsOnly && itemIsInert(treasures, item.name) {
 				continue
 			}
-			item.removeParent(g["unknown"])
+			item.removeParent(g["start"])
 			triedProgression = true
 
 			for es := slotPool.Front(); es != nil; es = es.Next() {
@@ -593,9 +595,10 @@ func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
 				}
 
 				// test whether seed is still beatable w/ item placement
-				g.clearMarks()
+				g.reset()
 				item.addParent(slot)
-				if !g["done"].getMark(false).reachable() {
+				g["start"].explore()
+				if !g["done"].reached {
 					item.removeParent(slot)
 					continue
 				}
@@ -609,7 +612,7 @@ func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
 				return ei, es
 			}
 
-			item.addParent(g["unknown"])
+			item.addParent(g["start"])
 		}
 	}
 
@@ -690,14 +693,15 @@ func isDeadEnd(g graph, curItem, curSlot *list.Element,
 
 	for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 		if ei != curItem {
-			ei.Value.(*node).removeParent(g["unknown"])
+			ei.Value.(*node).removeParent(g["start"])
 		}
 	}
-	g.clearMarks()
+	g.reset()
+	g["start"].explore()
 
 	dead := true
 	for es := slotPool.Front(); es != nil; es = es.Next() {
-		if es != curSlot && es.Value.(*node).getMark(false) == markTrue {
+		if es != curSlot && es.Value.(*node).reached {
 			dead = false
 			break
 		}
@@ -705,7 +709,7 @@ func isDeadEnd(g graph, curItem, curSlot *list.Element,
 
 	for ei := itemPool.Front(); ei != nil; ei = ei.Next() {
 		if ei != curItem {
-			ei.Value.(*node).addParent(g["unknown"])
+			ei.Value.(*node).addParent(g["start"])
 		}
 	}
 
