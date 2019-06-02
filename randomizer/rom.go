@@ -60,6 +60,20 @@ func romIsVanilla(b []byte) bool {
 	return string(sum[:]) == knownSum
 }
 
+// returns a 16-bit checksum of the rom data, for placing in the rom header.
+// this is calculated by summing the non-global-checksum bytes in the rom.
+// not to be confused with the header checksum, which is the byte before.
+func makeRomChecksum(data []byte) [2]byte {
+	var sum uint16
+	for _, c := range data[:0x14e] {
+		sum += uint16(c)
+	}
+	for _, c := range data[0x150:] {
+		sum += uint16(c)
+	}
+	return [2]byte{byte(sum >> 8), byte(sum)}
+}
+
 type romState struct {
 	game         int
 	data         []byte // actual contents of the file
@@ -180,6 +194,10 @@ func (rom *romState) mutate(
 
 	rom.setCompassData()
 	rom.setLinkedData()
+
+	sum := makeRomChecksum(rom.data)
+	rom.data[0x14e] = sum[0]
+	rom.data[0x14f] = sum[1]
 
 	outSum := sha1.Sum(rom.data)
 	return outSum[:], nil
