@@ -202,7 +202,7 @@ func parseSummary(path string, game int) (*summary, error) {
 // write a "spoiler log" to a file.
 func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	rom *romState, ri *routeInfo, checks map[*node]*node, spheres [][]*node,
-	extra []*node, owlHints map[string]string, fast bool) {
+	extra []*node, owlHints map[string]string) {
 	summary, summaryDone := getSummaryChannel(path)
 
 	// header
@@ -213,24 +213,19 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	summary <- ""
 
 	// items
-	if fast {
-		sendSectionHeader(summary, "items")
-		logSpheres(summary, checks, spheres, extra, rom.game, nil)
-	} else {
-		sendSectionHeader(summary, "progression items")
-		nonKeyChecks := make(map[*node]*node)
-		for slot, item := range checks {
-			if !keyRegexp.MatchString(item.name) {
-				nonKeyChecks[slot] = item
-			}
+	sendSectionHeader(summary, "progression items")
+	nonKeyChecks := make(map[*node]*node)
+	for slot, item := range checks {
+		if !keyRegexp.MatchString(item.name) {
+			nonKeyChecks[slot] = item
 		}
-		prog, junk := filterJunk(ri.graph, nonKeyChecks, rom.treasures)
-		logSpheres(summary, prog, spheres, extra, rom.game, nil)
-		sendSectionHeader(summary, "small keys and boss keys")
-		logSpheres(summary, checks, spheres, extra, rom.game, keyRegexp.MatchString)
-		sendSectionHeader(summary, "other items")
-		logSpheres(summary, junk, spheres, extra, rom.game, nil)
 	}
+	prog, junk := filterJunk(ri.graph, nonKeyChecks, rom.treasures)
+	logSpheres(summary, prog, spheres, extra, rom.game, nil)
+	sendSectionHeader(summary, "small keys and boss keys")
+	logSpheres(summary, checks, spheres, extra, rom.game, keyRegexp.MatchString)
+	sendSectionHeader(summary, "other items")
+	logSpheres(summary, junk, spheres, extra, rom.game, nil)
 
 	// warps
 	if ropts.dungeons {
