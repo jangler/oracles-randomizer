@@ -62,7 +62,8 @@ In logic:
 Out of logic:
 
 - Required damage (damage boosts, falling in pits)
-- Farming rupees, assuming you spend them optimally
+- Farming rupees for major purchases (150+), or farming for minor purchases
+  without sword, shovel, bracelet, or switch hook
 - Getting initial scent seeds from the plants in D3
 - Getting initial bombs from Goron Shooting Gallery or Head Thwomp
 - Lighting torches using mystery seeds
@@ -72,7 +73,7 @@ Out of logic:
 - Using fist ring as a weapon
 - Carrying bushes or pots between rooms
 - Doing Patch's restoration ceremony without sword
-- Getting a potion for King Zora from Maple
+- Getting a potion for King Zora from Maple instead of Syrup
 - Guard skip
 - Text warps
 - Magic rings from non-randomized locations
@@ -84,7 +85,7 @@ Out of logic:
 Choosing hard difficulty enables things that are out of normal logic, with the
 exception of:
 
-- Farming rupees, except by shovel RNG manips
+- Farming rupees for major purchases, except by shovel RNG manips
 - Mystery seeds as a weapon
 - Bombs as a weapon, except versus enemies immune to sword
 - Double damage boosts

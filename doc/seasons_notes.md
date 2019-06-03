@@ -61,7 +61,8 @@ Out of logic:
 - Anything that gives an explicit in-game warning (these are also potential
   softlocks)
 - Required damage (damage boosts, falling in pits)
-- Farming rupees or ore chunks, assuming you spend them optimally
+- Farming rupees for major purchases (150+), or farming for minor purchases
+  without sword, shovel, bracelet, boomerang, or fool's ore.
 - Getting a new type of mystical seed from anything other than a seed tree
 - Getting initial bombs from regenerating plants
 - Lighting torches using mystery seeds
@@ -83,7 +84,7 @@ Choosing hard difficulty enables things that are out of normal logic, with the
 exception of:
 
 - Warnings
-- Farming rupees, except by shovel RNG manips
+- Farming rupees for major purchases, except by shovel RNG manips
 - Farming ore chunks with bombs or ember seeds
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon

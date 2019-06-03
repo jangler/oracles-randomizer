@@ -29,11 +29,10 @@ seed type: {
     or: [ember seeds, scent seeds, pegasus seeds, gale seeds, mystery seeds]}
 balloon guy's upgrade: [balloon guy, count: [3, seed type]]
 raft: [lynna village, cheval rope, island chart]
-shop, 30 rupees: [lynna city, rupees]
-shop, 150 rupees: [lynna city, rupees]
+shop, 30 rupees: [lynna city, farm rupees]
+shop, 150 rupees: [lynna city, count: [150, fixed rupees]]
 ambi's palace tree: [lynna village, or: [sword, punch object], seed item]
-ambi's palace chest: [lynna village, or: [
-    ages,
+ambi's palace chest: [lynna village, or: [ages,
     [hard, satchel, scent seeds, pegasus seeds],
     [break bush safe, mermaid suit]]]
 rescue nayru: [ambi's palace chest, mystery seeds, switch hook,
@@ -48,7 +47,7 @@ cheval's grave: [yoll graveyard, or: [kill switch hook, bomb jump 3]]
 cheval's test: [cheval's grave, bracelet, or: [feather, flippers]]
 cheval's invention: [cheval's grave, flippers]
 grave under tree: [yoll graveyard]
-syrup: [yoll graveyard, graveyard key, rupees,
+syrup: [yoll graveyard, graveyard key, count: [450, fixed rupees],
     or: [flippers, bomb jump 2, dimitri's flute, long hook]]
 graveyard poe: [yoll graveyard, graveyard key, bracelet]
 d1 entrance: [yoll graveyard, graveyard key]
@@ -140,8 +139,8 @@ ridge base present: {or: [ridge upper present, ridge mid present,
 mermaid legend owl: [ridge base present]
 d6 present entrance: [old mermaid key, ridge base present]
 pool in d6 entrance: [ridge base present, mermaid suit]
-goron dance present: [ridge base present]
-goron dance, with letter: [ridge base past, goron letter]
+goron dance present: [ridge base present, farm rupees]
+goron dance, with letter: [ridge base past, goron letter, farm rupees]
 ridge mid past: {or: [
     [ridge base past west, switch hook],
     [ridge upper present, ages],
@@ -170,6 +169,7 @@ ridge base past west: {or: [
     [ridge base present, or: [ages, [break bush safe, echoes]]],
     [ridge base past east, or: [flippers, [hard, bomb jump 2]]],
     ridge mid past]} # ledge added to prevent softlocks
+rolling ridge past old man: [ridge base past west, ember seeds]
 ridge base past: [ridge base past west, bombs]
 d6 past entrance: [mermaid key, ridge base past west,
     or: [flippers, [ages, feather], [hard, bomb jump 2]]]

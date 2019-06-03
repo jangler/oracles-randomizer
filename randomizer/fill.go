@@ -41,7 +41,7 @@ func addDefaultItemNodes(rom *romState, nodes map[string]*prenode) {
 func addNodes(prenodes map[string]*prenode, g graph) {
 	for key, pn := range prenodes {
 		switch pn.nType {
-		case andNode, orNode:
+		case andNode, orNode, rupeesNode:
 			g[key] = newNode(key, pn.nType)
 		case countNode:
 			g[key] = newNode(key, countNode)

@@ -1,7 +1,7 @@
 # oracles-randomizer `logic` notes
 
 These files define (most of) the directed graph that's used for randomizer
-logic. There are three types of node:
+logic. There are four types of node:
 
 - An `and` node (`[<parent>...]`, the default) is reachable iff all of its
   parents are reachable. One with no parents is reachable.
@@ -10,6 +10,8 @@ logic. There are three types of node:
 - A `count` node (`count: [<min>, <parent>]`) is reachable iff its parent
   (there should be exactly one) has at least a certain number of parents which
   are also reachable.
+- The singular `rupees` node relays the net rupee value of its parents to its
+  children, which are `count` nodes.
 
 Potential YAML gotchas:
 

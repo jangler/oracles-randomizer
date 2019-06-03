@@ -132,6 +132,9 @@ func loadNode(v interface{}) *prenode {
 			n.minCount = v["count"].([]interface{})[0].(int)
 			n.parents = make([]interface{}, 1)
 			n.parents[0] = v["count"].([]interface{})[1].(string)
+		case v["rupees"] != nil:
+			n.nType = rupeesNode
+			n.parents = loadParents(v["rupees"])
 		default:
 			println("unknown map type")
 		}
@@ -163,40 +166,7 @@ func loadParents(v interface{}) []interface{} {
 	return parents
 }
 
-var locationValues = map[string]int{
-	"shop, 20 rupees":  -20,
-	"shop, 30 rupees":  -30,
-	"shop, 150 rupees": -150,
-	"member's shop 1":  -300,
-	"member's shop 2":  -300,
-	"member's shop 3":  -200,
-
-	"blaino prize": -10,
-
-	"syrup":                    -300,
-	"wild tokay game":          -10,
-	"goron dance, with letter": -20,
-	"goron dance present":      -10,
-	"target carts 1":           -10,
-	"target carts 2":           -10,
-	"goron shooting gallery":   -20,
-
-	"goron mountain old man":      300,
-	"western coast old man":       300,
-	"holodrum plain east old man": 200,
-	"horon village old man":       100,
-	"north horon old man":         100,
-
-	"tarm ruins old man":          -200,
-	"woods of winter old man":     -50,
-	"holodrum plain west old man": -100,
-
-	// rng is involved; each rupee is either worth 1, 5, or 10
-	"d2 rupee room": 200,
-	"d6 rupee room": 150,
-}
-
-var itemValues = map[string]int{
+var rupeeValues = map[string]int{
 	"rupees, 1":   1,
 	"rupees, 5":   5,
 	"rupees, 10":  10,
@@ -205,4 +175,15 @@ var itemValues = map[string]int{
 	"rupees, 50":  50,
 	"rupees, 100": 100,
 	"rupees, 200": 200,
+
+	"goron mountain old man":      300,
+	"western coast old man":       300,
+	"holodrum plain east old man": 200,
+	"horon village old man":       100,
+	"north horon old man":         100,
+
+	// rng is involved: each rupee is worth 1, 5, 10, or 20.
+	// these totals are about 2 standard deviations below mean.
+	"d2 rupee room": 150,
+	"d6 rupee room": 90,
 }

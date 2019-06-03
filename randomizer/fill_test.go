@@ -56,6 +56,17 @@ func testSeasonsGraph(t *testing.T) {
 	checkReach(t, g, testMap, "suburbs", false)
 	testMap["enter horon village portal"] = "exit eastern suburbs portal"
 	checkReach(t, g, testMap, "suburbs", true)
+
+	// test rupee counting
+	testMap = map[string]string{
+		"d0 key chest":            "sword",
+		"maku tree":               "flippers",
+		"old man in treehouse":    "rupees, 50",
+		"cave south of mrs. ruul": "rupees, 50",
+	}
+	checkReach(t, g, testMap, "shop, 150 rupees", false)
+	testMap["natzu region, across water"] = "rupees, 50"
+	checkReach(t, g, testMap, "shop, 150 rupees", true)
 }
 
 // check that graph logic is working as expected
@@ -98,6 +109,20 @@ func testAgesGraph(t *testing.T) {
 	checkReach(t, g, testMap, "d3 bush beetle room", false)
 	testMap["d3 armos drop"] = "d3 small key"
 	checkReach(t, g, testMap, "d3 bush beetle room", true)
+
+	// test rupee counting
+	testMap = map[string]string{
+		"starting chest":     "sword",
+		"nayru's house":      "satchel",
+		"south lynna tree":   "ember tree seeds",
+		"grave under tree":   "graveyard key",
+		"black tower worker": "rupees, 200",
+		"lynna city chest":   "flippers",
+		"cheval's invention": "rupees, 200",
+	}
+	checkReach(t, g, testMap, "syrup", false)
+	testMap["shop, 150 rupees"] = "rupees, 50" // dumb but w/e
+	checkReach(t, g, testMap, "syrup", true)
 
 	// test bombs from head thwomp in hard logic
 	headThwompBombMap := map[string]string{

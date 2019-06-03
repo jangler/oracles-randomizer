@@ -13,12 +13,13 @@ horon village tree: [horon village, seed item,
     or: [harvest tree, dimitri's flute, [hard, break bush]]]
 horon village SE chest: [horon village, bombs]
 horon village SW chest: [horon village, or: [break mushroom, dimitri's flute]]
-shop, 20 rupees: [start, rupees]
-shop, 30 rupees: [start, rupees]
-shop, 150 rupees: [start, or: [ember seeds, [hard, shovel]]]
-member's shop 1: [member's card, or: [ember seeds, [hard, shovel]]]
-member's shop 2: [member's card, or: [ember seeds, [hard, shovel]]]
-member's shop 3: [member's card, or: [ember seeds, [hard, shovel]]]
+shop, 20 rupees: [start, farm rupees]
+shop, 30 rupees: [start, farm rupees]
+shop, 150 rupees: [start, or: [count: [150, fixed rupees], [hard, shovel]]]
+member's shop 1: [member's card,
+    or: [count: [950, fixed rupees], [hard, shovel]]]
+member's shop 2: [member's shop 1]
+member's shop 3: [member's shop 1]
 
 # western coast
 black beast's chest: [horon village,
@@ -110,7 +111,7 @@ blaino's gym: {or: [
     [goron mountain, flippers]]}
 north horon tree: [blaino's gym, seed item,
     or: [harvest tree, dimitri's flute]]
-blaino prize: [blaino's gym, rupees]
+blaino prize: [blaino's gym, farm rupees]
 ricky: {or: [ricky's flute]}
 old man in treehouse: [blaino's gym, or: [flippers, dimitri's flute]]
 cave south of mrs. ruul: [blaino's gym, flippers]

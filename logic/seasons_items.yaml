@@ -7,9 +7,13 @@ ricky's flute: {or: []}
 dimitri's flute: {or: []}
 moosh's flute: {or: []}
 
-# TODO: this is a dumb placeholder for until new fill is more developed
-rupees: {or: ["rupees, 30", "rupees, 50", "rupees, 100", ember seeds,
-    [hard, shovel]]}
+# flute sucks. never required to farm rupees with flute.
+farm rupees: {or: [sword, shovel, bracelet, boomerang, fool's ore]}
+fixed rupees: {rupees: [
+    "rupees, 1", "rupees, 5", "rupees, 10", "rupees, 20", "rupees, 30",
+    "rupees, 50", "rupees, 100", d2 rupee room, d6 rupee room,
+    goron mountain old man, western coast old man, holodrum plain east old man,
+    horon village old man, north horon old man]}
 
 # expert's ring can do some things that fist ring can't, so this is for the
 # lowest common denominator.

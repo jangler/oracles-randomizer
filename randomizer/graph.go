@@ -48,6 +48,7 @@ const (
 	andNode nodeType = iota
 	orNode
 	countNode
+	rupeesNode
 )
 
 // a single vertex in the graph.
@@ -80,7 +81,7 @@ func (n *node) mindegree() int {
 	switch n.ntype {
 	case andNode:
 		return len(n.parents)
-	case orNode:
+	case orNode, rupeesNode:
 		return 1
 	case countNode:
 		return n.minCount
@@ -136,8 +137,24 @@ func (n *node) String() string { return n.name }
 func (n *node) explore() {
 	n.reached = true
 
+	// rupees node sets indegree of children to total # of rupees reached
+	if n.ntype == rupeesNode {
+		for _, c := range n.children {
+			c.indegree = n.indegree
+			if !c.reached {
+				c.exploreIfReachable()
+			}
+		}
+		return
+	}
+
 	for _, c := range n.children {
-		c.indegree++
+		// add rupee value of parent to rupees node
+		if c.ntype == rupeesNode {
+			c.indegree += rupeeValues[n.name]
+		} else {
+			c.indegree++
+		}
 
 		if !c.reached {
 			c.exploreIfReachable()
@@ -147,6 +164,9 @@ func (n *node) explore() {
 				if !cc.reached && cc.ntype == countNode {
 					cc.indegree++
 					cc.exploreIfReachable()
+				} else if cc.ntype == rupeesNode {
+					cc.indegree += rupeeValues[c.name]
+					cc.explore()
 				}
 			}
 		}
