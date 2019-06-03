@@ -123,6 +123,9 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		for name := range rom.itemSlots {
 			ri.slots[name] = ri.graph[name]
 		}
+		if ropts.hard {
+			ri.graph["hard"].addParent(ri.graph["start"])
+		}
 
 		ri.companion = rollAnimalCompanion(
 			ri.src, ri.graph, rom.game, ropts.plan.items)
