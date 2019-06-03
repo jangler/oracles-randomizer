@@ -10,7 +10,7 @@ import (
 )
 
 // give up completely if routing fails too many times
-const maxTries = 50
+const maxTries = 200
 
 // names of portals from the subrosia side.
 var subrosianPortalNames = map[string]string{
@@ -110,14 +110,12 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		seed:      seed,
 		usedItems: list.New(),
 		usedSlots: list.New(),
+		src:       rand.New(rand.NewSource(int64(seed))),
 	}
 
 	// try to find the route, retrying if needed
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
-		ri.src = rand.New(rand.NewSource(int64(ri.seed)))
-		logf("trying seed %08x", ri.seed)
-
 		ri.graph = newRouteGraph(rom)
 		ri.slots = make(map[string]*node, 0)
 		for name := range rom.itemSlots {
@@ -184,10 +182,8 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			}
 		}
 
+		// clear placements and try again
 		ri.usedItems, ri.usedSlots = list.New(), list.New()
-
-		// get a new seed for the next iteration
-		ri.seed = uint32(ri.src.Int31())
 	}
 
 	if tries >= maxTries {
