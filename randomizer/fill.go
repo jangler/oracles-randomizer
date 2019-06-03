@@ -584,7 +584,7 @@ func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
 			for es := slotPool.Front(); es != nil; es = es.Next() {
 				slot := es.Value.(*node)
 
-				if !itemFitsInSlot(item, slot, src) {
+				if !itemFitsInSlot(item, slot) {
 					continue
 				}
 
@@ -621,7 +621,7 @@ func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
 // checks whether the item fits in the slot due to things like seeds only going
 // in trees, certain item slots not accomodating sub IDs. this doesn't check
 // for softlocks or the availability of the slot and item.
-func itemFitsInSlot(itemNode, slotNode *node, src *rand.Rand) bool {
+func itemFitsInSlot(itemNode, slotNode *node) bool {
 	// dummy shop slots 1 and 2 can only hold their vanilla items.
 	switch {
 	case slotNode.name == "shop, 20 rupees" && itemNode.name != "bombs, 10":
