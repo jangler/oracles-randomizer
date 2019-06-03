@@ -152,6 +152,8 @@ func (n *node) explore() {
 		// add rupee value of parent to rupees node
 		if c.ntype == rupeesNode {
 			c.indegree += rupeeValues[n.name]
+			c.explore()
+			return
 		} else {
 			c.indegree++
 		}

@@ -40,60 +40,102 @@ func filterJunk(g graph, checks map[*node]*node,
 	treasures map[string]*treasure) (prog, junk map[*node]*node) {
 	prog, junk = make(map[*node]*node), make(map[*node]*node)
 
-	// start by assuming every item is progression
-	for k, v := range checks {
-		prog[k] = v
-	}
-
-	done := false
-	for !done {
-		spheres, _ := getSpheres(g, prog)
-		done = true
-
-		// create a copy to pass to functions so that the map we're iterating
-		// over isn't modified
-		progCopy := make(map[*node]*node)
-		for k, v := range prog {
-			progCopy[k] = v
+	// get all required items. if multiple instances of the same class exist
+	// and any is skippable but some are required, the first instances are
+	// considered required and the rest are considered unrequired.
+	spheres, _ := getSpheres(g, checks)
+	for _, class := range getAllItemClasses(checks) {
+		// skip known inert items
+		if class != "rupees" && itemIsInert(treasures, class) {
+			continue
 		}
 
-		// if item isn't required, move it to junk and reset iteration
-		for slot, item := range prog {
-			if itemIsInert(treasures, item.name) ||
-				(!itemIsRequired(g, slot, item) &&
-					!itemChangesProgression(g, progCopy, spheres, slot, item)) {
-				delete(prog, slot)
-				junk[slot] = item
-				done = false
+		// start by removing all instances
+		removed := make(map[*node]*node)
+		for slot, item := range checks {
+			if item.name == class ||
+				(class == "rupees" && strings.HasPrefix(item.name, "rupees")) {
+				removed[slot] = item
+				item.removeParent(slot)
 			}
+		}
+
+		// add instances back one at a time in sphere order
+		g.reset()
+		g["start"].explore()
+		for !g["done"].reached {
+		outerLoop:
+			for _, sphere := range spheres {
+				for _, node := range sphere {
+					if item := removed[node]; item != nil {
+						delete(removed, node)
+						prog[node] = item
+						item.addParent(node)
+						break outerLoop
+					}
+				}
+			}
+			g.reset()
+			g["start"].explore()
+		}
+
+		// add all other instances back
+		for slot, item := range removed {
+			item.addParent(slot)
+		}
+	}
+
+	// remove denominations of rupees that were added but are actually too
+	// small to matter.
+	junkRupees := make(map[*node]*node)
+	for slot, item := range checks {
+		if strings.HasPrefix(item.name, "rupees") && prog[slot] == nil {
+			item.removeParent(slot)
+			junkRupees[slot] = item
+		}
+	}
+	trivialRupees := make([]*node, 0, 10)
+	for slot, item := range prog {
+		if strings.HasPrefix(item.name, "rupees") {
+			item.removeParent(slot)
+			g.reset()
+			g["start"].explore()
+			if g["done"].reached {
+				println(item.name, "is trivial")
+				trivialRupees = append(trivialRupees, slot)
+			}
+			item.addParent(slot)
+		}
+	}
+	for _, slot := range trivialRupees {
+		delete(prog, slot)
+	}
+	for slot, item := range junkRupees {
+		item.addParent(slot)
+	}
+
+	// the remainder is junk.
+	for slot, item := range checks {
+		if prog[slot] == nil {
+			junk[slot] = item
 		}
 	}
 
 	return
 }
 
-// returns true iff removing the slot/item combination from the graph would
-// make the seed unbeatable.
-func itemIsRequired(g graph, slot, item *node) bool {
-	g.reset()
-	item.removeParent(slot)
-	g["start"].explore()
-	item.addParent(slot)
-	return !g["done"].reached
-}
-
-// returns true iff removing the slot/item combination from the graph would
-// change the spheres in which other items appear.
-func itemChangesProgression(g graph, checks map[*node]*node, spheres [][]*node,
-	slot, item *node) bool {
-	oldText := spheresToText(spheres, checks, slot)
-	item.removeParent(slot)
-	delete(checks, slot)
-	newSpheres, _ := getSpheres(g, checks)
-	item.addParent(slot)
-	checks[slot] = item
-	newText := spheresToText(newSpheres, checks, slot)
-	return newText != oldText
+// return an ordered slice of names of different item classes. all rupees are
+// considered a single class.
+func getAllItemClasses(checks map[*node]*node) []string {
+	allClasses := make(map[string]bool)
+	for _, item := range checks {
+		if strings.HasPrefix(item.name, "rupees") {
+			allClasses["rupees"] = true
+		} else {
+			allClasses[item.name] = true
+		}
+	}
+	return orderedKeys(allClasses)
 }
 
 // returns a sorted textual representation of the slots in each sphere (except
@@ -129,16 +171,6 @@ func newSummary() *summary {
 		seasons:  make(map[string]string),
 		hints:    make(map[string]string),
 	}
-}
-
-func orderedValues(m map[string]string) []string {
-	a, i := make([]string, len(m)), 0
-	for _, v := range m {
-		a[i] = v
-		i++
-	}
-	sort.Strings(a)
-	return a
 }
 
 var conditionRegexp = regexp.MustCompile(`(.+?) +<- (.+)`)

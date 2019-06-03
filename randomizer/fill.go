@@ -798,3 +798,14 @@ func sliceContains(a interface{}, v interface{}) bool {
 	}
 	return false
 }
+
+// return alphabetically sorted string values from a map.
+func orderedValues(m map[string]string) []string {
+	a, i := make([]string, len(m)), 0
+	for _, v := range m {
+		a[i] = v
+		i++
+	}
+	sort.Strings(a)
+	return a
+}
