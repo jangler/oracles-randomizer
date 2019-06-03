@@ -63,6 +63,8 @@ Out of logic:
 - Required damage (damage boosts, falling in pits)
 - Farming rupees for major purchases (150+), or farming for minor purchases
   without sword, shovel, bracelet, boomerang, or fool's ore.
+- Farming ore chunks without sword, shovel, bracelet, magic boomerang, or
+  access to the Subrosian dance hall.
 - Getting a new type of mystical seed from anything other than a seed tree
 - Getting initial bombs from regenerating plants
 - Lighting torches using mystery seeds
