@@ -29,8 +29,8 @@ seed type: {
     or: [ember seeds, scent seeds, pegasus seeds, gale seeds, mystery seeds]}
 balloon guy's upgrade: [balloon guy, count: [3, seed type]]
 raft: [lynna village, cheval rope, island chart]
-shop, 30 rupees: [lynna city, farm rupees]
-shop, 150 rupees: [lynna city, count: [150, fixed rupees]]
+shop, 30 rupees: [lynna city, or: [count: [30, fixed rupees], [hard, shovel]]]
+shop, 150 rupees: [lynna city, or: [count: [180, fixed rupees], [hard, shovel]]]
 ambi's palace tree: [lynna village, or: [sword, punch object], seed item]
 ambi's palace chest: [lynna village, or: [ages,
     [hard, satchel, scent seeds, pegasus seeds],
@@ -47,7 +47,8 @@ cheval's grave: [yoll graveyard, or: [kill switch hook, bomb jump 3]]
 cheval's test: [cheval's grave, bracelet, or: [feather, flippers]]
 cheval's invention: [cheval's grave, flippers]
 grave under tree: [yoll graveyard]
-syrup: [yoll graveyard, graveyard key, count: [450, fixed rupees],
+syrup: [yoll graveyard, graveyard key,
+    or: [count: [480, fixed rupees], [hard, shovel]],
     or: [flippers, bomb jump 2, dimitri's flute, long hook]]
 graveyard poe: [yoll graveyard, graveyard key, bracelet]
 d1 entrance: [yoll graveyard, graveyard key]

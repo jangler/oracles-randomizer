@@ -9,9 +9,8 @@ dimitri's flute: {or: []}
 moosh's flute: {or: []}
 flute: {or: [ricky's flute, dimitri's flute, moosh's flute]}
 
-# flute sucks. never required to farm rupees with flute. also not including
-# boomerang or cane since you can't initially reach things to kill with them.
-farm rupees: {or: [sword, shovel, bracelet, switch hook]}
+farm rupees: {or: [ # only in logic for minigames. so almost never matters
+    sword, shovel, bracelet, boomerang, cane, switch hook, flute]}
 fixed rupees: {rupees: [
     "rupees, 10", "rupees, 20", "rupees, 30", "rupees, 50", "rupees, 100",
     "rupees, 200", rolling ridge past old man]}

@@ -58,12 +58,12 @@ In logic:
 - Using expert's ring as a weapon
 - Using thrown objects (bushes, pots) as weapons
 - Flipping spiked beetles using the shovel
+- Farming rupees for minigames
 
 Out of logic:
 
 - Required damage (damage boosts, falling in pits)
-- Farming rupees for major purchases (150+), or farming for minor purchases
-  without sword, shovel, bracelet, or switch hook
+- Farming rupees for shop purchases
 - Getting initial scent seeds from the plants in D3
 - Getting initial bombs from Goron Shooting Gallery or Head Thwomp
 - Lighting torches using mystery seeds
@@ -85,7 +85,7 @@ Out of logic:
 Choosing hard difficulty enables things that are out of normal logic, with the
 exception of:
 
-- Farming rupees for major purchases, except by shovel RNG manips
+- Farming rupees for shop purchases, except by shovel RNG manips
 - Mystery seeds as a weapon
 - Bombs as a weapon, except versus enemies immune to sword
 - Double damage boosts

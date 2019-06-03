@@ -55,16 +55,14 @@ In logic:
 - Using expert's ring as a weapon
 - Using thrown objects (bushes, pots) as weapons
 - Flipping spiked beetles using the shovel
+- Farming ore chunks
 
 Out of logic:
 
 - Anything that gives an explicit in-game warning (these are also potential
   softlocks)
 - Required damage (damage boosts, falling in pits)
-- Farming rupees for major purchases (150+), or farming for minor purchases
-  without sword, shovel, bracelet, boomerang, or fool's ore.
-- Farming ore chunks without sword, shovel, bracelet, magic boomerang, or
-  access to the Subrosian dance hall.
+- Farming rupees
 - Getting a new type of mystical seed from anything other than a seed tree
 - Getting initial bombs from regenerating plants
 - Lighting torches using mystery seeds
@@ -86,8 +84,7 @@ Choosing hard difficulty enables things that are out of normal logic, with the
 exception of:
 
 - Warnings
-- Farming rupees for major purchases, except by shovel RNG manips
-- Farming ore chunks with bombs or ember seeds
+- Farming rupees, except by shovel RNG manips
 - Lighting more than two torches per room using mystery seeds
 - Mystery seeds as a weapon
 - Bombs as a weapon, except versus enemies immune to sword

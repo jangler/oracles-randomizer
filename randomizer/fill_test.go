@@ -61,11 +61,11 @@ func testSeasonsGraph(t *testing.T) {
 	testMap = map[string]string{
 		"d0 key chest":            "sword",
 		"maku tree":               "flippers",
-		"old man in treehouse":    "rupees, 50",
-		"cave south of mrs. ruul": "rupees, 50",
+		"old man in treehouse":    "rupees, 100",
+		"cave south of mrs. ruul": "rupees, 100",
 	}
 	checkReach(t, g, testMap, "shop, 150 rupees", false)
-	testMap["natzu region, across water"] = "rupees, 50"
+	testMap["natzu region, across water"] = "rupees, 10"
 	checkReach(t, g, testMap, "shop, 150 rupees", true)
 }
 
@@ -121,7 +121,7 @@ func testAgesGraph(t *testing.T) {
 		"cheval's invention": "rupees, 200",
 	}
 	checkReach(t, g, testMap, "syrup", false)
-	testMap["shop, 150 rupees"] = "rupees, 50" // dumb but w/e
+	testMap["shop, 150 rupees"] = "rupees, 100" // dumb but w/e
 	checkReach(t, g, testMap, "syrup", true)
 
 	// test bombs from head thwomp in hard logic

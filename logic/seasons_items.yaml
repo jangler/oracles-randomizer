@@ -7,8 +7,6 @@ ricky's flute: {or: []}
 dimitri's flute: {or: []}
 moosh's flute: {or: []}
 
-# flute sucks. never required to farm rupees with flute.
-farm rupees: {or: [sword, shovel, bracelet, boomerang, fool's ore]}
 fixed rupees: {rupees: [
     "rupees, 1", "rupees, 5", "rupees, 10", "rupees, 20", "rupees, 30",
     "rupees, 50", "rupees, 100", d2 rupee room, d6 rupee room,

@@ -101,7 +101,6 @@ func filterJunk(g graph, checks map[*node]*node,
 			g.reset()
 			g["start"].explore()
 			if g["done"].reached {
-				println(item.name, "is trivial")
 				trivialRupees = append(trivialRupees, slot)
 			}
 			item.addParent(slot)
