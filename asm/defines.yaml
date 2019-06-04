@@ -128,7 +128,7 @@ common:
 seasons:
   00/: |
     # constants
-    define BANK_FONT,14
+    define BANK_FILE_SELECT_GFX,14
     define BANK_TREASURE_DATA,15
     define BANK_OWL_TEXT,3f
     define BANK_ROOM_TREASURES,3f
@@ -230,7 +230,7 @@ ages:
   00/: |
     # constants
     define BANK_TREASURE_DATA,16
-    define BANK_FONT,38
+    define BANK_FILE_SELECT_GFX,38
     define BANK_OWL_TEXT,38
     define BANK_ROOM_TREASURES,38
     define STARTING_TREE_MAP_INDEX,78

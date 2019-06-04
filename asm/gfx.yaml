@@ -10,31 +10,25 @@ common:
       call loadUncompressedGfxHeader
       # first load custom font
       ld b,19 # 26*16 bytes
-      ld c,BANK_FONT
+      ld c,BANK_FILE_SELECT_GFX
       ld de,8e21
       ld hl,dma_CustomFontLetters
       call queueDmaTransfer
       ld b,3 # 4*16 bytes
-      ld c,BANK_FONT
+      ld c,BANK_FILE_SELECT_GFX
       ld de,8fc1
       ld hl,dma_CustomFontPunct
       call queueDmaTransfer
-      ld b,1 # 32 bytes
-      ld c,02
-      ld de,9c01
+      ld b,3 # 64 bytes
+      ld c,BANK_FILE_SELECT_GFX
+      ld de,9c21
       ld hl,dma_FileSelectStringAttrs
       call queueDmaTransfer
-      ld b,1 # 32 bytes
-      ld c,02
-      ld de,9c00
+      ld b,3 # 64 bytes
+      ld c,BANK_FILE_SELECT_GFX
+      ld de,9c20
       ld hl,dma_FileSelectStringTiles
       jp queueDmaTransfer
-  02/dma_FileSelectStringAttrs: |
-      db 0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a
-      db 0a,0a,0a,0a
-  02/dma_FileSelectStringTiles: |
-      db 00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
-      db 00,00,00,00
 
   # overrides the sprite data loaded for certain interactions. this is mostly
   # used for "non-item" interactions that depict items, like the ones in shops.
@@ -116,7 +110,20 @@ common:
       pop bc
       ret
 
+floating:
+  dma_FileSelectStringAttrs: |
+      db 0a,0a,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,2a,2a
+      db 0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a # offscreen
+      db 0a,0a,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,0e,2a,2a
+      db 0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a,0a # offscreen
+  dma_FileSelectStringTiles: |
+      db 74,31,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,41,40
+      db 02,02,02,02,02,02,02,02,02,02,02,02 # offscreen
+      db 40,41,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,51,50
+      db 02,02,02,02,02,02,02,02,02,02,02,02 # offscreen
+
 seasons:
+  02/4206/: call displayFileSelectString
   02/4a54/: jp displayFileSelectString
 
   # make the rod of seasons interaction behave like a regular item,
@@ -135,6 +142,9 @@ seasons:
       ret
   00/25d9/: call overrideAnimationId
   00/2600/: call overrideAnimationId
+
+  14/dma_FileSelectStringAttrs: /include dma_FileSelectStringAttrs
+  14/dma_FileSelectStringTiles: /include dma_FileSelectStringTiles
 
   # format (ID, subID, jump address). these functions *must* pop af as the last
   # instruction before returning.
@@ -272,10 +282,14 @@ seasons:
   3f/4356/: call checkLoadCustomSprite
 
 ages:
+  02/4246/: call displayFileSelectString
   02/4a94/: jp displayFileSelectString
 
   # make tune of echoes treasure use harp graphics.
   15/53c9/: db 68
+
+  38/dma_FileSelectStringAttrs: /include dma_FileSelectStringAttrs
+  38/dma_FileSelectStringTiles: /include dma_FileSelectStringTiles
 
   # format (ID, subID, jump address). these functions *must* pop af as the last
   # action before returning.

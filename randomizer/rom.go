@@ -4,6 +4,7 @@
 package randomizer
 
 import (
+	"bytes"
 	"crypto/sha1"
 	"fmt"
 	"math/rand"
@@ -682,13 +683,30 @@ func changeTreasureMapTiles(slots map[string]*itemSlot,
 
 // set the string to display on the file select screen.
 func (rom *romState) setFileSelectText(seed uint32, ropts randomizerOptions) {
-	// construct ascii  string
-	fileSelectText := []byte(strings.ToUpper(
-		fmt.Sprintf("%s %08x%s", shortVersion(), seed, optString(ropts))))
+	// construct tiles from strings
+	fileSelectRow1 := stringToTiles(strings.ToUpper(ternary(len(version) == 5,
+		fmt.Sprintf("randomizer %s", version),
+		fmt.Sprintf("rando %10s", version)[:16]).(string)))
+	fileSelectRow2 := stringToTiles(strings.ToUpper(
+		fmt.Sprintf("%02x%s", seed, optString(ropts))))
 
-	// convert to tile indexes
-	for i, c := range fileSelectText {
-		fileSelectText[i] = func() byte {
+	tiles := rom.codeMutables["dma_FileSelectStringTiles"]
+	buf := new(bytes.Buffer)
+	buf.Write(tiles.new[:2])
+	buf.Write(fileSelectRow1)
+	padding := 16 - len(fileSelectRow2) // bias toward right padding
+	buf.Write(tiles.new[2+len(fileSelectRow1) : 0x22+padding/2])
+	buf.Write(fileSelectRow2)
+	buf.Write(tiles.new[0x22+len(fileSelectRow2)+padding/2:])
+	tiles.new = buf.Bytes()
+}
+
+// returns a conversion of the string to file select screen tile indexes, using
+// the custom font.
+func stringToTiles(s string) []byte {
+	b := make([]byte, len(s))
+	for i, c := range []byte(s) {
+		b[i] = func() byte {
 			switch {
 			case c >= '0' && c <= '9':
 				return c - 0x20
@@ -707,25 +725,5 @@ func (rom *romState) setFileSelectText(seed uint32, ropts randomizerOptions) {
 			}
 		}()
 	}
-
-	// pad with zeroes
-	maxlen := len(rom.codeMutables["dma_FileSelectStringTiles"].new)
-	for len(fileSelectText) < maxlen {
-		fileSelectText = append([]byte{'\xfc'},
-			append(fileSelectText, '\xfc')...)
-	}
-	if len(fileSelectText) > maxlen {
-		fileSelectText = fileSelectText[1:]
-	}
-
-	rom.codeMutables["dma_FileSelectStringTiles"].new = fileSelectText
-}
-
-// return a shortened version string for display on the title screen. release
-// tags are preserved in full.
-func shortVersion() string {
-	if index := strings.IndexRune(version, '-'); index != -1 {
-		return version[0:1] + version[index-1:index+4]
-	}
-	return version
+	return b
 }

@@ -593,6 +593,8 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 func optString(ropts randomizerOptions) string {
 	s := ""
 	if ropts.treewarp || ropts.hard || ropts.dungeons || ropts.portals {
+		// these are in chronological order of introduction, for no particular
+		// reason.
 		s += "+"
 		if ropts.treewarp {
 			s += "t"
