@@ -73,9 +73,9 @@ func makeCollectModeTable(itemSlots map[string]*itemSlot) string {
 	for _, key := range orderedKeys(itemSlots) {
 		slot := itemSlots[key]
 
-		// use no pickup animation if item is a key outside a chest
+		// use no pickup animation for falling small keys
 		mode := slot.collectMode
-		if mode < 0x80 && slot.treasure != nil && slot.treasure.id == 0x30 {
+		if mode == 0x29 && slot.treasure != nil && slot.treasure.id == 0x30 {
 			mode &= 0xf8
 		}
 
