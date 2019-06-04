@@ -39,7 +39,7 @@ seasons:
       dw script_warnBushText
       dw script_warnKeySkipText
 
-  # moblin keep -> sunken city ledge (add warning)
+  # moblin keep -> sunken city ledge
   11/moblinKeepStaticObjects: |
       db f2
       db ab,00,40,70
@@ -49,7 +49,7 @@ seasons:
       db fe
   11/650b/: db f3; dw moblinKeepStaticObjects; db ff
 
-  # natzu / woods of winter cliff (add warning)
+  # natzu / woods of winter cliff
   11/flowerCliffStaticObjects: |
       db f2
       db 9c,00,58,58
@@ -57,7 +57,7 @@ seasons:
       db fe
   11/6568/: db f3; dw flowerCliffStaticObjects; db ff
 
-  # sunken city diving spot (add warning)
+  # sunken city diving spot
   11/divingSpotStaticObjects: |
       db f2
       db 1f,0d,68,68
@@ -66,7 +66,24 @@ seasons:
       db fe
   11/69cc/: db f3; dw divingSpotStaticObjects; db ff
 
-  # mount cucco waterfall/vine screen (add warning)
+  # temple remains lower ledge (only exists in rando)
+  11/templeLowerStaticObjects: |
+      db f2
+      db e1,00,28,28
+      db 22,0a,38,38
+      db fe
+  11/6be4/: db f3; dw templeLowerStaticObjects; db ff
+
+  # temple remains upper ledge
+  11/templeUpperStaticObjects: |
+      db f6
+      db 20,0d,01
+      db f2
+      db 22,0a,68,58
+      db fe
+  11/6bbb/: dw templeUpperStaticObjects
+
+  # mount cucco waterfall/vine screen
   11/waterfallStaticObjects: |
       db f2
       db 1f,08,68,68
@@ -74,7 +91,7 @@ seasons:
       db fe
   11/6c10/: db f3; dw waterfallStaticObjects; db ff
 
-  # hss skip room (add warning)
+  # hss skip room, on far side
   11/hssSkipStaticObjects: |
       db f2
       db 22,0a,88,98
@@ -184,6 +201,59 @@ seasons:
       ret c
       jp warnCliff
 
+  # warning for the upper temple remains ledge. this is dumb complicated just
+  # to figure out whether the player can for sure get back up, and
+  # *technically* it assumes you can bomb jump across the lava if you have
+  # feather.
+  15/warnTempleRemainsUpper: |
+      call checkGaleSatchel
+      ret c
+      ld a,(wFeatherLevel)
+      or a
+      jr z,.warn
+      ld a,15 # temple remains has been bombed
+      call checkGlobalFlag
+      jr z,.warn
+      ld b,6c # temple remains
+      ld d,02 # summer
+      call checkSeasonAccessInArea
+      jr nz,.warn
+      ld a,TREASURE_MAGNET_GLOVES
+      call checkTreasureObtained
+      ret c
+      ld a,(wFeatherLevel)
+      cp a,02
+      jr c,.warn
+      ld a,TREASURE_SEED_SATCHEL
+      call checkTreasureObtained
+      jr nc,.warn
+      ld a,TREASURE_PEGASUS_SEEDS
+      call checkTreasureObtained
+      ret c
+      .warn
+      jp warnCliff
+
+  # warning for the lower temple remains ledge. this doesn't account for fall
+  # skip because it gets very complicated and conditional.
+  15/warnTempleRemainsLower: |
+      call checkGaleSatchel
+      ret c
+      ld a,(wFeatherLevel)
+      or a
+      jr z,.warn
+      ld a,15 # temple remains has been bombed
+      call checkGlobalFlag
+      ret nz
+      ld b,6c # temple remains
+      ld d,04 # autumn
+      call checkSeasonAccessInArea
+      jr nz,.warn
+      ld a,c # rod seasons
+      and a,08 # winter
+      ret nz
+      .warn
+      jp warnCliff
+
   # warning for small key softlock with HSS skip. checks and sets room flags so
   # as not to display the warning more than once, ever.
   15/warnHssSkip: |
@@ -216,6 +286,10 @@ seasons:
       ld a,(wObtainedSeasons)
       ld c,a
       ld a,(wActiveRoom)
+      cp a,05
+      jp z,warnTempleRemainsUpper
+      cp a,25
+      jp z,warnTempleRemainsLower
       cp a,7c
       jp z,warnFlowerCliff
       cp a,6e
