@@ -1,6 +1,3 @@
-// Package rom deals with the structure of the oracles ROM files themselves.
-// The given addresses are for the English versions of the games, and if two
-// are specified, Ages comes first.
 package randomizer
 
 import (
