@@ -5,7 +5,6 @@
 -- arg[2] = drop table index
 -- arg[3] = high byte of room
 
--- TODO: ages addrs
 local bank_offset = (0x3f - 1) * 0x4000
 local seek_table = {DIN = 0x4a75, NAY = 0x4a46}
 local prob_table = {DIN = 0x481d, NAY = 0x47fe}
