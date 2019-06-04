@@ -237,7 +237,7 @@ subrosian dance hall:
   maptile: 0x9a
   addr: {bank: 0x0b, addr: 0x6646}
 temple of seasons:
-  treasure: gasha seed # lone rod doesn't exist in rando
+  treasure: fool's ore # lone rod doesn't exist in rando
   room: 0x03ac
   maptile: 0xb0
   ids: [{bank: 0x15, addr: 0x70ce}]

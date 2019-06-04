@@ -394,11 +394,8 @@ var seedTreeNames = map[string]bool{
 func initRouteInfo(ri *routeInfo, rom *romState,
 	plan map[string]string) (itemList, slotList *list.List) {
 	// get slices of names
-	// TODO: do this differently. like put it in a regular slot. also does
-	// this actually work like it's supposed to?
 	var itemNames []string
-	extraItemNames := sora(rom.game, 0, 1).(int) // +1 for fool's ore
-	slotNames := make([]string, 0, len(ri.slots)+extraItemNames)
+	slotNames := make([]string, 0, len(ri.slots))
 
 	// get count of each seed tree from a combination of plan and RNG
 	nTrees := sora(rom.game, 6, 8).(int)
@@ -423,8 +420,6 @@ func initRouteInfo(ri *routeInfo, rom *romState,
 
 	for key, slot := range rom.itemSlots {
 		switch {
-		case key == "temple of seasons": // don't slot vanilla, seasonless rod
-			break
 		case seedTreeNames[key]:
 			id := thisSeeds[0]
 			thisSeeds = thisSeeds[1:]
@@ -451,9 +446,6 @@ func initRouteInfo(ri *routeInfo, rom *romState,
 
 			itemNames = append(itemNames, treasureName)
 		}
-	}
-	if rom.game == gameSeasons {
-		itemNames = append(itemNames, "fool's ore")
 	}
 	for key := range ri.slots {
 		slotNames = append(slotNames, key)
