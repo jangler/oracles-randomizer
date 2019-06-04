@@ -72,6 +72,11 @@ seasons:
   15/5a1c/: db 80,e2,00,66 # wWarpDestVariables, in order?
 
 ages:
+  # as a side effect of removing the nayru/impa/ralph cutscene outside the
+  # black tower. nayru hangs out in lynna village from the start. don't do
+  # that.
+  08/69b4/: jp interactionDelete
+
   # skip ralph cutscene in front of palace.
   08/6e61/: and a,00
   09/5152/: jp interactionDelete # for the intangible guard
