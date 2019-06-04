@@ -400,7 +400,6 @@ def read_interaction(buf, bank, addr, name=True):
     if mode == 0xf0:
         print("skipped interaction type", hex(mode), "@", hex(addr - 1),
                 file=sys.stderr)
-        # TODO
         while read_byte(buf, bank, addr) < 0xf0:
             addr += 1
     elif mode == 0xf1:
