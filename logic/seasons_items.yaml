@@ -71,7 +71,6 @@ flute: {or: [ricky's flute, moosh's flute, dimitri's flute]}
 shield: {or: [wooden shield, iron shield, [beach, ember seeds]]}
 seed item: {or: [satchel, slingshot]}
 bombs: {or: [
-    [hard, d2 blade chest, bracelet], # deku scrub, TODO: rupees
     [hard, harvest bush, d2 bracelet room],
     ["bombs, 10", or: [shovel, bracelet, break flower, flute]]]}
 
