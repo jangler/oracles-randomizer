@@ -29,6 +29,7 @@ seasons:
 
   0b/script_checkDisplayWarning: |
       db jumpifmemoryeq; dw wActiveRoom; db d9; dw 4e87 # use vanilla script
+      db setcollisionradii,04,04
       db checkcollidedwithlink_onground
       db asm15; dw checkDisplayWarning
       db checkcfc0_bit0

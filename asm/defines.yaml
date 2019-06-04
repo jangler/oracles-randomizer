@@ -57,6 +57,7 @@ common:
     define scriptend,00
     define loadscript,83
     define jumptable_memoryaddress,87
+    define setcollisionradii,8d
     define setanimation,8f
     define writememory,91
     define ormemory,92
