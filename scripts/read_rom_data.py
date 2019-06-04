@@ -444,6 +444,7 @@ def read_interaction(buf, bank, addr, name=True):
             })
     elif mode in (0xf3, 0xf4, 0xf5):
         # pointer to other interaction
+        print("following pointer @ %04x" % addr)
         ptr = read_ptr(buf, bank, addr)
         addr += 2
         new_objects, _ = loop_read_interaction(buf, bank, ptr, name)
