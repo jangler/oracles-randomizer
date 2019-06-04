@@ -718,7 +718,7 @@ func stringToTiles(s string) []byte {
 			case c == '.':
 				return '\xff'
 			default:
-				panic("invalid byte in file select text: " + string(c))
+				return '\xfc' // leave other characters blank
 			}
 		}()
 	}

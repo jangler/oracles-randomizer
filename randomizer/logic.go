@@ -136,7 +136,7 @@ func loadNode(v interface{}) *prenode {
 			n.nType = rupeesNode
 			n.parents = loadParents(v["rupees"])
 		default:
-			println("unknown map type")
+			panic(fmt.Sprintf("unknown logic type: %v", v))
 		}
 	}
 

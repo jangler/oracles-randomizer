@@ -306,8 +306,7 @@ func (rom *romState) attachText() {
 		if mut, ok := rom.codeMutables[label]; ok {
 			mut.new = processText(rawText)
 		} else {
-			// TODO: there shouldn't be printlns anywhere. unit test instead?
-			println("no code label matches text label " + label)
+			panic(fmt.Sprintf("no code label matches text label %q", label))
 		}
 	}
 
