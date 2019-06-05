@@ -6,25 +6,26 @@
 # environment
 
 go generate
-
-version="$(grep -o '".\+"' version.go | tr -d '"')"
-appname="$(basename "$PWD")"
-
+python scripts/checklist.py
 unix2dos -n README.md README.txt
 
+version="$(grep -o '".\+"' randomizer/version.go | tr -d '"')"
+appname="$(basename "$PWD")"
+
 mkdir -p "dist/$version"
-GOOS=windows GOARCH=386 go build
-apack "dist/$version/$appname"_win32_"$version.zip" "$appname.exe" README.txt \
-	checklist/ tracker/
-GOOS=darwin GOARCH=amd64 go build
-apack "dist/$version/$appname"_macos64_"$version.zip" "$appname" README.txt \
-	checklist/ tracker/
-GOOS=linux GOARCH=amd64 go build
-apack "dist/$version/$appname"_linux64_"$version.zip" "$appname" README.txt \
-	checklist/ tracker/
+
+function buildfor() {
+	GOOS=$1 GOARCH=$2
+	echo "building for $GOOS/$GOARCH"
+	go build
+	apack -q "dist/$version/$appname"_$3_"$version.zip" "$appname" \
+		README.txt checklist/ tracker/
+}
+
+buildfor windows 386 win32
+buildfor darwin amd64 macos64
+buildfor linux amd64 linux64
 
 rm README.txt
 
-echo "============================="
-echo "MAKE SURE TO UPDATE VERSION!!"
-echo "============================="
+echo "archives written to dist/$version/"

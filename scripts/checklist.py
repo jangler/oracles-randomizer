@@ -3,13 +3,14 @@
 import re
 import sys
 
+import yaml # pyyaml
+
 # create an HTML checklist (doc/checklist.html) from the logic. this must be
 # run from the repository's root folder.
 
 files = {
-    'seasons': ('logic/holodrum.go', 'logic/subrosia.go',
-        'logic/seasons_dungeons.go'),
-    'ages': ('logic/labrynna.go', 'logic/ages_dungeons.go'),
+    'seasons': 'romdata/seasons_slots.yaml',
+    'ages': 'romdata/ages_slots.yaml',
 }
 
 version_regexp = re.compile('const version = "(.+?)"')
@@ -19,6 +20,7 @@ name_regexp = re.compile('"(.+?)": +"(.+?)",')
 doc_template = """<!DOCTYPE html>
 <html>
 <style>
+body { font-family: sans-serif; }
 h1 { font-size: x-large; }
 h2 { font-size: large; }
 </style>
@@ -32,11 +34,7 @@ h2 { font-size: large; }
 </html>
 """
 
-section_template = """<h2>%s</h2>
-%s
-"""
-
-with open('version.go') as f:
+with open('randomizer/version.go') as f:
     for line in f.readlines():
         match = version_regexp.match(line)
         if match:
@@ -44,39 +42,18 @@ with open('version.go') as f:
             break
 
 names = {}
-with open('names.go') as f:
+with open('randomizer/names.go') as f:
     for line in f.readlines():
         match = name_regexp.search(line)
         if match:
             names[match.group(1)] = match.group(2)
 
-def make_checklist(game, infiles, outfile):
-    sections = []
-
-    for filename in infiles:
-        slots = []
-
-        with open(filename) as infile:
-            for line in infile.readlines():
-                match = slot_regexp.search(line)
-                if match:
-                    name = match.group(1)
-
-                    if name in names:
-                        name = names[name]
-                    if name[0] == 'd' and name[2] == ' ':
-                            name = "D" + name[1:]
-
-                    slots.append(name)
-
-        elements = ['<input type="checkbox"> %s' % name
-                for name in slots]
-
-        sections.append(section_template %
-                (filename[6:-3].replace(game+'_', ''), '<br>\n'.join(elements)))
-
+def make_checklist(game, infile, outfile):
+    with open(infile) as f:
+        slots = yaml.load(f)
+    elements = ['<input type="checkbox"> %s' % name for name in slots]
     outfile.write(doc_template %
-        (version, game, version, game, '\n'.join(sections)))
+        (version, game, version, game, '<br>\n'.join(elements)))
 
 
 for game, infiles in files.items():
