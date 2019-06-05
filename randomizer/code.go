@@ -257,6 +257,9 @@ func (rom *romState) applyAsmFiles(infos []os.FileInfo) {
 // io.Writer.
 func (rom *romState) showAsm(symbol string, w io.Writer) error {
 	mut := rom.codeMutables[symbol]
+	if mut == nil {
+		return fmt.Errorf("no such label: %s", symbol)
+	}
 	s, err := rom.assembler.decompile(string(mut.new))
 	if err != nil {
 		return err

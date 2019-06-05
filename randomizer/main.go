@@ -40,9 +40,15 @@ func usage() {
 	flag.PrintDefaults()
 }
 
-// fatal prints an error to whichever UI is used.
+// fatal prints an error to whichever UI is used. this doesn't exit the
+// program, since that would destroy the TUI.
 func fatal(err error, logf logFunc) {
 	logf("fatal: %v.", err)
+}
+
+// a quick and dirty type of logFunc.
+func printErrf(s string, a ...interface{}) {
+	fmt.Fprintf(os.Stderr, s+"\n", a...)
 }
 
 // options specified on the command line or via the TUI
@@ -104,7 +110,8 @@ func Main() {
 	if flagCpuProf != "" {
 		f, err := os.Create(flagCpuProf)
 		if err != nil {
-			panic(err)
+			fatal(err, printErrf)
+			return
 		}
 		pprof.StartCPUProfile(f)
 		defer pprof.StopCPUProfile()
@@ -122,33 +129,40 @@ func Main() {
 	switch flagDevCmd {
 	case "findaddr":
 		// print the name of the mutable/etc that modifies an address
-		tokens := strings.Split(flag.Arg(0), ":")
+		tokens := strings.Split(flag.Arg(0), "/")
 		if len(tokens) != 3 {
-			panic("findaddr: invalid argument: " + flag.Arg(0))
+			fatal(fmt.Errorf("findaddr: invalid argument: %s", flag.Arg(0)),
+				printErrf)
+			return
 		}
 		game := reverseLookupOrPanic(gameNames, tokens[0]).(int)
 		bank, err := strconv.ParseUint(tokens[1], 16, 8)
 		if err != nil {
-			panic(err)
+			fatal(err, printErrf)
+			return
 		}
 		addr, err := strconv.ParseUint(tokens[2], 16, 16)
 		if err != nil {
-			panic(err)
+			fatal(err, printErrf)
+			return
 		}
 
-		// optionall specify path of rom to load
+		// optionally specify path of rom to load.
+		// i forget why or whether this is useful.
 		var rom *romState
 		if flag.Arg(1) == "" {
 			rom = newRomState(nil, game)
 		} else {
 			f, err := os.Open(flag.Arg(1))
 			if err != nil {
-				panic(err)
+				fatal(err, printErrf)
+				return
 			}
 			defer f.Close()
 			b, err := ioutil.ReadAll(f)
 			if err != nil {
-				panic(err)
+				fatal(err, printErrf)
+				return
 			}
 			rom = newRomState(b, game)
 		}
@@ -159,7 +173,8 @@ func Main() {
 		game := reverseLookupOrPanic(gameNames, flag.Arg(0)).(int)
 		numTrials, err := strconv.Atoi(flag.Arg(1))
 		if err != nil {
-			panic(err)
+			fatal(err, printErrf)
+			return
 		}
 
 		rand.Seed(time.Now().UnixNano())
@@ -169,15 +184,18 @@ func Main() {
 		})
 	case "showasm":
 		// print the asm for the named function/etc
-		tokens := strings.Split(flag.Arg(0), ":")
+		tokens := strings.Split(flag.Arg(0), "/")
 		if len(tokens) != 2 {
-			panic("showasm: invalid argument: " + flag.Arg(0))
+			fatal(fmt.Errorf("showasm: invalid argument: %s", flag.Arg(0)),
+				printErrf)
+			return
 		}
 		game := reverseLookupOrPanic(gameNames, tokens[0]).(int)
 
 		rom := newRomState(nil, game)
 		if err := rom.showAsm(tokens[1], os.Stdout); err != nil {
-			panic(err)
+			fatal(err, printErrf)
+			return
 		}
 	case "":
 		// no devcmd, run randomizer normally
