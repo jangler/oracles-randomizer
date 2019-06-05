@@ -142,7 +142,7 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 	rom.setBossItemAddrs()
 	rom.setSeedData()
 	rom.setRoomTreasureData()
-	rom.setFileSelectText(seed, ropts)
+	rom.setFileSelectText(optString(seed, ropts))
 	rom.attachText()
 
 	// regenerate collect mode table to accommodate changes based on contents.
@@ -437,24 +437,23 @@ func (rom *romState) randomizeRingPool(src *rand.Rand,
 	}
 	ringValues, i := make([]int, nRings), 0
 
-	// load planned values first
+	// load planned values if present
 	for _, v := range planValues {
-		for id, name := range rings {
-			if v == name {
-				if i >= len(ringValues) {
-					return nil, fmt.Errorf("too many rings in plan")
-				}
-				ringValues[i] = id
-				i++
-				break
+		if id := getStringIndex(rings, v); id != -1 {
+			if i >= len(ringValues) {
+				return nil, fmt.Errorf("too many rings in plan")
 			}
+			ringValues[i] = id
+			i++
+		} else {
+			return nil, fmt.Errorf("no such ring: %s", v)
 		}
 	}
 
 	// then roll random ones for the rest
 	for i < len(ringValues) {
-		// loop until we get a ring that's not literally useless, and which
-		// we haven't used before.
+		// loop until we get a random ring that's not literally useless, and
+		// which we haven't used before.
 		done := false
 		for !done {
 			param := src.Intn(0x40)
@@ -679,13 +678,13 @@ func changeTreasureMapTiles(slots map[string]*itemSlot,
 }
 
 // set the string to display on the file select screen.
-func (rom *romState) setFileSelectText(seed uint32, ropts randomizerOptions) {
+func (rom *romState) setFileSelectText(row2 string) {
 	// construct tiles from strings
 	fileSelectRow1 := stringToTiles(strings.ToUpper(ternary(len(version) == 5,
 		fmt.Sprintf("randomizer %s", version),
 		fmt.Sprintf("rando %10s", version)[:16]).(string)))
-	fileSelectRow2 := stringToTiles(strings.ToUpper(
-		fmt.Sprintf("%02x%s", seed, optString(ropts))))
+	fileSelectRow2 := stringToTiles(
+		strings.ToUpper(strings.ReplaceAll(row2, "-", " ")))
 
 	tiles := rom.codeMutables["dma_FileSelectStringTiles"]
 	buf := new(bytes.Buffer)

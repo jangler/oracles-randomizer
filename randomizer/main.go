@@ -1,6 +1,7 @@
 package randomizer
 
 import (
+	"crypto/sha1"
 	"flag"
 	"fmt"
 	"io/ioutil"
@@ -71,7 +72,7 @@ type randomizerOptions struct {
 	hard     bool
 	dungeons bool
 	portals  bool
-	plan     *summary
+	plan     *plan
 	seed     string // given seed, not necessarily final seed
 }
 
@@ -123,7 +124,6 @@ func Main() {
 		dungeons: flagDungeons,
 		portals:  flagPortals,
 		seed:     flagSeed,
-		plan:     newSummary(),
 	}
 
 	switch flagDevCmd {
@@ -256,8 +256,6 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 				fatal(err, logf)
 				return
 			}
-			ropts.dungeons = ropts.dungeons || len(ropts.plan.dungeons) > 0
-			ropts.portals = ropts.portals || len(ropts.plan.portals) > 0
 		}
 
 		if err := randomizeFile(
@@ -359,10 +357,14 @@ func writeRom(b []byte, dirName, filename, logFilename string, seed uint32,
 	}
 
 	// print summary
-	logf("seed: %08x", seed)
+	if flagPlan == "" {
+		logf("seed: %08x", seed)
+	}
 	logf("SHA-1 sum: %x", string(sum))
 	logf("wrote new ROM to %s", filename)
-	logf("wrote log file to %s", logFilename)
+	if flagPlan == "" {
+		logf("wrote log file to %s", logFilename)
+	}
 
 	return nil
 }
@@ -480,8 +482,8 @@ func randomizeFile(rom *romState, dirName, outfile string,
 	}
 	if outfile == "" {
 		gamePrefix := sora(rom.game, "oos", "ooa")
-		outfile = fmt.Sprintf("%srando_%s_%08x%s.gbc",
-			gamePrefix, version, seed, optString(ropts))
+		outfile = fmt.Sprintf("%srando_%s_%s.gbc",
+			gamePrefix, version, optString(seed, ropts))
 	}
 
 	// write to file
@@ -520,23 +522,40 @@ func randomize(rom *romState, dirName, logFilename string,
 	}
 
 	// search for valid configuration
-	seed, err := setRandomSeed(ropts.seed)
-	if err != nil {
-		return 0, nil, "", err
-	}
-	ri, err := findRoute(rom, seed, ropts, verbose, logf)
-	if err != nil {
-		return 0, nil, "", err
+	var ri *routeInfo
+	if ropts.plan == nil {
+		seed, err := setRandomSeed(ropts.seed)
+		if err != nil {
+			return 0, nil, "", err
+		}
+		ri, err = findRoute(rom, seed, ropts, verbose, logf)
+		if err != nil {
+			return 0, nil, "", err
+		}
+	} else {
+		var err error
+		ri, err = makePlannedRoute(rom, ropts.plan)
+		if err != nil {
+			return 0, nil, "", err
+		}
+		if ri.entrances != nil && len(ri.entrances) > 0 {
+			ropts.dungeons = true
+		}
+		if ri.portals != nil && len(ri.portals) > 0 {
+			ropts.portals = true
+		}
 	}
 
 	// configuration found; come up with auxiliary data
 	checks := getChecks(ri.usedItems, ri.usedSlots)
 	spheres, extra := getSpheres(ri.graph, checks)
 	owlNames := orderedKeys(getOwlIds(rom.game))
-	owlHints, err := newHinter(rom.game).generate(
-		ri.src, ri.graph, checks, owlNames, ropts.plan.hints)
-	if err != nil {
-		return 0, nil, "", err
+	owlHinter := newHinter(rom.game)
+	owlHints := owlHinter.generate(ri.src, ri.graph, checks, owlNames)
+	if ropts.plan != nil {
+		if err := planOwlHints(ropts.plan, owlHinter, owlHints); err != nil {
+			return 0, nil, "", err
+		}
 	}
 
 	checksum, err := setRomData(rom, ri, owlHints, ropts, logf, verbose)
@@ -545,13 +564,15 @@ func randomize(rom *romState, dirName, logFilename string,
 	}
 
 	// write spoiler log
-	if logFilename == "" {
-		gamePrefix := sora(rom.game, "oos", "ooa")
-		logFilename = fmt.Sprintf("%srando_%s_%08x%s_log.txt",
-			gamePrefix, version, ri.seed, optString(ropts))
+	if ropts.plan == nil {
+		if logFilename == "" {
+			gamePrefix := sora(rom.game, "oos", "ooa")
+			logFilename = fmt.Sprintf("%srando_%s_%s_log.txt",
+				gamePrefix, version, optString(ri.seed, ropts))
+		}
+		writeSummary(filepath.Join(dirName, logFilename), checksum,
+			ropts, rom, ri, checks, spheres, extra, owlHints)
 	}
-	writeSummary(filepath.Join(dirName, logFilename), checksum,
-		ropts, rom, ri, checks, spheres, extra, owlHints)
 
 	return ri.seed, checksum, logFilename, nil
 }
@@ -577,10 +598,7 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 	// set season data
 	if rom.game == gameSeasons {
 		for area, id := range ri.seasons {
-			// dumb camel case transformation to match asm names
-			key := fmt.Sprintf("%c%sSeason", area[0],
-				strings.ReplaceAll(strings.Title(area)[1:], " ", ""))
-			rom.setSeason(key, id)
+			rom.setSeason(inflictCamelCase(area+"Season"), id)
 		}
 	}
 
@@ -605,11 +623,27 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 	return rom.mutate(warps, ri.seed, ropts)
 }
 
-// returns a string representing the randomizer options that affect the
-// generated seed or how it's played - so not including things like music
-// on/off.
-func optString(ropts randomizerOptions) string {
+// returns a string representing a seed/has plus the randomizer options that
+// affect the generated seed or how it's played - so not including things like
+// music on/off.
+func optString(seed uint32, ropts randomizerOptions) string {
 	s := ""
+
+	if ropts.plan != nil {
+		// -plan gets a hash based on source file rather than a seed
+		sum := sha1.Sum([]byte(ropts.plan.source))
+		s += fmt.Sprintf("plan-%04x", sum[:2])
+
+		// treewarp is the only option that makes a difference in plando
+		if ropts.treewarp {
+			s += "+t"
+		}
+
+		return s
+	}
+
+	s += fmt.Sprintf("%08x", seed)
+
 	if ropts.treewarp || ropts.hard || ropts.dungeons || ropts.portals {
 		// these are in chronological order of introduction, for no particular
 		// reason.
@@ -627,6 +661,7 @@ func optString(ropts randomizerOptions) string {
 			s += "p"
 		}
 	}
+
 	return s
 }
 
@@ -647,7 +682,7 @@ func reverseLookup(m, match interface{}) (interface{}, bool) {
 func reverseLookupOrPanic(m, match interface{}) interface{} {
 	i, ok := reverseLookup(m, match)
 	if !ok {
-		panic(fmt.Sprintf("reverse lookup failed for value %q", match))
+		panic(fmt.Sprintf("reverse lookup failed for value %v", match))
 	}
 	return i
 }

@@ -89,18 +89,11 @@ func newHinter(game int) *hinter {
 
 // returns a randomly generated map of owl names to owl messages.
 func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
-	owlNames []string, plan map[string]string) (map[string]string, error) {
+	owlNames []string) map[string]string {
 	// function body starts here lol
 	hints := make(map[string]string)
 	slots := getShuffledHintSlots(src, checks)
 	i := 0
-
-	// check for invalid plando owl names
-	for k := range plan {
-		if !sliceContains(owlNames, k) {
-			return nil, fmt.Errorf("unknown owl name: %s", k)
-		}
-	}
 
 	// keep track of which slots have been hinted at in order to avoid
 	// duplicates. in practice the implementation of the hint loop makes this
@@ -108,19 +101,16 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 	hintedSlots := make(map[*node]bool)
 
 	for _, owlName := range owlNames {
-		// use planned hints if given
-		if v, ok := plan[owlName]; ok {
-			if !isValidGameText(v) {
-				return nil, fmt.Errorf("invalid hint text: %s", v)
-			}
-			hints[owlName] = h.format(strings.Replace(v, `"`, "", 2))
-			continue
-		}
-
 		// sometimes owls are just unreachable, so anything goes, i guess
 		g.reset()
 		g["start"].explore()
 		owlUnreachable := !g[owlName].reached
+
+		// if we're in plando mode, there could be no slots.
+		if len(slots) == 0 || len(hintedSlots) >= len(slots) {
+			hints[owlName] = h.format("...")
+			continue
+		}
 
 		for {
 			slot, item := slots[i], checks[slots[i]]
@@ -147,7 +137,7 @@ func (h *hinter) generate(src *rand.Rand, g graph, checks map[*node]*node,
 		}
 	}
 
-	return hints, nil
+	return hints
 }
 
 // formats a string for a text box. text box. this doesn't include control

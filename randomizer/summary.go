@@ -2,9 +2,7 @@ package randomizer
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
-	"regexp"
 	"sort"
 	"strings"
 	"time"
@@ -152,82 +150,6 @@ func spheresToText(spheres [][]*node, checks map[*node]*node, except *node) stri
 		}
 	}
 	return b.String()
-}
-
-type summary struct {
-	items    map[string]string
-	dungeons map[string]string
-	portals  map[string]string
-	seasons  map[string]string
-	hints    map[string]string
-}
-
-func newSummary() *summary {
-	return &summary{
-		items:    make(map[string]string),
-		dungeons: make(map[string]string),
-		portals:  make(map[string]string),
-		seasons:  make(map[string]string),
-		hints:    make(map[string]string),
-	}
-}
-
-var conditionRegexp = regexp.MustCompile(`(.+?) +<- (.+)`)
-
-// loads conditions from a log file.
-func parseSummary(path string, game int) (*summary, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer f.Close()
-
-	b, err := ioutil.ReadAll(f)
-	if err != nil {
-		return nil, err
-	}
-
-	sum := newSummary()
-	section := sum.items
-	for _, line := range strings.Split(string(b), "\n") {
-		line = strings.Replace(line, "\r", "", 1)
-		if strings.HasPrefix(line, "--") {
-			switch line {
-			case "-- items --", "-- progression items --",
-				"-- small keys and boss keys --", "-- other items --":
-				section = sum.items
-			case "-- dungeon entrances --":
-				section = sum.dungeons
-			case "-- subrosia portals --":
-				section = sum.portals
-			case "-- default seasons --":
-				section = sum.seasons
-			case "-- hints --":
-				section = sum.hints
-			default:
-				return nil, fmt.Errorf("unknown section: %q", line)
-			}
-		} else {
-			submatches := conditionRegexp.FindStringSubmatch(line)
-			if submatches != nil {
-				if submatches[1] == "null" {
-					var nullKey string
-					for i := 0; true; i++ {
-						nullKey = fmt.Sprintf("null %d", i)
-						if section[nullKey] == "" {
-							break
-						}
-					}
-					section[nullKey] = ungetNiceName(submatches[2], game)
-				} else {
-					section[ungetNiceName(submatches[1], game)] =
-						ungetNiceName(submatches[2], game)
-				}
-			}
-		}
-	}
-
-	return sum, nil
 }
 
 // write a "spoiler log" to a file.

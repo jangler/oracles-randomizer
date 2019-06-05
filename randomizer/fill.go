@@ -102,7 +102,6 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 	verbose bool, logf logFunc) (*routeInfo, error) {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
-	var err error
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
@@ -125,14 +124,9 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			ri.graph["hard"].addParent(ri.graph["start"])
 		}
 
-		ri.companion = rollAnimalCompanion(
-			ri.src, ri.graph, rom.game, ropts.plan.items)
-		ri.ringMap, err = rom.randomizeRingPool(
-			ri.src, orderedValues(ropts.plan.items))
-		if err != nil {
-			return nil, err
-		}
-		itemList, slotList = initRouteInfo(ri, rom, ropts.plan.items)
+		ri.companion = rollAnimalCompanion(ri.src, ri.graph, rom.game)
+		ri.ringMap, _ = rom.randomizeRingPool(ri.src, nil)
+		itemList, slotList = initRouteInfo(ri, rom)
 
 		// attach free items to the "start" node until placed.
 		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
@@ -142,32 +136,11 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 
 		// slot "world" nodes before items
 		if rom.game == gameSeasons {
-			ri.seasons, err = rollSeasons(ri.src, ri.graph, ropts.plan.seasons)
-			if err != nil {
-				return nil, err
-			}
-			ri.portals, err = setPortals(ri.src, ri.graph, ropts.portals,
-				ropts.plan.portals)
-			if err != nil {
-				return nil, err
-			}
+			ri.seasons = rollSeasons(ri.src, ri.graph)
+			ri.portals = setPortals(ri.src, ri.graph, ropts.portals)
 		}
-		ri.entrances, err = setDungeonEntrances(ri.src, ri.graph, rom.game,
-			ropts.dungeons, ropts.plan.dungeons)
-		if err != nil {
-			return nil, err
-		}
-
-		// load planned item configuration, if present
-		err = applyPlannedItems(ropts.plan.items, ri, slotList, itemList, rom)
-		if err != nil {
-			return nil, err
-		}
-		ri.graph.reset()
-		ri.graph["start"].explore()
-		if !ri.graph["done"].reached {
-			return nil, fmt.Errorf("impossible plando configuration")
-		}
+		ri.entrances = setDungeonEntrances(
+			ri.src, ri.graph, rom.game, ropts.dungeons)
 
 		if tryPlaceItems(
 			ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
@@ -204,40 +177,20 @@ var (
 
 // set the default seasons for all the applicable areas in the game, and return
 // a mapping of area name to season value.
-func rollSeasons(src *rand.Rand, g graph,
-	plan map[string]string) (map[string]byte, error) {
+func rollSeasons(src *rand.Rand, g graph) map[string]byte {
 	seasonMap := make(map[string]byte, len(seasonAreas))
-
-	// check for invalid plan
-	for k, v := range plan {
-		if !sliceContains(seasonAreas, k) {
-			return nil, fmt.Errorf("invalid season area: %s", k)
-		}
-		if !sliceContains(seasonsById, v) {
-			return nil, fmt.Errorf("invalid season: %s", v)
-		}
-	}
-
 	for _, area := range seasonAreas {
 		id := src.Intn(len(seasonsById))
-		if season, ok := plan[area]; ok {
-			for i, name := range seasonsById {
-				if name == season {
-					id = i
-				}
-			}
-		}
 		season := seasonsById[id]
 		g[fmt.Sprintf("%s default %s", area, season)].addParent(g["start"])
 		seasonMap[area] = byte(id)
 	}
-
-	return seasonMap, nil
+	return seasonMap
 }
 
 // connect dungeon entrances, randomly or vanilla-ly.
-func setDungeonEntrances(src *rand.Rand, g graph, game int, shuffle bool,
-	plan map[string]string) (map[string]string, error) {
+func setDungeonEntrances(
+	src *rand.Rand, g graph, game int, shuffle bool) map[string]string {
 	dungeonEntranceMap := make(map[string]string)
 	dungeons := make([]string, len(dungeonNames[game]))
 	copy(dungeons, dungeonNames[game])
@@ -249,16 +202,6 @@ func setDungeonEntrances(src *rand.Rand, g graph, game int, shuffle bool,
 		g["d2 alt entrances enabled"].addParent(g["start"])
 	}
 
-	// check for invalid plan
-	for k, v := range plan {
-		if !sliceContains(dungeons, strings.Replace(k, " entrance", "", 1)) {
-			return nil, fmt.Errorf("invalid dungeon entrance: %s", k)
-		}
-		if !sliceContains(dungeons, v) {
-			return nil, fmt.Errorf("invalid dungeon: %s", v)
-		}
-	}
-
 	entrances := make([]string, len(dungeons))
 	copy(entrances, dungeons)
 
@@ -268,23 +211,17 @@ func setDungeonEntrances(src *rand.Rand, g graph, game int, shuffle bool,
 		})
 	}
 
-	for k, v := range plan {
-		moveStringToBack(entrances, strings.Replace(k, " entrance", "", 1))
-		moveStringToBack(dungeons, v)
-	}
-
 	for i := 0; i < len(dungeons); i++ {
 		entranceName := fmt.Sprintf("%s entrance", entrances[i])
 		dungeonEntranceMap[entrances[i]] = dungeons[i]
 		g[fmt.Sprintf("enter %s", dungeons[i])].addParent(g[entranceName])
 	}
 
-	return dungeonEntranceMap, nil
+	return dungeonEntranceMap
 }
 
 // connect subrosia portals, randomly or vanilla-ly.
-func setPortals(src *rand.Rand, g graph, shuffle bool,
-	plan map[string]string) (map[string]string, error) {
+func setPortals(src *rand.Rand, g graph, shuffle bool) map[string]string {
 	portalMap := make(map[string]string)
 	var portals = []string{
 		"eastern suburbs", "spool swamp", "mt. cucco", "eyeglass lake",
@@ -295,25 +232,10 @@ func setPortals(src *rand.Rand, g graph, shuffle bool,
 		connects[i] = subrosianPortalNames[portal]
 	}
 
-	// check for invalid plan
-	for k, v := range plan {
-		if subrosianPortalNames[k] == "" {
-			return nil, fmt.Errorf("invalid portal name: %s", k)
-		}
-		if !sliceContains(connects, v) {
-			return nil, fmt.Errorf("invalid portal name: %s", v)
-		}
-	}
-
 	if shuffle {
 		src.Shuffle(len(connects), func(i, j int) {
 			connects[i], connects[j] = connects[j], connects[i]
 		})
-	}
-
-	for k, v := range plan {
-		moveStringToBack(portals, k)
-		moveStringToBack(connects, v)
 	}
 
 	for i := 0; i < len(portals); i++ {
@@ -324,28 +246,12 @@ func setPortals(src *rand.Rand, g graph, shuffle bool,
 			addParent(g[fmt.Sprintf("enter %s portal", connects[i])])
 	}
 
-	return portalMap, nil
+	return portalMap
 }
 
 // randomly determines animal companion and returns its ID (1 to 3)
-func rollAnimalCompanion(src *rand.Rand, g graph, game int,
-	plan map[string]string) int {
+func rollAnimalCompanion(src *rand.Rand, g graph, game int) int {
 	companion := src.Intn(3) + 1
-
-	// plan might specify which flute is in the seed
-	for _, v := range plan {
-		switch v {
-		case "ricky's flute":
-			companion = ricky
-			break
-		case "dimitri's flute":
-			companion = dimitri
-			break
-		case "moosh's flute":
-			companion = moosh
-			break
-		}
-	}
 
 	if game == gameSeasons {
 		switch companion {
@@ -391,24 +297,16 @@ var seedTreeNames = map[string]bool{
 }
 
 // return shuffled lists of item and slot nodes
-func initRouteInfo(ri *routeInfo, rom *romState,
-	plan map[string]string) (itemList, slotList *list.List) {
+func initRouteInfo(
+	ri *routeInfo, rom *romState) (itemList, slotList *list.List) {
 	// get slices of names
 	var itemNames []string
 	slotNames := make([]string, 0, len(ri.slots))
 
-	// get count of each seed tree from a combination of plan and RNG
+	// get count of each seed tree from RNG
 	nTrees := sora(rom.game, 6, 8).(int)
 	thisSeeds := make([]int, 0, nTrees)
 	seedCounts := make(map[int]int)
-	for _, v := range plan {
-		for id, name := range seedNames {
-			if name == v {
-				thisSeeds = append(thisSeeds, id)
-				seedCounts[id]++
-			}
-		}
-	}
 	for len(thisSeeds) < cap(thisSeeds) {
 		id := ri.src.Intn(len(seedNames))
 		for seedCounts[id] > len(seedCounts)/len(seedNames) {
@@ -510,49 +408,6 @@ func tryPlaceItems(ri *routeInfo, itemList, slotList *list.List,
 		}
 	}
 	return true
-}
-
-// applies the items in `plan` to the initial route. returns an error if any
-// name is invalid.
-func applyPlannedItems(plan map[string]string, ri *routeInfo,
-	slotList, itemList *list.List, rom *romState) error {
-planLoop:
-	for k, v := range plan {
-		// try to match an item slot
-		for es := slotList.Front(); es != nil; es = es.Next() {
-			slot := es.Value.(*node)
-			if slot.name == k || strings.HasPrefix(k, "null") {
-				// try to match an item
-				for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-					item := ei.Value.(*node)
-					if item.name == v {
-						slotList.Remove(es)
-						itemList.Remove(ei)
-						item.removeParent(ri.graph["start"])
-						if strings.HasPrefix(k, "null") {
-							item = ri.graph["gasha seed"]
-						}
-						ri.usedSlots.PushBack(slot)
-						ri.usedItems.PushBack(item)
-						item.addParent(slot)
-						continue planLoop
-					}
-				}
-				// no existing match, try just adding a new item
-				if rom.treasures[v] != nil {
-					item := ri.graph[v]
-					slotList.Remove(es)
-					ri.usedSlots.PushBack(slot)
-					ri.usedItems.PushBack(item)
-					item.addParent(slot)
-					continue planLoop
-				}
-				return fmt.Errorf("unknown plan item: %q", v)
-			}
-		}
-		return fmt.Errorf("unknown plan slot: %q", k)
-	}
-	return nil
 }
 
 func trySlotRandomItem(g graph, src *rand.Rand, itemPool, slotPool *list.List,
