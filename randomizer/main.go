@@ -90,7 +90,7 @@ func initFlags() {
 	flag.BoolVar(&flagNoMusic, "nomusic", false,
 		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
-		"use command line output without option prompts")
+		"use command line without prompts if input file is given")
 	flag.StringVar(&flagPlan, "plan", "",
 		"use fixed 'randomization' from a file")
 	flag.BoolVar(&flagPortals, "portals", false,
@@ -199,7 +199,7 @@ func Main() {
 		}
 	case "":
 		// no devcmd, run randomizer normally
-		if flag.NArg()+flag.NFlag() > 1 { // CLI used
+		if flag.NArg() > 0 && flag.NArg()+flag.NFlag() > 1 { // CLI used
 			// run randomizer on main goroutine
 			runRandomizer(nil, ropts, func(s string, a ...interface{}) {
 				fmt.Printf(s, a...)
