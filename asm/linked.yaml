@@ -26,6 +26,27 @@ seasons:
   # could be uncompleteable without a way to kill the moblins.
   14/5247/: db writememory; dw wDisableTransitions; db 00
 
+  # give shield upgrade secret instead of smithy check when appropriate.
+  15/giveSmithySecret: |
+      ld de,d00b
+      push bc
+      push hl
+      ld hl,d458 # script ptr
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      ld bc,762a
+      call compareHlToBc
+      pop hl
+      pop bc
+      ret nz
+      ld (hl),01
+      dec hl
+      ld (hl),01
+      inc hl
+      ret
+  15/62c2/: call giveSmithySecret
+
   # don't play item fanfare for the item given at the start of a linked game.
   # this doesn't actually check for linked, just for the room.
   3f/playSoundExceptForLinkedStartItem: |
