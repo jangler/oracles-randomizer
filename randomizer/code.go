@@ -31,8 +31,7 @@ func (rom *romState) replaceAsm(addr address, label, asm string) {
 	if data, err := rom.assembler.compile(asm); err == nil {
 		rom.replaceRaw(addr, label, data)
 	} else {
-		fmt.Fprintf(os.Stderr, "assembler error in %s:\n%v\n", label, err)
-		os.Exit(1)
+		panic(fmt.Sprintf("assembler error in %s:\n%v\n", label, err))
 	}
 }
 
