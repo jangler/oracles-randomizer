@@ -217,15 +217,17 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	}
 
 	// owl hints
-	sendSectionHeader(summary, "hints")
-	sendSorted(summary, func(c chan string) {
-		for owlName, hint := range owlHints {
-			oneLineHint := strings.ReplaceAll(hint, "\n", " ")
-			oneLineHint = strings.ReplaceAll(oneLineHint, "  ", " ")
-			c <- fmt.Sprintf("%-20s <- \"%s\"", owlName, oneLineHint)
-		}
-		close(c)
-	})
+	if owlHints != nil {
+		sendSectionHeader(summary, "hints")
+		sendSorted(summary, func(c chan string) {
+			for owlName, hint := range owlHints {
+				oneLineHint := strings.ReplaceAll(hint, "\n", " ")
+				oneLineHint = strings.ReplaceAll(oneLineHint, "  ", " ")
+				c <- fmt.Sprintf("%-20s <- \"%s\"", owlName, oneLineHint)
+			}
+			close(c)
+		})
+	}
 
 	close(summary)
 	<-summaryDone

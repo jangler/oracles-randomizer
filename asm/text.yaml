@@ -78,7 +78,7 @@ seasons:
   1f/459f/warningEndText: ''
   1c/6b54/: dw 921d # pointer to above
 
-  3f/4fd9/: call useOwlText
+  # 3f/4fd9/: call useOwlText
 
 ages:
   # set text index for portal sign on crescent island.
@@ -115,4 +115,4 @@ ages:
       db ff
   0c/4300/: call scriptShowTextNonExitableCustom
 
-  3f/4faa/: call useOwlText
+  # 3f/4faa/: call useOwlText

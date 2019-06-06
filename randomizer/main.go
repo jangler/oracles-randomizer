@@ -549,16 +549,18 @@ func randomize(rom *romState, dirName, logFilename string,
 	// configuration found; come up with auxiliary data
 	checks := getChecks(ri.usedItems, ri.usedSlots)
 	spheres, extra := getSpheres(ri.graph, checks)
-	owlNames := orderedKeys(getOwlIds(rom.game))
-	owlHinter := newHinter(rom.game)
-	owlHints := owlHinter.generate(ri.src, ri.graph, checks, owlNames)
-	if ropts.plan != nil {
-		if err := planOwlHints(ropts.plan, owlHinter, owlHints); err != nil {
-			return 0, nil, "", err
+	/*
+		owlNames := orderedKeys(getOwlIds(rom.game))
+		owlHinter := newHinter(rom.game)
+		owlHints := owlHinter.generate(ri.src, ri.graph, checks, owlNames)
+		if ropts.plan != nil {
+			if err := planOwlHints(ropts.plan, owlHinter, owlHints); err != nil {
+				return 0, nil, "", err
+			}
 		}
-	}
+	*/
 
-	checksum, err := setRomData(rom, ri, owlHints, ropts, logf, verbose)
+	checksum, err := setRomData(rom, ri, nil, ropts, logf, verbose)
 	if err != nil {
 		return 0, nil, "", err
 	}
@@ -571,7 +573,7 @@ func randomize(rom *romState, dirName, logFilename string,
 				gamePrefix, version, optString(ri.seed, ropts, "-"))
 		}
 		writeSummary(filepath.Join(dirName, logFilename), checksum,
-			ropts, rom, ri, checks, spheres, extra, owlHints)
+			ropts, rom, ri, checks, spheres, extra, nil)
 	}
 
 	return ri.seed, checksum, logFilename, nil
@@ -603,7 +605,9 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 	}
 
 	rom.setAnimal(ri.companion)
-	rom.setOwlData(owlHints)
+	if owlHints != nil {
+		rom.setOwlData(owlHints)
+	}
 
 	warps := make(map[string]string)
 	if ropts.dungeons {
