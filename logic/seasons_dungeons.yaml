@@ -109,7 +109,7 @@ d4 dark room: [d4 maze chest, feather]
 
 # 1 key
 d4 water ring room: [enter d4, or: [flippers, cape], bombs, d4 small key,
-    or: [bracelet, kill normal, [rod, boomerang]]]
+    or: [feather, hard], or: [bracelet, kill normal, [rod, boomerang]]]
 d4 roller minecart: [enter d4, feather, d4 small key, flippers]
 d4 pool: [d4 roller minecart, hit lever from minecart, flippers,
     or: [kill normal, bracelet]]
