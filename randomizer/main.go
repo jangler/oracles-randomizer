@@ -483,7 +483,7 @@ func randomizeFile(rom *romState, dirName, outfile string,
 	if outfile == "" {
 		gamePrefix := sora(rom.game, "oos", "ooa")
 		outfile = fmt.Sprintf("%srando_%s_%s.gbc",
-			gamePrefix, version, optString(seed, ropts))
+			gamePrefix, version, optString(seed, ropts, "-"))
 	}
 
 	// write to file
@@ -568,7 +568,7 @@ func randomize(rom *romState, dirName, logFilename string,
 		if logFilename == "" {
 			gamePrefix := sora(rom.game, "oos", "ooa")
 			logFilename = fmt.Sprintf("%srando_%s_%s_log.txt",
-				gamePrefix, version, optString(ri.seed, ropts))
+				gamePrefix, version, optString(ri.seed, ropts, "-"))
 		}
 		writeSummary(filepath.Join(dirName, logFilename), checksum,
 			ropts, rom, ri, checks, spheres, extra, owlHints)
@@ -626,7 +626,7 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 // returns a string representing a seed/has plus the randomizer options that
 // affect the generated seed or how it's played - so not including things like
 // music on/off.
-func optString(seed uint32, ropts randomizerOptions) string {
+func optString(seed uint32, ropts randomizerOptions, flagSep string) string {
 	s := ""
 
 	if ropts.plan != nil {
@@ -636,7 +636,7 @@ func optString(seed uint32, ropts randomizerOptions) string {
 
 		// treewarp is the only option that makes a difference in plando
 		if ropts.treewarp {
-			s += "+t"
+			s += flagSep + "t"
 		}
 
 		return s
@@ -647,7 +647,7 @@ func optString(seed uint32, ropts randomizerOptions) string {
 	if ropts.treewarp || ropts.hard || ropts.dungeons || ropts.portals {
 		// these are in chronological order of introduction, for no particular
 		// reason.
-		s += "+"
+		s += flagSep
 		if ropts.treewarp {
 			s += "t"
 		}
