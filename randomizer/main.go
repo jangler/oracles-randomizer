@@ -241,7 +241,7 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 		}
 
 		logf("randomizing %s.", infile)
-		getAndLogOptions(ui, logf)
+		getAndLogOptions(game, ui, logf)
 		if ui != nil {
 			logf("")
 		}
@@ -319,7 +319,7 @@ func getRomPaths(ui *uiInstance, logf logFunc) (dir, in, out string) {
 
 // getAndLogOptions logs values of selected options, prompting for them first
 // if the TUI is used.
-func getAndLogOptions(ui *uiInstance, logf logFunc) {
+func getAndLogOptions(game int, ui *uiInstance, logf logFunc) {
 	if ui != nil {
 		if ui.doPrompt("use specific seed? (y/n)") == 'y' {
 			flagSeed = ui.promptSeed("enter seed: (8-digit hex number)")
@@ -341,6 +341,18 @@ func getAndLogOptions(ui *uiInstance, logf logFunc) {
 		flagTreewarp = ui.doPrompt("enable tree warp? (y/n)") == 'y'
 	}
 	logf("tree warp %s.", ternary(flagTreewarp, "on", "off"))
+
+	if ui != nil {
+		flagDungeons = ui.doPrompt("shuffle dungeons? (y/n)") == 'y'
+	}
+	logf("dungeon shuffle %s.", ternary(flagDungeons, "on", "off"))
+
+	if game == gameSeasons {
+		if ui != nil {
+			flagPortals = ui.doPrompt("shuffle portals? (y/n)") == 'y'
+		}
+		logf("portal shuffle %s.", ternary(flagPortals, "on", "off"))
+	}
 }
 
 // attempt to write rom data to a file and print summary info.
@@ -524,6 +536,7 @@ func randomize(rom *romState, dirName, logFilename string,
 	// search for valid configuration
 	var ri *routeInfo
 	if ropts.plan == nil {
+		logf("searching...")
 		seed, err := setRandomSeed(ropts.seed)
 		if err != nil {
 			return 0, nil, "", err
@@ -533,6 +546,7 @@ func randomize(rom *romState, dirName, logFilename string,
 			return 0, nil, "", err
 		}
 	} else {
+		logf("applying plan...")
 		var err error
 		ri, err = makePlannedRoute(rom, ropts.plan)
 		if err != nil {
