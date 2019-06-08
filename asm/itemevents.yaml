@@ -565,7 +565,7 @@ ages:
 
   # king zora should give the item first, *then* give permission to enter jabu
   # (on another visit (as in vanilla)).
-  0b/checkKingZoraSequence: |
+  0b/checkKingZoraSequence1: |
       call checkGlobalFlag
       ret z
       ld a,10 # set by kingZoraSetFakeId
@@ -574,7 +574,18 @@ ages:
       ret nc
       inc a
       ret
-  0b/5464/: call checkKingZoraSequence
+  0b/5464/: call checkKingZoraSequence1
+
+  # also, get permission to enter jabu even if you've already completed d7 (as
+  # can happen in dungeon shuffle).
+  0b/checkKingZoraSequence2: |
+      call checkGlobalFlag
+      ret z
+      ld a,40
+      call checkTreasureObtained
+      bit 6,a
+      ret
+  0b/5469/: ld a,31; call checkKingZoraSequence2; nop; nop
 
   # change harp (nayru's house?) interaction to allow subid.
   0b/6825/: |
