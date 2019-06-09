@@ -95,6 +95,9 @@ func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 // logSpheres prints item placement by sphere to the summary channel.
 func logSpheres(summary chan string, checks map[*node]*node,
 	spheres [][]*node, extra []*node, game int, filter func(string) bool) {
+	// don't print an extra newline before the first sphere in the section.
+	firstSphere := true
+
 	for i, sphere := range append(spheres, extra) {
 		// get lines first, to make sure there are actual relevant items in
 		// this sphere.
@@ -115,16 +118,22 @@ func logSpheres(summary chan string, checks map[*node]*node,
 
 		// then log the sphere if it's non-empty.
 		if len(lines) > 0 {
+			if firstSphere {
+				firstSphere = false
+			} else {
+				summary <- ""
+			}
+
 			if i < len(spheres) {
 				summary <- fmt.Sprintf("sphere %d:", i)
 			} else {
 				summary <- "inaccessible:"
 			}
+
 			sort.Strings(lines)
 			for _, line := range lines {
 				summary <- line
 			}
-			summary <- ""
 		}
 	}
 }

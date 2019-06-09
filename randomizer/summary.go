@@ -163,7 +163,6 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	summary <- fmt.Sprintf("sha-1 sum: %x", checksum)
 	summary <- fmt.Sprintf("difficulty: %s",
 		ternary(ropts.hard, "hard", "normal"))
-	summary <- ""
 
 	// items
 	sendSectionHeader(summary, "progression items")
@@ -190,7 +189,6 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 			}
 			close(c)
 		})
-		summary <- ""
 	}
 	if ropts.portals {
 		sendSectionHeader(summary, "subrosia portals")
@@ -201,7 +199,6 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 			}
 			close(c)
 		})
-		summary <- ""
 	}
 
 	// default seasons (oos only)
@@ -213,7 +210,6 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 			}
 			close(c)
 		})
-		summary <- ""
 	}
 
 	// owl hints
@@ -252,6 +248,7 @@ func sendSorted(out chan string, generate func(chan string)) {
 
 // sends a section delimiter to the channel.
 func sendSectionHeader(c chan string, name string) {
+	c <- ""
 	c <- ""
 	c <- fmt.Sprintf("-- %s --", name)
 	c <- ""
