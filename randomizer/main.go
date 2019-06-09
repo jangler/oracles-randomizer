@@ -241,13 +241,13 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 		}
 
 		logf("randomizing %s.", infile)
-		getAndLogOptions(game, ui, logf)
+		getAndLogOptions(game, ui, &ropts, logf)
 		if ui != nil {
 			logf("")
 		}
 
 		rom.setMusic(!flagNoMusic)
-		rom.setTreewarp(flagTreewarp)
+		rom.setTreewarp(ropts.treewarp)
 
 		if flagPlan != "" {
 			var err error
@@ -319,18 +319,19 @@ func getRomPaths(ui *uiInstance, logf logFunc) (dir, in, out string) {
 
 // getAndLogOptions logs values of selected options, prompting for them first
 // if the TUI is used.
-func getAndLogOptions(game int, ui *uiInstance, logf logFunc) {
+func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions,
+	logf logFunc) {
 	if ui != nil {
 		if ui.doPrompt("use specific seed? (y/n)") == 'y' {
-			flagSeed = ui.promptSeed("enter seed: (8-digit hex number)")
-			logf("using seed %s.", flagSeed)
+			ropts.seed = ui.promptSeed("enter seed: (8-digit hex number)")
+			logf("using seed %s.", ropts.seed)
 		}
 	}
 
 	if ui != nil {
-		flagHard = ui.doPrompt("enable hard difficulty? (y/n)") == 'y'
+		ropts.hard = ui.doPrompt("enable hard difficulty? (y/n)") == 'y'
 	}
-	logf("using %s difficulty.", ternary(flagHard, "hard", "normal"))
+	logf("using %s difficulty.", ternary(ropts.hard, "hard", "normal"))
 
 	if ui != nil {
 		flagNoMusic = ui.doPrompt("disable music? (y/n)") == 'y'
@@ -338,20 +339,20 @@ func getAndLogOptions(game int, ui *uiInstance, logf logFunc) {
 	logf("music %s.", ternary(flagNoMusic, "off", "on"))
 
 	if ui != nil {
-		flagTreewarp = ui.doPrompt("enable tree warp? (y/n)") == 'y'
+		ropts.treewarp = ui.doPrompt("enable tree warp? (y/n)") == 'y'
 	}
-	logf("tree warp %s.", ternary(flagTreewarp, "on", "off"))
+	logf("tree warp %s.", ternary(ropts.treewarp, "on", "off"))
 
 	if ui != nil {
-		flagDungeons = ui.doPrompt("shuffle dungeons? (y/n)") == 'y'
+		ropts.dungeons = ui.doPrompt("shuffle dungeons? (y/n)") == 'y'
 	}
-	logf("dungeon shuffle %s.", ternary(flagDungeons, "on", "off"))
+	logf("dungeon shuffle %s.", ternary(ropts.dungeons, "on", "off"))
 
 	if game == gameSeasons {
 		if ui != nil {
-			flagPortals = ui.doPrompt("shuffle portals? (y/n)") == 'y'
+			ropts.portals = ui.doPrompt("shuffle portals? (y/n)") == 'y'
 		}
-		logf("portal shuffle %s.", ternary(flagPortals, "on", "off"))
+		logf("portal shuffle %s.", ternary(ropts.portals, "on", "off"))
 	}
 }
 
