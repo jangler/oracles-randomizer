@@ -154,8 +154,10 @@ func loadTreasures(b []byte, game int) map[string]*treasure {
 		t.text = 0x3a
 		t.sprite = 0x23
 	} else {
-		// give strange flute ricky's flute text
+		// give strange flutes identified flute text
 		m["ricky's flute"].text = 0x38
+		m["dimitri's flute"].text = 0x39
+		m["moosh's flute"].text = 0x3a
 	}
 
 	// add dummy treasures for seed trees
