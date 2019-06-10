@@ -3,9 +3,9 @@
 # combinations on the file select screen.
 
 common:
-  # a (hopefully) unused byte in sram, used for options like music on/off and
-  # overriding gba palettes with gbc ones.
-  00/: define sramRandoVars,a00f
+  00/: |
+      define sramMagicString,a008 # 4 bytes
+      define sramRandoVars,a00f
 
   # preserve extra bits in music volume, and always set actual volume to zero
   # if bit 2 is set.
@@ -80,13 +80,17 @@ common:
       ld (ff00+hDirtySprPalettes),a
       ret
 
-  # load custom vars from sram at startup.
+  # load custom vars from sram at startup, initializing the rando-specific
+  # options if the magic string isn't present.
   03/customInit: |
       call clearMemory
       ld a,0a
       ld (1111),a
+      ld de,romMagicString
+      ld hl,sramMagicString
+      ld b,4
+      call copyAndCheckEqual
       ld a,(sramRandoVars)
-      bit 7,a # if set, sram hasn't been initialized
       jr z,.initialized
       xor a
       ld (sramRandoVars),a
@@ -101,6 +105,26 @@ common:
       call setMusicVolume
       ret
   03/4027/: call customInit
+
+  03/romMagicString: db 52,44,4d,5a # ascii "RDMZ"
+
+  # copies b bytes from de to hl, setting z iff the dest was already equal to
+  # the source.
+  03/copyAndCheckEqual: |
+      ld c,00
+      .loop
+      ld a,(de)
+      inc de
+      cp (hl)
+      jr z,.equal
+      ld c,01
+      .equal
+      ldi (hl),a
+      dec b
+      jr nz,.loop
+      ld a,c
+      or a
+      ret
 
   # don't use gba palettes if bit 3 is set.
   3f/getPaletteGameboyType: |
