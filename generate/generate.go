@@ -71,7 +71,7 @@ func generateVersion() {
 	version := fmt.Sprintf(`"%s"`, strings.TrimSpace(string(output)))
 
 	// not an exact tag; use long format
-	if strings.Contains(string(output), "-") {
+	if strings.Contains(string(output), "-g") {
 		describeCmd = exec.Command("git", "describe", "--all", "--long")
 		if output, err = describeCmd.Output(); err != nil {
 			panic(err)
