@@ -1,0 +1,126 @@
+# some extra randomizer-specific "runtime" options are stored in sram and
+# copied to unused bits in hMusicVolume. the options can be changed via button
+# combinations on the file select screen.
+
+common:
+  # a (hopefully) unused byte in sram, used for options like music on/off and
+  # overriding gba palettes with gbc ones.
+  00/: define sramRandoVars,a00f
+
+  # preserve extra bits in music volume, and always set actual volume to zero
+  # if bit 2 is set.
+  00/customSetMusicVolume: |
+      push bc
+      ld b,a
+      ld a,(ff00+hMusicVolume)
+      and a,7c
+      or b
+      pop bc
+      bit 2,a
+      jr z,.next
+      and a,fc
+      .next
+      or a,80
+      ld (ff00+hMusicVolume),a
+      ret
+
+  # preserve extra bits when applying music volume updates.
+  00/customSaveMusicVolume: |
+      and a,7f
+      ld (ff00+hMusicVolume),a
+      and a,03
+      ret
+
+  # use select + direction on file menu to toggle options. wrapper function
+  # loads and unloads sram.
+  02/checkChangeRandoVars: |
+      push bc
+      ld a,0a
+      ld (1111),a
+      call checkChangeRandoVars_body
+      xor a
+      ld (1111),a
+      ld a,b
+      pop bc
+      ret
+  02/checkChangeRandoVars_body: |
+      ld a,(wKeysPressed)
+      and a,04 # select button
+      ld a,(ff00+hMusicVolume)
+      ld c,a
+      ld a,(wKeysJustPressed)
+      ld b,a
+      ret z
+      cp a,10 # select + right = toggle music
+      jr nz,.notRightDpad
+      ld a,c
+      xor a,04
+      and a,7c
+      ld (sramRandoVars),a
+      bit 2,a
+      jr nz,.musicOff
+      or a,03
+      .musicOff
+      or a,80
+      ld (ff00+hMusicVolume),a
+      call setMusicVolume
+      ret
+      .notRightDpad
+      cp a,20 # select + left = toggle gbc palette override
+      ret nz
+      ld a,c
+      xor a,08
+      ld c,a
+      and a,7c
+      ld (sramRandoVars),a
+      ld a,c
+      ld (ff00+hMusicVolume),a
+      ld a,SND_CLINK
+      call playSound
+      ret
+
+  # load custom vars from sram at startup.
+  03/customInit: |
+      call clearMemory
+      ld a,0a
+      ld (1111),a
+      ld a,(sramRandoVars)
+      bit 7,a # if set, sram hasn't been initialized
+      jr z,.initialized
+      xor a
+      ld (sramRandoVars),a
+      .initialized
+      ld (ff00+hMusicVolume),a
+      ld b,a
+      xor a
+      ld (1111),a
+      ld a,b
+      bit 2,a
+      ret z
+      call setMusicVolume
+      ret
+  03/4027/: call customInit
+
+  # don't use gba palettes if bit 3 is set.
+  3f/getPaletteGameboyType: |
+      ld a,(ff00+hMusicVolume)
+      bit 3,a
+      ld a,01
+      jr nz,.forcegbc
+      ld a,(ff00+hGameboyType)
+      .forcegbc
+      inc a
+      ret
+  3f/403b/: call getPaletteGameboyType
+
+seasons:
+  00/0c89/: jp customSetMusicVolume
+  00/0d06/: call customSaveMusicVolume; nop
+
+  02/4427/: call checkChangeRandoVars
+
+ages:
+  00/0cad/: jp customSetMusicVolume
+  00/0d2a/: call customSaveMusicVolume; nop
+
+  02/4467/: call checkChangeRandoVars

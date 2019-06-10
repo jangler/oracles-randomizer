@@ -91,10 +91,12 @@ common:
     define delay30frames,f6
 
     # hram
+    define hGameboyType,96
     define hRomBank,97
 
     # wram
     define wKeysPressed,c481
+    define wKeysJustPressed,c482
     define wAnimalRegion,c610
     define wRingsObtained,c616
     define wTotalSignsDestroyed,c626
@@ -144,12 +146,13 @@ seasons:
     define hBrokenTilePosition,93
     define hCameraY,a8
     define hCameraX,aa
-    define hMusicVar,b5 # used in filterMusic
+    define hMusicVolume,b4
 
     # wram
     define wRickyState,c643
     define wAnimalTutorialFlags,c646
     define wInventoryB,c680
+    define wObtainedTreasureFlags,c692
     define wShieldLevel,c6a9
     define wSwordLevel,c6ac
     define wFluteIcon,c6af
@@ -173,6 +176,7 @@ seasons:
     # rom 00
     define multiplyABy4,01c3
     define getRandomNumber,041a
+    define clearMemory,044b
     define copyMemory,0462
     define queueDmaTransfer,0566
     define loadUncompressedGfxHeader,05b6
@@ -240,7 +244,7 @@ ages:
     # hram
     define hCameraY,aa
     define hCameraX,ac
-    define hMusicVar,b7 # used in filterMusic
+    define hMusicVolume,b6
 
     # wram
     define wRememberedCompanionId,cc24
@@ -273,6 +277,7 @@ ages:
 
     # rom 00
     define getRandomNumber,043e
+    define clearMemory,046f
     define copyMemory,0486
     define queueDmaTransfer,058a
     define loadUncompressedGfxHeader,05da

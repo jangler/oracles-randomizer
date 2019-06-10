@@ -1,16 +1,4 @@
 common:
-  # don't play any music. should only be called if the -nomusic flag is
-  # given.
-  00/filterMusic: |
-      ld h,a
-      cp a,49
-      jr nc,.sfx
-      ld a,08
-      ret
-      .sfx
-      ld a,(ff00+hMusicVar)
-      ret
-
   # allow skipping the capcom screen after one second by pressing start.
   03/skipCapcom: |
       push hl
@@ -28,7 +16,6 @@ common:
       db 20,20,50,99
 
 seasons:
-  00/0c76/: call filterMusic
   03/4d6b/: call skipCapcom
 
   # remove hard-coded d5 boss key room beep - it beeps just fine based on
@@ -159,8 +146,6 @@ seasons:
   3f/460d/: ld hl,seedCapacityTable
 
 ages:
-  00/0c9a/: call filterMusic
-
   # vanilla bug: compass doesn't show D6 boss key chest.
   01/4eea/: db 34
 

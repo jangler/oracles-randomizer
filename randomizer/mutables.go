@@ -37,12 +37,6 @@ func (mut *mutableRange) check(b []byte) error {
 	return nil
 }
 
-// sets music on or off in the modified ROM. By default, it is off.
-func (rom *romState) setMusic(music bool) {
-	mut := rom.codeMutables["filterMusic"]
-	mut.new[3] = byte(ternary(music, 0x18, 0x30).(int)) // jr / jr nc
-}
-
 // sets treewarp on or off in the modified ROM. By default, it is on.
 func (rom *romState) setTreewarp(treewarp bool) {
 	mut := rom.codeMutables["treeWarp"]

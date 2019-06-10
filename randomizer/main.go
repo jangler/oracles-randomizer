@@ -58,7 +58,6 @@ var (
 	flagDevCmd   string
 	flagDungeons bool
 	flagHard     bool
-	flagNoMusic  bool
 	flagNoUI     bool
 	flagPlan     string
 	flagPortals  bool
@@ -87,8 +86,6 @@ func initFlags() {
 		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
 		"enable more difficult logic")
-	flag.BoolVar(&flagNoMusic, "nomusic", false,
-		"don't play any music in the modified ROM")
 	flag.BoolVar(&flagNoUI, "noui", false,
 		"use command line without prompts if input file is given")
 	flag.StringVar(&flagPlan, "plan", "",
@@ -246,7 +243,6 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			logf("")
 		}
 
-		rom.setMusic(!flagNoMusic)
 		rom.setTreewarp(ropts.treewarp)
 
 		if flagPlan != "" {
@@ -332,11 +328,6 @@ func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions,
 		ropts.hard = ui.doPrompt("enable hard difficulty? (y/n)") == 'y'
 	}
 	logf("using %s difficulty.", ternary(ropts.hard, "hard", "normal"))
-
-	if ui != nil {
-		flagNoMusic = ui.doPrompt("disable music? (y/n)") == 'y'
-	}
-	logf("music %s.", ternary(flagNoMusic, "off", "on"))
 
 	if ui != nil {
 		ropts.treewarp = ui.doPrompt("enable tree warp? (y/n)") == 'y'
