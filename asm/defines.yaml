@@ -144,6 +144,8 @@ seasons:
 
     # hram
     define hBrokenTilePosition,93
+    define hDirtyBgPalettes,a4
+    define hDirtySprPalettes,a5
     define hCameraY,a8
     define hCameraX,aa
     define hMusicVolume,b4
@@ -242,6 +244,8 @@ ages:
     define STARTING_TREE_MAP_INDEX,78
 
     # hram
+    define hDirtyBgPalettes,a6
+    define hDirtySprPalettes,a7
     define hCameraY,aa
     define hCameraX,ac
     define hMusicVolume,b6

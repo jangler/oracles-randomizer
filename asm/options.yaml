@@ -75,8 +75,9 @@ common:
       ld (sramRandoVars),a
       ld a,c
       ld (ff00+hMusicVolume),a
-      ld a,SND_CLINK
-      call playSound
+      ld a,ff
+      ld (ff00+hDirtyBgPalettes),a
+      ld (ff00+hDirtySprPalettes),a
       ret
 
   # load custom vars from sram at startup.
