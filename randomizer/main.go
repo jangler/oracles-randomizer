@@ -62,6 +62,7 @@ var (
 	flagPlan     string
 	flagPortals  bool
 	flagSeed     string
+	flagRace     bool
 	flagTreewarp bool
 	flagVerbose  bool
 )
@@ -72,7 +73,8 @@ type randomizerOptions struct {
 	dungeons bool
 	portals  bool
 	plan     *plan
-	seed     string // given seed, not necessarily final seed
+	race     bool
+	seed     string
 }
 
 // initFlags initializes the CLI/TUI option values and variables.
@@ -92,6 +94,8 @@ func initFlags() {
 		"use fixed 'randomization' from a file")
 	flag.BoolVar(&flagPortals, "portals", false,
 		"shuffle subrosia portal connections (seasons)")
+	flag.BoolVar(&flagRace, "race", false,
+		"don't print full seed in file select screen or filename")
 	flag.StringVar(&flagSeed, "seed", "",
 		"specific random seed to use (32-bit hex number)")
 	flag.BoolVar(&flagTreewarp, "treewarp", false,
@@ -120,6 +124,7 @@ func Main() {
 		hard:     flagHard,
 		dungeons: flagDungeons,
 		portals:  flagPortals,
+		race:     flagRace,
 		seed:     flagSeed,
 	}
 
@@ -361,12 +366,12 @@ func writeRom(b []byte, dirName, filename, logFilename string, seed uint32,
 	}
 
 	// print summary
-	if flagPlan == "" {
+	if flagPlan == "" && !flagRace {
 		logf("seed: %08x", seed)
 	}
 	logf("SHA-1 sum: %x", string(sum))
 	logf("wrote new ROM to %s", filename)
-	if flagPlan == "" {
+	if flagPlan == "" && !flagRace {
 		logf("wrote log file to %s", logFilename)
 	}
 
@@ -572,7 +577,7 @@ func randomize(rom *romState, dirName, logFilename string,
 	}
 
 	// write spoiler log
-	if ropts.plan == nil {
+	if ropts.plan == nil && !ropts.race {
 		if logFilename == "" {
 			gamePrefix := sora(rom.game, "oos", "ooa")
 			logFilename = fmt.Sprintf("%srando_%s_%s_log.txt",
@@ -642,7 +647,7 @@ func optString(seed uint32, ropts randomizerOptions, flagSep string) string {
 	if ropts.plan != nil {
 		// -plan gets a hash based on source file rather than a seed
 		sum := sha1.Sum([]byte(ropts.plan.source))
-		s += fmt.Sprintf("plan-%04x", sum[:2])
+		s += fmt.Sprintf("plan-%03x", ((int(sum[0])<<8)+int(sum[1]))>>4)
 
 		// treewarp is the only option that makes a difference in plando
 		if ropts.treewarp {
@@ -652,7 +657,11 @@ func optString(seed uint32, ropts randomizerOptions, flagSep string) string {
 		return s
 	}
 
-	s += fmt.Sprintf("%08x", seed)
+	if ropts.race {
+		s += fmt.Sprintf("race-%03x", seed>>20)
+	} else {
+		s += fmt.Sprintf("%08x", seed)
+	}
 
 	if ropts.treewarp || ropts.hard || ropts.dungeons || ropts.portals {
 		// these are in chronological order of introduction, for no particular
