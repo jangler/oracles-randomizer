@@ -37,7 +37,7 @@ will have the same issue that dungeon entrances do.
 Seasons only. No special notes.
 
 
-### `-- hints --`
+### `-- hints --` (currently disabled)
 
 Owl text may consist only of printable ASCII characters in the range ' ' to
 'z'. Not all puntuation characters will print correctly in-game. There is no
