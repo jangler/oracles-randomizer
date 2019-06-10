@@ -15,14 +15,13 @@ appname="$(basename "$PWD")"
 mkdir -p "dist/$version"
 
 function buildfor() {
-	GOOS=$1 GOARCH=$2
-	echo "building for $GOOS/$GOARCH"
-	go build
-	apack -q "dist/$version/$appname"_$3_"$version.zip" "$appname" \
+	echo "building for $1/$2"
+	GOOS=$1 GOARCH=$2 go build
+	apack -q "dist/$version/$appname"_$3_"$version.zip" "$appname$4" \
 		README.txt checklist/ tracker/
 }
 
-buildfor windows 386 win32
+buildfor windows 386 win32 .exe
 buildfor darwin amd64 macos64
 buildfor linux amd64 linux64
 
