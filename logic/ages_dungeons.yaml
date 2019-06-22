@@ -312,7 +312,7 @@ d8 sarcophagus chest: [d8 blue peg chest, power glove]
 d8 stalfos: [d8 blue peg chest]
 
 # 4 keys - reach miniboss
-d8 maze chest: [d8 blue peg chest, sword, count: [4, d8 small key]]
+d8 maze chest: [d8 blue peg chest, feather, sword, count: [4, d8 small key]]
 d8 NW slate chest: [d8 maze chest]
 d8 NE slate chest: [d8 maze chest, feather, flippers, ember seeds]
 ancient words owl: [mystery shooter, d8 NE slate chest]
