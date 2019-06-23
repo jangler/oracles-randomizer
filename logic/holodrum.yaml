@@ -238,7 +238,7 @@ diving spot outside D4: ["mt. cucco, talon's cave", flippers]
 goron mountain: {or: [
     [mount cucco, or: [shovel, spring banana], bracelet],
     [temple remains lower stump, jump 3, or: [flippers, bomb jump 4]],
-    [blaino's gym, or: [flippers, dimitri's flute]]]}
+    [blaino's gym, flippers]]}
 chest in goron mountain: [goron mountain, bombs, bomb jump 3]
 
 # tarm ruins
