@@ -47,6 +47,8 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://streamable.com/s2xdt)
 - Cross the easternmost pits in Natzu Wasteland using a bomb + seeds + feather
   jump. [[Video]](https://streamable.com/42bkt)
+- Reach Moblin Keep in Natzu Wasteland using only feather to clear pits.
+  [[Video]](https://streamable.com/e9okj)
 - Cross the Moblin Keep pool using a bomb + cape jump. Position yourself above
   and to the right of the bomb, and hold right as you jump.
   [[Video]](https://streamable.com/wr5dy)
