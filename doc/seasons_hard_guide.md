@@ -63,6 +63,8 @@ for a list of things that are out of logic even in hard.
   reach the stump. In the second room, only move diagonally for a moment, then
   hold right. To get back, reenter and walk straight up.
   [[Video]](https://streamable.com/1occ3)
+- Bomb jump capeless to the button before the D7 miniboss.
+  [[Video]](https://clips.twitch.tv/CloudyGoodReubenOneHand)
 - Access the western stump in Temple Remains without autumn, using seeds +
   cape. [[Video]](https://streamable.com/6u65g)
 
