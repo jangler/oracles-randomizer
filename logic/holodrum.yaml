@@ -148,6 +148,8 @@ d3 entrance: [spool stump, or: [spool swamp default summer, summer]]
 # north horon / eyeglass lake
 not north horon default summer: {or: [north horon default spring,
     north horon default autumn, north horon default winter]}
+not north horon summer: {or: [
+    not north horon default summer, spring, autumn, winter]}
 north horon stump: {or: [
     [horon village, or: [break bush, flute]],
     [blaino's gym, bracelet],
@@ -163,7 +165,8 @@ wet eyeglass lake: {
 d5 stump: {or: [
     [exit eyeglass lake portal, not north horon default summer,
         or: [flippers, [north horon default winter, jump 6]]],
-    [north horon stump, or: [feather, ricky's flute, moosh's flute],
+    [north horon stump, not north horon summer,
+        or: [feather, ricky's flute, moosh's flute],
         or: [north horon default winter, winter, flippers,
             [bracelet, dimitri's flute]]]]}
 d5 entrance: [d5 stump, or: [break mushroom, dimitri's flute],
