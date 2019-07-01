@@ -35,11 +35,3 @@ will have the same issue that dungeon entrances do.
 ### `-- default seasons --`
 
 Seasons only. No special notes.
-
-
-### `-- hints --` (currently disabled)
-
-Owl text may consist only of printable ASCII characters in the range ' ' to
-'z'. Not all puntuation characters will print correctly in-game. There is no
-specific limit on the length of a hint, but words may not be longer than 16
-characters, and the cumulative length may not exceed the available bank space.
