@@ -232,8 +232,10 @@ func (rom *romState) applyAsmData(asmFiles []*asmData) {
 }
 
 // applies the labels and EOB declarations in the given asm data files.
-func (rom *romState) applyAsmFiles(infos []os.FileInfo) {
-	asmFiles := make([]*asmData, len(infos))
+func (rom *romState) applyAsmFiles(infos []os.FileInfo, extras []string) {
+	asmFiles := make([]*asmData, len(infos)+len(extras))
+
+	// standard files are embedded
 	for i, info := range infos {
 		asmFiles[i] = new(asmData)
 		asmFiles[i].filename = info.Name()
@@ -249,6 +251,24 @@ func (rom *romState) applyAsmFiles(infos []os.FileInfo) {
 			panic(err)
 		}
 	}
+
+	// extras are read from the filesystem
+	for j, path := range extras {
+		i := j + len(infos)
+		asmFiles[i] = new(asmData)
+		asmFiles[i].filename = path
+
+		f, err := os.Open(path)
+		if err != nil {
+			panic(err)
+		}
+		defer f.Close()
+
+		if err := yaml.NewDecoder(f).Decode(asmFiles[i]); err != nil {
+			panic(err)
+		}
+	}
+
 	rom.applyAsmData(asmFiles)
 }
 
@@ -376,8 +396,9 @@ func loadShopNames(game string) map[string]string {
 }
 
 // set up all the pre-randomization asm changes, and track the state so that
-// the randomization changes can be applied later.
-func (rom *romState) initBanks() {
+// the randomization changes can be applied later. includes additional file
+// paths as given.
+func (rom *romState) initBanks(extras []string) {
 	rom.codeMutables = make(map[string]*mutableRange)
 	rom.bankEnds = loadBankEnds(gameNames[rom.game])
 	asm, err := newAssembler()
@@ -406,5 +427,6 @@ func (rom *romState) initBanks() {
 	if err != nil {
 		panic(err)
 	}
-	rom.applyAsmFiles(fi)
+
+	rom.applyAsmFiles(fi, extras)
 }

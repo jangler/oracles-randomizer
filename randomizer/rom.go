@@ -82,14 +82,14 @@ type romState struct {
 	assembler    *assembler
 }
 
-func newRomState(data []byte, game int) *romState {
+func newRomState(data []byte, game int, extras []string) *romState {
 	rom := &romState{
 		game:      game,
 		data:      data,
 		treasures: loadTreasures(data, game),
 	}
 	rom.itemSlots = rom.loadSlots()
-	rom.initBanks()
+	rom.initBanks(extras)
 	return rom
 }
 
