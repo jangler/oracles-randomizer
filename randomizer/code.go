@@ -27,16 +27,18 @@ type asmData struct {
 // bank, the EOB point is moved to the end of the replacement. if the bank
 // offset of `addr` is zero, the replacement will start at the existing EOB
 // point.
-func (rom *romState) replaceAsm(addr address, label, asm string) {
+//
+// returns the final label of the replacement.
+func (rom *romState) replaceAsm(addr address, label, asm string) string {
 	if data, err := rom.assembler.compile(asm); err == nil {
-		rom.replaceRaw(addr, label, data)
+		return rom.replaceRaw(addr, label, data)
 	} else {
 		panic(fmt.Sprintf("assembler error in %s:\n%v\n", label, err))
 	}
 }
 
 // as replaceAsm, but interprets the data as a literal byte string.
-func (rom *romState) replaceRaw(addr address, label, data string) {
+func (rom *romState) replaceRaw(addr address, label, data string) string {
 	if addr.offset == 0 {
 		addr.offset = rom.bankEnds[addr.bank]
 	}
@@ -61,6 +63,8 @@ func (rom *romState) replaceRaw(addr address, label, data string) {
 		new:  []byte(data),
 	}
 	rom.assembler.define(label, addr.offset)
+
+	return label
 }
 
 // returns a byte table of (group, room, collect mode) entries for randomized
@@ -135,7 +139,8 @@ type eobThing struct {
 }
 
 // applies the labels and EOB declarations in the asm data sets.
-func (rom *romState) applyAsmData(asmFiles []*asmData) {
+// returns a slice of added labels.
+func (rom *romState) applyAsmData(asmFiles []*asmData) []string {
 	// preprocess map slices (keys = labels, values = asm blocks)
 	slices := make([]yaml.MapSlice, 0)
 	for _, asmFile := range asmFiles {
@@ -215,9 +220,12 @@ func (rom *romState) applyAsmData(asmFiles []*asmData) {
 	// reset EOB boundaries
 	copy(rom.bankEnds, originalBankEnds)
 
+	labels := make([]string, 0, 3000) // 3000 probably still fine
+
 	// rewrite EOB asm, using real addresses for labels
 	for _, thing := range allEobThings {
-		rom.replaceAsm(thing.addr, thing.label, thing.thing)
+		labels = append(labels,
+			rom.replaceAsm(thing.addr, thing.label, thing.thing))
 	}
 
 	// make non-EOB asm replacements
@@ -225,15 +233,17 @@ func (rom *romState) applyAsmData(asmFiles []*asmData) {
 		for _, item := range slice {
 			k, v := item.Key.(string), item.Value.(string)
 			if addr, label := parseMetalabel(k); addr.offset != 0 {
-				rom.replaceAsm(addr, label, v)
+				labels = append(labels, rom.replaceAsm(addr, label, v))
 			}
 		}
 	}
+
+	return labels
 }
 
 // applies the labels and EOB declarations in the given asm data files.
-func (rom *romState) applyAsmFiles(infos []os.FileInfo, extras []string) {
-	asmFiles := make([]*asmData, len(infos)+len(extras))
+func (rom *romState) applyAsmFiles(infos []os.FileInfo) {
+	asmFiles := make([]*asmData, len(infos))
 
 	// standard files are embedded
 	for i, info := range infos {
@@ -248,23 +258,6 @@ func (rom *romState) applyAsmFiles(infos []os.FileInfo, extras []string) {
 		path := "/asm/" + info.Name()
 		if err := yaml.Unmarshal(
 			FSMustByte(false, path), asmFiles[i]); err != nil {
-			panic(err)
-		}
-	}
-
-	// extras are read from the filesystem
-	for j, path := range extras {
-		i := j + len(infos)
-		asmFiles[i] = new(asmData)
-		asmFiles[i].filename = path
-
-		f, err := os.Open(path)
-		if err != nil {
-			panic(err)
-		}
-		defer f.Close()
-
-		if err := yaml.NewDecoder(f).Decode(asmFiles[i]); err != nil {
 			panic(err)
 		}
 	}
@@ -396,9 +389,8 @@ func loadShopNames(game string) map[string]string {
 }
 
 // set up all the pre-randomization asm changes, and track the state so that
-// the randomization changes can be applied later. includes additional file
-// paths as given.
-func (rom *romState) initBanks(extras []string) {
+// the randomization changes can be applied later.
+func (rom *romState) initBanks() {
 	rom.codeMutables = make(map[string]*mutableRange)
 	rom.bankEnds = loadBankEnds(gameNames[rom.game])
 	asm, err := newAssembler()
@@ -428,5 +420,35 @@ func (rom *romState) initBanks(extras []string) {
 		panic(err)
 	}
 
-	rom.applyAsmFiles(fi, extras)
+	rom.applyAsmFiles(fi)
+}
+
+// apply extra asm files.
+func (rom *romState) addExtras() error {
+	asmFiles := make([]*asmData, len(rom.extras))
+
+	// read from filesystem
+	for i, path := range rom.extras {
+		asmFiles[i] = new(asmData)
+		asmFiles[i].filename = path
+
+		f, err := os.Open(path)
+		if err != nil {
+			return err
+		}
+		defer f.Close()
+
+		if err := yaml.NewDecoder(f).Decode(asmFiles[i]); err != nil {
+			return err
+		}
+	}
+
+	// apply immediately
+	labels := rom.applyAsmData(asmFiles)
+	sort.Strings(labels)
+	for _, label := range labels {
+		rom.codeMutables[label].mutate(rom.data)
+	}
+
+	return nil
 }
