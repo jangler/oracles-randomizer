@@ -16,14 +16,14 @@ type itemSlot struct {
 }
 
 // implementes `mutate` from the `mutable` interface.
-func (mut *itemSlot) mutate(b []byte) error {
+func (mut *itemSlot) mutate(b []byte) {
 	for _, addr := range mut.idAddrs {
 		b[addr.fullOffset()] = mut.treasure.id
 	}
 	for _, addr := range mut.subidAddrs {
 		b[addr.fullOffset()] = mut.treasure.subid
 	}
-	return mut.treasure.mutate(b)
+	mut.treasure.mutate(b)
 }
 
 // helper function for itemSlot.check()

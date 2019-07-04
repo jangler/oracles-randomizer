@@ -6,8 +6,8 @@ import (
 
 // an instance of ROM data that can be changed by the randomizer.
 type mutable interface {
-	mutate([]byte) error // change ROM bytes
-	check([]byte) error  // verify that the mutable matches the ROM
+	mutate([]byte)      // change ROM bytes
+	check([]byte) error // verify that the mutable matches the ROM
 }
 
 // a length of mutable bytes starting at a given address.
@@ -17,12 +17,11 @@ type mutableRange struct {
 }
 
 // implements `mutate()` from the `mutable` interface.
-func (mut *mutableRange) mutate(b []byte) error {
+func (mut *mutableRange) mutate(b []byte) {
 	offset := mut.addr.fullOffset()
 	for i, value := range mut.new {
 		b[offset+i] = value
 	}
-	return nil
 }
 
 // implements `check()` from the `mutable` interface.

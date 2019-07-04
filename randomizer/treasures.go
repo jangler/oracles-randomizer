@@ -50,17 +50,16 @@ func (t treasure) bytes() []byte {
 }
 
 // implements `mutate()` from the `mutable` interface.
-func (t treasure) mutate(b []byte) error {
+func (t treasure) mutate(b []byte) {
 	// fake treasure
 	if t.addr.offset == 0 {
-		return nil
+		return
 	}
 
 	addr, data := t.addr.fullOffset(), t.bytes()
 	for i := 0; i < 4; i++ {
 		b[addr+i] = data[i]
 	}
-	return nil
 }
 
 // implements `check()` from the `mutable` interface.

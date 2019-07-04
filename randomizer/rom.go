@@ -157,13 +157,9 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		}
 	}
 
-	var err error
 	mutables := rom.getAllMutables()
 	for _, k := range orderedKeys(mutables) {
-		err = mutables[k].mutate(rom.data)
-		if err != nil {
-			return nil, err
-		}
+		mutables[k].mutate(rom.data)
 	}
 
 	// explicitly set these items after their functions are written
