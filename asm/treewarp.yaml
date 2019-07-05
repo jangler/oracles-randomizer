@@ -16,6 +16,9 @@ seasons:
       ld a,(wKeysPressed)
       and a,08
       jr z,.done
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      jr z,.warp
       ld a,(wAreaFlags)
       and a,AREAFLAG_OUTDOORS
       jr nz,.warp
@@ -42,6 +45,9 @@ ages:
       ld a,(wKeysPressed)
       and a,08
       jr z,.done
+      ld a,(wActiveRing)
+      cp a,DEV_RING
+      jr z,.warp
       ld a,(wAreaFlags)
       and a,AREAFLAG_OUTDOORS
       jr nz,.warp
