@@ -80,15 +80,15 @@ type romState struct {
 	codeMutables map[string]*mutableRange
 	bankEnds     []uint16 // bus offset of free space in each bank
 	assembler    *assembler
-	extras       []string // filenames
+	includes     []string // filenames
 }
 
-func newRomState(data []byte, game int, extras []string) *romState {
+func newRomState(data []byte, game int, includes []string) *romState {
 	rom := &romState{
 		game:      game,
 		data:      data,
 		treasures: loadTreasures(data, game),
-		extras:    extras,
+		includes:  includes,
 	}
 	rom.itemSlots = rom.loadSlots()
 	rom.initBanks()
@@ -192,8 +192,8 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 	rom.setCompassData()
 	rom.setLinkedData()
 
-	// do this last; extras have precendence over everything else
-	rom.addExtras()
+	// do this last; includes have precendence over everything else
+	rom.addIncludes()
 
 	sum := makeRomChecksum(rom.data)
 	rom.data[0x14e] = sum[0]

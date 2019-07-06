@@ -58,7 +58,7 @@ var (
 	flagDevCmd   string
 	flagDungeons bool
 	flagHard     bool
-	flagExtras   string
+	flagIncludes string
 	flagNoUI     bool
 	flagPlan     string
 	flagPortals  bool
@@ -76,7 +76,7 @@ type randomizerOptions struct {
 	plan     *plan
 	race     bool
 	seed     string
-	extras   []string
+	include  []string
 }
 
 // initFlags initializes the CLI/TUI option values and variables.
@@ -90,7 +90,7 @@ func initFlags() {
 		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
 		"enable more difficult logic")
-	flag.StringVar(&flagExtras, "extras", "",
+	flag.StringVar(&flagIncludes, "include", "",
 		"comma-separated list of additional asm files to include")
 	flag.BoolVar(&flagNoUI, "noui", false,
 		"use command line without prompts if input file is given")
@@ -130,11 +130,11 @@ func Main() {
 		portals:  flagPortals,
 		race:     flagRace,
 		seed:     flagSeed,
-		extras:   []string{},
+		include:  []string{},
 	}
 
-	if flagExtras != "" {
-		ropts.extras = strings.Split(flagExtras, ",")
+	if flagIncludes != "" {
+		ropts.include = strings.Split(flagIncludes, ",")
 	}
 
 	switch flagDevCmd {
@@ -162,7 +162,7 @@ func Main() {
 		// i forget why or whether this is useful.
 		var rom *romState
 		if flag.Arg(1) == "" {
-			rom = newRomState(nil, game, ropts.extras)
+			rom = newRomState(nil, game, ropts.include)
 		} else {
 			f, err := os.Open(flag.Arg(1))
 			if err != nil {
@@ -175,7 +175,7 @@ func Main() {
 				fatal(err, printErrf)
 				return
 			}
-			rom = newRomState(b, game, ropts.extras)
+			rom = newRomState(b, game, ropts.include)
 		}
 
 		fmt.Println(rom.findAddr(byte(bank), uint16(addr)))
@@ -203,7 +203,7 @@ func Main() {
 		}
 		game := reverseLookupOrPanic(gameNames, tokens[0]).(int)
 
-		rom := newRomState(nil, game, ropts.extras)
+		rom := newRomState(nil, game, ropts.include)
 		if err := rom.showAsm(tokens[1], os.Stdout); err != nil {
 			fatal(err, printErrf)
 			return
@@ -248,7 +248,7 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			fatal(err, logf)
 			return
 		} else {
-			rom = newRomState(b, game, ropts.extras)
+			rom = newRomState(b, game, ropts.include)
 		}
 
 		logf("randomizing %s.", infile)

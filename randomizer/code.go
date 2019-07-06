@@ -423,12 +423,12 @@ func (rom *romState) initBanks() {
 	rom.applyAsmFiles(fi)
 }
 
-// apply extra asm files.
-func (rom *romState) addExtras() error {
-	asmFiles := make([]*asmData, len(rom.extras))
+// apply user-included asm files.
+func (rom *romState) addIncludes() error {
+	asmFiles := make([]*asmData, len(rom.includes))
 
 	// read from filesystem
-	for i, path := range rom.extras {
+	for i, path := range rom.includes {
 		asmFiles[i] = new(asmData)
 		asmFiles[i].filename = path
 
