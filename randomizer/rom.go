@@ -372,14 +372,20 @@ func (rom *romState) setCompassData() {
 	// set key flags
 	for _, prefix := range prefixes {
 		slots := rom.lookupAllItemSlots(fmt.Sprintf("%s small key", prefix))
+
+		// boss keys can be absent in plando, so handle the nil case
 		switch prefix {
 		case "d0", "d6 present":
 			break
 		case "d6 past":
-			slots = append(slots, rom.lookupItemSlot("d6 boss key"))
+			if slot := rom.lookupItemSlot("d6 boss key"); slot != nil {
+				slots = append(slots, slot)
+			}
 		default:
-			slots = append(slots,
-				rom.lookupItemSlot(fmt.Sprintf("%s boss key", prefix)))
+			keyName := fmt.Sprintf("%s boss key", prefix)
+			if slot := rom.lookupItemSlot(keyName); slot != nil {
+				slots = append(slots, slot)
+			}
 		}
 
 		for _, slot := range slots {

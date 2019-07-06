@@ -149,15 +149,18 @@ d4 color tile drop: [d4 minecart C,
 
 # 4 keys
 d4 minecart D: [d4 minecart C, count: [4, d4 small key]]
-# these weapons are for the miniboss, not the moldorms
-d4 small floor puzzle: [d4 minecart D, bombs,
-    or: [sword, switch hook, scent shooter, punch enemy, hard]]
-d4 large floor puzzle: [d4 minecart D, switch hook]
-d4 boss: [d4 large floor puzzle, d4 boss key,
+d4 miniboss: [d4 minecart D,
+    or: [sword, switch hook, scent shooter, punch enemy]]
+d4 small floor puzzle: [d4 miniboss, bombs]
+d4 large floor puzzle: {or: [
+    [d4 minecart D, switch hook],
+    [hard, d4 miniboss, bomb jump 3, cane, noble sword]]}
+d4 boss: [d4 large floor puzzle, d4 boss key, switch hook,
     or: [sword, boomerang, punch enemy]]
 
 # 5 keys
-d4 lava pot chest: [d4 large floor puzzle, count: [5, d4 small key]]
+d4 lava pot chest: [d4 large floor puzzle, switch hook,
+    count: [5, d4 small key]]
 
 # d5
 enter d5: {or: []}
