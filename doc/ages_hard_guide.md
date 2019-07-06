@@ -81,6 +81,9 @@ for a list of things that are out of logic even in hard.
   [[Video (5 w/ bomb boost)]](https://clips.twitch.tv/LazyImpartialLadiesMVGame)
 - Get two chests in D4 by hitting switches with feather + boomerang instead of
   seed shooter. [[Video]](https://streamable.com/2behr)
+- Skip switch hook in D4 by taking the miniboss portal, bomb jumping to the
+  bridge from the first minecart track, using cane to press the button
+  downstairs, and breaking the pot using noble sword.
 - Hit two switches in D5 from a distance by throwing pots. The second throw
   requires the toss ring, plus feather (+ seeds?) to cross the next barrier.
   [[Video]](https://streamable.com/b9xp3)
