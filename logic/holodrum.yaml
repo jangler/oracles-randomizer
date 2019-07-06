@@ -127,7 +127,7 @@ spool swamp tree: [north swamp, seed item,
 floodgate keeper's house: [north swamp, hit lever]
 floodgate keeper owl: [mystery seeds, floodgate keeper's house]
 spool stump: [north swamp, hit lever, bracelet, floodgate key,
-    or: [pegasus satchel, flippers, bomb jump 3]]
+    or: [pegasus satchel, flippers, feather]]
 dry swamp: {or: [
     spool swamp default summer,
     spool swamp default autumn,
