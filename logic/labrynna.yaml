@@ -116,7 +116,9 @@ talus peaks chest: {or: [restoration wall]}
 d4 entrance: [symmetry present, tuni nut, patch]
 
 # rolling ridge. what a nightmare
-goron elder: [bomb flower, switch hook, or: [feather, ages]]
+goron elder: [bomb flower, or: [
+    ridge west past,
+    [switch hook, or: [feather, ages]]]]
 ridge west past: {or: [
     goron elder,
     [ridge west present, or: [ages, [bracelet, echoes]]]]}
