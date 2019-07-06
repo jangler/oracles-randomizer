@@ -1,0 +1,32 @@
+# when included, owls set your respawn point instead of giving hints.
+# they do not save the game themselves.
+
+floating:
+  setOwlCheckpoint: |
+      call setDeathRespawnPoint
+      ld bc,3900
+      ret
+
+  owlMessage: |
+      db 43,68,65,63,6b,70,6f,69,6e,74,20,73,65,74,2e,01 # Checkpoint set.
+      db 47,61,6d,65,20,6e,6f,74,20,73,61,76,65,64,2e,00 # Game not saved.
+
+seasons:
+  _: |
+      define setDeathRespawnPoint,10ce
+      define showText,184b
+
+  10/4d70/: call setOwlCheckpoint
+  10/setOwlCheckpoint: /include setOwlCheckpoint
+
+  1f/7841/: /include owlMessage
+
+ages:
+  _: |
+      define setDeathRespawnPoint,1100
+      define showText,1872
+
+  11/4d0d/: call setOwlCheckpoint
+  11/setOwlCheckpoint: /include setOwlCheckpoint
+
+  22/71d9/: /include owlMessage

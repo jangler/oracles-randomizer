@@ -1,0 +1,30 @@
+# when included, animals can be called in all dungeon-sized non-sidescroller
+# rooms, and nowhere else. of course, the game does not expect animals to be in
+# dungeons, so all sorts of wacky things may happen. notably, the game
+# conflates minecarts and animals.
+
+ages:
+  # only allow animals in dungeon-sized non-sidescroller rooms
+  0a/4a92/: and a,28; cp a,08
+  0a/4aac/: nop; nop; nop
+
+  # adjust the coordinates of flute screen edge checks for big rooms
+  0a/4ada/: ld hl,ce90
+  0a/4aed/: ld hl,ce0d
+
+  # adjust the south and east off-screen locations where animals spawn
+  0a/4ae1/: ld b,b8
+  0a/4af4/: ld c,f8 # known bug: this visually wraps around to the left side
+
+  # idk what the code after this is for so i'm skipping it
+  0a/4b10/: jp 4b72
+
+seasons:
+  # same deal for seasons, in order
+  09/4d3b/: and a,28; cp a,08
+  09/4d55/: nop; nop; nop
+  09/4d83/: ld hl,ce90
+  09/4d96/: ld hl,ce0d
+  09/4d8a/: ld b,b8
+  09/4d9d/: ld c,f8
+  09/4db9/: jp 4e21
