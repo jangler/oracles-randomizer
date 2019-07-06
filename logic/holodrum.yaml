@@ -95,12 +95,11 @@ woods of winter, 2nd cave: [moblin road, or: [flippers, bomb jump 3]]
 ghastly stump: {or: [north swamp,
     [blaino's gym, or: [feather, ricky, flute,
         [flippers, break bush], holodrum plain default winter]],
-    [south swamp, or: [flippers, dimitri's flute],
-        or: [break bush, flute, spool swamp default autumn]]]}
+    [south swamp, break bush, or: [flippers, dimitri's flute]]]}
 blaino's gym: {or: [
     [ghastly stump,
         or: [feather, ricky, flute, winter, holodrum plain default winter]],
-    [south swamp, or: [flippers, dimitri's flute]],
+    [south swamp, or: [[break bush, flippers], dimitri's flute]],
     [sunken city, or: [
         [natzu prairie, flute],
         [natzu river, feather, or: [flippers, flute]],
@@ -136,8 +135,7 @@ dry swamp: {or: [
 south swamp: {or: [
     [spool stump, or: [flippers, dimitri's flute]],
     [spool stump, dry swamp, or: [feather, flute]],
-    [ghastly stump, or: [break bush, flute, spool swamp default autumn],
-        or: [flippers, dimitri's flute]],
+    [ghastly stump, or: [break bush, flute], or: [flippers, dimitri's flute]],
     [blaino's gym, or: [flippers, dimitri's flute]],
     [exit spool swamp portal, bracelet]]}
 spool swamp cave: [south swamp,
