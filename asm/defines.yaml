@@ -164,6 +164,7 @@ seasons:
     define wActiveRing,c6c5
     define wRingBoxLevel,c6c6
     define wRememberedCompanionRoom,cc42
+    define wRememberedCompanionY,cc43
     define wActiveGroup,cc49
     define wActiveRoom,cc4c
     define wRoomStateModifier,cc4e
