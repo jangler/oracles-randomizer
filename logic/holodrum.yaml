@@ -95,8 +95,7 @@ woods of winter, 2nd cave: [moblin road, or: [flippers, bomb jump 3]]
 ghastly stump: {or: [north swamp,
     [blaino's gym, or: [feather, ricky, flute,
         [flippers, break bush], holodrum plain default winter]],
-    [south swamp, or: [flippers, dimitri's flute],
-        or: [break bush, flute, spool swamp default autumn]]]}
+    [south swamp, or: [[break bush, flippers], dimitri's flute]]]}
 blaino's gym: {or: [
     [ghastly stump,
         or: [feather, ricky, flute, winter, holodrum plain default winter]],
@@ -127,7 +126,7 @@ spool swamp tree: [north swamp, seed item,
 floodgate keeper's house: [north swamp, hit lever]
 floodgate keeper owl: [mystery seeds, floodgate keeper's house]
 spool stump: [north swamp, hit lever, bracelet, floodgate key,
-    or: [pegasus satchel, flippers, bomb jump 3]]
+    or: [pegasus satchel, flippers, feather]]
 dry swamp: {or: [
     spool swamp default summer,
     spool swamp default autumn,
@@ -136,8 +135,7 @@ dry swamp: {or: [
 south swamp: {or: [
     [spool stump, or: [flippers, dimitri's flute]],
     [spool stump, dry swamp, or: [feather, flute]],
-    [ghastly stump, or: [break bush, flute, spool swamp default autumn],
-        or: [flippers, dimitri's flute]],
+    [ghastly stump, or: [break bush, flute], or: [flippers, dimitri's flute]],
     [blaino's gym, or: [flippers, dimitri's flute]],
     [exit spool swamp portal, bracelet]]}
 spool swamp cave: [south swamp,
