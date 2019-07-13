@@ -67,8 +67,7 @@ deku forest cave east: [deku forest]
 deku forest cave west: [deku forest, bracelet,
     or: [feather, switch hook, ember seeds, ages, gale satchel]]
 deku forest tree: [deku forest, or: [sword, punch object], seed item,
-    or: [ember seeds, ages, switch hook, gale satchel,
-        [hard, feather, or: [sword, bombs]]]]
+    or: [ember seeds, ages, switch hook, gale satchel, feather]]
 deku forest owl: [mystery seeds, deku forest tree]
 deku forest soldier: [deku forest, mystery seeds]
 d2 entrance: [deku forest, or: [bombs, currents]]
