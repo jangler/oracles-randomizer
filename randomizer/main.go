@@ -85,7 +85,7 @@ func initFlags() {
 	flag.StringVar(&flagCpuProf, "cpuprofile", "",
 		"write CPU profile to file")
 	flag.StringVar(&flagDevCmd, "devcmd", "",
-		"subcommands are 'findaddr', 'showasm', and 'stats'")
+		"subcommands are 'findaddr', 'showasm', 'stats', and 'hardstats'")
 	flag.BoolVar(&flagDungeons, "dungeons", false,
 		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
@@ -179,7 +179,7 @@ func Main() {
 		}
 
 		fmt.Println(rom.findAddr(byte(bank), uint16(addr)))
-	case "stats":
+	case "stats", "hardstats":
 		// do stats instead of randomizing
 		game := reverseLookupOrPanic(gameNames, flag.Arg(0)).(int)
 		numTrials, err := strconv.Atoi(flag.Arg(1))
@@ -189,7 +189,12 @@ func Main() {
 		}
 
 		rand.Seed(time.Now().UnixNano())
-		logStats(game, numTrials, ropts, func(s string, a ...interface{}) {
+
+		statFunc := logStats
+		if flagDevCmd == "hardstats" {
+			statFunc = logHardStats
+		}
+		statFunc(game, numTrials, ropts, func(s string, a ...interface{}) {
 			fmt.Printf(s, a...)
 			fmt.Println()
 		})
