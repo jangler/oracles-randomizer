@@ -37,9 +37,6 @@ for a list of things that are out of logic even in hard.
 
 ## Overworld Past
 
-- Traverse the Deku Forest tree cave without bracelet by breaking the bush with
-  sword or bombs, then jumping around the rock.
-  [[Video]](https://streamable.com/oxzk1)
 - Patch swordless: push into a corner until all beetles are stacked together,
   then use shield, shovel, scent seeds, switch hook, or boomerang.
   [[Video]](https://streamable.com/iznvd)
