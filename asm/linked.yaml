@@ -4,6 +4,9 @@ seasons:
   # start linked games without sword
   07/41ac/: db a2,10,92,04
 
+  # linked normally replaces the shop shield with a gasha seed. don't do this.
+  08/4aec/: jr 03
+
   # in linked, start with the item that *would* be in the d0 sword chest
   # instead of the sword.
   0a/giveLinkedStartItem: |
@@ -65,6 +68,9 @@ seasons:
 ages:
   # start linked games with shield instead of sword.
   07/41c0/: db 8a,01,9a,06
+
+  # linked normally replaces the shop shield with a gasha seed. don't do this.
+  09/4322/: jr 03
 
   # keep past zora guarding sea of storms in linked game.
   0b/61cc/: nop; nop; nop
