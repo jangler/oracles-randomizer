@@ -1,6 +1,9 @@
 # linked games should be playable, but secrets etc aren't randomized.
 
 seasons:
+  # use same treasure map data for linked and unlinked games
+  02/664e/: jr 02
+
   # start linked games without sword
   07/41ac/: db a2,10,92,04
 
