@@ -269,7 +269,7 @@ d7 diamond puzzle: [enter d7, switch hook]
 d7 flower room: [enter d7, flippers, long hook, feather]
 golden isle owl: [mystery seeds, enter d7, or: [mermaid suit, flood d7]]
 d7 stairway chest: [enter d7,
-    or: [long hook, [drain d7, cane, or: [feather, flippers]]]]
+    or: [long hook, [drain d7, flippers, cane, switch hook]]]
 d7 right wing: [d7 stairway chest, kill moldorm,
     or: [mermaid suit, flood d7]]
 
@@ -278,7 +278,6 @@ drain d7: [enter d7,
     or: [flood d7, [mermaid suit, count: [3, d7 small key]]]]
 jabu switch room owl: [mystery seeds, drain d7]
 d7 boxed chest: [drain d7]
-d7 pot island chest: [drain d7, switch hook]
 d7 cane/diamond puzzle: [drain d7, long hook, cane]
 
 # 4 keys - enough to choose any water level
@@ -295,6 +294,7 @@ d7 hallway chest: [flood d7, count: [5, d7 small key]]
 d7 miniboss chest: [d7 stairway chest, flippers, feather,
     or: [sword, boomerang, scent shooter], count: [7, d7 small key]]
 d7 post-hallway chest: [flood d7, count: [7, d7 small key]]
+d7 pot island chest: [drain d7, switch hook, count: [7, d7 small key]]
 
 # d8
 enter d8: {or: []}
