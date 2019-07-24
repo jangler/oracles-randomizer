@@ -4,6 +4,7 @@
 -- arg[1] = rom file (seasons or ages, US)
 -- arg[2] = drop table index
 -- arg[3] = high byte of room
+-- arg[4] = if arg[2] is zero, enemy value at $dxc2
 
 local bank_offset = (0x3f - 1) * 0x4000
 local seek_table = {DIN = 0x4a75, NAY = 0x4a46}
@@ -32,6 +33,7 @@ local name_table = {
 local rom = io.open(arg[1], 'rb')
 local c = tonumber(arg[2]) -- register c passed to drop function
 local group = tonumber(arg[3])
+local enemy_var = tonumber(arg[4])
 
 rom:seek('set', 0x13a)
 local game = rom:read(3)
@@ -43,6 +45,9 @@ end
 -- get offset into probability table
 print(string.format('index: 0x%x', c))
 local a = c | 0x80
+if c == 0 then
+    a = enemy_var
+end
 local hl = seek_table[game] + a
 rom:seek('set', bank_offset + hl)
 a = string.byte(rom:read(1))
