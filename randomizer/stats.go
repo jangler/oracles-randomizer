@@ -62,6 +62,10 @@ func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
 		}
 		if game == gameSeasons {
 			for area, seasonId := range ri.seasons {
+				// make sure not to overwrite info about lost woods item
+				if area == "lost woods" {
+					area = "lost woods (season)"
+				}
 				stringChecks[i][area] = seasonsById[int(seasonId)]
 			}
 		}
