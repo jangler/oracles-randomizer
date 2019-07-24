@@ -35,7 +35,7 @@ seasons:
       ld (wWarpTransition2),a
       ld a,(wEssencesObtained)
       call getNumSetBits
-      ld (c6df),a # some maku tree state var? ages-disasm doesn't specify it
+      ld (c6df),a # some maku tree state var? oracles-disasm doesn't specify it
       ret
   09/4b4f/: call essenceWarp
 

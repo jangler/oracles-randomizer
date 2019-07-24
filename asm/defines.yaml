@@ -3,7 +3,7 @@
 # items in this file don't have any actual instructions, just assembler
 # directives, so they're zero length.
 #
-# names usually match those from ages-disasm.
+# names usually match those from oracles-disasm.
 
 common:
   00/: |
@@ -138,7 +138,7 @@ seasons:
     define BANK_ROOM_TREASURES,3f
     define SEASON_SPRING,00
     define SEASON_SUMMER,01
-    define SEASON_AUTUMN,02 # ages-disasm calls this SEASON_FALL but i refuse
+    define SEASON_AUTUMN,02 # oracles-disasm calls this SEASON_FALL but i refuse
     define SEASON_WINTER,03
     define STARTING_TREE_MAP_INDEX,f8
 

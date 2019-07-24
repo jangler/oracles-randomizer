@@ -1,7 +1,7 @@
 # technical notes
 
 function names and ram address names, when present, correspond to those in
-drenn's ages-disasm. single addresses are for seasons; double addresses are
+drenn's oracles-disasm. single addresses are for seasons; double addresses are
 ages/seasons, in that order. if an address ends in a slash, it's the same for
 both games.
 
@@ -242,7 +242,8 @@ does something like disable all other objects. bank 16?/15 contains unique
 functions called by scripts; general-purpose ones are in bank 0.
 
 for a complete list of script commands, see
-ages-disasm/include/script_commands.s, but some are listed here with addresses.
+oracles-disasm/include/script_commands.s, but some are listed here with
+addresses.
 
 - 00 = end script
 - 80 = 4186, set interaction.state
@@ -356,7 +357,7 @@ automatically at the top or bottom, depending on link's y position.
 current text block.  for example, index 2601 ending with 07 03 would jump to
 index 2603.
 
-see ages-disasm/text/ for text IDs and dictionary entries.
+see oracles-disasm/text/ for text IDs and dictionary entries.
 
 3f:5c00 is the text pointer table; text IDs are two bytes, so the address at
 5c00+2h is read first, then the address at (5c00+2h)+2l is read. the game has

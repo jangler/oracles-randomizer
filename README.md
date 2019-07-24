@@ -105,8 +105,8 @@ by the seed, not by the linked file.
 
 ## Thanks to:
 
-- Drenn for [ages-disasm](https://github.com/Drenn1/ages-disasm) and additional
-  code.
+- Drenn for [oracles-disasm](https://github.com/Drenn1/oracles-disasm) and
+  additional code.
 - Herreteman, dragonc0, Phoenomenom714, and jaysee87 for help with logic,
   playtesting, design, and "customer support".
 - Everyone who helped playtest prerelease versions of the randomizer.

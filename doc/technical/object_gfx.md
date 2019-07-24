@@ -15,7 +15,7 @@ See http://gbdev.gg8.se/wiki/articles/Video_Display for a more detailed
 description about how displaying graphics works on the GB/C in general.
 
 Names for functions and struct fields used here are from
-https://github.com/Drenn1/ages-disasm.
+https://github.com/Drenn1/oracles-disasm.
 
 
 ## Nomenclature
@@ -121,7 +121,7 @@ transfers is maintained so that the main "thread" of execution does not have to
 wait for VRAM to become accessible during VBlank (etc?) before continuing.
 
 The queueDmaTransfer function at $0:058a/0566 is useful for seeing when and
-what data is transferred to VRAM (or sometimes WRAM). See ages-disasm/main.s
+what data is transferred to VRAM (or sometimes WRAM). See oracles-disasm/ages.s
 for details.
 
 
