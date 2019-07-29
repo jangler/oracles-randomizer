@@ -45,6 +45,11 @@ seasons:
   # end northen peak cutscene as soon as the barrier is broken.
   0b/79f1/: db setglobalflag,1d,enableinput,scriptend
 
+  # skip linked cutscene when entering d8. cutscene warp will ignore dungeon
+  # shuffle if not removed.
+  0b/7a2a/: db writememory; dw wDisableWarpTiles; db 00
+  0b/7a32/: db setglobalflag,1e,scriptend
+
   # skip the great furnace dance. for some reason jumpalways doesn't work here.
   14/4b15/: db jumpifc6xxset,92,ff; dw c33f
 

@@ -173,6 +173,7 @@ seasons:
     define wWarpDestGroup,cc63
     define wWarpDestIndex,cc64
     define wWarpTransition2,cc67
+    define wDisableWarpTiles,ccaa
     define wDisableTransitions,ccab
     define wActiveTileType,ccb6
 
