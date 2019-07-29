@@ -81,9 +81,9 @@ seasons:
       ret
   06/47f5/: call dropExtraGalesOnEmpty
 
-  # custom script command to use on d1 entrance screen: set ccaa to 01 until
-  # bit of cfc0 is set. fixes a vanilla bug where dismounting an animal on
-  # that screen allowed you to enter without the key.
+  # custom script command to use on d1 entrance screen: disable warp tiles
+  # until bit of cfc0 is set. fixes a vanilla bug where dismounting an animal
+  # on that screen allowed you to enter without the key.
   0b/d1EntranceScriptCmd: |
       pop hl
       push bc
@@ -92,7 +92,7 @@ seasons:
       pop bc
       ret nz
       ld a,01
-      ld (ccaa),a
+      ld (wDisableWarpTiles),a
       xor a
       jp 432d
   # new script command address and id
