@@ -163,6 +163,10 @@ seasons:
   22/7905/: db 25
   22/7910/: db 47
 
+  # remove snow pile outside d6 to prevent softlock in default winter if statue
+  # is pushed to the left.
+  24/45d2/: db 04
+
   # remove the snow piles in front of holly's house so that shovel isn't
   # required to leave.
   24/6474/: db 04
