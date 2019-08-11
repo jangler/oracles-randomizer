@@ -104,15 +104,16 @@ enter d4: {or: []}
 # 0 keys
 d4 north of entrance: [enter d4, or: [flippers, cape]]
 d4 pot puzzle: [d4 north of entrance, bombs, bracelet]
-d4 maze chest: [d4 north of entrance, hit lever from minecart]
+d4 maze chest: [d4 north of entrance,
+    or: [hit lever from minecart, [hard, bracelet]]]
 d4 dark room: [d4 maze chest, feather]
 
 # 1 key
 d4 water ring room: [enter d4, or: [flippers, cape], bombs, d4 small key,
     or: [feather, hard], or: [bracelet, kill normal, [rod, boomerang]]]
 d4 roller minecart: [enter d4, feather, d4 small key, flippers]
-d4 pool: [d4 roller minecart, hit lever from minecart, flippers,
-    or: [kill normal, bracelet]]
+d4 pool: [d4 roller minecart, flippers, or: [kill normal, bracelet],
+    or: [hit lever from minecart, [hard, bracelet]]]
 
 # 2 keys
 greater distance owl: [mystery seeds, d4 roller minecart,

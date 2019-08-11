@@ -123,7 +123,7 @@ north swamp: [ghastly stump,
     or: [holodrum plain default summer, summer, cape, ricky, moosh's flute]]
 spool swamp tree: [north swamp, seed item,
     or: [harvest tree, dimitri's flute]]
-floodgate keeper's house: [north swamp, hit lever]
+floodgate keeper's house: [north swamp, or: [hit lever, [hard, bracelet]]]
 floodgate keeper owl: [mystery seeds, floodgate keeper's house]
 spool stump: [north swamp, hit lever, bracelet, floodgate key,
     or: [pegasus satchel, flippers, feather]]

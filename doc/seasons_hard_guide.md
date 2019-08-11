@@ -69,6 +69,12 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://clips.twitch.tv/CloudyGoodReubenOneHand)
 - Access the western stump in Temple Remains without autumn, using seeds +
   cape. [[Video]](https://streamable.com/6u65g)
+- Hit the lever in the floodgate keeper's house by throwing a pot. The
+  horizontal position of the throw is precise.
+  [[Video]](https://clips.twitch.tv/ExpensiveAbnegateMoonFUNgineer)
+- Hit minecart levers in D4 by dropping pots while passing by. This works for
+  both 1F minecarts.
+  [[Video]](https://clips.twitch.tv/LaconicYawningPresidentFUNgineer)
 
 ## Subrosia
 
