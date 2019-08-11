@@ -72,9 +72,6 @@ for a list of things that are out of logic even in hard.
 - Hit the lever in the floodgate keeper's house by throwing a pot. The
   horizontal position of the throw is precise.
   [[Video]](https://clips.twitch.tv/ExpensiveAbnegateMoonFUNgineer)
-- Hit minecart levers in D4 by dropping pots while passing by. This works for
-  both 1F minecarts.
-  [[Video]](https://clips.twitch.tv/LaconicYawningPresidentFUNgineer)
 
 ## Subrosia
 
@@ -87,6 +84,9 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://streamable.com/798g1)
 - Throw pots in D2 to access the vanilla bracelet chest and blade trap room.
   [[Video]](https://streamable.com/tp6cz)
+- Hit minecart levers in D4 by dropping pots while passing by. This works for
+  both 1F minecarts.
+  [[Video]](https://clips.twitch.tv/LaconicYawningPresidentFUNgineer)
 - Bomb + feather jump across the water to get to the minecarts in D5.
   [[Video]](https://streamable.com/pehqq)
 - Damage boost off enemies to cross D5 sidescroller gaps without feather.
