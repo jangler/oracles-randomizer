@@ -1,4 +1,4 @@
-# enemies have index zero and get their whatever from an hram variable.
+# enemies have index zero and get drops based on their $dxc2 value instead.
 # crystals don't drop anything.
 
 common:
@@ -53,7 +53,194 @@ common:
       enemy: 0.09375
       fairy: 0.0625
 
+  # enemies
+  octorok/stalfos/gel/wizzrobe/gibdo/sand crab:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      heart: 0.5
+      1 rupee: 0.375
+      5 rupees: 0.125
+  keese/floormaster/magunesu:
+    index: 0x0
+    droprate: 0.5
+    drops:
+      heart: 0.5
+      1 rupee: 0.375
+      5 rupees: 0.125
+  moblin:
+    index: 0x0
+    droprate: 0.5
+    drops:
+      bombs: 0.5
+      1 rupee: 0.1875
+      5 rupees: 0.1875
+      heart: 0.125
+  like-like:
+    index: 0x0
+    droprate: 0.125
+    drops:
+      heart: 0.5
+      ember seeds: 0.125
+      pegasus seeds: 0.125
+      gale seeds: 0.09375
+      scent seeds: 0.09375
+      mystery seeds: 0.0625
+  leever:
+    index: 0x0
+    droprate: 0.75
+    drops:
+      heart: 0.40625
+      1 rupee: 0.25
+      scent seeds: 0.125
+      ember seeds: 0.09375
+      5 rupees: 0.0625
+      fairy: 0.03125
+      mystery seeds: 0.03125
+  rope/tektite:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      heart: 0.40625
+      1 rupee: 0.25
+      scent seeds: 0.125
+      ember seeds: 0.09375
+      5 rupees: 0.0625
+      fairy: 0.03125
+      mystery seeds: 0.03125
+  beetle:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      bombs: 0.5
+      1 rupee: 0.1875
+      5 rupees: 0.1875
+      heart: 0.125
+  peahat:
+    index: 0x0
+    droprate: 0.5
+    drops:
+      heart: 0.5
+      ember seeds: 0.125
+      pegasus seeds: 0.125
+      gale seeds: 0.09375
+      scent seeds: 0.09375
+      mystery seeds: 0.0625
+  buzz blob:
+    index: 0x0
+    droprate: 0.5
+    drops:
+      ember seeds: 0.21875
+      pegasus seeds: 0.21875
+      scent seeds: 0.1875
+      mystery seeds: 0.1875
+      gale seeds: 0.1875
+  crow:
+    index: 0x0
+    droprate: 0.25
+    drops:
+      bombs: 1.0
+  pincer:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      1 rupee: 0.3125
+      5 rupees: 0.1875
+      ember seeds: 0.125
+      gale seeds: 0.09375
+      pegasus seeds: 0.09375
+      scent seeds: 0.09375
+      mystery seeds: 0.09375
+  water tektite: null
+  goponga flower:
+    index: 0x0
+    droprate: 0.75
+    drops:
+      heart: 0.5
+      ember seeds: 0.125
+      pegasus seeds: 0.125
+      gale seeds: 0.09375
+      scent seeds: 0.09375
+      mystery seeds: 0.0625
+  moldorm:
+    index: 0x0
+    droprate: 0.75
+    drops:
+      1 rupee: 0.15625
+      heart: 0.125
+      bombs: 0.125
+      scent seeds: 0.09375
+      ember seeds: 0.09375
+      mystery seeds: 0.09375
+      5 rupees: 0.09375
+      pegasus seeds: 0.09375
+      gale seeds: 0.09375
+      fairy: 0.03125
+  shrouded stalfos, spear:
+    index: 0x0
+    droprate: 0.125
+    drops:
+      bombs: 0.25
+      heart: 0.21875
+      1 rupee: 0.125
+      5 rupees: 0.125
+      pegasus seeds: 0.0625
+      ember seeds: 0.0625
+      scent seeds: 0.0625
+      fairy: 0.03125
+      gale seeds: 0.03125
+      mystery seeds: 0.03125
+  shrouded stalfos, sword/darknut, spear:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      heart: 0.4375
+      bombs: 0.125
+      1 rupee: 0.125
+      ember seeds: 0.0625
+      pegasus seeds: 0.0625
+      5 rupees: 0.0625
+      gale seeds: 0.03125
+      fairy: 0.03125
+      mystery seeds: 0.03125
+      scent seeds: 0.03125
+  pokey: null
+  ghini:
+    index: 0x0
+    droprate: 0.25
+    drops:
+      heart: 1.0
+  darknut, sword:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      bombs: 0.25
+      heart: 0.21875
+      1 rupee: 0.125
+      5 rupees: 0.125
+      pegasus seeds: 0.0625
+      ember seeds: 0.0625
+      scent seeds: 0.0625
+      fairy: 0.03125
+      gale seeds: 0.03125
+      mystery seeds: 0.03125
+  ball and chain trooper:
+    index: 0x0
+    droprate: 0.5
+    drops:
+      heart: 1.0
+  lynel:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      bombs: 0.3125
+      heart: 0.3125
+      1 rupee: 0.28125
+      5 rupees: 0.0625
+      fairy: 0.03125
+
 seasons:
+  # non-enemies
   leaves:
     index: 0x3
     droprate: 0.25
@@ -101,3 +288,10 @@ seasons:
       5 ores: 0.1875
       enemy: 0.0625
       heart: 0.03125
+
+  # enemies
+  iron mask:
+    index: 0x0
+    droprate: 0.375
+    drops:
+      heart: 1.0

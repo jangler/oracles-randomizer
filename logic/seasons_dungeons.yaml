@@ -228,8 +228,8 @@ d7 spike chest: [d7 water stairs,
         [feather, magnet gloves]]]
 
 # 4 keys
-d7 maze chest: [d7 water stairs, kill poe sister,
-    or: [cape, [hard, bombs]], count: [4, d7 small key]]
+d7 maze chest: [d7 water stairs, kill poe sister, bomb jump 3,
+    count: [4, d7 small key]]
 d7 B2F drop: [d7 maze chest, or: [magnet gloves, [hard, jump 6]]]
 shining blue owl: [mystery seeds, d7 stalfos chest]
 d7 boss: [d7 maze chest, d7 boss key, kill gleeok]

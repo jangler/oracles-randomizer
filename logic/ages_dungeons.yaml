@@ -320,7 +320,7 @@ d8 NW slate chest: [d8 maze chest]
 d8 NE slate chest: [d8 maze chest, feather, flippers, ember seeds]
 ancient words owl: [mystery shooter, d8 NE slate chest]
 d8 B3F chest: [d8 maze chest, power glove]
-d8 tile room: [d8 maze chest, feather]
+d8 tile room: [d8 maze chest, power glove, feather]
 d8 SE slate chest: [d8 tile room]
 d8 boss: [d8 boss key, d8 tile room, count: [4, slate]]
 
