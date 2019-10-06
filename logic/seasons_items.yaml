@@ -31,7 +31,7 @@ refill seeds: {or: [harvest tree, dimitri's flute, dimitri,
 
 harvest ember seeds: [seed item, or: [
     [ember tree seeds, refill seeds], [hard, d5 armos chest],
-    [hard, harvest bush, or: [enter agunima, enter d7]]]]
+    [hard, harvest bush, or: [enter agunima, inner d7]]]]
 harvest mystery seeds: [seed item, or: [
     [mystery tree seeds, refill seeds],
     [hard, d8 armos chest, harvest bush]]]
@@ -68,7 +68,7 @@ bomb flower: [furnace, feather, bracelet]
 
 flute: {or: [ricky's flute, moosh's flute, dimitri's flute]}
 
-shield: {or: [wooden shield, iron shield, [beach, ember seeds]]}
+shield: {or: [wooden shield, iron shield, [inner subrosia shop, ember seeds]]}
 seed item: {or: [satchel, slingshot]}
 bombs: {or: [
     [hard, harvest bush, d2 bracelet room],

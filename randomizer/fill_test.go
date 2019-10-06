@@ -28,7 +28,8 @@ func testSeasonsGraph(t *testing.T) {
 		"d0 key chest":           "bracelet",
 		"d0 rupee chest":         "gnarled key",
 		"horon village SW chest": "winter",
-		"d1 entrance":            "enter d1",
+		"outer d1":               "inner d1",
+		"inner d1":               "outer d1",
 		"d1 stalfos drop":        "d1 small key",
 	}
 	checkReach(t, g, testMap, "d1 block-pushing room", false)
@@ -39,7 +40,8 @@ func testSeasonsGraph(t *testing.T) {
 	testMap = map[string]string{
 		"d0 key chest":     "sword",
 		"maku tree":        "gnarled key",
-		"d1 entrance":      "enter d1",
+		"outer d1":         "inner d1",
+		"inner d1":         "outer d1",
 		"d1 stalfos drop":  "d1 small key",
 		"d1 stalfos chest": "bombs, 10",
 	}
@@ -49,9 +51,11 @@ func testSeasonsGraph(t *testing.T) {
 
 	// check a subrosia portal
 	testMap = map[string]string{
-		"d0 key chest":   "sword",
-		"d0 rupee chest": "boomerang",
-		"maku tree":      "boomerang",
+		"d0 key chest":                   "sword",
+		"d0 rupee chest":                 "boomerang",
+		"maku tree":                      "boomerang",
+		"outer horon stairs into portal": "inner horon stairs into portal",
+		"inner horon stairs into portal": "outer horon stairs into portal",
 	}
 	checkReach(t, g, testMap, "suburbs", false)
 	testMap["enter horon village portal"] = "exit eastern suburbs portal"
@@ -59,10 +63,18 @@ func testSeasonsGraph(t *testing.T) {
 
 	// test rupee counting
 	testMap = map[string]string{
-		"d0 key chest":            "sword",
-		"maku tree":               "flippers",
-		"old man in treehouse":    "rupees, 100",
-		"cave south of mrs. ruul": "rupees, 100",
+		"d0 key chest":                    "sword",
+		"maku tree":                       "flippers",
+		"old man in treehouse":            "rupees, 100",
+		"outer treehouse old man":         "inner treehouse old man",
+		"inner treehouse old man":         "outer treehouse old man",
+		"outer water cave under mrs ruul": "inner water cave under mrs ruul",
+		"inner water cave under mrs ruul": "outer water cave under mrs ruul",
+		"cave south of mrs. ruul":         "rupees, 100",
+		"outer horon shop":                "inner horon shop",
+		"inner horon shop":                "outer horon shop",
+		"outer stairs N of natzu":         "inner stairs N of natzu",
+		"inner stairs N of natzu":         "outer stairs N of natzu",
 	}
 	checkReach(t, g, testMap, "shop, 150 rupees", false)
 	testMap["natzu region, across water"] = "rupees, 10"

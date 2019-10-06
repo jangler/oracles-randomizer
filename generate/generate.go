@@ -6,7 +6,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
@@ -18,7 +17,7 @@ const (
 
 // Code generated - DO NOT EDIT.
 
-import "github.com/{{username}}/oracles-randomizer/randomizer"
+import "oracles-randomizer/randomizer"
 
 func main() {
 	randomizer.Main()
@@ -45,18 +44,7 @@ func main() {
 }
 
 func generateMain() {
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	matches := usernameRegexp.FindStringSubmatch(wd)
-	if matches == nil {
-		panic("error getting import path from working directory")
-	}
-
-	s := strings.ReplaceAll(mainTemplate, "{{username}}", matches[1])
-	if err := ioutil.WriteFile("main.go", []byte(s), 0644); err != nil {
+	if err := ioutil.WriteFile("main.go", []byte(mainTemplate), 0644); err != nil {
 		panic(err)
 	}
 }

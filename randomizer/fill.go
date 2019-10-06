@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+
+	"gopkg.in/yaml.v2"
 )
 
 // give up completely if routing fails too many times
@@ -67,18 +69,19 @@ func addNodeParents(prenodes map[string]*prenode, g graph) {
 }
 
 type routeInfo struct {
-	graph        graph
-	slots        map[string]*node
-	seed         uint32
-	seasons      map[string]byte
-	entrances    map[string]string
-	portals      map[string]string
-	companion    int // 1 to 3
-	usedItems    *list.List
-	usedSlots    *list.List
-	ringMap      map[string]string
-	attemptCount int
-	src          *rand.Rand
+	graph           graph
+	slots           map[string]*node
+	seed            uint32
+	seasons         map[string]byte
+	entrances       map[string]string
+	portals         map[string]string
+	companion       int // 1 to 3
+	usedItems       *list.List
+	usedSlots       *list.List
+	ringMap         map[string]string
+	attemptCount    int
+	src             *rand.Rand
+	entranceMapping map[string]string
 }
 
 const (
@@ -94,6 +97,68 @@ func newRouteGraph(rom *romState) graph {
 	addNodes(totalPrenodes, g)
 	addNodeParents(totalPrenodes, g)
 	return g
+}
+
+type shuffledEntrance struct {
+	Entry         uint32
+	Exit          uint32
+	Dungeon       bool
+	Roomtile      uint8
+	Maptile       uint8
+	Ismultiwarp   bool
+	Connector     bool // if inner part connects to another inner part
+	Oneway        bool // if logically, you can't exit a connector into this entrance's outer part (eg to old man tree)
+	Trapped       bool // if it is an outer that connects to nothing
+	Water         bool
+	name          string
+	newEntryByte1 byte
+	newEntryByte2 byte
+	newExitByte1  byte
+	newExitByte2  byte
+}
+
+func setEntrances(src *rand.Rand) map[string]string {
+	entrances := make(map[string]shuffledEntrance)
+	subrosiaEntrances := make(map[string]shuffledEntrance)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/romdata/holodrum_warps.yaml"), entrances); err != nil {
+		panic(err)
+	}
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/romdata/subrosia_warps.yaml"), subrosiaEntrances); err != nil {
+		panic(err)
+	}
+
+	outers := make([]shuffledEntrance, 0, len(entrances)+len(subrosiaEntrances))
+	inners := make([]shuffledEntrance, 0, len(entrances)+len(subrosiaEntrances))
+
+	for entranceName, entrance := range entrances {
+		entrance.name = entranceName
+		outers = append(outers, entrance)
+		inners = append(inners, entrance)
+	}
+	for entranceName, entrance := range subrosiaEntrances {
+		entrance.name = entranceName
+		outers = append(outers, entrance)
+		inners = append(inners, entrance)
+	}
+	entranceMapping := make(map[string]string)
+
+	src.Shuffle(len(inners), func(i, j int) {
+		if (outers[i].Oneway && inners[j].Connector) || (outers[j].Oneway && inners[i].Connector) {
+			// don't swap if an old man entrance connects to a connector
+		} else if (outers[i].Trapped && inners[j].Dungeon) || (outers[j].Trapped && inners[i].Dungeon) {
+			// don't swap if an unconnected overworld connects to a dungeon
+		} else if (outers[i].Water && !inners[j].Water) || (outers[j].Water && !inners[i].Water) {
+			// water entrances can only be swapped with other water entrances
+		} else {
+			inners[i], inners[j] = inners[j], inners[i]
+		}
+	})
+	for i := range outers {
+		entranceMapping[outers[i].name] = inners[i].name
+	}
+	return entranceMapping
 }
 
 // attempts to create a path to the given targets by placing different items in
@@ -140,7 +205,18 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			ri.portals = setPortals(ri.src, ri.graph, ropts.portals)
 		}
 		ri.entrances = setDungeonEntrances(
-			ri.src, ri.graph, rom.game, ropts.dungeons)
+			ri.src, ri.graph, rom.game, ropts.dungeons, ropts.entrance)
+
+		if ropts.entrance {
+			entranceMapping := setEntrances(ri.src)
+			for outerName, innerName := range entranceMapping {
+				fullOuterName := "outer " + outerName
+				fullInnerName := "inner " + innerName
+				ri.graph[fullOuterName].addParent(ri.graph[fullInnerName])
+				ri.graph[fullInnerName].addParent(ri.graph[fullOuterName])
+			}
+			ri.entranceMapping = entranceMapping
+		}
 
 		if tryPlaceItems(
 			ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
@@ -190,7 +266,7 @@ func rollSeasons(src *rand.Rand, g graph) map[string]byte {
 
 // connect dungeon entrances, randomly or vanilla-ly.
 func setDungeonEntrances(
-	src *rand.Rand, g graph, game int, shuffle bool) map[string]string {
+	src *rand.Rand, g graph, game int, shuffle bool, entranceShuffle bool) map[string]string {
 	dungeonEntranceMap := make(map[string]string)
 	dungeons := make([]string, len(dungeonNames[game]))
 	copy(dungeons, dungeonNames[game])
@@ -198,7 +274,7 @@ func setDungeonEntrances(
 		dungeons = dungeons[1:]
 	}
 
-	if game == gameSeasons && !shuffle {
+	if game == gameSeasons && !(shuffle || entranceShuffle) {
 		g["d2 alt entrances enabled"].addParent(g["start"])
 	}
 

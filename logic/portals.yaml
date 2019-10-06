@@ -42,11 +42,11 @@ exit great furnace portal: {or: []}
 
 # pair 5
 
-enter horon village portal: [horon village,
+enter horon village portal: [inner horon stairs into portal,
     or: [magic boomerang, [hard, jump 6]]]
 exit horon village portal: {or: []}
 
-enter house of pirates portal: [pirate house, hit lever]
+enter house of pirates portal: [outer pirate house - top stairs]
 exit house of pirates portal: {or: []}
 
 # pair 6
@@ -65,19 +65,16 @@ enter temple remains lower portal: [temple remains lower stump, or: [
             break bush, feather, winter]]]]]
 exit temple remains lower portal: {or: []}
 
-enter volcanoes west portal: {or: []} # not possible without exiting first
+enter volcanoes west portal: {or: [outer bomb hole cave]}
 exit volcanoes west portal: {or: []}
 
 # pair 7
 
-enter temple remains upper portal: [
-    temple remains lower stump, bomb temple remains,
-    or: [temple remains default summer, summer],
-    or: [jump 6, [bomb jump 2, magnet gloves]]]
+enter temple remains upper portal: [inner NW temple ruins building]
 exit temple remains upper portal: {or: []}
 
 enter d8 entrance portal: [d8 entrance]
 exit d8 entrance portal: {or: []}
 
 # idk where to put this
-bomb temple remains: [exit volcanoes west portal, bombs]
+bomb temple remains: [inner bomb hole cave, bombs]

@@ -75,6 +75,7 @@ type randomizerOptions struct {
 	plan     *plan
 	race     bool
 	seed     string
+	entrance bool
 }
 
 // initFlags initializes the CLI/TUI option values and variables.
@@ -122,10 +123,11 @@ func Main() {
 	ropts := randomizerOptions{
 		treewarp: flagTreewarp,
 		hard:     flagHard,
-		dungeons: flagDungeons,
+		dungeons: false,
 		portals:  flagPortals,
 		race:     flagRace,
 		seed:     flagSeed,
+		entrance: true,
 	}
 
 	switch flagDevCmd {
@@ -559,7 +561,7 @@ func randomize(rom *romState, dirName, logFilename string,
 
 	// configuration found; come up with auxiliary data
 	checks := getChecks(ri.usedItems, ri.usedSlots)
-	spheres, extra := getSpheres(ri.graph, checks)
+	spheres, extra, entrances, extraEntrances := getSpheres(ri.graph, checks, true)
 	/*
 		owlNames := orderedKeys(getOwlIds(rom.game))
 		owlHinter := newHinter(rom.game)
@@ -584,7 +586,7 @@ func randomize(rom *romState, dirName, logFilename string,
 				gamePrefix, version, optString(ri.seed, ropts, "-"))
 		}
 		writeSummary(filepath.Join(dirName, logFilename), checksum,
-			ropts, rom, ri, checks, spheres, extra, nil)
+			ropts, rom, ri, checks, spheres, extra, nil, entrances, extraEntrances)
 	}
 
 	return ri.seed, checksum, logFilename, nil
@@ -635,7 +637,7 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 	}
 
 	// do it! (but don't write anything)
-	return rom.mutate(warps, ri.seed, ropts)
+	return rom.mutate(warps, ri.seed, ropts, ri.entranceMapping)
 }
 
 // returns a string representing a seed/has plus the randomizer options that

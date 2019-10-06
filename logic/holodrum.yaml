@@ -11,12 +11,12 @@ horon village: {or: [start, # portal included in case something changes
 maku tree: [horon village, sword]
 horon village tree: [horon village, seed item,
     or: [harvest tree, dimitri's flute, [hard, break bush]]]
-horon village SE chest: [horon village, bombs]
+horon village SE chest: [outer SE horon vill house - side entrance, or: [bomb jump 2, flippers]]
 horon village SW chest: [horon village, or: [break mushroom, dimitri's flute]]
-shop, 20 rupees: [start, or: [count: [30, fixed rupees], [hard, shovel]]]
-shop, 30 rupees: [start, or: [count: [60, fixed rupees], [hard, shovel]]]
-shop, 150 rupees: [start, or: [count: [210, fixed rupees], [hard, shovel]]]
-member's shop 1: [member's card,
+shop, 20 rupees: [inner horon shop, or: [count: [30, fixed rupees], [hard, shovel]]]
+shop, 30 rupees: [inner horon shop, or: [count: [60, fixed rupees], [hard, shovel]]]
+shop, 150 rupees: [inner horon shop, or: [count: [210, fixed rupees], [hard, shovel]]]
+member's shop 1: [inner horon shop, member's card,
     or: [count: [1010, fixed rupees], [hard, shovel]]]
 member's shop 2: [member's shop 1]
 member's shop 3: [member's shop 1]
@@ -26,20 +26,15 @@ black beast's chest: [horon village,
     or: [ember slingshot, [hard, mystery slingshot]],
     mystery seeds, kill armored]
 d0 entrance: [horon village]
-pirate ship: [pirate's bell, pirate house]
-coast stump: [pirate ship, bombs, or: [feather, hard]]
-d7 entrance: [pirate ship,
-    or: [jump 3, western coast default summer,
-        [coast stump, summer]],
-    or: [shovel, western coast default spring,
-        western coast default summer,
-        western coast default autumn,
-        [coast stump, or: [spring, summer, autumn]]]]
-western coast, beach chest: [pirate ship]
-western coast, in house: [pirate ship]
+pirate ship: [pirate's bell, inner pirate house - main entrance]
+d7 entrance: [upper west coast, or: [shovel, [horon village, pirate ship, western coast default summer]]]
+western coast, beach chest: [lower west coast]
+western coast, in house: [inner west coast house - main entrance]
 
 # eastern suburbs
 suburbs: {or: [ # this is the area south of the pool by sokra's stump
+    outer windmill main entrance,
+    [outer windmill entrance above main entrance, or: [winter, eastern suburbs default winter]],
     [horon village, ember seeds],
     [exit eastern suburbs portal, break bush],
     [fairy fountain, or: [eastern suburbs default winter, winter,
@@ -50,22 +45,16 @@ fairy fountain: {or: [
     [suburbs, or: [eastern suburbs default winter, winter,
         flippers, feather, ricky's flute, dimitri's flute]]]}
 moblin road: {or: [
+    outer ww cave under sunken,
     [fairy fountain, or: [eastern suburbs default winter, winter]],
-    [sunken city, flippers, or: [
-        sunken city default spring, spring,
-        sunken city default summer, summer,
-        sunken city default autumn, autumn],
-        or: [gale satchel, [
-            or: [eastern suburbs default winter, winter],
-            or: [eastern suburbs default spring, spring]]]]]}
-holly's house: [moblin road,
-    or: [woods of winter default winter, winter]]
-central woods of winter: [fairy fountain, or: [
+    ]}
+holly's house: [inner shovel girl main entrance]
+central woods of winter: {or: [[outer d2, break bush], [fairy fountain, or: [
     shovel, feather, flute, spring, summer, autumn,
     [flippers, or: [
         eastern suburbs default spring,
         eastern suburbs default summer,
-        eastern suburbs default autumn]]]]
+        eastern suburbs default autumn]]]]]}
 woods of winter owl: [mystery seeds, central woods of winter]
 woods of winter tree: [central woods of winter, seed item,
     or: [harvest tree, dimitri's flute]]
@@ -77,26 +66,20 @@ d2 roof: {or: [d2 alt entrances,
     [central woods of winter, bracelet,
         or: [woods of winter default summer, ricky's flute]]]}
 chest on top of D2: [d2 roof]
-cave outside D2: [central woods of winter,
-    or: [break mushroom, dimitri's flute],
-    or: [cape, magnet gloves],
-    or: [woods of winter default autumn, [autumn, d2 roof]]]
-woods of winter, 1st cave: [moblin road,
-    or: [bombs, ricky's flute], break bush safe,
-    or: [woods of winter default spring, spring,
-        woods of winter default summer, summer,
-        woods of winter default autumn, autumn]]
-eastern suburbs, on cliff: [suburbs, bracelet,
-    or: [cape, [hard, bomb jump 2], magnet gloves],
-    or: [eastern suburbs default spring, spring]]
-woods of winter, 2nd cave: [moblin road, or: [flippers, bomb jump 3]]
+cave outside D2: [inner E of d2 - R cave, or: [cape, magnet gloves]]
+woods of winter, 1st cave: [inner ww bomb cave, break bush safe]
+eastern suburbs, on cliff: [inner suburbs stairs past blooming flower,
+    or: [cape, [hard, bomb jump 2], magnet gloves]]
+woods of winter, 2nd cave: [inner ww cave under sunken, or: [flippers, bomb jump 3]]
 
 # holodrum plain
-ghastly stump: {or: [north swamp,
+ghastly stump: {or: [outer mrs ruul, [north swamp, summer],
     [blaino's gym, or: [feather, ricky, flute,
         [flippers, break bush], holodrum plain default winter]],
     [south swamp, or: [[break bush, flippers], dimitri's flute]]]}
 blaino's gym: {or: [
+    outer blaino,
+    [outer treehouse old man, flippers],
     [ghastly stump,
         or: [feather, ricky, flute, winter, holodrum plain default winter]],
     [south swamp, or: [flippers, dimitri's flute]],
@@ -110,23 +93,21 @@ blaino's gym: {or: [
     [goron mountain, flippers]]}
 north horon tree: [blaino's gym, seed item,
     or: [harvest tree, dimitri's flute]]
-blaino prize: [blaino's gym, or: [count: [10, fixed rupees], [hard, shovel]]]
+blaino prize: [inner blaino, or: [count: [10, fixed rupees], [hard, shovel]]]
 ricky: {or: [ricky's flute]}
-old man in treehouse: [blaino's gym, or: [flippers, dimitri's flute]]
-cave south of mrs. ruul: [blaino's gym, flippers]
-cave north of D1: [blaino's gym, flippers,
-    or: [break mushroom, dimitri's flute],
-    or: [holodrum plain default autumn, [ghastly stump, autumn]]]
+old man in treehouse: [inner treehouse old man]
+cave south of mrs. ruul: [inner water cave under mrs ruul]
+cave north of D1: [inner holodrum plain water cave past mushrooms]
 
 # spool swamp
-north swamp: [ghastly stump,
-    or: [holodrum plain default summer, summer, cape, ricky, moosh's flute]]
+north swamp: {or: [
+    outer floodgate house,
+    [ghastly stump, or: [summer, cape, ricky, moosh's flute]]]}
 spool swamp tree: [north swamp, seed item,
     or: [harvest tree, dimitri's flute]]
-floodgate keeper's house: [north swamp, hit lever]
+floodgate keeper's house: [inner floodgate house, hit lever]
 floodgate keeper owl: [mystery seeds, floodgate keeper's house]
-spool stump: [north swamp, hit lever, bracelet, floodgate key,
-    or: [pegasus satchel, flippers, feather]]
+spool stump: [north swamp, unflooded]
 dry swamp: {or: [
     spool swamp default summer,
     spool swamp default autumn,
@@ -138,9 +119,7 @@ south swamp: {or: [
     [ghastly stump, or: [break bush, flute], or: [flippers, dimitri's flute]],
     [blaino's gym, or: [flippers, dimitri's flute]],
     [exit spool swamp portal, bracelet]]}
-spool swamp cave: [south swamp,
-    or: [spool swamp default winter, [spool stump, winter]],
-    or: [shovel, flute], or: [bombs, ricky's flute]]
+spool swamp cave: [inner swamp S bomb cave]
 d3 entrance: [spool stump, or: [spool swamp default summer, summer]]
 
 # north horon / eyeglass lake
@@ -149,6 +128,7 @@ not north horon default summer: {or: [north horon default spring,
 not north horon summer: {or: [
     not north horon default summer, spring, autumn, winter]}
 north horon stump: {or: [
+    outer cuccodex girl,
     [horon village, or: [break bush, flute]],
     [blaino's gym, bracelet],
     [south swamp, or: [flippers, dimitri's flute], or: [break bush, flute]],
@@ -173,31 +153,19 @@ d5 entrance: [d5 stump, or: [break mushroom, dimitri's flute],
         or: [flippers, [dimitri's flute, or: [bracelet, winter]]]]]]
 eyeglass lake, across bridge: [horon village, or: [cape,
     [feather, or: [north horon default autumn, [autumn, north horon stump]]]]]
-dry eyeglass lake, east cave: [d5 stump, bracelet,
-    or: [summer, [d5 entrance, north horon default summer]]]
-dry eyeglass lake, west cave: [
-    or: [bombs, ricky's flute], flippers,
-    or: [[north horon stump, or: [north horon default summer, summer],
-            or: [feather, ricky's flute, moosh's flute]],
-        [d5 stump, summer],
-        [d5 entrance, north horon default summer]]]
+dry eyeglass lake, east cave: [inner eyeglass stairs under water]
+dry eyeglass lake, west cave: [inner eyeglass bomb cave, flippers]
 
 # natzu
 natzu prairie: {or: []}
 natzu river: {or: []}
 natzu wasteland: {or: []}
-moblin keep: [or: [flippers, bomb jump 4], bracelet, or: [
-    [natzu prairie, sunken city],
-    [natzu river, blaino's gym,
-        or: [dimitri's flute, [flippers, swimmer's ring]]],
-    [natzu wasteland, blaino's gym,
-        or: [flute, [hard, feather], jump 3]]]]
-natzu region, across water: {or: [
-    [blaino's gym, or: [flippers, dimitri's flute]],
-    [sunken city, natzu river, jump 6]]}
+moblin keep: [bracelet, or: [inner moblin keep L entrance, inner moblin keep R entrance]]
+natzu region, across water: [inner stairs N of natzu]
 
 # sunken city
 sunken city: {or: [
+    [sunken city hub, or: [flippers, dimitri, feather]],
     [mount cucco, flippers,
         or: [summer, sunken city default summer, gale satchel]],
     [fairy fountain, or: [eastern suburbs default spring, spring]],
@@ -207,33 +175,29 @@ sunken city: {or: [
             [or: [flippers, flute], feather],
             [or: [flute, swimmer's ring], flippers, gale satchel]]],
         [natzu wasteland, or: [flute, [break bush, bomb jump 3]]]]]]}
-sunken city tree: [sunken city, seed item,
-    or: [harvest tree, dimitri],
-    or: [feather, flippers, dimitri's flute, sunken city default winter]]
-dimitri: [sunken city, or: [dimitri's flute,
+sunken city tree: [sunken city hub, seed item,
+    or: [harvest tree, dimitri]]
+dimitri: [sunken city hub, or: [dimitri's flute,
     [bombs, or: [feather, flippers, sunken city default winter]]]]
 master diver's challenge: [dimitri, sword, or: [feather, flippers]]
 master diver's reward: [dimitri, master's plaque]
-sunken city, summer cave: [sunken city, flippers, break bush safe,
-    or: [sunken city default summer, summer]]
+sunken city, summer cave: [inner sunken vines cave, break bush safe, or: [flippers, bomb jump 2]]
 chest in master diver's cave: [dimitri]
 
 # mount cucco
 mount cucco: {or: [exit mt. cucco portal,
+    [outer mt cucco mushroom guy, or: [sunken city default spring, spring]],
+    [outer mt cucco - cave by portal, or: [sunken city default winter, winter]],
     [sunken city, flippers, or: [sunken city default summer, summer]],
     [goron mountain, bracelet, shovel]]}
-spring banana tree: [mount cucco, bracelet, feather,
-    or: [break flower, moosh, [hard, gale satchel]],
-    or: [sunken city default spring, spring], or: [sword, fool's ore]]
-mt. cucco, platform cave: [mount cucco, bracelet, or: [
-    [hard, gale satchel],
-    [or: [break flower, moosh], or: [sunken city default spring, spring]]]]
+spring banana tree: {or: []}  # spring-only
+mt. cucco, platform cave: [inner mt cucco S of banana tree screen]
 moosh: [mount cucco, spring banana]
 goron mountain, across pits: [mount cucco, or: [moosh, jump 6, [hard, cape]]]
-mt. cucco, talon's cave: [mount cucco, or: [sunken city default spring, spring]]
-dragon keyhole: ["mt. cucco, talon's cave", winter, feather, bracelet]
-d4 entrance: [dragon key, dragon keyhole, summer]
-diving spot outside D4: ["mt. cucco, talon's cave", flippers]
+mt. cucco, talon's cave: [inner mt cucco mushroom guy]
+dragon keyhole: [outer mt cucco stairs near top cucco, bracelet]
+d4 entrance: [dragon key, dragon keyhole, summer, flippers]
+diving spot outside D4: [outer mt cucco mushroom guy, flippers]
 
 # goron mountain
 goron mountain: {or: [
@@ -251,13 +215,12 @@ d6 entrance: [lost woods, break flower safe,
     or: [tarm ruins default winter, winter],
     or: [tarm ruins default spring, spring],
     or: [shovel, ember seeds]]
-tarm ruins, under tree: [lost woods, break mushroom, ember seeds,
-    or: [tarm ruins default autumn, autumn]]
+tarm ruins, under tree: [inner tarm tree stairs]
 
 # samasa desert
-desert: [suburbs, pirate house]
+desert: [suburbs, inner pirate house - main entrance]
 samasa desert pit: [desert, bracelet]
-samasa desert chest: [desert, flippers]
+samasa desert chest: [outer desert chest stairs]
 
 # temple remains. this is a mess now that portals can be randomized.
 temple remains lower stump: {or: [
@@ -270,16 +233,6 @@ temple remains lower stump: {or: [
             [hard, jump 6, or: [summer, temple remains default summer]],
             [hard, break flower, jump 6,
                 or: [spring, temple remains default spring]]]]]],
-    [exit temple remains upper portal, feather,
-        # make sure you can get down
-        or: [bomb temple remains, winter, temple remains default winter,
-            [break bush, or: [autumn, [hard, jump 6,
-                or: [temple remains not spring, break flower]]]]],
-        # then make sure you can get back up
-        or: [gale satchel,
-            [bomb temple remains,
-                or: [summer, temple remains default summer],
-                or: [jump 6, [bomb jump 2, magnet gloves]]]]],
     [goron mountain, or: [flippers, bomb jump 4], jump 3],
     [blaino's gym, jump 3]]}
 # this is from the upper stump
@@ -294,16 +247,11 @@ maku seed: [sword, d1 boss, d2 boss, d3 boss, d4 boss, d5 boss, d6 boss,
 d9 entrance: [blaino's gym, maku seed]
 
 # old men
-goron mountain old man: [goron mountain, ember seeds]
-western coast old man: [pirate ship, ember seeds]
-holodrum plain east old man: [blaino's gym, ember seeds,
-    or: [ricky's flute, holodrum plain default summer,
-        [ghastly stump, summer, or: [feather, flute, [break bush, flippers]]]]]
-horon village old man: [horon village, ember seeds]
-north horon old man: [north horon stump, ember seeds]
-tarm ruins old man: [d6 entrance, ember seeds]
-woods of winter old man: [moblin road, ember seeds]
-holodrum plain west old man: [ghastly stump, ember seeds]
+goron mountain old man: [inner goron mountain old man]
+western coast old man: [inner western coast old man]
+holodrum plain east old man: [inner holodrum plain east old man]
+horon village old man: [inner horon village old man]
+north horon old man: [inner north horon old man]
 
 north horon default spring: {or: []}
 north horon default summer: {or: []}

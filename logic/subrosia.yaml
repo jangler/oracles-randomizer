@@ -13,6 +13,12 @@
 
 temple: {or: [
     exit volcanoes east portal,
+    [outer E volcano cave, feather],
+    # outer minigame stairs,
+    outer house N of smithy,
+    outer smithy,
+    outer temple of seasons,
+    outer temple of winter,
     [beach, ribbon],
     [beach, feather],
     [hide and seek, bomb jump 4],
@@ -20,48 +26,56 @@ temple: {or: [
 
 beach: {or: [
     exit subrosia market portal,
+    outer subrosia shop,
     [hide and seek, feather, bracelet, or: [bomb jump 2, magnet gloves]],
     [furnace, bracelet, feather],
     [furnace, or: [cape, [hard, bomb jump 3]]],
     [furnace, feather, magnet gloves],
     [temple, feather]]}
 
-hide and seek: [feather, or: [
+hide and seek: {or: [outer house NE of thieves portal, [feather, or: [
     exit strange brothers portal, pirate house,
-    [bomb jump 4, or: [temple, bridge]]]]
+    [bomb jump 4, temple],
+    outer stairs leading to spring tower]]]}
 
-pirate house: {or: [exit house of pirates portal, [hide and seek, feather]]}
+pirate house: [hide and seek, feather]
 
 furnace: {or: [
+    outer furnace,
+    outer signpost house,
+    [outer E ore screen - bottom cave, or: [cape, [feather, magnet gloves]]],
     exit great furnace portal,
     [beach, or: [cape, [hard, bomb jump 3]]],
     [beach, magnet gloves, feather]]}
 
 bridge: {or: [
     [temple, feather],
-    [exit volcanoes west portal, bracelet, bomb jump 3],
+    outer subrosia open cave,
+    outer subrosia locked cave,
+    outer house S of subrosia locked cave,
+    [or: [exit volcanoes west portal, outer bomb hole cave], bracelet, bomb jump 3],
     [hide and seek, bomb jump 4]]}
 
+# subrosian dance hall: [inner minigame stairs]
 subrosian dance hall: [temple]
-temple of seasons: [temple]
+temple of seasons: [inner temple of seasons]
 subrosia seaside: [beach, shovel]
-pirate's bell: [temple, rusty bell]
-tower of winter: [temple, or: [hit far switch, feather]]
-tower of summer: [beach, ribbon, bracelet]
-tower of spring: [hide and seek, feather]
-tower of autumn: [temple, feather, bomb flower]
+pirate's bell: [inner smithy, rusty bell]
+tower of winter: [inner temple of winter, or: [hit far switch, feather]]
+tower of summer: [inner temple of summer, bracelet]
+tower of spring: [inner temple of spring, feather]
+tower of autumn: [inner temple of autumn, feather]
 subrosian wilds chest: [hide and seek, or: [cape, magnet gloves]]
-subrosia village chest: {or: [
-    [beach, magnet gloves],
-    [furnace, feather, or: [cape, magnet gloves]]]}
-subrosia, open cave: [bridge]
-subrosia, locked cave: [beach, ribbon, feather]
+subrosia village chest: [outer E ore screen - top stairs]
+subrosia, open cave: [inner subrosia open cave]
+subrosia, locked cave: [inner subrosia locked cave]
 ore chunks: {or: [
-    shovel, sword, bracelet, magic boomerang, subrosian dance hall]}
-subrosia market, 1st item: [beach, star ore]
-subrosia market, 2nd item: [beach, ore chunks, ember seeds]
-subrosia market, 5th item: [beach, ore chunks]
-great furnace: [furnace, red ore, blue ore, temple, bomb flower]
-subrosian smithy: [temple, hard ore]
+    # sword, bracelet, magic boomerang, 
+    shovel, subrosian dance hall]}
+subrosia market, 1st item: [inner subrosia shop, star ore]
+subrosia market, 2nd item: [inner subrosia shop, ore chunks, ember seeds]
+subrosia market, 5th item: [inner subrosia shop, ore chunks]
+great furnace: [inner furnace, red ore, blue ore, temple, feather, bomb flower]
+subrosian smithy: [inner smithy, hard ore]
 
 d8 entrance: [exit d8 entrance portal]

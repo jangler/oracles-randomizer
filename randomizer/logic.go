@@ -30,7 +30,8 @@ func init() {
 	appendPrenodes(seasonsPrenodes, loadLogic("rings.yaml"),
 		loadLogic("seasons_items.yaml"), loadLogic("seasons_kill.yaml"),
 		loadLogic("holodrum.yaml"), loadLogic("subrosia.yaml"),
-		loadLogic("portals.yaml"), loadLogic("seasons_dungeons.yaml"))
+		loadLogic("portals.yaml"), loadLogic("seasons_dungeons.yaml"),
+		loadLogic("holodrum_entrances.yaml"), loadLogic("subrosia_entrances.yaml"))
 	flattenNestedPrenodes(seasonsPrenodes)
 
 	agesPrenodes = make(map[string]*prenode)

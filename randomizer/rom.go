@@ -93,13 +93,106 @@ func newRomState(data []byte, game int) *romState {
 	return rom
 }
 
+func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
+	entrances := make(map[string]shuffledEntrance)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/romdata/holodrum_warps.yaml"), entrances); err != nil {
+		panic(err)
+	}
+	subrosiaEntrances := make(map[string]shuffledEntrance)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/romdata/subrosia_warps.yaml"), subrosiaEntrances); err != nil {
+		panic(err)
+	}
+	for subName, sub := range subrosiaEntrances {
+		entrances[subName] = sub
+	}
+
+	for outerName, innerName := range entranceMapping {
+		if outerName == innerName {
+			entrances[outerName] = shuffledEntrance{
+				Entry:         entrances[outerName].Entry,
+				Exit:          entrances[outerName].Exit,
+				newEntryByte1: rom.data[entrances[outerName].Entry],
+				newEntryByte2: rom.data[entrances[outerName].Entry+1],
+				newExitByte1:  rom.data[entrances[outerName].Exit],
+				newExitByte2:  rom.data[entrances[outerName].Exit+1],
+			}
+		} else {
+			if len(innerName) == 2 && innerName[0] == 'd' {
+				wd := make(map[string](map[string]*warpData))
+				if err := yaml.Unmarshal(
+					FSMustByte(false, "/romdata/warps.yaml"), wd); err != nil {
+					panic(err)
+				}
+				warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
+				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(8*0x4000) // TODO: ages
+
+				outer := entrances[outerName]
+				destGroup := (rom.data[outer.Exit+1] & 0xf0) >> 4 // upper nybble is dest group
+
+				var yxInWorld byte
+				var yxInRoom byte
+
+				if outer.Ismultiwarp {
+					yxInWorld = outer.Maptile
+					yxInRoom = rom.data[outer.Entry-1]
+				} else {
+					yxInWorld = rom.data[outer.Entry-1]
+					yxInRoom = outer.Roomtile
+				}
+				rom.data[warpExit] = (rom.data[warpExit] & 0xf0) + destGroup
+				rom.data[warpExit+1] = yxInWorld
+				rom.data[warpExit+2] = yxInRoom
+			}
+			newOuterEntrance := shuffledEntrance{
+				Entry:         entrances[outerName].Entry,
+				Exit:          entrances[outerName].Exit,
+				newEntryByte1: rom.data[entrances[innerName].Entry],
+				newEntryByte2: (rom.data[entrances[innerName].Entry+1] & 0xf0) + (rom.data[entrances[outerName].Entry+1] & 0xf),
+				newExitByte1:  entrances[outerName].newExitByte1,
+				newExitByte2:  entrances[outerName].newExitByte2,
+				Roomtile:      entrances[outerName].Roomtile,
+				Maptile:       entrances[outerName].Maptile,
+				Ismultiwarp:   entrances[outerName].Ismultiwarp,
+			}
+			newInnerEntrance := shuffledEntrance{
+				Entry:         entrances[innerName].Entry,
+				Exit:          entrances[innerName].Exit,
+				newEntryByte1: entrances[innerName].newEntryByte1,
+				newEntryByte2: entrances[innerName].newEntryByte2,
+				newExitByte1:  rom.data[entrances[outerName].Exit],
+				newExitByte2:  (rom.data[entrances[outerName].Exit+1] & 0xf0) + (rom.data[entrances[innerName].Exit+1] & 0xf),
+				Roomtile:      entrances[innerName].Roomtile,
+				Maptile:       entrances[innerName].Maptile,
+				Ismultiwarp:   entrances[innerName].Ismultiwarp,
+			}
+			entrances[outerName] = newOuterEntrance
+			entrances[innerName] = newInnerEntrance
+		}
+	}
+	for _, entrance := range entrances {
+		rom.data[entrance.Entry] = entrance.newEntryByte1
+		rom.data[entrance.Entry+1] = entrance.newEntryByte2
+		rom.data[entrance.Exit] = entrance.newExitByte1
+		rom.data[entrance.Exit+1] = entrance.newExitByte2
+	}
+}
+
 // changes the contents of loaded ROM bytes in place. returns a checksum of the
 // result or an error.
 func (rom *romState) mutate(warpMap map[string]string, seed uint32,
-	ropts randomizerOptions) ([]byte, error) {
+	ropts randomizerOptions, entranceMapping map[string]string) ([]byte, error) {
 	// need to set this *before* treasure map data
 	if len(warpMap) != 0 {
-		rom.setWarps(warpMap, ropts.dungeons)
+		rom.setWarps(warpMap, ropts.dungeons, ropts.entrance)
+	}
+	if ropts.entrance {
+		rom.setShuffledEntrances(entranceMapping)
+		innerRedRing := entranceMapping["stairs to old man who gives red ring"]
+		if len(innerRedRing) == 2 && innerRedRing[0] == 'd' {
+			rom.data[0x12eca] = 0x13
+		}
 	}
 
 	if rom.game == gameSeasons {
@@ -567,7 +660,7 @@ type warpData struct {
 	vanillaEntryData, vanillaExitData []byte // read from rom
 }
 
-func (rom *romState) setWarps(warpMap map[string]string, dungeons bool) {
+func (rom *romState) setWarps(warpMap map[string]string, dungeons bool, entrances bool) {
 	// load yaml data
 	wd := make(map[string](map[string]*warpData))
 	if err := yaml.Unmarshal(
@@ -640,7 +733,7 @@ func (rom *romState) setWarps(warpMap map[string]string, dungeons bool) {
 			})
 		}
 
-		if dungeons {
+		if dungeons || entrances {
 			// remove alternate d2 entrances and connect d2 stairs exits
 			// directly to each other
 			src, dest := warps["d2 alt left"], warps["d2 alt right"]
