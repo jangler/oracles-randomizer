@@ -12,3 +12,4 @@ ref/
 *.out
 *.prof
 *log*.txt
+.vscode/

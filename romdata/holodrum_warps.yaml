@@ -338,7 +338,7 @@ stairs SE of lost woods:
 # samasa desert
 NE desert cave:
   entry: 0x13619
-  exit: 0x13a39
+  exit: 0x13a3d
   maptile: 0xbf
   ismultiwarp: true
 desert chest stairs:

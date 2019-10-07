@@ -108,6 +108,13 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 		entrances[subName] = sub
 	}
 
+	wd := make(map[string](map[string]*warpData))
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/romdata/warps.yaml"), wd); err != nil {
+		panic(err)
+	}
+	warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
+
 	for outerName, innerName := range entranceMapping {
 		if outerName == innerName {
 			entrances[outerName] = shuffledEntrance{
@@ -120,12 +127,6 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 			}
 		} else {
 			if len(innerName) == 2 && innerName[0] == 'd' {
-				wd := make(map[string](map[string]*warpData))
-				if err := yaml.Unmarshal(
-					FSMustByte(false, "/romdata/warps.yaml"), wd); err != nil {
-					panic(err)
-				}
-				warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
 				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(8*0x4000) // TODO: ages
 
 				outer := entrances[outerName]

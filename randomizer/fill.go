@@ -132,12 +132,14 @@ func setEntrances(src *rand.Rand) map[string]string {
 	outers := make([]shuffledEntrance, 0, len(entrances)+len(subrosiaEntrances))
 	inners := make([]shuffledEntrance, 0, len(entrances)+len(subrosiaEntrances))
 
-	for entranceName, entrance := range entrances {
+	for _, entranceName := range orderedKeys(entrances) {
+		entrance := entrances[entranceName]
 		entrance.name = entranceName
 		outers = append(outers, entrance)
 		inners = append(inners, entrance)
 	}
-	for entranceName, entrance := range subrosiaEntrances {
+	for _, entranceName := range orderedKeys(subrosiaEntrances) {
+		entrance := subrosiaEntrances[entranceName]
 		entrance.name = entranceName
 		outers = append(outers, entrance)
 		inners = append(inners, entrance)
@@ -210,6 +212,9 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		if ropts.entrance {
 			entranceMapping := setEntrances(ri.src)
 			for outerName, innerName := range entranceMapping {
+				if outerName == "moblin keep L entrance" || outerName == "moblin keep R entrance" {
+					continue
+				}
 				fullOuterName := "outer " + outerName
 				fullInnerName := "inner " + innerName
 				ri.graph[fullOuterName].addParent(ri.graph[fullInnerName])
