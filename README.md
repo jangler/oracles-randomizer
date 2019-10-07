@@ -1,5 +1,10 @@
 # Zelda Oracles Randomizer
 
+## Entrance rando shoutouts
+- Drenn for helping me understand the warp tables used to randomize entrances, including his additional update to his disassembly repo for this purpose
+- Jangler for the original randomizer. The choice of yaml and the node system makes this incredibly pluggable for entrance rando
+- Everyone else who plays and has fun with the original rando and this one
+
 This program reads a Zelda: Oracle of Seasons or Oracle of Ages ROM (US
 versions only), shuffles the locations of (most) items and mystical seeds, and
 writes the modified ROM to a new file. In Seasons, the default seasons for each
