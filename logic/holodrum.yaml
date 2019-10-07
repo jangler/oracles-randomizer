@@ -160,7 +160,7 @@ dry eyeglass lake, west cave: [inner eyeglass bomb cave, flippers]
 natzu prairie: {or: []}
 natzu river: {or: []}
 natzu wasteland: {or: []}
-moblin keep: [bracelet, or: [inner moblin keep L entrance, inner moblin keep R entrance]]
+moblin keep: [bracelet, or: [gale satchel, outer moblin keep L entrance], or: [inner moblin keep L entrance, inner moblin keep R entrance]]
 natzu region, across water: [inner stairs N of natzu]
 
 # sunken city
