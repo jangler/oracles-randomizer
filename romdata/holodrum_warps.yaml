@@ -290,6 +290,7 @@ mt cucco cliff cave to top cucco:
   exit: 0x13b91
   roomtile: 0x11
   oneway: true
+  connector: true
 mt cucco S of banana tree screen:
   entry: 0x13541
   exit: 0x13b9d

@@ -5,6 +5,13 @@
 - Jangler for the original randomizer. The choice of yaml and the node system makes this incredibly pluggable for entrance rando
 - Everyone else who plays and has fun with the original rando and this one
 
+TODO: remove D2 alternate entrances
+TODO: make sure each exit value is correct
+TODO: fix moblin keep logic possibly, and put gale seeds into logic in other places
+
+Rest of README is by Jangler:
+
+
 This program reads a Zelda: Oracle of Seasons or Oracle of Ages ROM (US
 versions only), shuffles the locations of (most) items and mystical seeds, and
 writes the modified ROM to a new file. In Seasons, the default seasons for each
