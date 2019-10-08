@@ -212,7 +212,6 @@ impa:
   exit: 0x13801
   roomtile: 0x11
   oneway: true
-  roomtile: 0x11
 
 # natzu
 stairs N of natzu:
@@ -298,7 +297,8 @@ mt cucco S of banana tree screen:
 mt cucco - cave by portal:
   entry: 0x135fd
   exit: 0x13a09
-  roomtile: 0x12
+  maptile: 0x1e
+  ismultiwarp: true
   oneway: true
 
 # goron mountain
