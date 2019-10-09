@@ -5,13 +5,6 @@
 - Jangler for the original randomizer. The choice of yaml and the node system makes this incredibly pluggable for entrance rando
 - Everyone else who plays and has fun with the original rando and this one
 
-TODO: remove D2 alternate entrances  
-TODO: make sure each exit value is correct  
-TODO: fix moblin keep logic possibly, and put gale seeds into logic in other places  
-TODO: fix sprites in some subrosia houses, notably smithy and minigame  
-TODO: (if adding minigame into rando, need to fix exit warping to vanilla location)  
-TODO: making sure that season is reset everytime you exit onto the overworld
-
 Rest of README is by Jangler:
 
 
