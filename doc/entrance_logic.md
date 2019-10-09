@@ -43,3 +43,4 @@ Some could be added in the near future
 - D2 stairs - usual soft lock scenarios in regular rando
 - Old men who take rupees from you - could make rupee grinding required if unlucky. Maybe I can make these guys take nothing, since they already serve 0 purpose in regular rando
 - Subrosia dancing minigame - need to sort out the warp that takes you to the vanilla entrance once the game finishes
+- Natzu caves
