@@ -189,8 +189,11 @@ inner mt cucco S of banana tree screen: {or: []}
 inner mt cucco - cave by portal: {or: []}
 
 # goron mountain
-outer goron mountain - S of lynels - L separated cave: {or: [[goron mountain, bombs]]}
-outer goron ring cave: {or: [[goron mountain, bombs]]}
+goron mountain bomb wall: {or: [
+    [mount cucco, or: [shovel, spring banana]],
+    [bracelet, goron mountain]]}
+outer goron mountain - S of lynels - L separated cave: {or: [[goron mountain bomb wall, bombs]]}
+outer goron ring cave: {or: [[goron mountain bomb wall, bombs]]}
 
 inner goron mountain - S of lynels - L separated cave: {or: []}
 inner goron ring cave: {or: []}
