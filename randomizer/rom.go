@@ -93,20 +93,27 @@ func newRomState(data []byte, game int) *romState {
 	return rom
 }
 
+func (rom *romState) getShuffledEntrances() map[string]shuffledEntrance {
+	entrances1 := make(map[string]shuffledEntrance)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, sora(rom.game, "/romdata/holodrum_warps.yaml", "/romdata/lab_present_warps.yaml").(string)),
+		entrances1); err != nil {
+		panic(err)
+	}
+	entrances2 := make(map[string]shuffledEntrance)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, sora(rom.game, "/romdata/subrosia_warps.yaml", "/romdata/lab_past_warps.yaml").(string)),
+		entrances1); err != nil {
+		panic(err)
+	}
+	for subName, sub := range entrances2 {
+		entrances1[subName] = sub
+	}
+	return entrances1
+}
+
 func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
-	entrances := make(map[string]shuffledEntrance)
-	if err := yaml.Unmarshal(
-		FSMustByte(false, "/romdata/holodrum_warps.yaml"), entrances); err != nil {
-		panic(err)
-	}
-	subrosiaEntrances := make(map[string]shuffledEntrance)
-	if err := yaml.Unmarshal(
-		FSMustByte(false, "/romdata/subrosia_warps.yaml"), subrosiaEntrances); err != nil {
-		panic(err)
-	}
-	for subName, sub := range subrosiaEntrances {
-		entrances[subName] = sub
-	}
+	entrances := rom.getShuffledEntrances()
 
 	wd := make(map[string](map[string]*warpData))
 	if err := yaml.Unmarshal(
@@ -127,7 +134,7 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 			}
 		} else {
 			if len(innerName) == 2 && innerName[0] == 'd' {
-				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(8*0x4000) // TODO: ages
+				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(sora(rom.game, 0x8, 0x9).(uint16)*0x4000)
 
 				outer := entrances[outerName]
 				destGroup := (rom.data[outer.Exit+1] & 0xf0) >> 4 // upper nybble is dest group
@@ -190,8 +197,8 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 	}
 	if ropts.entrance {
 		rom.setShuffledEntrances(entranceMapping)
-		innerRedRing := entranceMapping["stairs to old man who gives red ring"]
-		if len(innerRedRing) == 2 && innerRedRing[0] == 'd' {
+		innerRedRing, ok := entranceMapping["stairs to old man who gives red ring"]
+		if ok && len(innerRedRing) == 2 && innerRedRing[0] == 'd' {
 			rom.data[0x12eca] = 0x13
 		}
 	}

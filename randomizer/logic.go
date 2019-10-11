@@ -37,7 +37,8 @@ func init() {
 	agesPrenodes = make(map[string]*prenode)
 	appendPrenodes(agesPrenodes, loadLogic("rings.yaml"),
 		loadLogic("ages_items.yaml"), loadLogic("ages_kill.yaml"),
-		loadLogic("labrynna.yaml"), loadLogic("ages_dungeons.yaml"))
+		loadLogic("labrynna.yaml"), loadLogic("ages_dungeons.yaml"),
+		loadLogic("lab_present_entrances.yaml"), loadLogic("lab_past_entrances.yaml"))
 	flattenNestedPrenodes(agesPrenodes)
 
 	err := yaml.Unmarshal(FSMustByte(false, "/romdata/rings.yaml"), &rings)

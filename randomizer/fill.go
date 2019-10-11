@@ -7,8 +7,6 @@ import (
 	"reflect"
 	"sort"
 	"strings"
-
-	"gopkg.in/yaml.v2"
 )
 
 // give up completely if routing fails too many times
@@ -117,29 +115,14 @@ type shuffledEntrance struct {
 	newExitByte2  byte
 }
 
-func setEntrances(src *rand.Rand) map[string]string {
-	entrances := make(map[string]shuffledEntrance)
-	subrosiaEntrances := make(map[string]shuffledEntrance)
-	if err := yaml.Unmarshal(
-		FSMustByte(false, "/romdata/holodrum_warps.yaml"), entrances); err != nil {
-		panic(err)
-	}
-	if err := yaml.Unmarshal(
-		FSMustByte(false, "/romdata/subrosia_warps.yaml"), subrosiaEntrances); err != nil {
-		panic(err)
-	}
+func setEntrances(rom *romState, src *rand.Rand) map[string]string {
+	entrances := rom.getShuffledEntrances()
 
-	outers := make([]shuffledEntrance, 0, len(entrances)+len(subrosiaEntrances))
-	inners := make([]shuffledEntrance, 0, len(entrances)+len(subrosiaEntrances))
+	outers := make([]shuffledEntrance, 0, len(entrances))
+	inners := make([]shuffledEntrance, 0, len(entrances))
 
 	for _, entranceName := range orderedKeys(entrances) {
 		entrance := entrances[entranceName]
-		entrance.name = entranceName
-		outers = append(outers, entrance)
-		inners = append(inners, entrance)
-	}
-	for _, entranceName := range orderedKeys(subrosiaEntrances) {
-		entrance := subrosiaEntrances[entranceName]
 		entrance.name = entranceName
 		outers = append(outers, entrance)
 		inners = append(inners, entrance)
@@ -210,7 +193,7 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			ri.src, ri.graph, rom.game, ropts.dungeons, ropts.entrance)
 
 		if ropts.entrance {
-			entranceMapping := setEntrances(ri.src)
+			entranceMapping := setEntrances(rom, ri.src)
 			for outerName, innerName := range entranceMapping {
 				if outerName == "moblin keep L entrance" || outerName == "moblin keep R entrance" {
 					continue
