@@ -1,0 +1,5 @@
+temple of spring:
+  entry: 0x13735
+  exit: 0x13c59
+  maptile: 0x28
+  ismultiwarp: true
