@@ -341,10 +341,7 @@ func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions,
 	}
 	logf("tree warp %s.", ternary(ropts.treewarp, "on", "off"))
 
-	if ui != nil {
-		ropts.dungeons = ui.doPrompt("shuffle dungeons? (y/n)") == 'y'
-	}
-	logf("dungeon shuffle %s.", ternary(ropts.dungeons, "on", "off"))
+	ropts.dungeons = false
 
 	if game == gameSeasons {
 		if ui != nil {
