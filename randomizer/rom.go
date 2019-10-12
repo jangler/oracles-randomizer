@@ -134,7 +134,7 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 			}
 		} else {
 			if len(innerName) == 2 && innerName[0] == 'd' {
-				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(sora(rom.game, 0x8, 0x9).(uint16)*0x4000)
+				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(sora(rom.game, 0x8, 0x9).(int)*0x4000)
 
 				outer := entrances[outerName]
 				destGroup := (rom.data[outer.Exit+1] & 0xf0) >> 4 // upper nybble is dest group
@@ -192,9 +192,8 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 	ropts randomizerOptions, entranceMapping map[string]string) ([]byte, error) {
 	// need to set this *before* treasure map data
-	if len(warpMap) != 0 {
-		rom.setWarps(warpMap, ropts.dungeons, ropts.entrance)
-	}
+	rom.setWarps(warpMap, ropts.dungeons, ropts.entrance)
+
 	if ropts.entrance {
 		rom.setShuffledEntrances(entranceMapping)
 		innerRedRing, ok := entranceMapping["stairs to old man who gives red ring"]
