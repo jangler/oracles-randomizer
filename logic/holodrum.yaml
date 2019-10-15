@@ -81,7 +81,7 @@ blaino's gym: {or: [
     outer blaino,
     [outer treehouse old man, flippers],
     [ghastly stump,
-        or: [feather, ricky, flute, winter, holodrum plain default winter]],
+        or: [feather, ricky, flute, winter]],
     [south swamp, or: [flippers, dimitri's flute]],
     [sunken city, or: [
         [natzu prairie, flute],
