@@ -1,5 +1,450 @@
-temple of spring:
-  entry: 0x13735
-  exit: 0x13c59
-  maptile: 0x28
+# symmetry
+present - symmetry NW house:
+  entry: 0x135d4
+  exit: 0x13a08
+  roomtile: 0x22
+
+present - symmetry NE house:
+  entry: 0x135d8
+  exit: 0x13a70
+  roomtile: 0x27
+
+present - symmetry SW house:
+  entry: 0x135dc
+  exit: 0x13a74
+  roomtile: 0x35
+
+present - symmetry SE house:
+  entry: 0x135e0
+  exit: 0x13a78
+  roomtile: 0x34
+
+nuun upper cave:
+  entry: 0x135e4
+  exit: 0x13918
+  roomtile: 0x48
+
+# lynna
+present - lynna - NW house:
+  entry: 0x1360c
+  exit: 0x13a98
+  roomtile: 0x52
+
+present - lynna - W house:
+  entry: 0x1361c
+  exit: 0x13a8c
+  roomtile: 0x42
+
+present - lynna - frozen grandson house:
+  entry: 0x13620
+  exit: 0x13878
+  roomtile: 0x28
+
+present - mayors house:
+  entry: 0x13624
+  exit: 0x13a90
+  roomtile: 0x25
+
+present - ring shop:
+  entry: 0x13628
+  exit: 0x13948
+  roomtile: 0x45
+
+present - lynna - SW house:
+  entry: 0x13630
+  exit: 0x13930
+  roomtile: 0x54
+
+present - baby house L:
+  entry: 0x13700
+  exit: 0x1393c
   ismultiwarp: true
+  maptile: 0x47
+
+present - baby house R:
+  entry: 0x13704
+  exit: 0x13940
+  ismultiwarp: true
+  maptile: 0x47
+
+present - maku tree cave:
+  entry: 0x13708
+  exit: 0x13ae8
+  ismultiwarp: true
+  maptile: 0x48
+
+present - lynna shop L:
+  entry: 0x13710
+  exit: 0x138a0
+  ismultiwarp: true
+  maptile: 0x68
+
+present - lynna shop R:
+  entry: 0x13714
+  exit: 0x138a4
+  ismultiwarp: true
+  maptile: 0x68
+
+# graveyard
+witch hut:
+  entry: 0x1362c
+  exit: 0x13a7c
+  roomtile: 0x27
+
+ghost grave:
+  entry: 0x13640
+  exit: 0x13888
+  roomtile: 0x35
+
+under cheval grave:
+  entry: 0x1368c
+  exit: 0x13cc4
+  roomtile: 0x32
+
+stairs near d1:
+  entry: 0x1371c
+  exit: 0x13d78
+  ismultiwarp: true
+  maptile: 0x8d
+
+# lynna outskirts
+mask house:
+  entry: 0x13618
+  exit: 0x1392c
+  roomtile: 0x62 # 8 pixels left, 1 square above this
+
+tingle stairs:
+  entry: 0x1363c
+  exit: 0x138d0
+  roomtile: 0x11
+
+cave below tingle:
+  entry: 0x13644
+  exit: 0x138cc
+  roomtile: 0x45
+
+impa:
+  entry: 0x13660
+  exit: 0x13a10
+  roomtile: 0x23
+
+# zora
+present - octo fairy cave:
+  entry: 0x13648
+  exit: 0x13a80
+  roomtile: 0x32
+
+present - moving island house:
+  entry: 0x13650
+  exit: 0x13a40
+  roomtile: 0x33
+
+present - zora vill - NW bomb cave:
+  entry: 0x13690
+  exit: 0x13ce8
+  roomtile: 0x03
+
+present - library:
+  entry: 0x13694
+  exit: 0x13d08
+  roomtile: 0x33  # 8 pixels left, 1 square above this
+
+# crescent
+present - crescent - NE cave:
+  entry: 0x1364c
+  exit: 0x13928
+  roomtile: 0x11
+
+present - crescent - E house:
+  entry: 0x13654
+  exit: 0x1390c
+  roomtile: 0x52
+
+present - crescent - SW cave:
+  entry: 0x13658
+  exit: 0x13a88
+  roomtile: 0x06
+
+present - crescent - SE house:
+  entry: 0x1365c
+  exit: 0x13894
+  roomtile: 0x25
+
+# goron upper L
+present - first cave to upper goron:
+  entry: 0x13680
+  exit: 0x13cb4
+  roomtile: 0x26
+
+present - moblin keep L:
+  entry: 0x1369c
+  exit: 0x138d8
+  ismultiwarp: true
+  maptile: 0x09
+
+present - moblin keep R:
+  entry: 0x136a0
+  exit: 0x138dc
+  ismultiwarp: true
+  maptile: 0x09
+
+present - moblin keep cave:
+  entry: 0x136a4
+  exit: 0x13d28
+  ismultiwarp: true
+  maptile: 0x09
+
+present - moblin keep stairs:
+  entry: 0x136a8
+  exit: 0x13e60
+  ismultiwarp: true
+  maptile: 0x09
+
+cliff cave E of moblin keep:
+  entry: 0x136ac
+  exit: 0x138fc
+  ismultiwarp: true
+  maptile: 0x0a
+
+present - NW goron - under peg tree cave:
+  entry: 0x136c8
+  exit: 0x13cc8
+  ismultiwarp: true
+  maptile: 0x18
+
+present - NW goron - under peg tree stairs:
+  entry: 0x136cc
+  exit: 0x13dec
+  ismultiwarp: true
+  maptile: 0x18
+
+present - NW goron - by time portal:
+  entry: 0x136d4
+  exit: 0x139e0
+  ismultiwarp: true
+  maptile: 0x1b
+
+# goron upper R
+present - upper goron R - cave on tall building:
+  entry: 0x135f0
+  exit: 0x139d0
+  roomtile: 0x54
+
+present - E of d5 right:
+  entry: 0x136b4
+  exit: 0x13958
+  ismultiwarp: true
+  maptile: 0x0b
+
+present - E of d5 left:
+  entry: 0x136b8
+  exit: 0x13d30
+  ismultiwarp: true
+  maptile: 0x0b
+
+present - E of d5 middle:
+  entry: 0x136bc
+  exit: 0x13964
+  ismultiwarp: true
+  maptile: 0x0b
+
+present - upper goron - L rock-separated caves:
+  entry: 0x136c0
+  exit: 0x13d7c
+  ismultiwarp: true
+  maptile: 0x0d
+
+present - upper goron - R rock-separated caves:
+  entry: 0x136c4
+  exit: 0x13d80
+  ismultiwarp: true
+  maptile: 0x0d
+
+present - NW goron - cave on cliff near time portal:
+  entry: 0x136d0
+  exit: 0x13970
+  ismultiwarp: true
+  maptile: 0x1b
+
+# goron mid
+present - mid goron - leftmost cave:
+  entry: 0x136d8
+  exit: 0x139c0
+  ismultiwarp: true
+  maptile: 0x1c
+
+present - mid goron - L of carts:
+  entry: 0x136dc
+  exit: 0x139f0
+  ismultiwarp: true
+  maptile: 0x1c
+
+present - mid goron - carts:
+  entry: 0x136e0
+  exit: 0x13d24
+  ismultiwarp: true
+  maptile: 0x1d
+
+present - mid goron - by carts:
+  entry: 0x136e4
+  exit: 0x139ec
+  ismultiwarp: true
+  maptile: 0x1d
+
+# goron lower
+present - lower goron old man:
+  entry: 0x13614
+  exit: 0x13898
+  roomtile: 0x38
+
+present - lower goron cave - leftmost:
+  entry: 0x13684
+  exit: 0x13d48
+  roomtile: 0x23
+
+present - lower goron - d6 cave:
+  entry: 0x13688
+  exit: 0x1374c
+  roomtile: 0x34
+
+present - lower goron - dance cave:
+  entry: 0x136f8
+  exit: 0x13978
+  ismultiwarp: true
+  maptile: 0x3d
+
+present - lower goron - cave beside dance cave:
+  entry: 0x136fc
+  exit: 0x139e8
+  ismultiwarp: true
+  maptile: 0x3d
+
+# dungeons
+d1:
+  entry: 0x13718
+  exit: 0x13ad0
+  ismultiwarp: true
+  maptile: 0x8d
+
+d2:
+  entry: 0x1372c
+  exit: 0x13ad4
+  roomtile: 0x25
+
+d3:
+  entry: 0x135c8
+  exit: 0x13ad8
+  roomtile: 0x55
+
+d4:
+  entry: 0x135cc
+  exit: 0x13adc
+  roomtile: 0x45  # 8 pixels left, 1 square above this
+
+d5:
+  entry: 0x136b0
+  exit: 0x13ae0
+  ismultiwarp: true
+  maptile: 0x0a
+
+d6 present:
+  entry: 0x13748
+  exit: 0x13c48
+  roomtile: 0x16
+
+d7:
+  entry: 0x13874
+  exit: 0x13c60
+  roomtile: 0x45  # 8 pixels left of this
+
+# natzu lower cave - Ricky:
+#   entry: 0x13600
+#   exit: 0x13944
+#   roomtile:
+
+# natzu lower cave - Moosh:
+#   entry: 0x13604
+#   exit: 0x13950
+#   roomtile:
+
+# TODO this goes to same as below:
+#   entry: 0x136e8
+#   exit: 0x13d00
+#   ismultiwarp: true
+#   maptile: 0x38
+
+# present - maku tree - to inner (same as below?):
+#   entry: 0x136ec
+#   exit: 0x13d00
+#   ismultiwarp: true
+#   maptile: 0x38
+
+# present - maku tree stairs L:
+#   entry: 0x136f0
+#   exit:
+#   ismultiwarp: true
+#   maptile: 0x38
+
+# upper maku tree - mid R:
+#   entry: 0x13720
+#   exit: 0x138b0
+#   ismultiwarp: true
+#   maptile: 0xe1
+
+# upper maku tree - mid L:
+#   entry: 0x13724
+#   exit: 0x138b4
+#   ismultiwarp: true
+#   maptile: 0xe1
+
+# upper maku tree - L:
+#   entry: 0x13668
+#   exit: 0x138c0
+#   roomtile:
+
+# upper maku tree - R:
+#   entry: 0x13670
+#   exit: 0x138bc
+#   roomtile:
+
+# upper maku tree - stairs:
+#   entry: 0x13674
+#   exit: 0x13d04
+#   roomtile:
+
+# present - black tower (linked?):
+#   entry: 0x13638
+#   exit: 0x13b54
+#   roomtile:
+
+present underwater - zora palace:
+  entry: 0x138e0
+  exit: 0x13d90
+  roomtile:
+
+present underwater - zora SW L house:
+  entry: 0x139a4
+  exit: 0x13a54
+  ismultiwarp: true
+  maptile: 0xd0
+
+present underwater - zora SW R house:
+  entry: 0x139a8
+  exit: 0x13a58
+  ismultiwarp: true
+  maptile: 0xd0
+
+present underwater - zora E house:
+  entry: 0x13904
+  exit: 0x13a4c
+  roomtile: 0x46
+
+present underwater - crescent island:
+  entry: 0x138f0
+  exit: 0x13aa0
+  roomtile: 0x12
+
+# present underwater - pirate cave:
+#   entry: 0x138ec
+#   exit: 0x13a68
+#   roomtile: 0x33
