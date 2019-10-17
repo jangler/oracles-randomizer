@@ -86,18 +86,14 @@ inner present underwater - crescent island: {or: []}
 
 # nuun / symmetry city / talus peaks
 present symmetry: {or: [
-  outer present - symmetry NW house,
-  outer present - symmetry NE house,
-  outer present - symmetry SW house,
-  outer present - symmetry SE house,
   [nuun, or: [currents, flute]],
   [past symmetry, echoes, break bush safe],
   [ages, outer past - talus peaks - big cave to water changes]
 ]}
-outer present - symmetry NW house: {or: [present symmetry]}
-outer present - symmetry NE house: {or: [present symmetry]}
-outer present - symmetry SW house: {or: [present symmetry]}
-outer present - symmetry SE house: {or: [present symmetry]}
+outer present - symmetry NW house: {or: [d4 entrance]}
+outer present - symmetry NE house: {or: [d4 entrance]}
+outer present - symmetry SW house: {or: [d4 entrance]}
+outer present - symmetry SE house: {or: [d4 entrance]}
 outer nuun upper cave: {or: [
   [lynna village, currents],
   [nuun, or: [
