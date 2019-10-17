@@ -7,8 +7,8 @@ outer present - ring shop: {or: [lynna city]}
 outer present - lynna - SW house: {or: [lynna city]}
 outer present - baby house L: {or: [lynna city]}
 outer present - baby house R: {or: [lynna city]}
-outer present - maku tree stairs: {or: [[lynna city, or: [rescue nayru, maku tree]]]}
-outer present - maku tree cave: {or: [lynna city]}
+# outer present - maku tree stairs: {or: [[lynna city, or: [rescue nayru, maku tree]]]}
+# outer present - maku tree cave: {or: [lynna city]}
 outer present - lynna shop L: {or: [[lynna village, currents]]}
 outer present - lynna shop R: {or: [lynna city]}
 outer mask house: {or: [fairies' woods]}
@@ -28,8 +28,8 @@ inner present - ring shop: {or: []}
 inner present - lynna - SW house: {or: []}
 inner present - baby house L: {or: [inner present - baby house R]}
 inner present - baby house R: {or: [inner present - baby house L]}
-inner present - maku tree stairs: {or: [inner present - maku tree cave]}
-inner present - maku tree cave: {or: [inner present - maku tree stairs]}
+# inner present - maku tree stairs: {or: [inner present - maku tree cave]}
+# inner present - maku tree cave: {or: [inner present - maku tree stairs]}
 inner present - lynna shop L: {or: []}
 inner present - lynna shop R: {or: []}
 inner mask house: {or: []}

@@ -29,12 +29,12 @@ nuun upper cave:
   roomtile: 0x48
 
 # lynna
-present - maku tree stairs:
-  entry: 0x136f0
-  exit: 0x13af8
-  ismultiwarp: true
-  maptile: 0x38
-  connector: true
+# present - maku tree stairs:
+#   entry: 0x136f0
+#   exit: 0x13af8
+#   ismultiwarp: true
+#   maptile: 0x38
+#   connector: true
 
 present - lynna - NW house:
   entry: 0x1360c
@@ -80,12 +80,12 @@ present - baby house R:
   maptile: 0x47
   connector: true
 
-present - maku tree cave:
-  entry: 0x13708
-  exit: 0x13ae8
-  ismultiwarp: true
-  maptile: 0x48
-  connector: true
+# present - maku tree cave:
+#   entry: 0x13708
+#   exit: 0x13ae8
+#   ismultiwarp: true
+#   maptile: 0x48
+#   connector: true
 
 present - lynna shop L:
   entry: 0x13710
@@ -262,7 +262,7 @@ present - E of d5 right:
 
 present - E of d5 left:
   entry: 0x136b8
-  exit: 0x13d30
+  exit: 0x13d2c
   ismultiwarp: true
   maptile: 0x0b
   connector: true

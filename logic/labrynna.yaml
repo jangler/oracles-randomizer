@@ -20,8 +20,8 @@ lynna city: {or: [
     outer present - lynna - SW house,
     outer present - baby house L,
     outer present - baby house R,
-    outer present - maku tree cave,
-    [outer present - maku tree stairs, maku tree],
+    # outer present - maku tree cave,
+    # [outer present - maku tree stairs, maku tree],
     outer present - lynna shop R,
     open sea present,
     [fairies' woods, or: [flippers, dimitri's flute]]
@@ -83,7 +83,7 @@ cheval's invention: [inner under cheval grave, flippers]
 grave under tree: [inner stairs near d1, ember seeds]
 syrup: [inner witch hut,
     or: [count: [480, fixed rupees], [hard, shovel]]]
-graveyard poe: [inner ghost grave]
+graveyard poe: [inner ghost grave, outer ghost grave]
 d1 entrance: [gravekey]
 
 # western woods
