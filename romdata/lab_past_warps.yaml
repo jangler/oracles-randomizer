@@ -17,7 +17,8 @@ past - symmetry - SW house:
 past - symmetry - S house:
   entry: 0x13778
   exit: 0x13da4
-  roomtile: 0x55  # 8 pixels left of this
+  roomtile: 0x55
+  alignedleft: true
 
 past - symmetry - SE house:
   entry: 0x1377c
@@ -28,7 +29,8 @@ past - symmetry - SE house:
 tuni nut game:
   entry: 0x1378c
   exit: 0x13a2c
-  roomtile: 0x05  # 8 pixels left of this
+  roomtile: 0x05
+  alignedleft: true
 
 past - cave below tuni guy:
   entry: 0x137a8
@@ -38,31 +40,38 @@ past - cave below tuni guy:
 past - talus peaks - big cave to water changes:
   entry: 0x137b4
   exit: 0x138c4
-  roomtile: 0x15  # 8 pixels left of this
+  roomtile: 0x15
+  alignedleft: true
+  connector: true
 
 past - talus peaks - L water change cave:
   entry: 0x1384c
   exit: 0x13d64
   ismultiwarp: true
   maptile: 0x41
+  connector: true
 
 past - talus peaks - R water change cave:
   entry: 0x13850
   exit: 0x13d68
   ismultiwarp: true
   maptile: 0x41
+  connector: true
 
 # lynna
 past - maku tree cave:
   entry: 0x13728
   exit: 0x13aec
   roomtile: 0x21
+  connector: true
+  oneway: true
 
 past - maku tree stairs:
   entry: 0x13734
   exit: 0x13af4
   ismultiwarp: true
   maptile: 0x38
+  connector: true
 
 past - lynna - NW house:
   entry: 0x137ac
@@ -100,21 +109,27 @@ palace L:
   entry: 0x13754
   exit: 0x13d0c
   roomtile: 0x13
+  connector: true
 
 palace M:
   entry: 0x13758
   exit: 0x13d18
-  roomtile: 0x15  # 8 pixels left of this
+  roomtile: 0x15
+  alignedleft: true
+  connector: true
 
 palace R:
   entry: 0x1375c
   exit: 0x13d1c
   roomtile: 0x16
+  connector: true
 
 stairs SE of palace:
   entry: 0x13828
   exit: 0x1382c
   roomtile: 0x47
+  connector: true
+  oneway: true
 
 # lynna outskirts
 past - SW goron - old zora:
@@ -132,18 +147,21 @@ raft guy L:
   exit: 0x13880
   ismultiwarp: true
   maptile: 0xa7
+  connector: true
 
 raft guy R:
   entry: 0x13860
   exit: 0x13884
   ismultiwarp: true
   maptile: 0xa7
+  connector: true
 
 # fairy woods
 past - NE of mystery tree:
   entry: 0x137d4
   exit: 0x13cb0
   roomtile: 0x22
+  connector: true
 
 past - NW of d2:
   entry: 0x137d8
@@ -154,23 +172,28 @@ past - NE of d2:
   entry: 0x137dc
   exit: 0x13ca4
   roomtile: 0x37
+  connector: true
 
 past - bush SE of mystery tree:
   entry: 0x137e4
   exit: 0x13ca0
   roomtile: 0x11
+  connector: true
+  oneway: true
 
 above mystery tree - L stairs:
   entry: 0x13864
   exit: 0x13dbc
   ismultiwarp: true
   maptile: 0x70
+  connector: true
 
 above mystery tree - R stairs:
   entry: 0x13868
   exit: 0x13dc0
   ismultiwarp: true
   maptile: 0x70
+  connector: true
 
 # zora
 past - octo fairy cave:
@@ -181,7 +204,8 @@ past - octo fairy cave:
 past - library:
   entry: 0x137ec
   exit: 0x13d74
-  roomtile: 0x33  # 8 pixels left, 1 square above this
+  roomtile: 0x23
+  alignedleft: true
 
 past - moving island:
   entry: 0x13808
@@ -208,31 +232,38 @@ past - crescent - stairs on cliff:
   entry: 0x13800
   exit: 0x13df4
   roomtile: 0x41
+  connector: true
 
 past - crescent - E bomb cave:
   entry: 0x13804
   exit: 0x13914
   roomtile: 0x11
+  oneway: true
 
 past - crescent - central bomb cave:
   entry: 0x1380c
   exit: 0x13cec
   roomtile: 0x08
+  connector: true
+  oneway: true
 
 past - crescent - iron shield cave:
   entry: 0x13814
   exit: 0x13d5c
   roomtile: 0x48
+  oneway: true
 
 past - crescent - L coconut separated cave:
   entry: 0x13818
   exit: 0x13cf4
   roomtile: 0x06
+  connector: true
 
 past - crescent - R coconut separated cave:
   entry: 0x1381c
   exit: 0x13cf8
   roomtile: 0x01
+  connector: true
 
 past - crescent - SE cave:
   entry: 0x13820
@@ -261,21 +292,25 @@ past - upper goron - L of bomb cave:
   entry: 0x13768
   exit: 0x139d8
   roomtile: 0x54
+  connector: true
 
 past - upper goron - bomb cave:
   entry: 0x1376c
   exit: 0x13974
   roomtile: 0x52
+  oneway: true
 
 past - upper goron - under peg tree:
   entry: 0x13780
   exit: 0x13d6c
   roomtile: 0x04
+  connector: true
 
 past - SW cave to upper goron:
   entry: 0x13790
   exit: 0x13cd8
   roomtile: 0x26
+  connector: true
 
 past - upper goron - E of d5 L:
   entry: 0x13838
@@ -294,6 +329,7 @@ past - mid goron - SW of bomb cave:
   entry: 0x13784
   exit: 0x139c8
   roomtile: 0x43
+  connector: true
 
 past - mid goron - sword game:
   entry: 0x13788
@@ -310,27 +346,34 @@ past - lower goron - leftmost cave:
   entry: 0x13794
   exit: 0x13d40
   roomtile: 0x23
+  connector: true
 
 past - dance cave:
   entry: 0x137a4
   exit: 0x13980
   roomtile: 0x27
+  connector: true
 
 past - lower goron old man:
   entry: 0x137b0
   exit: 0x13a6c
   roomtile: 0x38
+  oneway: true
 
 # dungeons
 d6 past:
   entry: 0x139b4
   exit: 0x13c54
   roomtile: 0x16
+  dungeon: true
+  oneway: true
 
 d8:
   entry: 0x13730
   exit: 0x13c74
-  roomtile: 0x25  # 8 pixels left, 1 square above this
+  roomtile: 0x15
+  alignedleft: true
+  dungeon: true
 
 # past - leads to d6 cave:
 #   entry: 0x13840, 0x13844, 0x13848
@@ -362,7 +405,8 @@ past underwater - cave S of d8:
 past underwater - zora palace:
   entry: 0x13a1c
   exit: 0x13d9c
-  roomtile: 0x25  # 8 pixels left of this
+  roomtile: 0x25
+  alignedleft: true
 
 past underwater - zora SW L house:
   entry: 0x13ac8

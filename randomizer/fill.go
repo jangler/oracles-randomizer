@@ -107,6 +107,7 @@ type shuffledEntrance struct {
 	Connector     bool // if inner part connects to another inner part
 	Oneway        bool // if logically, you can't exit a connector into this entrance's outer part (eg to old man tree)
 	Trapped       bool // if it is an outer that connects to nothing
+	Alignedleft   bool // if a dungeon essence warp should align you 8 pixels left
 	Water         bool
 	name          string
 	newEntryByte1 byte

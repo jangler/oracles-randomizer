@@ -169,20 +169,20 @@ inner present - mid goron - by carts: {or: []}
 
 # goron lower
 goron lower present: {or: [
-  [outer present - lower goron old man, ember shooter, oneways],  # also possible with like like
+  # [outer present - lower goron old man, ember shooter, oneways],  # also possible with like like
   outer present - lower goron cave - leftmost,
   outer present - lower goron - d6 cave,
   outer present - lower goron - dance cave,
   outer present - lower goron - cave beside dance cave,
   [currents, or: [goron lower past W, goron lower past E]]
 ]}
-outer present - lower goron old man: {or: [[goron lower present, ember seeds]]}
+# outer present - lower goron old man: {or: [[goron lower present, ember seeds]]}
 outer present - lower goron cave - leftmost: {or: [goron lower present]}
 outer present - lower goron - d6 cave: {or: [goron lower present]}
 outer present - lower goron - dance cave: {or: [goron lower present]}
 outer present - lower goron - cave beside dance cave: {or: [goron lower present]}
 
-inner present - lower goron old man: {or: []}
+# inner present - lower goron old man: {or: []}
 inner present - lower goron cave - leftmost:
 inner present - lower goron - d6 cave:
 inner present - lower goron - dance cave:

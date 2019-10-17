@@ -127,6 +127,7 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 			entrances[outerName] = shuffledEntrance{
 				Entry:         entrances[outerName].Entry,
 				Exit:          entrances[outerName].Exit,
+				Alignedleft:   entrances[outerName].Alignedleft,
 				newEntryByte1: rom.data[entrances[outerName].Entry],
 				newEntryByte2: rom.data[entrances[outerName].Entry+1],
 				newExitByte1:  rom.data[entrances[outerName].Exit],
@@ -152,6 +153,9 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 				rom.data[warpExit] = (rom.data[warpExit] & 0xf0) + destGroup
 				rom.data[warpExit+1] = yxInWorld
 				rom.data[warpExit+2] = yxInRoom
+				if outer.Alignedleft {
+					rom.data[warpExit+3] = 0x0e
+				}
 			}
 			newOuterEntrance := shuffledEntrance{
 				Entry:         entrances[outerName].Entry,
@@ -163,6 +167,7 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 				Roomtile:      entrances[outerName].Roomtile,
 				Maptile:       entrances[outerName].Maptile,
 				Ismultiwarp:   entrances[outerName].Ismultiwarp,
+				Alignedleft:   entrances[outerName].Alignedleft,
 			}
 			newInnerEntrance := shuffledEntrance{
 				Entry:         entrances[innerName].Entry,
@@ -174,6 +179,7 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 				Roomtile:      entrances[innerName].Roomtile,
 				Maptile:       entrances[innerName].Maptile,
 				Ismultiwarp:   entrances[innerName].Ismultiwarp,
+				Alignedleft:   entrances[innerName].Alignedleft,
 			}
 			entrances[outerName] = newOuterEntrance
 			entrances[innerName] = newInnerEntrance
