@@ -58,6 +58,12 @@ past - maku tree cave:
   exit: 0x13aec
   roomtile: 0x21
 
+past - maku tree stairs:
+  entry: 0x13734
+  exit: 0x13af4
+  ismultiwarp: true
+  maptile: 0x38
+
 past - lynna - NW house:
   entry: 0x137ac
   exit: 0x13a9c

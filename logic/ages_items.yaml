@@ -2,7 +2,7 @@ shield: {or: [wooden shield, iron shield]}
 
 bombs: {or: [
     ["bombs, 10", or: [bracelet, break pot, flute, shovel]],
-    [hard, or: [d2 boss, goron shooting gallery]]]}
+    [hard, or: [d2 boss, inner past - mid goron - sword game]]]}
 
 ricky's flute: {or: []}
 dimitri's flute: {or: []}
@@ -13,7 +13,7 @@ farm rupees: {or: [ # only in logic for minigames. so almost never matters
     sword, shovel, bracelet, boomerang, cane, switch hook, flute]}
 fixed rupees: {rupees: [
     "rupees, 10", "rupees, 20", "rupees, 30", "rupees, 50", "rupees, 100",
-    "rupees, 200", rolling ridge past old man]}
+    "rupees, 200", inner past - lower goron old man]}
 
 # expert's ring can do some things that fist ring can't, so this is for the
 # lowest common denominator.

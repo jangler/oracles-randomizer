@@ -13,3 +13,5 @@ ref/
 *.prof
 *log*.txt
 .vscode/
+.DS_Store/
+.idea/

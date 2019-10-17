@@ -25,6 +25,12 @@ nuun upper cave:
   roomtile: 0x48
 
 # lynna
+present - maku tree stairs:
+  entry: 0x136f0
+  exit: 0x13af8
+  ismultiwarp: true
+  maptile: 0x38
+
 present - lynna - NW house:
   entry: 0x1360c
   exit: 0x13a98
@@ -176,35 +182,35 @@ present - first cave to upper goron:
   exit: 0x13cb4
   roomtile: 0x26
 
-present - moblin keep L:
-  entry: 0x1369c
-  exit: 0x138d8
-  ismultiwarp: true
-  maptile: 0x09
+#present - moblin keep L:
+#  entry: 0x1369c
+#  exit: 0x138d8
+#  ismultiwarp: true
+#  maptile: 0x09
+#
+#present - moblin keep R:
+#  entry: 0x136a0
+#  exit: 0x138dc
+#  ismultiwarp: true
+#  maptile: 0x09
 
-present - moblin keep R:
-  entry: 0x136a0
-  exit: 0x138dc
-  ismultiwarp: true
-  maptile: 0x09
+#present - moblin keep cave:
+#  entry: 0x136a4
+#  exit: 0x13d28
+#  ismultiwarp: true
+#  maptile: 0x09
 
-present - moblin keep cave:
-  entry: 0x136a4
-  exit: 0x13d28
-  ismultiwarp: true
-  maptile: 0x09
-
-present - moblin keep stairs:
-  entry: 0x136a8
-  exit: 0x13e60
-  ismultiwarp: true
-  maptile: 0x09
-
-cliff cave E of moblin keep:
-  entry: 0x136ac
-  exit: 0x138fc
-  ismultiwarp: true
-  maptile: 0x0a
+#present - moblin keep stairs:
+#  entry: 0x136a8
+#  exit: 0x13e60
+#  ismultiwarp: true
+#  maptile: 0x09
+#
+#cliff cave E of moblin keep:
+#  entry: 0x136ac
+#  exit: 0x138fc
+#  ismultiwarp: true
+#  maptile: 0x0a
 
 present - NW goron - under peg tree cave:
   entry: 0x136c8
@@ -373,39 +379,33 @@ d7:
 #   ismultiwarp: true
 #   maptile: 0x38
 
-# present - maku tree - to inner (same as below?):
+# present - maku tree - to inner:
 #   entry: 0x136ec
 #   exit: 0x13d00
 #   ismultiwarp: true
 #   maptile: 0x38
 
-# present - maku tree stairs L:
-#   entry: 0x136f0
-#   exit:
-#   ismultiwarp: true
-#   maptile: 0x38
-
-# upper maku tree - mid R:
+# upper maku tree - mid R:  # after 3 dungeons
 #   entry: 0x13720
 #   exit: 0x138b0
 #   ismultiwarp: true
 #   maptile: 0xe1
 
-# upper maku tree - mid L:
+# upper maku tree - mid L:  # after 1 dungeon
 #   entry: 0x13724
 #   exit: 0x138b4
 #   ismultiwarp: true
 #   maptile: 0xe1
 
-# upper maku tree - L:
+# upper maku tree - L:  # after 6 dungeons
 #   entry: 0x13668
 #   exit: 0x138c0
-#   roomtile:
+#   roomtile: 0x46
 
-# upper maku tree - R:
+# upper maku tree - R:  # after 4 dungeons
 #   entry: 0x13670
 #   exit: 0x138bc
-#   roomtile:
+#   roomtile: 0x54
 
 # upper maku tree - stairs:
 #   entry: 0x13674
