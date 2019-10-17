@@ -37,7 +37,7 @@ d2 moblin drop: [inner d2, kill spiked beetle, kill normal]
 # potentially 2 keys w/ vanilla route
 enter swoop: [inner d2,
     or: [[kill spiked beetle, feather], count: [2, d2 small key]]]
-d2 basement: [inner swoop, kill swoop]
+d2 basement: [enter swoop, kill swoop]
 blue wing owl: [mystery seeds, d2 basement]
 d2 thwomp tunnel: [d2 basement]
 d2 thwomp shelf: [d2 basement,

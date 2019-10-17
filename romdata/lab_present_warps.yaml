@@ -152,7 +152,7 @@ present - octo fairy cave:
   exit: 0x13a80
   roomtile: 0x32
 
-present - moving island house:
+present - moving island:
   entry: 0x13650
   exit: 0x13a40
   roomtile: 0x33
