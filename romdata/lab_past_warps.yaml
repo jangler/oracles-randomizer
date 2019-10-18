@@ -403,6 +403,7 @@ past underwater - cave S of d8:
   entry: 0x13a04
   exit: 0x13e80
   roomtile: 0x45
+  connector: true
 
 past underwater - zora palace:
   entry: 0x13a1c
@@ -415,12 +416,14 @@ past underwater - zora SW L house:
   exit: 0x13a5c
   ismultiwarp: true
   maptile: 0xd0
+  connector: true
 
 past underwater - zora SW R house:
   entry: 0x13acc
   exit: 0x13a60
   ismultiwarp: true
   maptile: 0xd0
+  connector: true
 
 past underwater - zora E house:
   entry: 0x13a34

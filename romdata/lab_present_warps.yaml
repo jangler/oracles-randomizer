@@ -468,12 +468,14 @@ present underwater - zora SW L house:
   exit: 0x13a54
   ismultiwarp: true
   maptile: 0xd0
+  connector: true
 
 present underwater - zora SW R house:
   entry: 0x139a8
   exit: 0x13a58
   ismultiwarp: true
   maptile: 0xd0
+  connector: true
 
 present underwater - zora E house:
   entry: 0x13904

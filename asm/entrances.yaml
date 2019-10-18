@@ -1,6 +1,16 @@
-# seasons:
-#   # reset season on every overworld exit
-#   04/464e/: jr 09  # replaces jr c, 09
+seasons:
+  # reset season if area is goron mountains, or natzu
+  04/checkResetSeason: |
+      call loadScreenMusicAndSetRoomPack
+      ld a,(wLoadingRoomPack)
+      cp a,16  # goron mountain
+      jp z,checkRoomPackAfterWarp
+      cp a,ff  # natzu
+      jp z,checkRoomPackAfterWarp
+      ret
+
+  # reset season on every overworld exit
+  04/464e/: jp checkResetSeason  # replaces jr c, 09
 
 ages:
   # don't set respawn on inner entrance to past-central crescent-stairs on cliff
