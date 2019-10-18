@@ -233,13 +233,13 @@ present - NW goron - under peg tree cave:
   exit: 0x13cc8
   ismultiwarp: true
   maptile: 0x18
+  connector: true
 
 present - NW goron - under peg tree stairs:
   entry: 0x136cc
   exit: 0x13dec
   ismultiwarp: true
   maptile: 0x18
-  connector: true
 
 present - NW goron - by time portal:
   entry: 0x136d4
