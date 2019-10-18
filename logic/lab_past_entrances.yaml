@@ -17,7 +17,7 @@ outer palace R: {or: [[nuun, ages]]}
 outer stairs SE of palace: {or: [[lynna village, break bush safe]]}
 outer past - SW goron - old zora: {or: [
   ages, goron lower past water, 
-  [lynna village, feather],
+  [lynna village, feather, switch hook],
   [outer past - SW cave to upper goron, switch hook]
 ]}
 outer cheval: {or: [
@@ -51,8 +51,8 @@ inner raft guy R: {or: [inner raft guy L]}
 # black tower
 
 # western woods
-outer past - NE of mystery tree: {or: [[deku forest, or: [feather, switch hook]]]}
-outer past - NW of d2: {or: [[deku forest, or: [bracelet, feather, switch hook]]]}
+outer past - NE of mystery tree: {or: [[deku forest, or: [feather, switch hook, [ember seeds, bracelet]]]]}
+outer past - NW of d2: {or: [[deku forest, or: [bracelet, feather]]]}
 outer past - NE of d2: {or: [deku forest]}
 outer past - bush SE of mystery tree: {or: [[deku forest, ember seeds]]}
 outer above mystery tree - L stairs: {or: [[fairies' woods, ages]]}
@@ -105,13 +105,15 @@ crescent past S: {or: [
 ]}
 outer past - crescent - shop: {or: [crescent past E]}
 outer past - crescent - face cave: {or: [
-  all crescent,
-  [or: [bomb jump 2, mermaid suit], crescent past NW, tokay eyeball]
+  [tokay eyeball, or: [
+    all crescent,
+    [or: [bomb jump 2, mermaid suit], crescent past NW]
+  ]]
 ]}
 outer past - crescent - 1st cave: {or: [crescent past NW]}
 outer past - crescent - stairs on cliff: {or: [[crescent present E, ages]]}
 outer past - crescent - E bomb cave: {or: [[crescent past E, bombs]]}
-outer past - crescent - central bomb cave: {or: [crescent past S]}
+outer past - crescent - central bomb cave: {or: [[crescent past S, bombs]]}
 outer past - crescent - iron shield cave: {or: [open sea past]}
 outer past - crescent - L coconut separated cave: {or: [crescent past SW]}
 outer past - crescent - R coconut separated cave: {or: [crescent past S]}
@@ -162,7 +164,7 @@ outer past - symmetry - S house: {or: [past symmetry]}
 outer past - symmetry - SE house: {or: [past symmetry]}
 outer tuni nut game: {or: [after water changing, ages]}
 outer past - cave below tuni guy: {or: [[deku forest, feather], ages]}
-outer past - talus peaks - big cave to water changes: {or: [[past symmetry, currents]]}
+outer past - talus peaks - big cave to water changes: {or: [[past symmetry, currents, bracelet]]}
 outer past - talus peaks - L water change cave: {or: [
   [outer past - talus peaks - R water change cave, ages]
 ]}
@@ -194,7 +196,7 @@ goron upper past L: {or: [
   [or: [ages, [bracelet, echoes]], goron upper present L]
 ]}
 outer past - moblin keep cave: {or: [goron upper past L]}
-outer past - upper goron - under peg tree: {or: goron upper past L}
+outer past - upper goron - under peg tree: {or: [goron upper past L]}
 outer past - SW cave to upper goron: {or: [
   [switch hook, or: [outer past - SW goron - old zora, ages, [lynna village, feather]]],
   [outer present - first cave to upper goron, ages]
@@ -217,7 +219,7 @@ goron upper past R: {or: [
   [ages, or: [goron upper present R, outer present - upper goron - R rock-separated caves]]
 ]}
 outer past - upper goron - L of bomb cave: {or: [goron upper past R]}
-outer past - upper goron - bomb cave: {or: [goron upper past R]}
+outer past - upper goron - bomb cave: {or: [[goron upper past R, bombs]]}
 outer past - upper goron - E of d5 L: {or: [goron upper past M]}
 outer past - upper goron - E of d5 R: {or: [goron upper past M]}
 
@@ -289,7 +291,7 @@ past underwater zora: {or: [
 past overwater zora: [past underwater zora, mermaid suit]
 outer past - octo fairy cave: {or: [
   [outer present - octo fairy cave, ages],
-  [switch hook, past overwater zora]
+  [switch hook, or: [past overwater zora, [open sea past, clean seas]]]
 ]}
 outer past - library: {or: [[past overwater zora, library key]]}
 outer past - moving island: {or: [

@@ -206,6 +206,7 @@ past - library:
   exit: 0x13d74
   roomtile: 0x23
   alignedleft: true
+  oneway: true
 
 past - moving island:
   entry: 0x13808
@@ -222,6 +223,7 @@ past - crescent - face cave:
   entry: 0x137f8
   exit: 0x13db0
   roomtile: 0x55
+  oneway: true
 
 past - crescent - 1st cave:
   entry: 0x137fc

@@ -261,14 +261,14 @@ present - E of d5 right:
   maptile: 0x0b
 
 present - E of d5 left:
-  entry: 0x136b8
+  entry: 0x136bc
   exit: 0x13d2c
   ismultiwarp: true
   maptile: 0x0b
   connector: true
 
 present - E of d5 middle:
-  entry: 0x136bc
+  entry: 0x136b8
   exit: 0x13964
   ismultiwarp: true
   maptile: 0x0b

@@ -14,7 +14,7 @@ outer present - lynna shop R: {or: [lynna city]}
 outer mask house: {or: [fairies' woods]}
 outer tingle stairs: {or: [currents, ricky's gloves, ricky's flute]}
 outer cave below tingle: {or: [
-  bracelet, open sea present, ricky's gloves, ricky's flute,
+  bracelet, open sea present, ricky's gloves, flute,
   [feather, or: [break bush, flute, currents]],
   [currents, or: [flippers, outer cheval]]
 ]}
@@ -145,12 +145,12 @@ outer present - E of d5 right: {or: [goron upper present R]}
 outer present - E of d5 left: {or: [goron upper present M]}
 outer present - E of d5 middle: {or: [goron upper present M]}
 outer present - upper goron - L rock-separated caves: {or: [goron upper present R]}
-outer present - upper goron - R rock-separated caves: {or: [[goron upper past R, currents]]}
+outer present - upper goron - R rock-separated caves: {or: [[goron upper past R, currents, break bush]]}
 outer present - NW goron - cave on cliff near time portal: {or: [goron upper present R]}
 
 inner present - upper goron R - cave on tall building: {or: []}
 inner present - E of d5 right: {or: []}
-inner present - E of d5 left: {or: [defeat great moblin, bomb jump 2]}
+inner present - E of d5 left: {or: [[defeat great moblin, bomb jump 2]]}
 inner present - E of d5 middle: {or: [inner present - NW goron - cave on cliff near time portal]}
 inner present - upper goron - L rock-separated caves: {or: []}
 inner present - upper goron - R rock-separated caves: {or: []}
@@ -207,7 +207,7 @@ inner present - lower goron - cave beside dance cave: {or: []}
 # zora village / zora seas
 unlocked present library: [oneways, outer past - library, outer present - library]
 clean dimitri: [clean seas, dimitri's flute, open sea present land]
-present underwater zora: [
+present underwater zora: {or: [
   outer present underwater - zora palace,
   outer present underwater - zora SW L house,
   outer present underwater - zora SW R house,
@@ -219,11 +219,11 @@ present underwater zora: [
     [past underwater zora, currents],
     [oneways, outer present - zora vill - NW bomb cave, bombs]
   ]]
-]
-present overwater zora: [mermaid suit, present underwater zora]
+]}
+present overwater zora: [mermaid suit, or: [present underwater zora, open sea present]]
 outer present - octo fairy cave: {or: [[outer past - octo fairy cave, currents]]}
 outer present - moving island: {or: [
-  open sea present, clean dimitri, [currents, outer past - moving island]
+  open sea present, dimitri's flute, [currents, outer past - moving island]
 ]}
 outer present - zora vill - NW bomb cave: {or: [
   [bombs, or: [present overwater zora, clean dimitri]]

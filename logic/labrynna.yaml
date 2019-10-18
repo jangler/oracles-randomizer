@@ -27,7 +27,7 @@ lynna city: {or: [
     [fairies' woods, or: [flippers, dimitri's flute]]
 ]}
 lynna village: {or: [
-    echoes,
+    echoes, lynna city,  # lynna city due to unrandomized present maku path
     [outer past - maku tree cave, shovel],
     [outer past - maku tree stairs, or: [rescue nayru, maku tree]],
     outer past - lynna - NW house,
@@ -64,7 +64,7 @@ balloon guy's gift: [balloon guy]
 seed type: {
     or: [ember seeds, scent seeds, pegasus seeds, gale seeds, mystery seeds]}
 balloon guy's upgrade: [balloon guy, count: [3, seed type]]
-raft: [inner raft guy L, cheval rope, island chart]
+raft: [inner raft guy L, cheval rope, island chart, outer raft guy L]
 shop, 30 rupees: [inner present - lynna shop R, or: [count: [30, fixed rupees], [hard, shovel]]]
 shop, 150 rupees: [inner present - lynna shop R, or: [count: [180, fixed rupees], [hard, shovel]]]
 ambi's palace tree: [lynna village, or: [sword, punch object], seed item]
@@ -83,7 +83,7 @@ cheval's invention: [inner under cheval grave, flippers]
 grave under tree: [inner stairs near d1, ember seeds]
 syrup: [inner witch hut,
     or: [count: [480, fixed rupees], [hard, shovel]]]
-graveyard poe: [inner ghost grave, outer ghost grave]
+graveyard poe: [outer ghost grave]
 d1 entrance: [gravekey]
 
 # western woods
@@ -126,7 +126,7 @@ all crescent: [ages, or: [
 ]]
 tokay crystal cave: [inner past - crescent - 1st cave, or: [shovel, break crystal], feather]
 tokay bomb cave: [inner past - crescent - E stairs after boulder, bombs]
-wild tokay game: [inner past - crescent - E bomb cave, bracelet]
+wild tokay game: [inner past - crescent - E bomb cave, bracelet, farm rupees]
 # can get the warp point by swimming under crescent island, but that's pretty
 # unintuitive.
 crescent island tree: [
@@ -134,7 +134,7 @@ crescent island tree: [
     or: [sword, punch object],
     or: [ages, [bracelet, or: [echoes, [hard, gale satchel, mermaid suit]]]]]
 d3 entrance: [crescent present W]
-hidden tokay cave: [inner past - crescent - iron shield cave, mermaid suit]
+hidden tokay cave: [inner past - crescent - iron shield cave, flippers]
 under crescent island: [inner present underwater - crescent island]
 tokay pot cave: [inner past - crescent - SE cave, long hook]
 
@@ -174,7 +174,7 @@ d4 entrance: [present symmetry, tuni nut, inner past - symmetry - S house, patch
 
 # rolling ridge. what a nightmare
 goron elder: [bomb flower, inner past - SW cave to upper goron]
-ridge west cave: [outer present - NW goron - under peg tree stairs]
+ridge west cave: [inner present - NW goron - under peg tree stairs]
 rolling ridge west tree: [or: [sword, punch object], seed item, goron upper past L]
 under moblin keep: [goron upper present L, feather, flippers]
 defeat great moblin: [goron upper present L, pegasus satchel, bracelet]
@@ -187,7 +187,7 @@ pool in d6 entrance: [
     mermaid suit]
 goron dance present: [inner present - lower goron - dance cave, farm rupees]
 goron dance, with letter: [inner past - dance cave, goron letter, farm rupees]
-target carts: [inner present - mid goron - carts]
+target carts: [inner present - mid goron - carts, farm rupees]
 target carts 1: [target carts]
 target carts 2: [target carts]
 goron shooting gallery: [inner past - mid goron - sword game, sword]
@@ -202,7 +202,7 @@ d6 past entrance: [mermaid key, or: [
 ]]
 ridge diamonds past: [inner past - lower goron - leftmost cave, switch hook]
 bomb goron head: [inner past - upper goron - bomb cave]
-big bang game: [goronade, inner present - mid goron - leftmost cave]
+big bang game: [goronade, inner present - mid goron - leftmost cave, farm rupees]
 ridge NE cave present: [inner present - mid goron - leftmost cave]
 trade rock brisket: [brother emblem, rock brisket, inner present - lower goron - dance cave]
 trade goron vase: [brother emblem, goron vase, inner past - dance cave]
@@ -239,7 +239,8 @@ open sea present land: {or: [  # for dimitri/mermaid suit
 ]}
 open sea present: [mermaid suit, or: [
     open sea present land, outer present - moving island,
-    outer present underwater - crescent island
+    outer present underwater - crescent island,
+    [present overwater zora, clean seas]
 ]]
 open sea past land: {or: [
     lynna village, outer raft guy R,
@@ -247,6 +248,7 @@ open sea past land: {or: [
 ]}
 open sea past: [mermaid suit, or: [
     open sea past land, outer past - crescent - iron shield cave,
+    [or: [past overwater zora, [switch hook, outer past - octo fairy cave]], clean seas],
     [outer past underwater - pirate cave, zora scale]
 ]]
 piratian captain: [mermaid suit, zora scale, or: [open sea past, outer past underwater - pirate cave]]
