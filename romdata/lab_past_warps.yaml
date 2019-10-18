@@ -224,6 +224,7 @@ past - crescent - face cave:
   exit: 0x13db0
   roomtile: 0x55
   oneway: true
+  connector: true
 
 past - crescent - 1st cave:
   entry: 0x137fc

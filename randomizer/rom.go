@@ -134,7 +134,8 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 				newExitByte2:  rom.data[entrances[outerName].Exit+1],
 			}
 		} else {
-			if len(innerName) == 2 && innerName[0] == 'd' {
+			// Set essence warps to go back to the outer entrance
+			if getStringIndex(dungeonNames[rom.game], innerName) != -1 && innerName != "d6 present" {
 				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(sora(rom.game, 0x8, 0x9).(int)*0x4000)
 
 				outer := entrances[outerName]
