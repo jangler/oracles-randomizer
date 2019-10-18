@@ -215,10 +215,10 @@ inner bomb cave before lost woods: {or: []}
 inner stairs SE of lost woods: {or: []}
 
 # samasa desert
-# outer NE desert cave: {or: [[desert, bombs, or: [flippers, jump 3, [hard, bomb jump 2]]]]}
+outer NE desert cave: {or: [[desert, bombs, or: [flippers, jump 3, [hard, bomb jump 2]]]]}
 outer desert chest stairs: {or: []}
 
-# inner NE desert cave: {or: []}
+inner NE desert cave: {or: []}
 inner desert chest stairs: {or: [[desert, flippers]]}
 
 # temple remains

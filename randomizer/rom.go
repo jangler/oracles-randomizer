@@ -122,11 +122,6 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 	}
 	warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
 
-	// for ages, this entrance (past central crescent - stairs on cliff must not set respawn)
-	if rom.game == gameAges {
-		rom.data[0x1346b] = 0x04
-	}
-
 	for outerName, innerName := range entranceMapping {
 		if outerName == innerName {
 			entrances[outerName] = shuffledEntrance{
