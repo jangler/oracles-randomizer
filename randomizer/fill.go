@@ -130,17 +130,40 @@ func setEntrances(rom *romState, src *rand.Rand) map[string]string {
 	}
 	entranceMapping := make(map[string]string)
 
-	src.Shuffle(len(inners), func(i, j int) {
-		if (outers[i].Oneway && inners[j].Connector) || (outers[j].Oneway && inners[i].Connector) {
-			// don't swap if an old man entrance connects to a connector
-		} else if (outers[i].Trapped && inners[j].Dungeon) || (outers[j].Trapped && inners[i].Dungeon) {
-			// don't swap if an unconnected overworld connects to a dungeon
-		} else if (outers[i].Water && !inners[j].Water) || (outers[j].Water && !inners[i].Water) {
-			// water entrances can only be swapped with other water entrances
-		} else {
-			inners[i], inners[j] = inners[j], inners[i]
+	for {
+		shuffled := true
+
+		src.Shuffle(len(inners), func(i, j int) {
+			if (outers[i].Oneway && inners[j].Connector) || (outers[j].Oneway && inners[i].Connector) {
+				// don't swap if an old man entrance connects to a connector
+			} else if (outers[i].Trapped && inners[j].Dungeon) || (outers[j].Trapped && inners[i].Dungeon) {
+				// don't swap if an unconnected overworld connects to a dungeon
+			} else if (outers[i].Water && !inners[j].Water) || (outers[j].Water && !inners[i].Water) {
+				// water entrances can only be swapped with other water entrances
+			} else {
+				inners[i], inners[j] = inners[j], inners[i]
+			}
+		})
+
+		// Check all entrances follow the above rules
+		for i := range outers {
+			if outers[i].Oneway && inners[i].Connector {
+				shuffled = false
+				break
+			} else if outers[i].Trapped && inners[i].Dungeon {
+				shuffled = false
+				break
+			} else if outers[i].Water && !inners[i].Water {
+				shuffled = false
+				break
+			}
 		}
-	})
+
+		if shuffled {
+			break
+		}
+	}
+
 	for i := range outers {
 		entranceMapping[outers[i].name] = inners[i].name
 	}
