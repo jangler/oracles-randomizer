@@ -90,7 +90,7 @@ blaino's gym: {or: [
     [north horon stump, or: [bracelet,
         [or: [break bush, flute], or: [flippers, dimitri's flute]]]],
     [temple remains lower stump, jump 3],
-    [goron mountain, flippers]]}
+    [outer cave below goron mountain area, flippers]]}
 north horon tree: [blaino's gym, seed item,
     or: [harvest tree, dimitri's flute]]
 blaino prize: [inner blaino, or: [count: [10, fixed rupees], [hard, shovel]]]
@@ -189,7 +189,7 @@ mount cucco: {or: [exit mt. cucco portal,
     [outer mt cucco mushroom guy, or: [sunken city default spring, spring]],
     [outer mt cucco - cave by portal, or: [sunken city default winter, winter]],
     [sunken city, flippers, or: [sunken city default summer, summer]],
-    [goron mountain, bracelet, shovel]]}
+    [goron mountain bomb wall, shovel]]}
 spring banana tree: {or: []}  # spring-only
 mt. cucco, platform cave: [inner mt cucco S of banana tree screen]
 moosh: [mount cucco, spring banana]
@@ -201,10 +201,10 @@ diving spot outside D4: [outer mt cucco mushroom guy, flippers]
 
 # goron mountain
 goron mountain: {or: [
-    [mount cucco, or: [shovel, spring banana], bracelet],
-    [temple remains lower stump, jump 3, or: [flippers, bomb jump 4]],
-    [blaino's gym, flippers]]}
-chest in goron mountain: [goron mountain, bombs, bomb jump 3]
+    [goron mountain bomb wall, bracelet],
+    outer goron cave near old man
+]}
+chest in goron mountain: [inner goron cave near old man, bombs, bomb jump 3]
 
 # tarm ruins
 tarm ruins: [north swamp,
@@ -233,7 +233,7 @@ temple remains lower stump: {or: [
             [hard, jump 6, or: [summer, temple remains default summer]],
             [hard, break flower, jump 6,
                 or: [spring, temple remains default spring]]]]]],
-    [goron mountain, or: [flippers, bomb jump 4], jump 3],
+    [outer cave below goron mountain area, or: [flippers, bomb jump 4], jump 3],
     [blaino's gym, jump 3]]}
 # this is from the upper stump
 temple remains not spring: {or: [

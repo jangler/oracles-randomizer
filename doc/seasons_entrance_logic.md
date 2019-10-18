@@ -12,6 +12,7 @@ The following ways of navigating inner caves, etc are potential softlocks, if yo
 - jumping down from d6, getting through the other side of lost woods
 - jumping down from the tarm deku entrance
 - jumping down from the samasa desert chest cliff
+- jumping down from anywhere in goron mountain
 - in upper temple remains, jumping down the 1 cliff that connects in the Northwest
 - jumping down from dragon key lock, TODO: this needs to be fixed as this is the only way out
 
@@ -36,7 +37,6 @@ Some could be added in the near future
 - GBA shop
 - Diving spots - located differently in the disassembly to other entrances
 - Dimitri caves - same reason as above, but also gotta make sure dimitri is handled well when both entering and exiting
-- Rest of Goron mountain caves - only exists in winter. If I can fix seasons when exiting onto Holodrum, I can add these in
 - Cave leading up to western coast graveyard - currently due to not being able to go down the same cave once in the graveyard
 - Thieves house entrances - could soft lock you
 - The Key cave connecting subrosia beach to subrosia temple - you need Rosa to unlock these. A possible future change could include these by removing the inner locked doors, and then the outer ones can logically require Rosa

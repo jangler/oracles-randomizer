@@ -314,6 +314,48 @@ goron ring cave:
   maptile: 0x19
   ismultiwarp: true
   oneway: true
+  trapped: true
+goron mountain stairs by lynels:
+  entry: 0x13565
+  exit: 0x13be9
+  connector: true
+  trapped: true
+  roomtile: 0x26
+goron mountain - S of lynels - R separated cave:
+  entry: 0x13691
+  exit: 0x13be5
+  maptile: 0x19
+  ismultiwarp: true
+  connector: true
+goron mountain - stairs below L and R-separated caves:
+  entry: 0x13699
+  exit: 0x13bf1
+  maptile: 0x19
+  ismultiwarp: true
+  connector: true
+goron cave near old man:
+  entry: 0x135f5
+  exit: 0x13bcd
+  maptile: 0x28
+  ismultiwarp: true
+  connector: true
+goron bomb cave:
+  entry: 0x1356d
+  exit: 0x13bed
+  oneway: true
+  connector: true
+  roomtile: 0x17
+cave below goron mountain area:
+  entry: 0x13561
+  exit: 0x13bd1
+  connector: true
+  roomtile: 0x11
+under biggoron:
+  entry: 0x13559
+  exit: 0x13bc9
+  trapped: true
+  connector: true
+  roomtile: 0x17
 
 # tarm ruins
 tarm deku:

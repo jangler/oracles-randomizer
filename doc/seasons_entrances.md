@@ -79,8 +79,15 @@
 
 ## Goron Mountain
 - Goron ring cave
+- Cave by lynels
 - Cave South of lynels - left of rock
-- Old main in tree
+- Cave South of lynels - right of rock
+- Stairs South of lynels - leads to the 2 above
+- Bomb cave leading up to the above 3
+- Cave near Biggoron
+- Cave near old man in tree
+- Cave leading up to the above
+- Old man in tree
 
 ## Tarm Ruins
 - Deku scrub

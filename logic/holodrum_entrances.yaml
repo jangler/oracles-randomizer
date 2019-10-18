@@ -189,14 +189,41 @@ inner mt cucco S of banana tree screen: {or: []}
 inner mt cucco - cave by portal: {or: []}
 
 # goron mountain
+entrances near ring cave: {or: [
+    outer goron mountain - S of lynels - L separated cave,
+    outer goron mountain - S of lynels - R separated cave,
+    outer goron mountain - stairs below L and R-separated caves
+]}
 goron mountain bomb wall: {or: [
     [mount cucco, or: [shovel, spring banana]],
-    [bracelet, goron mountain]]}
-outer goron mountain - S of lynels - L separated cave: {or: [[goron mountain bomb wall, bombs]]}
-outer goron ring cave: {or: [[goron mountain bomb wall, bombs]]}
+    [bracelet, outer goron cave near old man]]}
+outer goron mountain - S of lynels - L separated cave: {or: [entrances near ring cave]}
+outer goron ring cave: {or: []}
+outer goron mountain stairs by lynels: {or: []}
+outer goron mountain - S of lynels - R separated cave: {or: [entrances near ring cave]}
+outer goron mountain - stairs below L and R-separated caves: {or: [entrances near ring cave]}
+outer goron cave near old man: {or: [goron mountain]}
+outer goron bomb cave: {or: [[goron mountain bomb wall, bombs]]}
+outer cave below goron mountain area: {or: [
+    [temple remains lower stump, jump 3],
+    [blaino's gym, flippers]
+]}
+outer under biggoron: {or: []}
 
 inner goron mountain - S of lynels - L separated cave: {or: []}
 inner goron ring cave: {or: []}
+inner goron mountain stairs by lynels: {or: [inner goron mountain - S of lynels - R separated cave]}
+inner goron mountain - S of lynels - R separated cave: {or: [inner goron mountain stairs by lynels]}
+inner goron mountain - stairs below L and R-separated caves: {or: [inner goron bomb cave]}
+inner goron cave near old man: {or: [
+    [inner cave below goron mountain area, or: [flippers, bomb jump 4]],
+    [inner under biggoron, feather]
+]}
+inner goron bomb cave: {or: [inner goron mountain - stairs below L and R-separated caves]}
+inner cave below goron mountain area: {or: [
+    [inner goron cave near old man, or: [flippers, bomb jump 4]]
+]}
+inner under biggoron: {or: [[inner goron cave near old man, feather]]}
 
 # tarm ruins
 outer tarm deku: {or: [
