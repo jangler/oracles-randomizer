@@ -34,11 +34,9 @@ beach: {or: [
     [temple, feather]]}
 
 hide and seek: {or: [outer house NE of thieves portal, [feather, or: [
-    exit strange brothers portal, pirate house,
+    exit strange brothers portal, outer pirate house - main entrance,
     [bomb jump 4, temple],
     outer stairs leading to spring tower]]]}
-
-pirate house: [hide and seek, feather]
 
 furnace: {or: [
     outer furnace,
@@ -70,8 +68,8 @@ subrosia village chest: [outer E ore screen - top stairs]
 subrosia, open cave: [inner subrosia open cave]
 subrosia, locked cave: [inner subrosia locked cave]
 ore chunks: {or: [
-    # sword, bracelet, magic boomerang, 
-    shovel, subrosian dance hall]}
+    # sword, bracelet, magic boomerang, shovel, 
+    subrosian dance hall]}
 subrosia market, 1st item: [inner subrosia shop, star ore]
 subrosia market, 2nd item: [inner subrosia shop, ore chunks, ember seeds]
 subrosia market, 5th item: [inner subrosia shop, ore chunks]

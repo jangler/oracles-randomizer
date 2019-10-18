@@ -181,7 +181,7 @@ dimitri: [sunken city hub, or: [dimitri's flute,
     [bombs, or: [feather, flippers, sunken city default winter]]]]
 master diver's challenge: [dimitri, sword, or: [feather, flippers]]
 master diver's reward: [dimitri, master's plaque]
-sunken city, summer cave: [inner sunken vines cave, break bush safe, or: [flippers, bomb jump 2]]
+sunken city, summer cave: [inner sunken vines cave, break bush safe, or: [flippers, [hard, feather], jump 3]]
 chest in master diver's cave: [dimitri]
 
 # mount cucco
@@ -196,7 +196,7 @@ moosh: [mount cucco, spring banana]
 goron mountain, across pits: [mount cucco, or: [moosh, jump 6, [hard, cape]]]
 mt. cucco, talon's cave: [inner mt cucco mushroom guy]
 dragon keyhole: [outer mt cucco stairs near top cucco, bracelet, outer mt cucco mushroom guy]
-d4 entrance: [dragon key, dragon keyhole, summer, flippers]
+d4 entrance: [dragon key, dragon keyhole, summer]
 diving spot outside D4: [outer mt cucco mushroom guy, flippers]
 
 # goron mountain
@@ -233,7 +233,7 @@ temple remains lower stump: {or: [
             [hard, jump 6, or: [summer, temple remains default summer]],
             [hard, break flower, jump 6,
                 or: [spring, temple remains default spring]]]]]],
-    [outer cave below goron mountain area, or: [flippers, bomb jump 4], jump 3],
+    [outer cave below goron mountain area, jump 3],
     [blaino's gym, jump 3]]}
 # this is from the upper stump
 temple remains not spring: {or: [

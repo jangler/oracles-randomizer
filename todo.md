@@ -10,6 +10,7 @@
 - fix sprites in some subrosia houses, notably smithy and minigame  
 - (if adding minigame into rando, need to fix exit warping to vanilla location)
 - correct rupee/ore chunk display
+- ore chunk farming logic
 
 ## Future ideas
 - hard logic idea - 2d spring tower section with bombs/seeds

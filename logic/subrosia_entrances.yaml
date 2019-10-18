@@ -17,7 +17,7 @@ inner temple of winter: {or: []}
 outer house NE of thieves portal: {or: [hide and seek]}
 outer stairs leading to spring tower: {or: [[hide and seek, feather]]}
 outer pirate house - top stairs: {or: [exit house of pirates portal]}
-outer pirate house - main entrance: {or: [pirate house]}
+outer pirate house - main entrance: {or: [[hide and seek, feather]]}
 
 inner house NE of thieves portal: {or: []}
 inner stairs leading to spring tower: {or: [[inner temple of spring - stairs, feather]]}

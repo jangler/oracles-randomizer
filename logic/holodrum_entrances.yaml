@@ -51,12 +51,19 @@ outer ww bomb cave: {or: [[
         woods of winter default summer, summer,
         woods of winter default autumn, autumn]]]]}
 outer ww cave under sunken: {or: [moblin road]}
-outer E of d2 - L cave: {or: [[central woods of winter, or: [feather, flippers, winter, woods of winter default winter]]]}
+d2 roof stump: {or: [
+    [central woods of winter, or: [woods of winter default summer, ricky's flute]],
+    [d2 roof, bracelet]
+]}
+outer E of d2 - L cave: {or: [[
+    central woods of winter, 
+    or: [feather, flippers, [winter, d2 roof stump], woods of winter default winter]
+]]}
 outer E of d2 - R cave: {or: [[
-  [central woods of winter, 
+  central woods of winter, 
   or: [break mushroom, dimitri's flute], 
-  or: [woods of winter default autumn, [autumn, d2 roof]]]
-  ]]}
+  or: [woods of winter default autumn, [autumn, d2 roof stump]]
+]]}
 outer suburbs stairs past blooming flower: {or: [[suburbs, bracelet, or: [eastern suburbs default spring, spring]]]}
 outer windmill guy: {or: []}
 outer windmill main entrance: {or: [suburbs]}
@@ -177,14 +184,14 @@ outer mt cucco S of banana tree screen: {or: [platform cave]}
 outer mt cucco - cave by portal: {or: [[mount cucco, feather, or: [sunken city default winter, winter]]]}
 
 inner mt cucco stairs near top cucco: {or: [
-  [inner mt cucco cliff cave to top cucco, 
-  or: [bomb jump 2, [feather, bracelet, break bush]]]]}
+  [inner mt cucco cliff cave to top cucco, feather]
+]}
 inner banana tree - top stairs: {or: [[feather, inner banana tree - bottom cave]]}
 inner banana tree - bottom cave: {or: [[feather, inner banana tree - top stairs]]}
 inner mt cucco mushroom guy: {or: []}
 inner mt cucco cliff cave to top cucco: {or: [
-  [inner mt cucco stairs near top cucco, 
-  or: [bomb jump 2, [feather, bracelet, break bush]]]]}
+  [inner mt cucco stairs near top cucco, feather]
+]}
 inner mt cucco S of banana tree screen: {or: []}
 inner mt cucco - cave by portal: {or: []}
 
@@ -226,15 +233,19 @@ inner cave below goron mountain area: {or: [
 inner under biggoron: {or: [[inner goron cave near old man, feather]]}
 
 # tarm ruins
-outer tarm deku: {or: [
-  [tarm ruins,
-  or: [tarm ruins default summer, summer],  # to push 1st statue
-  or: [tarm ruins default winter, winter],  # to push 2nd statue
-  autumn, break mushroom,
-  or: [flippers, bomb jump 2]]]}
-outer tarm tree stairs: {or: [[lost woods, break mushroom, ember seeds, autumn]]}
-outer bomb cave before lost woods: {or: [[outer tarm deku, bombs]]}
-outer stairs SE of lost woods: {or: [[outer tarm deku, ember seeds]]}
+outer tarm deku: {or: [[
+    tarm ruins,
+    or: [
+        lost woods default summer, summer, 
+        [magic boomerang, or: [hard, feather], or: [lost woods default autumn, autumn]]
+    ],  # to push 1st statue
+    or: [lost woods default winter, winter],  # to push 2nd statue
+    autumn, break mushroom,
+    or: [flippers, bomb jump 2]]]}
+outer tarm tree stairs: {or: [[lost woods, break mushroom, ember seeds, autumn, tarm ruins default autumn]]}
+before lost woods: [outer tarm deku, or: [cape, [hard, jump 3]]]
+outer bomb cave before lost woods: {or: [[before lost woods, bombs]]}
+outer stairs SE of lost woods: {or: [[before lost woods, ember seeds]]}
 
 inner tarm deku: {or: []}
 inner tarm tree stairs: {or: []}
