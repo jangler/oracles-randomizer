@@ -2,7 +2,7 @@ shield: {or: [wooden shield, iron shield]}
 
 bombs: {or: [
     ["bombs, 10", or: [bracelet, break pot, flute, shovel]],
-    [hard, or: [d2 boss, inner past - mid goron - sword game]]]}
+    [hard, or: [d2 boss, goron shooting gallery]]]}
 
 ricky's flute: {or: []}
 dimitri's flute: {or: []}
