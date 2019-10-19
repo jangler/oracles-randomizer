@@ -15,3 +15,6 @@ seasons:
 ages:
   # don't set respawn on inner entrance to past-central crescent-stairs on cliff
   05/346b/: db 04
+
+  # add stairs near chest in RR - NE-most cave so you don't need to soft-reset to get back up to stairs
+  1c/7719/: db 51
