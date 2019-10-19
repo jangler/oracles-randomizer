@@ -96,8 +96,8 @@ north horon tree: [blaino's gym, seed item,
 blaino prize: [inner blaino, or: [count: [10, fixed rupees], [hard, shovel]]]
 ricky: {or: [ricky's flute]}
 old man in treehouse: [inner treehouse old man]
-cave south of mrs. ruul: [inner water cave under mrs ruul]
-cave north of D1: [inner holodrum plain water cave past mushrooms]
+cave south of mrs. ruul: [inner water cave under mrs ruul, flippers]
+cave north of D1: [inner holodrum plain water cave past mushrooms, flippers]
 
 # spool swamp
 north swamp: {or: [

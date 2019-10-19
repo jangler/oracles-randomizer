@@ -149,7 +149,6 @@ holodrum plain water cave past mushrooms:
   exit: 0x139e1
   roomtile: 0x31
   oneway: true
-  water: true
 mrs ruul:
   entry: 0x134e5
   exit: 0x138ad
@@ -159,7 +158,6 @@ water cave under mrs ruul:
   exit: 0x139dd
   roomtile: 0x02
   oneway: true
-  water: true
 treehouse old man:
   entry: 0x134b5
   exit: 0x13835

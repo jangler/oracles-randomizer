@@ -15,6 +15,22 @@ seasons:
   # opens up gba shop
   04/6198/: nop
 
+  # cave under mrs ruul - add shallow water to entrance, and remove shallow water around chest
+  26/730a/: |
+    db df,a0,e1,21,c6,40,d4,41,64,48,34,00,52,05,75
+    db 72,db,fd,21,70,22,f1,7a,22,fd,21,b3,75,72,fd,21
+    db bf,70,72,3b,02,bf,21,77,42,3c,04,ae,41,fd,e4,15
+    db 1f,3c,04,fd,31,61,35,1c,05,2c,16
+
+  # other water cave past mushrooms - add shallow water
+  26/734b/: |
+    db db,22,56,c8,5b,a7,e0,01,56,3e,a5,16,15,df,e1
+    db f6,b7,f4,21,75,25,b8,cc,1b,a5,12,16,05,e0,1f,af
+    db 44,14,6f,12,65,2d,78,32,ab,6f,82,ab,d6,15,01,6f
+    db 32,ab,ab,fd,fd,ab,fd,fd,e3,db,02,0f,05,fd,fd,ab
+    db d6,15,db,12,2d,06,1f,34,04,e7,15,1b,15,ab,41,62
+    db b5
+
 ages:
   # don't set respawn on inner entrance to past-central crescent-stairs on cliff
   05/346b/: db 04

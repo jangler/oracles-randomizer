@@ -18,3 +18,4 @@
 - check d2 deku scrub - for logical bombs
 - tree warp in logic
 - soft reset in logic (for one-ways, eg bomb caves, ember bushes and keys)
+- Press up in doors specifically to go back through them?

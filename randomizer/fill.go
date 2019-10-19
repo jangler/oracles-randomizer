@@ -108,7 +108,6 @@ type shuffledEntrance struct {
 	Oneway        bool // if logically, you can't exit a connector into this entrance's outer part (eg to old man tree)
 	Trapped       bool // if it is an outer that connects to nothing
 	Alignedleft   bool // if a dungeon essence warp should align you 8 pixels left
-	Water         bool
 	name          string
 	newEntryByte1 byte
 	newEntryByte2 byte
@@ -138,8 +137,6 @@ func setEntrances(rom *romState, src *rand.Rand) map[string]string {
 				// don't swap if an old man entrance connects to a connector
 			} else if (outers[i].Trapped && inners[j].Dungeon) || (outers[j].Trapped && inners[i].Dungeon) {
 				// don't swap if an unconnected overworld connects to a dungeon
-			} else if (outers[i].Water && !inners[j].Water) || (outers[j].Water && !inners[i].Water) {
-				// water entrances can only be swapped with other water entrances
 			} else {
 				inners[i], inners[j] = inners[j], inners[i]
 			}
@@ -151,9 +148,6 @@ func setEntrances(rom *romState, src *rand.Rand) map[string]string {
 				shuffled = false
 				break
 			} else if outers[i].Trapped && inners[i].Dungeon {
-				shuffled = false
-				break
-			} else if outers[i].Water && !inners[i].Water {
 				shuffled = false
 				break
 			}
