@@ -395,11 +395,6 @@ d8:
 #   exit: 0x13b60
 #   roomtile:
 
-# stairs in palace, to underwater:
-#   entry: 0x13d14
-#   exit: 0x13830
-#   roomtile:
-
 past underwater - cave S of d8:
   entry: 0x13a04
   exit: 0x13e80

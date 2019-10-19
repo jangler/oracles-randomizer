@@ -4,6 +4,7 @@
 - D4
 
 ## Lynna City
+- Maku tree roof (4 entrances)
 - NW house
 - W house
 - W of Mayor house
