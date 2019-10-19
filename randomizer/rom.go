@@ -122,18 +122,10 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 	}
 	warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
 
+	entranceData := make(map[string]*shuffledEntrance)
+
 	for outerName, innerName := range entranceMapping {
-		if outerName == innerName {
-			entrances[outerName] = shuffledEntrance{
-				Entry:         entrances[outerName].Entry,
-				Exit:          entrances[outerName].Exit,
-				Alignedleft:   entrances[outerName].Alignedleft,
-				newEntryByte1: rom.data[entrances[outerName].Entry],
-				newEntryByte2: rom.data[entrances[outerName].Entry+1],
-				newExitByte1:  rom.data[entrances[outerName].Exit],
-				newExitByte2:  rom.data[entrances[outerName].Exit+1],
-			}
-		} else {
+		if outerName != innerName {
 			// Set essence warps to go back to the outer entrance
 			if getStringIndex(dungeonNames[rom.game], innerName) != -1 && innerName != "d6 present" {
 				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(sora(rom.game, 0x8, 0x9).(int)*0x4000)
@@ -158,35 +150,26 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 					rom.data[warpExit+3] = 0x0e
 				}
 			}
-			newOuterEntrance := shuffledEntrance{
-				Entry:         entrances[outerName].Entry,
-				Exit:          entrances[outerName].Exit,
-				newEntryByte1: rom.data[entrances[innerName].Entry],
-				newEntryByte2: (rom.data[entrances[innerName].Entry+1] & 0xf0) + (rom.data[entrances[outerName].Entry+1] & 0xf),
-				newExitByte1:  entrances[outerName].newExitByte1,
-				newExitByte2:  entrances[outerName].newExitByte2,
-				Roomtile:      entrances[outerName].Roomtile,
-				Maptile:       entrances[outerName].Maptile,
-				Ismultiwarp:   entrances[outerName].Ismultiwarp,
-				Alignedleft:   entrances[outerName].Alignedleft,
+			if _, ok := entranceData[outerName]; !ok {
+				entranceData[outerName] = &shuffledEntrance{
+					Entry: entrances[outerName].Entry,
+					Exit:  entrances[outerName].Exit,
+				}
 			}
-			newInnerEntrance := shuffledEntrance{
-				Entry:         entrances[innerName].Entry,
-				Exit:          entrances[innerName].Exit,
-				newEntryByte1: entrances[innerName].newEntryByte1,
-				newEntryByte2: entrances[innerName].newEntryByte2,
-				newExitByte1:  rom.data[entrances[outerName].Exit],
-				newExitByte2:  (rom.data[entrances[outerName].Exit+1] & 0xf0) + (rom.data[entrances[innerName].Exit+1] & 0xf),
-				Roomtile:      entrances[innerName].Roomtile,
-				Maptile:       entrances[innerName].Maptile,
-				Ismultiwarp:   entrances[innerName].Ismultiwarp,
-				Alignedleft:   entrances[innerName].Alignedleft,
+			if _, ok := entranceData[innerName]; !ok {
+				entranceData[innerName] = &shuffledEntrance{
+					Entry: entrances[innerName].Entry,
+					Exit:  entrances[innerName].Exit,
+				}
 			}
-			entrances[outerName] = newOuterEntrance
-			entrances[innerName] = newInnerEntrance
+
+			entranceData[outerName].newEntryByte1 = rom.data[entrances[innerName].Entry]
+			entranceData[outerName].newEntryByte2 = (rom.data[entrances[innerName].Entry+1] & 0xf0) + (rom.data[entrances[outerName].Entry+1] & 0xf)
+			entranceData[innerName].newExitByte1 = rom.data[entrances[outerName].Exit]
+			entranceData[innerName].newExitByte2 = (rom.data[entrances[outerName].Exit+1] & 0xf0) + (rom.data[entrances[innerName].Exit+1] & 0xf)
 		}
 	}
-	for _, entrance := range entrances {
+	for _, entrance := range entranceData {
 		rom.data[entrance.Entry] = entrance.newEntryByte1
 		rom.data[entrance.Entry+1] = entrance.newEntryByte2
 		rom.data[entrance.Exit] = entrance.newExitByte1

@@ -18,6 +18,7 @@ stairs behind clock shop:
   exit: 0x13c49
   maptile: 0xd7
   ismultiwarp: true
+  oneway: true
 horon shop:
   entry: 0x134d9
   exit: 0x1387d
@@ -79,6 +80,7 @@ SW graveyard:
   entry: 0x135d9
   exit: 0x138d5
   roomtile: 0x14
+  oneway: true
 
 # eastern suburbs
 ww bomb cave:
