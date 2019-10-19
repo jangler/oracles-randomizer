@@ -156,7 +156,7 @@ raft guy R:
   maptile: 0xa7
   connector: true
 
-# fairy woods
+# deku forest
 past - NE of mystery tree:
   entry: 0x137d4
   exit: 0x13cb0
