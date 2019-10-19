@@ -127,11 +127,11 @@ inner past - crescent - face cave: {or: [
 ]}
 inner past - crescent - 1st cave: {or: []}
 inner past - crescent - stairs on cliff: {or: [
-  [inner past - crescent - central bomb cave, bracelet, flippers, cane]
+  [inner past - crescent - central bomb cave, bracelet, flippers]
 ]}
 inner past - crescent - E bomb cave: {or: []}
 inner past - crescent - central bomb cave: {or: [
-  [inner past - crescent - stairs on cliff, bracelet, flippers, cane]
+  [inner past - crescent - stairs on cliff, bracelet, flippers]
 ]}
 inner past - crescent - iron shield cave: {or: []}
 inner past - crescent - L coconut separated cave: {or: [
