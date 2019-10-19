@@ -4,6 +4,11 @@ know-it-all:
   exit: 0x13809
   maptile: 0xc5
   ismultiwarp: true
+gba shop:
+  entry: 0x13609
+  exit: 0x1389d
+  maptile: 0xc5
+  ismultiwarp: true
 mayors house:
   entry: 0x134a5
   exit: 0x1380d

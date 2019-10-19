@@ -12,6 +12,9 @@ seasons:
   # reset season on every overworld exit
   04/464e/: jp checkResetSeason  # replaces jr c, 09
 
+  # opens up gba shop
+  04/6198/: nop
+
 ages:
   # don't set respawn on inner entrance to past-central crescent-stairs on cliff
   05/346b/: db 04

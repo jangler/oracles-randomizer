@@ -10,6 +10,7 @@ outer baby house - R entrance: {or: [horon village]}
 outer horon stairs into portal: {or: [horon village]}
 outer SE horon vill house - main entrance: {or: [horon village]}
 outer SE horon vill house - side entrance: {or: []}
+outer gba shop: {or: [horon village]}
 
 inner know-it-all: {or: []}
 inner mayors house: {or: []}
@@ -22,6 +23,7 @@ inner baby house - R entrance: {or: [inner baby house - L entrance]}
 inner horon stairs into portal: {or: [[exit horon village portal, or: [hit lever, [hard, jump 6]]]]}
 inner SE horon vill house - main entrance: {or: [[inner SE horon vill house - side entrance, bombs]]}
 inner SE horon vill house - side entrance: {or: [[inner SE horon vill house - main entrance, bombs]]}
+inner gba shop: {or: []}
 
 # western coast
 lower west coast: {or: [

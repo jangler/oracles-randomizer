@@ -34,7 +34,6 @@ Some could be added in the near future
 - Maku tree-related entrances - could be a fun addition, so keeping track of dungeons beaten is important
 - Pirate boat stairs - mostly because the 2 in the 2 deserts disappear when the pirate captain gets his bell. Could possibly make it so that the 1 in subrosia desert, and the 1 in western coast lead to the same place, and where it leads to can be considered in logic (assuming you can reach the subrosia desert entrance)
 - The 2 quicksands in samasa desert, Hero's cave, Holly's roof - I would have to add some stairs or something similar that would lead back to the area you jumped in from
-- GBA shop
 - Diving spots - located differently in the disassembly to other entrances
 - Dimitri caves - same reason as above, but also gotta make sure dimitri is handled well when both entering and exiting
 - Cave leading up to western coast graveyard - currently due to not being able to go down the same cave once in the graveyard

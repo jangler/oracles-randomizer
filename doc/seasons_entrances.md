@@ -11,6 +11,7 @@
 - Stairs going to portal
 - Southeast house - main and side entrance
 - Old man in tree
+- GBA shop
 
 ## Western Coast
 - House - main and side entrance
