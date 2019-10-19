@@ -1,3 +1,14 @@
+# maku tree
+outer upper maku tree - mid R: {or: [[maku tree, count: [3, essences]]]}
+outer upper maku tree - mid L: {or: [[maku tree, count: [1, essences]]]}
+outer upper maku tree - L: {or: [[maku tree, count: [6, essences]]]}
+outer upper maku tree - R: {or: [[maku tree, count: [4, essences]]]}
+
+inner upper maku tree - mid R: {or: []}
+inner upper maku tree - mid L: {or: []}
+inner upper maku tree - L: {or: []}
+inner upper maku tree - R: {or: []}
+
 # lynna / south shore / palace
 outer present - lynna - NW house: {or: [lynna city]}
 outer present - lynna - W house: {or: [lynna city]}

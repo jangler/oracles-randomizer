@@ -28,14 +28,59 @@ nuun upper cave:
   exit: 0x13918
   roomtile: 0x48
 
-# lynna
-# present - maku tree stairs:
+# maku tree
+upper maku tree - mid R:  # after 3 dungeons
+  entry: 0x13720
+  exit: 0x138b0
+  ismultiwarp: true
+  maptile: 0xe1
+  oneway: true
+
+upper maku tree - mid L:  # after 1 dungeon
+  entry: 0x13724
+  exit: 0x138b4
+  ismultiwarp: true
+  maptile: 0xe1
+  oneway: true
+
+upper maku tree - L:  # after 6 dungeons
+  entry: 0x13668
+  exit: 0x138c0
+  roomtile: 0x46
+  oneway: true
+
+upper maku tree - R:  # after 4 dungeons
+  entry: 0x13670
+  exit: 0x138bc
+  roomtile: 0x54
+  oneway: true
+
+# present - maku tree stairs to inner:
+#   entry: 0x136e8, 0x136ec
+#   exit: 0x13d00
+#   ismultiwarp: true
+#   maptile: 0x38
+
+# upper maku tree - stairs:
+#   entry: 0x13674
+#   exit: 0x13d04
+#   roomtile: 0x43
+
+# present - maku tree stairs to cave:
 #   entry: 0x136f0
 #   exit: 0x13af8
 #   ismultiwarp: true
 #   maptile: 0x38
 #   connector: true
 
+# present - maku tree cave:
+#   entry: 0x13708
+#   exit: 0x13ae8
+#   ismultiwarp: true
+#   maptile: 0x48
+#   connector: true
+
+# lynna
 present - lynna - NW house:
   entry: 0x1360c
   exit: 0x13a98
@@ -79,13 +124,6 @@ present - baby house R:
   ismultiwarp: true
   maptile: 0x47
   connector: true
-
-# present - maku tree cave:
-#   entry: 0x13708
-#   exit: 0x13ae8
-#   ismultiwarp: true
-#   maptile: 0x48
-#   connector: true
 
 present - lynna shop L:
   entry: 0x13710
@@ -406,56 +444,12 @@ d7:
 # natzu lower cave - Ricky:
 #   entry: 0x13600
 #   exit: 0x13944
-#   roomtile:
+#   roomtile: 0x55
 
 # natzu lower cave - Moosh:
 #   entry: 0x13604
 #   exit: 0x13950
-#   roomtile:
-
-# TODO this goes to same as below:
-#   entry: 0x136e8
-#   exit: 0x13d00
-#   ismultiwarp: true
-#   maptile: 0x38
-
-# present - maku tree - to inner:
-#   entry: 0x136ec
-#   exit: 0x13d00
-#   ismultiwarp: true
-#   maptile: 0x38
-
-# upper maku tree - mid R:  # after 3 dungeons
-#   entry: 0x13720
-#   exit: 0x138b0
-#   ismultiwarp: true
-#   maptile: 0xe1
-
-# upper maku tree - mid L:  # after 1 dungeon
-#   entry: 0x13724
-#   exit: 0x138b4
-#   ismultiwarp: true
-#   maptile: 0xe1
-
-# upper maku tree - L:  # after 6 dungeons
-#   entry: 0x13668
-#   exit: 0x138c0
-#   roomtile: 0x46
-
-# upper maku tree - R:  # after 4 dungeons
-#   entry: 0x13670
-#   exit: 0x138bc
-#   roomtile: 0x54
-
-# upper maku tree - stairs:
-#   entry: 0x13674
-#   exit: 0x13d04
-#   roomtile:
-
-# present - black tower (linked?):
-#   entry: 0x13638
-#   exit: 0x13b54
-#   roomtile:
+#   roomtile: 0x33?
 
 present underwater - zora palace:
   entry: 0x138e0
