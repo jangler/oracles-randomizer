@@ -148,6 +148,8 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 				rom.data[warpExit+2] = yxInRoom
 				if outer.Alignedleft {
 					rom.data[warpExit+3] = 0x0e
+				} else {
+					rom.data[warpExit+3] = 0x01
 				}
 			}
 			if _, ok := entranceData[outerName]; !ok {
