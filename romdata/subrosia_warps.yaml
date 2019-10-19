@@ -8,6 +8,7 @@ temple of seasons:
   entry: 0x136a1
   exit: 0x138e9
   roomtile: 0x45
+  alignedleft: true
 temple of autumn:
   entry: 0x136ad
   exit: 0x13c61
@@ -94,6 +95,7 @@ subrosia shop:
   entry: 0x136ed
   exit: 0x13865
   roomtile: 0x43
+  alignedleft: true
 
 # east
 furnace:
