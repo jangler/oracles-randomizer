@@ -146,7 +146,7 @@ func testAgesGraph(t *testing.T) {
 		"d2 rope room":          "d2 small key",
 		"d2 statue puzzle":      "d2 boss key",
 	}
-	setTestEntrances(testMap, rom)
+	setTestEntrances(headThwompBombMap, rom)
 	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", false)
 	headThwompBombMap["start"] = "hard"
 	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", true)

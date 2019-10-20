@@ -118,8 +118,8 @@ deku forest tree: [
     or: [sword, punch object], seed item]
 deku forest owl: [mystery seeds, deku forest tree]
 deku forest soldier: [deku forest, mystery seeds]
-# TODO: not yet sure how swapping will work with past d2 (removed or: [bombs, currents])
-d2 entrance: [deku forest, currents]
+# TODO: not yet sure how swapping will work with past d2
+d2 entrance: [deku forest, or: [currents, bombs]]
 
 # crescent island
 # the western present portal responds to currents only, in order to prevent

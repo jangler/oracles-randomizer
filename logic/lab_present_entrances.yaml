@@ -87,7 +87,10 @@ outer present - crescent - NE cave: {or: [crescent present E]}
 outer present - crescent - E house: {or: [crescent present E]}
 outer present - crescent - SW cave: {or: [crescent present W]}
 outer present - crescent - SE house: {or: [crescent present E]}
-outer present underwater - crescent island: {or: [[clean seas, present underwater zora]]}
+outer present underwater - crescent island: {or: [
+  [clean seas, present underwater zora],
+  [present overwater zora, mermaid suit]
+]}
 
 inner present - crescent - NE cave: {or: []}
 inner present - crescent - E house: {or: []}
