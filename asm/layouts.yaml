@@ -101,7 +101,7 @@ seasons:
       db 04,e0,00,97,fa # cont.
       db 04,e0,00,98,fa # cont.
       db 04,e0,00,67,fd # cont.
-      db 04,e1,00,94,fa # inside cave under mrs ruul
+      db 04,e1,00,94,fa # inside cave north of d1
       db 04,e1,00,95,fa # cont.
       db 04,e1,00,96,fa # cont.
   04/d2AltEntranceTileSubs: |
