@@ -113,12 +113,16 @@ outer nuun upper cave: {or: [
     [moosh nuun, or: [flute, [break bush, jump 3]]]
   ]]
 ]}
+outer nuun lower cave - Ricky: {or: [[ricky nuun, nuun, or: [flute, currents]]]}
+outer nuun lower cave - Moosh: {or: [[moosh nuun, nuun, or: [flute, currents, [break bush, jump 3]]]]}
 
 inner present - symmetry NW house: {or: []}
 inner present - symmetry NE house: {or: []}
 inner present - symmetry SW house: {or: []}
 inner present - symmetry SE house: {or: []}
 inner nuun upper cave: {or: []}
+inner nuun lower cave - Ricky: {or: []}
+inner nuun lower cave - Moosh: {or: []}
 
 # rolling ridge. what a nightmare
 # goron upper L

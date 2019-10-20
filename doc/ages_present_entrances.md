@@ -2,6 +2,7 @@
 - 4 houses in each corner
 - Upper Nuun cave (non-animal specific)
 - D4
+- Additional Ricky and Moosh caves
 
 ## Lynna City
 - Maku tree roof (4 entrances)

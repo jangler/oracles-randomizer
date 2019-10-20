@@ -28,6 +28,17 @@ nuun upper cave:
   exit: 0x13918
   roomtile: 0x48
 
+# nuun
+nuun lower cave - Ricky:
+  entry: 0x13600
+  exit: 0x13944
+  roomtile: 0x55
+
+nuun lower cave - Moosh:
+  entry: 0x13604
+  exit: 0x13950
+  roomtile: 0x33
+
 # maku tree
 upper maku tree - mid R:  # after 3 dungeons
   entry: 0x13720
@@ -440,16 +451,6 @@ d7:
   alignedleft: true
   dungeon: true
   oneway: true
-
-# natzu lower cave - Ricky:
-#   entry: 0x13600
-#   exit: 0x13944
-#   roomtile: 0x55
-
-# natzu lower cave - Moosh:
-#   entry: 0x13604
-#   exit: 0x13950
-#   roomtile: 0x33?
 
 present underwater - zora palace:
   entry: 0x138e0

@@ -156,12 +156,14 @@ nuun: {or: [
     [ricky nuun, or: [flute, [feather, break bush]]],
     [dimitri nuun, or: [flute, [flippers, ember seeds, hit lever]]],
     [moosh nuun, or: [flute, [break bush, jump 3]]]
-  ]]
+  ]],
+  [outer nuun lower cave - Ricky, or: [flute, currents]],
+  [outer nuun lower cave - Moosh, or: [flute, currents, [break bush, jump 3]]]
 ]}
 nuun highlands cave: [nuun, or: [
     dimitri's flute,
-    [ricky nuun, or: [flute, currents]],
-    [moosh nuun, or: [flute, currents, [break bush, jump 3]]]]]
+    inner nuun lower cave - Ricky,
+    inner nuun lower cave - Moosh]]
 symmetry city tree: [seed item, present symmetry,
     or: [sword, punch object, [dimitri's flute, d4 entrance]]]
 symmetry city brother: [

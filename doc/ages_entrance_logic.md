@@ -14,7 +14,6 @@ TODO. Basically jumping off any cliff where you can't access the bottom otherwis
 
 ## Past
 - Waterfall to d6 past
-- GBA shop
 - Past black tower - just need to check what happens when flag is set that turns it into last dungeon. Aim is to make its outer entrance lead to the same place if flag is set or not, and its inner entrances (flag set or not) reachable by the same outer entrance
 - Dive spot N Talus Peaks
 - D2 (just need to test past and present, entering and exiting works)
@@ -24,6 +23,5 @@ TODO. Basically jumping off any cliff where you can't access the bottom otherwis
 - Entrance into Maku tree
 - Entrance from Maku tree to her roof entrances
 - Moblin keep-related entrances
-- Nuun caves
 - Nuun dimitri waterfall
 - RR lower old man (takes rupees)

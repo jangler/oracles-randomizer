@@ -8,6 +8,7 @@
 ## Lynna Village
 - Maku tree stairs
 - Maku tree cave
+- GBA shop
 - NW house
 - W house
 - Postman house

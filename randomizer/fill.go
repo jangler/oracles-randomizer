@@ -115,8 +115,14 @@ type shuffledEntrance struct {
 	newExitByte2  byte
 }
 
-func setEntrances(rom *romState, src *rand.Rand) map[string]string {
+func setEntrances(rom *romState, src *rand.Rand, companion int) map[string]string {
 	entrances := rom.getShuffledEntrances()
+	if companion != ricky {
+		delete(entrances, "nuun lower cave - Ricky")
+	}
+	if companion != moosh {
+		delete(entrances, "nuun lower cave - Moosh")
+	}
 
 	outers := make([]shuffledEntrance, 0, len(entrances))
 	inners := make([]shuffledEntrance, 0, len(entrances))
@@ -217,7 +223,7 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			ri.src, ri.graph, rom.game, ropts.dungeons, ropts.entrance)
 
 		if ropts.entrance {
-			entranceMapping := setEntrances(rom, ri.src)
+			entranceMapping := setEntrances(rom, ri.src, ri.companion)
 			for outerName, innerName := range entranceMapping {
 				if outerName == "moblin keep L entrance" || outerName == "moblin keep R entrance" {
 					continue
