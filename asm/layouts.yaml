@@ -221,6 +221,14 @@ ages:
       db 05,cc,00,1b,ef # cont.
       db 05,cc,00,2a,b6 # cont.
       db 05,cc,00,2b,b9 # cont.
+      db 01,7c,02,63,ae # first room in d8 maze area
+      db 01,7c,02,64,b2
+      db 01,7c,02,65,b2
+      db 01,7c,02,66,ae
+      db 01,7c,02,73,bd
+      db 01,7c,02,74,bd
+      db 01,7c,02,75,bd
+      db 01,7c,02,76,bd
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
@@ -270,3 +278,12 @@ ages:
   # put a "return bush" for long hook across from syrup's shop.
   23/7ea0/: db 27,c8
   23/7ead/: db 22
+
+  # Close off path from D8 down to the tokay trial cave, until statue is pushed
+  10/openPathToD8: |
+      ld hl,c87c
+      set 1,(hl)
+      ld c,04
+      ld a,30
+      ret
+  10/785f/: call openPathToD8; nop

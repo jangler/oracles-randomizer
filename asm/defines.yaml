@@ -113,6 +113,7 @@ common:
     define wScreenTransitionDirection,cd02
     define wScreenOffsetY,cd08
     define wScreenShakeCounterY,cd18
+    define wRoomLayout,cf00
     define w1Link.angle,d009
     define w1Link.yh,d00b
     define w1Link.xh,d00d
