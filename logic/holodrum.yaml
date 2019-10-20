@@ -81,7 +81,7 @@ blaino's gym: {or: [
     outer blaino,
     [outer natzu fairy cave - Ricky, or: [feather, flippers, flute]],
     [outer natzu fairy cave - Moosh, or: [feather, flippers, flute]],
-    [outer natzu deku cave - Moosh, or: [flute, [break bush, jump 6]]],  # TODO: change to cape if just that is possible
+    [outer natzu deku cave - Moosh, or: [flute, [break bush, bomb jump 3], [hard, cape], jump 6]],
     [outer natzu fairy cave - Dimitri, or: [flute, [flippers, swimmer's ring]]],
     [outer treehouse old man, flippers],
     [ghastly stump,
@@ -169,7 +169,7 @@ natzu region, across water: [inner stairs N of natzu]
 
 # sunken city
 sunken city: {or: [  # land at the start of sunken city
-    [outer natzu deku cave - Ricky, flute],
+    [outer natzu deku cave - Ricky, or: [flute, break bush]],
     [sunken city hub, or: [flippers, dimitri, feather]],
     [mount cucco, flippers,
         or: [summer, sunken city default summer, gale satchel]],
