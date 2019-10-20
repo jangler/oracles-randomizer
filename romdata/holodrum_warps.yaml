@@ -235,6 +235,28 @@ moblin keep R entrance:
   maptile: 0x5b
   ismultiwarp: true
   connector: true
+natzu fairy cave - Ricky:
+  entry: 0x135ed
+  exit: 0x13c35
+  maptile: 0x57
+  ismultiwarp: true
+natzu fairy cave - Moosh:
+  entry: 0x135f1
+  exit: 0x13c4d
+  maptile: 0x57
+  ismultiwarp: true
+natzu fairy cave - Dimitri:
+  entry: 0x135c5
+  exit: 0x13c39
+  roomtile: 0x65
+natzu deku cave - Ricky:
+  entry: 0x135c9
+  exit: 0x13c3d
+  roomtile: 0x48
+natzu deku cave - Moosh:
+  entry: 0x135cd
+  exit: 0x13c41
+  roomtile: 0x55
 
 # sunken city
 sunken - NE flooded house:

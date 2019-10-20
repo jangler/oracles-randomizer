@@ -24,3 +24,4 @@
 - Press up in doors specifically to go back through them?
 - put gale seeds into logic in more places so that you can jump down usual soft lock cliffs 
 - test state-related rooms, eg Seasons moblin rest house before and after defeating them
+- double check animals in logic as much as possible

@@ -141,10 +141,36 @@ outer stairs N of natzu: {or: [
     [sunken city, natzu river, jump 6]]}
 outer moblin keep L entrance: {or: [moblin keep entrance]}
 outer moblin keep R entrance: {or: [moblin keep entrance]}
+outer natzu fairy cave - Ricky: {or: [
+    [natzu prairie, or: [
+        [blaino's gym, or: [feather, flippers, flute]],
+        [sunken city, flute]
+    ]]
+]}
+outer natzu fairy cave - Moosh: {or: [
+    [natzu wasteland, [blaino's gym, or: [flute, [break bush, or: [flippers, feather]]]]]
+]}
+outer natzu fairy cave - Dimitri: {or: [
+    [natzu river, [blaino's gym, or: [flute, [flippers, swimmer's ring]]]]
+]}
+outer natzu deku cave - Ricky: {or: [
+    [natzu prairie, or: [
+        [sunken city, or: [break bush, flute]],
+        [outer natzu fairy cave - Ricky, flute]
+    ]]
+]}
+outer natzu deku cave - Moosh: {or: [
+    [natzu wasteland, [blaino's gym, or: [flute, [break bush, bomb jump 3]]]]
+]}
 
 inner stairs N of natzu: {or: []}
 inner moblin keep L entrance: {or: [inner moblin keep R entrance]}
 inner moblin keep R entrance: {or: [inner moblin keep L entrance]}
+inner natzu fairy cave - Ricky: {or: []}
+inner natzu fairy cave - Moosh: {or: []}
+inner natzu fairy cave - Dimitri: {or: []}
+inner natzu deku cave - Ricky: {or: []}
+inner natzu deku cave - Moosh: {or: []}
 
 # sunken city
 sunken city hub: {or: [

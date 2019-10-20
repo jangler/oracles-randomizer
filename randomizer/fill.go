@@ -119,9 +119,16 @@ func setEntrances(rom *romState, src *rand.Rand, companion int) map[string]strin
 	entrances := rom.getShuffledEntrances()
 	if companion != ricky {
 		delete(entrances, "nuun lower cave - Ricky")
+		delete(entrances, "natzu fairy cave - Ricky")
+		delete(entrances, "natzu deku cave - Ricky")
 	}
 	if companion != moosh {
 		delete(entrances, "nuun lower cave - Moosh")
+		delete(entrances, "natzu fairy cave - Moosh")
+		delete(entrances, "natzu deku cave - Moosh")
+	}
+	if companion != dimitri {
+		delete(entrances, "natzu fairy cave - Dimitri")
 	}
 
 	outers := make([]shuffledEntrance, 0, len(entrances))

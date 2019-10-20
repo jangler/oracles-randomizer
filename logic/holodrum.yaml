@@ -79,6 +79,10 @@ ghastly stump: {or: [outer mrs ruul, [north swamp, summer],
     [south swamp, or: [[break bush, flippers], dimitri's flute]]]}
 blaino's gym: {or: [
     outer blaino,
+    [outer natzu fairy cave - Ricky, or: [feather, flippers, flute]],
+    [outer natzu fairy cave - Moosh, or: [feather, flippers, flute]],
+    [outer natzu deku cave - Moosh, or: [flute, [break bush, jump 6]]],  # TODO: change to cape if just that is possible
+    [outer natzu fairy cave - Dimitri, or: [flute, [flippers, swimmer's ring]]],
     [outer treehouse old man, flippers],
     [ghastly stump,
         or: [feather, ricky, flute, winter]],
@@ -164,7 +168,8 @@ moblin keep: [bracelet, or: [gale satchel, outer moblin keep L entrance], or: [i
 natzu region, across water: [inner stairs N of natzu]
 
 # sunken city
-sunken city: {or: [
+sunken city: {or: [  # land at the start of sunken city
+    [outer natzu deku cave - Ricky, flute],
     [sunken city hub, or: [flippers, dimitri, feather]],
     [mount cucco, flippers,
         or: [summer, sunken city default summer, gale satchel]],

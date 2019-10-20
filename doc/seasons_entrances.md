@@ -58,6 +58,9 @@
 ## Natzu
 - Stairs North of Natzu path
 - Moblin Keep (2 entrances)
+- Ricky (2 entrances)
+- Moosh (2 entrances)
+- Dimitri (1 non-waterfall entrance)
 
 ## Sunken City
 - Northeast house
