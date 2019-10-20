@@ -112,7 +112,9 @@ deku forest cave west: [bracelet, or: [
     inner past - NE of mystery tree,
     inner above mystery tree - L stairs,
 ]]
-deku forest tree: [outer above mystery tree - R stairs, or: [sword, punch object], seed item]
+deku forest tree: [
+    or: [outer above mystery tree - R stairs, [gale satchel, deku forest]], 
+    or: [sword, punch object], seed item]
 deku forest owl: [mystery seeds, deku forest tree]
 deku forest soldier: [deku forest, mystery seeds]
 # TODO: not yet sure how swapping will work with past d2 (removed or: [bombs, currents])
@@ -133,7 +135,10 @@ wild tokay game: [inner past - crescent - E bomb cave, bracelet, farm rupees]
 crescent island tree: [
     crescent past NW, scent seedling, seed item,
     or: [sword, punch object],
-    or: [ages, [bracelet, or: [echoes, [hard, gale satchel, mermaid suit]]]]]
+    or: [ages, [bracelet, or: [
+        or: [echoes, crescent present E], 
+        [hard, gale satchel, mermaid suit]
+    ]]]]
 d3 entrance: [crescent present W]
 hidden tokay cave: [inner past - crescent - iron shield cave, flippers]
 under crescent island: [inner present underwater - crescent island]
@@ -192,7 +197,10 @@ target carts: [inner present - mid goron - carts, farm rupees]
 target carts 1: [target carts]
 target carts 2: [target carts]
 goron shooting gallery: [inner past - mid goron - sword game, sword]
-rolling ridge east tree: [or: [sword, punch object], seed item, outer past - mid goron - near seed tree]
+rolling ridge east tree: [
+    or: [sword, punch object], seed item, 
+    or: [outer past - mid goron - near seed tree, [gale satchel, outer past - mid goron - SW of bomb cave]]
+]
 rolling ridge past old man: [inner past - lower goron old man]
 d6 past entrance: [mermaid key, or: [
     goron lower past water, 
@@ -217,7 +225,10 @@ ridge bush cave: [inner past - mid goron - SW of bomb cave, switch hook]
 # distinctions between past and present are necessary.
 # zora village: [mermaid suit, ages, switch hook]
 zora village tree: [
-    or: [present overwater zora, past overwater zora, clean dimitri], seed item,
+    or: [
+        present overwater zora, past overwater zora, clean dimitri, 
+        [gale satchel, or: [present underwater zora, past underwater zora]]], 
+    seed item,
     or: [sword, punch object, [dimitri's flute, clean seas]]]
 zora village present: [present overwater zora]
 zora palace chest: [inner present underwater - zora palace]

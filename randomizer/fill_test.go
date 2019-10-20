@@ -28,10 +28,9 @@ func testSeasonsGraph(t *testing.T) {
 		"d0 key chest":           "bracelet",
 		"d0 rupee chest":         "gnarled key",
 		"horon village SW chest": "winter",
-		"outer d1":               "inner d1",
-		"inner d1":               "outer d1",
 		"d1 stalfos drop":        "d1 small key",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, testMap, "d1 block-pushing room", false)
 	testMap["start"] = "hard"
 	checkReach(t, g, testMap, "d1 block-pushing room", true)
@@ -40,42 +39,33 @@ func testSeasonsGraph(t *testing.T) {
 	testMap = map[string]string{
 		"d0 key chest":     "sword",
 		"maku tree":        "gnarled key",
-		"outer d1":         "inner d1",
-		"inner d1":         "outer d1",
 		"d1 stalfos drop":  "d1 small key",
 		"d1 stalfos chest": "bombs, 10",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, testMap, "d1 basement", false)
 	testMap["d1 railway chest"] = "d1 small key"
 	checkReach(t, g, testMap, "d1 basement", true)
 
 	// check a subrosia portal
 	testMap = map[string]string{
-		"d0 key chest":                   "sword",
-		"d0 rupee chest":                 "boomerang",
-		"maku tree":                      "boomerang",
-		"outer horon stairs into portal": "inner horon stairs into portal",
-		"inner horon stairs into portal": "outer horon stairs into portal",
+		"d0 key chest":   "sword",
+		"d0 rupee chest": "boomerang",
+		"maku tree":      "boomerang",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, testMap, "suburbs", false)
 	testMap["enter horon village portal"] = "exit eastern suburbs portal"
 	checkReach(t, g, testMap, "suburbs", true)
 
 	// test rupee counting
 	testMap = map[string]string{
-		"d0 key chest":                    "sword",
-		"maku tree":                       "flippers",
-		"old man in treehouse":            "rupees, 100",
-		"outer treehouse old man":         "inner treehouse old man",
-		"inner treehouse old man":         "outer treehouse old man",
-		"outer water cave under mrs ruul": "inner water cave under mrs ruul",
-		"inner water cave under mrs ruul": "outer water cave under mrs ruul",
-		"cave south of mrs. ruul":         "rupees, 100",
-		"outer horon shop":                "inner horon shop",
-		"inner horon shop":                "outer horon shop",
-		"outer stairs N of natzu":         "inner stairs N of natzu",
-		"inner stairs N of natzu":         "outer stairs N of natzu",
+		"d0 key chest":            "sword",
+		"maku tree":               "flippers",
+		"old man in treehouse":    "rupees, 100",
+		"cave south of mrs. ruul": "rupees, 100",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, testMap, "shop, 150 rupees", false)
 	testMap["natzu region, across water"] = "rupees, 10"
 	checkReach(t, g, testMap, "shop, 150 rupees", true)
@@ -105,6 +95,7 @@ func testAgesGraph(t *testing.T) {
 		"d2 bombed terrace":     "d2 small key",
 		"d2 moblin drop":        "d2 small key",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, testMap, "d2 thwomp shelf", false)
 	testMap["start"] = "hard"
 	checkReach(t, g, testMap, "d2 thwomp shelf", true)
@@ -118,6 +109,7 @@ func testAgesGraph(t *testing.T) {
 		"d3 pols voice chest": "d3 small key",
 		"d3 statue drop":      "d3 small key",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, testMap, "d3 bush beetle room", false)
 	testMap["d3 armos drop"] = "d3 small key"
 	checkReach(t, g, testMap, "d3 bush beetle room", true)
@@ -132,6 +124,7 @@ func testAgesGraph(t *testing.T) {
 		"lynna city chest":   "flippers",
 		"cheval's invention": "rupees, 200",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, testMap, "syrup", false)
 	testMap["shop, 150 rupees"] = "rupees, 100" // dumb but w/e
 	checkReach(t, g, testMap, "syrup", true)
@@ -153,6 +146,7 @@ func testAgesGraph(t *testing.T) {
 		"d2 rope room":          "d2 small key",
 		"d2 statue puzzle":      "d2 boss key",
 	}
+	setTestEntrances(testMap, rom)
 	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", false)
 	headThwompBombMap["start"] = "hard"
 	checkReach(t, g, headThwompBombMap, "d2 bombed terrace", true)
@@ -184,6 +178,15 @@ func checkReach(t *testing.T, g graph, links map[string]string, target string,
 			t.Errorf("expected not to reach %s, but could", target)
 		}
 	}
+}
+
+func setTestEntrances(currMap map[string]string, rom *romState) map[string]string {
+	entrances := rom.getShuffledEntrances()
+	for entrance := range entrances {
+		currMap["outer "+entrance] = "inner " + entrance
+		currMap["inner "+entrance] = "outer " + entrance
+	}
+	return currMap
 }
 
 func TestDungeonsOverfilled(t *testing.T) {
