@@ -10,7 +10,7 @@ seasons:
       ret
 
   # reset season on every overworld exit
-  04/464e/: jp checkResetSeason  # replaces jr c, 09
+  04/464e/: jp checkResetSeason
 
   # opens up gba shop
   04/6198/: nop
@@ -18,9 +18,6 @@ seasons:
 ages:
   # opens up gba shop
   04/6536/: nop
-
-  # don't set respawn on inner entrance to past-central crescent-stairs on cliff
-  05/346b/: db 04
 
   # add stairs near chest in RR - NE-most cave so you don't need to soft-reset to get back up to stairs
   1c/7719/: db 51
