@@ -30,7 +30,6 @@ Some could be added in the near future
 
 - Onox - could be an option - would make for some quick seeds, and a fun rare case where onox is locked behind an item in vanilla onox location (eg shovel is there, and onox in stairs behind clock shop)
 - Twinrova/Ganon dungeon
-- Portals - could be added to the pool in some future option
 - Maku tree-related entrances - could be a fun addition, so keeping track of dungeons beaten is important
 - Pirate boat stairs - mostly because the 2 in the 2 deserts disappear when the pirate captain gets his bell. Could possibly make it so that the 1 in subrosia desert, and the 1 in western coast lead to the same place, and where it leads to can be considered in logic (assuming you can reach the subrosia desert entrance)
 - The 2 quicksands in samasa desert, Hero's cave, Holly's roof - I would have to add some stairs or something similar that would lead back to the area you jumped in from
@@ -43,3 +42,4 @@ Some could be added in the near future
 - Old men who take rupees from you - could make rupee grinding required if unlucky. Maybe I can make these guys take nothing, since they already serve 0 purpose in regular rando
 - Subrosia dancing minigame - need to sort out the warp that takes you to the vanilla entrance once the game finishes
 - Natzu caves
+- Natzu dimitri waterfall

@@ -18,11 +18,9 @@
 - hide and seek without feather
 - check d2 deku scrub - for logical bombs
 
-# Ages
-- Logic for using gales to access trees and related entrances
-
 # Common
 - tree warp in logic
 - soft reset in logic (for one-ways, eg bomb caves, ember bushes and keys)
 - Press up in doors specifically to go back through them?
 - put gale seeds into logic in more places so that you can jump down usual soft lock cliffs 
+- test state-related rooms, eg Seasons moblin rest house before and after defeating them
