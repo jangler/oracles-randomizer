@@ -96,6 +96,14 @@ seasons:
       db 00,9a,00,34,04 # remove bush next to rosa portal
       db 00,b0,00,21,13 # remove spool swamp pits to prevent winter softlock
       db 00,b0,00,51,13 # cont.
+      # for entrance rando
+      db 04,e0,00,96,fa # inside cave under mrs ruul
+      db 04,e0,00,97,fa # cont.
+      db 04,e0,00,98,fa # cont.
+      db 04,e0,00,67,fd # cont.
+      db 04,e1,00,94,fa # inside cave under mrs ruul
+      db 04,e1,00,95,fa # cont.
+      db 04,e1,00,96,fa # cont.
   04/d2AltEntranceTileSubs: |
       # these are enabled only if entrances are randomized
       db fe,8d,00,18,04 # remove left stairs
