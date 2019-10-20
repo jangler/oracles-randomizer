@@ -3,6 +3,7 @@ outer past - maku tree cave: {or: [[lynna village, shovel]]}
 outer past - maku tree stairs: {or: [
   [lynna village, or: [rescue nayru, maku tree]]
 ]}
+outer past - lynna - gba shop: {or: [lynna village]}
 outer past - lynna - NW house: {or: [lynna village]}
 outer past - lynna - W house: {or: [lynna village]}
 outer past - lynna - dark house with boy: {or: [lynna village]}
@@ -34,6 +35,7 @@ outer raft guy R: {or: [open sea past]}
 inner palace: {or: [inner palace L, inner palace M, inner palace R, [mermaid suit, inner stairs SE of palace]]}
 inner past - maku tree cave: {or: []}
 inner past - maku tree stairs: {or: [[inner past - maku tree cave, or: [kill normal, shovel]]]}
+inner past - lynna - gba shop: {or: []}
 inner past - lynna - NW house: {or: []}
 inner past - lynna - W house: {or: []}
 inner past - lynna - dark house with boy: {or: []}

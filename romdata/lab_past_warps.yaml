@@ -73,6 +73,12 @@ past - maku tree stairs:
   maptile: 0x38
   connector: true
 
+past - lynna - gba shop:
+  entry: 0x13858
+  exit: 0x13aa4
+  ismultiwarp: true
+  maptile: 0x58
+
 past - lynna - NW house:
   entry: 0x137ac
   exit: 0x13a9c
@@ -383,12 +389,6 @@ d8:
 #   exit:
 #   ismultiwarp: true
 #   maptile: 0x3c
-
-# past - lynna - gba shop:
-#   entry: 0x13858
-#   exit: 0x13aa4
-#   ismultiwarp: true
-#   maptile: 0x58
 
 # past - black tower:
 #   entry:

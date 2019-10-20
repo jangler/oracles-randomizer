@@ -30,6 +30,7 @@ lynna village: {or: [
     echoes, lynna city,  # lynna city due to unrandomized present maku path
     [outer past - maku tree cave, shovel],
     [outer past - maku tree stairs, or: [rescue nayru, maku tree]],
+    outer past - lynna - gba shop,
     outer past - lynna - NW house,
     outer past - lynna - W house,
     outer past - lynna - dark house with boy,

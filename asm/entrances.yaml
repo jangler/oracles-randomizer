@@ -32,6 +32,9 @@ seasons:
     db b5
 
 ages:
+  # opens up gba shop
+  04/6536/: nop
+
   # don't set respawn on inner entrance to past-central crescent-stairs on cliff
   05/346b/: db 04
 
