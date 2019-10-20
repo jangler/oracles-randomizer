@@ -55,7 +55,7 @@ inner impa: {or: []}
 # yoll graveyard
 gravekey: {or: [
   [yoll graveyard, graveyard key],
-  [outer witch hut, or: [bomb jump 2, flippers]],
+  [outer witch hut, or: [bomb jump 2, flippers, long hook]],
   [outer ghost grave, bracelet],
   outer d1
 ]}

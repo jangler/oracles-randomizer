@@ -206,7 +206,7 @@ outer past - SW cave to upper goron: {or: [
 
 inner past - moblin keep cave: {or: []}
 inner past - upper goron - under peg tree: {or: [[inner past - SW cave to upper goron, bomb flower]]}
-inner past - SW cave to upper goron: {or: [[inner past - upper goron - under peg tree, bomb flower]]}
+inner past - SW cave to upper goron: {or: []}
 
 # goron upper R
 goron upper past M: {or: [
