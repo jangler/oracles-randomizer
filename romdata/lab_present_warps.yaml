@@ -40,14 +40,14 @@ nuun lower cave - Moosh:
   roomtile: 0x33
 
 # maku tree
-upper maku tree - mid R:  # after 3 dungeons
+upper maku tree - mid R:  # after 1 dungeon
   entry: 0x13720
   exit: 0x138b0
   ismultiwarp: true
   maptile: 0xe1
   oneway: true
 
-upper maku tree - mid L:  # after 1 dungeon
+upper maku tree - mid L:  # after 3 dungeons
   entry: 0x13724
   exit: 0x138b4
   ismultiwarp: true

@@ -24,12 +24,13 @@ lynna city: {or: [
     # [outer present - maku tree stairs, maku tree],
     outer present - lynna shop R,
     open sea present,
-    [fairies' woods, or: [flippers, dimitri's flute]]
+    [fairies' woods, or: [flippers, dimitri's flute, bracelet]]
 ]}
 lynna village: {or: [
     echoes, lynna city,  # lynna city due to unrandomized present maku path
     [outer past - maku tree cave, shovel],
     [outer past - maku tree stairs, or: [rescue nayru, maku tree]],
+    [outer present - lynna shop L, currents],  # NOTE: can be echoes if present maku path unrandomized, but cumbersome to travel back here
     outer past - lynna - gba shop,
     outer past - lynna - NW house,
     outer past - lynna - W house,
@@ -65,7 +66,7 @@ balloon guy's gift: [balloon guy]
 seed type: {
     or: [ember seeds, scent seeds, pegasus seeds, gale seeds, mystery seeds]}
 balloon guy's upgrade: [balloon guy, count: [3, seed type]]
-raft: [inner raft guy L, cheval rope, island chart, outer raft guy L]
+raft: [inner raft guy L, cheval rope, island chart, outer raft guy R]
 shop, 30 rupees: [inner present - lynna shop R, or: [count: [30, fixed rupees], [hard, shovel]]]
 shop, 150 rupees: [inner present - lynna shop R, or: [count: [180, fixed rupees], [hard, shovel]]]
 ambi's palace tree: [lynna village, or: [sword, punch object], seed item]
@@ -96,7 +97,13 @@ fairies' woods: {or: [
     bracelet, dimitri's flute, 
     ages, outer mask house,
     [lynna city, flippers],
-    [currents, or: [hit lever, ricky's flute, moosh's flute]]]}
+    [nuun,
+    or: [currents, dimitri nuun,
+         [ricky nuun, or: [break bush, flute]],
+         [moosh nuun, or: [feather, flute]],
+    ], 
+    or: [hit lever, ricky's flute, moosh's flute]]    
+]}
 fairies' woods chest: {or: [[deku forest, currents],
     [fairies' woods, or: [feather, ricky's flute, moosh's flute, switch hook]]]}
 deku forest: {or: [
@@ -109,10 +116,7 @@ deku forest: {or: [
     ]]
 ]}
 deku forest cave east: [inner past - NW of d2]
-deku forest cave west: [bracelet, or: [
-    inner past - NE of mystery tree,
-    inner above mystery tree - L stairs,
-]]
+deku forest cave west: [bracelet, inner past - NE of mystery tree]
 deku forest tree: [
     or: [outer above mystery tree - R stairs, [gale satchel, deku forest]], 
     or: [sword, punch object], seed item]
@@ -150,27 +154,33 @@ ricky nuun: {or: []}
 dimitri nuun: {or: []}
 moosh nuun: {or: []}
 nuun: {or: [
-  [lynna village, or: [currents, [fairies' woods, ember shooter]]],
+  [lynna village, currents],
+  [fairies' woods, ember shooter, or: [
+      [ricky nuun, or: [break bush, flute]],
+      dimitri nuun,
+      [moosh nuun, or: [feather, flute]]
+  ]],
   [outer nuun upper cave, or: [
     ages,
-    [ricky nuun, or: [flute, [feather, break bush]]],
-    [dimitri nuun, or: [flute, [flippers, ember seeds, hit lever]]],
+    [ricky nuun, or: [flute, [feather, sword, or: [hard, switch hook]]]],
+    [dimitri nuun, or: [flute, [flippers, swimmer's ring]]],
     [moosh nuun, or: [flute, [break bush, jump 3]]]
   ]],
-  [outer nuun lower cave - Ricky, or: [flute, currents]],
+  [outer nuun lower cave - Ricky, flute],
   [outer nuun lower cave - Moosh, or: [flute, currents, [break bush, jump 3]]]
 ]}
-nuun highlands cave: [nuun, or: [
-    dimitri's flute,
+nuun highlands cave: {or: [
+    [nuun, dimitri's flute],
     inner nuun lower cave - Ricky,
-    inner nuun lower cave - Moosh]]
+    inner nuun lower cave - Moosh
+]}
 symmetry city tree: [seed item, present symmetry,
     or: [sword, punch object, [dimitri's flute, d4 entrance]]]
 symmetry city brother: [
     inner past - symmetry - S house,
     inner past - symmetry - NE house,
     inner past - symmetry - NW house]
-tokkey's composition: [past symmetry, flippers]
+tokkey's composition: [past symmetry, flippers, echoes]
 after water changing: [
     outer past - talus peaks - big cave to water changes,  # push plant
     currents, bracelet, flippers,  # base reqs traveling around
@@ -190,10 +200,7 @@ defeat great moblin: [goron upper present L, pegasus satchel, bracelet]
 d5 entrance: [crown key, goron upper present M]
 ridge base past: [bombs, inner past - lower goron - leftmost cave]
 d6 present entrance: [old mermaid key, inner present - lower goron - d6 cave]
-pool in d6 entrance: [
-    or: [inner present - lower goron - d6 cave,
-         [outer d6 present, oneways, old mermaid key]],
-    mermaid suit]
+pool in d6 entrance: [inner present - lower goron - d6 cave, mermaid suit]
 goron dance present: [inner present - lower goron - dance cave, farm rupees]
 goron dance, with letter: [inner past - dance cave, goron letter, farm rupees]
 target carts: [inner present - mid goron - carts, farm rupees]
@@ -208,9 +215,7 @@ rolling ridge past old man: [inner past - lower goron old man]
 d6 past entrance: [mermaid key, or: [
     goron lower past water, 
     [flippers, feather], 
-    [hard, bomb jump 2, or: [
-        goron lower past W, goron lower past E
-    ]]
+    [goron lower past W, or: [flippers, [ages, feather], [hard, bomb jump 2]]]
 ]]
 ridge diamonds past: [inner past - lower goron - leftmost cave, switch hook]
 bomb goron head: [inner past - upper goron - bomb cave]
@@ -236,7 +241,7 @@ zora village tree: [
 zora village present: [present overwater zora]
 zora palace chest: [inner present underwater - zora palace]
 zora NW cave: [inner present - zora vill - NW bomb cave, power glove]
-fairies' coast chest: [past overwater zora]
+fairies' coast chest: [present overwater zora]
 # in hard logic, farm kills and get a potion off maple
 king zora: [inner past underwater - zora palace, inner present underwater - zora palace, or: [syrup, hard]]
 library present: [inner present - library]
@@ -264,7 +269,8 @@ open sea past land: {or: [
 open sea past: [mermaid suit, or: [
     open sea past land, outer past - crescent - iron shield cave,
     [or: [past overwater zora, [switch hook, outer past - octo fairy cave]], clean seas],
-    [outer past underwater - pirate cave, zora scale]
+    [outer past underwater - pirate cave, zora scale],
+    [outer past underwater - cave S of d8, feather]  # NOTE: reconsider if randomizing present maku path
 ]]
 piratian captain: [mermaid suit, zora scale, or: [open sea past, outer past underwater - pirate cave]]
 sea of storms past: [inner past underwater - pirate cave]

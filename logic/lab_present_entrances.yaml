@@ -1,6 +1,6 @@
 # maku tree
-outer upper maku tree - mid R: {or: [[maku tree, count: [3, essences]]]}
-outer upper maku tree - mid L: {or: [[maku tree, count: [1, essences]]]}
+outer upper maku tree - mid R: {or: [[maku tree, count: [1, essences]]]}
+outer upper maku tree - mid L: {or: [[maku tree, count: [3, essences]]]}
 outer upper maku tree - L: {or: [[maku tree, count: [6, essences]]]}
 outer upper maku tree - R: {or: [[maku tree, count: [4, essences]]]}
 
@@ -48,8 +48,10 @@ inner tingle stairs: {or: [
   [inner cave below tingle, or: [
     any seed shooter, [hard, feather, or: [pegasus satchel, bombs], boomerang]]]]}
 inner cave below tingle: {or: [
-  [inner tingle stairs, or: [
-    [feather, any seed shooter], [hard, feather, or: [pegasus satchel, bombs], boomerang]]]]}
+  [inner tingle stairs, feather, hard, or: [
+    any seed shooter, [hard, feather, boomerang, [pegasus satchel, bombs, sword]
+  ]]]
+]}
 inner impa: {or: []}
 
 # yoll graveyard
@@ -102,7 +104,7 @@ inner present underwater - crescent island: {or: []}
 present symmetry: {or: [
   [nuun, or: [currents, flute]],
   [past symmetry, echoes, break bush safe],
-  [ages, outer past - talus peaks - big cave to water changes]
+  [currents, outer past - talus peaks - big cave to water changes]
 ]}
 outer present - symmetry NW house: {or: [d4 entrance]}
 outer present - symmetry NE house: {or: [d4 entrance]}
@@ -111,8 +113,8 @@ outer present - symmetry SE house: {or: [d4 entrance]}
 outer nuun upper cave: {or: [
   [lynna village, currents],
   [nuun, or: [
-    [ricky nuun, or: [flute, [feather, break bush]]],
-    [dimitri nuun, or: [flute, [flippers, ember seeds, hit lever]]],
+    [ricky nuun, or: [flute, [feather, sword, or: [hard, switch hook]]]],
+    [dimitri nuun, or: [flute, [flippers, swimmer's ring]]],
     [moosh nuun, or: [flute, [break bush, jump 3]]]
   ]]
 ]}
@@ -168,7 +170,7 @@ outer present - NW goron - cave on cliff near time portal: {or: [goron upper pre
 
 inner present - upper goron R - cave on tall building: {or: []}
 inner present - E of d5 right: {or: []}
-inner present - E of d5 left: {or: [[defeat great moblin, bomb jump 2]]}
+inner present - E of d5 left: {or: [[defeat great moblin, feather]]}
 inner present - E of d5 middle: {or: [inner present - NW goron - cave on cliff near time portal]}
 inner present - upper goron - L rock-separated caves: {or: []}
 inner present - upper goron - R rock-separated caves: {or: []}
@@ -223,19 +225,16 @@ inner present - lower goron - dance cave: {or: [
 inner present - lower goron - cave beside dance cave: {or: []}
 
 # zora village / zora seas
-unlocked present library: [oneways, outer past - library, outer present - library]
 clean dimitri: [clean seas, dimitri's flute, open sea present land]
 present underwater zora: {or: [
   outer present underwater - zora palace,
   outer present underwater - zora SW L house,
   outer present underwater - zora SW R house,
   outer present underwater - zora E house,
+  [clean seas, outer present underwater - crescent island],
   [mermaid suit, or: [
-    unlocked present library,
     [or: [[ages, switch hook], clean seas], outer present - moving island],
-    [clean seas, outer present underwater - crescent island],
-    [past underwater zora, currents],
-    [oneways, outer present - zora vill - NW bomb cave, bombs]
+    [past underwater zora, currents]
   ]]
 ]}
 present overwater zora: [mermaid suit, or: [present underwater zora, open sea present]]
