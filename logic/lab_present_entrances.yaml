@@ -49,7 +49,7 @@ inner tingle stairs: {or: [
     any seed shooter, [hard, feather, or: [pegasus satchel, bombs], boomerang]]]]}
 inner cave below tingle: {or: [
   [inner tingle stairs, feather, hard, or: [
-    any seed shooter, [hard, feather, boomerang, [pegasus satchel, bombs, sword]
+    any seed shooter, [boomerang, [pegasus satchel, bombs, sword]
   ]]]
 ]}
 inner impa: {or: []}
@@ -103,8 +103,7 @@ inner present underwater - crescent island: {or: []}
 # nuun / symmetry city / talus peaks
 present symmetry: {or: [
   [nuun, or: [currents, flute]],
-  [past symmetry, echoes, break bush safe],
-  [currents, outer past - talus peaks - big cave to water changes]
+  [past symmetry, or: [ages, [echoes, break bush safe]]]
 ]}
 outer present - symmetry NW house: {or: [d4 entrance]}
 outer present - symmetry NE house: {or: [d4 entrance]}

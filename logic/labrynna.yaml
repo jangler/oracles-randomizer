@@ -166,7 +166,7 @@ nuun: {or: [
     [dimitri nuun, or: [flute, [flippers, swimmer's ring]]],
     [moosh nuun, or: [flute, [break bush, jump 3]]]
   ]],
-  [outer nuun lower cave - Ricky, flute],
+  [outer nuun lower cave - Ricky, or: [flute, currents]],
   [outer nuun lower cave - Moosh, or: [flute, currents, [break bush, jump 3]]]
 ]}
 nuun highlands cave: {or: [
@@ -213,8 +213,7 @@ rolling ridge east tree: [
 ]
 rolling ridge past old man: [inner past - lower goron old man]
 d6 past entrance: [mermaid key, or: [
-    goron lower past water, 
-    [flippers, feather], 
+    goron lower past water,
     [goron lower past W, or: [flippers, [ages, feather], [hard, bomb jump 2]]]
 ]]
 ridge diamonds past: [inner past - lower goron - leftmost cave, switch hook]

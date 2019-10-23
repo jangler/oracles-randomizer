@@ -34,7 +34,7 @@ outer raft guy R: {or: [open sea past]}
 
 inner palace: {or: [inner palace L, inner palace M, inner palace R, [mermaid suit, inner stairs SE of palace]]}
 inner past - maku tree cave: {or: []}
-inner past - maku tree stairs: {or: [[inner past - maku tree cave, kill normal, shovel]]}
+inner past - maku tree stairs: {or: [[inner past - maku tree cave, kill normal]]}
 inner past - lynna - gba shop: {or: []}
 inner past - lynna - NW house: {or: []}
 inner past - lynna - W house: {or: []}
@@ -161,7 +161,8 @@ past symmetry: {or: [
   outer past - symmetry - SW house,
   outer past - symmetry - SE house,
   outer past - symmetry - S house,
-  [present symmetry, echoes, break bush safe]
+  [present symmetry, or: [ages, [echoes, break bush safe]]],
+  [or: [ages, [currents, bracelet]], outer past - talus peaks - big cave to water changes]
 ]}
 outer past - symmetry - NW house: {or: [past symmetry]}
 outer past - symmetry - NE house: {or: [past symmetry]}
@@ -240,7 +241,7 @@ inner past - upper goron - E of d5 R: {or: []}
 
 # goron mid
 outer past - mid goron - SW of bomb cave: {or: [[goron present mid bottom, ages]]}
-outer past - mid goron - sword game: {or: [[goron present mid top, or: [ages, [bracelet, currents]]]]}
+outer past - mid goron - sword game: {or: [[goron present mid top, or: [ages, [bracelet, or: [currents, [gale satchel, echoes]]]]]]}
 outer past - mid goron - near seed tree: {or: [[goron present mid bottom, ages]]}
 
 inner past - mid goron - SW of bomb cave: {or: [
