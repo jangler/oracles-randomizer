@@ -81,6 +81,8 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://streamable.com/798g1)
 - Throw pots in D2 to access the vanilla bracelet chest and blade trap room.
   [[Video]](https://streamable.com/tp6cz)
+- Pegasus + feather jump to reach the left chest in D5 (no bomb boost
+  required). [[Video]](https://clips.twitch.tv/CredulousTemperedMulePicoMause)
 - Bomb + feather jump across the water to get to the minecarts in D5.
   [[Video]](https://streamable.com/pehqq)
 - Damage boost off enemies to cross D5 sidescroller gaps without feather.
