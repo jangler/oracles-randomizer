@@ -59,7 +59,7 @@
 
 ## Rolling Ridge Lower
 - Leftmost cave
-- Old man in bush
+- Rupee-giving old man
 - Goron dancing cave
 - D6 past
 

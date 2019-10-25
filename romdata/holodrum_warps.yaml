@@ -484,6 +484,21 @@ north horon old man:
   exit: 0x13c1d
   roomtile: 0x23
   oneway: true
+ww old man:
+  entry: 0x135b9
+  exit: 0x13c2d
+  roomtile: 0x32
+  oneway: true
+tarm old man:
+  entry: 0x135b5
+  exit: 0x13c29
+  roomtile: 0x18
+  oneway: true
+mrs ruul old man:
+  entry: 0x135bd
+  exit: 0x13c31
+  roomtile: 0x56
+  oneway: true
 
 # dungeons
 d1:

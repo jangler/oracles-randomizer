@@ -37,7 +37,6 @@ Some could be added in the near future
 - Dimitri caves - same reason as above, but also gotta make sure dimitri is handled well when both entering and exiting
 - Cave leading up to western coast graveyard - currently due to not being able to go down the same cave once in the graveyard
 - D2 stairs - usual soft lock scenarios in regular rando
-- Old men who take rupees from you - could make rupee grinding required if unlucky. Maybe I can make these guys take nothing, since they already serve 0 purpose in regular rando
 - Natzu dimitri waterfall
 
 ## Subrosia

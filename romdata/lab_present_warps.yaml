@@ -331,12 +331,11 @@ present - mid goron - by carts:
   maptile: 0x1d
 
 # goron lower
-# present - lower goron old man:
-#   entry: 0x13614
-#   exit: 0x13898
-#   roomtile: 0x38
-#   oneway: true
-
+present - lower goron old man:
+  entry: 0x13614
+  exit: 0x13898
+  roomtile: 0x38
+  oneway: true
 present - lower goron cave - leftmost:
   entry: 0x13684
   exit: 0x13d48

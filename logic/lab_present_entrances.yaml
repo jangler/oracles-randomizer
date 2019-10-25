@@ -209,13 +209,13 @@ goron lower present: {or: [
   outer present - lower goron - cave beside dance cave,
   [currents, or: [goron lower past W, goron lower past E]]
 ]}
-# outer present - lower goron old man: {or: [[goron lower present, ember seeds]]}
+outer present - lower goron old man: {or: [[goron lower present, ember seeds]]}
 outer present - lower goron cave - leftmost: {or: [goron lower present]}
 outer present - lower goron - d6 cave: {or: [goron lower present]}
 outer present - lower goron - dance cave: {or: [goron lower present]}
 outer present - lower goron - cave beside dance cave: {or: [goron lower present]}
 
-# inner present - lower goron old man: {or: []}
+inner present - lower goron old man: {or: []}
 inner present - lower goron cave - leftmost: {or: [inner present - upper goron R - cave on tall building]}
 inner present - lower goron - d6 cave: {or: []}
 inner present - lower goron - dance cave: {or: [

@@ -24,4 +24,3 @@ TODO. Basically jumping off any cliff where you can't access the bottom otherwis
 - Entrance from Maku tree to her roof entrances
 - Moblin keep-related entrances
 - Nuun dimitri waterfall
-- RR lower old man (takes rupees)

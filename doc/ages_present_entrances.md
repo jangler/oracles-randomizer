@@ -60,6 +60,7 @@
 - D6 cave
 - Goron dancing minigame cave
 - Cave by above
+- Rupee-taking old man
 - D6 present (actual entrance inside cave)
 
 ## Zora overwater

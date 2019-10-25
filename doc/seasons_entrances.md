@@ -10,14 +10,14 @@
 - House with couple and baby (2 entrances)
 - Stairs going to portal
 - Southeast house - main and side entrance
-- Old man in tree
+- Rupee-giving old man
 - GBA shop
 
 ## Western Coast
 - House - main and side entrance
 - Fairy cave near Hero's cave
 - Hidden stairs in SW graveyard screen (use shovel)
-- Old man in tree
+- Rupee-giving old man
 - D7
 
 ## Eastern Suburbs
@@ -28,6 +28,7 @@
 - Moblin road - Holly
 - East of D2 - left cave
 - East of D2 - right cave
+- Rupee-taking old man
 - D2
 
 ## Holodrum Plain
@@ -36,7 +37,8 @@
 - Treehouse old man
 - Water cave under Mrs Ruul
 - Water cave north of D1
-- Old man above the above
+- Rupee-giving old man
+- Rupee-taking old man
 - D1
 
 ## Spool Swamp
@@ -52,7 +54,7 @@
 - Eyeglass West bomb cave
 - Eyeglass East boulder cave
 - Impa
-- Old man in tree
+- Rupee-giving old man
 - D5
 
 ## Natzu
@@ -91,13 +93,14 @@
 - Cave near Biggoron
 - Cave near old man in tree
 - Cave leading up to the above
-- Old man in tree
+- Rupee-giving old man
 
 ## Tarm Ruins
 - Deku scrub
 - Stairs by tarm tree
 - Bomb cave Northeast of Lost Woods
 - Tree Southeast of Lost Woods
+- Rupee-taking old man
 - D6
 
 ## Samasa Desert

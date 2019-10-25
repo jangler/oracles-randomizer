@@ -15,9 +15,19 @@ seasons:
   # opens up gba shop
   04/6198/: nop
 
+  # old men who take rupees takes 0
+  15/6218/: |
+      ld a,00
+      jp removeRupeeValue
+
 ages:
   # opens up gba shop
   04/6536/: nop
+
+  # old men who take rupees takes 0
+  15/5042/: |
+      ld a,00
+      jp removeRupeeValue
 
   # add stairs near chest in RR - NE-most cave so you don't need to soft-reset to get back up to stairs
   1c/7719/: db 51

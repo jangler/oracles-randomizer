@@ -125,6 +125,7 @@ common:
     define getNumSetBits,0176
     define compareHlToBc,01d6
     define decHlRef16WithCap,0237
+    define removeRupeeValue,1778
 
     # rom 3f
     define _interactionGetData,4437
@@ -192,6 +193,7 @@ seasons:
     define giveTreasure,16eb
     define loseTreasure,1702
     define checkTreasureObtained,1717
+    define removeRupeeValue,1751
     define getRandomRingOfGivenTier,17b9
     define refillSeedSatchel,17e5
     define showTextNonExitable,1847

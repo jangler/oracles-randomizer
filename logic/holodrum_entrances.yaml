@@ -313,12 +313,18 @@ outer holodrum plain east old man: {or: [[blaino's gym, ember seeds,
         [ghastly stump, summer, or: [feather, flute, [break bush, flippers]]]]]]}
 outer horon village old man: {or: [ember seeds]}
 outer north horon old man: {or: [[north horon stump, ember seeds]]}
+outer ww old man: {or: [[moblin road, ember seeds]]}
+outer tarm old man: {or: [[d6 entrance, ember seeds]]}
+outer mrs ruul old man: {or: [[outer mrs ruul, ember seeds]]}
 
 inner goron mountain old man: {or: []}
 inner western coast old man: {or: []}
 inner holodrum plain east old man: {or: []}
 inner horon village old man: {or: []}
 inner north horon old man: {or: []}
+inner ww old man: {or: []}
+inner tarm old man: {or: []}
+inner mrs ruul old man: {or: []}
 
 # dungeons
 outer d1: {or: [d1 entrance]}
