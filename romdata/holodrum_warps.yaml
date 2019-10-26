@@ -131,6 +131,7 @@ windmill entrance above main entrance:
   exit: 0x13b6d
   maptile: 0xea
   ismultiwarp: true
+  oneway: true
 shovel girl main entrance:
   entry: 0x13639
   exit: 0x13871
@@ -263,6 +264,7 @@ sunken - NE flooded house:
   entry: 0x134c5
   exit: 0x13859
   roomtile: 0x57
+  oneway: true
 sunken vase guy:
   entry: 0x134b9
   exit: 0x13849

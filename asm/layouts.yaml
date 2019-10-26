@@ -104,6 +104,26 @@ seasons:
       db 04,e1,00,94,fa # inside cave north of d1 - shallow water added
       db 04,e1,00,95,fa # cont.
       db 04,e1,00,96,fa # cont.
+      db 00,71,00,63,48 # extend floodgate key railing as chokepoint for warning
+      db 00,71,00,73,53 # cont.
+      db 00,1c,00,55,43 # close off waterfall down from d4 due to possibility of no flippers
+      db 00,1c,00,56,40 # cont.
+      db 00,1c,00,57,42 # cont.
+      db 00,1c,00,66,bc # cont.
+      db 05,b2,00,58,ed # inner windmill heart piece - replace pots with boulders
+      db 05,b2,00,68,ed # cont.
+      db 05,b2,00,88,ed # cont.
+      db 05,b2,00,79,ed # cont.
+      db 04,e6,00,3e,ed # inner cave to d3 (left screen) - adding boulders as chokepoint for warning
+      db 04,e7,00,30,ed # cont. (right screen)
+      db 04,e7,00,31,ed # cont.
+      db 04,e7,00,23,ed # cont.
+      db 04,e7,00,24,ed # cont.
+      db 04,e7,00,25,ed # cont.
+      db 04,e7,00,26,ed # cont.
+      db 04,e7,00,28,ed # cont.
+      db 04,e7,00,14,a5 # cont.
+      db 04,e7,00,15,a5 # cont.
   04/d2AltEntranceTileSubs: |
       # these are enabled only if entrances are randomized
       db fe,8d,00,18,04 # remove left stairs

@@ -1,6 +1,6 @@
 # Out of logic
 
-TODO. Basically jumping off any cliff where you can't access the bottom otherwise
+- Switch hooking to Octor fairy cave without mermaid suit to go back
 
 # Tricks/tips
 
