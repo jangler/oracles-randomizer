@@ -143,6 +143,11 @@ seasons:
     define SEASON_AUTUMN,02 # oracles-disasm calls this SEASON_FALL but i refuse
     define SEASON_WINTER,03
     define STARTING_TREE_MAP_INDEX,f8
+    define DISABLE_LINK,01
+    define Interaction.subid,42
+    define Interaction.state2,45
+    define Interaction.angle,49
+    define Interaction.var35,75
 
     # hram
     define hBrokenTilePosition,93
@@ -190,6 +195,7 @@ seasons:
     define forceEnableIntroInputs,0862
     define playSound,0c74
     define setMusicVolume,0c89
+    define interactionInitGraphics,15e9
     define giveTreasure,16eb
     define loseTreasure,1702
     define checkTreasureObtained,1717
@@ -207,6 +213,7 @@ seasons:
     define objectCopyPosition,21fd
     define objectCopyPositionWithOffset,221a
     define interactionSetScript,24fe
+    define interactionSetAnimation,25cb
     define createTreasure,271b
     define setLinkIdOverride,2a16
     define checkGlobalFlag,30c7

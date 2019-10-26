@@ -1,0 +1,122 @@
+seasons:
+  0a/cpLeftCucco: |
+      ld e,Interaction.subid
+      ld a,(de)
+      cp a,02
+      ret
+  0a/cuccoHeightCheckCliffData: |
+      db 18,68
+      db 08,48
+      db 18,38
+  0a/4ca1/: ld hl,cuccoHeightCheckCliffData
+  0a/setInitialAnimation: |
+      call interactionInitGraphics
+      call cpLeftCucco
+      ret nz
+      ld a,00
+      call interactionSetAnimation
+      ret
+  0a/4cad/: call setInitialAnimation
+  0a/linkCuccoDirection: | 
+      call cpLeftCucco
+      jr z,.faceLinkLeft
+      ld (hl),01
+      jr .done
+      .faceLinkLeft
+      ld (hl),03
+      .done
+      ld a,DISABLE_LINK
+      ld e,Interaction.state2
+      ret
+  0a/4cf9/: call linkCuccoDirection; nop
+  0a/newCuccoAngleData: |
+      db 08,01,68
+  0a/4d35/: ld hl,newCuccoAngleData
+  0a/newCuccoIsPulledOverInitialCliff: |  # a is (Interaction.subid)
+      cp a,01
+      jp z,4d6b
+      jp 4d4a
+  0a/4d47/: jp newCuccoIsPulledOverInitialCliff
+  0a/checkCuccoThresholdBeforeTapping: |  # 0d is from w1Link.xh (d00d)
+      call cpLeftCucco
+      jr z,.lessThan70
+      ld l,0d
+      ldi a,(hl)
+      cp a,30
+      ret c
+      jr .done
+      .lessThan70
+      ld l,0d
+      ldi a,(hl)
+      cp a,70
+      ret nc
+      .done
+      jp 4d53
+  0a/4d50/: jp checkCuccoThresholdBeforeTapping
+  0a/checkHeightAgainstHeightCheckCliff: |  # 4da5 is @reachedTargetXPosition
+      call cpLeftCucco
+      jr z,.lessThan38
+      ld e,Interaction.var35
+      ld a,(de)
+      cp (hl)
+      jp c,4da5
+      jr .done
+      .lessThan38
+      ld e,Interaction.var35
+      ld a,(de)
+      cp (hl)
+      jp nc,4da5
+      .done
+      jp 4d85
+  0a/4d82/: jp checkHeightAgainstHeightCheckCliff
+  0a/moveCuccoOverCliff: |
+      call cpLeftCucco
+      jr z,.leftOverCliff
+      ld a,08
+      ld e,Interaction.angle
+      ret
+      .leftOverCliff
+      ld a,68
+      ld e,Interaction.angle
+      ret
+  0a/4db0/: call moveCuccoOverCliff
+  0a/createCuccoHelperObject: |
+      cp a,01
+      jp z,4ddd
+      jp 4dc1
+  0a/4dbe/: jp createCuccoHelperObject
+  0a/setCuccoDistanceOverCliff: |
+      call cpLeftCucco
+      jr z,.left20
+      ld e,Interaction.var35
+      ld a,(de)
+      add a,20
+      ret
+      .left20
+      ld e,Interaction.var35
+      ld a,(de)
+      sub a,20
+      ret
+  0a/4dfd/: call setCuccoDistanceOverCliff; nop; nop
+  0a/fixCuccoReturnAnimation: |
+      call cpLeftCucco
+      jr z,.faceRight
+      ld a,00
+      call interactionSetAnimation
+      ret
+      .faceRight
+      ld a,01
+      call interactionSetAnimation
+      ret
+  0a/4e3f/: call fixCuccoReturnAnimation
+  0a/fixCuccoLoweredAnimation: |
+      call cpLeftCucco
+      jr z,.faceLeft
+      ld a,01
+      jp interactionSetAnimation
+      ret
+      .faceLeft
+      ld a,00
+      jp interactionSetAnimation
+      ret
+  0a/4e96/: jp fixCuccoLoweredAnimation

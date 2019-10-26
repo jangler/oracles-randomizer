@@ -187,6 +187,15 @@ seasons:
       db fe
   11/6c4f/: db f3; dw innerFloodgateCliffStaticObjects
 
+  # mt cucco top cuccos
+  11/addReturnCucco: |
+      db f2
+      db 8c,00,28,18
+      db 8c,02,28,88
+      db 22,0a,44,88
+      db fe
+  11/69e2/: db f3; dw addReturnCucco; db ff
+
   # ORs the default season in the given area (low byte b in bank 1) with the
   # seasons the rod has (c), then ANDs and compares the results with d.
   15/checkSeasonAccessInArea: |
