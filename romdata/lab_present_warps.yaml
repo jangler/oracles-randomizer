@@ -35,28 +35,28 @@ nuun lower cave - Moosh:
   roomtile: 0x33
 
 # maku tree
-upper maku tree - mid R:  # after 1 dungeon
-  entry: 0x13720
-  exit: 0x138b0
-  ismultiwarp: true
-  maptile: 0xe1
-  oneway: true
-upper maku tree - mid L:  # after 3 dungeons
-  entry: 0x13724
-  exit: 0x138b4
-  ismultiwarp: true
-  maptile: 0xe1
-  oneway: true
-upper maku tree - L:  # after 6 dungeons
-  entry: 0x13668
-  exit: 0x138c0
-  roomtile: 0x46
-  oneway: true
-upper maku tree - R:  # after 4 dungeons
-  entry: 0x13670
-  exit: 0x138bc
-  roomtile: 0x54
-  oneway: true
+# upper maku tree - mid R:  # after 1 dungeon
+#   entry: 0x13720
+#   exit: 0x138b0
+#   ismultiwarp: true
+#   maptile: 0xe1
+#   oneway: true
+# upper maku tree - mid L:  # after 3 dungeons
+#   entry: 0x13724
+#   exit: 0x138b4
+#   ismultiwarp: true
+#   maptile: 0xe1
+#   oneway: true
+# upper maku tree - L:  # after 6 dungeons
+#   entry: 0x13668
+#   exit: 0x138c0
+#   roomtile: 0x46
+#   oneway: true
+# upper maku tree - R:  # after 4 dungeons
+#   entry: 0x13670
+#   exit: 0x138bc
+#   roomtile: 0x54
+#   oneway: true
 
 # present - maku tree stairs to inner:
 #   entry: 0x136e8, 0x136ec
