@@ -114,9 +114,13 @@ common:
     define wScreenOffsetY,cd08
     define wScreenShakeCounterY,cd18
     define wRoomLayout,cf00
+    define w1Link.direction,d008
     define w1Link.angle,d009
     define w1Link.yh,d00b
     define w1Link.xh,d00d
+    define w1Link.z,d00e
+    define w1Link.zh,0f
+    define w1Link.visible,1a
     define w7ActiveBank,d0d4
 
     # rom 00
@@ -144,9 +148,23 @@ seasons:
     define SEASON_WINTER,03
     define STARTING_TREE_MAP_INDEX,f8
     define DISABLE_LINK,01
+    define Interaction.enabled,40
     define Interaction.subid,42
+    define Interaction.state,44
     define Interaction.state2,45
+    define Interaction.counter1,46
     define Interaction.angle,49
+    define Interaction.yh,4b
+    define Interaction.yh,4d
+    define Interaction.z,4e
+    define Interaction.zh,4f
+    define Interaction.speed,50
+    define Interaction.visible,5a
+    define Interaction.speedZ,54
+    define Interaction.var30,70
+    define Interaction.var32,72
+    define Interaction.var33,73
+    define Interaction.var34,74
     define Interaction.var35,75
 
     # hram

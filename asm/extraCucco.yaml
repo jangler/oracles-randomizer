@@ -39,15 +39,15 @@ seasons:
   0a/4d47/: jp newCuccoIsPulledOverInitialCliff
   0a/checkCuccoThresholdBeforeTapping: |  # 0d is from w1Link.xh (d00d)
       call cpLeftCucco
-      jr z,.lessThan70
       ld l,0d
-      ldi a,(hl)
+      ld a,(hl)
+      jr z,.lessThan70
+      inc hl
       cp a,30
       ret c
       jr .done
       .lessThan70
-      ld l,0d
-      ldi a,(hl)
+      inc hl
       cp a,70
       ret nc
       .done
@@ -55,28 +55,24 @@ seasons:
   0a/4d50/: jp checkCuccoThresholdBeforeTapping
   0a/checkHeightAgainstHeightCheckCliff: |  # 4da5 is @reachedTargetXPosition
       call cpLeftCucco
-      jr z,.lessThan38
       ld e,Interaction.var35
       ld a,(de)
+      jr z,.lessThan38
       cp (hl)
       jp c,4da5
       jr .done
       .lessThan38
-      ld e,Interaction.var35
-      ld a,(de)
       cp (hl)
       jp nc,4da5
       .done
       jp 4d85
   0a/4d82/: jp checkHeightAgainstHeightCheckCliff
-  0a/moveCuccoOverCliff: |
+  0a/moveCuccoOverCliff: |  # left-facing cucco has angle 68, vanilla cucco keeps 08
       call cpLeftCucco
-      jr z,.leftOverCliff
-      ld a,08
-      ld e,Interaction.angle
-      ret
-      .leftOverCliff
       ld a,68
+      jr z,.leftOverCliff
+      sub a,60
+      .leftOverCliff
       ld e,Interaction.angle
       ret
   0a/4db0/: call moveCuccoOverCliff
@@ -87,36 +83,31 @@ seasons:
   0a/4dbe/: jp createCuccoHelperObject
   0a/setCuccoDistanceOverCliff: |
       call cpLeftCucco
-      jr z,.left20
       ld e,Interaction.var35
       ld a,(de)
+      jr z,.left20
       add a,20
       ret
       .left20
-      ld e,Interaction.var35
-      ld a,(de)
       sub a,20
       ret
   0a/4dfd/: call setCuccoDistanceOverCliff; nop; nop
+  # cucco left - a is 00, right - a is 01
   0a/fixCuccoReturnAnimation: |
       call cpLeftCucco
-      jr z,.faceRight
-      ld a,00
-      call interactionSetAnimation
-      ret
-      .faceRight
       ld a,01
+      jr z,.faceRight
+      dec a
+      .faceRight
       call interactionSetAnimation
       ret
   0a/4e3f/: call fixCuccoReturnAnimation
   0a/fixCuccoLoweredAnimation: |
       call cpLeftCucco
-      jr z,.faceLeft
-      ld a,01
-      jp interactionSetAnimation
-      ret
-      .faceLeft
       ld a,00
+      jr z,.faceLeft
+      inc a
+      .faceLeft
       jp interactionSetAnimation
       ret
   0a/4e96/: jp fixCuccoLoweredAnimation
