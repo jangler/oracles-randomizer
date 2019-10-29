@@ -107,6 +107,61 @@ seasons:
       ld e,COLLECT_CHEST_NOFLAG
       ret
 
+  00/getSharedItemReplacement: |
+      ld a,14
+      ld (ff00+hRomBank),a
+      ld (2222),a
+      call getSharedItemIds
+      ld a,9
+      ld (ff00+hRomBank),a
+      ld (2222),a
+      ret
+  # shared code for standing heart pieces
+  09/6381/: call getSharedItemReplacement
+  # shared code for standing gasha seeds
+  09/6608/: call getSharedItemReplacement
+  # heart piece - inner windmill, tr bomb cave, d7, ww, horon vill, spool currents, cucco cliff
+  # gasha seeds - mayors gasha, house N of thieves portal, path to spring tower
+  14/sharedItemTable: |
+      db 01,2b
+      db 01,2b
+      db 01,2b
+      db 01,2b
+      db 01,2b
+      db 01,2b
+      db 01,2b
+      db 04,34
+      db 04,34
+      db 04,34
+  14/sharedItemRoomTable: |
+      db b2,c7,d1,af,d8,b1,2d
+      db 87,a1,e3
+      db ff
+  14/getSharedItemIds: | # load into bc the treasure id+subid based on room
+      ld a,(wActiveRoom)
+      ld c,a
+      ld b,00
+      ld hl,sharedItemRoomTable
+      .next
+      ldi a,(hl)
+      cp c
+      jr z,.found
+      cp a,ff
+      jr z,.failed
+      inc b
+      jr .next
+      .failed
+      ld bc,2b01
+      ret
+      .found
+      ld hl,sharedItemTable
+      ld a,b
+      rst 18
+      ldi a,(hl)
+      ld b,(hl)
+      ld c,a
+      ret
+
 ages:
   # collect modes starting at 80 index this jump table to determine the actual
   # mode.

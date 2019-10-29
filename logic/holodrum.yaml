@@ -20,6 +20,8 @@ member's shop 1: [inner horon shop, member's card,
     or: [count: [1010, fixed rupees], [hard, shovel]]]
 member's shop 2: [member's shop 1]
 member's shop 3: [member's shop 1]
+horon village hp: [horon village, ember seeds]
+mayor house gasha: [inner mayors house, bombs]
 
 # western coast
 black beast's chest: [horon village,
@@ -30,6 +32,7 @@ pirate ship: [pirate's bell, inner pirate house - main entrance]
 d7 entrance: [upper west coast, or: [shovel, [horon village, pirate ship, western coast default summer]]]
 western coast, beach chest: [lower west coast]
 western coast, in house: [inner west coast house - main entrance]
+outside d7 hp: [upper west coast, western coast default autumn, break mushroom]
 
 # eastern suburbs
 suburbs: {or: [ # this is the area south of the pool by sokra's stump
@@ -71,6 +74,8 @@ woods of winter, 1st cave: [inner ww bomb cave, break bush safe]
 eastern suburbs, on cliff: [inner suburbs stairs past blooming flower,
     or: [cape, [hard, bomb jump 2], magnet gloves]]
 woods of winter, 2nd cave: [inner ww cave under sunken, or: [flippers, bomb jump 3]]
+windmill hp: [inner windmill entrance above main entrance]
+winter woods hp: [or: [bracelet, feather, flippers], moblin road]  # TODO: animal?
 
 # holodrum plain
 ghastly stump: {or: [outer mrs ruul, [north swamp, summer],
@@ -125,6 +130,11 @@ south swamp: {or: [
     [exit spool swamp portal, bracelet]]}
 spool swamp cave: [inner swamp S bomb cave]
 d3 entrance: [spool stump, or: [spool swamp default summer, summer]]
+spool swamp currents hp: [
+    south swamp,
+    or: [spool swamp default spring, spring],
+    or: [flippers, dimitri's flute]
+]
 
 # north horon / eyeglass lake
 not north horon default summer: {or: [north horon default spring,
@@ -203,6 +213,7 @@ mt. cucco, talon's cave: [inner mt cucco mushroom guy]
 dragon keyhole: [outer mt cucco stairs near top cucco, bracelet]
 d4 entrance: [dragon key, dragon keyhole, summer]
 diving spot outside D4: [outer mt cucco mushroom guy, flippers]
+cucco cliff hp: [outer mt cucco mushroom guy, or: [sunken city default spring, spring]]  # can go back up
 
 # goron mountain
 goron mountain: {or: [
@@ -245,6 +256,7 @@ temple remains not spring: {or: [
     winter, temple remains default winter,
     summer, temple remains default summer,
     autumn, temple remains default autumn]}
+tr bomb cave hp: [bomb jump 2, inner temple remains bomb cave]
 
 # northern peak
 maku seed: [sword, d1 boss, d2 boss, d3 boss, d4 boss, d5 boss, d6 boss,

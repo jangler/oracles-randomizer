@@ -30,6 +30,11 @@ Most of these checks can be easily done if seasons reset on overworld exit
 - check d2 deku scrub - for logical bombs
 - add back in the d2 alternate entrances (how will it work with essences)
 
+## Relating to shared items
+- getSharedItemIds - better failure option
+- seasons_slots.yaml - accurate room values for standing items
+- winter woods hp - animal usage?
+
 # Ages
 - Soft locks
 

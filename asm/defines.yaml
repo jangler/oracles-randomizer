@@ -150,18 +150,20 @@ seasons:
     define DISABLE_LINK,01
     define Interaction.enabled,40
     define Interaction.subid,42
+    define Interaction.var03,43
     define Interaction.state,44
     define Interaction.state2,45
     define Interaction.counter1,46
     define Interaction.angle,49
     define Interaction.yh,4b
-    define Interaction.yh,4d
+    define Interaction.xh,4d
     define Interaction.z,4e
     define Interaction.zh,4f
     define Interaction.speed,50
     define Interaction.visible,5a
     define Interaction.speedZ,54
     define Interaction.var30,70
+    define Interaction.var31,71
     define Interaction.var32,72
     define Interaction.var33,73
     define Interaction.var34,74

@@ -219,6 +219,15 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		codeAddr = rom.codeMutables["createMtCuccoItem"].addr
 		rom.itemSlots["mt. cucco, platform cave"].idAddrs[0].offset = codeAddr.offset + 2
 		rom.itemSlots["mt. cucco, platform cave"].subidAddrs[0].offset = codeAddr.offset + 1
+		codeAddr = rom.codeMutables["sharedItemTable"].addr
+		for i, slot := range []string{
+			"windmill hp", "tr bomb cave hp", "outside d7 hp", "winter woods hp",
+			"horon village hp", "spool swamp currents hp", "cucco cliff hp",
+			"mayor house gasha", "subrosian's gasha", "spring tower gasha"} {
+			j := uint16(i)
+			rom.itemSlots[slot].idAddrs[0].offset = codeAddr.offset + (j * 2) + 1
+			rom.itemSlots[slot].subidAddrs[0].offset = codeAddr.offset + (j * 2)
+		}
 	} else {
 		// explicitly set these addresses and IDs after their functions
 		mut := rom.codeMutables["script_soldierGiveItem"]
@@ -264,6 +273,12 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		rom.itemSlots["subrosia seaside"].mutate(rom.data)
 		rom.itemSlots["great furnace"].mutate(rom.data)
 		rom.itemSlots["master diver's reward"].mutate(rom.data)
+		for _, slot := range []string{
+			"windmill hp", "tr bomb cave hp", "outside d7 hp", "winter woods hp",
+			"horon village hp", "spool swamp currents hp", "cucco cliff hp",
+			"mayor house gasha", "subrosian's gasha", "spring tower gasha"} {
+			rom.itemSlots[slot].mutate(rom.data)
+		}
 
 		// annoying special case to prevent text on key drop
 		mut := rom.itemSlots["d7 armos puzzle"]
@@ -304,6 +319,11 @@ func (rom *romState) verify() []error {
 		// seasons shop items
 		case "zero shop text", "member's card", "treasure map",
 			"rare peach stone", "ribbon":
+		// standing heart pieces
+		case "windmill hp", "tr bomb cave hp", "outside d7 hp", "winter woods hp",
+			"horon village hp", "spool swamp currents hp", "cucco cliff hp":
+		// standing gasha seeds
+		case "mayor house gasha", "subrosian's gasha", "spring tower gasha":
 		// seasons flutes
 		case "dimitri's flute", "moosh's flute":
 		// seasons linked chests
