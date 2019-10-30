@@ -28,6 +28,7 @@ black beast's chest: [horon village,
     or: [ember slingshot, [hard, mystery slingshot]],
     mystery seeds, kill armored]
 d0 entrance: [horon village]
+heros cave basement: [d0 entrance, or: [kill normal, boomerang]]
 pirate ship: [pirate's bell, inner pirate house - main entrance]
 d7 entrance: [upper west coast, or: [shovel, [horon village, pirate ship, western coast default summer]]]
 western coast, beach chest: [lower west coast]
@@ -107,6 +108,7 @@ ricky: {or: [ricky's flute]}
 old man in treehouse: [inner treehouse old man]
 cave south of mrs. ruul: [inner water cave under mrs ruul, flippers]
 cave north of D1: [inner holodrum plain water cave past mushrooms, flippers]
+holodrum plain diving gasha: [flippers, blaino's gym]
 
 # spool swamp
 north swamp: {or: [

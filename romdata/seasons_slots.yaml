@@ -240,6 +240,15 @@ spring tower gasha:
   room: 0x07e3
   maptile: 0x1e
   reverseaddr: {bank: 0x14}
+heros cave basement:
+  treasure: standing gasha
+  room: 0x0601
+  maptile: 0xd4
+  reverseaddr: {bank: 0x09, addr: 0x66ab}
+holodrum plain diving gasha:
+  treasure: water gasha
+  room: 0x0066
+  reverseaddr: {bank: 0x09, addr: 0x660f}
 
 # subrosia
 #

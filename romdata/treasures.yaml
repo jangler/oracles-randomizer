@@ -68,6 +68,7 @@ common:
   flippers: 0x2e00
   gasha seed: 0x3401
   standing gasha: 0x3404
+  water gasha: 0x3405
 
 seasons:
   # equip items
