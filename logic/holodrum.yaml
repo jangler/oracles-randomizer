@@ -75,7 +75,7 @@ eastern suburbs, on cliff: [inner suburbs stairs past blooming flower,
     or: [cape, [hard, bomb jump 2], magnet gloves]]
 woods of winter, 2nd cave: [inner ww cave under sunken, or: [flippers, bomb jump 3]]
 windmill hp: [inner windmill entrance above main entrance]
-winter woods hp: [or: [bracelet, feather, flippers], moblin road]  # TODO: animal?
+winter woods hp: [or: [bracelet, feather, flippers, dimitri's flute, [hard, ricky's flute]], moblin road]
 
 # holodrum plain
 ghastly stump: {or: [outer mrs ruul, [north swamp, summer],
@@ -131,10 +131,13 @@ south swamp: {or: [
 spool swamp cave: [inner swamp S bomb cave]
 d3 entrance: [spool stump, or: [spool swamp default summer, summer]]
 spool swamp currents hp: [
-    south swamp,
-    or: [spool swamp default spring, spring],
-    or: [flippers, dimitri's flute]
-]
+    south swamp, or: [
+    [spool swamp default spring, or: [
+        flippers, dimitri's flute, 
+        [exit spool swamp portal, bracelet, or: [jump 6, [hard, cape]]]
+    ]],
+    [spool stump, spring, or: [flippers, dimitri's flute]]
+]]
 
 # north horon / eyeglass lake
 not north horon default summer: {or: [north horon default spring,

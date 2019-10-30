@@ -69,6 +69,8 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://clips.twitch.tv/CloudyGoodReubenOneHand)
 - Access the western stump in Temple Remains without autumn, using seeds +
   cape. [[Video]](https://streamable.com/6u65g)
+- Use Ricky to get the standing heart piece in Woods of Winter. [[Video]](https://streamable.com/avgxh)
+- Using bombs, pegs and feather in Moosh's Natzu area to reach the rightmost stairs entrance. [[Video]](https://streamable.com/m7hht)
 
 ## Subrosia
 

@@ -32,7 +32,6 @@ Most of these checks can be easily done if seasons reset on overworld exit
 
 ## Relating to shared items
 - getSharedItemIds - better failure option
-- seasons_slots.yaml - accurate room values for standing items
 - winter woods hp - animal usage?
 
 # Ages
