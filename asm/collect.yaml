@@ -221,8 +221,8 @@ ages:
       ret
   # shared code for standing heart pieces
   10/74bd/: call getSharedItemReplacement
-  # heart piece - inner windmill, tr bomb cave, d7, ww, horon vill, spool currents, cucco cliff
-  # gasha seeds - mayors gasha, house N of thieves portal, path to spring tower
+  # heart piece - ne rr, talus peaks, graveyard, rr bomb wall,
+  # black tower, cave below patch, deku forest bush cave, maku path
   38/sharedItemTable: |
       db 00,2b
       db 00,2b
