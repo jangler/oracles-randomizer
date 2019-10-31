@@ -52,7 +52,7 @@ lynna village: {or: [
     [deku forest, bracelet]
 ]}
 black tower worker: [lynna village]
-black tower hp: {or: [[lynna village, shovel], [lynna city, ages]]}
+black tower hp: [lynna village, shovel]
 maku tree: {or: [rescue nayru, [outer past - maku tree stairs, kill normal]]}
 maku path hp: [inner past - maku tree stairs]
 south lynna tree: [lynna city, seed item,
