@@ -123,13 +123,13 @@ seasons:
   # heart piece - inner windmill, tr bomb cave, d7, ww, horon vill, spool currents, cucco cliff
   # gasha seeds - mayors gasha, house N of thieves portal, path to spring tower
   14/sharedItemTable: |
-      db 01,2b
-      db 01,2b
-      db 01,2b
-      db 01,2b
-      db 01,2b
-      db 01,2b
-      db 01,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
       db 04,34
       db 04,34
       db 04,34
@@ -151,7 +151,7 @@ seasons:
       inc b
       jr .next
       .failed
-      ld bc,2b01
+      ld bc,2b00
       ret
       .found
       ld hl,sharedItemTable
@@ -208,4 +208,54 @@ ages:
       ld e,COLLECT_PICKUP_ALT
       ret c
       ld e,COLLECT_CHEST
+      ret
+
+  00/getSharedItemReplacement: |
+      ld a,38
+      ld (ff00+hRomBank),a
+      ld (2222),a
+      call getSharedItemIds
+      ld a,10
+      ld (ff00+hRomBank),a
+      ld (2222),a
+      ret
+  # shared code for standing heart pieces
+  10/74bd/: call getSharedItemReplacement
+  # heart piece - inner windmill, tr bomb cave, d7, ww, horon vill, spool currents, cucco cliff
+  # gasha seeds - mayors gasha, house N of thieves portal, path to spring tower
+  38/sharedItemTable: |
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+      db 00,2b
+  38/sharedItemRoomTable: |
+      db 0d,11,8b,c1,86,af,b1,06
+      db ff
+  38/getSharedItemIds: | # load into bc the treasure id+subid based on room
+      ld a,(wActiveRoom)
+      ld c,a
+      ld b,00
+      ld hl,sharedItemRoomTable
+      .next
+      ldi a,(hl)
+      cp c
+      jr z,.found
+      cp a,ff
+      jr z,.failed
+      inc b
+      jr .next
+      .failed
+      ld bc,2b00
+      ret
+      .found
+      ld hl,sharedItemTable
+      ld a,b
+      rst 18
+      ldi a,(hl)
+      ld b,(hl)
+      ld c,a
       ret

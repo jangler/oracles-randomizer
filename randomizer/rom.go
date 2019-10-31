@@ -238,6 +238,14 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		codeAddr := mut.addr
 		rom.itemSlots["target carts 2"].idAddrs[1].offset = codeAddr.offset + 1
 		rom.itemSlots["target carts 2"].subidAddrs[1].offset = codeAddr.offset + 2
+		codeAddr = rom.codeMutables["sharedItemTable"].addr
+		for i, slot := range []string{
+			"NE rolling ridge hp", "talus peaks hp", "graveyard hp", "rolling ridge hp in wall",
+			"black tower hp", "cave below tuni guy hp", "deku forest bush cave hp", "maku path hp"} {
+			j := uint16(i)
+			rom.itemSlots[slot].idAddrs[0].offset = codeAddr.offset + (j * 2) + 1
+			rom.itemSlots[slot].subidAddrs[0].offset = codeAddr.offset + (j * 2)
+		}
 	}
 
 	rom.setBossItemAddrs()
@@ -290,6 +298,11 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		rom.itemSlots["deku forest soldier"].mutate(rom.data)
 		rom.itemSlots["target carts 2"].mutate(rom.data)
 		rom.itemSlots["hidden tokay cave"].mutate(rom.data)
+		for _, slot := range []string{
+			"NE rolling ridge hp", "talus peaks hp", "graveyard hp", "rolling ridge hp in wall",
+			"black tower hp", "cave below tuni guy hp", "deku forest bush cave hp", "maku path hp"} {
+			rom.itemSlots[slot].mutate(rom.data)
+		}
 
 		// other special case to prevent text on key drop
 		mut := rom.itemSlots["d8 stalfos"]
@@ -319,9 +332,12 @@ func (rom *romState) verify() []error {
 		// seasons shop items
 		case "zero shop text", "member's card", "treasure map",
 			"rare peach stone", "ribbon":
-		// standing heart pieces
+		// standing heart pieces - seasons
 		case "windmill hp", "tr bomb cave hp", "outside d7 hp", "winter woods hp",
 			"horon village hp", "spool swamp currents hp", "cucco cliff hp":
+		// standing heart pieces - ages
+		case "NE rolling ridge hp", "talus peaks hp", "graveyard hp", "rolling ridge hp in wall",
+			"black tower hp", "cave below tuni guy hp", "deku forest bush cave hp", "maku path hp":
 		// standing gasha seeds
 		case "mayor house gasha", "subrosian's gasha", "spring tower gasha":
 		// seasons flutes

@@ -203,6 +203,23 @@ zora palace chest:
   treasure: rupees, 200
   room: 0x05ac
   maptile: 0xa1
+NE rolling ridge hp:
+  treasure: standing heart
+  room: 0x000d
+  reverseaddr: {bank: 0x38}
+talus peaks hp:
+  treasure: standing heart
+  room: 0x0011
+  reverseaddr: {bank: 0x38}
+graveyard hp:
+  treasure: standing heart
+  room: 0x008b
+  reverseaddr: {bank: 0x38}
+rolling ridge hp in wall:
+  treasure: standing heart
+  room: 0x05c1
+  maptile: 0x18
+  reverseaddr: {bank: 0x38}
 
 # overworld past
 black tower worker:
@@ -299,6 +316,20 @@ tokay pot cave:
   treasure: power ring L-2
   room: 0x05f7
   maptile: 0xdc
+black tower hp:
+  treasure: standing heart
+  room: 0x0186
+  reverseaddr: {bank: 0x38}
+cave below tuni guy hp:
+  treasure: standing heart
+  room: 0x03af
+  maptile: 0x43
+  reverseaddr: {bank: 0x38}
+deku forest bush cave hp:
+  treasure: standing heart
+  room: 0x05b1
+  maptile: 0x91
+  reverseaddr: {bank: 0x38}
 
 # maku path
 maku path basement:
@@ -307,6 +338,11 @@ maku path basement:
   maptile: 0x48
   keydrop: true # uses the same code
   collect: touch
+maku path hp:
+  treasure: standing heart
+  room: 0x0406
+  maptile: 0x38
+  reverseaddr: {bank: 0x38}
 
 # d1
 d1 one-button chest:

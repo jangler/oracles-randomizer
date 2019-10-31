@@ -230,21 +230,6 @@ mayor house gasha:
   room: 0x0387
   maptile: 0xc8
   reverseaddr: {bank: 0x14}
-subrosian's gasha:
-  treasure: standing gasha
-  room: 0x03a1
-  maptile: 0x1e
-  reverseaddr: {bank: 0x14}
-spring tower gasha:
-  treasure: standing gasha
-  room: 0x07e3
-  maptile: 0x1e
-  reverseaddr: {bank: 0x14}
-heros cave basement:
-  treasure: standing gasha
-  room: 0x0601
-  maptile: 0xd4
-  reverseaddr: {bank: 0x09, addr: 0x66ab}
 holodrum plain diving gasha:
   treasure: water gasha
   room: 0x0066
@@ -345,6 +330,16 @@ subrosian smithy:
   maptile: 0x1e
   ids: [{bank: 0x15, addr: 0x62be}]
   subids: [{bank: 0x15, addr: 0x62b4}]
+subrosian's gasha:
+  treasure: standing gasha
+  room: 0x03a1
+  maptile: 0x1e
+  reverseaddr: {bank: 0x14}
+spring tower gasha:
+  treasure: standing gasha
+  room: 0x07e3
+  maptile: 0x1e
+  reverseaddr: {bank: 0x14}
 
 # hero's cave
 d0 key chest:
@@ -359,6 +354,11 @@ d0 rupee chest:
   treasure: rupees, 30
   room: 0x0405
   morerooms: [0x052c] # linked equivalent
+heros cave basement:
+  treasure: standing gasha
+  room: 0x0601
+  maptile: 0xd4
+  reverseaddr: {bank: 0x09, addr: 0x66ab}
 
 # d1
 d1 stalfos drop:

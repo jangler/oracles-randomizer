@@ -52,7 +52,9 @@ lynna village: {or: [
     [deku forest, bracelet]
 ]}
 black tower worker: [lynna village]
+black tower hp: {or: [[lynna village, shovel], [lynna city, ages]]}
 maku tree: {or: [rescue nayru, [outer past - maku tree stairs, kill normal]]}
+maku path hp: [inner past - maku tree stairs]
 south lynna tree: [lynna city, seed item,
     or: [sword, punch object, dimitri's flute, [hard, break bush]]]
 lynna city chest: {or: [ember seeds, currents]}
@@ -88,6 +90,7 @@ syrup: [inner witch hut,
     or: [count: [480, fixed rupees], [hard, shovel]]]
 graveyard poe: [outer ghost grave]
 d1 entrance: [gravekey]
+graveyard hp: [yoll graveyard, bracelet]
 
 # western woods
 # it's possible to switch hook the octorok through the boulder to enter
@@ -124,6 +127,7 @@ deku forest owl: [mystery seeds, deku forest tree]
 deku forest soldier: [deku forest, mystery seeds]
 # TODO: not yet sure how swapping will work with past d2
 d2 entrance: [deku forest, or: [currents, bombs]]
+deku forest bush cave hp: [inner past - bush SE of mystery tree]
 
 # crescent island
 # the western present portal responds to currents only, in order to prevent
@@ -181,6 +185,8 @@ symmetry city brother: [
     inner past - symmetry - NE house,
     inner past - symmetry - NW house]
 tokkey's composition: [past symmetry, flippers, echoes]
+talus peaks hp: [past symmetry, currents]
+cave below tuni guy hp: [inner past - cave below tuni guy, feather]
 after water changing: [
     outer past - talus peaks - big cave to water changes,  # push plant
     currents, bracelet, flippers,  # base reqs traveling around
@@ -193,6 +199,8 @@ d4 entrance: [present symmetry, tuni nut, inner past - symmetry - S house, patch
 
 # rolling ridge. what a nightmare
 goron elder: [bomb flower, inner past - SW cave to upper goron]
+NE rolling ridge hp: [outer present - upper goron - R rock-separated caves]
+rolling ridge hp in wall: [inner present - NW goron - under peg tree cave, bombs]
 ridge west cave: [inner present - NW goron - under peg tree stairs]
 rolling ridge west tree: [or: [sword, punch object], seed item, goron upper past L]
 under moblin keep: [goron upper present L, feather, flippers]
