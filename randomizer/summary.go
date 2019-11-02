@@ -179,8 +179,11 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	sendSectionHeader(summary, "other items")
 	logSpheres(summary, junk, spheres, extra, rom.game, nil)
 
-	sendSectionHeader(summary, "entrances")
-	logEntrances(summary, entrances, extraEntrances, ri)
+	// entrance
+	if ropts.entrance {
+		sendSectionHeader(summary, "entrances")
+		logEntrances(summary, entrances, extraEntrances, ri)
+	}
 
 	// warps
 	if ropts.dungeons {

@@ -32,10 +32,10 @@ Most of these checks can be easily done if seasons reset on overworld exit
 
 ## Relating to shared items
 - getSharedItemIds - better failure option
-- winter woods hp - animal usage?
 
 # Ages
 - Soft locks
+- d5 exit room coordinate
 
 # Common
 - tree warp in logic

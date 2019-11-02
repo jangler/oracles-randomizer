@@ -115,7 +115,7 @@ type shuffledEntrance struct {
 	newExitByte2  byte
 }
 
-func setEntrances(rom *romState, src *rand.Rand, companion int) map[string]string {
+func setEntrances(rom *romState, src *rand.Rand, companion int, entrance bool) map[string]string {
 	entrances := rom.getShuffledEntrances()
 	if companion != ricky {
 		delete(entrances, "nuun lower cave - Ricky")
@@ -142,39 +142,41 @@ func setEntrances(rom *romState, src *rand.Rand, companion int) map[string]strin
 	}
 	entranceMapping := make(map[string]string)
 
-	// shuffle everything with no rules
-	src.Shuffle(len(inners), func(i, j int) {
-		inners[i], inners[j] = inners[j], inners[i]
-	})
-
-	// then make sure entrances are compatible
-	for {
-		shuffled := true
-
-		// Current rules
-		for i := range outers {
-			if outers[i].Oneway && inners[i].Connector {
-				shuffled = false
-				break
-			} else if outers[i].Trapped && inners[i].Dungeon {
-				shuffled = false
-				break
-			}
-		}
-
-		if shuffled {
-			break
-		}
-
+	if entrance {
+		// shuffle everything with no rules
 		src.Shuffle(len(inners), func(i, j int) {
-			if (outers[i].Oneway && inners[j].Connector) || (outers[j].Oneway && inners[i].Connector) {
-				// don't swap if an old man entrance connects to a connector
-			} else if (outers[i].Trapped && inners[j].Dungeon) || (outers[j].Trapped && inners[i].Dungeon) {
-				// don't swap if an unconnected overworld connects to a dungeon
-			} else {
-				inners[i], inners[j] = inners[j], inners[i]
-			}
+			inners[i], inners[j] = inners[j], inners[i]
 		})
+
+		// then make sure entrances are compatible
+		for {
+			shuffled := true
+
+			// Current rules
+			for i := range outers {
+				if outers[i].Oneway && inners[i].Connector {
+					shuffled = false
+					break
+				} else if outers[i].Trapped && inners[i].Dungeon {
+					shuffled = false
+					break
+				}
+			}
+
+			if shuffled {
+				break
+			}
+
+			src.Shuffle(len(inners), func(i, j int) {
+				if (outers[i].Oneway && inners[j].Connector) || (outers[j].Oneway && inners[i].Connector) {
+					// don't swap if an old man entrance connects to a connector
+				} else if (outers[i].Trapped && inners[j].Dungeon) || (outers[j].Trapped && inners[i].Dungeon) {
+					// don't swap if an unconnected overworld connects to a dungeon
+				} else {
+					inners[i], inners[j] = inners[j], inners[i]
+				}
+			})
+		}
 	}
 
 	for i := range outers {
@@ -226,22 +228,22 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			ri.seasons = rollSeasons(ri.src, ri.graph)
 			ri.portals = setPortals(ri.src, ri.graph, ropts.portals)
 		}
+
+		// Map outer to inner entrances
+		entranceMapping := setEntrances(rom, ri.src, ri.companion, ropts.entrance)
+		for outerName, innerName := range entranceMapping {
+			if outerName == "moblin keep L entrance" || outerName == "moblin keep R entrance" {
+				continue
+			}
+			fullOuterName := "outer " + outerName
+			fullInnerName := "inner " + innerName
+			ri.graph[fullOuterName].addParent(ri.graph[fullInnerName])
+			ri.graph[fullInnerName].addParent(ri.graph[fullOuterName])
+		}
+		ri.entranceMapping = entranceMapping
+
 		ri.entrances = setDungeonEntrances(
 			ri.src, ri.graph, rom.game, ropts.dungeons, ropts.entrance)
-
-		if ropts.entrance {
-			entranceMapping := setEntrances(rom, ri.src, ri.companion)
-			for outerName, innerName := range entranceMapping {
-				if outerName == "moblin keep L entrance" || outerName == "moblin keep R entrance" {
-					continue
-				}
-				fullOuterName := "outer " + outerName
-				fullInnerName := "inner " + innerName
-				ri.graph[fullOuterName].addParent(ri.graph[fullInnerName])
-				ri.graph[fullInnerName].addParent(ri.graph[fullOuterName])
-			}
-			ri.entranceMapping = entranceMapping
-		}
 
 		if tryPlaceItems(
 			ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
@@ -291,7 +293,7 @@ func rollSeasons(src *rand.Rand, g graph) map[string]byte {
 
 // connect dungeon entrances, randomly or vanilla-ly.
 func setDungeonEntrances(
-	src *rand.Rand, g graph, game int, shuffle bool, entranceShuffle bool) map[string]string {
+	src *rand.Rand, g graph, game int, dungeonShuffle bool, entranceShuffle bool) map[string]string {
 	dungeonEntranceMap := make(map[string]string)
 	dungeons := make([]string, len(dungeonNames[game]))
 	copy(dungeons, dungeonNames[game])
@@ -299,23 +301,34 @@ func setDungeonEntrances(
 		dungeons = dungeons[1:]
 	}
 
-	if game == gameSeasons && !(shuffle || entranceShuffle) {
+	if game == gameSeasons && !(dungeonShuffle || entranceShuffle) {
 		g["d2 alt entrances enabled"].addParent(g["start"])
 	}
 
 	entrances := make([]string, len(dungeons))
 	copy(entrances, dungeons)
 
-	if shuffle {
+	if dungeonShuffle {
 		src.Shuffle(len(entrances), func(i, j int) {
 			entrances[i], entrances[j] = entrances[j], entrances[i]
 		})
 	}
 
-	for i := 0; i < len(dungeons); i++ {
-		entranceName := fmt.Sprintf("%s entrance", entrances[i])
-		dungeonEntranceMap[entrances[i]] = dungeons[i]
-		g[fmt.Sprintf("enter %s", dungeons[i])].addParent(g[entranceName])
+	if !entranceShuffle {
+		for i := 0; i < len(dungeons); i++ {
+			innerEntranceName := fmt.Sprintf("inner %s", entrances[i])
+			outerEntranceName := fmt.Sprintf("outer %s", entrances[i])
+			g[innerEntranceName].removeParent(g[outerEntranceName])
+			g[outerEntranceName].removeParent(g[innerEntranceName])
+		}
+
+		for i := 0; i < len(dungeons); i++ {
+			innerEntranceName := fmt.Sprintf("inner %s", dungeons[i])
+			outerEntranceName := fmt.Sprintf("outer %s", entrances[i])
+			g[innerEntranceName].addParent(g[outerEntranceName])
+			g[outerEntranceName].addParent(g[innerEntranceName])
+			dungeonEntranceMap[entrances[i]] = dungeons[i]
+		}
 	}
 
 	return dungeonEntranceMap
