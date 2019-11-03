@@ -201,17 +201,19 @@ inner past - talus peaks - R water change cave: {or: [water change caves]}
 goron upper past L: {or: [
   outer past - moblin keep cave,
   outer past - upper goron - under peg tree,
-  [or: [ages, [bracelet, echoes]], goron upper present L]
+  [or: [ages, [bracelet, echoes]], goron upper present L],
+  [non-entrance, goron upper past M]
 ]}
 outer past - moblin keep cave: {or: [goron upper past L]}
 outer past - upper goron - under peg tree: {or: [goron upper past L]}
 outer past - SW cave to upper goron: {or: [
   [switch hook, or: [outer past - SW goron - old zora, ages, [lynna village, feather]]],
-  [outer present - first cave to upper goron, ages]
+  [outer present - first cave to upper goron, ages],
+  [non-entrance, goron upper past L]
 ]}
 
 inner past - moblin keep cave: {or: []}
-inner past - upper goron - under peg tree: {or: []}
+inner past - upper goron - under peg tree: {or: [[non-entrance, inner past - SW cave to upper goron]]}
 inner past - SW cave to upper goron: {or: []}
 
 # goron upper R
@@ -238,9 +240,15 @@ inner past - upper goron - E of d5 L: {or: []}
 inner past - upper goron - E of d5 R: {or: []}
 
 # goron mid
-outer past - mid goron - SW of bomb cave: {or: [[goron present mid bottom, ages]]}
+outer past - mid goron - SW of bomb cave: {or: [
+  [goron present mid bottom, ages],
+  [non-entrance, or: [goron upper past R, outer past - mid goron - sword game]]
+]}
 outer past - mid goron - sword game: {or: [[goron present mid top, or: [ages, [bracelet, or: [currents, [gale satchel, echoes]]]]]]}
-outer past - mid goron - near seed tree: {or: [[goron present mid bottom, ages]]}
+outer past - mid goron - near seed tree: {or: [
+  [goron present mid bottom, ages],
+  [non-entrance, outer past - mid goron - sword game]
+]}
 
 inner past - mid goron - SW of bomb cave: {or: [
   [inner past - dance cave, brother emblem, feather]
@@ -268,7 +276,8 @@ goron lower past E: {or: [
   [goron lower past W, or: [[hard, jump 3], flippers]],
   outer past - lower goron - leftmost cave,
   outer past - lower goron old man,
-  [goron lower present, ages]
+  [goron lower present, ages],
+  [non-entrance, outer past - mid goron - near seed tree]
 ]}
 outer past - lower goron - leftmost cave: {or: [goron lower past W]}
 outer past - dance cave: {or: [goron lower past E]}

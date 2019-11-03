@@ -1,6 +1,7 @@
 # maku path
 maku path basement: {or: [
-    maku tree, [inner past - maku tree cave, or: [shovel, kill normal]]]} # shovel kills gels
+    maku tree, [inner past - maku tree cave, 
+    or: [shovel, or: [kill normal, non-entrance]]]]} # shovel kills gels
 
 # d1
 enter d1: {or: []}

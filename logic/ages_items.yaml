@@ -2,7 +2,7 @@ shield: {or: [wooden shield, iron shield]}
 
 bombs: {or: [
     ["bombs, 10", or: [bracelet, break pot, flute, shovel]],
-    [hard, or: [d2 boss, [goron shooting gallery, farm rupees]]]]}
+    [hard, or: [d2 boss, [goron shooting gallery, or: [non-entrance, farm rupees]]]]]}
 
 ricky's flute: {or: []}
 dimitri's flute: {or: []}
@@ -11,7 +11,7 @@ flute: {or: [ricky's flute, dimitri's flute, moosh's flute]}
 
 farm rupees: {or: [ # only in logic for minigames. so almost never matters
     sword, shovel, bracelet, 
-    # boomerang, cane,
+    [non-entrance, or: [boomerang, cane]],
     switch hook, flute]}
 fixed rupees: {rupees: [
     "rupees, 10", "rupees, 20", "rupees, 30", "rupees, 50", "rupees, 100",
