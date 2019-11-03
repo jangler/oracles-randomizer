@@ -3,7 +3,7 @@
 
 start: [] # parent for nodes reachable by default
 hard: {or: []}
-oneways: {or: []}
+non-entrance: {or: []}
 
 # forest of time
 starting chest: [start]

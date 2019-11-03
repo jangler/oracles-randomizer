@@ -34,7 +34,10 @@ lower west coast: {or: [
 upper west coast: {or: [  # area surrounding SW grave
   [outer d7, shovel],  # in case of winter
   [outer SW graveyard, shovel],
-  [lower west coast, or: [[western coast default summer, pirate ship], jump 3]]
+  [lower west coast, or: [
+      [western coast default summer, pirate ship], jump 3],
+      [non-entrance, summer, coast stump]
+  ]
 ]}
 outer west coast house - main entrance: {or: [lower west coast]}
 outer west coast house - side entrance: {or: []}
@@ -73,7 +76,15 @@ outer windmill entrance above main entrance: {or: [[suburbs, or: [winter, easter
 outer shovel girl main entrance: {or: [[moblin road, or: [winter, woods of winter default winter]]]}
 
 inner ww bomb cave: {or: []}
-inner ww cave under sunken: {or: []}
+inner ww cave under sunken: {or: [
+    [non-entrance, [sunken city, flippers, or: [
+        sunken city default spring, spring,
+        sunken city default summer, summer,
+        sunken city default autumn, autumn],
+        or: [gale satchel, [
+            or: [eastern suburbs default winter, winter],
+            or: [eastern suburbs default spring, spring]]]]]
+]}
 inner E of d2 - L cave: {or: []}
 inner E of d2 - R cave: {or: []}
 inner suburbs stairs past blooming flower: {or: []}
@@ -118,8 +129,13 @@ outer eyeglass bomb cave: {or: [[
     or: [bombs, ricky's flute],
     or: [[north horon stump, or: [north horon default summer, summer],
             or: [feather, ricky's flute, moosh's flute]],
-        [d5 stump, summer]]]]}
-outer eyeglass stairs under water: {or: [[d5 stump, bracelet, summer]]}
+        [d5 stump, summer],
+        [non-entrance, d5 entrance, north horon default summer]]
+]]}
+outer eyeglass stairs under water: {or: [
+    [d5 stump, bracelet, summer],
+    [non-entrance, d5 entrance, north horon default summer]
+]}
 outer impa: {or: [[horon village, or: [d1 boss, d2 boss, d3 boss, d4 boss, d5 boss, d6 boss,
     d7 boss, d8 boss]]]}
 
@@ -270,7 +286,10 @@ outer tarm deku: {or: [[
     or: [lost woods default winter, winter],  # to push 2nd statue
     autumn, break mushroom,
     or: [flippers, bomb jump 2]]]}
-outer tarm tree stairs: {or: [[lost woods, break mushroom, ember seeds, autumn, tarm ruins default autumn]]}
+outer tarm tree stairs: {or: [
+    [lost woods, break mushroom, ember seeds,
+    or: [[non-entrance, autumn], tarm ruins default autumn]]
+]}
 before lost woods: [outer tarm deku, or: [cape, [hard, jump 3]]]
 outer bomb cave before lost woods: {or: [[before lost woods, bombs]]}
 outer stairs SE of lost woods: {or: [[before lost woods, ember seeds]]}

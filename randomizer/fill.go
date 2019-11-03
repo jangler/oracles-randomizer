@@ -212,6 +212,9 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		if ropts.hard {
 			ri.graph["hard"].addParent(ri.graph["start"])
 		}
+		if !ropts.entrance {
+			ri.graph["non-entrance"].addParent(ri.graph["start"])
+		}
 
 		ri.companion = rollAnimalCompanion(ri.src, ri.graph, rom.game)
 		ri.ringMap, _ = rom.randomizeRingPool(ri.src, nil)

@@ -4,6 +4,7 @@
 
 start: [] # parent for nodes reachable by default
 hard: {or: []}
+non-entrance: {or: []}
 
 # horon village
 horon village: {or: [start, # portal included in case something changes
@@ -11,7 +12,7 @@ horon village: {or: [start, # portal included in case something changes
 maku tree: [horon village, sword]
 horon village tree: [horon village, seed item,
     or: [harvest tree, dimitri's flute, [hard, break bush]]]
-horon village SE chest: [outer SE horon vill house - side entrance, or: [bomb jump 2, flippers]]
+horon village SE chest: [outer SE horon vill house - side entrance, or: [non-entrance, bomb jump 2, flippers]]
 horon village SW chest: [horon village, or: [break mushroom, dimitri's flute]]
 shop, 20 rupees: [inner horon shop, or: [count: [30, fixed rupees], [hard, shovel]]]
 shop, 30 rupees: [inner horon shop, or: [count: [60, fixed rupees], [hard, shovel]]]
@@ -30,10 +31,20 @@ black beast's chest: [horon village,
 d0 entrance: [horon village]
 heros cave basement: [d0 entrance, or: [kill normal, boomerang]]
 pirate ship: [pirate's bell, inner pirate house - main entrance]
-d7 entrance: [upper west coast, or: [shovel, [horon village, pirate ship, western coast default summer]]]
+coast stump: [outer west coast house - side entrance]
+west coast not winter: {or: [
+    western coast default summer, western coast default autumn, 
+    western coast default spring, [coast stump, or: [spring, summer, autumn]]]}
+d7 entrance: [upper west coast, or: [
+    shovel, 
+    [horon village, pirate ship, western coast default summer],
+    [non-entrance, west coast not winter]
+]]
 western coast, beach chest: [lower west coast]
 western coast, in house: [inner west coast house - main entrance]
-outside d7 hp: [upper west coast, western coast default autumn, break mushroom]
+outside d7 hp: [
+    upper west coast, break mushroom, 
+    or: [western coast default autumn, [non-entrance, coast stump, autumn]]]
 
 # eastern suburbs
 suburbs: {or: [ # this is the area south of the pool by sokra's stump
@@ -91,7 +102,7 @@ blaino's gym: {or: [
     [outer natzu fairy cave - Dimitri, or: [flute, [flippers, swimmer's ring]]],
     [outer treehouse old man, flippers],
     [ghastly stump,
-        or: [feather, ricky, flute, winter]],
+        or: [feather, ricky, flute, winter, [non-entrance, holodrum plain default winter]]],
     [south swamp, or: [flippers, dimitri's flute]],
     [sunken city, or: [
         [natzu prairie, flute],
@@ -113,7 +124,9 @@ holodrum plain diving gasha: [flippers, blaino's gym]
 # spool swamp
 north swamp: {or: [
     outer floodgate house,
-    [ghastly stump, or: [summer, cape, ricky, moosh's flute]]]}
+    [ghastly stump, or: [
+        [non-entrance, holodrum plain default summer], 
+        summer, cape, ricky, moosh's flute]]]}
 spool swamp tree: [north swamp, seed item,
     or: [harvest tree, dimitri's flute]]
 floodgate keeper's house: [inner floodgate house, hit lever]
@@ -160,6 +173,7 @@ d1 entrance: [gnarled key, or: [
 wet eyeglass lake: {
     or: [not north horon default summer, spring, autumn, winter]}
 d5 stump: {or: [
+    outer d5,
     [exit eyeglass lake portal, not north horon default summer,
         or: [flippers, [north horon default winter, jump 6]]],
     [north horon stump, not north horon summer,
@@ -179,7 +193,9 @@ dry eyeglass lake, west cave: [inner eyeglass bomb cave, flippers]
 natzu prairie: {or: []}
 natzu river: {or: []}
 natzu wasteland: {or: []}
-moblin keep: [bracelet, or: [gale satchel, outer moblin keep L entrance], or: [inner moblin keep L entrance, inner moblin keep R entrance]]
+moblin keep: [bracelet, 
+    or: [gale satchel, outer moblin keep L entrance], 
+    or: [inner moblin keep L entrance, inner moblin keep R entrance]]
 natzu region, across water: [inner stairs N of natzu]
 
 # sunken city
@@ -210,7 +226,9 @@ mount cucco: {or: [exit mt. cucco portal,
     [outer mt cucco - cave by portal, or: [sunken city default winter, winter]],
     [sunken city, flippers, or: [sunken city default summer, summer]],
     [goron mountain bomb wall, shovel]]}
-spring banana tree: {or: []}  # spring-only
+spring banana tree: [non-entrance, mount cucco, bracelet, feather,
+    or: [break flower, moosh, [hard, gale satchel]],
+    or: [sunken city default spring, spring], or: [sword, fool's ore]]  # spring-only so not yet suited for entrance rando
 mt. cucco, platform cave: [inner mt cucco S of banana tree screen]
 moosh: [mount cucco, spring banana]
 goron mountain, across pits: [mount cucco, or: [moosh, jump 6, [hard, cape]]]
@@ -254,6 +272,16 @@ temple remains lower stump: {or: [
             [hard, jump 6, or: [summer, temple remains default summer]],
             [hard, break flower, jump 6,
                 or: [spring, temple remains default spring]]]]]],
+    [non-entrance, exit temple remains upper portal, feather,
+        # make sure you can get down
+        or: [bomb temple remains, winter, temple remains default winter,
+            [break bush, or: [autumn, [hard, jump 6,
+                or: [temple remains not spring, break flower]]]]],
+        # then make sure you can get back up
+        or: [gale satchel,
+            [bomb temple remains,
+                or: [summer, temple remains default summer],
+                or: [jump 6, [bomb jump 2, magnet gloves]]]]],
     [outer cave below goron mountain area, jump 3],
     [blaino's gym, jump 3]]}
 # this is from the upper stump

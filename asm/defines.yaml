@@ -22,6 +22,7 @@ common:
     define SND_CLINK,50
     define SND_ERROR,5a
     define SND_SOLVEPUZZLE_2,5b
+    define SND_ENTERCAVE,6e
     define TREASURE_SHIELD,01
     define TREASURE_PUNCH,02
     define TREASURE_CANE_OF_SOMARIA,04
@@ -200,6 +201,8 @@ seasons:
     define wDungeonIndex,cc55
     define wWarpDestGroup,cc63
     define wWarpDestIndex,cc64
+    define wWarpTransition,cc65
+    define wWarpDestPos,cc66
     define wWarpTransition2,cc67
     define wDisableWarpTiles,ccaa
     define wDisableTransitions,ccab

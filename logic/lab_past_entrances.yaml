@@ -88,7 +88,6 @@ crescent past E: {or: [
   outer past - crescent - E house,
   outer past - crescent - SE cave,
   [outer past - crescent - E stairs after boulder, bracelet],
-  [outer past - crescent - E bomb cave, oneways, bombs],
   [crescent present E, echoes]
 ]}
 crescent past NW: {or: [
@@ -104,7 +103,6 @@ crescent past SW: {or: [
 ]}
 crescent past S: {or: [
   all crescent, outer past - crescent - R coconut separated cave,
-  [outer past - crescent - central bomb cave, oneways, bombs],
   [crescent past E, or: [bracelet, feather]]
 ]}
 outer past - crescent - shop: {or: [crescent past E]}
@@ -256,8 +254,7 @@ goron lower past water: [mermaid suit, or: [
   [lynna village, feather],
   [outer past - SW cave to upper goron, switch hook],
   outer past - lower goron - leftmost cave,
-  outer past - dance cave,
-  [outer past - lower goron old man, oneways, ember shooter]
+  outer past - dance cave
 ]]
 goron lower past W: {or: [
   goron lower past water,
