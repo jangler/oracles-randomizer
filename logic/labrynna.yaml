@@ -143,7 +143,7 @@ mermaid legend owl: [ridge base present]
 d6 present entrance: [old mermaid key, ridge base present]
 pool in d6 entrance: [ridge base present, mermaid suit]
 goron dance present: [ridge base present, farm rupees]
-goron dance, with letter: [ridge base past, goron letter, farm rupees]
+goron dance, with letter: [ridge base past east, goron letter, farm rupees]
 ridge mid past: {or: [
     [ridge base past west, switch hook],
     [ridge upper present, ages],
