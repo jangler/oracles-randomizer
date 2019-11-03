@@ -24,6 +24,9 @@ ages:
   # opens up gba shop
   04/6536/: nop
 
+  # correct value for d5 essence exit
+  04/76af/: db 17
+
   # old men who take rupees takes 0
   15/5042/: |
       ld a,00
