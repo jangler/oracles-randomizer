@@ -70,7 +70,7 @@ subrosian's gasha: [inner house NE of thieves portal, feather]
 subrosia, open cave: [inner subrosia open cave]
 subrosia, locked cave: [inner subrosia locked cave]
 ore chunks: {or: [
-    # sword, bracelet, magic boomerang, shovel, 
+    [non-entrance, or: [sword, bracelet, magic boomerang, shovel]],
     subrosian dance hall]}
 subrosia market, 1st item: [inner subrosia shop, star ore]
 subrosia market, 2nd item: [inner subrosia shop, ore chunks, ember seeds]
