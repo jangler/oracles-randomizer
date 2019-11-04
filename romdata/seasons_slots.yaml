@@ -354,7 +354,7 @@ d0 rupee chest:
   treasure: rupees, 30
   room: 0x0405
   morerooms: [0x052c] # linked equivalent
-heros cave basement:
+d0 basement:
   treasure: standing gasha
   room: 0x0601
   maptile: 0xd4

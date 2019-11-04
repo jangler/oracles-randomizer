@@ -93,14 +93,14 @@ func newRomState(data []byte, game int) *romState {
 	return rom
 }
 
-func (rom *romState) getShuffledEntrances() map[string]shuffledEntrance {
-	entrances1 := make(map[string]shuffledEntrance)
+func (rom *romState) getShuffledEntrances() map[string]*shuffledEntrance {
+	entrances1 := make(map[string]*shuffledEntrance)
 	if err := yaml.Unmarshal(
 		FSMustByte(false, sora(rom.game, "/romdata/holodrum_warps.yaml", "/romdata/lab_present_warps.yaml").(string)),
 		entrances1); err != nil {
 		panic(err)
 	}
-	entrances2 := make(map[string]shuffledEntrance)
+	entrances2 := make(map[string]*shuffledEntrance)
 	if err := yaml.Unmarshal(
 		FSMustByte(false, sora(rom.game, "/romdata/subrosia_warps.yaml", "/romdata/lab_past_warps.yaml").(string)),
 		entrances1); err != nil {
@@ -115,14 +115,31 @@ func (rom *romState) getShuffledEntrances() map[string]shuffledEntrance {
 func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 	entrances := rom.getShuffledEntrances()
 
+	for _, entrance := range entrances {
+		if entrance.Entrycustomwarp != "" {
+			mut := rom.codeMutables[entrance.Entrycustomwarp]
+			entrance.oldEntryByte1 = mut.new[entrance.Entry*5+3]
+			entrance.oldEntryByte2 = mut.new[entrance.Entry*5+4]
+		} else {
+			entrance.oldEntryByte1 = rom.data[entrance.Entry]
+			entrance.oldEntryByte2 = rom.data[entrance.Entry+1]
+		}
+		if entrance.Exitcustomwarp != "" {
+			mut := rom.codeMutables[entrance.Exitcustomwarp]
+			entrance.oldExitByte1 = mut.new[entrance.Exit*5+3]
+			entrance.oldExitByte2 = mut.new[entrance.Exit*5+4]
+		} else {
+			entrance.oldExitByte1 = rom.data[entrance.Exit]
+			entrance.oldExitByte2 = rom.data[entrance.Exit+1]
+		}
+	}
+
 	wd := make(map[string](map[string]*warpData))
 	if err := yaml.Unmarshal(
 		FSMustByte(false, "/romdata/warps.yaml"), wd); err != nil {
 		panic(err)
 	}
 	warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
-
-	entranceData := make(map[string]*shuffledEntrance)
 
 	for outerName, innerName := range entranceMapping {
 		if outerName != innerName {
@@ -131,18 +148,27 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(sora(rom.game, 0x8, 0x9).(int)*0x4000)
 
 				outer := entrances[outerName]
-				destGroup := (rom.data[outer.Exit+1] & 0xf0) >> 4 // upper nybble is dest group
 
+				var destGroup byte
 				var yxInWorld byte
 				var yxInRoom byte
 
-				if outer.Ismultiwarp {
-					yxInWorld = outer.Maptile
-					yxInRoom = rom.data[outer.Entry-1]
+				if outer.Entrycustomwarp != "" {
+					mut := rom.codeMutables[outer.Entrycustomwarp]
+					destGroup = mut.new[outer.Entry*5]
+					yxInWorld = mut.new[outer.Entry*5+1]
+					yxInRoom = mut.new[outer.Entry*5+2]
 				} else {
-					yxInWorld = rom.data[outer.Entry-1]
-					yxInRoom = outer.Roomtile
+					destGroup = (outer.oldExitByte2 & 0xf0) >> 4 // upper nybble is dest group
+					if outer.Ismultiwarp {
+						yxInWorld = outer.Maptile
+						yxInRoom = rom.data[outer.Entry-1]
+					} else {
+						yxInWorld = rom.data[outer.Entry-1]
+						yxInRoom = outer.Roomtile
+					}
 				}
+
 				rom.data[warpExit] = (rom.data[warpExit] & 0xf0) + destGroup
 				rom.data[warpExit+1] = yxInWorld
 				rom.data[warpExit+2] = yxInRoom
@@ -152,30 +178,30 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 					rom.data[warpExit+3] = 0x01
 				}
 			}
-			if _, ok := entranceData[outerName]; !ok {
-				entranceData[outerName] = &shuffledEntrance{
-					Entry: entrances[outerName].Entry,
-					Exit:  entrances[outerName].Exit,
-				}
-			}
-			if _, ok := entranceData[innerName]; !ok {
-				entranceData[innerName] = &shuffledEntrance{
-					Entry: entrances[innerName].Entry,
-					Exit:  entrances[innerName].Exit,
-				}
-			}
 
-			entranceData[outerName].newEntryByte1 = rom.data[entrances[innerName].Entry]
-			entranceData[outerName].newEntryByte2 = (rom.data[entrances[innerName].Entry+1] & 0xf0) + (rom.data[entrances[outerName].Entry+1] & 0xf)
-			entranceData[innerName].newExitByte1 = rom.data[entrances[outerName].Exit]
-			entranceData[innerName].newExitByte2 = (rom.data[entrances[outerName].Exit+1] & 0xf0) + (rom.data[entrances[innerName].Exit+1] & 0xf)
+			entrances[outerName].newEntryByte1 = entrances[innerName].oldEntryByte1
+			entrances[outerName].newEntryByte2 = (entrances[innerName].oldEntryByte2 & 0xf0) + (entrances[outerName].oldEntryByte2 & 0xf)
+			entrances[innerName].newExitByte1 = entrances[outerName].oldExitByte1
+			entrances[innerName].newExitByte2 = (entrances[outerName].oldExitByte2 & 0xf0) + (entrances[innerName].oldExitByte2 & 0xf)
 		}
 	}
-	for _, entrance := range entranceData {
-		rom.data[entrance.Entry] = entrance.newEntryByte1
-		rom.data[entrance.Entry+1] = entrance.newEntryByte2
-		rom.data[entrance.Exit] = entrance.newExitByte1
-		rom.data[entrance.Exit+1] = entrance.newExitByte2
+	for _, entrance := range entrances {
+		if entrance.Entrycustomwarp != "" {
+			mut := rom.codeMutables[entrance.Entrycustomwarp]
+			mut.new[entrance.Entry*5+3] = entrance.newEntryByte1
+			mut.new[entrance.Entry*5+4] = entrance.newEntryByte2
+		} else {
+			rom.data[entrance.Entry] = entrance.newEntryByte1
+			rom.data[entrance.Entry+1] = entrance.newEntryByte2
+		}
+		if entrance.Exitcustomwarp != "" {
+			mut := rom.codeMutables[entrance.Exitcustomwarp]
+			mut.new[entrance.Exit*5+3] = entrance.newExitByte1
+			mut.new[entrance.Exit*5+4] = entrance.newExitByte2
+		} else {
+			rom.data[entrance.Exit] = entrance.newExitByte1
+			rom.data[entrance.Exit+1] = entrance.newExitByte2
+		}
 	}
 }
 

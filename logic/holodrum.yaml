@@ -28,8 +28,6 @@ mayor house gasha: [inner mayors house, bombs]
 black beast's chest: [horon village,
     or: [ember slingshot, [hard, mystery slingshot]],
     mystery seeds, kill armored]
-d0 entrance: [horon village]
-heros cave basement: [d0 entrance, or: [kill normal, boomerang]]
 pirate ship: [pirate's bell, inner pirate house - main entrance]
 coast stump: [outer west coast house - side entrance]
 west coast not winter: {or: [
@@ -51,6 +49,7 @@ suburbs: {or: [ # this is the area south of the pool by sokra's stump
     outer windmill main entrance,
     [outer windmill entrance above main entrance, or: [winter, eastern suburbs default winter]],
     [horon village, ember seeds],
+    [outer fixed quicksand, inner pirate house - main entrance],
     [exit eastern suburbs portal, break bush],
     [fairy fountain, or: [eastern suburbs default winter, winter,
         flippers, feather, ricky's flute, dimitri's flute]]]}
@@ -235,7 +234,7 @@ goron mountain, across pits: [mount cucco, or: [moosh, jump 6, [hard, cape]]]
 mt. cucco, talon's cave: [inner mt cucco mushroom guy]
 dragon keyhole: [outer mt cucco stairs near top cucco, bracelet]
 d4 entrance: [dragon key, dragon keyhole, summer]
-diving spot outside D4: [outer mt cucco mushroom guy, flippers]
+diving spot outside D4: [inner d4 dive spot, flippers]
 cucco cliff hp: [outer mt cucco mushroom guy, or: [sunken city default spring, spring]]  # can go back up
 
 # goron mountain
@@ -257,7 +256,7 @@ d6 entrance: [lost woods, break flower safe,
 tarm ruins, under tree: [inner tarm tree stairs]
 
 # samasa desert
-desert: [suburbs, inner pirate house - main entrance]
+desert: {or: [[suburbs, inner pirate house - main entrance], outer fixed quicksand]}
 samasa desert pit: [desert, bracelet]
 samasa desert chest: [outer desert chest stairs]
 

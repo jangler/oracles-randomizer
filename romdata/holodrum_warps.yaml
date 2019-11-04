@@ -1,3 +1,9 @@
+# fixed quicksand: # entering quicksand does not warp correctly
+#   entry: 0x13579
+#   exit: 0x2
+#   exitcustomwarp: customWarpSrcTable
+#   connector: true
+
 # horon village
 know-it-all:
   entry: 0x13605
@@ -289,6 +295,18 @@ moblin rest house:
   entry: 0x134cd
   exit: 0x13895
   roomtile: 0x57
+sunken city N dive spot:
+  entry: 0x1
+  exit: 0x13de5
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
+sunken city S dive spot:
+  entry: 0x5
+  exit: 0x1
+  entrycustomwarp: diveWarpTable
+  exitcustomwarp: customWarpSrcTable
+  oneway: true
 
 # mt cucco
 mt cucco stairs near top cucco:
@@ -328,6 +346,17 @@ mt cucco - cave by portal:
   exit: 0x13a09
   maptile: 0x1e
   ismultiwarp: true
+  oneway: true
+mt cucco S dive spot:
+  entry: 0x0
+  exit: 0x13de1
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
+d4 dive spot:
+  entry: 0x2
+  exit: 0x13df1
+  entrycustomwarp: diveWarpTable
   oneway: true
 
 # goron mountain
@@ -419,6 +448,18 @@ desert chest stairs:
   exit: 0x13a35
   roomtile: 0x36
   connector: true
+quicksand dive spot:
+  entry: 0x3
+  exit: 0x13df5
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
+desert chest dive spot:
+  entry: 0x4
+  exit: 0x13df9
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
 
 # temple remains
 NW temple ruins building:
@@ -503,6 +544,18 @@ mrs ruul old man:
   oneway: true
 
 # dungeons
+d0 main:
+  entry: 0x13651
+  exit: 0x13909
+  ismultiwarp: true
+  maptile: 0xd4
+d0 roof:
+  entry: 0x1364d
+  exit: 0x0
+  exitcustomwarp: customWarpSrcTable
+  oneway: true
+  ismultiwarp: true
+  maptile: 0xd4
 d1:
   entry: 0x1346d
   exit: 0x1390d

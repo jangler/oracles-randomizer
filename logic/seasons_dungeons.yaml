@@ -7,14 +7,13 @@
 # required to be killed with one throw.
 
 # d0
-enter d0: [d0 entrance] # not randomized
-
 # 0 keys
-d0 key chest: [enter d0]
-d0 rupee chest: {or: [break bush safe, flute]}
+d0 key chest: [inner d0 main]
+d0 rupee chest: [inner d0 roof]
+d0 basement: [inner d0 main, or: [kill normal, boomerang]]
 
 # 1 key
-d0 sword chest: [enter d0, d0 small key]
+d0 sword chest: [inner d0 main, d0 small key]
 
 # d1
 # bush-throwing is in hard logic for a few rooms, but the goriya one only

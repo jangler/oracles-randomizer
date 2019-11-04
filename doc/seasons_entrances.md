@@ -18,6 +18,8 @@
 - Fairy cave near Hero's cave
 - Hidden stairs in SW graveyard screen (use shovel)
 - Rupee-giving old man
+- D0 main entrance
+- D0 roof entrance
 - D7
 
 ## Eastern Suburbs
@@ -72,6 +74,8 @@
 - Witch's house
 - House near dimitri
 - Moblin rest house
+- N dive spot to Mt Cucco
+- S dive spot to Winter Woods
 
 ## Mt Cucco
 - Stairs near Northmost cucco
@@ -82,6 +86,8 @@
 - Cave South of above
 - Cave same screen as portal
 - D4
+- D4 dive spot
+- S dive spot to Sunken
 
 ## Goron Mountain
 - Goron ring cave
@@ -106,6 +112,8 @@
 ## Samasa Desert
 - Northeast desert bomb cave
 - Stairs by desert chest
+- Dive spot in fixed quicksand
+- Dive spot near desert chest
 
 ## Temple Remains
 - Building to upper portal

@@ -5,6 +5,8 @@
 - mt cucco top cucco - add another one that travels the other way
 - non-random desert quicksand can be a potential soft lock
 - reconsidering resetting season on exit to overworld
+- fixing d0 drop - non-instant transition messes up camera if it leads to a big room
+- fixing d0 warp from sword chest
 
 ## Soft lock warnings
 Most of these checks can be easily done if seasons reset on overworld exit

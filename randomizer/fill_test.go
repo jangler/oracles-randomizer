@@ -15,16 +15,20 @@ func testSeasonsGraph(t *testing.T) {
 	rom := newRomState(nil, gameSeasons)
 	g := newRouteGraph(rom)
 
-	// test basic start item
-	checkReach(t, g, map[string]string{
+	testMap := map[string]string{
 		"d0 key chest": "feather",
-	}, "maku tree", false)
-	checkReach(t, g, map[string]string{
+	}
+	setTestEntrances(testMap, rom)
+	// test basic start item
+	checkReach(t, g, testMap, "maku tree", false)
+	testMap = map[string]string{
 		"d0 key chest": "sword",
-	}, "maku tree", true)
+	}
+	setTestEntrances(testMap, rom)
+	checkReach(t, g, testMap, "maku tree", true)
 
 	// test hard logic via bracelet shenanigans in d1
-	testMap := map[string]string{
+	testMap = map[string]string{
 		"d0 key chest":           "bracelet",
 		"d0 rupee chest":         "gnarled key",
 		"horon village SW chest": "winter",

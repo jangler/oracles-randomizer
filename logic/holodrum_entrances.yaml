@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 # horon village
 outer know-it-all: {or: [horon village]}
 outer mayors house: {or: [horon village]}
@@ -206,6 +213,8 @@ outer witch's house: {or: [
   ]}
 outer house by dimitri bullies: {or: [sunken city hub]}
 outer moblin rest house: {or: [sunken city hub]}
+outer sunken city N dive spot: {or: [[sunken city, flippers]]}
+outer sunken city S dive spot: {or: [[sunken city hub, flippers]]}
 
 inner sunken - NE flooded house: {or: []}
 inner sunken vase guy: {or: []}
@@ -214,6 +223,8 @@ inner 1st sunken house: {or: []}
 inner witch's house: {or: []}
 inner house by dimitri bullies: {or: []}
 inner moblin rest house: {or: []}
+inner sunken city N dive spot: {or: [[inner mt cucco S dive spot, flippers]]}
+inner sunken city S dive spot: {or: []}
 
 # mt cucco
 platform cave: [mount cucco, bracelet, or: [
@@ -226,6 +237,8 @@ outer mt cucco mushroom guy: {or: [[mount cucco, or: [sunken city default spring
 outer mt cucco cliff cave to top cucco: {or: [[mount cucco, winter, or: [sunken city default spring, spring]]]}
 outer mt cucco S of banana tree screen: {or: [platform cave]}
 outer mt cucco - cave by portal: {or: [[mount cucco, feather, or: [sunken city default winter, winter]]]}
+outer mt cucco S dive spot: {or: []}
+outer d4 dive spot: {or: [[outer mt cucco mushroom guy, flippers]]}
 
 inner mt cucco stairs near top cucco: {or: [
   [inner mt cucco cliff cave to top cucco, feather]
@@ -238,6 +251,8 @@ inner mt cucco cliff cave to top cucco: {or: [
 ]}
 inner mt cucco S of banana tree screen: {or: []}
 inner mt cucco - cave by portal: {or: []}
+inner mt cucco S dive spot: {or: [[inner sunken city N dive spot, flippers]]}
+inner d4 dive spot: {or: []}
 
 # goron mountain
 entrances near ring cave: {or: [
@@ -302,9 +317,15 @@ inner stairs SE of lost woods: {or: []}
 # samasa desert
 outer NE desert cave: {or: [[desert, bombs, or: [flippers, jump 3, [hard, bomb jump 2]]]]}
 outer desert chest stairs: {or: []}
+outer fixed quicksand: {or: []}
+outer quicksand dive spot: {or: [[desert, flippers]]}  # TODO: change to inner fixed quicksand once its randomized
+outer desert chest dive spot: {or: [[inner desert chest stairs, flippers]]}
 
 inner NE desert cave: {or: []}
-inner desert chest stairs: {or: [[desert, flippers]]}
+inner desert chest stairs: {or: []}
+inner fixed quicksand: {or: []}
+inner quicksand dive spot: {or: [[inner desert chest dive spot, flippers]]}
+inner desert chest dive spot: {or: [[inner quicksand dive spot, flippers]]}
 
 # temple remains
 outer NW temple ruins building: {or: [outer upper temple remains L stairs]}
@@ -346,6 +367,8 @@ inner tarm old man: {or: []}
 inner mrs ruul old man: {or: []}
 
 # dungeons
+outer d0 main: {or: [start]}
+outer d0 roof: {or: [break bush safe, flute]}
 outer d1: {or: [d1 entrance]}
 outer d2: {or: [d2 entrance]}
 outer d3: {or: [d3 entrance]}
@@ -355,6 +378,8 @@ outer d6: {or: [d6 entrance]}
 outer d7: {or: [d7 entrance]}
 outer d8: {or: [d8 entrance]}
 
+inner d0 main: {or: []}
+inner d0 roof: {or: []}
 inner d1: {or: []}
 inner d2: {or: []}
 inner d3: {or: []}

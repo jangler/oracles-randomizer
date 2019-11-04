@@ -98,21 +98,27 @@ func newRouteGraph(rom *romState) graph {
 }
 
 type shuffledEntrance struct {
-	Entry         uint32
-	Exit          uint32
-	Dungeon       bool
-	Roomtile      uint8
-	Maptile       uint8
-	Ismultiwarp   bool
-	Connector     bool // if inner part connects to another inner part
-	Oneway        bool // if logically, you can't exit a connector into this entrance's outer part (eg to old man tree)
-	Trapped       bool // if it is an outer that connects to nothing
-	Alignedleft   bool // if a dungeon essence warp should align you 8 pixels left
-	name          string
-	newEntryByte1 byte
-	newEntryByte2 byte
-	newExitByte1  byte
-	newExitByte2  byte
+	Entry           uint32
+	Exit            uint32
+	Dungeon         bool
+	Roomtile        uint8
+	Maptile         uint8
+	Ismultiwarp     bool
+	Entrycustomwarp string
+	Exitcustomwarp  string
+	Connector       bool // if inner part connects to another inner part
+	Oneway          bool // if logically, you can't exit a connector into this entrance's outer part (eg to old man tree)
+	Trapped         bool // if it is an outer that connects to nothing
+	Alignedleft     bool // if a dungeon essence warp should align you 8 pixels left
+	name            string
+	oldEntryByte1   byte
+	oldEntryByte2   byte
+	oldExitByte1    byte
+	oldExitByte2    byte
+	newEntryByte1   byte
+	newEntryByte2   byte
+	newExitByte1    byte
+	newExitByte2    byte
 }
 
 func setEntrances(rom *romState, src *rand.Rand, companion int, entrance bool) map[string]string {
@@ -131,8 +137,8 @@ func setEntrances(rom *romState, src *rand.Rand, companion int, entrance bool) m
 		delete(entrances, "natzu fairy cave - Dimitri")
 	}
 
-	outers := make([]shuffledEntrance, 0, len(entrances))
-	inners := make([]shuffledEntrance, 0, len(entrances))
+	outers := make([]*shuffledEntrance, 0, len(entrances))
+	inners := make([]*shuffledEntrance, 0, len(entrances))
 
 	for _, entranceName := range orderedKeys(entrances) {
 		entrance := entrances[entranceName]
