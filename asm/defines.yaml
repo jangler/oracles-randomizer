@@ -314,6 +314,7 @@ ages:
     define wWarpDestGroup,cc47
     define wWarpDestIndex,cc48
     define wWarpTransition,cc49
+    define wWarpDestPos,cc4a
     define wWarpTransition2,cc4b
     define wDisableTransitions,cc91
     define wDisabledObjects,cc8a

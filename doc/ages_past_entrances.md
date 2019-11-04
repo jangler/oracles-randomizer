@@ -4,6 +4,7 @@
 - Patch
 - Cave below Patch
 - 3 caves involved in getting to Talus Peaks chest (changing water direction)
+- Dive spot to Tokkey
 
 ## Lynna Village
 - Maku tree stairs

@@ -101,7 +101,6 @@ cave leading down from graveyard:
   entry: 0x4
   exit: 0x13a2d
   entrycustomwarp: customWarpSrcTable
-  roomtile: 0x47
   connector: true
 
 # eastern suburbs

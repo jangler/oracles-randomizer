@@ -15,7 +15,6 @@
 ## Past
 - Waterfall to d6 past
 - Past black tower - just need to check what happens when flag is set that turns it into last dungeon. Aim is to make its outer entrance lead to the same place if flag is set or not, and its inner entrances (flag set or not) reachable by the same outer entrance
-- Dive spot N Talus Peaks
 - D2 (just need to test past and present, entering and exiting works)
 
 ## Present

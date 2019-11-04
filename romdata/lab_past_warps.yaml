@@ -22,6 +22,12 @@ past - symmetry - SE house:
   roomtile: 0x34
 
 # symmetry cliffs
+tokkey dive spot:
+  entry: 0x0
+  exit: 0x13e84
+  entrycustomwarp: diveWarpTable
+  connector: true
+  oneway: true
 tuni nut game:
   entry: 0x1378c
   exit: 0x13a2c

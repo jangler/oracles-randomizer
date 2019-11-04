@@ -348,6 +348,18 @@ ages:
       db 01,7c,02,74,bd # cont.
       db 01,7c,02,75,bd # cont.
       db 01,7c,02,76,bd # cont.
+      db 07,05,00,01,01 # tokay underwater
+      db 07,05,00,02,01 # cont.
+      db 07,05,00,03,18 # cont.
+      db 07,05,00,04,01 # cont.
+      db 07,05,00,11,1c # cont.
+      db 07,05,00,12,1c # cont.
+      db 07,05,00,13,1a # cont.
+      db 07,05,00,14,1c # cont.
+      db 07,09,00,01,18 # tokkey underwater
+      db 07,09,00,02,01 # cont.
+      db 07,09,00,11,1a # cont.
+      db 07,09,00,12,1c # cont.
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it

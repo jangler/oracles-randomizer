@@ -162,6 +162,7 @@ past symmetry: {or: [
   [present symmetry, or: [ages, [echoes, break bush safe]]],
   [or: [ages, [currents, bracelet]], outer past - talus peaks - big cave to water changes]
 ]}
+outer tokkey dive spot: {or: [[past symmetry, flippers]]}
 outer past - symmetry - NW house: {or: [past symmetry]}
 outer past - symmetry - NE house: {or: [past symmetry]}
 outer past - symmetry - SW house: {or: [past symmetry]}
@@ -180,6 +181,7 @@ outer past - talus peaks - R water change cave: {or: [
   [outer past - talus peaks - L water change cave, ages]
 ]}
 
+inner tokkey dive spot: {or: []}
 inner past - symmetry - NW house: {or: []}
 inner past - symmetry - NE house: {or: []}
 inner past - symmetry - SW house: {or: []}
