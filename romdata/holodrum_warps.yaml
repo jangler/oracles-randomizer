@@ -92,6 +92,17 @@ SW graveyard:
   exit: 0x138d5
   roomtile: 0x14
   oneway: true
+cave leading up to graveyard:
+  entry: 0x13575
+  exit: 0x13a29
+  roomtile: 0x06
+  connector: true
+cave leading down from graveyard:
+  entry: 0x4
+  exit: 0x13a2d
+  entrycustomwarp: customWarpSrcTable
+  roomtile: 0x47
+  connector: true
 
 # eastern suburbs
 ww bomb cave:
@@ -145,6 +156,15 @@ shovel girl main entrance:
   ismultiwarp: true
   oneway: true
   trapped: true
+  connector: true
+holly roof:
+  entry: 0x1363d
+  exit: 0x3
+  exitcustomwarp: customWarpSrcTable
+  maptile: 0x7f
+  ismultiwarp: true
+  connector: true
+  oneway: true
 
 # holodrum plain
 blaino:
@@ -567,7 +587,18 @@ d2:
   exit: 0x13911
   maptile: 0x8d
   ismultiwarp: true
-  dungeon: true
+  connector: true
+d2 roof left:
+  entry: 0x1365d
+  exit: 0x13935
+  maptile: 0x8d
+  ismultiwarp: true
+d2 roof right:
+  entry: 0x13661
+  exit: 0x13939
+  maptile: 0x8e
+  ismultiwarp: true
+  connector: true
 d3:
   entry: 0x13671
   exit: 0x13915

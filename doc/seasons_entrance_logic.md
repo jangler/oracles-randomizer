@@ -20,10 +20,8 @@ Some could be added in the near future
 - Onox - could be an option - would make for some quick seeds, and a fun rare case where onox is locked behind an item in vanilla onox location (eg shovel is there, and onox in stairs behind clock shop)
 - Twinrova/Ganon dungeon
 - Maku tree-related entrances - could be a fun addition, so keeping track of dungeons beaten is important
-- The 2 quicksands in samasa desert, Holly's roof
+- The 2 quicksands in samasa desert
 - Dimitri caves - same reason as above, but also gotta make sure dimitri is handled well when both entering and exiting
-- Cave leading up to western coast graveyard - currently due to not being able to go down the same cave once in the graveyard
-- D2 stairs - usual soft lock scenarios in regular rando
 - Natzu dimitri waterfall
 
 ## Subrosia

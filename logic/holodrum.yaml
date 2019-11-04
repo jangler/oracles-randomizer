@@ -73,10 +73,9 @@ woods of winter owl: [mystery seeds, central woods of winter]
 woods of winter tree: [central woods of winter, seed item,
     or: [harvest tree, dimitri's flute]]
 d2 entrance: [central woods of winter, or: [break bush, flute]]
-d2 alt entrances enabled: {or: []} # not enabled in entrance rando
-d2 alt entrances: [d2 alt entrances enabled,
-    or: [d2 roof, [d2 blade chest, bracelet]]]
-d2 roof: {or: [d2 alt entrances,
+d2 alt entrances enabled: {or: []} # not enabled in dungeon shuffle
+d2 roof: {or: [
+    [d2 alt entrances enabled, or: [outer d2 roof left, outer d2 roof right]],
     [central woods of winter, bracelet,
         or: [woods of winter default summer, ricky's flute]]]}
 chest on top of D2: [d2 roof]

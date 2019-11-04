@@ -310,7 +310,7 @@ func setDungeonEntrances(
 		dungeons = dungeons[1:]
 	}
 
-	if game == gameSeasons && !(dungeonShuffle || entranceShuffle) {
+	if game == gameSeasons && !dungeonShuffle {
 		g["d2 alt entrances enabled"].addParent(g["start"])
 	}
 

@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 # horon village
 outer know-it-all: {or: [horon village]}
 outer mayors house: {or: [horon village]}
@@ -36,25 +29,31 @@ inner gba shop: {or: []}
 lower west coast: {or: [
   [horon village, pirate ship], 
   outer west coast house - main entrance, 
+  outer cave leading up to graveyard,
   [upper west coast, or: [[western coast default summer, pirate ship], jump 3]]  # can get back up
 ]}
 upper west coast: {or: [  # area surrounding SW grave
   [outer d7, shovel],  # in case of winter
   [outer SW graveyard, shovel],
+  outer cave leading down from graveyard,
   [lower west coast, or: [
-      [western coast default summer, pirate ship], jump 3],
-      [non-entrance, summer, coast stump]
-  ]
+      [western coast default summer, pirate ship],
+      [non-entrance, summer, coast stump, jump 3]
+  ]]
 ]}
 outer west coast house - main entrance: {or: [lower west coast]}
 outer west coast house - side entrance: {or: []}
 outer fairy cave near hero's cave: {or: [horon village]}
 outer SW graveyard: {or: [[upper west coast, shovel]]}
+outer cave leading up to graveyard: {or: [lower west coast]}
+outer cave leading down from graveyard: {or: [upper west coast]}
 
 inner west coast house - main entrance: {or: [[bombs, inner west coast house - side entrance, or: [hard, feather]]]}
 inner west coast house - side entrance: {or: [[bombs, inner west coast house - main entrance, or: [hard, feather]]]}
 inner fairy cave near hero's cave: {or: []}
 inner SW graveyard: {or: []}
+inner cave leading up to graveyard: {or: [[inner cave leading down from graveyard, jump 3]]}
+inner cave leading down from graveyard: {or: [[inner cave leading up to graveyard, jump 3]]}
 
 # eastern suburbs
 outer ww bomb cave: {or: [[
@@ -81,6 +80,9 @@ outer windmill guy: {or: []}
 outer windmill main entrance: {or: [suburbs]}
 outer windmill entrance above main entrance: {or: [[suburbs, or: [winter, eastern suburbs default winter]]]}
 outer shovel girl main entrance: {or: [[moblin road, or: [winter, woods of winter default winter]]]}
+outer holly roof: {or: [[moblin road, or: [winter, woods of winter default winter]]]}
+outer d2 roof left: {or: [d2 roof]}
+outer d2 roof right: {or: [d2 roof]}
 
 inner ww bomb cave: {or: []}
 inner ww cave under sunken: {or: [
@@ -98,7 +100,10 @@ inner suburbs stairs past blooming flower: {or: []}
 inner windmill guy: {or: [inner windmill main entrance]}
 inner windmill main entrance: {or: [inner windmill guy]}
 inner windmill entrance above main entrance: {or: []}
-inner shovel girl main entrance: {or: []}
+inner shovel girl main entrance: {or: [inner holly roof]}
+inner holly roof: {or: [inner shovel girl main entrance]}
+inner d2 roof left: {or: [[non-entrance, inner d2 roof right]]}
+inner d2 roof right: {or: [[d2 blade chest, bracelet]]}
 
 # holodrum plain
 outer blaino: {or: [blaino's gym]}

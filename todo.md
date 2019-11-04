@@ -7,6 +7,7 @@
 - reconsidering resetting season on exit to overworld
 - fixing d0 drop - non-instant transition messes up camera if it leads to a big room
 - fixing d0 warp from sword chest
+- d0 roof essence exit
 
 ## Soft lock warnings
 Most of these checks can be easily done if seasons reset on overworld exit
@@ -30,14 +31,12 @@ Most of these checks can be easily done if seasons reset on overworld exit
 - hard logic idea - 2d spring tower section with bombs/seeds
 - hide and seek without feather
 - check d2 deku scrub - for logical bombs
-- add back in the d2 alternate entrances (how will it work with essences)
 
 ## Relating to shared items
 - getSharedItemIds - better failure option
 
 # Ages
 - Soft locks
-- d5 exit room coordinate
 
 # Common
 - tree warp in logic

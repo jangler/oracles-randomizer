@@ -794,7 +794,7 @@ func (rom *romState) setWarps(warpMap map[string]string, dungeons bool, entrance
 			})
 		}
 
-		if dungeons || entrances {
+		if dungeons {
 			// remove alternate d2 entrances and connect d2 stairs exits
 			// directly to each other
 			src, dest := warps["d2 alt left"], warps["d2 alt right"]

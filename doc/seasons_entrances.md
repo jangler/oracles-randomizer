@@ -21,15 +21,17 @@
 - D0 main entrance
 - D0 roof entrance
 - D7
+- Cave leading up to d7 - 2 entrances
 
 ## Eastern Suburbs
 - Stairs above cliff a bit Northeast of windmill
 - Windmill - 3 entrances
 - Moblin road - bomb cave
 - Moblin road - 2nd cave under Sunken City
-- Moblin road - Holly
+- Moblin road - Holly - 2 entrances
 - East of D2 - left cave
 - East of D2 - right cave
+- D2 roof - 2 entrances
 - Rupee-taking old man
 - D2
 

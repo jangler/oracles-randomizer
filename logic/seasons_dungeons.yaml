@@ -46,14 +46,14 @@ enter d2: {or: []}
 d2 torch room: {or: [inner d2, d2 rope chest]}
 d2 left from entrance: [d2 torch room]
 d2 rope drop: [d2 torch room, or: [kill normal]]
-d2 arrow room: {or: [d2 alt entrances,
+d2 arrow room: {or: [[inner d2 roof right, bracelet],
     [d2 torch room, or: [ember seeds, [hard, mystery seeds]]]]}
 d2 rope chest: [d2 arrow room, kill normal]
 d2 rupee room: [d2 arrow room, bombs]
-d2 blade chest: {or: [d2 alt entrances,
+d2 blade chest: {or: [[inner d2 roof right, bracelet],
     [d2 arrow room, or: [kill normal, [hard, bracelet]]]]}
 d2 roller chest: [d2 bomb wall, bombs, bracelet]
-d2 spiral chest: [d2 roller chest]
+d2 spiral chest: [inner d2 roof left, break bush, bombs]
 
 # 2 keys
 d2 spinner: [d2 roller chest, count: [2, d2 small key]]

@@ -168,6 +168,8 @@ seasons:
       db 07,e7,00,1c,1c # cont.
       db 07,e7,00,1d,1a # cont.
       db 05,12,00,29,44 # dive down/stairs up from sunken to winter woods
+      db 03,a3,00,24,44 # stairs up to hollys roof
+      db 00,e1,00,27,ce # cliff to jump down SE graveyard
   14/d2AltEntranceTileSubs: |
       # these are enabled only if entrances are randomized
       db fe,8d,00,18,04 # remove left stairs

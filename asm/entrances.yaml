@@ -35,11 +35,13 @@ seasons:
       ret nz
       jp 4662
   # src group, src room, src tile position, dest room index, dest group(+8 if custom)|warp src transition
-  # d0 rupee chest, inner sunken S dive spot, fixed quicksand drop
+  # d0 rupee chest, inner sunken S dive spot, fixed quicksand drop, holly up to chimney, SW grave drop
   14/customWarpSrcTable: |
       db 04,05,0d,00,84
       db 05,12,29,07,84
       db 04,f4,27,08,84
+      db 03,a3,24,09,84
+      db 00,e1,37,0a,c9
       db ff
   14/checkCustomWarps_body: |
       ld hl,customWarpSrcTable
@@ -86,7 +88,8 @@ seasons:
       ld (wWarpDestGroup),a
       ret
   04/45d0/: jp checkCustomDest
-  # outer d0 roof, (e0 to 12) inner 6 dive spots, outer sunken S dive spot, fixed desert quicksand
+  # outer d0 roof, (e0 to 12) inner 6 dive spots, outer sunken S dive spot, fixed desert quicksand,
+  # cliff above holly's house, inside drop from SW graveyard
   04/customDestTable: |  # group8+ warp table - room id, position, dest transition
       db d4,28,04
       db e0,02,31
@@ -97,6 +100,8 @@ seasons:
       db 12,29,05
       db 6e,56,04
       db fd,25,04
+      db 7f,21,04
+      db f3,27,04
   04/checkCustomDest: |
       ld a,(wWarpDestGroup)
       bit 3,a
