@@ -200,7 +200,8 @@ natzu region, across water: {or: [
 sunken city: {or: [
     [mount cucco, flippers,
         or: [summer, sunken city default summer, gale satchel]],
-    [fairy fountain, or: [eastern suburbs default spring, spring]],
+    [fairy fountain, spring],
+    [central woods of winter, eastern suburbs default spring],
     [blaino's gym, or: [
         [natzu prairie, flute],
         [natzu river, or: [
