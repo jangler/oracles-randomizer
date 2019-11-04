@@ -200,7 +200,7 @@ natzu region, across water: [inner stairs N of natzu]
 sunken city: {or: [  # land at the start of sunken city
     [outer natzu deku cave - Ricky, or: [flute, break bush]],
     [sunken city hub, or: [flippers, dimitri, feather]],
-    [mount cucco, flippers,
+    [non-entrance, mount cucco, flippers,
         or: [summer, sunken city default summer, gale satchel]],
     [fairy fountain, or: [eastern suburbs default spring, spring]],
     [blaino's gym, or: [
@@ -222,7 +222,7 @@ chest in master diver's cave: [dimitri]
 mount cucco: {or: [exit mt. cucco portal,
     [outer mt cucco mushroom guy, or: [sunken city default spring, spring]],
     [outer mt cucco - cave by portal, or: [sunken city default winter, winter]],
-    [sunken city, flippers, or: [sunken city default summer, summer]],
+    [non-entrance, sunken city, flippers, or: [sunken city default summer, summer]],
     [goron mountain bomb wall, shovel]]}
 spring banana tree: [non-entrance, mount cucco, bracelet, feather,
     or: [break flower, moosh, [hard, gale satchel]],
