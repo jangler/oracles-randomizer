@@ -73,6 +73,7 @@ d3 E crystal: [d3 1F spinner, bombs]
 d3 statue drop: [d3 E crystal]
 
 # 1 key
+d3 seeds from bridge room: [enter d3, d3 small key, seed item, or: [sword, bombs]]
 # you can clip into the blocks enough to hit this crystal with switch hook
 d3 W crystal: [enter d3, d3 small key]
 d3 N crystal: [d3 W crystal,
