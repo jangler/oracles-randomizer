@@ -186,6 +186,9 @@ func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
 		}
 	}
 	for _, entrance := range entrances {
+		if entranceMapping[entrance.name] == entrance.name {
+			continue
+		}
 		if entrance.Entrycustomwarp != "" {
 			mut := rom.codeMutables[entrance.Entrycustomwarp]
 			mut.new[entrance.Entry*5+3] = entrance.newEntryByte1
