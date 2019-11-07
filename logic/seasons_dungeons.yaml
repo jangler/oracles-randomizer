@@ -250,7 +250,8 @@ d8 three eyes chest: [enter d8, feather,
     or: [any hyper slingshot,
         [hard, or: [ember satchel, scent satchel, mystery satchel]]]]
 d8 hardhat room: [enter d8, kill magunesu]
-d8 hardhat drop: [d8 hardhat room, kill hardhat (magnet)]
+d8 hardhat drop: [d8 hardhat room,
+    or: [[bombs, magnet gloves], [or: [slingshot, hard], gale seeds]]]
 
 # 1 key
 d8 spike room: [d8 hardhat room, d8 small key, or: [cape, [hard, jump 3]]]
