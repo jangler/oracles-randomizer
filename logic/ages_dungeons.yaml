@@ -228,7 +228,7 @@ scent seduction owl: [mystery seeds, d6 present rope room]
 d6 present rope chest: [d6 present rope room, scent satchel]
 d6 present hand room: [enter d6 present,
     or: [flippers, feather, switch hook],
-    or: [any seed shooter, boomerang,
+    or: [any seed shooter, boomerang, [bomb jump 3, sword],
         [jump 3, or: [sword, switch hook, ember seeds,
             scent seeds, mystery seeds, [hard, bombs]]]]]
 d6 present cube chest: [d6 present hand room, bombs, switch hook,
