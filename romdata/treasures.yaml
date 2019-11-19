@@ -9,6 +9,8 @@ common:
   bombs, 10: 0x0300
   sword: 0x0500
   boomerang: 0x0600
+  biggoron's sword: 0x0c00
+  bombchu, 10: 0x0d00
   ricky's flute: 0x0e00 # these flutes are correct for ages but fake for seasons
   dimitri's flute: 0x0e01
   moosh's flute: 0x0e02
