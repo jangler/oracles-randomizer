@@ -66,8 +66,7 @@ past - maku tree cave:
 past - maku tree stairs:
   entry: 0x13734
   exit: 0x13af4
-  ismultiwarp: true
-  maptile: 0x38
+  roomtile: 0x52
   connector: true
 past - lynna - gba shop:
   entry: 0x13858
