@@ -126,7 +126,8 @@ outer stairs by d3: {or: []}
 outer stairs by floodgate house: {or: [[inner floodgate house, hit lever, north swamp]]}
 outer floodgate house: {or: [north swamp]}
 outer swamp S bomb cave: {or: [[south swamp,
-    or: [spool swamp default winter, [spool stump, winter]],
+    or: [[winter, spool stump], [spool swamp default winter,
+        or: [flippers, [spool stump, or: [feather, flute]]]]],
     or: [shovel, flute], or: [bombs, ricky's flute]]]}
 
 inner stairs by d3: {or: [[inner stairs by floodgate house, bracelet, or: [flippers, feather, pegasus satchel]]]}
