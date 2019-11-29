@@ -44,7 +44,7 @@ d2 thwomp shelf: [d2 basement,
     or: [feather, [hard, cane, or: [pegasus satchel, bombs]]]]
 d2 basement drop: [d2 basement, feather]
 d2 basement chest: [
-    d2 basement, feather, bombs, hit lever from minecart, kill normal]
+    d2 basement, feather, bombs, hit lever from minecart above, kill normal]
 
 # 3 keys
 d2 moblin platform: [d2 basement, feather, count: [3, d2 small key]]
@@ -137,7 +137,7 @@ d4 first crystal switch: [d4 minecart A,
 d4 minecart chest: [d4 minecart A, hit lever]
 
 # 2 keys
-d4 minecart B: [d4 minecart A, hit lever, bracelet, kill normal,
+d4 minecart B: [d4 minecart A, hit lever from minecart, bracelet, kill normal,
     count: [2, d4 small key]]
 d4 second crystal switch: [d4 minecart B,
     or: [any seed shooter, [hard, boomerang]]]
@@ -149,7 +149,7 @@ d4 color tile drop: [d4 minecart C,
         [hard, scent satchel]]]
 
 # 4 keys
-d4 minecart D: [d4 minecart C, count: [4, d4 small key]]
+d4 minecart D: [d4 color tile drop, count: [4, d4 small key]]
 d4 miniboss: [d4 minecart D,
     or: [sword, switch hook, scent shooter, punch enemy]]
 d4 small floor puzzle: [d4 miniboss, bombs]

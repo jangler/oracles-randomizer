@@ -156,7 +156,7 @@ d5 armos chest: [d5 terrace chest, kill armored]
 d5 spinner chest: [d5 cart bay, or: [magnet gloves, jump 6]]
 d5 drop ball: [d5 cart bay, hit lever from minecart, kill armored (pit)]
 # stalfos room means right side [where the chest is]
-d5 stalfos room: [d5 cart bay, or: [magnet gloves, cape]]
+d5 stalfos room: [or: [d5 cart bay, d5 pot room], or: [magnet gloves, cape]]
 
 # 5 keys
 d5 post-syger: [d5 stalfos room, kill armored]
