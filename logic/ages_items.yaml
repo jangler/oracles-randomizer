@@ -36,9 +36,9 @@ bomb jump 3: [hard, feather, pegasus satchel, bombs]
 seed item: {or: [satchel, seed shooter]}
 
 ember seeds: [ember tree seeds]
-# you can also get scent seeds from ramrock, but the requirements for those are
-# a superset of the requirements for the D3 ones.
-scent seeds: {or: [scent tree seeds, [hard, d3 E crystal, seed item]]}
+
+scent seeds: {or: [scent tree seeds, 
+    [hard, or: [d3 seeds from bridge room, d8 boss]]]}
 pegasus seeds: [pegasus tree seeds]
 gale seeds: [gale tree seeds]
 mystery seeds: [mystery tree seeds]

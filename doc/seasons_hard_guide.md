@@ -87,6 +87,8 @@ for a list of things that are out of logic even in hard.
 - Hit minecart levers in D4 by dropping pots while passing by. This works for
   both 1F minecarts.
   [[Video]](https://clips.twitch.tv/LaconicYawningPresidentFUNgineer)
+- Pegasus + feather jump to reach the left chest in D5 (no bomb boost
+  required). [[Video]](https://clips.twitch.tv/CredulousTemperedMulePicoMause)
 - Bomb + feather jump across the water to get to the minecarts in D5.
   [[Video]](https://streamable.com/pehqq)
 - Damage boost off enemies to cross D5 sidescroller gaps without feather.

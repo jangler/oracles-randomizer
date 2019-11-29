@@ -139,7 +139,8 @@ south swamp: {or: [
     [blaino's gym, or: [flippers, dimitri's flute]],
     [exit spool swamp portal, bracelet]]}
 spool swamp cave: [south swamp,
-    or: [spool swamp default winter, [spool stump, winter]],
+    or: [[winter, spool stump], [spool swamp default winter,
+        or: [flippers, [spool stump, or: [feather, flute]]]]],
     or: [shovel, flute], or: [bombs, ricky's flute]]
 d3 entrance: [spool stump, or: [spool swamp default summer, summer]]
 
@@ -200,7 +201,8 @@ natzu region, across water: {or: [
 sunken city: {or: [
     [mount cucco, flippers,
         or: [summer, sunken city default summer, gale satchel]],
-    [fairy fountain, or: [eastern suburbs default spring, spring]],
+    [fairy fountain, spring],
+    [central woods of winter, eastern suburbs default spring],
     [blaino's gym, or: [
         [natzu prairie, flute],
         [natzu river, or: [

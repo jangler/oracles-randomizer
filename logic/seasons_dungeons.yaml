@@ -148,7 +148,7 @@ d5 cart chest: [d5 cart bay, hit lever from minecart]
 d5 pot room: [enter d5, or: [[magnet gloves, bombs, feather],
     [d5 cart bay, or: [feather, [hard, pegasus satchel]]]]]
 d5 gibdo/zol chest: [d5 pot room, kill normal]
-d5 left chest: [enter d5, or: [magnet gloves, cape]]
+d5 left chest: [enter d5, or: [magnet gloves, jump 3]]
 d5 terrace chest: [enter d5, or: [magnet gloves, [d5 cart bay, feather, bombs]]]
 armos knights owl: [mystery seeds, d5 terrace chest]
 d5 spiral chest: [enter d5, or: [shield, kill armored]]
@@ -157,7 +157,7 @@ d5 armos chest: [d5 terrace chest, kill armored]
 d5 spinner chest: [d5 cart bay, or: [magnet gloves, jump 6]]
 d5 drop ball: [d5 cart bay, hit lever from minecart, kill armored (pit)]
 # stalfos room means right side [where the chest is]
-d5 stalfos room: [d5 cart bay, or: [magnet gloves, cape]]
+d5 stalfos room: [or: [d5 cart bay, d5 pot room], or: [magnet gloves, cape]]
 
 # 5 keys
 d5 post-syger: [d5 stalfos room, kill armored]
@@ -251,7 +251,8 @@ d8 three eyes chest: [enter d8, feather,
     or: [any hyper slingshot,
         [hard, or: [ember satchel, scent satchel, mystery satchel]]]]
 d8 hardhat room: [enter d8, kill magunesu]
-d8 hardhat drop: [d8 hardhat room, kill hardhat (magnet)]
+d8 hardhat drop: [d8 hardhat room,
+    or: [[bombs, magnet gloves], [or: [slingshot, hard], gale seeds]]]
 
 # 1 key
 d8 spike room: [d8 hardhat room, d8 small key, or: [cape, [hard, jump 3]]]
