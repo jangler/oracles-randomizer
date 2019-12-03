@@ -13,7 +13,7 @@ seasons:
   - 0x7dd7 # 03
   - 0x7e12 # 04
   - 0x7e2d # 05
-  - 0x77e4 # 06
+  - 0x7864 # 06 - 128 bytes reserved for sprite expansion w/ web patcher
   - 0x7900 # 07
   - 0x7fc0 # 08
   - 0x7f4e # 09
@@ -63,7 +63,7 @@ seasons:
   - 0x8000 # 35
   - 0x8000 # 36
   - 0x8000 # 37
-  - 0x8000 # 38
+  - 0x7df0 # 38
   - 0x8000 # 39
   - 0x8000 # 3a
   - 0x8000 # 3b
@@ -72,15 +72,17 @@ seasons:
   - 0x8000 # 3e
   - 0x714b # 3f - also here
 
+# ages has some banks with "garbage data" that isn't blank, but which is
+# corrupted in some way and never used.
 ages:
   - 0x3ef8 # 00
-  - 0x7fc3 # 01
-  - 0x7e96 # 02
-  - 0x7ebd # 03
+  - 0x7f23 # 01 - garbage data here
+  - 0x7de7 # 02 - garbage data here
+  - 0x7e54 # 03 - garbage data here
   - 0x7ee2 # 04
   - 0x7d9d # 05
-  - 0x7a31 # 06
-  - 0x8000 # 07 - might end as early as ~7de0 but i can't tell
+  - 0x7a73 # 06 - garbage data here - 128 bytes reserved for sprite expansion w/ web patcher
+  - 0x7caa # 07 - garbage data here
   - 0x7f5c # 08
   - 0x7def # 09
   - 0x7e08 # 0a
@@ -96,12 +98,12 @@ ages:
   - 0x7acd # 14
   - 0x7bfb # 15
   - 0x7e03 # 16
-  - 0x7f3a # 17
-  - 0x7e7c # 18
+  - 0x6ee3 # 17 - garbage data here (lots of space here)
+  - 0x799e # 18 - garbage data here
   - 0x7fdf # 19
   - 0x7ed0 # 1a
   - 0x7ee0 # 1b
-  - 0x8000 # 1c
+  - 0x7dc0 # 1c - garbage data here
   - 0x8000 # 1d
   - 0x8000 # 1e
   - 0x8000 # 1f
@@ -129,11 +131,11 @@ ages:
   - 0x8000 # 35
   - 0x8000 # 36
   - 0x8000 # 37
-  - 0x6afb # 38 - the only really wide-open bank in ages
+  - 0x6afb # 38 - lots of space here
   - 0x8000 # 39
   - 0x8000 # 3a
   - 0x8000 # 3b
   - 0x8000 # 3c
   - 0x8000 # 3d
   - 0x8000 # 3e
-  - 0x7d0a # 3f
+  - 0x7ca7 # 3f - garbage data here
