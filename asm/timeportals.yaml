@@ -144,5 +144,6 @@ ages:
       db dc,05
       db f2
       db e1,00,68,18
+      db e1,01,68,88
       db fe
   12/5e91/: db f3; dw symmetryPortalStaticObjects
