@@ -151,10 +151,13 @@ seasons:
       set 0,(hl)
       ret
 
-  # set cfe0 to the cliff warning text, then display the warning.
+  # set cfe0 to the cliff warning text, then display the warning. also set
+  # link's angle to null to prevent jumping down the cliff on the same frame.
   15/warnCliff: |
       xor a
       ld (cfe0),a
+      dec a
+      ld (w1Link.angle),a
       jp warnGeneric
 
   # warning for the ledge from natzu to eastern suburbs.
