@@ -1,0 +1,633 @@
+# fixed quicksand: # entering quicksand does not warp correctly
+#   entry: 0x13579
+#   exit: 0x2
+#   exitcustomwarp: customWarpSrcTable
+#   connector: true
+
+# horon village
+know-it-all:
+  entry: 0x13605
+  exit: 0x13809
+  maptile: 0xc5
+  ismultiwarp: true
+gba shop:
+  entry: 0x13609
+  exit: 0x1389d
+  maptile: 0xc5
+  ismultiwarp: true
+mayors house:
+  entry: 0x134a5
+  exit: 0x1380d
+  roomtile: 0x44
+clock shop:
+  entry: 0x135e5
+  exit: 0x13805
+  maptile: 0xd7
+  ismultiwarp: true
+stairs behind clock shop:
+  entry: 0x135e9
+  exit: 0x13c49
+  maptile: 0xd7
+  ismultiwarp: true
+  oneway: true
+horon shop:
+  entry: 0x134d9
+  exit: 0x1387d
+  roomtile: 0x45
+ring shop:
+  entry: 0x134ad
+  exit: 0x13829
+  roomtile: 0x45
+baby house - L entrance:
+  entry: 0x13625
+  exit: 0x1382d
+  maptile: 0xf6
+  ismultiwarp: true
+  connector: true
+baby house - R entrance:
+  entry: 0x13629
+  exit: 0x13831
+  maptile: 0xf6
+  ismultiwarp: true
+  connector: true
+horon stairs into portal:
+  entry: 0x134e1
+  exit: 0x13901
+  roomtile: 0x33
+  connector: true
+SE horon vill house - main entrance:
+  entry: 0x13631
+  exit: 0x13875
+  maptile: 0xf9
+  ismultiwarp: true
+  connector: true
+SE horon vill house - side entrance:
+  entry: 0x13635
+  exit: 0x13879
+  maptile: 0xf9
+  ismultiwarp: true
+  connector: true
+  trapped: true
+
+# western coast
+west coast house - main entrance:
+  entry: 0x13645
+  exit: 0x13811
+  maptile: 0xd2
+  ismultiwarp: true
+  connector: true
+west coast house - side entrance:
+  entry: 0x13649
+  exit: 0x13815
+  maptile: 0xd2
+  ismultiwarp: true
+  connector: true
+  trapped: true
+fairy cave near hero's cave:
+  entry: 0x1359d
+  exit: 0x13a59
+  roomtile: 0x06
+SW graveyard:
+  entry: 0x135d9
+  exit: 0x138d5
+  roomtile: 0x14
+  oneway: true
+cave leading up to graveyard:
+  entry: 0x13575
+  exit: 0x13a29
+  roomtile: 0x06
+  connector: true
+cave leading down from graveyard:
+  entry: 0x4
+  exit: 0x13a2d
+  entrycustomwarp: customWarpSrcTable
+  connector: true
+
+# eastern suburbs
+ww bomb cave:
+  entry: 0x1351d
+  exit: 0x13b7d
+  roomtile: 0x12
+  oneway: true
+  trapped: true
+ww cave under sunken:
+  entry: 0x135dd
+  exit: 0x13c55
+  roomtile: 0x11
+E of d2 - L cave:
+  entry: 0x13665
+  exit: 0x13b75
+  maptile: 0x8e
+  ismultiwarp: true
+  oneway: true
+  trapped: true
+E of d2 - R cave:
+  entry: 0x13669
+  exit: 0x13b79
+  maptile: 0x8e
+  ismultiwarp: true
+suburbs stairs past blooming flower:
+  entry: 0x13585
+  exit: 0x13a41
+  roomtile: 0x11
+windmill guy:
+  entry: 0x13525
+  exit: 0x13cb1
+  roomtile: 0x65
+  connector: true
+  trapped: true
+windmill main entrance:
+  entry: 0x13675
+  exit: 0x13b61
+  maptile: 0xea
+  ismultiwarp: true
+  connector: true
+windmill entrance above main entrance:
+  entry: 0x13679
+  exit: 0x13b6d
+  maptile: 0xea
+  ismultiwarp: true
+  oneway: true
+shovel girl main entrance:
+  entry: 0x13639
+  exit: 0x13871
+  maptile: 0x7f
+  ismultiwarp: true
+  oneway: true
+  trapped: true
+  connector: true
+holly roof:
+  entry: 0x1363d
+  exit: 0x3
+  exitcustomwarp: customWarpSrcTable
+  maptile: 0x7f
+  ismultiwarp: true
+  connector: true
+  oneway: true
+
+# holodrum plain
+blaino:
+  entry: 0x134e9
+  exit: 0x138b1
+  roomtile: 0x36
+holodrum plain water cave past mushrooms:
+  entry: 0x13599
+  exit: 0x139e1
+  roomtile: 0x31
+  oneway: true
+mrs ruul:
+  entry: 0x134e5
+  exit: 0x138ad
+  roomtile: 0x42
+water cave under mrs ruul:
+  entry: 0x13595
+  exit: 0x139dd
+  roomtile: 0x02
+  oneway: true
+treehouse old man:
+  entry: 0x134b5
+  exit: 0x13835
+  roomtile: 0x18
+
+# spool swamp
+stairs by d3:
+  entry: 0x1366d
+  exit: 0x13a79
+  maptile: 0x60
+  ismultiwarp: true
+  trapped: true
+  connector: true
+stairs by floodgate house:
+  entry: 0x1361d
+  exit: 0x139f1
+  maptile: 0x62
+  ismultiwarp: true
+  oneway: true
+  connector: true
+floodgate house:
+  entry: 0x13621
+  exit: 0x138b5
+  maptile: 0x62
+  ismultiwarp: true
+swamp S bomb cave:
+  entry: 0x1358d
+  exit: 0x13a51
+  roomtile: 0x07
+  oneway: true
+  trapped: true
+
+# north horon / eyeglass lake
+cuccodex girl:
+  entry: 0x13495
+  exit: 0x137f9
+  roomtile: 0x13
+stairs to old man who gives red ring:
+  entry: 0x135d5
+  exit: 0x13c51
+  roomtile: 0x27
+  oneway: true
+eyeglass bomb cave:
+  entry: 0x13591
+  exit: 0x13a55
+  roomtile: 0x28
+  oneway: true
+  trapped: true
+eyeglass stairs under water:
+  entry: 0x13545
+  exit: 0x13d79
+  roomtile: 0x37
+  oneway: true
+  trapped: true
+impa:
+  entry: 0x13499
+  exit: 0x13801
+  roomtile: 0x11
+  oneway: true
+
+# natzu
+stairs N of natzu:
+  entry: 0x135d1
+  exit: 0x13c45
+  roomtile: 0x17
+moblin keep L entrance:
+  entry: 0x1360d
+  exit: 0x138c5
+  maptile: 0x5b
+  ismultiwarp: true
+  connector: true
+moblin keep R entrance:
+  entry: 0x13611
+  exit: 0x138c9
+  maptile: 0x5b
+  ismultiwarp: true
+  connector: true
+natzu fairy cave - Ricky:
+  entry: 0x135ed
+  exit: 0x13c35
+  maptile: 0x57
+  ismultiwarp: true
+natzu fairy cave - Moosh:
+  entry: 0x135f1
+  exit: 0x13c4d
+  maptile: 0x57
+  ismultiwarp: true
+natzu fairy cave - Dimitri:
+  entry: 0x135c5
+  exit: 0x13c39
+  roomtile: 0x65
+natzu deku cave - Ricky:
+  entry: 0x135c9
+  exit: 0x13c3d
+  roomtile: 0x48
+natzu deku cave - Moosh:
+  entry: 0x135cd
+  exit: 0x13c41
+  roomtile: 0x55
+
+# sunken city
+sunken - NE flooded house:
+  entry: 0x134c5
+  exit: 0x13859
+  roomtile: 0x57
+  oneway: true
+sunken vase guy:
+  entry: 0x134b9
+  exit: 0x13849
+  roomtile: 0x11
+sunken vines cave:
+  entry: 0x1352d
+  exit: 0x13b81
+  roomtile: 0x12
+1st sunken house:
+  entry: 0x134f1
+  exit: 0x138b9
+  roomtile: 0x46
+witch's house:
+  entry: 0x134c1
+  exit: 0x13855
+  roomtile: 0x44
+house by dimitri bullies:
+  entry: 0x134c9
+  exit: 0x13861
+  roomtile: 0x32
+moblin rest house:
+  entry: 0x134cd
+  exit: 0x13895
+  roomtile: 0x57
+sunken city N dive spot:
+  entry: 0x1
+  exit: 0x13de5
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
+sunken city S dive spot:
+  entry: 0x5
+  exit: 0x1
+  entrycustomwarp: diveWarpTable
+  exitcustomwarp: customWarpSrcTable
+  oneway: true
+
+# mt cucco
+mt cucco stairs near top cucco:
+  entry: 0x13535
+  exit: 0x13d71
+  roomtile: 0x28
+  trapped: true
+  connector: true
+banana tree - top stairs:
+  entry: 0x13685
+  exit: 0x13b95
+  maptile: 0xf
+  ismultiwarp: true
+  connector: true
+banana tree - bottom cave:
+  entry: 0x13689
+  exit: 0x13b99
+  maptile: 0xf
+  ismultiwarp: true
+  connector: true
+mt cucco mushroom guy:
+  entry: 0x13531
+  exit: 0x13b85
+  roomtile: 0x27
+mt cucco cliff cave to top cucco:
+  entry: 0x13539
+  exit: 0x13b91
+  roomtile: 0x11
+  oneway: true
+  connector: true
+mt cucco S of banana tree screen:
+  entry: 0x13541
+  exit: 0x13b9d
+  roomtile: 0x37
+mt cucco - cave by portal:
+  entry: 0x135fd
+  exit: 0x13a09
+  maptile: 0x1e
+  ismultiwarp: true
+  oneway: true
+mt cucco S dive spot:
+  entry: 0x0
+  exit: 0x13de1
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
+d4 dive spot:
+  entry: 0x2
+  exit: 0x13df1
+  entrycustomwarp: diveWarpTable
+  oneway: true
+
+# goron mountain
+goron mountain - S of lynels - L separated cave:
+  entry: 0x1368d
+  exit: 0x13be1
+  maptile: 0x19
+  ismultiwarp: true
+  oneway: true
+goron ring cave:
+  entry: 0x13695
+  exit: 0x13bf5
+  maptile: 0x19
+  ismultiwarp: true
+  oneway: true
+  trapped: true
+goron mountain stairs by lynels:
+  entry: 0x13565
+  exit: 0x13be9
+  connector: true
+  trapped: true
+  roomtile: 0x26
+goron mountain - S of lynels - R separated cave:
+  entry: 0x13691
+  exit: 0x13be5
+  maptile: 0x19
+  ismultiwarp: true
+  connector: true
+goron mountain - stairs below L and R-separated caves:
+  entry: 0x13699
+  exit: 0x13bf1
+  maptile: 0x19
+  ismultiwarp: true
+  connector: true
+goron cave near old man:
+  entry: 0x135f5
+  exit: 0x13bcd
+  maptile: 0x28
+  ismultiwarp: true
+  connector: true
+goron bomb cave:
+  entry: 0x1356d
+  exit: 0x13bed
+  oneway: true
+  connector: true
+  roomtile: 0x17
+cave below goron mountain area:
+  entry: 0x13561
+  exit: 0x13bd1
+  connector: true
+  roomtile: 0x11
+under biggoron:
+  entry: 0x13559
+  exit: 0x13bc9
+  trapped: true
+  connector: true
+  roomtile: 0x17
+
+# tarm ruins
+tarm deku:
+  entry: 0x134f5
+  exit: 0x138c1
+  roomtile: 0x18
+tarm tree stairs:
+  entry: 0x134bd
+  exit: 0x13851
+  roomtile: 0x61
+  oneway: true
+bomb cave before lost woods:
+  entry: 0x13571
+  exit: 0x13a0d
+  roomtile: 0x14
+  oneway: true
+stairs SE of lost woods:
+  entry: 0x13589
+  exit: 0x13a45
+  roomtile: 0x56
+  oneway: true
+
+# samasa desert
+NE desert cave:
+  entry: 0x13619
+  exit: 0x13a3d
+  maptile: 0xbf
+  ismultiwarp: true
+  oneway: true
+desert chest stairs:
+  entry: 0x1357d
+  exit: 0x13a35
+  roomtile: 0x36
+  connector: true
+quicksand dive spot:
+  entry: 0x3
+  exit: 0x13df5
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
+desert chest dive spot:
+  entry: 0x4
+  exit: 0x13df9
+  entrycustomwarp: diveWarpTable
+  oneway: true
+  connector: true
+
+# temple remains
+NW temple ruins building:
+  entry: 0x134dd
+  exit: 0x13889
+  roomtile: 0x27
+  connector: true
+upper temple remains L stairs:
+  entry: 0x1367d
+  exit: 0x13bb9
+  maptile: 0x6
+  ismultiwarp: true
+  connector: true
+upper temple remains R stairs:
+  entry: 0x13681
+  exit: 0x13bbd
+  maptile: 0x6
+  ismultiwarp: true
+  connector: true
+temple remains NE stairs:
+  entry: 0x13551
+  exit: 0x13d85
+  roomtile: 0x13
+  connector: true
+temple remains bomb cave:
+  entry: 0x13555
+  exit: 0x13bc5
+  roomtile: 0x04
+  oneway: true
+temple remains cave past vines:
+  entry: 0x13549
+  exit: 0x13bad
+  roomtile: 0x08
+  oneway: true
+  connector: true
+
+# # northern peak
+
+# old men
+goron mountain old man:
+  entry: 0x135f9
+  exit: 0x13c15
+  maptile: 0x28
+  ismultiwarp: true
+  oneway: true
+western coast old man:
+  entry: 0x13641
+  exit: 0x13c21
+  maptile: 0xd2
+  ismultiwarp: true
+  oneway: true
+holodrum plain east old man:
+  entry: 0x135ad
+  exit: 0x13c19
+  roomtile: 0x55
+  oneway: true
+horon village old man:
+  entry: 0x1362d
+  exit: 0x13c25
+  maptile: 0xf9
+  ismultiwarp: true
+  oneway: true
+north horon old man:
+  entry: 0x135b1
+  exit: 0x13c1d
+  roomtile: 0x23
+  oneway: true
+ww old man:
+  entry: 0x135b9
+  exit: 0x13c2d
+  roomtile: 0x32
+  oneway: true
+tarm old man:
+  entry: 0x135b5
+  exit: 0x13c29
+  roomtile: 0x18
+  oneway: true
+mrs ruul old man:
+  entry: 0x135bd
+  exit: 0x13c31
+  roomtile: 0x56
+  oneway: true
+
+# dungeons
+d0 main:
+  entry: 0x13651
+  exit: 0x13909
+  ismultiwarp: true
+  maptile: 0xd4
+d0 roof:
+  entry: 0x1364d
+  exit: 0x0
+  exitcustomwarp: customWarpSrcTable
+  oneway: true
+  ismultiwarp: true
+  maptile: 0xd4
+d1:
+  entry: 0x1346d
+  exit: 0x1390d
+  roomtile: 0x44
+  dungeon: true
+  oneway: true
+d2:
+  entry: 0x13659
+  exit: 0x13911
+  maptile: 0x8d
+  ismultiwarp: true
+  connector: true
+d2 roof left:
+  entry: 0x1365d
+  exit: 0x13935
+  maptile: 0x8d
+  ismultiwarp: true
+d2 roof right:
+  entry: 0x13661
+  exit: 0x13939
+  maptile: 0x8e
+  ismultiwarp: true
+  connector: true
+d3:
+  entry: 0x13671
+  exit: 0x13915
+  maptile: 0x60
+  ismultiwarp: true
+  dungeon: true
+  oneway: true
+d4:
+  entry: 0x13479
+  exit: 0x13919
+  roomtile: 0x13
+  dungeon: true
+  oneway: true
+d5:
+  entry: 0x1347d
+  exit: 0x1391d
+  roomtile: 0x25
+  dungeon: true
+d6:
+  entry: 0x13481
+  exit: 0x13921
+  roomtile: 0x34
+  dungeon: true
+d7:
+  entry: 0x13485
+  exit: 0x13a89
+  roomtile: 0x34
+  dungeon: true
+d8:
+  entry: 0x1369d
+  exit: 0x13a8d
+  roomtile: 0x54
+  dungeon: true

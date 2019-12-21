@@ -93,13 +93,135 @@ func newRomState(data []byte, game int) *romState {
 	return rom
 }
 
+func (rom *romState) getShuffledEntrances() map[string]*shuffledEntrance {
+	entrances1 := make(map[string]*shuffledEntrance)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, sora(rom.game, "/romdata/holodrum_warps.yaml", "/romdata/lab_present_warps.yaml").(string)),
+		entrances1); err != nil {
+		panic(err)
+	}
+	entrances2 := make(map[string]*shuffledEntrance)
+	if err := yaml.Unmarshal(
+		FSMustByte(false, sora(rom.game, "/romdata/subrosia_warps.yaml", "/romdata/lab_past_warps.yaml").(string)),
+		entrances1); err != nil {
+		panic(err)
+	}
+	for subName, sub := range entrances2 {
+		entrances1[subName] = sub
+	}
+	return entrances1
+}
+
+func (rom *romState) setShuffledEntrances(entranceMapping map[string]string) {
+	entrances := rom.getShuffledEntrances()
+
+	for _, entrance := range entrances {
+		if entrance.Entrycustomwarp != "" {
+			mut := rom.codeMutables[entrance.Entrycustomwarp]
+			entrance.oldEntryByte1 = mut.new[entrance.Entry*5+3]
+			entrance.oldEntryByte2 = mut.new[entrance.Entry*5+4]
+		} else {
+			entrance.oldEntryByte1 = rom.data[entrance.Entry]
+			entrance.oldEntryByte2 = rom.data[entrance.Entry+1]
+		}
+		if entrance.Exitcustomwarp != "" {
+			mut := rom.codeMutables[entrance.Exitcustomwarp]
+			entrance.oldExitByte1 = mut.new[entrance.Exit*5+3]
+			entrance.oldExitByte2 = mut.new[entrance.Exit*5+4]
+		} else {
+			entrance.oldExitByte1 = rom.data[entrance.Exit]
+			entrance.oldExitByte2 = rom.data[entrance.Exit+1]
+		}
+	}
+
+	wd := make(map[string](map[string]*warpData))
+	if err := yaml.Unmarshal(
+		FSMustByte(false, "/romdata/warps.yaml"), wd); err != nil {
+		panic(err)
+	}
+	warps := sora(rom.game, wd["seasons"], wd["ages"]).(map[string]*warpData)
+
+	for outerName, innerName := range entranceMapping {
+		if outerName != innerName {
+			// Set essence warps to go back to the outer entrance
+			if getStringIndex(dungeonNames[rom.game], innerName) != -1 && innerName != "d6 present" {
+				warpExit := uint32(warps[innerName+" essence"].Exit) + uint32(sora(rom.game, 0x8, 0x9).(int)*0x4000)
+
+				outer := entrances[outerName]
+
+				var destGroup byte
+				var yxInWorld byte
+				var yxInRoom byte
+
+				if outer.Entrycustomwarp != "" {
+					mut := rom.codeMutables[outer.Entrycustomwarp]
+					destGroup = mut.new[outer.Entry*5]
+					yxInWorld = mut.new[outer.Entry*5+1]
+					yxInRoom = mut.new[outer.Entry*5+2]
+				} else {
+					destGroup = (outer.oldExitByte2 & 0xf0) >> 4 // upper nybble is dest group
+					if outer.Ismultiwarp {
+						yxInWorld = outer.Maptile
+						yxInRoom = rom.data[outer.Entry-1]
+					} else {
+						yxInWorld = rom.data[outer.Entry-1]
+						yxInRoom = outer.Roomtile
+					}
+				}
+
+				rom.data[warpExit] = (rom.data[warpExit] & 0xf0) + destGroup
+				rom.data[warpExit+1] = yxInWorld
+				rom.data[warpExit+2] = yxInRoom
+				if outer.Alignedleft {
+					rom.data[warpExit+3] = 0x0e
+				} else {
+					rom.data[warpExit+3] = 0x01
+				}
+			}
+
+			entrances[outerName].newEntryByte1 = entrances[innerName].oldEntryByte1
+			entrances[outerName].newEntryByte2 = (entrances[innerName].oldEntryByte2 & 0xf0) + (entrances[outerName].oldEntryByte2 & 0xf)
+			entrances[innerName].newExitByte1 = entrances[outerName].oldExitByte1
+			entrances[innerName].newExitByte2 = (entrances[outerName].oldExitByte2 & 0xf0) + (entrances[innerName].oldExitByte2 & 0xf)
+		}
+	}
+	for outerName, innerName := range entranceMapping {
+		if outerName == innerName {
+			continue
+		}
+		entrance := entrances[outerName]
+		if entrance.Entrycustomwarp != "" {
+			mut := rom.codeMutables[entrance.Entrycustomwarp]
+			mut.new[entrance.Entry*5+3] = entrance.newEntryByte1
+			mut.new[entrance.Entry*5+4] = entrance.newEntryByte2
+		} else {
+			rom.data[entrance.Entry] = entrance.newEntryByte1
+			rom.data[entrance.Entry+1] = entrance.newEntryByte2
+		}
+		if entrance.Exitcustomwarp != "" {
+			mut := rom.codeMutables[entrance.Exitcustomwarp]
+			mut.new[entrance.Exit*5+3] = entrance.newExitByte1
+			mut.new[entrance.Exit*5+4] = entrance.newExitByte2
+		} else {
+			rom.data[entrance.Exit] = entrance.newExitByte1
+			rom.data[entrance.Exit+1] = entrance.newExitByte2
+		}
+	}
+}
+
 // changes the contents of loaded ROM bytes in place. returns a checksum of the
 // result or an error.
 func (rom *romState) mutate(warpMap map[string]string, seed uint32,
-	ropts randomizerOptions) ([]byte, error) {
+	ropts randomizerOptions, entranceMapping map[string]string) ([]byte, error) {
 	// need to set this *before* treasure map data
-	if len(warpMap) != 0 {
-		rom.setWarps(warpMap, ropts.dungeons)
+	rom.setWarps(warpMap, ropts.dungeons, ropts.entrance)
+
+	if ropts.entrance {
+		rom.setShuffledEntrances(entranceMapping)
+		innerRedRing, ok := entranceMapping["stairs to old man who gives red ring"]
+		if ok && len(innerRedRing) == 2 && innerRedRing[0] == 'd' {
+			rom.data[0x12eca] = 0x13
+		}
 	}
 
 	if rom.game == gameSeasons {
@@ -127,6 +249,15 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		codeAddr = rom.codeMutables["createMtCuccoItem"].addr
 		rom.itemSlots["mt. cucco, platform cave"].idAddrs[0].offset = codeAddr.offset + 2
 		rom.itemSlots["mt. cucco, platform cave"].subidAddrs[0].offset = codeAddr.offset + 1
+		codeAddr = rom.codeMutables["sharedItemTable"].addr
+		for i, slot := range []string{
+			"windmill hp", "tr bomb cave hp", "outside d7 hp", "winter woods hp",
+			"horon village hp", "spool swamp currents hp", "cucco cliff hp",
+			"mayor house gasha", "subrosian's gasha", "spring tower gasha"} {
+			j := uint16(i)
+			rom.itemSlots[slot].idAddrs[0].offset = codeAddr.offset + (j * 2) + 1
+			rom.itemSlots[slot].subidAddrs[0].offset = codeAddr.offset + (j * 2)
+		}
 	} else {
 		// explicitly set these addresses and IDs after their functions
 		mut := rom.codeMutables["script_soldierGiveItem"]
@@ -137,6 +268,14 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		codeAddr := mut.addr
 		rom.itemSlots["target carts 2"].idAddrs[1].offset = codeAddr.offset + 1
 		rom.itemSlots["target carts 2"].subidAddrs[1].offset = codeAddr.offset + 2
+		codeAddr = rom.codeMutables["sharedItemTable"].addr
+		for i, slot := range []string{
+			"NE rolling ridge hp", "talus peaks hp", "graveyard hp", "rolling ridge hp in wall",
+			"black tower hp", "cave below tuni guy hp", "deku forest bush cave hp", "maku path hp"} {
+			j := uint16(i)
+			rom.itemSlots[slot].idAddrs[0].offset = codeAddr.offset + (j * 2) + 1
+			rom.itemSlots[slot].subidAddrs[0].offset = codeAddr.offset + (j * 2)
+		}
 	}
 
 	rom.setBossItemAddrs()
@@ -172,6 +311,12 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		rom.itemSlots["subrosia seaside"].mutate(rom.data)
 		rom.itemSlots["great furnace"].mutate(rom.data)
 		rom.itemSlots["master diver's reward"].mutate(rom.data)
+		for _, slot := range []string{
+			"windmill hp", "tr bomb cave hp", "outside d7 hp", "winter woods hp",
+			"horon village hp", "spool swamp currents hp", "cucco cliff hp",
+			"mayor house gasha", "subrosian's gasha", "spring tower gasha"} {
+			rom.itemSlots[slot].mutate(rom.data)
+		}
 
 		// annoying special case to prevent text on key drop
 		mut := rom.itemSlots["d7 armos puzzle"]
@@ -183,6 +328,11 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 		rom.itemSlots["deku forest soldier"].mutate(rom.data)
 		rom.itemSlots["target carts 2"].mutate(rom.data)
 		rom.itemSlots["hidden tokay cave"].mutate(rom.data)
+		for _, slot := range []string{
+			"NE rolling ridge hp", "talus peaks hp", "graveyard hp", "rolling ridge hp in wall",
+			"black tower hp", "cave below tuni guy hp", "deku forest bush cave hp", "maku path hp"} {
+			rom.itemSlots[slot].mutate(rom.data)
+		}
 
 		// other special case to prevent text on key drop
 		mut := rom.itemSlots["d8 stalfos"]
@@ -212,6 +362,14 @@ func (rom *romState) verify() []error {
 		// seasons shop items
 		case "zero shop text", "member's card", "treasure map",
 			"rare peach stone", "ribbon":
+		// standing heart pieces - seasons
+		case "windmill hp", "tr bomb cave hp", "outside d7 hp", "winter woods hp",
+			"horon village hp", "spool swamp currents hp", "cucco cliff hp":
+		// standing heart pieces - ages
+		case "NE rolling ridge hp", "talus peaks hp", "graveyard hp", "rolling ridge hp in wall",
+			"black tower hp", "cave below tuni guy hp", "deku forest bush cave hp", "maku path hp":
+		// standing gasha seeds
+		case "mayor house gasha", "subrosian's gasha", "spring tower gasha":
 		// seasons flutes
 		case "dimitri's flute", "moosh's flute":
 		// seasons linked chests
@@ -567,7 +725,7 @@ type warpData struct {
 	vanillaEntryData, vanillaExitData []byte // read from rom
 }
 
-func (rom *romState) setWarps(warpMap map[string]string, dungeons bool) {
+func (rom *romState) setWarps(warpMap map[string]string, dungeons bool, entrances bool) {
 	// load yaml data
 	wd := make(map[string](map[string]*warpData))
 	if err := yaml.Unmarshal(

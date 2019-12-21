@@ -69,6 +69,8 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://clips.twitch.tv/CloudyGoodReubenOneHand)
 - Access the western stump in Temple Remains without autumn, using seeds +
   cape. [[Video]](https://streamable.com/6u65g)
+- Use Ricky to get the standing heart piece in Woods of Winter. [[Video]](https://streamable.com/avgxh)
+- Using bombs, pegs and feather in Moosh's Natzu area to reach the rightmost stairs entrance. [[Video]](https://streamable.com/m7hht)
 
 ## Subrosia
 
@@ -81,6 +83,8 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://streamable.com/798g1)
 - Throw pots in D2 to access the vanilla bracelet chest and blade trap room.
   [[Video]](https://streamable.com/tp6cz)
+- Pegasus + feather jump to reach the left chest in D5 (no bomb boost
+  required). [[Video]](https://clips.twitch.tv/CredulousTemperedMulePicoMause)
 - Bomb + feather jump across the water to get to the minecarts in D5.
   [[Video]](https://streamable.com/pehqq)
 - Damage boost off enemies to cross D5 sidescroller gaps without feather.

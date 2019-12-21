@@ -4,7 +4,53 @@ common:
   # look up tiles in custom replacement table after loading a room. the format
   # is (group, room, bitmask, YX, tile ID), with ff ending the table. if the
   # bitmask AND the current room flags is nonzero, the replacement is not made.
+
+# bank 21 = spring, 22 = summer, 23 = autumn, 24 = winter.
+seasons:
+  # override room layout with bank 02's winterLayout when appropriate.
+  00/loadWinterLayout: |
+      push de
+      ld a,(wRoomStateModifier)
+      cp a,03 # winter
+      jr nz,.done
+      push bc
+      ld bc,9d00
+      call compareRoom
+      pop bc
+      jr nz,.done
+      ld a,02 # bank
+      ld (ff00+8c),a
+      ld hl,winterLayout
+      .done
+      ld a,(ff00+8c)
+      jp 39e2 # can't just ret, idr why
+  00/39df/: jp loadWinterLayout
+
+  # custom room layout for the problematic woods of winter screen in winter.
+  # the code here is one 8-tile compression block per line.
+  02/winterLayout: |
+      db 55,80,81,81,81,81
+      db 7c,16,80,82,17
+      db f0,1b,c4,c4,70,72
+      db 00,01,0d,17,c4,80,81,70,71
+      db 60,04,70,71,1a,1b,1c,f7
+      db 05,80,81,81,70,71,9e,9e
+      db 1c,16,04,15,17,80,81
+      db 30,1b,99,9b,d9,1a,01,19
+      db 00,70,71,15,16,17,f7,7a,8c
+      db 11,18,19,80,81,01,19,70
+
   04/applyExtraTileSubstitutions: |
+      push de
+      push hl
+      ld e,14
+      ld hl,applyExtraTileSubstitutions_body
+      call interBankCall
+      call applyAllTileSubstitutions
+      pop hl
+      pop de
+      ret
+  14/applyExtraTileSubstitutions_body: |
       push bc
       push de
       call getThisRoomFlags
@@ -45,46 +91,10 @@ common:
       .done
       pop de
       pop bc
-      call applyAllTileSubstitutions
       ret
 
-# bank 21 = spring, 22 = summer, 23 = autumn, 24 = winter.
-seasons:
-  # override room layout with bank 02's winterLayout when appropriate.
-  00/loadWinterLayout: |
-      push de
-      ld a,(wRoomStateModifier)
-      cp a,03 # winter
-      jr nz,.done
-      push bc
-      ld bc,9d00
-      call compareRoom
-      pop bc
-      jr nz,.done
-      ld a,02 # bank
-      ld (ff00+8c),a
-      ld hl,winterLayout
-      .done
-      ld a,(ff00+8c)
-      jp 39e2 # can't just ret, idr why
-  00/39df/: jp loadWinterLayout
-
-  # custom room layout for the problematic woods of winter screen in winter.
-  # the code here is one 8-tile compression block per line.
-  02/winterLayout: |
-      db 55,80,81,81,81,81
-      db 7c,16,80,82,17
-      db f0,1b,c4,c4,70,72
-      db 00,01,0d,17,c4,80,81,70,71
-      db 60,04,70,71,1a,1b,1c,f7
-      db 05,80,81,81,70,71,9e,9e
-      db 1c,16,04,15,17,80,81
-      db 30,1b,99,9b,d9,1a,01,19
-      db 00,70,71,15,16,17,f7,7a,8c
-      db 11,18,19,80,81,01,19,70
-
   # data for applyAllTileSubstitutions: group,room,flags,yx,tile
-  04/tileSubTable: |
+  14/tileSubTable: |
       db 00,01,01,52,04 # permanently remove flower outside D6 when cut
       db 00,25,00,32,3a # add ledge down from temple remains lower portal
       db 00,25,00,33,cf # ^
@@ -96,11 +106,75 @@ seasons:
       db 00,9a,00,34,04 # remove bush next to rosa portal
       db 00,b0,00,21,13 # remove spool swamp pits to prevent winter softlock
       db 00,b0,00,51,13 # cont.
-  04/d2AltEntranceTileSubs: |
+      # for entrance rando
+      db 04,e0,00,96,fa # inside cave under mrs ruul - shallow water added, but flippers still required
+      db 04,e0,00,97,fa # cont.
+      db 04,e0,00,98,fa # cont.
+      db 04,e0,00,67,fd # cont.
+      db 04,e1,00,94,fa # inside cave north of d1 - shallow water added
+      db 04,e1,00,95,fa # cont.
+      db 04,e1,00,96,fa # cont.
+      db 00,71,00,63,48 # extend floodgate key railing as chokepoint for warning
+      db 00,71,00,73,53 # cont.
+      db 00,1c,00,56,fd # close off waterfall down from d4 due to possibility of no flippers
+      db 05,b2,00,58,ed # inner windmill heart piece - replace pots with boulders
+      db 05,b2,00,68,ed # cont.
+      db 05,b2,00,88,ed # cont.
+      db 05,b2,00,79,ed # cont.
+      db 04,e6,00,3e,ed # inner cave to d3 (left screen) - adding boulders as chokepoint for warning
+      db 04,e7,00,30,ed # cont. (right screen)
+      db 04,e7,00,31,ed # cont.
+      db 04,e7,00,23,ed # cont.
+      db 04,e7,00,24,ed # cont.
+      db 04,e7,00,25,ed # cont.
+      db 04,e7,00,26,ed # cont.
+      db 04,e7,00,28,ed # cont.
+      db 04,e7,00,14,a5 # cont.
+      db 04,e7,00,15,a5 # cont.
+      db 04,05,00,0d,46 # hero's cave stairs up
+      db 07,e0,00,01,01 # mt cucco dive to sunken
+      db 07,e0,00,02,18 # cont.
+      db 07,e0,00,03,01 # cont.
+      db 07,e0,00,11,1c # cont.
+      db 07,e0,00,12,1a # cont.
+      db 07,e0,00,13,1c # cont.
+      db 07,e1,00,0a,52 # sunken dive to mt cucco
+      db 07,e1,00,0b,18 # cont.
+      db 07,e1,00,0c,01 # cont.
+      db 07,e1,00,0d,01 # cont.
+      db 07,e1,00,1a,1c # cont.
+      db 07,e1,00,1b,1a # cont.
+      db 07,e1,00,1c,1c # cont.
+      db 07,e1,00,1d,1c # cont.
+      db 07,e4,00,01,01 # d4 dive
+      db 07,e4,00,02,18 # cont.
+      db 07,e4,00,03,50 # cont.
+      db 07,e4,00,04,51 # cont.
+      db 07,e4,00,05,51 # cont.
+      db 07,e4,00,06,51 # cont.
+      db 07,e4,00,11,1c # cont.
+      db 07,e4,00,12,1a # cont.
+      db 07,e4,00,13,1c # cont.
+      db 07,e4,00,14,1c # cont.
+      db 07,e4,00,15,1c # cont.
+      db 07,e4,00,16,1c # cont.
+      db 07,e6,00,01,01 # desert dive from quicksand
+      db 07,e6,00,02,18 # cont.
+      db 07,e6,00,11,1c # cont.
+      db 07,e6,00,12,1a # cont.
+      db 04,f4,00,27,44 # stairs up from sunken quicksand
+      db 07,e7,00,0c,01 # desert dive from cliff chest
+      db 07,e7,00,0d,18 # cont.
+      db 07,e7,00,1c,1c # cont.
+      db 07,e7,00,1d,1a # cont.
+      db 05,12,00,29,44 # dive down/stairs up from sunken to winter woods
+      db 03,a3,00,24,44 # stairs up to hollys roof
+      db 00,e1,00,27,ce # cliff to jump down SE graveyard
+  14/d2AltEntranceTileSubs: |
       # these are enabled only if entrances are randomized
       db fe,8d,00,18,04 # remove left stairs
       db fe,8e,00,12,04 # remove right stairs
-  04/endTileSubTable: |
+  14/endTileSubTable: |
       db ff
 
   # unset a room flag when the flower outside D6 is broken. see tileSubTable.
@@ -177,8 +251,61 @@ seasons:
 ages:
   00/38c0/: call applyExtraTileSubstitutions
 
+  04/applyExtraTileSubstitutions: |
+      push de
+      push hl
+      ld e,38
+      ld hl,applyExtraTileSubstitutions_body
+      call interBankCall
+      call applyAllTileSubstitutions
+      pop hl
+      pop de
+      ret
+  38/applyExtraTileSubstitutions_body: |
+      push bc
+      push de
+      call getThisRoomFlags
+      ld e,a
+      ld hl,tileSubTable
+      ld a,(wActiveGroup)
+      ld b,a
+      ld a,(wActiveRoom)
+      ld c,a
+      .loop
+      ldi a,(hl)
+      cp a,ff
+      jr z,.done
+      cp b
+      jr nz,.groupMismatch
+      ldi a,(hl)
+      cp c
+      jr nz,.roomMismatch
+      ldi a,(hl)
+      and e
+      jr nz,.flagMismatch
+      push de
+      ld d,cf
+      ldi a,(hl)
+      ld e,a
+      ldi a,(hl)
+      ld (de),a
+      pop de
+      jr .loop
+      .groupMismatch
+      inc hl
+      .roomMismatch
+      inc hl
+      .flagMismatch
+      inc hl
+      inc hl
+      jr .loop
+      .done
+      pop de
+      pop bc
+      ret
+
   # data for applyAllTileSubstitutions: group,room,flags,yx,tile
-  04/tileSubTable: |
+  38/tileSubTable: |
       db 00,20,00,61,d7 # portal in talus peaks
       db 01,48,00,45,d7 # portal south of past maku tree
       db 00,37,02,43,d7 # portal in southeast ricky/moosh nuun
@@ -205,6 +332,34 @@ ages:
       db 01,a5,00,45,0b # cont.
       db 01,a5,00,55,6c # cont.
       db 00,83,00,44,d7 # portal outside D2 present
+      # for entrance rando
+      db 05,cc,00,0a,b9 # tokay central bomb cave
+      db 05,cc,00,0b,b6 # cont.
+      db 05,cc,00,0c,b0 # cont.
+      db 05,cc,00,1a,b1 # cont.
+      db 05,cc,00,1b,ef # cont.
+      db 05,cc,00,2a,b6 # cont.
+      db 05,cc,00,2b,b9 # cont.
+      db 01,7c,02,63,ae # first room in d8 maze area
+      db 01,7c,02,64,b2 # cont.
+      db 01,7c,02,65,b2 # cont.
+      db 01,7c,02,66,ae # cont.
+      db 01,7c,02,73,bd # cont.
+      db 01,7c,02,74,bd # cont.
+      db 01,7c,02,75,bd # cont.
+      db 01,7c,02,76,bd # cont.
+      db 07,05,00,01,01 # tokay underwater
+      db 07,05,00,02,01 # cont.
+      db 07,05,00,03,18 # cont.
+      db 07,05,00,04,01 # cont.
+      db 07,05,00,11,1c # cont.
+      db 07,05,00,12,1c # cont.
+      db 07,05,00,13,1a # cont.
+      db 07,05,00,14,1c # cont.
+      db 07,09,00,01,18 # tokkey underwater
+      db 07,09,00,02,01 # cont.
+      db 07,09,00,11,1a # cont.
+      db 07,09,00,12,1c # cont.
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
@@ -254,3 +409,12 @@ ages:
   # put a "return bush" for long hook across from syrup's shop.
   23/7ea0/: db 27,c8
   23/7ead/: db 22
+
+  # Close off path from D8 down to the tokay trial cave, until statue is pushed
+  10/openPathToD8: |
+      ld hl,c87c
+      set 1,(hl)
+      ld c,04
+      ld a,30
+      ret
+  10/785f/: call openPathToD8; nop

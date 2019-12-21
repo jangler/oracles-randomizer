@@ -1,0 +1,65 @@
+# temple
+outer temple of summer: {or: [[beach, ribbon]]}
+outer temple of seasons: {or: [temple]}
+outer temple of autumn: {or: [[temple, feather, bomb flower]]}
+outer temple of spring: {or: [outer temple of spring - stairs]}
+outer temple of spring - stairs: {or: [outer temple of spring]}
+outer temple of winter: {or: [temple]}
+
+inner temple of summer: {or: []}
+inner temple of seasons: {or: []}
+inner temple of autumn: {or: []}
+inner temple of spring: {or: []}
+inner temple of spring - stairs: {or: [[inner stairs leading to spring tower, feather]]}
+inner temple of winter: {or: []}
+
+# southwest
+outer house NE of thieves portal: {or: [hide and seek]}
+outer stairs leading to spring tower: {or: [[hide and seek, feather]]}
+outer pirate house - top stairs: {or: [exit house of pirates portal]}
+outer pirate house - main entrance: {or: [[hide and seek, feather]]}
+
+inner house NE of thieves portal: {or: []}
+inner stairs leading to spring tower: {or: [[inner temple of spring - stairs, feather]]}
+inner pirate house - top stairs: {or: [inner pirate house - main entrance]}
+inner pirate house - main entrance: {or: [inner pirate house - top stairs]}
+
+# northwest
+outer bomb hole cave: {or: [exit volcanoes west portal]}
+outer subrosia open cave: {or: [bridge]}
+outer subrosia locked cave: {or: [[bridge, beach, ribbon, feather]]}
+outer house S of subrosia locked cave: {or: [bridge]}
+
+inner bomb hole cave: {or: []}
+inner subrosia open cave: {or: []}
+inner subrosia locked cave: {or: []}
+inner house S of subrosia locked cave: {or: []}
+
+# north
+outer house N of smithy: {or: [temple]}
+outer E volcano cave: {or: [[temple, feather]]}
+# outer minigame stairs: {or: [temple]}
+outer smithy: {or: [temple]}
+
+inner house N of smithy: {or: []}
+inner E volcano cave: {or: []}
+# inner minigame stairs: {or: []}
+inner smithy: {or: []}
+
+# beach
+outer subrosia shop: {or: [beach]}
+
+inner subrosia shop: {or: []}
+
+# east
+outer furnace: {or: [furnace]}
+outer E ore screen - top stairs: {or: []}
+outer E ore screen - bottom cave:  {or: [
+    [beach, magnet gloves],
+    [furnace, feather, or: [cape, magnet gloves]]]}
+outer signpost house: {or: [furnace]}
+
+inner furnace: {or: []}
+inner E ore screen - top stairs: {or: [inner E ore screen - bottom cave]}
+inner E ore screen - bottom cave: {or: [inner E ore screen - top stairs]}
+inner signpost house: {or: []}

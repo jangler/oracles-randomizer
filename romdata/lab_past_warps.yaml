@@ -1,0 +1,385 @@
+# symmetry
+past - symmetry - NW house:
+  entry: 0x13750
+  exit: 0x139f4
+  roomtile: 0x22
+past - symmetry - NE house:
+  entry: 0x13770
+  exit: 0x139f8
+  roomtile: 0x27
+past - symmetry - SW house:
+  entry: 0x13774
+  exit: 0x139fc
+  roomtile: 0x35
+past - symmetry - S house:
+  entry: 0x13778
+  exit: 0x13da4
+  roomtile: 0x55
+  alignedleft: true
+past - symmetry - SE house:
+  entry: 0x1377c
+  exit: 0x13a00
+  roomtile: 0x34
+
+# symmetry cliffs
+tokkey dive spot:
+  entry: 0x0
+  exit: 0x13e84
+  entrycustomwarp: diveWarpTable
+  connector: true
+  oneway: true
+tuni nut game:
+  entry: 0x1378c
+  exit: 0x13a2c
+  roomtile: 0x05
+  alignedleft: true
+past - cave below tuni guy:
+  entry: 0x137a8
+  exit: 0x13a24
+  roomtile: 0x48
+past - talus peaks - big cave to water changes:
+  entry: 0x137b4
+  exit: 0x138c4
+  roomtile: 0x15
+  alignedleft: true
+  connector: true
+past - talus peaks - L water change cave:
+  entry: 0x1384c
+  exit: 0x13d64
+  ismultiwarp: true
+  maptile: 0x41
+  connector: true
+past - talus peaks - R water change cave:
+  entry: 0x13850
+  exit: 0x13d68
+  ismultiwarp: true
+  maptile: 0x41
+  connector: true
+
+# lynna
+past - maku tree cave:
+  entry: 0x13728
+  exit: 0x13aec
+  roomtile: 0x21
+  connector: true
+  oneway: true
+past - maku tree stairs:
+  entry: 0x13734
+  exit: 0x13af4
+  roomtile: 0x52
+  connector: true
+past - lynna - gba shop:
+  entry: 0x13858
+  exit: 0x13aa4
+  ismultiwarp: true
+  maptile: 0x58
+past - lynna - NW house:
+  entry: 0x137ac
+  exit: 0x13a9c
+  roomtile: 0x52
+past - lynna - W house:
+  entry: 0x137b8
+  exit: 0x13890
+  roomtile: 0x41
+past - lynna - dark house with boy:
+  entry: 0x137bc
+  exit: 0x1394c
+  roomtile: 0x27
+past - lynna - postman house:
+  entry: 0x137c0
+  exit: 0x1388c
+  roomtile: 0x36
+past - lynna - S house:
+  entry: 0x137cc
+  exit: 0x13a94
+  roomtile: 0x54
+past - lynna - sword game:
+  entry: 0x13854
+  exit: 0x13938
+  ismultiwarp: true
+  maptile: 0x58
+
+# palace
+palace L:
+  entry: 0x13754
+  exit: 0x13d0c
+  roomtile: 0x13
+  connector: true
+palace M:
+  entry: 0x13758
+  exit: 0x13d18
+  roomtile: 0x15
+  alignedleft: true
+  connector: true
+palace R:
+  entry: 0x1375c
+  exit: 0x13d1c
+  roomtile: 0x16
+  connector: true
+stairs SE of palace:
+  entry: 0x13828
+  exit: 0x1382c
+  roomtile: 0x47
+  connector: true
+  oneway: true
+
+# lynna outskirts
+past - SW goron - old zora:
+  entry: 0x137c8
+  exit: 0x13954
+  roomtile: 0x31
+cheval:
+  entry: 0x137e0
+  exit: 0x1387c
+  roomtile: 0x17
+raft guy L:
+  entry: 0x1385c
+  exit: 0x13880
+  ismultiwarp: true
+  maptile: 0xa7
+  connector: true
+raft guy R:
+  entry: 0x13860
+  exit: 0x13884
+  ismultiwarp: true
+  maptile: 0xa7
+  connector: true
+
+# deku forest
+past - NE of mystery tree:
+  entry: 0x137d4
+  exit: 0x13cb0
+  roomtile: 0x22
+  connector: true
+past - NW of d2:
+  entry: 0x137d8
+  exit: 0x13ca8
+  roomtile: 0x14
+past - NE of d2:
+  entry: 0x137dc
+  exit: 0x13ca4
+  roomtile: 0x37
+  connector: true
+past - bush SE of mystery tree:
+  entry: 0x137e4
+  exit: 0x13ca0
+  roomtile: 0x11
+  connector: true
+  oneway: true
+above mystery tree - L stairs:
+  entry: 0x13864
+  exit: 0x13dbc
+  ismultiwarp: true
+  maptile: 0x70
+  connector: true
+above mystery tree - R stairs:
+  entry: 0x13868
+  exit: 0x13dc0
+  ismultiwarp: true
+  maptile: 0x70
+  connector: true
+
+# zora
+past - octo fairy cave:
+  entry: 0x137e8
+  exit: 0x13a84
+  roomtile: 0x36
+past - library:
+  entry: 0x137ec
+  exit: 0x13d74
+  roomtile: 0x23
+  alignedleft: true
+  oneway: true
+past - moving island:
+  entry: 0x13808
+  exit: 0x13a44
+  roomtile: 0x38
+
+# crescent
+past - crescent - shop:
+  entry: 0x137f4
+  exit: 0x13924
+  roomtile: 0x15
+past - crescent - face cave:
+  entry: 0x137f8
+  exit: 0x13db0
+  roomtile: 0x55
+  oneway: true
+  connector: true
+past - crescent - 1st cave:
+  entry: 0x137fc
+  exit: 0x13d88
+  roomtile: 0x01
+past - crescent - stairs on cliff:
+  entry: 0x13800
+  exit: 0x13df4
+  roomtile: 0x41
+  connector: true
+past - crescent - E bomb cave:
+  entry: 0x13804
+  exit: 0x13914
+  roomtile: 0x11
+  oneway: true
+past - crescent - central bomb cave:
+  entry: 0x1380c
+  exit: 0x13cec
+  roomtile: 0x08
+  connector: true
+  oneway: true
+past - crescent - iron shield cave:
+  entry: 0x13814
+  exit: 0x13d5c
+  roomtile: 0x48
+  oneway: true
+past - crescent - L coconut separated cave:
+  entry: 0x13818
+  exit: 0x13cf4
+  roomtile: 0x06
+  connector: true
+past - crescent - R coconut separated cave:
+  entry: 0x1381c
+  exit: 0x13cf8
+  roomtile: 0x01
+  connector: true
+past - crescent - SE cave:
+  entry: 0x13820
+  exit: 0x13dac
+  roomtile: 0x31
+past - crescent - E house:
+  entry: 0x1386c
+  exit: 0x1391c
+  ismultiwarp: true
+  maptile: 0xcd
+past - crescent - E stairs after boulder:
+  entry: 0x13870
+  exit: 0x1399c
+  ismultiwarp: true
+  maptile: 0xcd
+
+# goron upper
+past - moblin keep cave:
+  entry: 0x13760
+  exit: 0x13d50
+  roomtile: 0x35
+past - upper goron - L of bomb cave:
+  entry: 0x13768
+  exit: 0x139d8
+  roomtile: 0x54
+  connector: true
+past - upper goron - bomb cave:
+  entry: 0x1376c
+  exit: 0x13974
+  roomtile: 0x52
+  oneway: true
+past - upper goron - under peg tree:
+  entry: 0x13780
+  exit: 0x13d6c
+  roomtile: 0x04
+  connector: true
+past - SW cave to upper goron:
+  entry: 0x13790
+  exit: 0x13cd8
+  roomtile: 0x26
+  connector: true
+past - upper goron - E of d5 L:
+  entry: 0x13838
+  exit: 0x13d54
+  ismultiwarp: true
+  maptile: 0x0b
+past - upper goron - E of d5 R:
+  entry: 0x1383c
+  exit: 0x1395c
+  ismultiwarp: true
+  maptile: 0x0b
+
+# goron mid
+past - mid goron - SW of bomb cave:
+  entry: 0x13784
+  exit: 0x139c8
+  roomtile: 0x43
+  connector: true
+past - mid goron - sword game:
+  entry: 0x13788
+  exit: 0x13a64
+  roomtile: 0x13
+past - mid goron - near seed tree:
+  entry: 0x13798
+  exit: 0x13960
+  roomtile: 0x07
+
+# goron lower
+past - lower goron - leftmost cave:
+  entry: 0x13794
+  exit: 0x13d40
+  roomtile: 0x23
+  connector: true
+past - dance cave:
+  entry: 0x137a4
+  exit: 0x13980
+  roomtile: 0x27
+  connector: true
+past - lower goron old man:
+  entry: 0x137b0
+  exit: 0x13a6c
+  roomtile: 0x38
+  oneway: true
+
+# dungeons
+d6 past:
+  entry: 0x139b4
+  exit: 0x13c54
+  roomtile: 0x16
+  dungeon: true
+  oneway: true
+d8:
+  entry: 0x13730
+  exit: 0x13c74
+  roomtile: 0x15
+  alignedleft: true
+  dungeon: true
+
+# past - leads to d6 cave:
+#   entry: 0x13840, 0x13844, 0x13848
+#   exit:
+#   ismultiwarp: true
+#   maptile: 0x3c
+
+# past - black tower:
+#   entry:
+#   exit: 0x13b60
+#   roomtile:
+
+past underwater - cave S of d8:
+  entry: 0x13a04
+  exit: 0x13e80
+  roomtile: 0x45
+  connector: true
+past underwater - zora palace:
+  entry: 0x13a1c
+  exit: 0x13d9c
+  roomtile: 0x25
+  alignedleft: true
+past underwater - zora SW L house:
+  entry: 0x13ac8
+  exit: 0x13a5c
+  ismultiwarp: true
+  maptile: 0xd0
+  connector: true
+past underwater - zora SW R house:
+  entry: 0x13acc
+  exit: 0x13a60
+  ismultiwarp: true
+  maptile: 0xd0
+  connector: true
+past underwater - zora E house:
+  entry: 0x13a34
+  exit: 0x13a50
+  roomtile: 0x46
+past underwater - moving island:
+  entry: 0x13a38
+  exit: 0x1389c
+  roomtile: 0x55
+past underwater - pirate cave:
+  entry: 0x13a3c
+  exit: 0x13aa8
+  roomtile: 0x46

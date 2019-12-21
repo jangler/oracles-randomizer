@@ -100,6 +100,102 @@ seasons:
       db fe
   11/7ada/: db f3; dw hssSkipStaticObjects
 
+  # Entrance rando warnings
+  # subrosia pirate portal cliff
+  11/piratePortalStaticObjects: |
+      db f2
+      db 22,0a,44,48
+      db f1
+      db dc,0b
+      db fe
+  11/6ff7/: db f3; dw piratePortalStaticObjects
+
+  # floodgate key cliff
+  11/floodgateKeyCliffStaticObjects: |
+      db f2
+      db 27,02,68,20
+      db 22,0a,58,38
+      db fe
+  11/686a/: db f3; dw floodgateKeyCliffStaticObjects; db ff
+
+  # goron lynel cliff
+  11/goronLynelCliffStaticObjects: |
+      db f2
+      db 22,0a,64,18
+      db ff
+  11/5b5d/: dw goronLynelCliffStaticObjects
+
+  # ring goron cliff
+  11/ringGoronCliffStaticObjects: |
+      db f2
+      db 22,0a,54,18
+      db ff
+  11/5b7d/: dw ringGoronCliffStaticObjects
+
+  # banana tree cliff
+  11/northBananaTreeCliffStaticObjects: |
+      db f2
+      db 6b,21,1c,70
+      db 22,0a,44,68
+      db fe
+  11/6947/: db f3; dw northBananaTreeCliffStaticObjects; db ff
+
+  # south of banana tree cliff
+  11/southBananaTreeCliffStaticObjects: |
+      db f2
+      db 8c,01,68,28
+      db 22,0a,24,88
+      db 22,0a,64,88
+      db fe
+  11/69ed/: db f3; dw southBananaTreeCliffStaticObjects; db ff
+
+  # d4 entrance - TODO: springbloom flower logic
+  11/d4entranceCliffStaticObjects: |
+      db f2
+      db 22,03,28,58
+      db 1f,0a,18,88
+      db 22,0a,74,48
+      db f3
+      dw 463a
+      db ff
+  11/5b85/: dw d4entranceCliffStaticObjects
+
+  # cliff near heart piece
+  11/innerWindmillCliffStaticObjects: |
+      db f2
+      db 6b,0a,38,b8
+      db 22,0a,44,84
+      db 22,0a,94,84
+      db fe
+  11/6d19/: db f3; dw innerWindmillCliffStaticObjects; db ff
+
+  # desert cliff by chest
+  11/desertCliffStaticObjects: |
+      db f2
+      db 22,0a,24,58
+      db f3
+      dw 4778
+      db ff
+  11/5d49/: dw desertCliffStaticObjects
+
+  # cave connecting floodgate house to lock - TODO: button puzzle logic
+  11/innerFloodgateCliffStaticObjects: |
+      db f2
+      db 22,0a,2c,78
+      db f1
+      db dc,00
+      db fe
+  11/6c4f/: db f3; dw innerFloodgateCliffStaticObjects
+
+  # mt cucco top cuccos
+  11/addReturnCucco: |
+      db f2
+      db 8c,00,28,18
+      db 8c,02,28,88
+      db 22,0a,44,88
+      db fe
+  11/69e2/: db f3; dw addReturnCucco; db ff
+
   # ORs the default season in the given area (low byte b in bank 1) with the
   # seasons the rod has (c), then ANDs and compares the results with d.
   15/checkSeasonAccessInArea: |

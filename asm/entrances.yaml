@@ -1,0 +1,222 @@
+seasons:
+  # reset season if area is goron mountains, or natzu
+  04/checkResetSeason: |
+      call loadScreenMusicAndSetRoomPack
+      ld a,(wLoadingRoomPack)
+      cp a,16  # goron mountain
+      jp z,checkRoomPackAfterWarp
+      cp a,ff  # natzu
+      jp z,checkRoomPackAfterWarp
+      ret
+
+  # reset season on every overworld exit
+  04/464e/: jp checkResetSeason
+
+  # opens up gba shop
+  04/6198/: nop
+
+  # old men who take rupees takes 0
+  15/6218/: |
+      ld a,00
+      jp removeRupeeValue
+
+  # check custom warps first
+  01/6066/: dw checkCustomWarps
+  04/checkCustomWarps: |
+      push de
+      push hl
+      ld e,14
+      ld hl,checkCustomWarps_body
+      call interBankCall
+      pop hl
+      pop de
+      ld a,(wWarpDestGroup)
+      cp a,ff
+      ret nz
+      jp 4662
+  # src group, src room, src tile position, dest room index, dest group(+8 if custom)|warp src transition
+  # d0 rupee chest, inner sunken S dive spot, fixed quicksand drop, holly up to chimney, SW grave drop
+  14/customWarpSrcTable: |
+      db 04,05,0d,00,84
+      db 05,12,29,07,84
+      db 04,f4,27,08,84
+      db 03,a3,24,09,84
+      db 00,e1,37,0a,c9
+      db ff
+  14/checkCustomWarps_body: |
+      ld hl,customWarpSrcTable
+      ld a,(wActiveGroup)
+      ld d,a
+      .next
+      ld a,(wActiveRoom)
+      ld e,a
+      ldi a,(hl)
+      cp a,ff
+      jr z,.vanillaWarp
+      cp d
+      jr nz,.wrongGroup
+      ldi a,(hl)
+      cp e
+      jr nz,.wrongRoom
+      ld a,(ff00+8d)
+      ld e,a
+      ldi a,(hl)
+      cp e
+      jr nz,.wrongTile
+      ldi a,(hl)
+      ld (wWarpDestIndex),a
+      ld a,(hl)
+      ld b,a
+      and a,0f
+      ld (wWarpTransition),a
+      ld a,b
+      swap a
+      and a,0f
+      ld (wWarpDestGroup),a
+      ld a,SND_ENTERCAVE
+      jp playSound
+      ret
+      .wrongGroup
+      inc hl
+      .wrongRoom
+      inc hl
+      .wrongTile
+      inc hl
+      inc hl
+      jr .next
+      .vanillaWarp
+      ld (wWarpDestGroup),a
+      ret
+  04/45d0/: jp checkCustomDest
+  # outer d0 roof, (e0 to 12) inner 6 dive spots, outer sunken S dive spot, fixed desert quicksand,
+  # cliff above holly's house, inside drop from SW graveyard
+  04/customDestTable: |  # group8+ warp table - room id, position, dest transition
+      db d4,28,04
+      db e0,02,31
+      db e1,0b,31
+      db e4,02,31
+      db e6,02,31
+      db e7,0d,31
+      db 12,29,05
+      db 6e,56,04
+      db fd,25,04
+      db 7f,21,04
+      db f3,27,04
+  04/checkCustomDest: |
+      ld a,(wWarpDestGroup)
+      bit 3,a
+      jp z,45d3
+      ld a,(wWarpDestIndex)
+      ld c,a
+      ld b,00
+      ld hl,customDestTable
+      add hl,bc
+      add hl,bc
+      add hl,bc
+      ldi a,(hl)
+      ld (wWarpDestIndex),a
+      ldi a,(hl)
+      ld (wWarpDestPos),a
+      ld a,(hl)
+      or a,80
+      ld (wWarpTransition),a
+      ld a,(wWarpDestGroup)
+      jp 460c
+  # diving warps
+  08/518a/: dw 526b
+  08/5286/: |  # set hl to 5*a+3
+      ld hl,diveWarpTable
+      ld b,a
+      add a,a
+      add a,a
+      add a,b
+      add a,03
+      rst 10
+      ldi a,(hl)
+      ld (wWarpDestIndex),a
+      ld a,(hl)
+      ld b,a
+      and a,0f
+      ld (wWarpTransition),a
+      ld a,b
+      swap a
+      and a,0f
+      ld (wWarpDestGroup),a
+      ld a,01
+      ld (wWarpTransition2),a
+      jp interactionDelete
+  # mt cucco S, sunken N, d4, quicksand, desert chest, sunken S
+  08/52ab/diveWarpTable: | # group, room, tile (all 3 for essence exit purposes), dest index, dest group+transition
+      db 00,3d,66,01,f4
+      db 00,4d,15,02,f4
+      db 00,1d,18,03,f4
+      db 04,f4,77,04,f4
+      db 04,f5,37,05,f4
+      db 00,6e,66,06,d4
+
+ages:
+  # opens up gba shop
+  04/6536/: nop
+
+  # correct value for d5 essence exit
+  04/76af/: db 17
+
+  # old men who take rupees takes 0
+  15/5042/: |
+      ld a,00
+      jp removeRupeeValue
+
+  # add stairs near chest in RR - NE-most cave so you don't need to soft-reset to get back up to stairs
+  1c/7719/: db 51
+
+  04/45d0/: jp checkCustomDest
+  # tokkey, tokay
+  04/customDestTable: |  # group8+ warp table - room id, position, dest transition
+      db 09,01,31
+      db 05,03,31
+  04/checkCustomDest: |
+      ld a,(wWarpDestGroup)
+      bit 3,a
+      jp z,45d3
+      ld a,(wWarpDestIndex)
+      ld c,a
+      ld b,00
+      ld hl,customDestTable
+      add hl,bc
+      add hl,bc
+      add hl,bc
+      ldi a,(hl)
+      ld (wWarpDestIndex),a
+      ldi a,(hl)
+      ld (wWarpDestPos),a
+      ld a,(hl)
+      or a,80
+      ld (wWarpTransition),a
+      ld a,(wWarpDestGroup)
+      jp 45f5
+  08/4b45/: jp newDiveWarpFunc
+  08/newDiveWarpFunc: |  # set hl to 5*a+3
+      ld hl,diveWarpTable
+      ld b,a
+      add a,a
+      add a,a
+      add a,b
+      add a,03
+      rst 10
+      ldi a,(hl)
+      ld (wWarpDestIndex),a
+      ld a,(hl)
+      ld b,a
+      and a,0f
+      ld (wWarpTransition),a
+      ld a,b
+      swap a
+      and a,0f
+      ld (wWarpDestGroup),a
+      ld a,01
+      ld (wWarpTransition2),a
+      jp interactionDelete
+  # tokkey, tokay
+  08/diveWarpTable: | # group, room, tile (all 3 for essence exit purposes), dest index, dest group+transition
+      db 01,01,18,00,f4
+      db 05,cc,12,01,f4

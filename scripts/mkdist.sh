@@ -6,7 +6,7 @@
 # environment
 
 go generate
-python scripts/checklist.py
+python3 scripts/checklist.py
 unix2dos -n README.md README.txt
 
 version="$(grep -o '".\+"' randomizer/version.go | tr -d '"')"
@@ -17,8 +17,8 @@ mkdir -p "dist/$version"
 function buildfor() {
 	echo "building for $1/$2"
 	GOOS=$1 GOARCH=$2 go build
-	apack -q "dist/$version/$appname"_$3_"$version.zip" "$appname$4" \
-		README.txt checklist/ tracker/
+	zip -r "dist/$version/$appname"_$3_"$version.zip" "$appname$4" \
+		README.txt tracker/
 }
 
 buildfor windows 386 win32 .exe

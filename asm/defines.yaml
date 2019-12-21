@@ -22,6 +22,7 @@ common:
     define SND_CLINK,50
     define SND_ERROR,5a
     define SND_SOLVEPUZZLE_2,5b
+    define SND_ENTERCAVE,6e
     define TREASURE_SHIELD,01
     define TREASURE_PUNCH,02
     define TREASURE_CANE_OF_SOMARIA,04
@@ -113,9 +114,14 @@ common:
     define wScreenTransitionDirection,cd02
     define wScreenOffsetY,cd08
     define wScreenShakeCounterY,cd18
+    define wRoomLayout,cf00
+    define w1Link.direction,d008
     define w1Link.angle,d009
     define w1Link.yh,d00b
     define w1Link.xh,d00d
+    define w1Link.z,d00e
+    define w1Link.zh,0f
+    define w1Link.visible,1a
     define w7ActiveBank,d0d4
 
     # rom 00
@@ -124,6 +130,7 @@ common:
     define getNumSetBits,0176
     define compareHlToBc,01d6
     define decHlRef16WithCap,0237
+    define removeRupeeValue,1778
 
     # rom 3f
     define _interactionGetData,4437
@@ -141,6 +148,27 @@ seasons:
     define SEASON_AUTUMN,02 # oracles-disasm calls this SEASON_FALL but i refuse
     define SEASON_WINTER,03
     define STARTING_TREE_MAP_INDEX,f8
+    define DISABLE_LINK,01
+    define Interaction.enabled,40
+    define Interaction.subid,42
+    define Interaction.var03,43
+    define Interaction.state,44
+    define Interaction.state2,45
+    define Interaction.counter1,46
+    define Interaction.angle,49
+    define Interaction.yh,4b
+    define Interaction.xh,4d
+    define Interaction.z,4e
+    define Interaction.zh,4f
+    define Interaction.speed,50
+    define Interaction.visible,5a
+    define Interaction.speedZ,54
+    define Interaction.var30,70
+    define Interaction.var31,71
+    define Interaction.var32,72
+    define Interaction.var33,73
+    define Interaction.var34,74
+    define Interaction.var35,75
 
     # hram
     define hBrokenTilePosition,93
@@ -167,11 +195,14 @@ seasons:
     define wRememberedCompanionY,cc43
     define wActiveGroup,cc49
     define wActiveRoom,cc4c
+    define wLoadingRoomPack,cc61
     define wRoomStateModifier,cc4e
     define wAreaFlags,cc50
     define wDungeonIndex,cc55
     define wWarpDestGroup,cc63
     define wWarpDestIndex,cc64
+    define wWarpTransition,cc65
+    define wWarpDestPos,cc66
     define wWarpTransition2,cc67
     define wDisableWarpTiles,ccaa
     define wDisableTransitions,ccab
@@ -187,9 +218,11 @@ seasons:
     define forceEnableIntroInputs,0862
     define playSound,0c74
     define setMusicVolume,0c89
+    define interactionInitGraphics,15e9
     define giveTreasure,16eb
     define loseTreasure,1702
     define checkTreasureObtained,1717
+    define removeRupeeValue,1751
     define getRandomRingOfGivenTier,17b9
     define refillSeedSatchel,17e5
     define showTextNonExitable,1847
@@ -203,6 +236,7 @@ seasons:
     define objectCopyPosition,21fd
     define objectCopyPositionWithOffset,221a
     define interactionSetScript,24fe
+    define interactionSetAnimation,25cb
     define createTreasure,271b
     define setLinkIdOverride,2a16
     define checkGlobalFlag,30c7
@@ -211,6 +245,10 @@ seasons:
     define getFreeInteractionSlot,3ac6
     define interactionDelete,3ad9
     define getFreePartSlot,3ea7
+
+    # rom 01
+    define loadScreenMusicAndSetRoomPack,32dc
+    define checkRoomPackAfterWarp,3ab2
 
     # rom 02
     define _closeMenu,4f7b
@@ -276,6 +314,7 @@ ages:
     define wWarpDestGroup,cc47
     define wWarpDestIndex,cc48
     define wWarpTransition,cc49
+    define wWarpDestPos,cc4a
     define wWarpTransition2,cc4b
     define wDisableTransitions,cc91
     define wDisabledObjects,cc8a

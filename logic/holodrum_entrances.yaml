@@ -1,0 +1,396 @@
+# horon village
+outer know-it-all: {or: [horon village]}
+outer mayors house: {or: [horon village]}
+outer clock shop: {or: [horon village]}
+outer stairs behind clock shop: {or: [[horon village, shovel]]}
+outer horon shop: {or: [horon village]}
+outer ring shop: {or: [horon village]}
+outer baby house - L entrance: {or: [horon village]}
+outer baby house - R entrance: {or: [horon village]}
+outer horon stairs into portal: {or: [horon village]}
+outer SE horon vill house - main entrance: {or: [horon village]}
+outer SE horon vill house - side entrance: {or: []}
+outer gba shop: {or: [horon village]}
+
+inner know-it-all: {or: []}
+inner mayors house: {or: []}
+inner clock shop: {or: []}
+inner stairs behind clock shop: {or: []}
+inner horon shop: {or: []}
+inner ring shop: {or: []}
+inner baby house - L entrance: {or: [inner baby house - R entrance]}
+inner baby house - R entrance: {or: [inner baby house - L entrance]}
+inner horon stairs into portal: {or: [[exit horon village portal, or: [hit lever, [hard, jump 6]]]]}
+inner SE horon vill house - main entrance: {or: [[inner SE horon vill house - side entrance, bombs]]}
+inner SE horon vill house - side entrance: {or: [[inner SE horon vill house - main entrance, bombs]]}
+inner gba shop: {or: []}
+
+# western coast
+lower west coast: {or: [
+  [horon village, pirate ship], 
+  outer west coast house - main entrance, 
+  outer cave leading up to graveyard,
+  [upper west coast, or: [[western coast default summer, pirate ship], jump 3]]  # can get back up
+]}
+upper west coast: {or: [  # area surrounding SW grave
+  [outer d7, shovel],  # in case of winter
+  [outer SW graveyard, shovel],
+  outer cave leading down from graveyard,
+  [lower west coast, or: [
+      [western coast default summer, pirate ship],
+      [non-entrance, summer, coast stump, jump 3]
+  ]]
+]}
+outer west coast house - main entrance: {or: [lower west coast]}
+outer west coast house - side entrance: {or: []}
+outer fairy cave near hero's cave: {or: [horon village]}
+outer SW graveyard: {or: [[upper west coast, shovel]]}
+outer cave leading up to graveyard: {or: [lower west coast]}
+outer cave leading down from graveyard: {or: [upper west coast]}
+
+inner west coast house - main entrance: {or: [[bombs, inner west coast house - side entrance, or: [hard, feather]]]}
+inner west coast house - side entrance: {or: [[bombs, inner west coast house - main entrance, or: [hard, feather]]]}
+inner fairy cave near hero's cave: {or: []}
+inner SW graveyard: {or: []}
+inner cave leading up to graveyard: {or: [[inner cave leading down from graveyard, jump 3]]}
+inner cave leading down from graveyard: {or: [[inner cave leading up to graveyard, jump 3]]}
+
+# eastern suburbs
+outer ww bomb cave: {or: [[
+  [moblin road, or: [bombs, ricky's flute], 
+  or: [woods of winter default spring, spring,
+        woods of winter default summer, summer,
+        woods of winter default autumn, autumn]]]]}
+outer ww cave under sunken: {or: [moblin road]}
+d2 roof stump: {or: [
+    [central woods of winter, or: [woods of winter default summer, ricky's flute]],
+    [d2 roof, bracelet]
+]}
+outer E of d2 - L cave: {or: [[
+    central woods of winter, 
+    or: [feather, flippers, [winter, d2 roof stump], woods of winter default winter]
+]]}
+outer E of d2 - R cave: {or: [[
+  central woods of winter, 
+  or: [break mushroom, dimitri's flute], 
+  or: [woods of winter default autumn, [autumn, d2 roof stump]]
+]]}
+outer suburbs stairs past blooming flower: {or: [[suburbs, bracelet, or: [eastern suburbs default spring, spring]]]}
+outer windmill guy: {or: []}
+outer windmill main entrance: {or: [suburbs]}
+outer windmill entrance above main entrance: {or: [[suburbs, or: [winter, eastern suburbs default winter]]]}
+outer shovel girl main entrance: {or: [[moblin road, or: [winter, woods of winter default winter]]]}
+outer holly roof: {or: [[moblin road, or: [winter, woods of winter default winter]]]}
+outer d2 roof left: {or: [d2 roof]}
+outer d2 roof right: {or: [d2 roof]}
+
+inner ww bomb cave: {or: []}
+inner ww cave under sunken: {or: [
+    [non-entrance, [sunken city, flippers, or: [
+        sunken city default spring, spring,
+        sunken city default summer, summer,
+        sunken city default autumn, autumn],
+        or: [gale satchel, [
+            or: [eastern suburbs default winter, winter],
+            or: [eastern suburbs default spring, spring]]]]]
+]}
+inner E of d2 - L cave: {or: []}
+inner E of d2 - R cave: {or: []}
+inner suburbs stairs past blooming flower: {or: []}
+inner windmill guy: {or: [inner windmill main entrance]}
+inner windmill main entrance: {or: [inner windmill guy]}
+inner windmill entrance above main entrance: {or: []}
+inner shovel girl main entrance: {or: [inner holly roof]}
+inner holly roof: {or: [inner shovel girl main entrance]}
+inner d2 roof left: {or: [[non-entrance, inner d2 roof right]]}
+inner d2 roof right: {or: [[d2 blade chest, bracelet]]}
+
+# holodrum plain
+outer blaino: {or: [blaino's gym]}
+outer holodrum plain water cave past mushrooms: {or: [[blaino's gym, flippers,
+    or: [break mushroom, dimitri's flute],
+    or: [holodrum plain default autumn, [ghastly stump, autumn]]]]}
+outer mrs ruul: {or: [ghastly stump]}
+outer water cave under mrs ruul: {or: [[blaino's gym, flippers]]}
+outer treehouse old man: {or: [[blaino's gym, or: [flippers, dimitri's flute]]]}
+
+inner blaino: {or: []}
+inner holodrum plain water cave past mushrooms: {or: []}
+inner mrs ruul: {or: []}
+inner water cave under mrs ruul: {or: []}
+inner treehouse old man: {or: []}
+
+# spool swamp
+unflooded: [outer stairs by d3, floodgate key]
+outer stairs by d3: {or: []}
+outer stairs by floodgate house: {or: [[inner floodgate house, hit lever, north swamp]]}
+outer floodgate house: {or: [north swamp]}
+outer swamp S bomb cave: {or: [[south swamp,
+    or: [[winter, spool stump], [spool swamp default winter,
+        or: [flippers, [spool stump, or: [feather, flute]]]]],
+    or: [shovel, flute], or: [bombs, ricky's flute]]]}
+
+inner stairs by d3: {or: [[inner stairs by floodgate house, bracelet, or: [flippers, feather, pegasus satchel]]]}
+inner stairs by floodgate house: {or: [[inner stairs by d3, bracelet, or: [flippers, feather, pegasus satchel]]]}
+inner floodgate house: {or: []}
+inner swamp S bomb cave: {or: []}
+
+# north horon / eyeglass lake
+outer cuccodex girl: {or: [north horon stump]}
+outer stairs to old man who gives red ring: {or: [[north horon stump, break bush, or: [north horon default summer, summer]]]}
+outer eyeglass bomb cave: {or: [[
+    or: [bombs, ricky's flute],
+    or: [[north horon stump, or: [north horon default summer, summer],
+            or: [feather, ricky's flute, moosh's flute]],
+        [d5 stump, summer],
+        [non-entrance, d5 entrance, north horon default summer]]
+]]}
+outer eyeglass stairs under water: {or: [
+    [d5 stump, bracelet, summer],
+    [non-entrance, d5 entrance, north horon default summer]
+]}
+outer impa: {or: [[horon village, or: [d1 boss, d2 boss, d3 boss, d4 boss, d5 boss, d6 boss,
+    d7 boss, d8 boss]]]}
+
+inner cuccodex girl: {or: []}
+inner stairs to old man who gives red ring: {or: []}
+inner eyeglass bomb cave: {or: []}
+inner eyeglass stairs under water: {or: []}
+inner impa: {or: []}
+
+# natzu
+moblin keep entrance: [or: [flippers, bomb jump 4], or: [
+    [natzu prairie, sunken city],
+    [natzu river, blaino's gym,
+        or: [dimitri's flute, [flippers, swimmer's ring]]],
+    [natzu wasteland, blaino's gym,
+        or: [flute, [hard, feather], jump 3]]]]
+outer stairs N of natzu: {or: [
+    [blaino's gym, or: [flippers, dimitri's flute]],
+    [sunken city, natzu river, jump 6]]}
+outer moblin keep L entrance: {or: [moblin keep entrance]}
+outer moblin keep R entrance: {or: [moblin keep entrance]}
+outer natzu fairy cave - Ricky: {or: [
+    [natzu prairie, or: [
+        [blaino's gym, or: [feather, flippers, flute]],
+        [sunken city, flute]
+    ]]
+]}
+outer natzu fairy cave - Moosh: {or: [
+    [natzu wasteland, [blaino's gym, or: [flute, [break bush, or: [flippers, feather]]]]]
+]}
+outer natzu fairy cave - Dimitri: {or: [
+    [natzu river, [blaino's gym, or: [flute, [flippers, swimmer's ring]]]]
+]}
+outer natzu deku cave - Ricky: {or: [
+    [natzu prairie, or: [
+        [sunken city, or: [break bush, flute]],
+        [outer natzu fairy cave - Ricky, flute]
+    ]]
+]}
+outer natzu deku cave - Moosh: {or: [
+    [natzu wasteland, [blaino's gym, or: [flute, [break bush, bomb jump 3], [hard, cape], jump 6]]]
+]}
+
+inner stairs N of natzu: {or: []}
+inner moblin keep L entrance: {or: [inner moblin keep R entrance]}
+inner moblin keep R entrance: {or: [inner moblin keep L entrance]}
+inner natzu fairy cave - Ricky: {or: []}
+inner natzu fairy cave - Moosh: {or: []}
+inner natzu fairy cave - Dimitri: {or: []}
+inner natzu deku cave - Ricky: {or: []}
+inner natzu deku cave - Moosh: {or: []}
+
+# sunken city
+sunken city hub: {or: [
+  outer sunken vase guy,
+  outer 1st sunken house,
+  outer house by dimitri bullies,
+  outer moblin rest house,
+  [outer sunken - NE flooded house, flippers, dimitri],  # can get down then back up
+  [sunken city, or: [feather, flippers, dimitri's flute, sunken city default winter]]
+  ]}
+outer sunken - NE flooded house: {or: [[sunken city hub, flippers, or: [sunken city default summer, summer, dimitri]]]}
+outer sunken vase guy: {or: [sunken city hub]}
+outer sunken vines cave: {or: [[sunken city hub, flippers, or: [sunken city default summer, summer]]]}
+outer 1st sunken house: {or: [sunken city hub]}
+outer witch's house: {or: [
+  [sunken city, or: [sunken city default winter, [winter, or: [flippers, dimitri]]]]
+  ]}
+outer house by dimitri bullies: {or: [sunken city hub]}
+outer moblin rest house: {or: [sunken city hub]}
+outer sunken city N dive spot: {or: [[sunken city, flippers]]}
+outer sunken city S dive spot: {or: [[sunken city hub, flippers]]}
+
+inner sunken - NE flooded house: {or: []}
+inner sunken vase guy: {or: []}
+inner sunken vines cave: {or: []}
+inner 1st sunken house: {or: []}
+inner witch's house: {or: []}
+inner house by dimitri bullies: {or: []}
+inner moblin rest house: {or: []}
+inner sunken city N dive spot: {or: [[inner mt cucco S dive spot, flippers]]}
+inner sunken city S dive spot: {or: []}
+
+# mt cucco
+platform cave: [mount cucco, bracelet, or: [
+    [hard, gale satchel],
+    [or: [break flower, moosh], or: [sunken city default spring, spring]]]]
+outer mt cucco stairs near top cucco: {or: []}
+outer banana tree - top stairs: {or: []}
+outer banana tree - bottom cave: {or: [platform cave]}
+outer mt cucco mushroom guy: {or: [[mount cucco, or: [sunken city default spring, spring]]]}
+outer mt cucco cliff cave to top cucco: {or: [[mount cucco, winter, or: [sunken city default spring, spring]]]}
+outer mt cucco S of banana tree screen: {or: [platform cave]}
+outer mt cucco - cave by portal: {or: [[mount cucco, feather, or: [sunken city default winter, winter]]]}
+outer mt cucco S dive spot: {or: []}
+outer d4 dive spot: {or: [[outer mt cucco mushroom guy, flippers]]}
+
+inner mt cucco stairs near top cucco: {or: [
+  [inner mt cucco cliff cave to top cucco, feather]
+]}
+inner banana tree - top stairs: {or: [[feather, inner banana tree - bottom cave]]}
+inner banana tree - bottom cave: {or: [[feather, inner banana tree - top stairs]]}
+inner mt cucco mushroom guy: {or: []}
+inner mt cucco cliff cave to top cucco: {or: [
+  [inner mt cucco stairs near top cucco, feather]
+]}
+inner mt cucco S of banana tree screen: {or: []}
+inner mt cucco - cave by portal: {or: []}
+inner mt cucco S dive spot: {or: [[inner sunken city N dive spot, flippers]]}
+inner d4 dive spot: {or: []}
+
+# goron mountain
+entrances near ring cave: {or: [
+    outer goron mountain - S of lynels - L separated cave,
+    outer goron mountain - S of lynels - R separated cave,
+    outer goron mountain - stairs below L and R-separated caves
+]}
+goron mountain bomb wall: {or: [
+    [mount cucco, or: [shovel, spring banana]],
+    [bracelet, outer goron cave near old man]]}
+outer goron mountain - S of lynels - L separated cave: {or: [entrances near ring cave]}
+outer goron ring cave: {or: []}
+outer goron mountain stairs by lynels: {or: []}
+outer goron mountain - S of lynels - R separated cave: {or: [entrances near ring cave]}
+outer goron mountain - stairs below L and R-separated caves: {or: [entrances near ring cave]}
+outer goron cave near old man: {or: [goron mountain]}
+outer goron bomb cave: {or: [[goron mountain bomb wall, bombs]]}
+outer cave below goron mountain area: {or: [
+    [temple remains lower stump, jump 3],
+    [blaino's gym, flippers]
+]}
+outer under biggoron: {or: []}
+
+inner goron mountain - S of lynels - L separated cave: {or: []}
+inner goron ring cave: {or: []}
+inner goron mountain stairs by lynels: {or: [inner goron mountain - S of lynels - R separated cave]}
+inner goron mountain - S of lynels - R separated cave: {or: [inner goron mountain stairs by lynels]}
+inner goron mountain - stairs below L and R-separated caves: {or: [inner goron bomb cave]}
+inner goron cave near old man: {or: [
+    [inner cave below goron mountain area, or: [flippers, bomb jump 4]],
+    [inner under biggoron, feather]
+]}
+inner goron bomb cave: {or: [inner goron mountain - stairs below L and R-separated caves]}
+inner cave below goron mountain area: {or: [
+    [inner goron cave near old man, or: [flippers, bomb jump 4]]
+]}
+inner under biggoron: {or: [[inner goron cave near old man, feather]]}
+
+# tarm ruins
+outer tarm deku: {or: [[
+    tarm ruins,
+    or: [
+        lost woods default summer, summer, 
+        [magic boomerang, or: [hard, feather], or: [lost woods default autumn, autumn]]
+    ],  # to push 1st statue
+    or: [lost woods default winter, winter],  # to push 2nd statue
+    autumn, break mushroom,
+    or: [flippers, bomb jump 2]]]}
+outer tarm tree stairs: {or: [
+    [lost woods, break mushroom, ember seeds,
+    or: [[non-entrance, autumn], tarm ruins default autumn]]
+]}
+before lost woods: [outer tarm deku, or: [cape, [hard, jump 3]]]
+outer bomb cave before lost woods: {or: [[before lost woods, bombs]]}
+outer stairs SE of lost woods: {or: [[before lost woods, ember seeds]]}
+
+inner tarm deku: {or: []}
+inner tarm tree stairs: {or: []}
+inner bomb cave before lost woods: {or: []}
+inner stairs SE of lost woods: {or: []}
+
+# samasa desert
+outer NE desert cave: {or: [[desert, bombs, or: [flippers, jump 3, [hard, bomb jump 2]]]]}
+outer desert chest stairs: {or: []}
+outer fixed quicksand: {or: []}
+outer quicksand dive spot: {or: [[desert, flippers]]}  # TODO: change to inner fixed quicksand once its randomized
+outer desert chest dive spot: {or: [[inner desert chest stairs, flippers]]}
+
+inner NE desert cave: {or: []}
+inner desert chest stairs: {or: []}
+inner fixed quicksand: {or: []}
+inner quicksand dive spot: {or: [[inner desert chest dive spot, flippers]]}
+inner desert chest dive spot: {or: [[inner quicksand dive spot, flippers]]}
+
+# temple remains
+outer NW temple ruins building: {or: [outer upper temple remains L stairs]}
+outer upper temple remains L stairs: {or: [outer NW temple ruins building]}
+outer upper temple remains R stairs: {or: [outer temple remains NE stairs]}
+outer temple remains NE stairs: {or: [outer upper temple remains R stairs]}
+outer temple remains bomb cave: {or: [[temple remains lower stump, feather, bomb temple remains]]}
+outer temple remains cave past vines: {or: [[
+    temple remains lower stump, bomb temple remains,
+    or: [temple remains default summer, summer],
+    bomb jump 2]]}
+
+inner NW temple ruins building: {or: [exit temple remains upper portal]}
+inner upper temple remains L stairs: {or: [[inner upper temple remains R stairs, or: [hard, feather]]]}  # have to shuffle across pits
+inner upper temple remains R stairs: {or: [[inner upper temple remains L stairs, or: [hard, feather]]]}
+inner temple remains NE stairs: {or: [[inner temple remains cave past vines, or: [jump 6, magnet gloves]]]}
+inner temple remains bomb cave: {or: []}
+inner temple remains cave past vines: {or: [[inner temple remains NE stairs, or: [jump 6, magnet gloves]]]}
+
+# old men
+outer goron mountain old man: {or: [[goron mountain, ember seeds]]}
+outer western coast old man: {or: [[lower west coast, ember seeds]]}
+outer holodrum plain east old man: {or: [[blaino's gym, ember seeds,
+    or: [ricky's flute, holodrum plain default summer,
+        [ghastly stump, summer, or: [feather, flute, [break bush, flippers]]]]]]}
+outer horon village old man: {or: [ember seeds]}
+outer north horon old man: {or: [[north horon stump, ember seeds]]}
+outer ww old man: {or: [[moblin road, ember seeds]]}
+outer tarm old man: {or: [[d6 entrance, ember seeds]]}
+outer mrs ruul old man: {or: [[outer mrs ruul, ember seeds]]}
+
+inner goron mountain old man: {or: []}
+inner western coast old man: {or: []}
+inner holodrum plain east old man: {or: []}
+inner horon village old man: {or: []}
+inner north horon old man: {or: []}
+inner ww old man: {or: []}
+inner tarm old man: {or: []}
+inner mrs ruul old man: {or: []}
+
+# dungeons
+outer d0 main: {or: [start]}
+outer d0 roof: {or: [break bush safe, flute]}
+outer d1: {or: [d1 entrance]}
+outer d2: {or: [d2 entrance]}
+outer d3: {or: [d3 entrance]}
+outer d4: {or: [d4 entrance]}
+outer d5: {or: [d5 entrance]}
+outer d6: {or: [d6 entrance]}
+outer d7: {or: [d7 entrance]}
+outer d8: {or: [d8 entrance]}
+
+inner d0 main: {or: []}
+inner d0 roof: {or: []}
+inner d1: {or: []}
+inner d2: {or: []}
+inner d3: {or: []}
+inner d4: {or: []}
+inner d5: {or: []}
+inner d6: {or: []}
+inner d7: {or: []}
+inner d8: {or: []}

@@ -1,0 +1,121 @@
+# temple
+temple of summer:
+  entry: 0x136a9
+  exit: 0x13c5d
+  oneway: true
+  roomtile: 0x53
+temple of seasons:
+  entry: 0x136a1
+  exit: 0x138e9
+  roomtile: 0x45
+  alignedleft: true
+temple of autumn:
+  entry: 0x136ad
+  exit: 0x13c61
+  oneway: true
+  roomtile: 0x23
+temple of spring:
+  entry: 0x13735
+  exit: 0x13c59
+  maptile: 0x28
+  ismultiwarp: true
+temple of spring - stairs:
+  entry: 0x13739
+  exit: 0x13ded
+  maptile: 0x28
+  ismultiwarp: true
+  connector: true
+temple of winter:
+  entry: 0x136b1
+  exit: 0x13c65
+  roomtile: 0x47
+
+# southwest
+house NE of thieves portal:
+  entry: 0x136f1
+  exit: 0x13869
+  roomtile: 0x43
+stairs leading to spring tower:
+  entry: 0x13705
+  exit: 0x13de9
+  roomtile: 0x64
+  connector: true
+pirate house - top stairs:
+  entry: 0x1372d
+  exit: 0x138fd
+  maptile: 0x72
+  ismultiwarp: true
+  connector: true
+pirate house - main entrance:
+  entry: 0x13731
+  exit: 0x13819
+  maptile: 0x72
+  ismultiwarp: true
+  connector: true
+
+# northwest
+bomb hole cave:
+  entry: 0x13709
+  exit: 0x13a15
+  roomtile: 0x67
+subrosia open cave:
+  entry: 0x13711
+  exit: 0x13a1d
+  roomtile: 0x31
+subrosia locked cave:
+  entry: 0x136cd
+  exit: 0x13bc1
+  roomtile: 0x58
+  oneway: true
+house S of subrosia locked cave:
+  entry: 0x136d9
+  exit: 0x13825
+  roomtile: 0x32
+
+# north
+house N of smithy:
+  entry: 0x136e1
+  exit: 0x1383d
+  roomtile: 0x48
+E volcano cave:
+  entry: 0x1370d
+  exit: 0x13a19
+  roomtile: 0x67
+# minigame stairs:
+#   entry: 0x136dd
+#   exit: 0x13839
+#   roomtile: 0x24
+smithy:
+  entry: 0x136e5
+  exit: 0x13841
+  roomtile: 0x46
+
+# beach
+subrosia shop:
+  entry: 0x136ed
+  exit: 0x13865
+  roomtile: 0x43
+  alignedleft: true
+
+# east
+furnace:
+  entry: 0x136e9
+  exit: 0x1385d
+  roomtile: 0x65
+E ore screen - top stairs:
+  entry: 0x13721
+  exit: 0x13a21
+  maptile: 0x58
+  ismultiwarp: true
+  connector: true
+  trapped: true
+E ore screen - bottom cave:
+  entry: 0x13725
+  exit: 0x13a25
+  maptile: 0x58
+  ismultiwarp: true
+  connector: true
+signpost house:
+  entry: 0x136f9
+  exit: 0x13891
+  roomtile: 0x24

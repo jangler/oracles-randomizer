@@ -26,6 +26,7 @@ common:
 
   # hearts
   heart container: 0x2a00
+  standing heart: 0x2b00
   piece of heart: 0x2b01
 
   # rings
@@ -66,6 +67,8 @@ common:
   # common page 2
   flippers: 0x2e00
   gasha seed: 0x3401
+  standing gasha: 0x3404
+  water gasha: 0x3405
 
 seasons:
   # equip items

@@ -15,6 +15,7 @@ Deku Forest:
 - deku forest cave west
 - deku forest soldier
 - deku forest tree
+- deku forest bush cave hp
 Fairies' Woods:
 - fairies' woods chest
 Forest of Time:
@@ -142,6 +143,7 @@ Lynna City:
 - shop, 30 rupees
 Maku Path:
 - maku path basement
+- maku path hp
 Nuun Highlands:
 - nuun highlands cave
 Rolling Ridge:
@@ -160,6 +162,8 @@ Rolling Ridge:
 - target carts 2
 - trade lava juice
 - under moblin keep
+- NE rolling ridge hp
+- rolling ridge hp in wall
 Rolling Ridge Base:
 - goron dance present
 - goron dance, with letter
@@ -185,13 +189,17 @@ Symmetry City:
 Talus Peaks:
 - talus peaks chest
 - tokkey's composition
+- talus peaks hp
+- cave below tuni guy hp
 The Black Tower:
 - black tower worker
+- black tower hp
 Yoll Graveyard:
 - cheval's invention
 - cheval's test
 - grave under tree
 - graveyard poe
+- graveyard hp
 Zora Seas:
 - fisher's island cave
 - library past

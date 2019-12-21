@@ -195,6 +195,45 @@ member's shop 3:
   room: 0x03b0
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4cd8}
+windmill hp:
+  treasure: standing heart
+  room: 0x05b2
+  maptile: 0xea
+  reverseaddr: {bank: 0x14}
+tr bomb cave hp:
+  treasure: standing heart
+  room: 0x05c7
+  maptile: 0x15
+  reverseaddr: {bank: 0x14}
+outside d7 hp:
+  treasure: standing heart
+  room: 0x00d1
+  reverseaddr: {bank: 0x14}
+winter woods hp:
+  treasure: standing heart
+  room: 0x00af
+  reverseaddr: {bank: 0x14}
+horon village hp:
+  treasure: standing heart
+  room: 0x00d8
+  reverseaddr: {bank: 0x14}
+spool swamp currents hp:
+  treasure: standing heart
+  room: 0x00b1
+  reverseaddr: {bank: 0x14}
+cucco cliff hp:
+  treasure: standing heart
+  room: 0x002d
+  reverseaddr: {bank: 0x14}
+mayor house gasha:
+  treasure: standing gasha
+  room: 0x0387
+  maptile: 0xc8
+  reverseaddr: {bank: 0x14}
+holodrum plain diving gasha:
+  treasure: water gasha
+  room: 0x0066
+  reverseaddr: {bank: 0x09, addr: 0x660f}
 
 # subrosia
 #
@@ -291,6 +330,16 @@ subrosian smithy:
   maptile: 0x1e
   ids: [{bank: 0x15, addr: 0x62be}]
   subids: [{bank: 0x15, addr: 0x62b4}]
+subrosian's gasha:
+  treasure: standing gasha
+  room: 0x03a1
+  maptile: 0x1e
+  reverseaddr: {bank: 0x14}
+spring tower gasha:
+  treasure: standing gasha
+  room: 0x07e3
+  maptile: 0x1e
+  reverseaddr: {bank: 0x14}
 
 # hero's cave
 d0 key chest:
@@ -305,6 +354,11 @@ d0 rupee chest:
   treasure: rupees, 30
   room: 0x0405
   morerooms: [0x052c] # linked equivalent
+d0 basement:
+  treasure: standing gasha
+  room: 0x0601
+  maptile: 0xd4
+  reverseaddr: {bank: 0x09, addr: 0x66ab}
 
 # d1
 d1 stalfos drop:

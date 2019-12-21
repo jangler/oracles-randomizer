@@ -67,18 +67,19 @@ func addNodeParents(prenodes map[string]*prenode, g graph) {
 }
 
 type routeInfo struct {
-	graph        graph
-	slots        map[string]*node
-	seed         uint32
-	seasons      map[string]byte
-	entrances    map[string]string
-	portals      map[string]string
-	companion    int // 1 to 3
-	usedItems    *list.List
-	usedSlots    *list.List
-	ringMap      map[string]string
-	attemptCount int
-	src          *rand.Rand
+	graph           graph
+	slots           map[string]*node
+	seed            uint32
+	seasons         map[string]byte
+	entrances       map[string]string
+	portals         map[string]string
+	companion       int // 1 to 3
+	usedItems       *list.List
+	usedSlots       *list.List
+	ringMap         map[string]string
+	attemptCount    int
+	src             *rand.Rand
+	entranceMapping map[string]string
 }
 
 const (
@@ -94,6 +95,100 @@ func newRouteGraph(rom *romState) graph {
 	addNodes(totalPrenodes, g)
 	addNodeParents(totalPrenodes, g)
 	return g
+}
+
+type shuffledEntrance struct {
+	Entry           uint32
+	Exit            uint32
+	Dungeon         bool
+	Roomtile        uint8
+	Maptile         uint8
+	Ismultiwarp     bool
+	Entrycustomwarp string
+	Exitcustomwarp  string
+	Connector       bool // if inner part connects to another inner part
+	Oneway          bool // if logically, you can't exit a connector into this entrance's outer part (eg to old man tree)
+	Trapped         bool // if it is an outer that connects to nothing
+	Alignedleft     bool // if a dungeon essence warp should align you 8 pixels left
+	name            string
+	oldEntryByte1   byte
+	oldEntryByte2   byte
+	oldExitByte1    byte
+	oldExitByte2    byte
+	newEntryByte1   byte
+	newEntryByte2   byte
+	newExitByte1    byte
+	newExitByte2    byte
+}
+
+func setEntrances(rom *romState, src *rand.Rand, companion int, entrance bool) map[string]string {
+	entrances := rom.getShuffledEntrances()
+	if companion != ricky {
+		delete(entrances, "nuun lower cave - Ricky")
+		delete(entrances, "natzu fairy cave - Ricky")
+		delete(entrances, "natzu deku cave - Ricky")
+	}
+	if companion != moosh {
+		delete(entrances, "nuun lower cave - Moosh")
+		delete(entrances, "natzu fairy cave - Moosh")
+		delete(entrances, "natzu deku cave - Moosh")
+	}
+	if companion != dimitri {
+		delete(entrances, "natzu fairy cave - Dimitri")
+	}
+
+	outers := make([]*shuffledEntrance, 0, len(entrances))
+	inners := make([]*shuffledEntrance, 0, len(entrances))
+
+	for _, entranceName := range orderedKeys(entrances) {
+		entrance := entrances[entranceName]
+		entrance.name = entranceName
+		outers = append(outers, entrance)
+		inners = append(inners, entrance)
+	}
+	entranceMapping := make(map[string]string)
+
+	if entrance {
+		// shuffle everything with no rules
+		src.Shuffle(len(inners), func(i, j int) {
+			inners[i], inners[j] = inners[j], inners[i]
+		})
+
+		// then make sure entrances are compatible
+		for {
+			shuffled := true
+
+			// Current rules
+			for i := range outers {
+				if outers[i].Oneway && inners[i].Connector {
+					shuffled = false
+					break
+				} else if outers[i].Trapped && inners[i].Dungeon {
+					shuffled = false
+					break
+				}
+			}
+
+			if shuffled {
+				break
+			}
+
+			src.Shuffle(len(inners), func(i, j int) {
+				if (outers[i].Oneway && inners[j].Connector) || (outers[j].Oneway && inners[i].Connector) {
+					// don't swap if an old man entrance connects to a connector
+				} else if (outers[i].Trapped && inners[j].Dungeon) || (outers[j].Trapped && inners[i].Dungeon) {
+					// don't swap if an unconnected overworld connects to a dungeon
+				} else {
+					inners[i], inners[j] = inners[j], inners[i]
+				}
+			})
+		}
+	}
+
+	for i := range outers {
+		entranceMapping[outers[i].name] = inners[i].name
+	}
+	return entranceMapping
 }
 
 // attempts to create a path to the given targets by placing different items in
@@ -123,6 +218,9 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		if ropts.hard {
 			ri.graph["hard"].addParent(ri.graph["start"])
 		}
+		if !ropts.entrance {
+			ri.graph["non-entrance"].addParent(ri.graph["start"])
+		}
 
 		ri.companion = rollAnimalCompanion(ri.src, ri.graph, rom.game)
 		ri.ringMap, _ = rom.randomizeRingPool(ri.src, nil)
@@ -139,8 +237,22 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 			ri.seasons = rollSeasons(ri.src, ri.graph)
 			ri.portals = setPortals(ri.src, ri.graph, ropts.portals)
 		}
+
+		// Map outer to inner entrances
+		entranceMapping := setEntrances(rom, ri.src, ri.companion, ropts.entrance)
+		for outerName, innerName := range entranceMapping {
+			if outerName == "moblin keep L entrance" || outerName == "moblin keep R entrance" {
+				continue
+			}
+			fullOuterName := "outer " + outerName
+			fullInnerName := "inner " + innerName
+			ri.graph[fullOuterName].addParent(ri.graph[fullInnerName])
+			ri.graph[fullInnerName].addParent(ri.graph[fullOuterName])
+		}
+		ri.entranceMapping = entranceMapping
+
 		ri.entrances = setDungeonEntrances(
-			ri.src, ri.graph, rom.game, ropts.dungeons)
+			ri.src, ri.graph, rom.game, ropts.dungeons, ropts.entrance)
 
 		if tryPlaceItems(
 			ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
@@ -190,7 +302,7 @@ func rollSeasons(src *rand.Rand, g graph) map[string]byte {
 
 // connect dungeon entrances, randomly or vanilla-ly.
 func setDungeonEntrances(
-	src *rand.Rand, g graph, game int, shuffle bool) map[string]string {
+	src *rand.Rand, g graph, game int, dungeonShuffle bool, entranceShuffle bool) map[string]string {
 	dungeonEntranceMap := make(map[string]string)
 	dungeons := make([]string, len(dungeonNames[game]))
 	copy(dungeons, dungeonNames[game])
@@ -198,23 +310,34 @@ func setDungeonEntrances(
 		dungeons = dungeons[1:]
 	}
 
-	if game == gameSeasons && !shuffle {
+	if game == gameSeasons && !dungeonShuffle {
 		g["d2 alt entrances enabled"].addParent(g["start"])
 	}
 
 	entrances := make([]string, len(dungeons))
 	copy(entrances, dungeons)
 
-	if shuffle {
+	if dungeonShuffle {
 		src.Shuffle(len(entrances), func(i, j int) {
 			entrances[i], entrances[j] = entrances[j], entrances[i]
 		})
 	}
 
-	for i := 0; i < len(dungeons); i++ {
-		entranceName := fmt.Sprintf("%s entrance", entrances[i])
-		dungeonEntranceMap[entrances[i]] = dungeons[i]
-		g[fmt.Sprintf("enter %s", dungeons[i])].addParent(g[entranceName])
+	if !entranceShuffle {
+		for i := 0; i < len(dungeons); i++ {
+			innerEntranceName := fmt.Sprintf("inner %s", entrances[i])
+			outerEntranceName := fmt.Sprintf("outer %s", entrances[i])
+			g[innerEntranceName].removeParent(g[outerEntranceName])
+			g[outerEntranceName].removeParent(g[innerEntranceName])
+		}
+
+		for i := 0; i < len(dungeons); i++ {
+			innerEntranceName := fmt.Sprintf("inner %s", dungeons[i])
+			outerEntranceName := fmt.Sprintf("outer %s", entrances[i])
+			g[innerEntranceName].addParent(g[outerEntranceName])
+			g[outerEntranceName].addParent(g[innerEntranceName])
+			dungeonEntranceMap[entrances[i]] = dungeons[i]
+		}
 	}
 
 	return dungeonEntranceMap

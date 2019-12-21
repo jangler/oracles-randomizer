@@ -57,6 +57,7 @@ var (
 	flagCpuProf  string
 	flagDevCmd   string
 	flagDungeons bool
+	flagEntrance bool
 	flagHard     bool
 	flagNoUI     bool
 	flagPlan     string
@@ -75,6 +76,7 @@ type randomizerOptions struct {
 	plan     *plan
 	race     bool
 	seed     string
+	entrance bool
 }
 
 // initFlags initializes the CLI/TUI option values and variables.
@@ -85,7 +87,9 @@ func initFlags() {
 	flag.StringVar(&flagDevCmd, "devcmd", "",
 		"subcommands are 'findaddr', 'showasm', and 'stats'")
 	flag.BoolVar(&flagDungeons, "dungeons", false,
-		"shuffle dungeon entrances")
+		"shuffle dungeon entrances (disabled in entrance rando)")
+	flag.BoolVar(&flagEntrance, "entrances", false,
+		"shuffle all entrances")
 	flag.BoolVar(&flagHard, "hard", false,
 		"enable more difficult logic")
 	flag.BoolVar(&flagNoUI, "noui", false,
@@ -126,6 +130,7 @@ func Main() {
 		portals:  flagPortals,
 		race:     flagRace,
 		seed:     flagSeed,
+		entrance: flagEntrance,
 	}
 
 	switch flagDevCmd {
@@ -340,6 +345,11 @@ func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions,
 	logf("tree warp %s.", ternary(ropts.treewarp, "on", "off"))
 
 	if ui != nil {
+		ropts.entrance = ui.doPrompt("shuffle all entrances? (y/n)") == 'y'
+	}
+	logf("entrance shuffle %s.", ternary(ropts.entrance, "on", "off"))
+
+	if ui != nil && !ropts.entrance {
 		ropts.dungeons = ui.doPrompt("shuffle dungeons? (y/n)") == 'y'
 	}
 	logf("dungeon shuffle %s.", ternary(ropts.dungeons, "on", "off"))
@@ -559,7 +569,7 @@ func randomize(rom *romState, dirName, logFilename string,
 
 	// configuration found; come up with auxiliary data
 	checks := getChecks(ri.usedItems, ri.usedSlots)
-	spheres, extra := getSpheres(ri.graph, checks)
+	spheres, extra, entrances, extraEntrances := getSpheres(ri.graph, checks, true)
 	/*
 		owlNames := orderedKeys(getOwlIds(rom.game))
 		owlHinter := newHinter(rom.game)
@@ -584,7 +594,7 @@ func randomize(rom *romState, dirName, logFilename string,
 				gamePrefix, version, optString(ri.seed, ropts, "-"))
 		}
 		writeSummary(filepath.Join(dirName, logFilename), checksum,
-			ropts, rom, ri, checks, spheres, extra, nil)
+			ropts, rom, ri, checks, spheres, extra, nil, entrances, extraEntrances)
 	}
 
 	return ri.seed, checksum, logFilename, nil
@@ -635,7 +645,7 @@ func setRomData(rom *romState, ri *routeInfo, owlHints map[string]string,
 	}
 
 	// do it! (but don't write anything)
-	return rom.mutate(warps, ri.seed, ropts)
+	return rom.mutate(warps, ri.seed, ropts, ri.entranceMapping)
 }
 
 // returns a string representing a seed/has plus the randomizer options that
@@ -663,7 +673,7 @@ func optString(seed uint32, ropts randomizerOptions, flagSep string) string {
 		s += fmt.Sprintf("%08x", seed)
 	}
 
-	if ropts.treewarp || ropts.hard || ropts.dungeons || ropts.portals {
+	if ropts.treewarp || ropts.hard || ropts.dungeons || ropts.portals || ropts.entrance {
 		// these are in chronological order of introduction, for no particular
 		// reason.
 		s += flagSep
@@ -678,6 +688,9 @@ func optString(seed uint32, ropts randomizerOptions, flagSep string) string {
 		}
 		if ropts.portals {
 			s += "p"
+		}
+		if ropts.entrance {
+			s += "e"
 		}
 	}
 
