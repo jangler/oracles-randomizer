@@ -105,7 +105,10 @@ fairies' woods: {or: [
          [ricky nuun, or: [break bush, flute]],
          [moosh nuun, or: [feather, flute]],
     ], 
-    or: [hit lever, ricky's flute, moosh's flute]]    
+    or: [hit lever, ricky's flute, moosh's flute]], 
+    [currents, or: [outer past - NE of mystery tree, outer past - NW of d2, 
+        outer past - NE of d2, outer above mystery tree - L stairs, 
+        outer above mystery tree - R stairs]],  
 ]}
 fairies' woods chest: {or: [[deku forest, currents],
     [fairies' woods, or: [feather, ricky's flute, moosh's flute, switch hook]]]}
