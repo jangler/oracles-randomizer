@@ -130,7 +130,12 @@ deku forest: {or: [
 deku forest cave east: [inner past - NW of d2]
 deku forest cave west: [bracelet, inner past - NE of mystery tree]
 deku forest tree: [
-    or: [outer above mystery tree - R stairs, [gale satchel, deku forest]], 
+    or: [outer above mystery tree - R stairs, 
+        [gale satchel, or: [
+            deku forest,
+            outer above mystery tree - L stairs, 
+            [bracelet, outer past - NE of mystery tree]
+    ]]], 
     or: [sword, punch object], seed item]
 deku forest owl: [mystery seeds, deku forest tree]
 deku forest soldier: [deku forest, mystery seeds]
