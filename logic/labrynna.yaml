@@ -183,7 +183,7 @@ nuun: {or: [
       [moosh nuun, or: [feather, flute]]
   ]],
   [outer nuun upper cave, or: [
-    ages,
+    echoes, # ledge+echoes leads to palace garden > village > city > starting area = safe
     [ricky nuun, or: [flute, [feather, sword, or: [hard, switch hook]]]],
     [dimitri nuun, or: [flute, [flippers, swimmer's ring]]],
     [moosh nuun, or: [flute, [break bush, jump 3]]]
