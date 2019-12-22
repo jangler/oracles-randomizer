@@ -49,7 +49,11 @@ lynna village: {or: [
     [outer cheval, or: [feather, flippers]],
     outer raft guy L,
     [outer palace M, hard, satchel, scent seeds, pegasus seeds],
-    [deku forest, bracelet]
+    [deku forest, bracelet],
+    [echoes, or: [
+        outer nuun lower cave - Moosh, 
+        outer nuun lower cave - Ricky,
+        outer nuun upper cave]] # ledge+echoes leads to palace garden > village > city > starting area = safe
 ]}
 black tower worker: [lynna village]
 black tower hp: [lynna village, shovel]
