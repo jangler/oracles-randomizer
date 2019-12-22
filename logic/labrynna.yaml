@@ -276,7 +276,7 @@ zora's reward: [past underwater zora, d7 boss]
 # sea of storms / sea of no return
 # These 2 to connect all regions that do not connect to each other outside of mermaid suit
 open sea present land: {or: [  # for dimitri/mermaid suit
-    crescent present W, crescent present E, lynna city, shore present
+    crescent present W, lynna city, shore present
 ]}
 open sea present: [mermaid suit, or: [
     open sea present land, outer present - moving island,
