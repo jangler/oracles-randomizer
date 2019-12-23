@@ -213,7 +213,7 @@ talus peaks hp: [past symmetry, currents]
 cave below tuni guy hp: [inner past - cave below tuni guy, feather]
 after water changing: [
     outer past - talus peaks - big cave to water changes,  # push plant
-    currents, bracelet, flippers,  # base reqs traveling around
+    currents, flippers,  # base reqs traveling around
     outer past - talus peaks - R water change cave,  # fill R with water
 ]
 patch: [inner tuni nut game, or: [sword,
