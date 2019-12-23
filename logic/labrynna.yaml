@@ -299,7 +299,7 @@ open sea past land: {or: [
 ]}
 open sea past: [mermaid suit, or: [
     open sea past land, outer past - crescent - iron shield cave,
-    [or: [past overwater zora, [switch hook, outer past - octo fairy cave]], clean seas],
+    [clean seas, or: [past overwater zora, past library island]],
     [outer past underwater - pirate cave, zora scale],
     [outer past underwater - cave S of d8, feather]  # NOTE: reconsider if randomizing present maku path
 ]]
