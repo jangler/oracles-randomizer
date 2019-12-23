@@ -300,22 +300,35 @@ past underwater zora: {or: [
   outer past underwater - zora SW R house,
   outer past underwater - zora E house,
   [mermaid suit, or: [
-    [outer past - octo fairy cave, switch hook],
-    [ages, or: [
-      [outer past - moving island, switch hook],
-      present underwater zora]]
+    past library island,
+    past overwater zora
   ]],
   [clean seas, outer past underwater - moving island]
 ]}
-past overwater zora: [past underwater zora, mermaid suit]
+past overwater zora: {or: [
+  [clean seas, or: [
+    raft,
+    open seas past,
+    [mermaid suit, outer past - moving island]]],
+  [past underwater zora, mermaid suit],
+  [present overwater zora, ages]
+]}
+past library island: {or: [
+  [clean seas, or: [open seas past, raft]], 
+  [present library island, ages]
+  [mermaid suit, or: [
+      past underwater zora,
+      [outer past - octo fairy cave, switch hook]]]
+]}
 outer past - octo fairy cave: {or: [
   [outer present - octo fairy cave, ages],
-  [switch hook, or: [past overwater zora, [open sea past, clean seas]]]
+  [past library island, switch hook, mermaid suit]
 ]}
-outer past - library: {or: [[past overwater zora, library key]]}
+outer past - library: {or: [[past library island, library key]]}
 outer past - moving island: {or: [
   [mermaid suit, outer past underwater - moving island],
-  [ages, outer present - moving island]
+  [clean seas, or: [raft, open seas past]],
+  [ages, flippers, outer present - moving island] # ages drops in water
 ]}
 outer past underwater - zora palace: {or: [past underwater zora]}
 outer past underwater - zora SW L house: {or: [past underwater zora]}
