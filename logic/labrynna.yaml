@@ -269,16 +269,16 @@ zora village tree: [
         [gale satchel, or: [present underwater zora, past underwater zora]]], 
     seed item,
     or: [sword, punch object, [dimitri's flute, clean seas]]]
-zora village present: [present overwater zora]
+zora village present: [present overwater zora, mermaid suit]
 zora palace chest: [inner present underwater - zora palace]
 zora NW cave: [inner present - zora vill - NW bomb cave, power glove]
-fairies' coast chest: [present overwater zora]
+fairies' coast chest: [present overwater zora, or: [flippers, clean dimitri]] # flippers only because you could clean raft and time travel
 # in hard logic, farm kills and get a potion off maple
 king zora: [inner past underwater - zora palace, inner present underwater - zora palace, or: [syrup, hard]]
 library present: [inner present - library]
 library past: [inner past - library, or: [book of seals, bomb jump 3]]
 clean seas: [inner past - octo fairy cave, fairy powder]
-zora seas chest: [clean seas, present overwater zora, ages]
+zora seas chest: [clean seas, present overwater zora, mermaid suit, ages]
 d7 entrance: [king zora, clean seas, present underwater zora]
 fisher's island cave: [inner past underwater - moving island, long hook]
 zora's reward: [past underwater zora, d7 boss]
