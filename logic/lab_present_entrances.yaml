@@ -237,19 +237,34 @@ present underwater zora: {or: [
   [clean seas, outer present underwater - crescent island],
   [mermaid suit, or: [
     [or: [[ages, switch hook], clean seas], outer present - moving island],
-    [past underwater zora, currents]
+    present overwater zora, # dive from surface
   ]]
 ]}
-present overwater zora: [mermaid suit, or: [present underwater zora, open sea present]]
+present overwater zora: {or: [
+  clean dimitri,
+  [clean seas, open seas present],
+  [present underwater zora, mermaid suit],
+  [past overwater zora, or: [
+    ages, 
+    [currents, gale satchel]]] # NOTE: can't be sure return portal is still here, would need an echoes portal somewhere in present Zora village to make currents alone softlock-proof
+]}
+present library island: {or: [
+  clean dimitri, 
+  [mermaid suit, present underwater zora],
+  [past library island, or: [
+    ages, 
+    [currents,  gale satchel]]] # NOTE: can't be sure return portal is still here, would need an echoes portal somewhere in present Zora village to make currents alone softlock-proof
+]}
 outer present - octo fairy cave: {or: [[outer past - octo fairy cave, currents]]}
 outer present - moving island: {or: [
-  open sea present, dimitri's flute, [currents, outer past - moving island]
+  open sea present, dimitri's flute, 
+  [currents, mermaid suit, outer past - moving island] # currents will drop you in deep water
 ]}
 outer present - zora vill - NW bomb cave: {or: [
-  [bombs, or: [present overwater zora, clean dimitri]]
+  [bombs, present overwater zora]
 ]}
 outer present - library: {or: [
-  [outer past - library, or: [present overwater zora, clean dimitri]]
+  [outer past - library, present library island]
 ]}
 outer present underwater - zora palace: {or: [present underwater zora]}
 outer present underwater - zora SW L house: {or: [present underwater zora]}
