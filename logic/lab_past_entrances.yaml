@@ -315,7 +315,7 @@ past overwater zora: {or: [
 ]}
 past library island: {or: [
   [clean seas, or: [open seas past, raft]], 
-  [present library island, ages]
+  [present library island, ages],
   [mermaid suit, or: [
       past underwater zora,
       [outer past - octo fairy cave, switch hook]]]
