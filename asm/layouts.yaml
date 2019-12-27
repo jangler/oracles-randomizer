@@ -316,6 +316,7 @@ ages:
       db 00,83,00,43,a4 # rock outside D2
       db 03,0f,00,66,f9 # water in d6 past entrance
       db 01,13,00,61,d7 # portal in symmetry city past
+      db 01,13,00,68,d7 # cont.
       db 00,25,00,37,d7 # portal in nuun highlands
       db 05,da,01,a4,b2 # tunnel to moblin keep
       db 05,da,01,a5,b2 # cont.
@@ -385,6 +386,10 @@ ages:
       db 00,0d,00,74,68 # ledge on NE ridge top
       db 00,0d,00,75,06 # cont.
       db 00,0d,00,76,67 # cont.
+      db 00,13,00,42,d7 # remove grass over echoes in repaired symmetry
+      db 00,13,00,47,d7 # cont.
+      db 00,13,03,42,c9 # cont.
+      db 00,13,05,47,c9 # cont.
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
