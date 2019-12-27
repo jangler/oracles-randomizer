@@ -382,6 +382,9 @@ ages:
       db 00,2b,00,41,d0 # cont.
       db 00,2b,00,42,8e # cont.
       db 01,2a,00,38,74 # stone to prevent sequence break from new ledge
+      db 00,0d,00,74,68 # ledge on NE ridge top
+      db 00,0d,00,75,06 # cont.
+      db 00,0d,00,76,67 # cont.
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
