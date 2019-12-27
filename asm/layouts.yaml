@@ -334,13 +334,7 @@ ages:
       db 01,a5,00,55,6c # cont.
       db 00,83,00,44,d7 # portal outside D2 present
       # for entrance rando
-      db 05,cc,00,0a,b9 # tokay central bomb cave
-      db 05,cc,00,0b,b6 # cont.
-      db 05,cc,00,0c,b0 # cont.
-      db 05,cc,00,1a,b1 # cont.
-      db 05,cc,00,1b,ef # cont.
-      db 05,cc,00,2a,b6 # cont.
-      db 05,cc,00,2b,b9 # cont.
+      db 05,cc,00,1d,92 # tokay central bomb cave
       db 01,7c,02,63,ae # first room in d8 maze area
       db 01,7c,02,64,b2 # cont.
       db 01,7c,02,65,b2 # cont.
