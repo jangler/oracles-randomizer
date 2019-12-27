@@ -360,6 +360,28 @@ ages:
       db 07,09,00,02,01 # cont.
       db 07,09,00,11,1a # cont.
       db 07,09,00,12,1c # cont.
+      db 00,64,00,48,31 # ledge from fairies' woods
+      db 00,64,00,57,74 # cont.
+      db 00,64,00,58,07 # cont.
+      db 00,64,00,59,74 # cont.
+      db 01,bb,00,27,3a # remove grass on past crescent island
+      db 00,3a,00,28,3a # remove grass near nayru's hut
+      db 00,2a,00,28,59 # ledge from ridge base present
+      db 00,2a,00,29,50 # cont.
+      db 00,2a,00,38,0a # cont.
+      db 00,2a,00,39,15 # cont.
+      db 00,2a,00,48,6b # cont.
+      db 00,2a,00,49,50 # cont.
+      db 00,2b,00,20,50 # cont.
+      db 00,2b,00,21,50 # cont.
+      db 00,2b,00,22,5a # cont.
+      db 00,2b,00,30,3a # cont.
+      db 00,2b,00,31,3a # cont.
+      db 00,2b,00,32,58 # cont.
+      db 00,2b,00,40,66 # cont.
+      db 00,2b,00,41,d0 # cont.
+      db 00,2b,00,42,8e # cont.
+      db 01,2a,00,38,74 # stone to prevent sequence break from new ledge
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
