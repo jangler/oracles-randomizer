@@ -24,7 +24,7 @@ lynna city: {or: [
     # [outer present - maku tree stairs, maku tree],
     outer present - lynna shop R,
     open sea present,
-    [fairies' woods, or: [flippers, dimitri's flute, bracelet]]
+    fairies' woods
 ]}
 lynna village: {or: [
     echoes, lynna city,  # lynna city due to unrandomized present maku path
@@ -104,13 +104,15 @@ fairies' woods: {or: [
     bracelet, dimitri's flute, 
     ages, outer mask house,
     [lynna city, flippers],
-    [nuun,
-    or: [currents, dimitri nuun,
-         [ricky nuun, or: [break bush, flute]],
-         [moosh nuun, or: [feather, flute]],
-    ], 
-    or: [hit lever, ricky's flute, moosh's flute]], 
-    [currents, gale satchel, or: [
+    [nuun, 
+      or: [hit lever, ricky's flute, moosh's flute],
+      or: [
+          currents, 
+          dimitri nuun,
+          [ricky nuun, or: [break bush, flute]],
+          [moosh nuun, or: [feather, flute]]]],
+    [currents, or: [
+        deku forest,
         outer past - NE of mystery tree, 
         outer past - NW of d2, 
         outer past - NE of d2, 
@@ -184,18 +186,15 @@ nuun: {or: [
   ]],
   [outer nuun upper cave, or: [
     echoes, # ledge+echoes leads to palace garden > village > city > starting area = safe
+    gale satchel, # ledge drop, able to return to city
     [ricky nuun, or: [
-        flute, [
-          feather, 
-          or: [
-            [bombs, gale satchel], # gale satchel due to softlock potential
-            [ember seeds, gale satchel, or: [hard, seed shooter, switch hook]],
-            [sword, or: [hard, switch hook, [gale shooter, gale satchel]]]]]]],
-    [dimitri nuun, or: [flute, [flippers, swimmer's ring]]],
-    [moosh nuun, or: [flute, [break bush, jump 3]]]
+        [break bush, hit lever], # ledge drop, able to return to city
+        flute]],
+    [dimitri nuun, or: [flute, hit lever, [flippers, swimmer's ring]]],
+    [moosh nuun, or: [flute, [feather, hit lever], [break bush, jump 3]]]
   ]],
-  [outer nuun lower cave - Ricky, or: [flute, currents]],
-  [outer nuun lower cave - Moosh, or: [flute, currents, [break bush, jump 3]]]
+  [outer nuun lower cave - Ricky, or: [flute]],
+  [outer nuun lower cave - Moosh, or: [flute, [break bush, jump 3]]]
 ]}
 nuun highlands cave: {or: [
     [nuun, dimitri's flute],
