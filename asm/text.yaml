@@ -83,8 +83,18 @@ seasons:
 ages:
   # set text index for portal sign on crescent island.
   06/setSignTextIndex: |
-      ld bc,a900
+      ld bc,a300 # Present Octo Fairy Island
       call compareRoom
+      jr z,.endComparison
+      ld bc,a900 # Present Cresent Island NW
+      call compareRoom
+      jr z,.endComparison
+      ld bc,d000 # Present Zora Village SW
+      call compareRoom
+      jr z,.endComparison
+      ld bc,da00 # Present Crescent Island SW
+      call compareRoom
+      .endComparison
       ld bc,0901
       ret nz
       ld bc,5601

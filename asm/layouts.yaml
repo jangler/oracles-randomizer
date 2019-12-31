@@ -328,7 +328,7 @@ ages:
       db 01,2c,00,70,69 # ledge in rolling ridge east past
       db 01,2c,00,71,06 # cont.
       db 01,2c,00,72,67 # cont.
-      db 00,a9,00,67,f2 # portal sign on crescent island
+      db 00,a9,00,67,f2 # portal sign on NW crescent island
       db 01,a5,00,35,48 # ledge by library past
       db 01,a5,00,45,0b # cont.
       db 01,a5,00,55,6c # cont.
@@ -380,10 +380,33 @@ ages:
       db 00,0d,00,74,68 # ledge on NE ridge top
       db 00,0d,00,75,06 # cont.
       db 00,0d,00,76,67 # cont.
-      db 00,13,00,42,d7 # remove grass over echoes in repaired symmetry
+      db 00,13,00,42,d7 # remove grass over portal in repaired symmetry
       db 00,13,00,47,d7 # cont.
       db 00,13,03,42,c9 # cont.
       db 00,13,05,47,c9 # cont.
+      db 00,d9,00,18,d7 # portal on SW crescent island
+      db 00,da,00,35,d7 # currents portal on SW crescent island
+      db 00,da,00,25,f2 # portal sign on SW crescent island
+      db 00,d0,00,61,d7 # currents portal in SW Zora village
+      db 00,d0,00,51,f2 # portal sign in SW Zora village
+      db 00,89,00,17,c5 # rearrange grass near Tingle
+      db 00,89,00,18,c5 # cont.
+      db 00,7a,00,62,3a # cont.
+      db 00,89,00,07,13 # cont. (eye candy)
+      db 00,89,00,08,15 # cont. (eye candy)
+      db 00,89,00,27,10 # cont. (eye candy)
+      db 00,89,00,28,12 # cont. (eye candy)
+      db 00,89,00,13,1a # Add safe way back from Tingle cave
+      db 00,89,00,53,0a # cont.
+      db 00,89,00,54,11 # cont.
+      db 00,89,00,55,1b # cont.
+      db 00,89,00,63,0a # cont.
+      db 00,89,00,64,14 # cont.
+      db 00,89,00,65,14 # cont.
+      db 00,89,00,72,66 # cont.
+      db 00,89,00,73,6b # cont.
+      db 00,a3,00,46,d7 # currents portal on present octo fairy island
+      db 00,a3,00,35,f2 # portal sign on present octo fairy island
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
