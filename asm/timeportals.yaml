@@ -180,3 +180,11 @@ ages:
       db ff
   # Present Octo Fairy Island (Pointer Table)
   15/4481/: dw octoFairyPresentPortalStaticObjects
+
+  # Echoes Portal under rock in past upper ridge M
+  12/ridgeUpperMiddlePastPortalStaticObjects: |
+      db f2
+      db e1,00,38,68
+      db ff
+  # Past Upper Ridge Middle (Pointer Table)
+  15/4551/: dw ridgeUpperMiddlePastPortalStaticObjects

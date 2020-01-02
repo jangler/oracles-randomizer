@@ -407,6 +407,7 @@ ages:
       db 00,89,00,73,6b # cont.
       db 00,a3,00,46,d7 # currents portal on present octo fairy island
       db 00,a3,00,35,f2 # portal sign on present octo fairy island
+      db 01,0b,00,36,c4 # portal under rock in upper ridge middle
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
