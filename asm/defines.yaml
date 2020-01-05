@@ -345,8 +345,9 @@ ages:
     define checkGlobalFlag,31f3
     define setGlobalFlag,31f9
     define fadeInFromWhite,3299
-    define incMakuTreeState,3e53
     define interactionDelete,3b05
+    define incMakuTreeState,3e53
+    define getFreePartSlot,3e8e
 
     # rom 02
     define _closeMenu,4fba
