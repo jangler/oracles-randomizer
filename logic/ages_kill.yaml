@@ -34,7 +34,8 @@ kill switch hook: {or: [kill normal, switch hook]}
 
 kill giant ghini: {or: [
     sword, scent shooter, switch hook, punch enemy, [hard, scent satchel]]}
-kill pumpkin head: [bracelet, kill giant ghini]
+kill pumpkin head: [bracelet,
+    or: [sword, ember seeds, scent shooter, punch enemy, [hard, scent satchel]]]
 
 # spiked beetles can't be punched for some reason
 kill spiked beetle: {or: [
