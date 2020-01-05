@@ -38,7 +38,8 @@ seed item: {or: [satchel, seed shooter]}
 ember seeds: [ember tree seeds]
 
 scent seeds: {or: [scent tree seeds, 
-    [hard, or: [d3 seeds from bridge room, d8 boss]]]}
+    [hard, or: [
+        d3 seeds from bridge room, d8 boss, [d7 stairway chest, flippers]]]]}
 pegasus seeds: [pegasus tree seeds]
 gale seeds: [gale tree seeds]
 mystery seeds: [mystery tree seeds]
