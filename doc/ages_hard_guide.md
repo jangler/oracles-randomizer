@@ -106,3 +106,4 @@ for a list of things that are out of logic even in hard.
   Octorok. Clipping slightly into the fence tiles makes it slightly easier,
   using scent seeds to attract the Octorok makes it faster.
   [[Video]](https://streamable.com/3r6uv)
+- Get scent seeds from D7 miniboss.
