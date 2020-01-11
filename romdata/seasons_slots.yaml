@@ -125,7 +125,7 @@ woods of winter, 1st cave:
 sunken city, summer cave:
   treasure: gasha seed
   room: 0x05b5
-  maptile: 0x4e
+  maptile: 0x4f
 chest in master diver's cave:
   treasure: rupees, 50
   room: 0x05bd
