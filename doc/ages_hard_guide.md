@@ -97,8 +97,9 @@ for a list of things that are out of logic even in hard.
   then mid pitch. [[Video]](https://streamable.com/guma6)
 - Walk diagonally across the corners of pits in the D6 present cube puzzle. [No
   video.]
-- Use bomb jumps + sword to traverse the D6 present room with the switch that
-  changes the floor tile pattern. [[Videp]](https://youtu.be/EqXjIhgYo1A)
+- Use feather + sword to traverse the D6 present room with the switch that
+  changes the floor tile pattern.
+  [[Video]](https://clips.twitch.tv/CrunchyBlushingHummingbirdMingLee)
 
 ## Not in logic because you could softlock but still cool
 
