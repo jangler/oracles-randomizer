@@ -362,20 +362,12 @@ ages:
       db 01,bb,00,27,3a # remove grass on past crescent island
       db 00,3a,00,28,3a # remove grass near nayru's hut
       db 00,2a,00,28,59 # ledge from ridge base present
-      db 00,2a,00,29,50 # cont.
-      db 00,2a,00,38,0a # cont.
-      db 00,2a,00,39,15 # cont.
-      db 00,2a,00,48,6b # cont.
-      db 00,2a,00,49,50 # cont.
+      db 00,2a,00,29,50 # cont. (dynamic substitution due to compression)
       db 00,2b,00,20,50 # cont.
       db 00,2b,00,21,50 # cont.
       db 00,2b,00,22,5a # cont.
-      db 00,2b,00,30,3a # cont.
-      db 00,2b,00,31,3a # cont.
       db 00,2b,00,32,58 # cont.
-      db 00,2b,00,40,66 # cont.
       db 00,2b,00,41,d0 # cont.
-      db 00,2b,00,42,8e # cont.
       db 01,2a,00,38,74 # stone to prevent sequence break from new ledge
       db 00,0d,00,74,68 # ledge on NE ridge top
       db 00,0d,00,75,06 # cont.
@@ -450,6 +442,12 @@ ages:
       ld a,30
       ret
   10/785f/: call openPathToD8; nop
+
+  # ledge from ridge base present
+  23/723f/: db 0a,15
+  23/724b/: db 6b,50
+  23/7270/: db 3a,3a
+  23/727a/: db 66,8e
 
   # Remove bush west of Tingle
   24/45f9/: db 3a
