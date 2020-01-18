@@ -255,3 +255,7 @@ ages:
   # put a "return bush" for long hook across from syrup's shop.
   23/7ea0/: db 27,c8
   23/7ead/: db 22
+
+
+  # change bush type in moosh nuun (for static peg seed drop)
+  26/4501/: db c8
