@@ -355,10 +355,7 @@ ages:
       db 07,09,00,02,01 # cont.
       db 07,09,00,11,1a # cont.
       db 07,09,00,12,1c # cont.
-      db 00,64,00,48,31 # ledge from fairies' woods
-      db 00,64,00,57,74 # cont.
-      db 00,64,00,58,07 # cont.
-      db 00,64,00,59,74 # cont.
+      db 00,64,02,66,c0 # move rock near newly-created fairies' woods ledge
       db 01,bb,00,27,3a # remove grass on past crescent island
       db 00,3a,00,28,3a # remove grass near nayru's hut
       db 00,2a,00,28,59 # ledge from ridge base present
@@ -442,6 +439,18 @@ ages:
       ld a,30
       ret
   10/785f/: call openPathToD8; nop
+
+  # ledge from fairies' woods (room0064)
+  24/402b/: |
+      db 60,21
+      db 31,a0,29,24,29,22
+      db 61,3a
+      db 74,07,74,2f,23
+      db 3c,3a
+      db 24,25 # continue normally
+
+  # Move Rock near new fairies' woods ledge (change static object coordinate)
+  12/5c0b/: db 66
 
   # ledge from ridge base present
   23/723f/: db 0a,15
