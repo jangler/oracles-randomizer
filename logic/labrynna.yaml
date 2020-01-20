@@ -128,14 +128,12 @@ d1 entrance: [gravekey]
 graveyard hp: [yoll graveyard, bracelet]
 
 # western woods
-# it's possible to switch hook the octorok through the boulder to enter
-# fairies' woods [easier if you have scent seeds], but it's not in logic for
-# the same reason that cucco clip isn't in seasons logic.
 fairies' woods: {or: [
     bracelet, 
     dimitri's flute, 
     ages, 
     outer mask house,
+    [hard, switch hook], # octo clip in hard logic :D
     [lynna city, flippers],
     [ nuun, 
       or: [
