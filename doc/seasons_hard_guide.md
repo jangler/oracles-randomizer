@@ -95,6 +95,8 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://streamable.com/pxe10)
 - Jump through the "wall" of fire traps in D5.
   [[Video]](https://streamable.com/yxrae)
+- Corner-walk around the first crystal in D6, or just run through the blade
+  traps, obviating feather or a means to break the crystal.
 - Poe skip: skip fighting the first Poe in D7.
   [[Video]](https://streamable.com/ztzsh)
 - Hit the three buttons in D7 in the correct order without pegasus seeds, by
