@@ -172,12 +172,12 @@ d5 boss: [d5 post-syger, magnet gloves, d5 boss key, or: [feather, hard],
 enter d6: {or: []}
 
 # 0 keys
-d6 1F east: [enter d6]
-d6 rupee room: [enter d6, bombs]
-d6 magnet ball drop: [enter d6, or: [[magnet gloves, feather], cape]]
-d6 1F terrace: [enter d6]
-d6 crystal trap room: [enter d6]
-d6 U-room: [enter d6, break crystal, magic boomerang]
+d6 1F east: [enter d6, or: [hard, feather, sword, bombs, expert's ring]]
+d6 rupee room: [d6 1F west, bombs]
+d6 1F terrace: {or: [d6 1F east, [magnet gloves, count: [2, d6 small key]]]}
+d6 magnet ball drop: [d6 1F terrace, or: [[magnet gloves, feather], cape]]
+d6 crystal trap room: [d6 1F terrace]
+d6 U-room: [d6 1F terrace, break crystal, magic boomerang]
 d6 torch stairs: [d6 U-room, ember seeds]
 d6 escape room: [d6 torch stairs, feather]
 d6 vire chest: [d6 escape room, kill stalfos]
