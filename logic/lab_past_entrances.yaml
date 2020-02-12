@@ -250,6 +250,7 @@ outer past - mid goron - sword game: {or: [[goron present mid top, or: [ages, [b
 outer past - mid goron - near seed tree: {or: [
   [goron present mid bottom, ages],
   [non-entrance, outer past - mid goron - sword game]
+  [outer past mid goron SW of bomb cave, gale satchel]
 ]}
 
 inner past - mid goron - SW of bomb cave: {or: [
