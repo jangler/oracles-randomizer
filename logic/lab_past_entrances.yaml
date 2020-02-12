@@ -87,7 +87,7 @@ crescent past E: {or: [
   outer past - crescent - shop,
   outer past - crescent - E house,
   outer past - crescent - SE cave,
-  [outer past - crescent - E stairs after boulder, bracelet],
+  [outer past - crescent - E stairs after boulder, or: [bracelet, ages,[gale satchel, currents]]],
   [crescent present E, echoes]
 ]}
 crescent past NW: {or: [
@@ -121,7 +121,7 @@ outer past - crescent - L coconut separated cave: {or: [crescent past SW]}
 outer past - crescent - R coconut separated cave: {or: [crescent past S]}
 outer past - crescent - SE cave: {or: [crescent past E]}
 outer past - crescent - E house: {or: [crescent past E]}
-outer past - crescent - E stairs after boulder: {or: [[crescent past E, bracelet]]}
+outer past - crescent - E stairs after boulder: {or: [[crescent past E, bracelet],[crescent present E,ages]}
 
 inner past - crescent - shop: {or: []}
 inner past - crescent - face cave: {or: [
