@@ -316,6 +316,7 @@ ages:
       db 00,83,00,43,a4 # rock outside D2
       db 03,0f,00,66,f9 # water in d6 past entrance
       db 01,13,00,61,d7 # portal in symmetry city past
+      db 01,13,00,68,d7 # cont.
       db 00,25,00,37,d7 # portal in nuun highlands
       db 05,da,01,a4,b2 # tunnel to moblin keep
       db 05,da,01,a5,b2 # cont.
@@ -327,19 +328,13 @@ ages:
       db 01,2c,00,70,69 # ledge in rolling ridge east past
       db 01,2c,00,71,06 # cont.
       db 01,2c,00,72,67 # cont.
-      db 00,a9,00,67,f2 # portal sign on crescent island
+      db 00,a9,00,67,f2 # portal sign on NW crescent island
       db 01,a5,00,35,48 # ledge by library past
       db 01,a5,00,45,0b # cont.
       db 01,a5,00,55,6c # cont.
       db 00,83,00,44,d7 # portal outside D2 present
       # for entrance rando
-      db 05,cc,00,0a,b9 # tokay central bomb cave
-      db 05,cc,00,0b,b6 # cont.
-      db 05,cc,00,0c,b0 # cont.
-      db 05,cc,00,1a,b1 # cont.
-      db 05,cc,00,1b,ef # cont.
-      db 05,cc,00,2a,b6 # cont.
-      db 05,cc,00,2b,b9 # cont.
+      db 05,cc,00,1d,92 # tokay central bomb cave
       db 01,7c,02,63,ae # first room in d8 maze area
       db 01,7c,02,64,b2 # cont.
       db 01,7c,02,65,b2 # cont.
@@ -360,6 +355,32 @@ ages:
       db 07,09,00,02,01 # cont.
       db 07,09,00,11,1a # cont.
       db 07,09,00,12,1c # cont.
+      db 00,64,02,66,c0 # move rock near newly-created fairies' woods ledge
+      db 01,bb,00,27,3a # remove grass on past crescent island
+      db 00,3a,00,28,3a # remove grass near nayru's hut
+      db 00,2a,00,28,59 # ledge from ridge base present
+      db 00,2a,00,29,50 # cont. (dynamic substitution due to compression)
+      db 00,2b,00,20,50 # cont.
+      db 00,2b,00,21,50 # cont.
+      db 00,2b,00,22,5a # cont.
+      db 00,2b,00,32,58 # cont.
+      db 00,2b,00,41,d0 # cont.
+      db 01,2a,00,38,74 # stone to prevent sequence break from new ledge
+      db 00,0d,00,74,68 # ledge on NE ridge top
+      db 00,0d,00,75,06 # cont.
+      db 00,0d,00,76,67 # cont.
+      db 00,13,00,42,d7 # remove grass over portal in repaired symmetry
+      db 00,13,00,47,d7 # cont.
+      db 00,13,03,42,c9 # cont.
+      db 00,13,05,47,c9 # cont.
+      db 00,d9,00,18,d7 # portal on SW crescent island
+      db 00,da,00,35,d7 # currents portal on SW crescent island
+      db 00,da,00,25,f2 # portal sign on SW crescent island
+      db 00,d0,00,61,d7 # currents portal in SW Zora village
+      db 00,d0,00,51,f2 # portal sign in SW Zora village
+      db 00,a3,00,46,d7 # currents portal on present octo fairy island
+      db 00,a3,00,35,f2 # portal sign on present octo fairy island
+      db 01,0b,00,36,c4 # portal under rock in upper ridge middle
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
@@ -418,3 +439,70 @@ ages:
       ld a,30
       ret
   10/785f/: call openPathToD8; nop
+
+  # ledge from fairies' woods (room0064)
+  24/402b/: |
+      db 60,21
+      db 31,a0,29,24,29,22
+      db 61,3a
+      db 74,07,74,2f,23
+      db 3c,3a
+      db 24,25 # continue normally
+
+  # Move Rock near new fairies' woods ledge (change static object coordinate)
+  12/5c0b/: db 66
+
+  # ledge from ridge base present
+  23/723f/: db 0a,15
+  23/724b/: db 6b,50
+  23/7270/: db 3a,3a
+  23/727a/: db 66,8e
+
+  # Remove bush west of Tingle
+  24/45f9/: db 3a
+
+  # Tingle lower entrance modification (unchanged compressed size: 4c bytes)
+  24/499a/: |
+      db 22,f0,1b
+      db 62,1a,60,61,63,13,15,3e,62,1a
+      db c0,02,1a
+      db 63,c5,c5,2e,62,1b,1b,63,10,12,3e,5b,d0
+      db 0e,00,50
+      db 45,73,f3,f3,2e,5d,d0,5d,55,64,dd,61,16
+      db 20,80,0a
+      db 17,3e,2f,16,12,11,1b,11,1b,17,2e,3f,13,15
+      db c0,c4,50
+      db 14,14,1b,14,15,3e,66,6b,46,d0,45
+
+    # modifed compressed room layout
+    #  -- 1b -- -- -- 1b -- -- -- -- -- -- 1b 1b 1b 1b # bitmask
+    #  62,--,1a,60,61,--,63,13,15,3e,62,1a,--,--,--,-- # data
+
+    #  -- -- -- -- -- -- 1a 1a -- 1a -- -- -- -- -- -- # bitmask
+    #  63,c5,c5,2e,62,1b,--,--,1b,--,63,10,12,3e,5b,d0 # data
+
+    #  -- 50 50 50 -- -- -- -- -- -- -- -- -- -- -- -- # bitmask
+    #  45,--,--,--,73,f3,f3,2e,5d,d0,5d,55,64,dd,61,16 # data
+
+    #  -- -- -- -- -- 0a -- -- -- -- -- -- -- -- -- 0a # bitmask
+    #  17,3e,2f,16,12,--,11,1b,11,1b,17,2e,3f,13,15,-- # data
+
+    #  -- -- -- -- -- -- 50 50 -- -- 50 -- -- -- 50 50 # bitmask
+    #  11,14,1b,14,15,3e,--,--,66,6b,--,46,d0,45,--,-- # data
+
+    # vanilla compressed room layout:
+    # db 22,d0,1b
+    # #  -- 1b -- -- -- 1b -- -- -- -- -- -- 1b -- 1b 1b   
+    # db 62,   1a,60,61,   63,16,17,3e,62,1a,   f3
+    # db 02,08,16
+    # #  -- 16 -- -- -- -- -- -- -- -- -- 16 -- -- -- --
+    # db 63,   17,2e,62,1b,1a,f3,1b,1a,63,   17,3e,5b,d0
+    # db 0e,00,50
+    # #  -- 50 50 50 -- -- -- -- -- -- -- -- -- -- -- --
+    # db 45,         73,f3,f3,2e,5d,d0,60,64,64,dd,61,16
+    # db 88,00,16
+    # #  -- -- -- 16 -- -- -- 16 -- -- -- -- -- -- -- --
+    # db 17,3e,2f,   12,c0,f3,   11,1b,17,2e,3f,13,15,c0
+    # db c0,c7,50
+    # #  -- -- -- -- -- -- 50 50 50 50 50 -- -- -- 50 50
+    # db f3,13,1b,14,15,3e,               46,d0,45

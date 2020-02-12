@@ -1,7 +1,12 @@
 # maku path
+maku path key chest: [
+    or: [kill normal, shovel], # kill gel
+    or: [inner past - maku tree cave, # south entrance
+        [inner past - maku tree stairs, d0 small key]]] # north entrance
 maku path basement: {or: [
-    maku tree, [inner past - maku tree cave, 
-    or: [shovel, or: [kill normal, non-entrance]]]]} # shovel kills gels
+    inner past - maku tree stairs, # north entrance
+    [inner past - maku tree cave, d0 small key] #south entrance
+]}
 
 # d1
 enter d1: {or: []}
@@ -45,7 +50,7 @@ d2 thwomp shelf: [d2 basement,
     or: [feather, [hard, cane, or: [pegasus satchel, bombs]]]]
 d2 basement drop: [d2 basement, feather]
 d2 basement chest: [
-    d2 basement, feather, bombs, hit lever from minecart, kill normal]
+    d2 basement, feather, bombs, hit lever from minecart above, kill normal]
 
 # 3 keys
 d2 moblin platform: [d2 basement, feather, count: [3, d2 small key]]
@@ -66,7 +71,8 @@ d2 boss: [d2 color room, d2 boss key, or: [bombs, hard]]
 enter d3: {or: []}
 
 # 0 keys
-d3 pols voice chest: [inner d3, bombs]
+d3 pols voice chest: [or: [inner d3, bombs],
+    [d3 six-block drop, kill pols voice]]
 d3 1F spinner: [inner d3, or: [kill moldorm, bracelet]]
 d3 S crystal: [d3 1F spinner]
 four crystals owl: [mystery seeds, d3 1F spinner]
@@ -74,21 +80,26 @@ d3 E crystal: [d3 1F spinner, bombs]
 d3 statue drop: [d3 E crystal]
 
 # 1 key
+d3 seeds from bridge room: [enter d3, d3 small key, seed item, or: [sword, bombs]]
 # you can clip into the blocks enough to hit this crystal with switch hook
-d3 W crystal: [inner d3, d3 small key]
-d3 N crystal: [d3 W crystal,
+d3 W crystal: [inner d3, d3 small key, kill pols voice ranged,
+    or: [bombs, scent shooter, switch hook, [cane, bracelet]]]
+d3 N crystal: [inner d3, d3 small key,
     or: [any seed shooter, boomerang, [hard, switch hook]]]
 stone soldiers owl: [mystery seeds, d3 small key]
-d3 armos drop: [d3 W crystal]
-d3 six-block drop: [d3 W crystal]
+d3 armos drop: [inner d3, d3 small key,
+    or: [bombs, cane, scent shooter, [hard, scent satchel]]]
+d3 six-block drop: [d3 W crystal,
+    or: [bombs, any seed shooter, [hard, switch hook]]]
+d3 conveyor belt room: [d3 six-block drop,
+    or: [bombs, cane, scent shooter, [hard, scent satchel]]]
 break crystal switch: {or: [sword, switch hook, boomerang, ember satchel,
     scent satchel, mystery satchel, any seed shooter, punch object]}
 d3 B1F spinner: [d3 S crystal, d3 E crystal, d3 N crystal, d3 W crystal,
     break crystal switch]
 d3 crossroads: [d3 B1F spinner]
-d3 conveyor belt room: [d3 W crystal]
 d3 torch chest: [d3 B1F spinner, or: [ember shooter, [hard, mystery shooter]]]
-d3 bridge chest: [d3 W crystal,
+d3 bridge chest: [inner d3, d3 small key,
     or: [any seed shooter, jump 3,
         [hard, d3 post-subterror, count: [4, d3 small key], feather],
         [hard, or: [boomerang, [bracelet, toss ring]],
@@ -137,7 +148,7 @@ d4 first crystal switch: [d4 minecart A,
 d4 minecart chest: [d4 minecart A, hit lever]
 
 # 2 keys
-d4 minecart B: [d4 minecart A, hit lever, bracelet, kill normal,
+d4 minecart B: [d4 minecart A, hit lever from minecart, bracelet, kill normal,
     count: [2, d4 small key]]
 d4 second crystal switch: [d4 minecart B,
     or: [any seed shooter, [hard, boomerang]]]
@@ -149,7 +160,7 @@ d4 color tile drop: [d4 minecart C,
         [hard, scent satchel]]]
 
 # 4 keys
-d4 minecart D: [d4 minecart C, count: [4, d4 small key]]
+d4 minecart D: [d4 color tile drop, count: [4, d4 small key]]
 d4 miniboss: [d4 minecart D,
     or: [sword, switch hook, scent shooter, punch enemy]]
 d4 small floor puzzle: [d4 miniboss, bombs]
@@ -160,7 +171,7 @@ d4 boss: [d4 large floor puzzle, d4 boss key, switch hook,
     or: [sword, boomerang, punch enemy]]
 
 # 5 keys
-d4 lava pot chest: [d4 large floor puzzle, switch hook,
+d4 lava pot chest: [d4 large floor puzzle, bracelet, switch hook,
     count: [5, d4 small key]]
 
 # d5
@@ -305,7 +316,7 @@ open ears owl: [mystery seeds, inner d8]
 d8 1F chest: [inner d8, bombs]
 
 # 1 key - access B1F
-d8 ghini chest: [inner d8, d8 small key, switch hook, cane, seed shooter,
+d8 ghini chest: [d8 1F chest, d8 small key, switch hook, cane, seed shooter,
     or: [ember seeds, [hard, mystery seeds]]]
 d8 B1F NW chest: [d8 ghini chest]
 

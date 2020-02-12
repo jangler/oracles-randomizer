@@ -2,7 +2,7 @@ shield: {or: [wooden shield, iron shield]}
 
 bombs: {or: [
     ["bombs, 10", or: [bracelet, break pot, flute, shovel]],
-    [hard, or: [d2 boss, [goron shooting gallery, or: [non-entrance, farm rupees]]]]]}
+    [hard, or: [d2 boss, goron shooting gallery]]]}
 
 ricky's flute: {or: []}
 dimitri's flute: {or: []}
@@ -15,7 +15,7 @@ farm rupees: {or: [ # only in logic for minigames. so almost never matters
     switch hook, flute]}
 fixed rupees: {rupees: [
     "rupees, 10", "rupees, 20", "rupees, 30", "rupees, 50", "rupees, 100",
-    "rupees, 200", inner past - lower goron old man]}
+    "rupees, 200", rolling ridge past old man]}
 
 # expert's ring can do some things that fist ring can't, so this is for the
 # lowest common denominator.
@@ -38,9 +38,9 @@ bomb jump 3: [hard, feather, pegasus satchel, bombs]
 seed item: {or: [satchel, seed shooter]}
 
 ember seeds: [ember tree seeds]
-# you can also get scent seeds from ramrock, but the requirements for those are
-# a superset of the requirements for the D3 ones.
-scent seeds: {or: [scent tree seeds, [hard, d3 E crystal, seed item]]}
+
+scent seeds: {or: [scent tree seeds, 
+    [hard, or: [d3 seeds from bridge room, d8 boss]]]}
 pegasus seeds: [pegasus tree seeds]
 gale seeds: [gale tree seeds]
 mystery seeds: [mystery tree seeds]

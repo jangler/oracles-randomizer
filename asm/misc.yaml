@@ -169,6 +169,25 @@ ages:
       jp 77c9
   02/77c6/: jp despawnMakuPathSkeletons
 
+  # replace a random item drop with gale seeds 1/4 of the time if the player is
+  # out of gale seeds. just to be nice since warping out of one-ways is in
+  # logic.
+  06/dropExtraGalesOnEmpty: |
+      ld a,TREASURE_GALE_SEEDS
+      call checkTreasureObtained
+      jr nc,.done
+      ld l,bc # wNumGaleSeeds
+      or (hl)
+      jr nz,.done
+      call getRandomNumber
+      cp a,40
+      jr nc,.done
+      ld c,08
+      .done
+      call getFreePartSlot
+      ret
+  06/4843/: call dropExtraGalesOnEmpty
+
   # make guy in front of d2 go away if you have bombs.
   09/5242/: |
       ld a,03

@@ -18,16 +18,21 @@ outer present - ring shop: {or: [lynna city]}
 outer present - lynna - SW house: {or: [lynna city]}
 outer present - baby house L: {or: [lynna city]}
 outer present - baby house R: {or: [lynna city]}
-# outer present - maku tree stairs: {or: [[lynna city, or: [rescue nayru, maku tree]]]}
+# outer present - maku tree stairs: {or: [
+#     [lynna city, or: [rescue nayru, maku tree]]
+# ]}
 # outer present - maku tree cave: {or: [lynna city]}
 outer present - lynna shop L: {or: [[lynna village, currents]]}
 outer present - lynna shop R: {or: [lynna city]}
 outer mask house: {or: [fairies' woods]}
 outer tingle stairs: {or: [currents, ricky's gloves, ricky's flute]}
 outer cave below tingle: {or: [
-  bracelet, open sea present, ricky's gloves, flute,
-  [feather, or: [break bush, flute, currents]],
-  [currents, or: [flippers, outer cheval]]
+    bracelet, 
+    open sea present, 
+    ricky's gloves, 
+    flute,
+    [feather, break bush],
+    [currents, or: [flippers, feather, outer cheval]]
 ]}
 outer impa: {or: [start]}
 
@@ -45,23 +50,37 @@ inner present - lynna shop L: {or: []}
 inner present - lynna shop R: {or: []}
 inner mask house: {or: []}
 inner tingle stairs: {or: [
-  [inner cave below tingle, or: [
-    any seed shooter, [hard, feather, or: [pegasus satchel, bombs], boomerang]]]]}
+    [inner cave below tingle, or: [
+        any seed shooter, 
+        [hard, feather, boomerang, or: [
+            pegasus satchel, 
+            bombs]]]]
+]}
 inner cave below tingle: {or: [
-  [inner tingle stairs, feather, hard, or: [
-    any seed shooter, [boomerang, [pegasus satchel, bombs, sword]
-  ]]]
+    [inner tingle stairs, feather, hard, or: [
+        any seed shooter, 
+        [boomerang, [pegasus satchel, bombs, sword]]]]
 ]}
 inner impa: {or: []}
 
 # yoll graveyard
-gravekey: {or: [
-  [yoll graveyard, graveyard key],
-  [outer witch hut, or: [bomb jump 2, flippers, long hook]],
-  [outer ghost grave, bracelet],
-  outer d1
+gravekey: {or: [ # east graveyard
+    [yoll graveyard, graveyard key],
+    [outer ghost grave, bracelet],
+    outer d1,
+    [outer witch hut, or: [
+        bomb jump 2, 
+        flippers, 
+        long hook]]
 ]}
-outer witch hut: {or: [[gravekey, or: [bomb jump 2, flippers, dimitri's flute, long hook]]]}
+outer witch hut: {or: [
+    [gravekey, 
+    or: [
+        bomb jump 2, 
+        flippers, 
+        dimitri's flute, 
+        long hook]]
+]}
 outer ghost grave: {or: [[gravekey, bracelet]]}
 outer under cheval grave: {or: [cheval's grave]}
 outer stairs near d1: {or: [yoll graveyard]}
@@ -73,27 +92,36 @@ inner stairs near d1: {or: []}
 
 # crescent island
 crescent present E: {or: [
-  outer present - crescent - NE cave,
-  outer present - crescent - E house,
-  outer present - crescent - SE house,
-  [crescent past E, echoes], all crescent,
-  [currents, or: [crescent past NW, [crescent past SW, shovel], crescent past E, crescent past S]]
+    outer present - crescent - NE cave,
+    outer present - crescent - E house,
+    outer present - crescent - SE house,
+    all crescent,
+    [crescent past E, echoes],
+    [outer past - crescent - E stairs after boulder, or: [
+      ages,
+      [currents, gale satchel]]]
+    [currents, or: [
+        crescent past NW, 
+        crescent past S]]
 ]}
 crescent present W: {or: [
-  dimitri's flute, open sea present,
-  all crescent,
-  [currents, or: [crescent past NW, crescent past SW]],
-  [shovel, echoes, crescent past SW],
-  outer d3,
-  outer present - crescent - SW cave
+    dimitri's flute, 
+    open sea present,
+    all crescent,
+    outer d3,
+    outer present - crescent - SW cave,
+    [shovel, echoes, crescent past SW],
+    [currents, or: [
+        crescent past NW, 
+        crescent past SW]]
 ]}
 outer present - crescent - NE cave: {or: [crescent present E]}
 outer present - crescent - E house: {or: [crescent present E]}
 outer present - crescent - SW cave: {or: [crescent present W]}
 outer present - crescent - SE house: {or: [crescent present E]}
 outer present underwater - crescent island: {or: [
-  [clean seas, present underwater zora],
-  [present overwater zora, mermaid suit]
+    [clean seas, present underwater zora],
+    [open sea present, mermaid suit]
 ]}
 
 inner present - crescent - NE cave: {or: []}
@@ -104,23 +132,51 @@ inner present underwater - crescent island: {or: []}
 
 # nuun / symmetry city / talus peaks
 present symmetry: {or: [
-  [nuun, or: [currents, flute]],
-  [past symmetry, or: [ages, [echoes, break bush safe]]]
+    [nuun, or: [
+        currents, 
+        flute]],
+    [past symmetry, or: 
+        [ages, 
+        [echoes, break bush safe]]]
 ]}
 outer present - symmetry NW house: {or: [d4 entrance]}
 outer present - symmetry NE house: {or: [d4 entrance]}
 outer present - symmetry SW house: {or: [d4 entrance]}
 outer present - symmetry SE house: {or: [d4 entrance]}
 outer nuun upper cave: {or: [
-  [lynna village, currents],
-  [nuun, or: [
-    [ricky nuun, or: [flute, [feather, sword, or: [hard, switch hook]]]],
-    [dimitri nuun, or: [flute, [flippers, swimmer's ring]]],
-    [moosh nuun, or: [flute, [break bush, jump 3]]]
-  ]]
+    [lynna village, currents],
+    [nuun, or: [
+        [ricky nuun, or: [
+            flute, 
+            [ feather, 
+              or: [
+                  sword, 
+                  ember seeds, 
+                  bombs], 
+              or: [
+                  hard, 
+                  switch hook, 
+                  bombs, 
+                  ember shooter, 
+                  gale shooter]]]],
+        [dimitri nuun, or: [
+            flute, 
+            [flippers, swimmer's ring]]],
+        [moosh nuun, or: [
+            flute, 
+            [break bush, jump 3]]]]]
 ]}
-outer nuun lower cave - Ricky: {or: [[ricky nuun, nuun, or: [flute, currents]]]}
-outer nuun lower cave - Moosh: {or: [[moosh nuun, nuun, or: [flute, currents, [break bush, jump 3]]]]}
+outer nuun lower cave - Ricky: {or: [
+    [ricky nuun, nuun, or: [
+        flute, 
+        currents]]
+]}
+outer nuun lower cave - Moosh: {or: [
+    [moosh nuun, nuun, or: [
+        flute, 
+        currents, 
+        [break bush, jump 3]]]
+]}
 
 inner present - symmetry NW house: {or: []}
 inner present - symmetry NE house: {or: []}
@@ -131,68 +187,106 @@ inner nuun lower cave - Ricky: {or: []}
 inner nuun lower cave - Moosh: {or: []}
 
 # rolling ridge. what a nightmare
+# entrance rando map changes: overworld ledge drops are safe
 # goron upper L
 goron upper present L: {or: [
-  outer present - NW goron - under peg tree cave,
-  outer present - NW goron - under peg tree stairs,
-  outer present - NW goron - by time portal,
-  [goron upper past L, currents],
-  [non-entrance, or: [goron upper present M, goron upper present R]]
+    outer present - NW goron - under peg tree cave,
+    outer present - NW goron - under peg tree stairs,
+    outer present - NW goron - by time portal,
+    goron upper present M, 
+    goron upper present R,
+    [goron upper past L, currents],
 ]}
-outer present - first cave to upper goron: {or: [[currents, outer past - SW cave to upper goron]]}
+outer present - first cave to upper goron: {or: [
+    goron upper present L, # map change -> safe ledge
+    [currents, outer past - SW cave to upper goron]
+]}
 outer present - NW goron - under peg tree cave: {or: [goron upper present L]}
 outer present - NW goron - under peg tree stairs: {or: [goron upper present L]}
 outer present - NW goron - by time portal: {or: [goron upper present L]}
 
-inner present - first cave to upper goron: {or: [inner present - NW goron - under peg tree cave]}
-inner present - NW goron - under peg tree cave: {or: [inner present - first cave to upper goron]}
+inner present - first cave to upper goron: {or: [
+    inner present - NW goron - under peg tree cave
+]}
+inner present - NW goron - under peg tree cave: {or: [
+    inner present - first cave to upper goron
+]}
 inner present - NW goron - under peg tree stairs: {or: []}
 inner present - NW goron - by time portal: {or: []}
 
-# goron upper R
+# goron upper M
 goron upper present M: {or: [
-  outer present - E of d5 left,
-  outer present - E of d5 middle,
-  [goron upper past M, currents]
+    outer present - E of d5 left,
+    outer present - E of d5 middle,
+    # outer d5 # currently oneway only
+    [goron upper past M, currents]
 ]}
-goron upper present R: {or: [
-  outer present - E of d5 right,
-  outer present - upper goron R - cave on tall building,
-  outer present - NW goron - cave on cliff near time portal,
-  outer present - upper goron - L rock-separated caves,
-  [currents, or: [goron upper past M, goron upper past R]]
-]}
-outer present - upper goron R - cave on tall building: {or: [goron upper present R]}
-outer present - E of d5 right: {or: [goron upper present R]}
 outer present - E of d5 left: {or: [goron upper present M]}
 outer present - E of d5 middle: {or: [goron upper present M]}
-outer present - upper goron - L rock-separated caves: {or: [goron upper present R]}
-outer present - upper goron - R rock-separated caves: {or: [[goron upper past R, currents, break bush]]}
-outer present - NW goron - cave on cliff near time portal: {or: [goron upper present R]}
 
-inner present - upper goron R - cave on tall building: {or: []}
+inner present - E of d5 left: {or: [
+    [defeat great moblin, feather]
+]}
+inner present - E of d5 middle: {or: [
+    inner present - NW goron - cave on cliff near time portal
+]}
+
+# goron upper R
+goron upper present R: {or: [
+    outer present - E of d5 right,
+    outer present - upper goron R - cave on tall building,
+    outer present - NW goron - cave on cliff near time portal,
+    outer present - upper goron - L rock-separated caves,
+    [goron upper past M, echoes, bracelet],
+    [currents, or: [
+        goron upper past M, 
+        goron upper past R]]
+]}
+outer present - upper goron R - cave on tall building: {or: [
+    goron upper present R
+]}
+outer present - E of d5 right: {or: [goron upper present R]}
+outer present - upper goron - L rock-separated caves: {or: [
+    goron upper present R
+]}
+outer present - upper goron - R rock-separated caves: {or: [
+    [goron upper past R, currents, break bush]
+]}
+outer present - NW goron - cave on cliff near time portal: {or: [
+    goron upper present R
+]}
+
+inner present - upper goron R - cave on tall building: {or: [
+    [inner present - lower goron cave - leftmost, or: [
+        jump 3,
+        [hard, feather, cane]]]
+]}
 inner present - E of d5 right: {or: []}
-inner present - E of d5 left: {or: [[defeat great moblin, feather]]}
-inner present - E of d5 middle: {or: [inner present - NW goron - cave on cliff near time portal]}
 inner present - upper goron - L rock-separated caves: {or: [
-  [non-entrance, inner present - mid goron - leftmost cave]
+    [non-entrance, inner present - mid goron - leftmost cave]
 ]}
 inner present - upper goron - R rock-separated caves: {or: []}
-inner present - NW goron - cave on cliff near time portal: {or: [inner present - E of d5 middle]}
+inner present - NW goron - cave on cliff near time portal: {or: [
+    inner present - E of d5 middle
+]}
 
 # goron mid
 goron present mid top: {or: [
-  outer present - mid goron - L of carts,
-  outer present - mid goron - carts,
-  [outer past - mid goron - SW of bomb cave, switch hook, goron present mid bottom],
-  [currents, outer past - mid goron - sword game]
+    outer present - mid goron - L of carts,
+    outer present - mid goron - carts,
+    [ outer past - mid goron - SW of bomb cave, switch hook, 
+      goron present mid bottom],
+    [currents, outer past - mid goron - sword game]
 ]}
 goron present mid bottom: {or: [
-  [non-entrance, goron present mid top],
-  outer present - mid goron - leftmost cave,
-  outer present - mid goron - by carts,
-  [outer past - mid goron - SW of bomb cave, switch hook, goron present mid top],
-  [currents, or: [outer past - mid goron - SW of bomb cave, outer past - mid goron - near seed tree]]
+    goron present mid top,
+    outer present - upper goron - R rock-separated caves, # entrance rando change!
+    outer present - mid goron - leftmost cave,
+    outer present - mid goron - by carts,
+    goron present mid top, # entrance rando change!
+    [currents, or: [
+        outer past - mid goron - SW of bomb cave, 
+        outer past - mid goron - near seed tree]]
 ]}
 outer present - mid goron - leftmost cave: {or: [goron present mid bottom]}
 outer present - mid goron - L of carts: {or: [goron present mid top]}
@@ -200,7 +294,9 @@ outer present - mid goron - carts: {or: [goron present mid top]}
 outer present - mid goron - by carts: {or: [goron present mid bottom]}
 
 inner present - mid goron - leftmost cave: {or: [
-  [inner present - lower goron - dance cave, or: [switch hook, jump 3], brother emblem]
+    [inner present - lower goron - dance cave, brother emblem, or: [
+        switch hook, 
+        jump 3]]
 ]}
 inner present - mid goron - L of carts: {or: []}
 inner present - mid goron - carts: {or: []}
@@ -208,50 +304,77 @@ inner present - mid goron - by carts: {or: []}
 
 # goron lower
 goron lower present: {or: [
-  outer present - lower goron cave - leftmost,
-  outer present - lower goron - d6 cave,
-  outer present - lower goron - dance cave,
-  outer present - lower goron - cave beside dance cave,
-  [or:[non-entrance, gale satchel] goron present mid bottom],
-  [currents, or: [goron lower past W, goron lower past E]]
+    outer present - lower goron cave - leftmost,
+    outer present - lower goron - d6 cave,
+    outer present - lower goron - dance cave,
+    outer present - lower goron - cave beside dance cave,
+    goron present mid bottom,
+    # outer present - lower goron old man, # currently oneway only 
+    [currents, or: [
+        goron lower past W, 
+        goron lower past E]]
 ]}
-outer present - lower goron old man: {or: [[goron lower present, ember seeds]]}
+outer present - lower goron old man: {or: [
+    [goron lower present, ember seeds]
+]}
 outer present - lower goron cave - leftmost: {or: [goron lower present]}
 outer present - lower goron - d6 cave: {or: [goron lower present]}
 outer present - lower goron - dance cave: {or: [goron lower present]}
-outer present - lower goron - cave beside dance cave: {or: [goron lower present]}
+outer present - lower goron - cave beside dance cave: {or: [
+    goron lower present
+]}
 
 inner present - lower goron old man: {or: []}
-inner present - lower goron cave - leftmost: {or: [inner present - upper goron R - cave on tall building]}
+inner present - lower goron cave - leftmost: {or: [
+    inner present - upper goron R - cave on tall building
+]}
 inner present - lower goron - d6 cave: {or: []}
 inner present - lower goron - dance cave: {or: [
-  [inner present - mid goron - leftmost cave, or: [switch hook, jump 3], brother emblem]
+    [inner present - mid goron - leftmost cave, brother emblem, or: [
+        switch hook, 
+        jump 3]]
 ]}
 inner present - lower goron - cave beside dance cave: {or: []}
 
 # zora village / zora seas
-clean dimitri: [clean seas, dimitri's flute, open sea present land]
+clean dimitri: [clean seas, dimitri's flute] # dimitri guarantees open sea access
 present underwater zora: {or: [
-  outer present underwater - zora palace,
-  outer present underwater - zora SW L house,
-  outer present underwater - zora SW R house,
-  outer present underwater - zora E house,
-  [clean seas, outer present underwater - crescent island],
-  [mermaid suit, or: [
-    [or: [[ages, switch hook], clean seas], outer present - moving island],
-    [past underwater zora, currents]
-  ]]
+    outer present underwater - zora palace,
+    outer present underwater - zora SW L house,
+    outer present underwater - zora SW R house,
+    outer present underwater - zora E house,
+    [clean seas, outer present underwater - crescent island],
+    [mermaid suit, or: [
+        present overwater zora,
+        [outer present - moving island, or: [
+            clean seas,
+            [ages, switch hook]]]]]
 ]}
-present overwater zora: [mermaid suit, or: [present underwater zora, open sea present]]
-outer present - octo fairy cave: {or: [[outer past - octo fairy cave, currents]]}
+present overwater zora: {or: [
+    clean dimitri,
+    [clean seas, open seas present],
+    [mermaid suit, or: [
+        present underwater zora,
+        [past overwater zora, currents]]]
+]}
+present library island: {or: [
+    clean dimitri, 
+    [mermaid suit, present underwater zora],
+    [past library island, currents]
+]}
+outer present - octo fairy cave: {or: [
+    [outer past - octo fairy cave, currents]
+]}
 outer present - moving island: {or: [
-  open sea present, dimitri's flute, [currents, outer past - moving island]
+    open sea present, dimitri's flute, 
+    [currents, mermaid suit, outer past - moving island]
+    # currents will drop you in deep water
 ]}
 outer present - zora vill - NW bomb cave: {or: [
-  [bombs, or: [present overwater zora, clean dimitri]]
+    [bombs, present overwater zora]
 ]}
 outer present - library: {or: [
-  [outer past - library, or: [present overwater zora, clean dimitri]]
+    [outer past - library, present library island]
 ]}
 outer present underwater - zora palace: {or: [present underwater zora]}
 outer present underwater - zora SW L house: {or: [present underwater zora]}
@@ -263,8 +386,12 @@ inner present - moving island: {or: []}
 inner present - zora vill - NW bomb cave: {or: []}
 inner present - library: {or: []}
 inner present underwater - zora palace: {or: []}
-inner present underwater - zora SW L house: {or: [inner present underwater - zora SW R house]}
-inner present underwater - zora SW R house: {or: [inner present underwater - zora SW L house]}
+inner present underwater - zora SW L house: {or: [
+    inner present underwater - zora SW R house
+]}
+inner present underwater - zora SW R house: {or: [
+    inner present underwater - zora SW L house
+]}
 inner present underwater - zora E house: {or: []}
 
 # dungeons

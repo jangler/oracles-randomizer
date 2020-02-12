@@ -2,13 +2,13 @@
 # provent softlock situations.
 
 ages:
-  # searches for an interaction with ID a and returns the ID address in de,
-  # and z flag if found. this is here because it's currently only used by
-  # handleSpecialCurrentsActions.
+  # searches for an interaction with ID a starting at d (first pass: supply d0) 
+  # and returns the ID address in de, and z flag if found. this is here 
+  # because it's currently only used by handleSpecialCurrentsActions.
   00/findObjectWithId: |
       push bc
       ld b,a
-      ld de,d041
+      ld e,41 # address offset for state variable
       .loop
       ld a,(de)
       cp b
@@ -18,7 +18,7 @@ ages:
       .next
       inc d
       ld a,d
-      cp a,e0
+      cp a,e0 # still in valid memory space?
       jr c,.loop
       pop bc
       or a
@@ -47,29 +47,30 @@ ages:
   02/6245/: jp displayPortalPopups
 
   # reenter a warp tile that link is standing on when playing the tune of
-  # currents (useful if you warp into a patch of bushes). also activate the
-  # west present crescent island portal, which won't respond to echoes.
+  # currents (useful if you warp into a patch of bushes). also activate 
+  # echoes portals (even if they are "immune" to tune of echoes)
   06/handleSpecialCurrentsActions: |
-      push bc
-      ld bc,a900
-      call compareRoom
-      pop bc
-      jr nz,.notIsland
       push de
+      ld de,d041
+      .loopEcho
+      ld a,d
+      cp a,e0
+      jr nc,.noDormantPortal
       ld a,e1 # echoes portal
       call findObjectWithId
       jr nz,.noDormantPortal
       ld e,44
       ld a,02
       ld (de),a
+      inc d
+      jr .loopEcho
       .noDormantPortal
       pop de
-      jp 4e08 # clear self
-      .notIsland
       ld a,(wAreaFlags)
       push af
       push de
       ld a,de # currents/ages return portal
+      ld de,d041
       call findObjectWithId
       jr nz,.noReturnPortal
       ld e,44
@@ -84,8 +85,18 @@ ages:
   # don't let the tune of echoes activate the special crescent island portal.
   10/checkActivateEchoesPortal: |
       push bc
-      ld bc,a900
+      ld bc,a300 # Present Octo Fairy Island
       call compareRoom
+      jr z,.endComparison
+      ld bc,a900 # Present Cresent Island NW
+      call compareRoom
+      jr z,.endComparison
+      ld bc,d000 # Present Zora Village SW
+      call compareRoom
+      jr z,.endComparison
+      ld bc,da00 # Present Crescent Island SW
+      call compareRoom
+      .endComparison
       pop bc
       ld a,(wPlayingInstrument1)
       ret nz
@@ -144,5 +155,36 @@ ages:
       db dc,05
       db f2
       db e1,00,68,18
+      db e1,00,68,88
       db fe
   12/5e91/: db f3; dw symmetryPortalStaticObjects
+
+  # SW Crescent Island Present (Pointer Table)
+  15/44ed/: dw 6221 # static objects of the same location past
+
+  # SW Zora Village (Pointer Table)
+  15/44db/: dw 5b43 # static objects of ridge base present (outside D6 cave)
+
+  # Currents only portal in SW Crescent Island
+  12/crescentIslandCurrentsPortalStaticObjects: |
+      db f2
+      db e1,00,38,58
+      db fe
+  12/5e06/: dw crescentIslandCurrentsPortalStaticObjects
+
+
+  # Currenty only portal on present Octo fairy island
+  12/octoFairyPresentPortalStaticObjects: |
+      db f2
+      db e1,00,48,68
+      db ff
+  # Present Octo Fairy Island (Pointer Table)
+  15/4481/: dw octoFairyPresentPortalStaticObjects
+
+  # Echoes Portal under rock in past upper ridge M
+  12/ridgeUpperMiddlePastPortalStaticObjects: |
+      db f2
+      db e1,00,38,68
+      db ff
+  # Past Upper Ridge Middle (Pointer Table)
+  15/4551/: dw ridgeUpperMiddlePastPortalStaticObjects
