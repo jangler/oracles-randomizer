@@ -212,7 +212,7 @@ goron lower present: {or: [
   outer present - lower goron - d6 cave,
   outer present - lower goron - dance cave,
   outer present - lower goron - cave beside dance cave,
-  [non-entrance, goron present mid bottom],
+  [or:[non-entrance, gale satchel] goron present mid bottom],
   [currents, or: [goron lower past W, goron lower past E]]
 ]}
 outer present - lower goron old man: {or: [[goron lower present, ember seeds]]}
