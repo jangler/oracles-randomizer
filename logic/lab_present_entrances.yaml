@@ -83,7 +83,9 @@ crescent present W: {or: [
   dimitri's flute, open sea present,
   all crescent,
   [currents, or: [crescent past NW, crescent past SW]],
-  [shovel, echoes, crescent past SW]
+  [shovel, echoes, crescent past SW],
+  outer d3,
+  outer present - crescent - SW cave
 ]}
 outer present - crescent - NE cave: {or: [crescent present E]}
 outer present - crescent - E house: {or: [crescent present E]}
