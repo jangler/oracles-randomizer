@@ -177,7 +177,7 @@ outer past - crescent - SE cave: {or: [crescent past E]}
 outer past - crescent - E house: {or: [crescent past E]}
 outer past - crescent - E stairs after boulder: {or: [
     [crescent past E, bracelet],
-    [crescent present E,ages]
+    [crescent present E, ages]
 ]}
 
 inner past - crescent - shop: {or: []}
