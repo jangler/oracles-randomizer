@@ -285,8 +285,8 @@ d7 cane/diamond puzzle: [drain d7, long hook, cane]
 flood d7: [enter d7, long hook, count: [4, d7 small key]]
 d7 3F terrace: [flood d7]
 d7 left wing: [flood d7]
-plasmarine owl: [mystery shooter, flood d7]
-d7 boss: [d7 boss key, flood d7]
+plasmarine owl: [mermaid suit, mystery shooter, flood d7]
+d7 boss: [mermaid suit, d7 boss key, flood d7]
 
 # 5 keys
 d7 hallway chest: [flood d7, count: [5, d7 small key]]
