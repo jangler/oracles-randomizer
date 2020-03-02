@@ -217,7 +217,7 @@ d6 past diamond chest: [d6 past spinner, mermaid suit,
     switch hook]
 
 # past, 3 keys
-d6 boss: [d6 past spinner, d6 boss key, any seed shooter,
+d6 boss: [d6 past spinner, d6 boss key, mermaid suit, any seed shooter,
     count: [3, d6 past small key]]
 
 # present, 0 keys
