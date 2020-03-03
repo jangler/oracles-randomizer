@@ -217,7 +217,7 @@ d6 past diamond chest: [d6 past spinner, mermaid suit,
     switch hook]
 
 # past, 3 keys
-d6 boss: [d6 past spinner, d6 boss key, any seed shooter,
+d6 boss: [d6 past spinner, d6 boss key, mermaid suit, any seed shooter,
     count: [3, d6 past small key]]
 
 # present, 0 keys
@@ -285,8 +285,8 @@ d7 cane/diamond puzzle: [drain d7, long hook, cane]
 flood d7: [enter d7, long hook, count: [4, d7 small key]]
 d7 3F terrace: [flood d7]
 d7 left wing: [flood d7]
-plasmarine owl: [mystery shooter, flood d7]
-d7 boss: [d7 boss key, flood d7]
+plasmarine owl: [mermaid suit, mystery shooter, flood d7]
+d7 boss: [mermaid suit, d7 boss key, flood d7]
 
 # 5 keys
 d7 hallway chest: [flood d7, count: [5, d7 small key]]
