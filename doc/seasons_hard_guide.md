@@ -16,11 +16,10 @@ for a list of things that are out of logic even in hard.
 	- Ember seeds from the plants in the first Poe Sister's room in D7
 	- Mystery seeds from Frypolar's room in D8
 - Get bombs from the plants in D2.
-- Use bomb boosts to increase jump distance. Drop a bomb near the gap you're
+- Use bomb boosts to increase jump distance. Pull a bomb near the gap you're
   jumping, move slightly closer to the gap, and jump in the desired direction
-  as the bomb explodes and hits you. Buffering the simultaneous jump +
-  directional input by holding the relevant buttons while closing a menu makes
-  the trick easier.
+  as the bomb explodes. Buffering the simultaneous jump + directional input by
+  holding the relevant buttons while closing a menu makes the trick easier.
 
   Strictly horizontal and vertical bomb jumps include:
 	- Lava between Mt. Cucco portal and Subrosia Market
