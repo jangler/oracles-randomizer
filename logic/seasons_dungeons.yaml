@@ -249,7 +249,7 @@ d8 eye drop: [enter d8, break pot, or: [any slingshot,
     [hard, feather, or: [ember satchel, scent satchel, mystery satchel]]]]
 d8 three eyes chest: [enter d8, feather,
     or: [any hyper slingshot,
-        [hard, or: [ember satchel, scent satchel, mystery satchel]]]]
+        [hard, or: [ember seeds, scent seeds, mystery satchel]]]]
 d8 hardhat room: [enter d8, kill magunesu]
 d8 hardhat drop: [d8 hardhat room,
     or: [[bombs, magnet gloves], [or: [slingshot, hard], gale seeds]]]
@@ -266,7 +266,7 @@ d8 spinner chest: [d8 armos chest]
 frypolar owl: [mystery seeds, d8 armos chest]
 d8 darknut chest: [d8 armos chest, bombs, kill armored,
     or: [any hyper slingshot,
-        [hard, or: [ember satchel, scent satchel, mystery satchel]]]]
+        [hard, or: [ember seeds, scent seeds, mystery satchel]]]]
 
 # 3 keys
 d8 ice puzzle room: [d8 armos chest, count: [3, d8 small key], kill frypolar,

@@ -104,7 +104,8 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://streamable.com/q7gnh)
 - Hit the first eye statue in D8 with seeds + feather + satchel.
   [[Video]](https://streamable.com/jle4o)
-- Hit sets of three eye statues in D8 with feather + satchel instead of HSS.
+- Hit sets of three eye statues in D8 with feather + satchel/slingshot instead
+  of HSS. Only ember and scent seeds are in logic with the slingshot.
   [[Video]](https://streamable.com/k0hj5)
 - Activate the D8 bridge switch without L-2 boomerang or seeds + cape.
   [[Video]](https://streamable.com/jtpr6)
