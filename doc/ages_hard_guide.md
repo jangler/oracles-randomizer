@@ -12,11 +12,10 @@ for a list of things that are out of logic even in hard.
 - Get scent seeds from the plants in D3.
 - Get bombs from Head Thwomp or Goron Shooting Gallery (200-299 points).
 - Get a random potion from Maple instead of buying one from Syrup.
-- Use bomb boosts to increase jump distance. Drop a bomb near the gap you're
+- Use bomb boosts to increase jump distance. Pull a bomb near the gap you're
   jumping, move slightly closer to the gap, and jump in the desired direction
-  as the bomb explodes and hits you. Buffering the simultaneous jump +
-  directional input by holding the relevant buttons while closing a menu makes
-  the trick easier.
+  as the bomb explodes. Buffering the simultaneous jump + directional input by
+  holding the relevant buttons while closing a menu makes the trick easier.
 
   I think the only relevant strictly horizontal or vertical bomb jump is across
   the water channels in past Rolling Ridge Base.
