@@ -31,6 +31,11 @@ for a list of things that are out of logic even in hard.
   [[Video]](https://streamable.com/qowrs)
 - Hit the switch in the cave under Tingle using a bomb/seed jump + boomerang.
   [[Video]](https://streamable.com/ly1vn)
+- Hit the switch in the cave under Tingle using the seed shooter, coming from
+  the stairs. The position is subpixel-dependent, so run around diagonally a
+  bit if you're on the correct pixel and the seed is breaking on one of the
+  green tiles.
+  [[Image]](https://cdn.discordapp.com/attachments/523574765160628245/692422509236060200/unknown.png)
 - Reach the Crescent Island seed tree by visiting the map tile underwater, then
   warping to it with gale seeds. [[Video]](https://streamable.com/4bwyq)
 

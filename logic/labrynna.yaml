@@ -17,8 +17,8 @@ south lynna tree: [lynna city, seed item,
     or: [sword, punch object, dimitri's flute, [hard, break bush]]]
 lynna city chest: {or: [ember seeds, currents]}
 shore present: {or: [flute, ricky's gloves, [break bush, feather],
-    [lynna city, bracelet], [currents, or: [feather, flippers, raft]],
-    [ages, break bush], [lynna city, mermaid suit]]}
+    [ages, break bush], [lynna city, {or: [bracelet, mermaid suit]}],
+    [currents, or: [feather, flippers, raft, [hard, seed shooter]]]]}
 south shore dirt: [shore present, or: [shovel, flute]]
 balloon guy: [feather, or: [sword, boomerang],
     or: [currents, ricky's gloves, ricky's flute,
