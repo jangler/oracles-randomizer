@@ -83,7 +83,9 @@ outer witch hut: {or: [
 ]}
 outer ghost grave: {or: [[gravekey, bracelet]]}
 outer under cheval grave: {or: [cheval's grave]}
-outer stairs near d1: {or: [yoll graveyard]}
+outer stairs near d1: {or: [
+    [yoll graveyard, ember seeds]
+]}
 
 inner witch hut: {or: []}
 inner ghost grave: {or: []}
@@ -96,6 +98,7 @@ crescent present E: {or: [
     outer present - crescent - E house,
     outer present - crescent - SE house,
     all crescent,
+    crescent island reach tree,
     [crescent past E, echoes],
     [outer past - crescent - E stairs after boulder, or: [
         ages,

@@ -49,7 +49,9 @@ lynna village: {or: [
     open sea past,
     [outer cheval, or: [feather, flippers]],
     outer raft guy L,
-    [outer palace M, hard, satchel, scent seeds, pegasus seeds],
+    outer palace L, # get caught on purpose, Lynna Village always leads
+    outer palace M, # back to the starting area, so no explicit
+    outer palace R, # return path is necessary
     [deku forest, bracelet],
 ]}
 black tower worker: [lynna village]
@@ -111,7 +113,14 @@ essences: {or: [
 maku seed: [count: [8, essences]]
 
 # yoll graveyard
-yoll graveyard: [ember seeds] # west graveyard
+yoll graveyard: {or: [  # west graveyard
+    ember seeds, # from vanilla way
+    [outer under cheval grave, or: [ # from cheval's grave
+        bomb jump 3,
+        [bracelet, feather, or: [
+            moosh's flute,
+            kill switch hook]]]]
+]}
 cheval's grave: [yoll graveyard, or: [
     kill switch hook, 
     bomb jump 3
@@ -209,16 +218,21 @@ tokay bomb cave: [inner past - crescent - E stairs after boulder, bombs]
 wild tokay game: [inner past - crescent - E bomb cave, bracelet, farm rupees]
 # can get the warp point by swimming under crescent island, but that's pretty
 # unintuitive.
-crescent island tree: [
+crescent island plant seedling: [
     crescent past NW, 
     scent seedling, 
-    seed item,
-    or: [sword, punch object],
+    or: [ages, bracelet]
+]
+crescent island reach tree: [
+    crescent island plant seedling,
     or: [
-        ages, 
-        [bracelet, or: [
-            or: [echoes, crescent present E], 
-            [hard, gale satchel, outer present underwater - crescent island]]]]
+        crescent present E,
+        [hard, gale satchel, outer present underwater - crescent island]]
+]
+crescent island tree: [
+    crescent island reach tree,
+    seed item,
+    or: [sword, punch object]
 ]
 d3 entrance: [crescent present W]
 hidden tokay cave: [inner past - crescent - iron shield cave, flippers]
