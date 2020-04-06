@@ -201,7 +201,7 @@ enter d6 past: {or: []}
 
 # past, 0 keys
 d6 past color room: [enter d6 past, feather, kill switch hook]
-d6 past wizzrobe chest: [enter d6 past, bombs, kill normal]
+d6 past wizzrobe chest: [enter d6 past, bombs, kill wizzrobe]
 d6 past pool chest: [enter d6 past, bombs, ember seeds, flippers]
 d6 open wall: [enter d6 past, bombs, ember shooter]
 deep waters owl: [mystery seeds, d6 open wall]
