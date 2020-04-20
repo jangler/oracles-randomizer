@@ -48,3 +48,5 @@ kill swoop: {or: [
 kill moldorm: {or: [sword, scent shooter, cane, switch hook, punch enemy,
     [hard, scent satchel]]}
 kill subterror: [shovel, or: [sword, switch hook, scent seeds, punch enemy]]
+
+kill wizzrobe: {or: [sword, satchel weapon, shooter weapon, punch enemy]}

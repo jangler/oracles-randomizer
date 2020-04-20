@@ -201,7 +201,7 @@ enter d6 past: {or: []}
 
 # past, 0 keys
 d6 past color room: [enter d6 past, feather, kill switch hook]
-d6 past wizzrobe chest: [enter d6 past, bombs, kill normal]
+d6 past wizzrobe chest: [enter d6 past, bombs, kill wizzrobe]
 d6 past pool chest: [enter d6 past, bombs, ember seeds, flippers]
 d6 open wall: [enter d6 past, bombs, ember shooter]
 deep waters owl: [mystery seeds, d6 open wall]
@@ -302,10 +302,10 @@ enter d8: {or: []}
 
 # 0 keys
 open ears owl: [mystery seeds, enter d8]
-d8 1F chest: [enter d8, bombs]
+d8 1F chest: [enter d8, bombs, kill normal]
 
 # 1 key - access B1F
-d8 ghini chest: [enter d8, d8 small key, switch hook, cane, seed shooter,
+d8 ghini chest: [d8 1F chest, d8 small key, switch hook, cane, seed shooter,
     or: [ember seeds, [hard, mystery seeds]]]
 d8 B1F NW chest: [d8 ghini chest]
 
