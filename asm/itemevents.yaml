@@ -29,10 +29,54 @@ seasons:
       ret
   08/62a7/: call checkBeachItemObtained
 
+  # items that shouldn't be shared in co-op
+  # - dungeon-specific items (since right now dungeon index = current dungeon)
+  # - essences
+  02/nonShareableTable: |
+      db TREASURE_SMALL_KEY
+      db TREASURE_BOSS_KEY
+      db TREASURE_MAP
+      db TREASURE_COMPASS
+      db TREASURE_ESSENCE
+      db ff
+
+  # progressive items that should be downgraded to L-1 before being shared
+  02/shareDowngradeTable: |
+      db TREASURE_SHIELD
+      db TREASURE_SWORD
+      db TREASURE_BOOMERANG
+      db TREASURE_SLINGSHOT
+      db TREASURE_FEATHER
+      db TREASURE_SEED_SATCHEL
+      db ff
+
   # star ore and maku tree both need fake treasure ids to check instead of the
-  # vanilla ones.
+  # vanilla ones. also handle shared items.
   02/makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
-  02/setFakeIdsForStarOreAndMakuTree_body: |
+  02/handleGetItem_body: |
+      push de
+      ld e,47
+      ld a,(de)
+      pop de
+      and a
+      jr nz,.receive
+      ld a,b
+      ld hl,nonShareableTable
+      call searchValue
+      jr z,.receive
+      ld hl,shareDowngradeTable
+      call searchValue
+      jr nz,.noDowngrade
+      ld c,01
+      .noDowngrade
+      ld hl,wNetTreasureOut
+      ld (hl),b
+      inc hl
+      ld (hl),c
+      ld b,TREASURE_RUPEES
+      ld c,00
+      ret
+      .receive
       ld a,(wActiveGroup)
       cp a,01
       jr z,.subrosia
@@ -105,16 +149,18 @@ seasons:
   08/7e62/: ld a,01
 
   # see function in bank 02.
-  09/setFakeIdsForStarOreAndMakuTree: |
+  09/handleGetItem: |
+      ld b,a
       push af
       push hl
-      ld hl,setFakeIdsForStarOreAndMakuTree_body
+      ld hl,handleGetItem_body
       call callBank2
       pop hl
       pop af
+      ld a,b
       call giveTreasure
       ret
-  09/42e0/: call setFakeIdsForStarOreAndMakuTree
+  09/42e0/: call handleGetItem
 
   # mt. cucco platform cave item is normally created using ring-specific code.
   # values are replaced at randomization.

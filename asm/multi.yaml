@@ -1,5 +1,6 @@
 seasons:
   # if the item buffer is nonzero, spawn the item at link and reset the buffer.
+  # var 47 is used to signal that the item is non-local.
   05/checkNetItemBuffer: |
       push bc
       push de
@@ -10,14 +11,19 @@ seasons:
       jr z,.done
       ld b,a
       ld c,(hl)
+      ld e,BANK_TREASURE_DATA
+      ld hl,reverseTreasureLookup
+      call interBankCall
       call createTreasure
       jr nz,.done
       ld de,w1Link.yh
       call objectCopyPosition_rawAddress
+      ld l,47
+      inc (hl)
       ld hl,wNetCountIn
       inc (hl)
       inc hl
-      ld (hl),0a
+      ld (hl),02
       inc hl
       xor a
       ldi (hl),a
@@ -29,3 +35,34 @@ seasons:
       call 4226
       ret
   05/5495/: call checkNetItemBuffer
+
+  # returns b = id, c = subid for b = id, c = param.
+  # might loop forever if given bad data.
+  15/reverseTreasureLookup: |
+      ld hl,treasureObjectData
+      ld a,b
+      rst 18
+      rst 18
+      .idLoop
+      bit 7,(hl)
+      jr z,.idDone
+      inc hl
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      jr .idLoop
+      .idDone
+      ld a,c
+      ld c,00
+      inc hl
+      .paramLoop
+      cp (hl)
+      jr z,.paramDone
+      inc hl
+      inc hl
+      inc hl
+      inc hl
+      inc c
+      jr .paramLoop
+      .paramDone
+      ret

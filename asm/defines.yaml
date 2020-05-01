@@ -24,6 +24,7 @@ common:
     define SND_SOLVEPUZZLE_2,5b
     define TREASURE_SHIELD,01
     define TREASURE_PUNCH,02
+    define TREASURE_BOMBS,03
     define TREASURE_CANE_OF_SOMARIA,04
     define TREASURE_SWORD,05
     define TREASURE_BOOMERANG,06
@@ -36,18 +37,25 @@ common:
     define TREASURE_SEED_SATCHEL,19
     define TREASURE_FOOLS_ORE,1e
     define TREASURE_EMBER_SEEDS,20
+    define TREASURE_SCENT_SEEDS,21
     define TREASURE_PEGASUS_SEEDS,22
     define TREASURE_GALE_SEEDS,23
     define TREASURE_MYSTERY_SEEDS,24
     define TREASURE_TUNE_OF_ECHOES,25
     define TREASURE_TUNE_OF_CURRENTS,26
+    define TREASURE_RUPEES,28
+    define TREASURE_HEART_REFILL,29
     define TREASURE_HEART_CONTAINER,2a
     define TREASURE_RING,2d
     define TREASURE_FLIPPERS,2e
     define TREASURE_SMALL_KEY,30
     define TREASURE_BOSS_KEY,31
+    define TREASURE_COMPASS,32
+    define TREASURE_MAP,33
     define TREASURE_MAKU_SEED,36
+    define TREASURE_ORE_CHUNKS,37
     define TREASURE_ESSENCE,40
+    define TREASURE_TRADEITEM,41
     define TREASURE_STAR_ORE,45
     define TREASURE_MASTERS_PLAQUE,54
     define TREASURE_GORON_LETTER,59
@@ -125,6 +133,9 @@ common:
     define getNumSetBits,0176
     define compareHlToBc,01d6
     define decHlRef16WithCap,0237
+
+    # rom 15
+    define treasureObjectData,5129
 
     # rom 3f
     define _interactionGetData,4437
