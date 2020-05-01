@@ -156,6 +156,7 @@ seasons:
     define wAnimalTutorialFlags,c646
     define wInventoryB,c680
     define wObtainedTreasureFlags,c692
+    define wNetCountIn,c69c
     define wNetCollect,c69d
     define wNetTreasureIn,c69e
     define wNetTreasureOut,c6a0
