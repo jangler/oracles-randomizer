@@ -113,6 +113,7 @@ common:
     define wScreenTransitionDirection,cd02
     define wScreenOffsetY,cd08
     define wScreenShakeCounterY,cd18
+    define w1Link.state,d004
     define w1Link.angle,d009
     define w1Link.yh,d00b
     define w1Link.xh,d00d
@@ -155,6 +156,9 @@ seasons:
     define wAnimalTutorialFlags,c646
     define wInventoryB,c680
     define wObtainedTreasureFlags,c692
+    define wNetCollect,c69d
+    define wNetTreasureIn,c69e
+    define wNetTreasureOut,c6a0
     define wShieldLevel,c6a9
     define wSwordLevel,c6ac
     define wFluteIcon,c6af
@@ -201,6 +205,7 @@ seasons:
     define convertShortToLongPosition,2089
     define objectDelete_useActiveObjectType,219e
     define objectCopyPosition,21fd
+    define objectCopyPosition_rawAddress,2202
     define objectCopyPositionWithOffset,221a
     define interactionSetScript,24fe
     define createTreasure,271b
@@ -301,6 +306,7 @@ ages:
     define lookupCollisionTable,1e1f
     define objectDelete_useActiveObjectType,21e0
     define objectCopyPosition,2242
+    define objectCopyPosition_rawAddress,2247
     define objectCreateInteraction,24c5
     define createTreasure,27d4
     define checkGlobalFlag,31f3
