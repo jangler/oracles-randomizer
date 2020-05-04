@@ -278,6 +278,11 @@ ages:
     define wDungeonBossKeys,c682
     define wInventoryB,c688
     define wObtainedTreasureFlags,c69a
+    define wNetCountIn,c6a9
+    define wNetCollect,cbfa
+    define wNetTreasureIn,cbfb
+    define wNetPlayerOut,cbfd
+    define wNetTreasureOut,cbfe
     define wSeedSatchelLevel,c6b4
     define wFluteIcon,c6b5
     define wEssencesObtained,c6bf
