@@ -44,6 +44,8 @@ seasons:
   02/handleGetItem_body: |
       ld e,47
       ld a,(de)
+      and a
+      jr z,.receive
       ld e,a
       ld a,(multiPlayerNumber)
       cp e
