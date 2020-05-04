@@ -74,6 +74,7 @@ func makeRomChecksum(data []byte) [2]byte {
 
 type romState struct {
 	game         int
+	player       int
 	data         []byte // actual contents of the file
 	treasures    map[string]*treasure
 	itemSlots    map[string]*itemSlot
@@ -83,9 +84,10 @@ type romState struct {
 	includes     []string // filenames
 }
 
-func newRomState(data []byte, game int, includes []string) *romState {
+func newRomState(data []byte, game, player int, includes []string) *romState {
 	rom := &romState{
 		game:      game,
+		player:    player,
 		data:      data,
 		treasures: loadTreasures(data, game),
 		includes:  includes,

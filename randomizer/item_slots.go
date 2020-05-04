@@ -8,11 +8,11 @@ import (
 
 // an item slot (chest, gift, etc). it references room data and treasure data.
 type itemSlot struct {
-	treasure                 *treasure
-	idAddrs, subidAddrs      []address
-	group, room, collectMode byte
-	moreRooms                []uint16 // high = group, low = room
-	mapTile                  byte     // overworld map coords, yx
+	treasure                         *treasure
+	idAddrs, subidAddrs              []address
+	group, room, collectMode, player byte
+	moreRooms                        []uint16 // high = group, low = room
+	mapTile                          byte     // overworld map coords, yx
 }
 
 // implementes `mutate` from the `mutable` interface.

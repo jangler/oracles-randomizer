@@ -61,6 +61,7 @@ var (
 	flagIncludes string
 	flagNoUI     bool
 	flagPlan     string
+	flagPlayers  int
 	flagPortals  bool
 	flagSeed     string
 	flagRace     bool
@@ -74,6 +75,7 @@ type randomizerOptions struct {
 	dungeons bool
 	portals  bool
 	plan     *plan
+	players  int
 	race     bool
 	seed     string
 	include  []string
@@ -96,6 +98,8 @@ func initFlags() {
 		"use command line without prompts if input file is given")
 	flag.StringVar(&flagPlan, "plan", "",
 		"use fixed 'randomization' from a file")
+	flag.IntVar(&flagPlayers, "players", 1,
+		"number of players in a multiworld seed")
 	flag.BoolVar(&flagPortals, "portals", false,
 		"shuffle subrosia portal connections (seasons)")
 	flag.BoolVar(&flagRace, "race", false,
@@ -127,6 +131,7 @@ func Main() {
 		treewarp: flagTreewarp,
 		hard:     flagHard,
 		dungeons: flagDungeons,
+		players:  flagPlayers,
 		portals:  flagPortals,
 		race:     flagRace,
 		seed:     flagSeed,
@@ -162,7 +167,7 @@ func Main() {
 		// i forget why or whether this is useful.
 		var rom *romState
 		if flag.Arg(1) == "" {
-			rom = newRomState(nil, game, ropts.include)
+			rom = newRomState(nil, game, 1, ropts.include)
 		} else {
 			f, err := os.Open(flag.Arg(1))
 			if err != nil {
@@ -175,7 +180,7 @@ func Main() {
 				fatal(err, printErrf)
 				return
 			}
-			rom = newRomState(b, game, ropts.include)
+			rom = newRomState(b, game, 1, ropts.include)
 		}
 
 		fmt.Println(rom.findAddr(byte(bank), uint16(addr)))
@@ -208,7 +213,7 @@ func Main() {
 		}
 		game := reverseLookupOrPanic(gameNames, tokens[0]).(int)
 
-		rom := newRomState(nil, game, ropts.include)
+		rom := newRomState(nil, game, 1, ropts.include)
 		if err := rom.showAsm(tokens[1], os.Stdout); err != nil {
 			fatal(err, printErrf)
 			return
@@ -253,7 +258,7 @@ func runRandomizer(ui *uiInstance, ropts randomizerOptions, logf logFunc) {
 			fatal(err, logf)
 			return
 		} else {
-			rom = newRomState(b, game, ropts.include)
+			rom = newRomState(b, game, 1, ropts.include)
 		}
 
 		logf("randomizing %s.", infile)
