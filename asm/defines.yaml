@@ -98,6 +98,7 @@ common:
     define wKeysPressed,c481
     define wKeysJustPressed,c482
     define wAnimalRegion,c610
+    define wWhichGame,c611
     define wRingsObtained,c616
     define wTotalSignsDestroyed,c626
     define wTextIndexL,cba2

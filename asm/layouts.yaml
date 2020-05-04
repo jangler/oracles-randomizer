@@ -43,6 +43,7 @@ common:
       inc hl
       jr .loop
       .done
+      call applySpringSwampShallowWater
       pop de
       pop bc
       call applyAllTileSubstitutions
@@ -103,6 +104,29 @@ seasons:
   04/endTileSubTable: |
       db ff
 
+  # replace all (regular) deep water on four spool swamp screens with shallow
+  # water, in order to avoid a softlock.
+  04/springSwampScreens: db 91,92,a1,a2,ff
+  04/applySpringSwampShallowWater: |
+      ld a,(wActiveGroup)
+      and a
+      ret nz
+      ld a,(wActiveRoom)
+      ld hl,springSwampScreens
+      call searchValue
+      ret nz
+      .match
+      ld hl,cf00
+      .loop
+      ld a,(hl)
+      cp a,fd
+      jr nz,.next
+      ld (hl),fa
+      .next
+      inc l
+      ret z
+      jr .loop
+
   # unset a room flag when the flower outside D6 is broken. see tileSubTable.
   06/checkBreakD6Flower: |
       push af
@@ -148,6 +172,13 @@ seasons:
   21/7ab1/: db d3,d3
   21/7ab6/: db d4,d4,d4
   21/7abe/: db d1
+
+  # replace deep water on spring floodgate keyhole screen with shallow water.
+  # other spring swamp screens use a blanket substitution function.
+  21/6d9b/: db fa,fa,fa
+  21/6da3/: db fa
+  21/6db4/: db fa,fa,fa
+  21/6dbd/: db fa
 
   # replace deep water in eyeglass lake water with shallow water to prevent a
   # softlock from default winter + summer rod + no flippers.
@@ -207,6 +238,9 @@ ages:
       db 01,a5,00,55,6c # cont.
       db 00,83,00,44,d7 # portal outside D2 present
       db ff
+
+  # this doesn't apply to ages.
+  04/applySpringSwampShallowWater: ret
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
   # can be gone for good (see tileSubTable).
