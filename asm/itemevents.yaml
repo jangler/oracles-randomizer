@@ -42,7 +42,6 @@ seasons:
 
   # progressive items that should be downgraded to L-1 before being shared
   02/shareDowngradeTable: |
-      db TREASURE_SHIELD
       db TREASURE_SWORD
       db TREASURE_BOOMERANG
       db TREASURE_SLINGSHOT
@@ -54,12 +53,12 @@ seasons:
   # vanilla ones. also handle shared items.
   02/makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
   02/handleGetItem_body: |
-      push de
       ld e,47
       ld a,(de)
-      pop de
-      and a
-      jr nz,.receive
+      ld e,a
+      ld a,(multiPlayerNumber)
+      cp e
+      jr z,.receive
       ld a,b
       ld hl,nonShareableTable
       call searchValue
@@ -69,6 +68,9 @@ seasons:
       jr nz,.noDowngrade
       ld c,01
       .noDowngrade
+      ld e,47
+      ld a,(de)
+      ld (wNetPlayerOut),a
       ld hl,wNetTreasureOut
       ld (hl),b
       inc hl
@@ -152,10 +154,12 @@ seasons:
   09/handleGetItem: |
       ld b,a
       push af
+      push de
       push hl
       ld hl,handleGetItem_body
       call callBank2
       pop hl
+      pop de
       pop af
       ld a,b
       call giveTreasure

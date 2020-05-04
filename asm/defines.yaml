@@ -168,8 +168,9 @@ seasons:
     define wInventoryB,c680
     define wObtainedTreasureFlags,c692
     define wNetCountIn,c6a1
-    define wNetCollect,cbfb
-    define wNetTreasureIn,cbfc
+    define wNetCollect,cbfa
+    define wNetTreasureIn,cbfb
+    define wNetPlayerOut,cbfd
     define wNetTreasureOut,cbfe
     define wShieldLevel,c6a9
     define wSwordLevel,c6ac

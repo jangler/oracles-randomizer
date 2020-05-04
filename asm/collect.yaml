@@ -24,7 +24,7 @@ common:
   # or based on the net collection mode if one is stored (and then clears it).
   # the table format is (group, room, mode), and modes 80+ are used to index a
   # jump table for special cases. if no match is found, it returns the regular,
-  # non-overriden mode.
+  # non-overriden mode. this also handles network items.
   06/lookupCollectMode_body: |
       ld hl,wNetCollect
       ld e,(hl)
@@ -37,11 +37,15 @@ common:
       ld b,a
       ld a,(wActiveRoom)
       ld c,a
-      ld e,01
-      ld hl,collectModeTable
+      ld e,02
+      ld hl,collectPropertiesTable
       call searchDoubleKey
       ld e,a
       ret nc
+      inc hl
+      ldd a,(hl)
+      ld e,47
+      ld (de),a
       ld a,(hl)
       ld e,a
       cp a,80

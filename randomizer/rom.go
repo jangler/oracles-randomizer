@@ -148,8 +148,8 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 	rom.attachText()
 
 	// regenerate collect mode table to accommodate changes based on contents.
-	rom.codeMutables["collectModeTable"].new =
-		[]byte(makeCollectModeTable(rom.itemSlots))
+	rom.codeMutables["collectPropertiesTable"].new =
+		[]byte(makeCollectPropertiesTable(rom.itemSlots))
 
 	// set the text IDs for all rings to $ff (blank), since custom code deals
 	// with text
