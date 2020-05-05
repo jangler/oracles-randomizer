@@ -70,6 +70,7 @@ var (
 )
 
 type randomizerOptions struct {
+	game     int
 	treewarp bool
 	hard     bool
 	dungeons bool
@@ -111,6 +112,55 @@ func initFlags() {
 	flag.BoolVar(&flagVerbose, "verbose", false,
 		"print more detailed output to terminal")
 	flag.Parse()
+}
+
+// parses options from a string like "s+dp" or "ages+hk"
+func roptsFromString(s string) (*randomizerOptions, error) {
+	a := strings.Split(s, "+")
+	if len(a) == 0 || len(a) > 2 {
+		return nil, fmt.Errorf("bad option string: %s", s)
+	}
+
+	// global options
+	ropts := randomizerOptions{
+		players:  flagPlayers,
+		race:     flagRace,
+		seed:     flagSeed,
+		include:  []string{},
+	}
+	if flagIncludes != "" {
+		ropts.include = strings.Split(flagIncludes, ",")
+	}
+
+	// game name
+	switch a[0] {
+	case "s", "seasons":
+		ropts.game = gameSeasons
+	case "a", "ages":
+		ropts.game = gameAges
+	default:
+		return nil, fmt.Errorf("unknown game: %s", a[0])
+	}
+
+	// flags
+	if len(a) == 2 {
+		for _, c := range a[1] {
+			switch c {
+			case 'd':
+				ropts.dungeons = true
+			case 'h':
+				ropts.hard = true
+			case 'p':
+				ropts.portals = true
+			case 't':
+				ropts.treewarp = true
+			default:
+				return nil, fmt.Errorf("unknown flag: %v", c)
+			}
+		}
+	}
+
+	return &ropts, nil
 }
 
 // the program's entry point.
@@ -550,14 +600,14 @@ func randomize(rom *romState, dirName, logFilename string,
 	}
 
 	// search for valid configuration
-	var ri *routeInfo
+	ris := make([]*routeInfo, ropts.players)
 	if ropts.plan == nil {
 		logf("searching...")
 		seed, err := setRandomSeed(ropts.seed)
 		if err != nil {
 			return 0, nil, "", err
 		}
-		ri, err = findRoute(rom, seed, ropts, verbose, logf)
+		ris, err = findRoutes(rom, seed, ropts, verbose, logf)
 		if err != nil {
 			return 0, nil, "", err
 		}
@@ -574,6 +624,7 @@ func randomize(rom *romState, dirName, logFilename string,
 		if ri.portals != nil && len(ri.portals) > 0 {
 			ropts.portals = true
 		}
+		ris = append(ris, ri)
 	}
 
 	// configuration found; come up with auxiliary data

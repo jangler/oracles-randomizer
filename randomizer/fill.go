@@ -98,8 +98,8 @@ func newRouteGraph(rom *romState) graph {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
-	verbose bool, logf logFunc) (*routeInfo, error) {
+func findRoutes(roms []*romState, seed uint32, ropts randomizerOptions,
+	verbose bool, logf logFunc) ([]*routeInfo, error) {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
