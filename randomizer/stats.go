@@ -10,7 +10,7 @@ import (
 )
 
 // generate a bunch of seeds.
-func generateSeeds(n, game int, ropts randomizerOptions) []*routeInfo {
+func generateSeeds(n, game int, gopts *globalOptions) []*routeInfo {
 	threads := runtime.NumCPU()
 	dummyLogf := func(string, ...interface{}) {}
 
@@ -24,11 +24,13 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*routeInfo {
 					// i don't know if a new romState actually *needs* to be
 					// created for each iteration.
 					seed := uint32(rand.Int())
-					rom := newRomState(nil, game, 1, ropts.include)
-					route, _ := findRoute(rom, seed, ropts, false, dummyLogf)
-					if route != nil {
-						attempts += route.attemptCount
-						routeChan <- route
+					roms := []*romState{
+						newRomState(nil, game, 1, gopts.include),
+					}
+					routes, _ := findRoutes(roms, seed, gopts, false, dummyLogf)
+					if routes[0] != nil {
+						attempts += routes[0].attemptCount
+						routeChan <- routes[0]
 						break
 					}
 				}
@@ -49,9 +51,9 @@ func generateSeeds(n, game int, ropts randomizerOptions) []*routeInfo {
 }
 
 // generate a bunch of seeds and print item configurations in YAML format.
-func logStats(game, trials int, ropts randomizerOptions, logf logFunc) {
+func logStats(game, trials int, gopts *globalOptions, logf logFunc) {
 	// get `trials` routes
-	routes := generateSeeds(trials, game, ropts)
+	routes := generateSeeds(trials, game, gopts)
 
 	// make a YAML-serializable slice of check maps
 	stringChecks := make([]map[string]string, len(routes))

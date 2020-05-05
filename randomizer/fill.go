@@ -98,72 +98,97 @@ func newRouteGraph(rom *romState) graph {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func findRoutes(roms []*romState, seed uint32, ropts randomizerOptions,
+func findRoutes(roms []*romState, seed uint32, gopts *globalOptions,
 	verbose bool, logf logFunc) ([]*routeInfo, error) {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
 	// also keep track of which items we've popped off the stacks.
 	// these lists are parallel; i.e. the first item is in the first slot
-	ri := &routeInfo{
-		seed:      seed,
-		usedItems: list.New(),
-		usedSlots: list.New(),
-		src:       rand.New(rand.NewSource(int64(seed))),
+	ris := make([]*routeInfo, len(roms))
+	src := rand.New(rand.NewSource(int64(seed)))
+	for i, _ := range ris {
+		ris[i] = &routeInfo{
+			seed:      seed,
+			usedItems: list.New(),
+			usedSlots: list.New(),
+			src:       src,
+		}
 	}
 
 	// try to find the route, retrying if needed
 	tries := 0
 	for tries = 0; tries < maxTries; tries++ {
-		ri.graph = newRouteGraph(rom)
-		ri.slots = make(map[string]*node, 0)
-		for name := range rom.itemSlots {
-			ri.slots[name] = ri.graph[name]
-		}
-		if ropts.hard {
-			ri.graph["hard"].addParent(ri.graph["start"])
-		}
+		masterGraph := newGraph()
+		masterGraph["done"] = newNode("done", andNode)
+		masterGraph["start"] = newNode("start", andNode)
 
-		ri.companion = rollAnimalCompanion(ri.src, ri.graph, rom.game)
-		ri.ringMap, _ = rom.randomizeRingPool(ri.src, nil)
-		itemList, slotList = initRouteInfo(ri, rom)
+		for i, ri := range ris {
+			rom, ropts := roms[i], gopts.instances[i]
 
-		// attach free items to the "start" node until placed.
-		for ei := itemList.Front(); ei != nil; ei = ei.Next() {
-			item := ei.Value.(*node)
-			ri.graph[item.name].addParent(ri.graph["start"])
-		}
+			ri.graph = newRouteGraph(rom)
+			ri.slots = make(map[string]*node, 0)
+			for name := range rom.itemSlots {
+				ri.slots[name] = ri.graph[name]
+			}
+			if ropts.hard {
+				ri.graph["hard"].addParent(ri.graph["start"])
+			}
 
-		// slot "world" nodes before items
-		if rom.game == gameSeasons {
-			ri.seasons = rollSeasons(ri.src, ri.graph)
-			ri.portals = setPortals(ri.src, ri.graph, ropts.portals)
-		}
-		ri.entrances = setDungeonEntrances(
-			ri.src, ri.graph, rom.game, ropts.dungeons)
+			ri.companion = rollAnimalCompanion(ri.src, ri.graph, rom.game)
+			ri.ringMap, _ = rom.randomizeRingPool(ri.src, nil)
+			itemList, slotList = initRouteInfo(ri, rom)
 
-		if tryPlaceItems(
-			ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
-			ri.graph.reset()
-			ri.graph["start"].explore()
-			if ri.graph["done"].reached {
-				// and we're done
-				ri.attemptCount = tries + 1
-				break
-			} else if verbose {
-				logf("all items placed but seed not completable")
+			// attach free items to the "start" node until placed.
+			for ei := itemList.Front(); ei != nil; ei = ei.Next() {
+				item := ei.Value.(*node)
+				ri.graph[item.name].addParent(ri.graph["start"])
+			}
+
+			// slot "world" nodes before items
+			if rom.game == gameSeasons {
+				ri.seasons = rollSeasons(ri.src, ri.graph)
+				ri.portals = setPortals(ri.src, ri.graph, ropts.portals)
+			}
+			ri.entrances = setDungeonEntrances(
+				ri.src, ri.graph, rom.game, ropts.dungeons)
+
+			if tryPlaceItems(
+				ri, itemList, slotList, rom.treasures, rom.game, verbose, logf) {
+				ri.graph.reset()
+				ri.graph["start"].explore()
+				if ri.graph["done"].reached {
+					// and we're done
+					ri.attemptCount = tries + 1
+				} else if verbose {
+					logf("all items placed but seed not completable")
+				}
 			}
 		}
 
+		done := true
+		for i, ri := range ris {
+			if !ri.graph["done"].reached {
+				logf("route %d not found", i)
+				done = false
+				break
+			}
+		}
+		if done {
+			break
+		}
+
 		// clear placements and try again
-		ri.usedItems, ri.usedSlots = list.New(), list.New()
+		for _, ri := range ris {
+			ri.usedItems, ri.usedSlots = list.New(), list.New()
+		}
 	}
 
 	if tries >= maxTries {
 		return nil, fmt.Errorf("could not find route after %d tries", maxTries)
 	}
 
-	return ri, nil
+	return ris, nil
 }
 
 var (

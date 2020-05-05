@@ -160,9 +160,9 @@ func printOrderedHardStats(w io.Writer, counts map[string]int,
 
 // generate a bunch of seeds and print info about frequency of required hard
 // logic tricks.
-func logHardStats(game, trials int, ropts randomizerOptions, logf logFunc) {
+func logHardStats(game, trials int, gopts *globalOptions, logf logFunc) {
 	// get `trials` routes
-	routes := generateSeeds(trials, game, ropts)
+	routes := generateSeeds(trials, game, gopts)
 	nameMap := ternary(game == gameSeasons,
 		seasonsTrickNames, agesTrickNames).(map[string]string)
 	printOrderedHardStats(os.Stdout, getHardStats(routes), trials, nameMap)

@@ -100,7 +100,7 @@ func newRomState(data []byte, game, player int, includes []string) *romState {
 // changes the contents of loaded ROM bytes in place. returns a checksum of the
 // result or an error.
 func (rom *romState) mutate(warpMap map[string]string, seed uint32,
-	ropts randomizerOptions) ([]byte, error) {
+	ropts *randomizerOptions) ([]byte, error) {
 	// need to set this *before* treasure map data
 	if len(warpMap) != 0 {
 		rom.setWarps(warpMap, ropts.dungeons)
