@@ -21,7 +21,7 @@ function buildfor() {
 		README.txt checklist/ tracker/
 }
 
-buildfor windows amd64 win32 .exe
+buildfor windows amd64 win64 .exe
 buildfor darwin amd64 macos64
 buildfor linux amd64 linux64
 
