@@ -7,7 +7,7 @@ import (
 func TestMutableOverlap(t *testing.T) {
 	for _, game := range []int{gameSeasons, gameAges} {
 		hitBytes := make(map[int]*string)
-		for k, v := range newRomState(nil, game, nil).getAllMutables() {
+		for k, v := range newRomState(nil, game, 0, nil).getAllMutables() {
 			k := k
 			switch v := v.(type) {
 			case *mutableRange:

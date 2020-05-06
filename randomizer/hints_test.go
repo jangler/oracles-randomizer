@@ -8,7 +8,7 @@ import (
 // make sure that every item and check has a corresponding hint name.
 func TestHintCoverage(t *testing.T) {
 	for _, game := range []int{gameSeasons, gameAges} {
-		rom := newRomState(nil, game, nil)
+		rom := newRomState(nil, game, 0, nil)
 		hinter := newHinter(game)
 
 		for name := range rom.treasures {
@@ -35,7 +35,7 @@ func TestHintCoverage(t *testing.T) {
 // make sure that no hints refer to nothing.
 func TestDanglingHints(t *testing.T) {
 	for _, game := range []int{gameSeasons, gameAges} {
-		rom := newRomState(nil, game, nil)
+		rom := newRomState(nil, game, 0, nil)
 		hinter := newHinter(game)
 
 		for name := range hinter.items {
