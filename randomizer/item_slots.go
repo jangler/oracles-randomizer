@@ -13,6 +13,7 @@ type itemSlot struct {
 	group, room, collectMode, player byte
 	moreRooms                        []uint16 // high = group, low = room
 	mapTile                          byte     // overworld map coords, yx
+	localOnly                        bool     // multiworld
 }
 
 // implementes `mutate` from the `mutable` interface.
@@ -74,6 +75,8 @@ type rawSlot struct {
 
 	// optional additional rooms
 	MoreRooms []uint16
+
+	Local bool // dummy implies true
 }
 
 // like address, but has exported fields for loading from yaml.
@@ -116,6 +119,7 @@ func (rom *romState) loadSlots() map[string]*itemSlot {
 			group:     byte(raw.Room >> 8),
 			room:      byte(raw.Room),
 			moreRooms: raw.MoreRooms,
+			localOnly: raw.Local || raw.Dummy,
 		}
 
 		// unspecified map tile = assume overworld

@@ -117,13 +117,10 @@ func findRoutes(roms []*romState, seed uint32, gopts *globalOptions,
 	}
 
 	// try to find the route, retrying if needed
-	tries := 0
-	for tries = 0; tries < maxTries; tries++ {
-		masterGraph := newGraph()
-		masterGraph["done"] = newNode("done", andNode)
-		masterGraph["start"] = newNode("start", andNode)
+	for i, ri := range ris {
+		tries := 0
 
-		for i, ri := range ris {
+		for tries = 0; tries < maxTries; tries++ {
 			rom, ropts := roms[i], gopts.instances[i]
 
 			ri.graph = newRouteGraph(rom)
@@ -160,32 +157,23 @@ func findRoutes(roms []*romState, seed uint32, gopts *globalOptions,
 				if ri.graph["done"].reached {
 					// and we're done
 					ri.attemptCount = tries + 1
+					break
 				} else if verbose {
 					logf("all items placed but seed not completable")
 				}
 			}
-		}
 
-		done := true
-		for i, ri := range ris {
-			if !ri.graph["done"].reached {
-				logf("route %d not found", i)
-				done = false
-				break
-			}
-		}
-		if done {
-			break
-		}
-
-		// clear placements and try again
-		for _, ri := range ris {
+			// clear placements and try again
 			ri.usedItems, ri.usedSlots = list.New(), list.New()
+		}
+
+		if tries >= maxTries {
+			return nil, fmt.Errorf("could not find route after %d tries", maxTries)
 		}
 	}
 
-	if tries >= maxTries {
-		return nil, fmt.Errorf("could not find route after %d tries", maxTries)
+	if len(ris) > 1 {
+		shuffleMultiworld(ris, roms, verbose, logf)
 	}
 
 	return ris, nil

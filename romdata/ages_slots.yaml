@@ -18,6 +18,7 @@ maku tree:
   ids: [{bank: 0x15, addr: 0x70e0}, {bank: 0x15, addr: 0x7115}]
   subids: [{bank: 0x15, addr: 0x70e3}, {bank: 0x15, addr: 0x7118}]
   collect: maku tree (ages)
+  local: true
 grave under tree:
   treasure: graveyard key
   room: 0x05ed
@@ -45,15 +46,18 @@ balloon guy's gift:
   treasure: island chart
   room: 0x0079
   addr: {bank: 0x0c, addr: 0x7e20}
+  local: true
 balloon guy's upgrade:
   treasure: satchel
   room: 0x0079
   addr: {bank: 0x0c, addr: 0x7e7a}
+  local: true
 shop, 150 rupees:
   treasure: dimitri's flute
   room: 0x025e
   maptile: 0x68
   addr: {bank: 0x09, addr: 0x4511}
+  local: true
 defeat great moblin:
   treasure: bomb flower
   room: 0x0009
@@ -70,6 +74,7 @@ target carts 1:
   ids: [{bank: 0x15, addr: 0x66e8}, {bank: 0x0c, addr: 0x6e71}]
   subids: [{bank: 0x15, addr: 0x66e9}, {bank: 0x0c, addr: 0x6e72}]
   collect: target carts
+  local: true
 target carts 2:
   treasure: boomerang
   ids: [{bank: 0x15, addr: 0x66f0}, {bank: 0x0c}] # addr set at EOB
@@ -77,11 +82,13 @@ target carts 2:
   room: 0x05d8
   maptile: 0x1d
   collect: target carts
+  local: true
 goron dance present:
   treasure: brother emblem
   room: 0x02ed
   maptile: 0x3d
   addr: {bank: 0x0c, addr: 0x698c}
+  local: true
 trade rock brisket:
   treasure: goron vase
   room: 0x02fd
@@ -104,17 +111,20 @@ goron shooting gallery:
   room: 0x03e7
   maptile: 0x1d
   addr: {bank: 0x15, addr: 0x5285}
+  local: true
 trade lava juice:
   treasure: goron letter
   room: 0x031f
   maptile: 0x1c
   addr: {bank: 0x0c, addr: 0x6ee9}
   collect: lava juice room
+  local: true
 rescue nayru:
   treasure: harp
   room: 0x0038
   addr: {bank: 0x15, addr: 0x54f1}
   collect: maku tree (ages)
+  local: true
 king zora:
   treasure: library key
   room: 0x05ab
@@ -160,6 +170,7 @@ nuun highlands cave:
   maptile: 0x37 # correct for 2 out of 3 animals
   ids: [{bank: 0x16, addr: 0x5150}, {bank: 0x16, addr: 0x5154}, {bank: 0x16, addr: 0x5327}]
   subids: [{bank: 0x16, addr: 0x5151}, {bank: 0x16, addr: 0x5155}, {bank: 0x16, addr: 0x5328}]
+  local: true
 zora village present:
   treasure: gasha seed
   room: 0x02c0
@@ -231,6 +242,7 @@ symmetry city brother:
   morerooms: [0x036f] # east
   maptile: 0x13
   addr: {bank: 0x15, addr: 0x7929}
+  local: true
 tokkey's composition:
   treasure: harp
   room: 0x038f
@@ -242,6 +254,7 @@ goron dance, with letter:
   room: 0x02ef
   maptile: 0x3d
   addr: {bank: 0x0c, addr: 0x699f}
+  local: true
 library past:
   treasure: fairy powder
   room: 0x05e4
@@ -267,6 +280,7 @@ ridge bush cave:
   room: 0x031f
   maptile: 0x1c
   collect: lava juice room
+  local: true
 sea of storms past:
   treasure: pegasus ring
   room: 0x03ff

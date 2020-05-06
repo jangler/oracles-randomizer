@@ -164,20 +164,27 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	summary <- fmt.Sprintf("difficulty: %s",
 		ternary(ropts.hard, "hard", "normal"))
 
+	println("TMP: WROTE HEADER")
+
 	// items
-	sendSectionHeader(summary, "progression items")
-	nonKeyChecks := make(map[*node]*node)
-	for slot, item := range checks {
-		if !keyRegexp.MatchString(item.name) {
-			nonKeyChecks[slot] = item
+	if len(ropts.gopts.instances) == 1 {
+		nonKeyChecks := make(map[*node]*node)
+		for slot, item := range checks {
+			if !keyRegexp.MatchString(item.name) {
+				nonKeyChecks[slot] = item
+			}
 		}
+		prog, junk := filterJunk(ri.graph, nonKeyChecks, rom.treasures)
+		sendSectionHeader(summary, "progression items")
+		logSpheres(summary, prog, spheres, extra, rom.game, nil)
+		sendSectionHeader(summary, "small keys and boss keys")
+		logSpheres(summary, checks, spheres, extra, rom.game, keyRegexp.MatchString)
+		sendSectionHeader(summary, "other items")
+		logSpheres(summary, junk, spheres, extra, rom.game, nil)
+	} else {
+		sendSectionHeader(summary, "items")
+		logSpheres(summary, checks, spheres, extra, rom.game, nil)
 	}
-	prog, junk := filterJunk(ri.graph, nonKeyChecks, rom.treasures)
-	logSpheres(summary, prog, spheres, extra, rom.game, nil)
-	sendSectionHeader(summary, "small keys and boss keys")
-	logSpheres(summary, checks, spheres, extra, rom.game, keyRegexp.MatchString)
-	sendSectionHeader(summary, "other items")
-	logSpheres(summary, junk, spheres, extra, rom.game, nil)
 
 	// warps
 	if ropts.dungeons {

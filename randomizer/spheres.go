@@ -108,8 +108,9 @@ func logSpheres(summary chan string, checks map[*node]*node,
 			}
 			for _, n := range sphere {
 				if n == slot {
-					lines = append(lines, fmt.Sprintf("%-28s <- %s",
+					lines = append(lines, fmt.Sprintf("%-28s <- P%d %s",
 						getNiceName(slot.name, game),
+						checks[slot].player,
 						getNiceName(item.name, game)))
 					break
 				}

@@ -636,6 +636,7 @@ func applyRoute(rom *romState, ri *routeInfo, dirName, logFilename string,
 	if err != nil {
 		return nil, err
 	}
+	println("TMP: SET ROM DATA")
 
 	// write spoiler log
 	if ropts.plan == nil && !ropts.gopts.race {
