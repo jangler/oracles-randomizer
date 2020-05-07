@@ -72,8 +72,6 @@ func (rom *romState) replaceRaw(addr address, label, data string) string {
 // for special cases.
 func makeCollectPropertiesTable(itemSlots map[string]*itemSlot) string {
 	b := new(strings.Builder)
-	const player = 0 // TODO
-
 	for _, key := range orderedKeys(itemSlots) {
 		slot := itemSlots[key]
 
@@ -83,12 +81,12 @@ func makeCollectPropertiesTable(itemSlots map[string]*itemSlot) string {
 			mode &= 0xf8
 		}
 
-		if _, err := b.Write([]byte{slot.group, slot.room, mode, player}); err != nil {
+		if _, err := b.Write([]byte{slot.group, slot.room, mode, slot.player}); err != nil {
 			panic(err)
 		}
 		for _, groupRoom := range slot.moreRooms {
 			group, room := byte(groupRoom>>8), byte(groupRoom)
-			if _, err := b.Write([]byte{group, room, mode, player}); err != nil {
+			if _, err := b.Write([]byte{group, room, mode, slot.player}); err != nil {
 				panic(err)
 			}
 		}

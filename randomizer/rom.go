@@ -148,6 +148,7 @@ func (rom *romState) mutate(warpMap map[string]string, seed uint32,
 	rom.setRoomTreasureData()
 	rom.setFileSelectText(optString(seed, ropts, "+"))
 	rom.attachText()
+	rom.codeMutables["multiPlayerNumber"].new[0] = byte(rom.player)
 
 	// regenerate collect mode table to accommodate changes based on contents.
 	rom.codeMutables["collectPropertiesTable"].new =
