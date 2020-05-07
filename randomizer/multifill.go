@@ -100,7 +100,6 @@ func shuffleMultiworld(
 			mrs[slot1.player-1].checks[slot1] = item2
 			mrs[slot2.player-1].checks[slot2] = item1
 			swaps++
-			println(swaps, "swaps")
 		} else {
 			item1.removeParent(slot2)
 			item2.removeParent(slot1)

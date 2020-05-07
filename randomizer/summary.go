@@ -164,8 +164,6 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	summary <- fmt.Sprintf("difficulty: %s",
 		ternary(ropts.hard, "hard", "normal"))
 
-	println("TMP: WROTE HEADER")
-
 	// items
 	if len(ropts.gopts.instances) == 1 {
 		nonKeyChecks := make(map[*node]*node)

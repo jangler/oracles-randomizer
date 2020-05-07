@@ -391,8 +391,10 @@ func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
 		for _, ri := range routes {
 			ri.graph["start"].removeParent(g["start"])
 		}
-		logf("%d checks", len(checks))
-		logf("%d spheres", len(spheres))
+		if flagVerbose {
+			logf("%d checks", len(checks))
+			logf("%d spheres", len(spheres))
+		}
 
 		// write roms
 		for i, rom := range roms {
@@ -653,7 +655,6 @@ func applyRoute(rom *romState, ri *routeInfo, dirName, logFilename string,
 	if err != nil {
 		return nil, err
 	}
-	println("TMP: SET ROM DATA")
 
 	// write spoiler log
 	if ropts.plan == nil && !ropts.gopts.race {
