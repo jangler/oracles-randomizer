@@ -182,8 +182,23 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 		sendSectionHeader(summary, "other items")
 		logSpheres(summary, junk, spheres, extra, rom.game, nil)
 	} else {
-		sendSectionHeader(summary, "items")
-		logSpheres(summary, checks, spheres, extra, rom.game, nil)
+		isGoodItem := func(s string) bool {
+			return !(s == "gasha seed" ||
+				s == "heart container" ||
+				s == "piece of heart" ||
+				strings.Contains(s, "rupee") ||
+				strings.Contains(s, " ring") ||
+				strings.HasSuffix(s, "small key") ||
+				strings.HasSuffix(s, "boss key") ||
+				strings.HasSuffix(s, "dungeon map") ||
+				strings.HasSuffix(s, "compass"))
+		}
+		sendSectionHeader(summary, "good items")
+		logSpheres(summary, checks, spheres, extra, rom.game, isGoodItem)
+		sendSectionHeader(summary, "bad items")
+		logSpheres(summary, checks, spheres, extra, rom.game, func(s string) bool {
+			return !isGoodItem(s)
+		})
 	}
 
 	// warps
