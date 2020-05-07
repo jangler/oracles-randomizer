@@ -326,7 +326,7 @@ func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
 				fatal(err, logf)
 				return
 			} else {
-				roms[i] = newRomState(b, game, 1, gopts.include)
+				roms[i] = newRomState(b, game, i+1, gopts.include)
 			}
 
 			// sanity check beforehand
