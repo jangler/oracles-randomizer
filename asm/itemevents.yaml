@@ -42,7 +42,7 @@ seasons:
   # vanilla ones. also handle shared items.
   02/makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
   02/handleGetItem_body: |
-      ld e,47
+      ld e,INTERAC_MULTI_BYTE
       ld a,(de)
       and a
       jr z,.receive
@@ -56,7 +56,7 @@ seasons:
       jr nz,.noDowngrade
       ld c,01
       .noDowngrade
-      ld e,47
+      ld e,INTERAC_MULTI_BYTE
       ld a,(de)
       ld (wNetPlayerOut),a
       ld hl,wNetTreasureOut

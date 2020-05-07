@@ -60,6 +60,7 @@ common:
     define TREASURE_MASTERS_PLAQUE,54
     define TREASURE_GORON_LETTER,59
     define DEV_RING,40
+    define INTERAC_MULTI_BYTE,7f # low byte of struct
 
     # script commands
     define scriptend,00

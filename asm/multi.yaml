@@ -3,7 +3,7 @@ common:
 
 seasons:
   # if the item buffer is nonzero, spawn the item at link and reset the buffer.
-  # var 47 is used to signal the destination player number.
+  # var INTERAC_MULTI_BYTE is used to signal the destination player number.
   05/checkNetItemBuffer: |
       push bc
       push de
@@ -22,7 +22,7 @@ seasons:
       ld de,w1Link.yh
       call objectCopyPosition_rawAddress
       ld a,(multiPlayerNumber)
-      ld l,47
+      ld l,INTERAC_MULTI_BYTE
       ld (hl),a
       ld hl,wNetCountIn
       inc (hl)
