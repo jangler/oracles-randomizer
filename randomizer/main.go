@@ -371,6 +371,29 @@ func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
 			return
 		}
 
+		// come up with log data
+		checks, spheres := make(map[*node]*node), make([][]*node, 0)
+		for _, ri := range routes {
+			for k, v := range getChecks(ri.usedItems, ri.usedSlots) {
+				checks[k] = v
+			}
+		}
+		g := newGraph()
+		g["start"] = newNode("start", andNode)
+		for _, ri := range routes {
+			ri.graph["start"].addParent(g["start"])
+		}
+		spheres, extra := getSpheres(g, checks, func() {
+			for _, ri := range routes {
+				ri.graph.reset()
+			}
+		})
+		for _, ri := range routes {
+			ri.graph["start"].removeParent(g["start"])
+		}
+		logf("%d checks", len(checks))
+		logf("%d spheres", len(spheres))
+
 		// write roms
 		for i, rom := range roms {
 			ropts := gopts.instances[i]
@@ -383,11 +406,11 @@ func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
 				outfile = fmt.Sprintf("%srando_%s_%s.gbc", gamePrefix, version,
 					optString(seed, ropts, "-"))
 			}
-			// TODO: short outfile name or something
+			// TODO: handle panic on short outfile name or something
 			logFilename := outfile[:len(outfile)-4] + "_log.txt"
 
 			sum, err := applyRoute(rom, routes[i], dirName, logFilename, ropts,
-				flagVerbose, logf)
+				checks, spheres, extra, flagVerbose, logf)
 			if err != nil {
 				fatal(err, logf)
 				return
@@ -624,14 +647,8 @@ func setRandomSeed(hexString string) (uint32, error) {
 
 // messes up rom data and writes it to a file.
 func applyRoute(rom *romState, ri *routeInfo, dirName, logFilename string,
-	ropts *randomizerOptions, verbose bool, logf logFunc) ([]byte, error) {
-	// come up with log data
-	checks := getChecks(ri.usedItems, ri.usedSlots)
-	spheres, extra := getSpheres(ri.graph, checks)
-
-	logf("%d checks", len(checks))
-	logf("%d spheres", len(spheres))
-
+	ropts *randomizerOptions, checks map[*node]*node, spheres [][]*node,
+	extra []*node, verbose bool, logf logFunc) ([]byte, error) {
 	checksum, err := setRomData(rom, ri, ropts, logf, verbose)
 	if err != nil {
 		return nil, err

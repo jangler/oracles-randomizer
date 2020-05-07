@@ -25,7 +25,7 @@ func getChecks(usedItems, usedSlots *list.List) map[*node]*node {
 // items from sphere 0, and so on. each check only belongs to one sphere. it
 // also returns a separate slice of checks that aren't reachable at all.
 // returned slices are ordered alphabetically.
-func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
+func getSpheres(g graph, checks map[*node]*node, resetFunc func()) ([][]*node, []*node) {
 	reached := make(map[*node]bool)
 	spheres := make([][]*node, 0)
 
@@ -44,6 +44,7 @@ func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 	for {
 		sphere := make([]*node, 0)
 		g.reset()
+		resetFunc()
 		g["start"].explore()
 
 		// get the set of newly reachable nodes
@@ -108,7 +109,8 @@ func logSpheres(summary chan string, checks map[*node]*node,
 			}
 			for _, n := range sphere {
 				if n == slot {
-					lines = append(lines, fmt.Sprintf("%-28s <- P%d %s",
+					lines = append(lines, fmt.Sprintf("P%d %-28s <- P%d %s",
+						slot.player,
 						getNiceName(slot.name, game),
 						checks[slot].player,
 						getNiceName(item.name, game)))
