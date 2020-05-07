@@ -70,3 +70,25 @@ seasons:
       jr .paramLoop
       .paramDone
       ret
+
+  # use dummy text if the item you receive is for another player.
+  15/subMultiworldText: |
+      push de
+      ld e,INTERAC_MULTI_BYTE
+      ld a,(de)
+      ld e,a
+      ld a,(multiPlayerNumber)
+      cp e
+      jr z,.local
+      pop de
+      inc hl
+      ld a,72
+      jr .done
+      .local
+      pop de
+      ldi a,(hl)
+      .done
+      inc e
+      ld (de),a
+      ret
+  15/466f/: call subMultiworldText
