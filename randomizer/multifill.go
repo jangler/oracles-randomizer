@@ -42,8 +42,6 @@ func shuffleMultiworld(
 
 	for i, ri := range ris {
 		// mark graph nodes as belonging to each player
-		// TODO: is this needed?
-		// TODO: is this used??
 		for _, v := range ri.graph {
 			v.player = i + 1
 		}
@@ -62,7 +60,6 @@ func shuffleMultiworld(
 	// swap some random items ???
 	swaps := 0
 	for i := 0; i < 10000*len(mrs); i++ {
-		// TODO: make sure these are from two different routes
 		slot1, item1 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 		slot2, item2 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 
