@@ -5,10 +5,10 @@ main.go
 version.go
 checklist/
 dist/
-extras/
 gbc/
 notes/
 ref/
+untracked/
 *.gbc
 *.out
 *.prof
