@@ -59,7 +59,7 @@ func shuffleMultiworld(
 
 	// swap some random items ???
 	swaps := 0
-	for i := 0; i < 10000*len(mrs); i++ {
+	for i := 0; i < 1000*len(mrs); i++ {
 		slot1, item1 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 		slot2, item2 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 
@@ -82,18 +82,15 @@ func shuffleMultiworld(
 
 		// test whether seeds are still beatable w/ item placement
 		success := true
-		for i, ri := range ris {
+		for _, ri := range ris {
 			ri.graph.reset()
+		}
+		for _, ri := range ris {
 			ri.graph["start"].explore()
+		}
+		for _, ri := range ris {
 			if !ri.graph["done"].reached {
-				item1.removeParent(slot2)
-				item2.removeParent(slot1)
-				item1.addParent(slot1)
-				item2.addParent(slot2)
 				success = false
-				if verbose {
-					logf("player %d route no longer viable", i)
-				}
 				break
 			}
 		}
@@ -104,6 +101,14 @@ func shuffleMultiworld(
 			mrs[slot2.player-1].checks[slot2] = item1
 			swaps++
 			println(swaps, "swaps")
+		} else {
+			item1.removeParent(slot2)
+			item2.removeParent(slot1)
+			item1.addParent(slot1)
+			item2.addParent(slot2)
+			if verbose {
+				logf("player %d route no longer viable", i)
+			}
 		}
 	}
 
