@@ -63,8 +63,11 @@ func shuffleMultiworld(
 		slot1, item1 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 		slot2, item2 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 
-		// haha
-		if slot1 == slot2 || slot1.player == slot2.player {
+		// skip if slots are from the same player, or either of the treasures
+		// aren't present in the other game
+		if slot1.player == slot2.player ||
+			roms[slot1.player-1].treasures[item2.name] == nil ||
+			roms[slot2.player-1].treasures[item1.name] == nil {
 			continue
 		}
 

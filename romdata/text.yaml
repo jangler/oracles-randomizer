@@ -71,6 +71,9 @@ seasons:
     \x02\xfe\x03\xbf\x00 # Sure / No
 
 ages:
+  # this would overflow if the number were >2 digits.
+  remoteItemText: P\x0c\x08 got an item!\x00
+
   # "fix" pickup text for harp tunes - it's all weird and calls things wrong
   # names in vanilla and i don't like it.
   tuneOfEchoesText: |

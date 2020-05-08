@@ -30,9 +30,11 @@ common:
     define TREASURE_BOOMERANG,06
     define TREASURE_ROD_OF_SEASONS,07
     define TREASURE_MAGNET_GLOVES,08
+    define TREASURE_SWITCH_HOOK,0a
     define TREASURE_FLUTE,0e
     define TREASURE_SHOOTER,0f
     define TREASURE_SLINGSHOT,13
+    define TREASURE_BRACELET,16
     define TREASURE_FEATHER,17
     define TREASURE_SEED_SATCHEL,19
     define TREASURE_FOOLS_ORE,1e
@@ -59,6 +61,7 @@ common:
     define TREASURE_STAR_ORE,45
     define TREASURE_MASTERS_PLAQUE,54
     define TREASURE_GORON_LETTER,59
+    define TX_REMOTE_ITEM,3b
     define DEV_RING,40
     define INTERAC_MULTI_BYTE,7f # low byte of struct
 
@@ -117,6 +120,10 @@ common:
     define wMapMenu_cursorIndex,cbb6
     define wInventorySubmenu1CursorPos,cbd1
     define wRingMenu_mode,cbd3
+    define wNetCollect,cbfa
+    define wNetTreasureIn,cbfb
+    define wNetPlayerOut,cbfd
+    define wNetTreasureOut,cbfe
     define wIsLinkedGame,cc01
     define wMenuDisabled,cc02
     define wCutsceneState,cc03
@@ -156,7 +163,6 @@ seasons:
     define SEASON_AUTUMN,02 # oracles-disasm calls this SEASON_FALL but i refuse
     define SEASON_WINTER,03
     define STARTING_TREE_MAP_INDEX,f8
-    define TX_REMOTE_ITEM,3b
 
     # hram
     define hBrokenTilePosition,93
@@ -172,10 +178,6 @@ seasons:
     define wInventoryB,c680
     define wObtainedTreasureFlags,c692
     define wNetCountIn,c6a1
-    define wNetCollect,cbfa
-    define wNetTreasureIn,cbfb
-    define wNetPlayerOut,cbfd
-    define wNetTreasureOut,cbfe
     define wShieldLevel,c6a9
     define wSwordLevel,c6ac
     define wFluteIcon,c6af
@@ -246,6 +248,7 @@ seasons:
 
     # rom 05
     define _specialObjectGetRelativeTileWithDirectionTable,44aa
+    define updateLinkDamageTaken,4226
 
     # rom 0b
     define scriptEnd,4103
@@ -283,10 +286,6 @@ ages:
     define wInventoryB,c688
     define wObtainedTreasureFlags,c69a
     define wNetCountIn,c6a9
-    define wNetCollect,cbfa
-    define wNetTreasureIn,cbfb
-    define wNetPlayerOut,cbfd
-    define wNetTreasureOut,cbfe
     define wSeedSatchelLevel,c6b4
     define wFluteIcon,c6b5
     define wEssencesObtained,c6bf
@@ -346,6 +345,9 @@ ages:
 
     # rom 04
     define applyAllTileSubstitutions,5fef
+
+    # rom 05
+    define updateLinkDamageTaken,4268
 
     # rom 16
     define treasureObjectData,5332

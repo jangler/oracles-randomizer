@@ -95,6 +95,8 @@ ages:
 
   38/owlText: ''
 
+  1e/4721/remoteItemText: '' # 003b, strange flute
+
   # overwritten in-place
   1e/4c3e/tuneOfEchoesText: ''
   1d/7e48/tuneOfCurrentsText: ''

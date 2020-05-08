@@ -1,7 +1,97 @@
+floating:
+  # returns b = id, c = subid for b = id, c = param.
+  # might loop forever if given bad data.
+  reverseTreasureLookup: |
+      ld hl,treasureObjectData
+      ld a,b
+      rst 18
+      rst 18
+      .idLoop
+      bit 7,(hl)
+      jr z,.idDone
+      inc hl
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      jr .idLoop
+      .idDone
+      ld a,c
+      ld c,00
+      inc hl
+      .paramLoop
+      cp (hl)
+      jr z,.paramDone
+      inc hl
+      inc hl
+      inc hl
+      inc hl
+      inc c
+      jr .paramLoop
+      .paramDone
+      ret
+
+  # use different text if the item you receive is for another player.
+  subMultiworldText: |
+      call getMultiworldItemDest
+      jr z,.local
+      call setTextNumberSubstitution
+      inc hl
+      ld a,TX_REMOTE_ITEM
+      jr .done
+      .local
+      ldi a,(hl)
+      .done
+      inc e
+      ld (de),a
+      ret
+
+  # sets z if the flag is local, and returns the destination player in a.
+  getMultiworldItemDest: |
+      push de
+      ld e,INTERAC_MULTI_BYTE
+      ld a,(de)
+      and a
+      ld e,a
+      ld a,(multiPlayerNumber)
+      jr z,.done
+      cp e
+      ld a,e
+      .done
+      pop de
+      ret
+
+  # conerts a to BCD and loads it into wTextNumberSubstitution.
+  setTextNumberSubstitution: |
+      push hl
+      ld hl,wTextNumberSubstitution
+      inc hl
+      .hundreds
+      sub a,64
+      jr c,.next
+      inc (hl)
+      jr .hundreds
+      .next
+      add a,64
+      dec hl
+      .tens
+      sub a,0a
+      jr c,.done
+      inc (hl)
+      jr .tens
+      .done
+      add a,0a
+      sla (hl)
+      sla (hl)
+      sla (hl)
+      sla (hl)
+      add a,(hl)
+      ld (hl),a
+      pop hl
+      ret
+
 common:
   00/multiPlayerNumber: db 00
 
-seasons:
   # if the item buffer is nonzero, spawn the item at link and reset the buffer.
   # var INTERAC_MULTI_BYTE is used to signal the destination player number.
   05/checkNetItemBuffer: |
@@ -36,97 +126,23 @@ seasons:
       pop hl
       pop de
       pop bc
-      call 4226
+      call updateLinkDamageTaken
       ret
+
+seasons:
   05/5495/: call checkNetItemBuffer
 
-  # returns b = id, c = subid for b = id, c = param.
-  # might loop forever if given bad data.
-  15/reverseTreasureLookup: |
-      ld hl,treasureObjectData
-      ld a,b
-      rst 18
-      rst 18
-      .idLoop
-      bit 7,(hl)
-      jr z,.idDone
-      inc hl
-      ldi a,(hl)
-      ld h,(hl)
-      ld l,a
-      jr .idLoop
-      .idDone
-      ld a,c
-      ld c,00
-      inc hl
-      .paramLoop
-      cp (hl)
-      jr z,.paramDone
-      inc hl
-      inc hl
-      inc hl
-      inc hl
-      inc c
-      jr .paramLoop
-      .paramDone
-      ret
-
-  # use different text if the item you receive is for another player.
-  15/subMultiworldText: |
-      call getMultiworldItemDest
-      jr z,.local
-      call setTextNumberSubstitution
-      inc hl
-      ld a,TX_REMOTE_ITEM
-      jr .done
-      .local
-      ldi a,(hl)
-      .done
-      inc e
-      ld (de),a
-      ret
+  15/reverseTreasureLookup: /include reverseTreasureLookup
+  15/subMultiworldText: /include subMultiworldText
+  15/getMultiworldItemDest: /include getMultiworldItemDest
+  15/setTextNumberSubstitution: /include setTextNumberSubstitution
   15/466f/: call subMultiworldText
 
-  # sets z if the flag is local, and returns the destination player in a.
-  15/getMultiworldItemDest: |
-      push de
-      ld e,INTERAC_MULTI_BYTE
-      ld a,(de)
-      and a
-      ld e,a
-      ld a,(multiPlayerNumber)
-      jr z,.done
-      cp e
-      ld a,e
-      .done
-      pop de
-      ret
+ages:
+  05/54ed/: call checkNetItemBuffer
 
-  # conerts a to BCD and loads it into wTextNumberSubstitution.
-  15/setTextNumberSubstitution: |
-      push hl
-      ld hl,wTextNumberSubstitution
-      inc hl
-      .hundreds
-      sub a,64
-      jr c,.next
-      inc (hl)
-      jr .hundreds
-      .next
-      add a,64
-      dec hl
-      .tens
-      sub a,0a
-      jr c,.done
-      inc (hl)
-      jr .tens
-      .done
-      add a,0a
-      sla (hl)
-      sla (hl)
-      sla (hl)
-      sla (hl)
-      add a,(hl)
-      ld (hl),a
-      pop hl
-      ret
+  16/reverseTreasureLookup: /include reverseTreasureLookup
+  16/subMultiworldText: /include subMultiworldText
+  16/getMultiworldItemDest: /include getMultiworldItemDest
+  16/setTextNumberSubstitution: /include setTextNumberSubstitution
+  16/454e/: call subMultiworldText
