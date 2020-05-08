@@ -165,7 +165,7 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 		ternary(ropts.hard, "hard", "normal"))
 
 	// items
-	if len(ropts.gopts.instances) == 1 {
+	if ropts.players == 1 {
 		nonKeyChecks := make(map[*node]*node)
 		for slot, item := range checks {
 			if !keyRegexp.MatchString(item.name) {

@@ -69,21 +69,17 @@ var (
 	flagVerbose  bool
 )
 
-type globalOptions struct {
-	instances []*randomizerOptions
-	race      bool
-	seed      string
-	include   []string
-}
-
 type randomizerOptions struct {
-	gopts    *globalOptions
-	game     int
 	treewarp bool
 	hard     bool
 	dungeons bool
 	portals  bool
 	plan     *plan
+	race     bool
+	seed     string
+	include  []string
+	game     int
+	players  int
 }
 
 // initFlags initializes the CLI/TUI option values and variables.
@@ -118,16 +114,11 @@ func initFlags() {
 	flag.Parse()
 }
 
-// parses options from a string like "s+dp" or "ages+hk"
-func roptsFromString(
-	s string, gopts *globalOptions) (*randomizerOptions, error) {
+// parses options from a string like "s+dp" or "ages+hk" in a ropts.
+func roptsFromString(s string, ropts *randomizerOptions) error {
 	a := strings.Split(s, "+")
 	if len(a) == 0 || len(a) > 2 {
-		return nil, fmt.Errorf("bad option string: %s", s)
-	}
-
-	ropts := randomizerOptions{
-		gopts: gopts,
+		return fmt.Errorf("bad option string: %s", s)
 	}
 
 	// game name
@@ -137,7 +128,7 @@ func roptsFromString(
 	case "a", "ages":
 		ropts.game = gameAges
 	default:
-		return nil, fmt.Errorf("unknown game: %s", a[0])
+		return fmt.Errorf("unknown game: %s", a[0])
 	}
 
 	// flags
@@ -153,12 +144,12 @@ func roptsFromString(
 			case 't':
 				ropts.treewarp = true
 			default:
-				return nil, fmt.Errorf("unknown flag: %v", c)
+				return fmt.Errorf("unknown flag: %v", c)
 			}
 		}
 	}
 
-	return &ropts, nil
+	return nil
 }
 
 // the program's entry point.
@@ -176,32 +167,33 @@ func Main() {
 	}
 
 	// get options
-	gopts := &globalOptions{
-		race:    flagRace,
-		seed:    flagSeed,
-		include: []string{},
-	}
+	optsList := make([]*randomizerOptions, 0, 1)
+	include := strings.Split(flagIncludes, ",")
 	if flagMulti != "" {
-		for _, s := range strings.Split(flagMulti, ",") {
-			if ropts, err := roptsFromString(s, gopts); err == nil {
-				gopts.instances = append(gopts.instances, ropts)
-			} else {
+		for i, s := range strings.Split(flagMulti, ",") {
+			optsList = append(optsList, &randomizerOptions{
+				race:    flagRace,
+				seed:    flagSeed,
+				include: include,
+			})
+			if err := roptsFromString(s, optsList[i]); err != nil {
 				fatal(err, printErrf)
 				return
 			}
 		}
 	} else {
-		gopts.instances = append(gopts.instances, &randomizerOptions{
-			gopts:    gopts,
+		optsList = append(optsList, &randomizerOptions{
+			race:     flagRace,
+			seed:     flagSeed,
 			treewarp: flagTreewarp,
 			hard:     flagHard,
 			dungeons: flagDungeons,
 			portals:  flagPortals,
+			include:  include,
 		})
 	}
-
-	if flagIncludes != "" {
-		gopts.include = strings.Split(flagIncludes, ",")
+	for _, ropts := range optsList {
+		ropts.players = len(optsList)
 	}
 
 	switch flagDevCmd {
@@ -229,7 +221,7 @@ func Main() {
 		// i forget why or whether this is useful.
 		var rom *romState
 		if flag.Arg(1) == "" {
-			rom = newRomState(nil, game, 1, gopts.include)
+			rom = newRomState(nil, game, 1, optsList[0].include)
 		} else {
 			f, err := os.Open(flag.Arg(1))
 			if err != nil {
@@ -242,7 +234,7 @@ func Main() {
 				fatal(err, printErrf)
 				return
 			}
-			rom = newRomState(b, game, 1, gopts.include)
+			rom = newRomState(b, game, 1, optsList[0].include)
 		}
 
 		fmt.Println(rom.findAddr(byte(bank), uint16(addr)))
@@ -261,7 +253,7 @@ func Main() {
 		if flagDevCmd == "hardstats" {
 			statFunc = logHardStats
 		}
-		statFunc(game, numTrials, gopts,
+		statFunc(game, numTrials, *optsList[0],
 			func(s string, a ...interface{}) {
 				fmt.Printf(s, a...)
 				fmt.Println()
@@ -276,7 +268,7 @@ func Main() {
 		}
 		game := reverseLookupOrPanic(gameNames, tokens[0]).(int)
 
-		rom := newRomState(nil, game, 1, gopts.include)
+		rom := newRomState(nil, game, 1, optsList[0].include)
 		if err := rom.showAsm(tokens[1], os.Stdout); err != nil {
 			fatal(err, printErrf)
 			return
@@ -285,14 +277,14 @@ func Main() {
 		// no devcmd, run randomizer normally
 		if flag.NArg() > 0 && flag.NArg()+flag.NFlag() > 1 { // CLI used
 			// run randomizer on main goroutine
-			runRandomizer(nil, gopts, func(s string, a ...interface{}) {
+			runRandomizer(nil, optsList, func(s string, a ...interface{}) {
 				fmt.Printf(s, a...)
 				fmt.Println()
 			})
 		} else { // CLI maybe not used
 			// run TUI on main goroutine and randomizer on alternate goroutine
 			ui := newUI("oracles randomizer " + version)
-			go runRandomizer(ui, gopts, func(s string, a ...interface{}) {
+			go runRandomizer(ui, optsList, func(s string, a ...interface{}) {
 				ui.printf(s, a...)
 			})
 			ui.run()
@@ -304,7 +296,7 @@ func Main() {
 
 // run the main randomizer routine, printing messages via logf, which should
 // act analogously to fmt.Printf with added newline.
-func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
+func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) {
 	// close TUI after randomizer is done
 	defer func() {
 		if ui != nil {
@@ -316,17 +308,25 @@ func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
 	dirName, infiles, outfiles := getRomPaths(ui, logf)
 	if infiles != nil {
 		roms := make([]*romState, len(infiles))
+		routes := make([]*routeInfo, len(infiles))
+
+		seed, err := setRandomSeed(optsList[0].seed)
+		if err != nil {
+			fatal(err, logf)
+			return
+		}
+		src := rand.New(rand.NewSource(int64(seed)))
 
 		// get input for instance
 		for i, infile := range infiles {
-			ropts := gopts.instances[i]
+			ropts := optsList[i]
 
 			b, game, err := readGivenRom(filepath.Join(dirName, infile))
 			if err != nil {
 				fatal(err, logf)
 				return
 			} else {
-				roms[i] = newRomState(b, game, i+1, gopts.include)
+				roms[i] = newRomState(b, game, i+1, ropts.include)
 			}
 
 			// sanity check beforehand
@@ -357,24 +357,20 @@ func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
 				}
 			}
 
-		}
-
-		// find routes
-		seed, err := setRandomSeed(gopts.seed)
-		if err != nil {
-			fatal(err, logf)
-			return
-		}
-		routes, err := findRoutes(roms, seed, gopts, flagVerbose, logf)
-		if err != nil {
-			fatal(err, logf)
-			return
+			// find routes
+			route, err := findRoute(roms[i], seed, src, *ropts, flagVerbose, logf)
+			if err != nil {
+				fatal(err, logf)
+				return
+			}
+			routes[i] = route
 		}
 
 		// come up with log data
 		checks, spheres := make(map[*node]*node), make([][]*node, 0)
-		for _, ri := range routes {
+		for i, ri := range routes {
 			for k, v := range getChecks(ri.usedItems, ri.usedSlots) {
+				k.player, v.player = i+1, i+1
 				checks[k] = v
 			}
 		}
@@ -398,7 +394,7 @@ func runRandomizer(ui *uiInstance, gopts *globalOptions, logf logFunc) {
 
 		// write roms
 		for i, rom := range roms {
-			ropts := gopts.instances[i]
+			ropts := optsList[i]
 
 			gamePrefix := sora(rom.game, "oos", "ooa")
 			var outfile string
@@ -486,8 +482,8 @@ func getRomPaths(ui *uiInstance, logf logFunc) (dir string, in, out []string) {
 func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions, logf logFunc) {
 	if ui != nil {
 		if ui.doPrompt("use specific seed? (y/n)") == 'y' {
-			ropts.gopts.seed = ui.promptSeed("enter seed: (8-digit hex number)")
-			logf("using seed %s.", ropts.gopts.seed)
+			ropts.seed = ui.promptSeed("enter seed: (8-digit hex number)")
+			logf("using seed %s.", ropts.seed)
 		}
 	}
 
@@ -657,7 +653,7 @@ func applyRoute(rom *romState, ri *routeInfo, dirName, logFilename string,
 	}
 
 	// write spoiler log
-	if ropts.plan == nil && !ropts.gopts.race {
+	if ropts.plan == nil && !ropts.race {
 		if logFilename == "" {
 			gamePrefix := sora(rom.game, "oos", "ooa")
 			logFilename = fmt.Sprintf("%srando_%s_%s_log.txt",
@@ -734,7 +730,7 @@ func optString(seed uint32, ropts *randomizerOptions, flagSep string) string {
 		return s
 	}
 
-	if ropts.gopts.race {
+	if ropts.race {
 		s += fmt.Sprintf("race-%03x", seed>>20)
 	} else {
 		s += fmt.Sprintf("%08x", seed)
