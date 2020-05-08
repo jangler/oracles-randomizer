@@ -366,11 +366,14 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 			routes[i] = route
 		}
 
+		if len(routes) > 1 {
+			shuffleMultiworld(routes, roms, flagVerbose, logf)
+		}
+
 		// come up with log data
 		checks, spheres := make(map[*node]*node), make([][]*node, 0)
-		for i, ri := range routes {
+		for _, ri := range routes {
 			for k, v := range getChecks(ri.usedItems, ri.usedSlots) {
-				k.player, v.player = i+1, i+1
 				checks[k] = v
 			}
 		}
