@@ -65,6 +65,7 @@ floating:
       push hl
       ld hl,wTextNumberSubstitution
       inc hl
+      ld (hl),0
       .hundreds
       sub a,64
       jr c,.next
@@ -73,6 +74,7 @@ floating:
       .next
       add a,64
       dec hl
+      ld (hl),0
       .tens
       sub a,0a
       jr c,.done
