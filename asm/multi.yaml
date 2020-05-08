@@ -71,24 +71,62 @@ seasons:
       .paramDone
       ret
 
-  # use dummy text if the item you receive is for another player.
+  # use different text if the item you receive is for another player.
   15/subMultiworldText: |
-      push de
-      ld e,INTERAC_MULTI_BYTE
-      ld a,(de)
-      ld e,a
-      ld a,(multiPlayerNumber)
-      cp e
+      call getMultiworldItemDest
       jr z,.local
-      pop de
+      call setTextNumberSubstitution
       inc hl
-      ld a,72
+      ld a,TX_REMOTE_ITEM
       jr .done
       .local
-      pop de
       ldi a,(hl)
       .done
       inc e
       ld (de),a
       ret
   15/466f/: call subMultiworldText
+
+  # sets z if the flag is local, and returns the destination player in a.
+  15/getMultiworldItemDest: |
+      push de
+      ld e,INTERAC_MULTI_BYTE
+      ld a,(de)
+      and a
+      ld e,a
+      ld a,(multiPlayerNumber)
+      jr z,.done
+      cp e
+      ld a,e
+      .done
+      pop de
+      ret
+
+  # conerts a to BCD and loads it into wTextNumberSubstitution.
+  15/setTextNumberSubstitution: |
+      push hl
+      ld hl,wTextNumberSubstitution
+      inc hl
+      .hundreds
+      sub a,64
+      jr c,.next
+      inc (hl)
+      jr .hundreds
+      .next
+      add a,64
+      dec hl
+      .tens
+      sub a,0a
+      jr c,.done
+      inc (hl)
+      jr .tens
+      .done
+      add a,0a
+      sla (hl)
+      sla (hl)
+      sla (hl)
+      sla (hl)
+      add a,(hl)
+      ld (hl),a
+      pop hl
+      ret

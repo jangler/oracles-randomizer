@@ -112,6 +112,7 @@ common:
     define wTotalSignsDestroyed,c626
     define wTextIndexL,cba2
     define wTextIndexH,cba3
+    define wTextNumberSubstitution,cba8
     define wMapMenu_mode,cbb3
     define wMapMenu_cursorIndex,cbb6
     define wInventorySubmenu1CursorPos,cbd1
@@ -131,9 +132,9 @@ common:
 
     # rom 00
     define interBankCall,008a
-    define setFlag,020e
     define getNumSetBits,0176
     define compareHlToBc,01d6
+    define setFlag,020e
     define decHlRef16WithCap,0237
 
     # rom 15
@@ -155,6 +156,7 @@ seasons:
     define SEASON_AUTUMN,02 # oracles-disasm calls this SEASON_FALL but i refuse
     define SEASON_WINTER,03
     define STARTING_TREE_MAP_INDEX,f8
+    define TX_REMOTE_ITEM,3b
 
     # hram
     define hBrokenTilePosition,93
