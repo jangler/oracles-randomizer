@@ -245,3 +245,16 @@ ages:
   15/75bf/: db setglobalflag,a2 # bit 7 = unset flag
 
   3f/4607/: ld hl,seedCapacityTable
+
+  # static pegasus seed item drop in moosh nuun
+  12/nuunMooshConditionalPegDropObjects: |
+      db f2
+      db 9a,d4,68,48     # vanilla worker object
+      db f0,04           # conditional moosh
+      db fa              # obj_itemDrop
+      db 00,07,58        # 07 = peg seeds, 58 = coordinates
+      db fe
+  # 12/5aa0/: db 9a,d4,68,48    # these 4 bytes are replaced with:
+  12/5aa0/: |
+      db f3; dw nuunMooshConditionalPegDropObjects
+      db f2

@@ -345,8 +345,9 @@ func setTreeNybble(subid *mutableRange, slot *itemSlot) {
 func (rom *romState) setTreasureMapData() {
 	for _, name := range []string{"round", "pyramid", "square", "x-shaped"} {
 		label := strings.ReplaceAll(name, "-s", "S") + "JewelCoords" // lol
-		slot := rom.lookupItemSlot(name + " jewel")
-		rom.codeMutables[label].new[0] = slot.mapTile
+		if slot := rom.lookupItemSlot(name + " jewel"); slot != nil {
+			rom.codeMutables[label].new[0] = slot.mapTile
+		}
 	}
 }
 

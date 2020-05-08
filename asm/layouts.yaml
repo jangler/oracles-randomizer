@@ -43,6 +43,7 @@ common:
       inc hl
       jr .loop
       .done
+      call applySpringSwampShallowWater
       pop de
       pop bc
       call applyAllTileSubstitutions
@@ -103,6 +104,29 @@ seasons:
   04/endTileSubTable: |
       db ff
 
+  # replace all (regular) deep water on four spool swamp screens with shallow
+  # water, in order to avoid a softlock.
+  04/springSwampScreens: db 91,92,a1,a2,ff
+  04/applySpringSwampShallowWater: |
+      ld a,(wActiveGroup)
+      and a
+      ret nz
+      ld a,(wActiveRoom)
+      ld hl,springSwampScreens
+      call searchValue
+      ret nz
+      .match
+      ld hl,cf00
+      .loop
+      ld a,(hl)
+      cp a,fd
+      jr nz,.next
+      ld (hl),fa
+      .next
+      inc l
+      ret z
+      jr .loop
+
   # unset a room flag when the flower outside D6 is broken. see tileSubTable.
   06/checkBreakD6Flower: |
       push af
@@ -149,6 +173,13 @@ seasons:
   21/7ab6/: db d4,d4,d4
   21/7abe/: db d1
 
+  # replace deep water on spring floodgate keyhole screen with shallow water.
+  # other spring swamp screens use a blanket substitution function.
+  21/6d9b/: db fa,fa,fa
+  21/6da3/: db fa
+  21/6db4/: db fa,fa,fa
+  21/6dbd/: db fa
+
   # replace deep water in eyeglass lake water with shallow water to prevent a
   # softlock from default winter + summer rod + no flippers.
   22/74e4/: db fa
@@ -189,6 +220,7 @@ ages:
       db 00,83,00,43,a4 # rock outside D2
       db 03,0f,00,66,f9 # water in d6 past entrance
       db 01,13,00,61,d7 # portal in symmetry city past
+      db 01,13,00,68,d7 # portal in symmetry city past
       db 00,25,00,37,d7 # portal in nuun highlands
       db 05,da,01,a4,b2 # tunnel to moblin keep
       db 05,da,01,a5,b2 # cont.
@@ -206,6 +238,9 @@ ages:
       db 01,a5,00,55,6c # cont.
       db 00,83,00,44,d7 # portal outside D2 present
       db ff
+
+  # this doesn't apply to ages.
+  04/applySpringSwampShallowWater: ret
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
   # can be gone for good (see tileSubTable).
@@ -254,3 +289,7 @@ ages:
   # put a "return bush" for long hook across from syrup's shop.
   23/7ea0/: db 27,c8
   23/7ead/: db 22
+
+
+  # change bush type in moosh nuun (for static peg seed drop)
+  26/4501/: db c8
