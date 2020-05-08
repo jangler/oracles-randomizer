@@ -3,19 +3,6 @@
 # obtained.
 
 floating:
-  # progressive items that should be downgraded to L-1 before being shared
-  # TODO: just don't upgrade remote items in the first place. this currently
-  #       doesn't work with harp or mermaid suit since they're separe ids
-  shareDowngradeTable: |
-      db TREASURE_SWORD
-      db TREASURE_BOOMERANG
-      db TREASURE_SWITCH_HOOK
-      db TREASURE_SLINGSHOT
-      db TREASURE_BRACELET
-      db TREASURE_FEATHER
-      db TREASURE_SEED_SATCHEL
-      db ff
-
   # if item is multiworld, send it and replace the id and param in bc with a
   # dummy value. returns nz if the item is outgoing.
   handleGetMultiworldItem: |
@@ -27,12 +14,6 @@ floating:
       ld a,(multiPlayerNumber)
       cp e
       ret z
-      ld a,b
-      ld hl,shareDowngradeTable
-      call searchValue
-      jr nz,.noDowngrade
-      ld c,01
-      .noDowngrade
       ld e,INTERAC_MULTI_BYTE
       ld a,(de)
       ld (wNetPlayerOut),a
@@ -75,7 +56,6 @@ seasons:
   # star ore and maku tree both need fake treasure ids to check instead of the
   # vanilla ones. also handle shared items.
   02/makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
-  02/shareDowngradeTable: /include shareDowngradeTable
   02/handleGetMultiworldItem: /include handleGetMultiworldItem
   02/handleGetItem_body: |
       call handleGetMultiworldItem
@@ -405,7 +385,6 @@ ages:
   # run certain actions depending on what item was picked up and where. this
   # has to be explicitly called if an item is given by an interaction other
   # than ID 60.
-  09/shareDowngradeTable: /include shareDowngradeTable
   09/handleGetMultiworldItem: /include handleGetMultiworldItem
   09/handleGetItem: |
       call handleGetMultiworldItem

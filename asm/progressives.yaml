@@ -86,10 +86,13 @@ floating:
       ret
 
   # return treasure data address and collect mode modified as necessary, given
-  # a treasure ID in dx42.
+  # a treasure ID in dx42. lookupCollectMode must happen before upgradeTreasure
+  # for multiworld things to work correctly.
   modifyTreasure: |
-      call upgradeTreasure
       call lookupCollectMode
+      push af
+      call upgradeTreasure
+      pop af
       ld b,a
       swap a
       ret
@@ -104,7 +107,8 @@ floating:
       inc de
       ld a,(de)
       ld c,a
-      call getUpgradedTreasure
+      call getMultiworldItemDest
+      call z,getUpgradedTreasure
       ld e,70
       ld a,b
       ld (de),a

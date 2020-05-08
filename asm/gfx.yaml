@@ -154,7 +154,6 @@ seasons:
       db 47,05; dw setMembersShop3Sprite
       db 47,0d; dw setShopSprite
       db 59,00; dw setPedestalSprite
-      db 60,16; dw setFeatherSprite
       db 6e,00; dw setStolenFeatherSprite
       db 81,00; dw setMarket1Sprite
       db 81,04; dw setMarket2Sprite
@@ -187,20 +186,6 @@ seasons:
       ld e,0b
       ld hl,6418
       jp setGenericSprite
-
-  3f/setFeatherSprite: |
-      ld e,43
-      ld a,(de) # treasure sub ID
-      cp a,02
-      jp z,setStolenFeatherSprite
-      ld hl,671e
-      ld a,(wFeatherLevel)
-      or a
-      jr z,.feather
-      ld hl,6721
-      .feather
-      pop af
-      ret
 
   3f/setStolenFeatherSprite: |
       ld hl,671e
