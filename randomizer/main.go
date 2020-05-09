@@ -379,20 +379,28 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 		}
 		g := newGraph()
 		g["start"] = newNode("start", andNode)
+		g["done"] = newNode("done", andNode)
 		for _, ri := range routes {
 			ri.graph["start"].addParent(g["start"])
+			g["done"].addParent(ri.graph["done"])
 		}
-		spheres, extra := getSpheres(g, checks, func() {
+		resetFunc := func() {
 			for _, ri := range routes {
 				ri.graph.reset()
 			}
-		})
-		for _, ri := range routes {
-			ri.graph["start"].removeParent(g["start"])
 		}
+		spheres, extra := getSpheres(g, checks, resetFunc)
 		if flagVerbose {
 			logf("%d checks", len(checks))
 			logf("%d spheres", len(spheres))
+		}
+
+		// accumulate all treasures for reference by log functions
+		treasures := make(map[string]*treasure)
+		for _, rom := range roms {
+			for k, v := range rom.treasures {
+				treasures[k] = v
+			}
 		}
 
 		// write roms
@@ -411,7 +419,7 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 			logFilename := outfile[:len(outfile)-4] + "_log.txt"
 
 			sum, err := applyRoute(rom, routes[i], dirName, logFilename, ropts,
-				checks, spheres, extra, flagVerbose, logf)
+				checks, spheres, extra, g, resetFunc, treasures, flagVerbose, logf)
 			if err != nil {
 				fatal(err, logf)
 				return
@@ -421,6 +429,11 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 				fatal(err, logf)
 				return
 			}
+		}
+
+		for _, ri := range routes {
+			ri.graph["start"].removeParent(g["start"])
+			g["done"].removeParent(ri.graph["done"])
 		}
 	}
 }
@@ -649,7 +662,8 @@ func setRandomSeed(hexString string) (uint32, error) {
 // messes up rom data and writes it to a file.
 func applyRoute(rom *romState, ri *routeInfo, dirName, logFilename string,
 	ropts *randomizerOptions, checks map[*node]*node, spheres [][]*node,
-	extra []*node, verbose bool, logf logFunc) ([]byte, error) {
+	extra []*node, g graph, resetFunc func(), treasures map[string]*treasure,
+	verbose bool, logf logFunc) ([]byte, error) {
 	checksum, err := setRomData(rom, ri, ropts, logf, verbose)
 	if err != nil {
 		return nil, err
@@ -662,8 +676,8 @@ func applyRoute(rom *romState, ri *routeInfo, dirName, logFilename string,
 			logFilename = fmt.Sprintf("%srando_%s_%s_log.txt",
 				gamePrefix, version, optString(ri.seed, ropts, "-"))
 		}
-		writeSummary(filepath.Join(dirName, logFilename), checksum,
-			*ropts, rom, ri, checks, spheres, extra, nil)
+		writeSummary(filepath.Join(dirName, logFilename), checksum, *ropts,
+			rom, ri, checks, spheres, extra, g, resetFunc, treasures, nil)
 	}
 
 	return checksum, nil
