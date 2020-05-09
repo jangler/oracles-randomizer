@@ -55,11 +55,12 @@ seasons:
 
   # star ore and maku tree both need fake treasure ids to check instead of the
   # vanilla ones. also handle shared items.
+  # TODO: don't set flags if item is from another player (i.e. its collect mode
+  #       or whatever other vars wouldn't set room flags)
   02/makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
   02/handleGetMultiworldItem: /include handleGetMultiworldItem
   02/handleGetItem_body: |
       call handleGetMultiworldItem
-      ret nz
       ld a,(wActiveGroup)
       cp a,01
       jr z,.subrosia
