@@ -411,12 +411,14 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 			var outfile string
 			if outfiles != nil && len(outfiles) > i {
 				outfile = outfiles[i]
-			} else {
+			} else if len(roms) == 1 {
 				outfile = fmt.Sprintf("%srando_%s_%s.gbc", gamePrefix, version,
 					optString(seed, ropts, "-"))
+			} else {
+				outfile = fmt.Sprintf("%srando_%s_%s_p%d.gbc", gamePrefix, version,
+					optString(seed, ropts, "-"), i+1)
 			}
-			// TODO: handle panic on short outfile name or something
-			logFilename := outfile[:len(outfile)-4] + "_log.txt"
+			logFilename := strings.Replace(outfile, ".gbc", "", 1) + "_log.txt"
 
 			sum, err := applyRoute(rom, routes[i], dirName, logFilename, ropts,
 				checks, spheres, extra, g, resetFunc, treasures, flagVerbose, logf)
@@ -671,11 +673,6 @@ func applyRoute(rom *romState, ri *routeInfo, dirName, logFilename string,
 
 	// write spoiler log
 	if ropts.plan == nil && !ropts.race {
-		if logFilename == "" {
-			gamePrefix := sora(rom.game, "oos", "ooa")
-			logFilename = fmt.Sprintf("%srando_%s_%s_log.txt",
-				gamePrefix, version, optString(ri.seed, ropts, "-"))
-		}
 		writeSummary(filepath.Join(dirName, logFilename), checksum, *ropts,
 			rom, ri, checks, spheres, extra, g, resetFunc, treasures, nil)
 	}
