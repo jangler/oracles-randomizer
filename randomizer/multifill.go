@@ -16,8 +16,7 @@ type multiRoute struct {
 func randomMultiCheck(src *rand.Rand, mr *multiRoute) (*node, *node) {
 	i, slots := 0, make([]*node, 0, len(mr.checks))
 	for slot, item := range mr.checks {
-		// TODO: this ring check could be done more precisely
-		if !mr.local[slot] && !strings.Contains(item.name, "ring") &&
+		if !mr.local[slot] && !strings.Contains(item.name, " ring") &&
 			!strings.HasSuffix(item.name, "small key") &&
 			!strings.HasSuffix(item.name, "boss key") &&
 			!strings.HasSuffix(item.name, "dungeon map") &&
