@@ -305,7 +305,7 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 	}()
 
 	// if rom is to be randomized, infile must be non-empty after switch
-	dirName, infiles, outfiles := getRomPaths(ui, logf)
+	dirName, infiles, outfiles := getRomPaths(ui, optsList, logf)
 	if infiles != nil {
 		roms := make([]*romState, len(infiles))
 		routes := make([]*routeInfo, len(infiles))
@@ -341,7 +341,7 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 			}
 
 			logf("randomizing %s.", infile)
-			getAndLogOptions(game, ui, ropts, logf)
+			getAndLogOptions(game, ui, ropts, i == 0, logf)
 			if ui != nil {
 				logf("")
 			}
@@ -443,7 +443,8 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 // returns the target directory and filenames of input and output files. the
 // output filename may be empty, in which case it will be automatically
 // determined.
-func getRomPaths(ui *uiInstance, logf logFunc) (dir string, in, out []string) {
+func getRomPaths(ui *uiInstance, optsList []*randomizerOptions,
+	logf logFunc) (dir string, in, out []string) {
 	switch flag.NArg() {
 	case 0: // no specified files, search in executable's directory
 		var seasons, ages string
@@ -469,18 +470,28 @@ func getRomPaths(ui *uiInstance, logf logFunc) (dir string, in, out []string) {
 
 		// determine which filename to use based on what roms are found, and on
 		// user input.
-		in = make([]string, 1)
-		if seasons == "" && ages == "" {
-			ui.printf("no ROMs found in program's directory, " +
-				"and no ROMs specified.")
-			in = nil
-		} else if seasons != "" && ages != "" {
-			which := ui.doPrompt("randomize (s)easons or (a)ges?")
-			in[0] = ternary(which == 's', seasons, ages).(string)
-		} else if seasons != "" {
-			in[0] = seasons
-		} else {
-			in[0] = ages
+		in = make([]string, len(optsList))
+		for i, ropts := range optsList {
+			if seasons == "" && ages == "" {
+				ui.printf("no ROMs found in program's directory, " +
+					"and no ROMs specified.")
+				in = nil
+				break
+			} else if ropts.game != 0 {
+				in[i] = ternary(ropts.game == gameSeasons, seasons, ages).(string)
+				if in[i] == "" {
+					ui.printf("ROM for game not found")
+					in = nil
+					break
+				}
+			} else if seasons != "" && ages != "" {
+				which := ui.doPrompt("randomize (s)easons or (a)ges?")
+				in[i] = ternary(which == 's', seasons, ages).(string)
+			} else if seasons != "" {
+				in[i] = seasons
+			} else {
+				in[i] = ages
+			}
 		}
 	case 1: // specified input file only
 		in = strings.Split(flag.Arg(0), ",")
@@ -496,9 +507,9 @@ func getRomPaths(ui *uiInstance, logf logFunc) (dir string, in, out []string) {
 
 // getAndLogOptions logs values of selected options, prompting for them first
 // if the TUI is used.
-// TODO: this prompts for seed for every input rom
-func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions, logf logFunc) {
-	if ui != nil {
+func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions,
+	isFirstFile bool, logf logFunc) {
+	if ui != nil && isFirstFile {
 		if ui.doPrompt("use specific seed? (y/n)") == 'y' {
 			ropts.seed = ui.promptSeed("enter seed: (8-digit hex number)")
 			logf("using seed %s.", ropts.seed)
