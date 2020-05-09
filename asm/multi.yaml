@@ -105,7 +105,12 @@ common:
       and a
       jr z,.done
       ld b,a
-      ld c,(hl)
+      cp a,0e
+      ld a,(hl)
+      jr nz,.notFlute
+      ld a,(romAnimalRegion)
+      .notFlute
+      ld c,a
       ld e,BANK_TREASURE_DATA
       ld hl,reverseTreasureLookup
       call interBankCall
