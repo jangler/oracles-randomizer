@@ -144,9 +144,6 @@ common:
     define setFlag,020e
     define decHlRef16WithCap,0237
 
-    # rom 15
-    define treasureObjectData,5129
-
     # rom 3f
     define _interactionGetData,4437
     define giveTreasure_body,44c8
