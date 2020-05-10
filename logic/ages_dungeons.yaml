@@ -81,9 +81,9 @@ d3 statue drop: [d3 E crystal]
 
 # 1 key
 d3 seeds from bridge room: [inner d3, d3 small key, seed item, or: [sword, bombs]]
-# you can clip into the blocks enough to hit this crystal with switch hook
 d3 W crystal: [inner d3, d3 small key, kill pols voice ranged,
     or: [bombs, scent shooter, switch hook, [cane, bracelet]]]
+# you can clip into the blocks enough to hit this crystal with switch hook
 d3 N crystal: [inner d3, d3 small key,
     or: [any seed shooter, boomerang, [hard, switch hook]]]
 stone soldiers owl: [mystery seeds, d3 small key]
@@ -228,7 +228,7 @@ d6 past diamond chest: [d6 past spinner, mermaid suit,
     switch hook]
 
 # past, 3 keys
-d6 boss: [d6 past spinner, d6 boss key, any seed shooter,
+d6 boss: [d6 past spinner, d6 boss key, mermaid suit, any seed shooter,
     count: [3, d6 past small key]]
 
 # present, 0 keys
@@ -297,7 +297,7 @@ flood d7: [inner d7, long hook, count: [4, d7 small key]]
 d7 3F terrace: [flood d7]
 d7 left wing: [flood d7]
 plasmarine owl: [mystery shooter, flood d7]
-d7 boss: [d7 boss key, flood d7]
+d7 boss: [mermaid suit, d7 boss key, flood d7]
 
 # 5 keys
 d7 hallway chest: [flood d7, count: [5, d7 small key]]
