@@ -57,8 +57,7 @@ func (rom *romState) setSeason(key string, id byte) {
 }
 
 // get a collated map of all mutables, *except* for treasures which do not
-// appear in the seed. this allows things like the three seasons flutes having
-// different data but the same address.
+// appear in the seed.
 func (rom *romState) getAllMutables() map[string]mutable {
 	allMutables := make(map[string]mutable)
 	for k, v := range rom.itemSlots {

@@ -63,7 +63,7 @@ seasons:
   # this is called to make moosh unrideable on mt cucco in the case of not
   # having flute in a moosh seed.
   05/checkFlute: |
-      ld a,0e
+      ld a,TREASURE_FLUTE
       jp checkTreasureObtained
   05/776b/: call checkFlute
   05/7a65/: call checkFlute

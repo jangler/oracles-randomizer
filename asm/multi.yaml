@@ -105,11 +105,7 @@ common:
       and a
       jr z,.done
       ld b,a
-      cp a,0e
       ld a,(hl)
-      jr nz,.notFlute
-      ld a,(wAnimalRegion)
-      .notFlute
       ld c,a
       ld e,BANK_TREASURE_DATA
       ld hl,reverseTreasureLookup
