@@ -151,6 +151,9 @@ func loadTreasures(b []byte, game int) map[string]*treasure {
 		t.param = 0x0d
 		t.text = 0x3a
 		t.sprite = 0x23
+
+		// give bracelet a level for ages multiworld compatibility
+		m["bracelet"].param = 0x01
 	} else {
 		// give strange flutes identified flute text
 		m["ricky's flute"].text = 0x38

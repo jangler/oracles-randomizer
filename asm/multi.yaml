@@ -141,6 +141,9 @@ seasons:
   15/setTextNumberSubstitution: /include setTextNumberSubstitution
   15/466f/: call subMultiworldText
 
+  # give power bracelet a level for ages multiworld compatibility
+  15/5182/: db 01
+
 ages:
   05/54ed/: call checkNetItemBuffer
 

@@ -222,7 +222,7 @@ func (rom *romState) verify() []error {
 		case "spool swamp cave", "woods of winter, 2nd cave",
 			"dry eyeglass lake, west cave":
 		// seasons misc.
-		case "temple of seasons", "fool's ore", "blaino prize",
+		case "bracelet", "temple of seasons", "fool's ore", "blaino prize",
 			"mt. cucco, platform cave", "diving spot outside D4":
 		// ages progressive w/ different item IDs
 		case "nayru's house", "tokkey's composition", "rescue nayru",
