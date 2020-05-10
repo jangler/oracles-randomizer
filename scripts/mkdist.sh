@@ -7,7 +7,9 @@
 
 go generate
 python scripts/checklist.py
-unix2dos -n README.md README.txt
+for f in README*.md; do
+	unix2dos -n "$f" "${f/.md/.txt}"
+done
 
 version="$(grep -o '".\+"' randomizer/version.go | tr -d '"')"
 appname="$(basename "$PWD")"
@@ -18,13 +20,13 @@ function buildfor() {
 	echo "building for $1/$2"
 	GOOS=$1 GOARCH=$2 go build
 	apack -q "dist/$version/$appname"_$3_"$version.zip" "$appname$4" \
-		README.txt checklist/ tracker/
+		README*.txt checklist/ tracker/
 }
 
 buildfor windows amd64 win64 .exe
 buildfor darwin amd64 macos64
 buildfor linux amd64 linux64
 
-rm README.txt
+rm README*.txt
 
 echo "archives written to dist/$version/"
