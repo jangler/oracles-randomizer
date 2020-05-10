@@ -132,6 +132,13 @@ seasons:
   11/6572/: db ff
   11/68d4/: db ff
 
+  # add proper treasure entries for each flute, like ages has.
+  15/fluteTreasureData: |
+      db 0a,0b,38,23
+      db 0a,0c,39,23
+      db 0a,0d,3a,23
+  15/5161/: db 80; dw fluteTreasureData; db 00
+
 ages:
   # allow calling animals on the west coast of crescent island.
   # this sets additional bits in a field indexed by room.

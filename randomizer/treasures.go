@@ -135,20 +135,19 @@ func loadTreasures(b []byte, game int) map[string]*treasure {
 		m["member's card"].text = 0x45
 		m["member's card"].sprite = 0x48
 
-		// and seasons flutes aren't real treasures like ages ones are
+		// and seasons flutes aren't initially real treasures like ages ones are
 		t := m["ricky's flute"]
+		t.addr = address{}
 		t.param = 0x0b
 		t.text = 0x38
 		t.sprite = 0x23
 		t = m["dimitri's flute"]
-		t.subid = 0x00
-		t.addr = m["ricky's flute"].addr
+		t.addr = address{}
 		t.param = 0x0c
 		t.text = 0x39
 		t.sprite = 0x23
 		t = m["moosh's flute"]
-		t.subid = 0x00
-		t.addr = m["ricky's flute"].addr
+		t.addr = address{}
 		t.param = 0x0d
 		t.text = 0x3a
 		t.sprite = 0x23
