@@ -134,10 +134,9 @@ inner present - crescent - SE house: {or: []}
 inner present underwater - crescent island: {or: []}
 
 # nuun / symmetry city / talus peaks
+nuun workers: [nuun, or: [currents, flute]]
 present symmetry: {or: [
-    [nuun, or: [
-        currents, 
-        flute]],
+    nuun workers,
     [past symmetry, or: 
         [ages, 
         [echoes, break bush safe]]]
