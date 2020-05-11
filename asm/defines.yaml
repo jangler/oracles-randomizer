@@ -226,6 +226,7 @@ seasons:
     define interactionSetScript,24fe
     define createTreasure,271b
     define setLinkIdOverride,2a16
+    define decPegasusSeedCounter,2b04
     define checkGlobalFlag,30c7
     define setGlobalFlag,30cd
     define setTile,3a52
@@ -245,7 +246,6 @@ seasons:
 
     # rom 05
     define _specialObjectGetRelativeTileWithDirectionTable,44aa
-    define updateLinkDamageTaken,4226
 
     # rom 0b
     define scriptEnd,4103
@@ -327,6 +327,7 @@ ages:
     define objectCopyPosition_rawAddress,2247
     define objectCreateInteraction,24c5
     define createTreasure,27d4
+    define decPegasusSeedCounter,2bbd
     define checkGlobalFlag,31f3
     define setGlobalFlag,31f9
     define fadeInFromWhite,3299
@@ -342,9 +343,6 @@ ages:
 
     # rom 04
     define applyAllTileSubstitutions,5fef
-
-    # rom 05
-    define updateLinkDamageTaken,4268
 
     # rom 16
     define treasureObjectData,5332

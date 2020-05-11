@@ -129,11 +129,11 @@ common:
       pop hl
       pop de
       pop bc
-      call updateLinkDamageTaken
+      call decPegasusSeedCounter
       ret
 
 seasons:
-  05/5495/: call checkNetItemBuffer
+  05/54ab/: call checkNetItemBuffer
 
   15/reverseTreasureLookup: /include reverseTreasureLookup
   15/subMultiworldText: /include subMultiworldText
@@ -145,7 +145,7 @@ seasons:
   15/5182/: db 01
 
 ages:
-  05/54ed/: call checkNetItemBuffer
+  05/5503/: call checkNetItemBuffer
 
   16/reverseTreasureLookup: /include reverseTreasureLookup
   16/subMultiworldText: /include subMultiworldText
