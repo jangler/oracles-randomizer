@@ -23,8 +23,9 @@ Notes and limitations:
 - The treasure map in Seasons does not work correctly.
 - If you are disconnected from the netplay room, items of yours that are
   obtained by other players while you were disconnected are lost ~forever~.
-- Fill currently makes no effort to ensure a "fun" distribution of items. One
-  player could be stuck waiting on another for quite a long time.
+- Completing the game may prevent you from accessing some checks that might
+  have items for the other player, due to postgame changes like global default
+  spring in Seasons.
 - Multiworld plandos aren't a thing.
 
 Some of these limitations will be addressed before 4.1.0 release; some won't.
