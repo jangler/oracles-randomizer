@@ -59,7 +59,7 @@ func shuffleMultiworld(
 
 	// swap some random items ???
 	swaps := 0
-	for i := 0; i < 1000*len(mrs); i++ {
+	for swaps < len(mrs)*200 {
 		slot1, item1 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 		slot2, item2 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 
@@ -101,6 +101,22 @@ func shuffleMultiworld(
 			}
 		}
 
+		// make sure no player has to wait too long on progression from another
+		mrs[slot1.player-1].checks[slot1] = item2
+		mrs[slot2.player-1].checks[slot2] = item1
+		for i, ri := range ris {
+			ri.usedItems, ri.usedSlots = list.New(), list.New()
+			for slot, item := range mrs[i].checks {
+				ri.usedItems.PushBack(item)
+				ri.usedSlots.PushBack(slot)
+			}
+		}
+		mrs[slot1.player-1].checks[slot1] = item1
+		mrs[slot2.player-1].checks[slot2] = item2
+		if playerHasConsecutiveEmptySpheres(ris, 2) {
+			success = false
+		}
+
 		// update check maps
 		if success {
 			mrs[slot1.player-1].checks[slot1] = item2
@@ -112,7 +128,7 @@ func shuffleMultiworld(
 			item1.addParent(slot1)
 			item2.addParent(slot2)
 			if verbose {
-				logf("player %d route no longer viable", i)
+				logf("route no longer viable")
 			}
 		}
 	}
@@ -130,4 +146,51 @@ func shuffleMultiworld(
 			roms[i].itemSlots[slot.name].player = byte(item.player)
 		}
 	}
+}
+
+// returns true iff any of the players have >= limit empty spheres *before*
+// they're finished.
+func playerHasConsecutiveEmptySpheres(routes []*routeInfo, limit int) bool {
+	g, _, spheres, _ := getAllSpheres(routes)
+
+	// clean up getAllSpheres master graph
+	for _, ri := range routes {
+		ri.graph["start"].removeParent(g["start"])
+		g["done"].removeParent(ri.graph["done"])
+	}
+
+	// figure out what the final sphere for each player is
+	finalSpheres := make([]int, len(routes))
+	for i, sphere := range spheres {
+		for _, check := range sphere {
+			if i > finalSpheres[check.player-1] {
+				finalSpheres[check.player-1] = i
+			}
+		}
+	}
+
+	// number of consecutive empty spheres a player has had
+	drought := make([]int, len(routes))
+
+	// check whether any player has an empty sphere before their final one
+	for i, sphere := range spheres {
+	playerLoop:
+		for j, route := range routes {
+			if i > finalSpheres[j] {
+				continue
+			}
+			for _, node := range sphere {
+				if route.slots[node.name] == node {
+					drought[j] = 0
+					continue playerLoop
+				}
+			}
+			drought[j]++
+			if drought[j] >= limit {
+				return true
+			}
+		}
+	}
+
+	return false
 }

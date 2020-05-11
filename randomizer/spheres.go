@@ -146,3 +146,27 @@ func logSpheres(summary chan string, checks map[*node]*node,
 		}
 	}
 }
+
+// collates all the checks from multiple routes and returns check/sphere data.
+// also returns a "master graph" which contains all the route graphs.
+func getAllSpheres(routes []*routeInfo) (graph, map[*node]*node, [][]*node, []*node) {
+	checks, spheres := make(map[*node]*node), make([][]*node, 0)
+	for _, ri := range routes {
+		for k, v := range getChecks(ri.usedItems, ri.usedSlots) {
+			checks[k] = v
+		}
+	}
+	g := newGraph()
+	g["start"] = newNode("start", andNode)
+	g["done"] = newNode("done", andNode)
+	for _, ri := range routes {
+		ri.graph["start"].addParent(g["start"])
+		g["done"].addParent(ri.graph["done"])
+	}
+	spheres, extra := getSpheres(g, checks, func() {
+		for _, ri := range routes {
+			ri.graph.reset()
+		}
+	})
+	return g, checks, spheres, extra
+}
