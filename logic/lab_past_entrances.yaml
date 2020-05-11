@@ -47,9 +47,11 @@ inner palace: {or: [
     inner palace R, 
     [mermaid suit, inner stairs SE of palace]
 ]}
-inner past - maku tree cave: {or: []}
+inner past - maku tree cave: {or: [
+    [inner past - maku tree stairs, d0 small key]
+]}
 inner past - maku tree stairs: {or: [
-    [inner past - maku tree cave, kill normal]
+    [inner past - maku tree cave, d0 small key, kill normal]
 ]}
 inner past - lynna - gba shop: {or: []}
 inner past - lynna - NW house: {or: []}
