@@ -20,7 +20,8 @@ func randomMultiCheck(src *rand.Rand, mr *multiRoute) (*node, *node) {
 			!strings.HasSuffix(item.name, "small key") &&
 			!strings.HasSuffix(item.name, "boss key") &&
 			!strings.HasSuffix(item.name, "dungeon map") &&
-			!strings.HasSuffix(item.name, "compass") {
+			!strings.HasSuffix(item.name, "compass") &&
+			item.name != "slate" {
 			slots = append(slots, slot)
 			i++
 		}
@@ -63,10 +64,13 @@ func shuffleMultiworld(
 		slot2, item2 := randomMultiCheck(src, mrs[src.Intn(len(mrs))])
 
 		// skip if slots are from the same player, or either of the treasures
-		// aren't present in the other game
+		// aren't present in the other game, or the swapped treasures don't fit
+		// in their new slots
 		if slot1.player == slot2.player ||
 			roms[slot1.player-1].treasures[item2.name] == nil ||
-			roms[slot2.player-1].treasures[item1.name] == nil {
+			roms[slot2.player-1].treasures[item1.name] == nil ||
+			!itemFitsInSlot(item2, slot1) ||
+			!itemFitsInSlot(item1, slot2) {
 			continue
 		}
 
