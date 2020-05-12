@@ -1,6 +1,9 @@
 # maku path
+maku path key chest: {or: [
+    [maku tree, d0 small key, or: [kill normal, shovel]],
+    [lynna village, shovel]]} # shovel kills gels
 maku path basement: {or: [
-    maku tree, [lynna village, shovel]]} # shovel kills gels
+    maku tree, [lynna village, shovel, d0 small key]]}
 
 # d1
 enter d1: {or: []}

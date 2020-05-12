@@ -315,6 +315,10 @@ tokay pot cave:
   maptile: 0xdc
 
 # maku path
+maku path key chest:
+  treasure: d0 small key
+  room: 0x0408
+  maptile: 0x48
 maku path basement:
   treasure: rupees, 30
   room: 0x0605
