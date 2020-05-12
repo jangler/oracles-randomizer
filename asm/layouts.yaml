@@ -224,6 +224,7 @@ ages:
       db 01,a5,00,45,0b # cont.
       db 01,a5,00,55,6c # cont.
       db 00,83,00,44,d7 # portal outside D2 present
+      db 01,48,02,31,cd # past maku road: remove dirt when exiting
       db ff
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
@@ -288,3 +289,7 @@ ages:
   # give "goron's hiding place" bombable wall a different tile, like other
   # bombable walls have.
   28/6ac0/: db 31
+
+  # Maku Path: Prevent Softlock when exiting cave (see tileSubTable)
+  25/5c9a/: db 15
+  26/4a9e/: db 15
