@@ -96,6 +96,8 @@ common:
 
   # if the item buffer is nonzero, spawn the item at link and reset the buffer.
   # var INTERAC_MULTI_BYTE is used to signal the destination player number.
+  # this manually upgrades feather to cape based on wFeatherLevel to avoid
+  # softlocking by receiving feather during hide and seek.
   05/checkNetItemBuffer: |
       push bc
       push de
@@ -104,9 +106,16 @@ common:
       ldi a,(hl)
       and a
       jr z,.done
+      cp a,TREASURE_FEATHER
       ld b,a
       ld a,(hl)
       ld c,a
+      jr nz,.noUpgradeFeather
+      ld a,(wFeatherLevel)
+      and a
+      jr z,.noUpgradeFeather
+      ld c,02
+      .noUpgradeFeather
       ld e,BANK_TREASURE_DATA
       ld hl,reverseTreasureLookup
       call interBankCall

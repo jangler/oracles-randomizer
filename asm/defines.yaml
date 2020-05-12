@@ -275,6 +275,7 @@ ages:
     define hMusicVolume,b6
 
     # wram
+    define wFeatherLevel,0 # not present in ages
     define wRememberedCompanionId,cc24
     define wRickyState,c646
     define wDimitriState,c647
