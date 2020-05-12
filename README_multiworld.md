@@ -20,7 +20,8 @@ Notes and limitations:
   other players, and vice versa.
 - Rings and shops, as well as a select few other checks, will always belong to
   the local player.
-- The treasure map in Seasons does not work correctly.
+- The treasure map in Seasons only displays the locations of your own jewels.
+  Jewels that aren't in your game have sparkles at the Tarm gate instead.
 - If you are disconnected from the netplay room, items of yours that are
   obtained by other players while you were disconnected are lost ~forever~.
 - Completing the game may prevent you from accessing some checks that might

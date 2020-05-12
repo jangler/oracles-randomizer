@@ -347,9 +347,12 @@ func setTreeNybble(subid *mutableRange, slot *itemSlot) {
 // set the locations of the sparkles for the jewels on the treasure map.
 func (rom *romState) setTreasureMapData() {
 	for _, name := range []string{"round", "pyramid", "square", "x-shaped"} {
-		label := strings.ReplaceAll(name, "-s", "S") + "JewelCoords" // lol
-		if slot := rom.lookupItemSlot(name + " jewel"); slot != nil {
-			rom.codeMutables[label].new[0] = slot.mapTile
+		label := strings.ReplaceAll(name, "-s", "S") + "JewelCoords"
+		rom.codeMutables[label].new[0] = 0x63 // default to tarm gate
+		for _, slot := range rom.lookupAllItemSlots(name + " jewel") {
+			if int(slot.player) == 0 || int(slot.player) == rom.player {
+				rom.codeMutables[label].new[0] = slot.mapTile
+			}
 		}
 	}
 }
