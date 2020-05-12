@@ -111,6 +111,9 @@ common:
       ld a,(hl)
       ld c,a
       jr nz,.noUpgradeFeather
+      ld a,(wWhichGame)
+      and a
+      jr nz,.noUpgradeFeather
       ld a,(wFeatherLevel)
       and a
       jr z,.noUpgradeFeather
