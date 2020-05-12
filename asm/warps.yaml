@@ -21,7 +21,15 @@ ages:
       ret
       .next
       push bc
-      ld bc,5605
+      ld bc,0d04 # past maku road south entrance room
+      call compareRoom
+      jr nz,.notMaku
+      push hl
+      ld hl,c848 # room flags outside past maku road
+      set 1,(hl)
+      pop hl
+      .notMaku
+      ld bc,5605 # d7 entrance room
       call compareRoom
       jr nz,.notJabu
       ld a,21
