@@ -14,7 +14,8 @@ enter spool swamp portal: [south swamp, bracelet, or: [
     flute, spool swamp default summer, spool swamp default autumn,
     [spool stump, or: [summer, autumn]],
     [or: [spool swamp default winter, [spool stump, winter]], shovel],
-    [or: [spool swamp default spring, [spool stump, spring]], break flower]]]
+    [or: [spool swamp default spring, [spool stump, spring]],
+        break flower, flippers]]]
 exit spool swamp portal: {or: []}
 
 enter subrosia market portal: [beach]
