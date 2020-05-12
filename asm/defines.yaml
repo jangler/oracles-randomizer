@@ -216,6 +216,7 @@ seasons:
     define showText,184b
     define getThisRoomFlags,1956
     define openMenu,1a76
+    define linkInteractWithAButtonSensitiveObjects,1b23
     define lookupKey,1dc4
     define lookupCollisionTable,1ddd
     define convertShortToLongPosition,2089
@@ -226,7 +227,6 @@ seasons:
     define interactionSetScript,24fe
     define createTreasure,271b
     define setLinkIdOverride,2a16
-    define decPegasusSeedCounter,2b04
     define checkGlobalFlag,30c7
     define setGlobalFlag,30cd
     define setTile,3a52
@@ -320,6 +320,7 @@ ages:
     define showText,1872
     define getThisRoomFlags,197d
     define openMenu,1ab0
+    define linkInteractWithAButtonSensitiveObjects,1b5d
     define lookupKey,1e06
     define lookupCollisionTable,1e1f
     define objectDelete_useActiveObjectType,21e0
@@ -327,7 +328,6 @@ ages:
     define objectCopyPosition_rawAddress,2247
     define objectCreateInteraction,24c5
     define createTreasure,27d4
-    define decPegasusSeedCounter,2bbd
     define checkGlobalFlag,31f3
     define setGlobalFlag,31f9
     define fadeInFromWhite,3299
