@@ -275,7 +275,8 @@ func Main() {
 		}
 	case "":
 		// no devcmd, run randomizer normally
-		if flag.NArg() > 0 && flag.NArg()+flag.NFlag() > 1 { // CLI used
+		if flagMulti != "" ||
+			(flag.NArg() > 0 && flag.NArg()+flag.NFlag() > 1) { // CLI used
 			// run randomizer on main goroutine
 			runRandomizer(nil, optsList, func(s string, a ...interface{}) {
 				fmt.Printf(s, a...)
@@ -436,7 +437,7 @@ func getRomPaths(ui *uiInstance, optsList []*randomizerOptions,
 	case 0: // no specified files, search in executable's directory
 		var seasons, ages string
 		var err error
-		dir, seasons, ages, err = findVanillaRoms(ui)
+		dir, seasons, ages, err = findVanillaRoms(ui, logf)
 		if err != nil {
 			fatal(err, logf)
 			break
@@ -444,30 +445,40 @@ func getRomPaths(ui *uiInstance, optsList []*randomizerOptions,
 
 		// print which files, if any, are found.
 		if seasons != "" {
-			ui.printPath("found vanilla US seasons ROM: ", seasons, "")
+			if ui != nil {
+				ui.printPath("found vanilla US seasons ROM: ", seasons, "")
+			} else {
+				logf("found vanilla US seasons ROM: %s", seasons)
+			}
 		} else {
-			ui.printf("no vanilla US seasons ROM found.")
+			logf("no vanilla US seasons ROM found.")
 		}
 		if ages != "" {
-			ui.printPath("found vanilla US ages ROM: ", ages, "")
+			if ui != nil {
+				ui.printPath("found vanilla US ages ROM: ", ages, "")
+			} else {
+				logf("found vanilla US ages ROM: %s", ages)
+			}
 		} else {
-			ui.printf("no vanilla US ages ROM found.")
+			logf("no vanilla US ages ROM found.")
 		}
-		ui.printf("")
+		if ui != nil {
+			logf("")
+		}
 
 		// determine which filename to use based on what roms are found, and on
 		// user input.
 		in = make([]string, len(optsList))
 		for i, ropts := range optsList {
 			if seasons == "" && ages == "" {
-				ui.printf("no ROMs found in program's directory, " +
+				logf("no ROMs found in program's directory, " +
 					"and no ROMs specified.")
 				in = nil
 				break
 			} else if ropts.game != 0 {
 				in[i] = ternary(ropts.game == gameSeasons, seasons, ages).(string)
 				if in[i] == "" {
-					ui.printf("ROM for game not found")
+					logf("ROM for game not found")
 					in = nil
 					break
 				}
@@ -555,14 +566,18 @@ func writeRom(b []byte, dirName, filename, logFilename string, seed uint32,
 // search for a vanilla US seasons and ages roms in the executable's directory,
 // and return their filenames.
 func findVanillaRoms(
-	ui *uiInstance) (dirName, seasons, ages string, err error) {
+	ui *uiInstance, logf logFunc) (dirName, seasons, ages string, err error) {
 	// read slice of file info from executable's dir
 	exe, err := os.Executable()
 	if err != nil {
 		return
 	}
 	dirName = filepath.Dir(exe)
-	ui.printPath("searching ", dirName, " for ROMs.")
+	if ui != nil {
+		ui.printPath("searching ", dirName, " for ROMs.")
+	} else {
+		logf("searching %s for ROMs.", dirName)
+	}
 	dir, err := os.Open(dirName)
 	if err != nil {
 		return

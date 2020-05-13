@@ -9,7 +9,8 @@ items that are not in their own game are sent to them via the network.
    https://github.com/TestRunnerSRL/bizhawk-co-op#Setup
 2. Place Oracles.lua in the bizhawk-co-op/ramcontroller/ folder
 3. Generate a seed using the command line. A valid invocation looks like:
-   `oracles-randomizer.exe -multi s,a+t,s+hdp "seasons.gbc,ages.gbc,seasons.gbc"`
+   `oracles-randomizer.exe -multi s,a+t,s+hdp`, run in the directory containing
+   your vanilla ROMs.
 4. Follow the rest of the instructions in the bizhawk-co-op readme to play the
    game.
 
