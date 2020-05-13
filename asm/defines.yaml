@@ -193,6 +193,7 @@ seasons:
     define wWarpDestGroup,cc63
     define wWarpDestIndex,cc64
     define wWarpTransition2,cc67
+    define wLinkGrabState,cc75
     define wDisableWarpTiles,ccaa
     define wDisableTransitions,ccab
     define wActiveTileType,ccb6
@@ -301,6 +302,7 @@ ages:
     define wWarpDestIndex,cc48
     define wWarpTransition,cc49
     define wWarpTransition2,cc4b
+    define wLinkGrabState,cc5a
     define wDisableTransitions,cc91
     define wDisabledObjects,cc8a
     define wPlayingInstrument1,cc8d

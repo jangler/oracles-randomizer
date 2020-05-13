@@ -102,6 +102,12 @@ common:
       push bc
       push de
       push hl
+      ld a,(wMenuDisabled)
+      and a
+      jr nz,.done
+      ld a,(wLinkGrabState)
+      and a
+      jr nz,.done
       ld hl,wNetTreasureIn
       ldi a,(hl)
       and a
