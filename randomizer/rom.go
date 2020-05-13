@@ -216,8 +216,8 @@ func (rom *romState) verify() []error {
 		// seasons shop items
 		case "zero shop text", "member's card", "treasure map",
 			"rare peach stone", "ribbon":
-		// seasons flutes
-		case "dimitri's flute", "moosh's flute":
+		// flutes
+		case "ricky's flute", "dimitri's flute", "moosh's flute":
 		// seasons linked chests
 		case "spool swamp cave", "woods of winter, 2nd cave",
 			"dry eyeglass lake, west cave":

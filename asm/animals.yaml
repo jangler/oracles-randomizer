@@ -134,9 +134,9 @@ seasons:
 
   # add proper treasure entries for each flute, like ages has.
   15/fluteTreasureData: |
-      db 0a,0b,38,23
-      db 0a,0c,39,23
-      db 0a,0d,3a,23
+      db 0a,0b,38,3c
+      db 0a,0c,39,3d
+      db 0a,0d,3a,3e
   15/5161/: db 80; dw fluteTreasureData; db 00
 
 ages:
@@ -157,10 +157,3 @@ ages:
   # vanilla bug(?): moosh appears on the screen south of cheval's grave after
   # visiting the cheval's grave screen, whether you've obtained him or not.
   12/5c5d/: db ff
-
-  # give flutes identified flute text boxes instead of strange flute ones,
-  # even if they're not in the seed (i.e. multiworld).
-  16/552a/: |
-      db 0a,0b,38,23
-      db 0a,0c,39,23
-      db 0a,0d,3a,23

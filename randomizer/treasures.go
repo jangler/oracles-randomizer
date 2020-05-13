@@ -64,6 +64,11 @@ func (t treasure) mutate(b []byte) {
 
 // implements `check()` from the `mutable` interface.
 func (t treasure) check(b []byte) error {
+	// fake treasure
+	if t.addr.offset == 0 {
+		return nil
+	}
+
 	addr, data := t.addr.fullOffset(), t.bytes()
 	if bytes.Compare(b[addr:addr+4], data) != 0 {
 		return fmt.Errorf("expected %x at %x; found %x",
@@ -139,26 +144,23 @@ func loadTreasures(b []byte, game int) map[string]*treasure {
 		t := m["ricky's flute"]
 		t.addr = address{}
 		t.param = 0x0b
-		t.text = 0x38
-		t.sprite = 0x23
 		t = m["dimitri's flute"]
 		t.addr = address{}
 		t.param = 0x0c
-		t.text = 0x39
-		t.sprite = 0x23
 		t = m["moosh's flute"]
 		t.addr = address{}
 		t.param = 0x0d
-		t.text = 0x3a
-		t.sprite = 0x23
 
 		// give bracelet a level for ages multiworld compatibility
 		m["bracelet"].param = 0x01
 	} else {
-		// give strange flutes identified flute text
+		// give strange flutes identified flute text and palettes
 		m["ricky's flute"].text = 0x38
+		m["ricky's flute"].sprite = 0x6c
 		m["dimitri's flute"].text = 0x39
+		m["dimitri's flute"].sprite = 0x6d
 		m["moosh's flute"].text = 0x3a
+		m["moosh's flute"].sprite = 0x6e
 	}
 
 	// add dummy treasures for seed trees

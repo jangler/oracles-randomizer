@@ -264,6 +264,12 @@ seasons:
   3f/67c6/: db 5d,10,26 # rare peach stone
   3f/67c9/: db 65,0c,23 # ribbon
 
+  # also flutes with different palettes? idk how this works in vanilla
+  3f/6790/: |
+      db 5f,16,33
+      db 5f,16,23
+      db 5f,16,13
+
   3f/4356/: call checkLoadCustomSprite
 
 ages:
@@ -385,6 +391,12 @@ ages:
       dec hl
       pop af
       ret
+
+  # give flutes different palettes; idk how this works in vanilla
+  3f/681f/: |
+      db 7c,16,33
+      db 7c,16,23
+      db 7c,16,13
 
   # fix the zora scale object palette (to match inventory?)
   3f/67d0/: db 43
