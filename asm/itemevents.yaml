@@ -392,17 +392,27 @@ ages:
   09/handleGetItem: |
       call handleGetMultiworldItem
       ld a,b
-      jp nz,giveTreasure
       ld e,a
+      jr nz,.outgoing
+      push de
+      ld e,73
+      ld a,(de) # nonzero if interaction should set item room flag
+      pop de
+      and a
+      push af
       call satchelRefillSeeds
       call seedShooterGiveSeeds
       call activateFlute
-      call setD6BossKey
+      pop af
+      jr z,.incoming
+      .outgoing
       call dirtSetFakeId
       call tingleSetFakeId
       call symmetryBrotherSetFakeId
       call goronDanceSetFakeId
       call kingZoraSetFakeId
+      .incoming
+      call setD6BossKey
       call makuSeedResetTreeState
       ld a,e
       jp giveTreasure
