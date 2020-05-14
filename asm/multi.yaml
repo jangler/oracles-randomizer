@@ -102,11 +102,7 @@ common:
       push bc
       push de
       push hl
-      ld a,(wMenuDisabled)
-      and a
-      jr nz,.done
-      ld a,(wLinkGrabState)
-      and a
+      call checkCanReceiveItems
       jr nz,.done
       ld hl,wNetTreasureIn
       ldi a,(hl)
@@ -148,6 +144,26 @@ common:
       pop de
       pop bc
       call linkInteractWithAButtonSensitiveObjects
+      ret
+
+  # returns z if it's safe to spawn an incoming treasure at link's position.
+  05/checkCanReceiveItems: |
+      ld a,(wMenuDisabled)
+      and a
+      ret nz
+      ld a,(wLinkGrabState)
+      and a
+      ret nz
+      ld a,(d358) # subrosian dancing script low byte
+      cp a,5d
+      jr nz,.ok
+      ld a,(d359) # subrosian dancing script high byte
+      cp a,66
+      jr nz,.ok
+      and a
+      ret
+      .ok
+      xor a
       ret
 
 seasons:
