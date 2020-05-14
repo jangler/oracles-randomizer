@@ -220,6 +220,7 @@ seasons:
     define linkInteractWithAButtonSensitiveObjects,1b23
     define lookupKey,1dc4
     define lookupCollisionTable,1ddd
+    define objectSetVisiblec2,1e03
     define convertShortToLongPosition,2089
     define objectDelete_useActiveObjectType,219e
     define objectCopyPosition,21fd
@@ -247,6 +248,9 @@ seasons:
 
     # rom 05
     define _specialObjectGetRelativeTileWithDirectionTable,44aa
+
+    # rom 09
+    define interactionCode60,4000
 
     # rom 0b
     define scriptEnd,4103
@@ -326,6 +330,7 @@ ages:
     define linkInteractWithAButtonSensitiveObjects,1b5d
     define lookupKey,1e06
     define lookupCollisionTable,1e1f
+    define objectSetVisiblec2,1e45
     define objectDelete_useActiveObjectType,21e0
     define objectCopyPosition,2242
     define objectCopyPosition_rawAddress,2247
@@ -346,6 +351,9 @@ ages:
 
     # rom 04
     define applyAllTileSubstitutions,5fef
+
+    # rom 09
+    define interactionCode60,4973
 
     # rom 16
     define treasureObjectData,5332
