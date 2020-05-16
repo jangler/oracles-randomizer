@@ -9,7 +9,7 @@ starting chest: [start]
 nayru's house: [start]
 
 # lynna / south shore / palace
-lynna city: {or: [break bush, flute, echoes]}
+lynna city: {or: [break bush, flute, echoes, [shore present, mermaid suit]]}
 lynna village: {or: [lynna city, echoes]}
 black tower worker: [lynna village]
 maku tree: {or: [rescue nayru, [lynna village, shovel, kill normal]]}
