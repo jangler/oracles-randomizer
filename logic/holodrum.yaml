@@ -192,7 +192,13 @@ moblin keep: [or: [flippers, bomb jump 4], bracelet, or: [
     [natzu river, blaino's gym,
         or: [dimitri's flute, [flippers, swimmer's ring]]],
     [natzu wasteland, blaino's gym,
-        or: [flute, [hard, feather], jump 3]]]]
+        or: [flute,
+            [or: [[hard, feather], jump 3],
+                or: [magic boomerang, cape, gale satchel, [hard, sword]],
+            ]
+        ]
+    ]
+]]
 natzu region, across water: {or: [
     [blaino's gym, or: [flippers, dimitri's flute]],
     [sunken city, natzu river, jump 6]]}
