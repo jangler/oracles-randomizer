@@ -91,11 +91,6 @@ seasons:
       db 00,25,00,34,4b # ^
       db 00,5c,00,64,48 # extend moblin keep railing as chokepoint for warning
       db 00,5c,00,74,53 # cont.
-      db 00,91,00,64,fa # shallow water tiles in spring spool swamp
-      db 00,91,00,65,fa # ^
-      db 00,91,00,66,fa # ^
-      db 00,91,00,67,fa # ^
-      db 00,91,00,68,fa # ^
       db 00,9a,00,14,12 # remove rock across pit blocking exit from D5
       db 00,8a,00,66,64 # ^ but add rock at bottom of cliff to block ricky
       db 00,9a,00,34,04 # remove bush next to rosa portal
@@ -107,6 +102,28 @@ seasons:
       db fe,8e,00,12,04 # remove right stairs
   04/endTileSubTable: |
       db ff
+
+  # replaces some tiles in shallow spool swamp in spring, in addition to the
+  # regular tile sub routine.
+  04/applySeasonsTileSubstitutions: |
+      push bc
+      ld bc,9100
+      call compareRoom
+      pop bc
+      jr nz,.done
+      ld a,(wRoomStateModifier)
+      and a
+      jr nz,.done
+      ld hl,cf64
+      ld a,68
+      .loop
+      ld (hl),fa
+      inc l
+      cp l
+      jr nc,.loop
+      .done
+      jp applyExtraTileSubstitutions
+  00/3854/: call applySeasonsTileSubstitutions
 
   # unset a room flag when the flower outside D6 is broken. see tileSubTable.
   06/checkBreakD6Flower: |
@@ -127,8 +144,6 @@ seasons:
       pop af
       jp setTile
   06/4774/: call checkBreakD6Flower
-
-  00/3854/: call applyExtraTileSubstitutions
 
   # change water tiles outside d4 from deep to shallow, to prevent softlock
   # from entering without flippers or default summer.
@@ -155,8 +170,9 @@ seasons:
   21/7abe/: db d1
 
   # replace deep water on spring floodgate keyhole screen, and the screen below
-  # it, with shallow water. tileSubTable also contributes to this, since
-  # in-place changes can't keep deep water tiles on the edge of the screen.
+  # it, with shallow water. applySeasonsTileSubstitutions also contributes to
+  # this, since in-place changes can't keep deep water tiles on the edge of the
+  # screen.
   21/6d9b/: db fa,fa,fa
   21/6da3/: db fa
   21/6db4/: db fa,fa,fa
