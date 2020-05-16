@@ -94,9 +94,14 @@ floating:
   # run treasure state 1 code immediately following treasure state 0 code, so
   # that link can pick up items on the same frame they're spawned. this avoids
   # issues for treasures spawning on the frame before link gets warped, like
-  # after subrosian dancing and when failing poe skip.
+  # after subrosian dancing and when failing poe skip. maku seed visuals don't
+  # quite work right this way, so don't do this for maku seed.
   treasureCollideImmediately: |
       call objectSetVisiblec2
+      ld e,70
+      ld a,(de)
+      cp a,TREASURE_MAKU_SEED
+      ret z
       jp interactionCode60
 
 common:
