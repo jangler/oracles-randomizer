@@ -42,6 +42,7 @@ south shore dirt:
   treasure: ricky's gloves
   room: 0x0098
   reverseaddr: {bank: 0x0a, addr: 0x5e3c}
+  collect: dig
 balloon guy's gift:
   treasure: island chart
   room: 0x0079
@@ -130,6 +131,7 @@ king zora:
   room: 0x05ab
   maptile: 0xa1
   addr: {bank: 0x0c, addr: 0x7ae4}
+  collect: touch
 library present:
   treasure: book of seals
   room: 0x05c8
