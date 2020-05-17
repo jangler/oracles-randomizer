@@ -359,12 +359,24 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 			}
 
 			// find routes
-			route, err := findRoute(roms[i], seed, src, *ropts, flagVerbose, logf)
-			if err != nil {
-				fatal(err, logf)
-				return
+			if ropts.plan == nil {
+				route, err := findRoute(
+					roms[i], seed, src, *ropts, flagVerbose, logf)
+				if err != nil {
+					fatal(err, logf)
+					return
+				}
+				routes[i] = route
+			} else {
+				route, err := makePlannedRoute(roms[i], ropts.plan)
+				if err != nil {
+					fatal(err, logf)
+					return
+				}
+				routes[i] = route
+				ropts.dungeons = route.entrances != nil && len(route.entrances) > 0
+				ropts.portals = route.portals != nil && len(route.portals) > 0
 			}
-			routes[i] = route
 		}
 
 		if len(routes) > 1 {
