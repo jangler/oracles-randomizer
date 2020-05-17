@@ -227,12 +227,12 @@ d6 boss: [d6 past spinner, d6 boss key, mermaid suit, any seed shooter,
 d6 present diamond chest: [enter d6 present, switch hook]
 d6 present rope room: [enter d6 present,
     or: [flippers, bomb jump 3, switch hook],
-    or: [any seed shooter, boomerang, jump 3, [feather, sword]]]
+    or: [any seed shooter, boomerang, jump 3, [hard, feather, sword]]]
 scent seduction owl: [mystery seeds, d6 present rope room]
 d6 present rope chest: [d6 present rope room, scent satchel]
 d6 present hand room: [enter d6 present,
     or: [flippers, bomb jump 3, switch hook],
-    or: [any seed shooter, boomerang, [feather, sword],
+    or: [any seed shooter, boomerang, [hard, feather, sword],
         [jump 3, or: [switch hook, ember seeds,
             scent seeds, mystery seeds, [hard, bombs]]]]]
 d6 present cube chest: [d6 present hand room, bombs, switch hook,
