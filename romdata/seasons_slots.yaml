@@ -151,6 +151,7 @@ mt. cucco, talon's cave:
   treasure: subrosian ring
   room: 0x05b6
   maptile: 0x1b
+  local: true
 tarm ruins, under tree:
   treasure: gasha seed
   room: 0x039b
