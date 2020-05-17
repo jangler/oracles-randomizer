@@ -77,6 +77,14 @@ For game-specific notes on randomization and logic, see
 and
 [ages_notes.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/ages_notes.md).
 
+See
+[multiworld.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/multiworld.md)
+for information on multiworld seeds.
+
+See
+[plan.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/plan.md)
+for information on plando generation.
+
 
 ## FAQ
 
