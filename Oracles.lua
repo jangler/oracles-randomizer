@@ -29,6 +29,14 @@ local function string_from_byterange(br)
 	return string.char(unpack(t))
 end
 
+-- returns true iff func returns true for any element of a list
+local function any_element_matches(list, func)
+	for _, v in ipairs(list) do
+		if func(v) then return true end
+	end
+	return false
+end
+
 -- figure out whether we're playing seasons or ages (or neither)
 local game_code = string_from_byterange(memory.readbyterange(0x134, 9))
 if game_code == "ZELDA DIN" then
@@ -41,7 +49,7 @@ end
 
 local this_player = memory.readbyte(addrs.multiPlayerNumber)
 local items_in = {}
-local rooms_out = {} -- to prevent save scum abuse
+local items_out = {}
 local oracles_ram = {} -- exports RAM controller interface
 
 -- Gets a message to send to the other player of new changes
@@ -58,8 +66,8 @@ function oracles_ram.getMessage()
 		-- give the most recent item to the game every frame until
 		-- counts match
 		local item = items_in[count_in + 1]
-		memory.writebyte(addrs.wNetTreasureIn, item[2])
-		memory.writebyte(addrs.wNetTreasureIn + 1, item[3])
+		memory.writebyte(addrs.wNetTreasureIn, item.id)
+		memory.writebyte(addrs.wNetTreasureIn + 1, item.param)
 	elseif #items_in < count_in then
 		-- something is wrong if the save file's item count is higher
 		-- than the RAM controller's, likely a disconnect. reset it so
@@ -84,11 +92,21 @@ function oracles_ram.getMessage()
 		-- send message if room's item hasn't been sent before
 		local room = memory.readbyte(addrs.wActiveGroup) * 0x100 +
 			memory.readbyte(addrs.wActiveRoom)
-		if rooms_out[room] then
-			console.log(string.format("item from room %04x already sent", room))
+		if any_element_matches(items_out, function(e)
+			return e.room == room
+		end) then
+			console.log(string.format("item from P%d:%04x already sent",
+				this_player, room))
 		else
 			rooms_out[room] = true
-			message["m"] = {out_player, out_id, out_param}
+			message["m"] = {
+				from = this_player,
+				to = out_player,
+				id = out_id,
+				param = out_param,
+				room = room,
+			}
+			table.insert(items_out, message["m"])
 			console.log(string.format("sent item to P%d: {%02x, %02x}",
 				out_player, out_id, out_param))
 		end
@@ -102,10 +120,18 @@ end
 -- Process a message from another player and update RAM
 function oracles_ram.processMessage(their_user, message)
 	if message["m"] ~= nil then
-		if message["m"][1] == this_player then
-			table.insert(items_in, message["m"])
-			console.log(string.format("received item: {%02x, %02x}",
-				message["m"][2], message["m"][3]))
+		local item = message["m"]
+		if item.to == this_player then
+			if any_element_matches(items_in, function(e)
+				return e.player == item.player and e.room == item.room
+			end) then
+				console.log(string.format("item from P%d:%04x already received",
+					item.from, item.room))
+			else
+				table.insert(items_in, item)
+				console.log(string.format("received item from P%d: {%02x, %02x}",
+					item.from, item.id, item.param))
+			end
 		end
 	end
 end
