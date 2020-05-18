@@ -108,7 +108,7 @@ A: no
 
 A: Yes, although linked support has not been extensively tested, and linked
 elements of the games are not randomized. Animal companion is still determined
-by the seed, not by the linked file.
+by the seed, not by the linked file. Multiworld linked games are not supported.
 
 
 ## Thanks to:
