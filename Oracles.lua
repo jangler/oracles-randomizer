@@ -98,7 +98,6 @@ function oracles_ram.getMessage()
 			console.log(string.format("item from P%d:%04x already sent",
 				this_player, room))
 		else
-			rooms_out[room] = true
 			message["m"] = {
 				from = this_player,
 				to = out_player,
