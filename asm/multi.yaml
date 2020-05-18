@@ -164,6 +164,14 @@ common:
       ret
 
 seasons:
+  # keep default woods of winter season after game is beaten for the sake of
+  # check accessibility.
+  01/keepWoodsOfWinterSeason: |
+      cp a,12
+      jp nz,7e17
+      jp 7e19
+  01/7e15/: jp nz,keepWoodsOfWinterSeason
+
   05/54ca/: call checkNetItemBuffer
 
   09/treasureCollideImmediately: /include treasureCollideImmediately
