@@ -172,7 +172,6 @@ nuun highlands cave:
   maptile: 0x37 # correct for 2 out of 3 animals
   ids: [{bank: 0x16, addr: 0x5150}, {bank: 0x16, addr: 0x5154}, {bank: 0x16, addr: 0x5327}]
   subids: [{bank: 0x16, addr: 0x5151}, {bank: 0x16, addr: 0x5155}, {bank: 0x16, addr: 0x5328}]
-  local: true
 zora village present:
   treasure: gasha seed
   room: 0x02c0
@@ -244,7 +243,6 @@ symmetry city brother:
   morerooms: [0x036f] # east
   maptile: 0x13
   addr: {bank: 0x15, addr: 0x7929}
-  local: true
 tokkey's composition:
   treasure: harp
   room: 0x038f

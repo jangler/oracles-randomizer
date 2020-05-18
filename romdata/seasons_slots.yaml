@@ -321,7 +321,6 @@ d0 rupee chest:
   treasure: rupees, 30
   room: 0x0405
   morerooms: [0x052c] # linked equivalent
-  local: true
 
 # d1
 d1 stalfos drop:
