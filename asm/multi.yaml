@@ -174,6 +174,9 @@ seasons:
 
   05/54ca/: call checkNetItemBuffer
 
+  # don't delete master diver in postgame
+  08/587b/: nop; nop; nop
+
   09/treasureCollideImmediately: /include treasureCollideImmediately
   09/4033/: jp treasureCollideImmediately
 
