@@ -23,7 +23,5 @@ Notes and limitations:
   the local player.
 - The treasure map in Seasons only displays the locations of your own jewels.
   Jewels that aren't in your game have sparkles at the Tarm gate instead.
-- If you are disconnected from the netplay room, items of yours that are
-  obtained by other players while you were disconnected are lost ~forever~.
 - Multiworld plandos aren't a thing.
 - Multiworld linked games are not supported.
