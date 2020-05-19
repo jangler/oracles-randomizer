@@ -167,10 +167,12 @@ seasons:
   # keep default woods of winter season after game is beaten for the sake of
   # check accessibility.
   01/keepWoodsOfWinterSeason: |
+      ld a,(wLoadingRoomPack)
+      jp z,7e19
       cp a,12
       jp nz,7e17
       jp 7e19
-  01/7e15/: jp nz,keepWoodsOfWinterSeason
+  01/7e12/: jp keepWoodsOfWinterSeason; nop; nop
 
   05/54ca/: call checkNetItemBuffer
 

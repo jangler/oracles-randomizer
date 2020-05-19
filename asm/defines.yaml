@@ -190,6 +190,7 @@ seasons:
     define wRoomStateModifier,cc4e
     define wAreaFlags,cc50
     define wDungeonIndex,cc55
+    define wLoadingRoomPack,cc61
     define wWarpDestGroup,cc63
     define wWarpDestIndex,cc64
     define wWarpTransition2,cc67
