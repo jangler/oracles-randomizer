@@ -245,6 +245,7 @@ subrosian dance hall:
   room: 0x0395
   maptile: 0x9a
   addr: {bank: 0x0b, addr: 0x6646}
+  local: true
 temple of seasons:
   treasure: fool's ore # lone rod doesn't exist in rando
   room: 0x03ac

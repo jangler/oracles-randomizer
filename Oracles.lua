@@ -20,6 +20,8 @@ local ages_addrs = {
 	wActiveRoom = 0xcc30,
 }
 
+local debug = false
+
 -- converts a return value from memory.readbyterange to a string
 local function string_from_byterange(br)
 	local t = {}
@@ -37,6 +39,22 @@ local function any_element_matches(list, func)
 	return false
 end
 
+-- removes and returns the first list element that func returns true for
+local function remove_first_match(list, func)
+	for i, v in ipairs(list) do
+		if func(v) then
+			return table.remove(list, i)
+		end
+	end
+end
+
+-- performs a function for each element of a list, clearing the list
+local function empty_queue(list, func)
+	while #list > 0 do
+		func(table.remove(list))
+	end
+end
+
 -- figure out whether we're playing seasons or ages (or neither)
 local game_code = string_from_byterange(memory.readbyterange(0x134, 9))
 if game_code == "ZELDA DIN" then
@@ -50,7 +68,30 @@ end
 local this_player = memory.readbyte(addrs.multiPlayerNumber)
 local items_in = {}
 local items_out = {}
+local items_unack = {}
+local out_queue = {}
+local ack_queue = {}
 local oracles_ram = {} -- exports RAM controller interface
+
+-- call for each incoming item
+local function receive_item(item)
+	if item.to == this_player then
+		if any_element_matches(items_in, function(e)
+			return e.from == item.from and e.room == item.room
+		end) then
+			console.log(string.format("item from P%d:%04x already received",
+				item.from, item.room))
+		else
+			table.insert(items_in, item)
+			table.insert(ack_queue, {
+				from = item.from,
+				room = item.room,
+			})
+			console.log(string.format("received item from P%d: {%02x, %02x}",
+				item.from, item.id, item.param))
+		end
+	end
+end
 
 -- Gets a message to send to the other player of new changes
 -- Returns the message as a dictionary object
@@ -71,15 +112,14 @@ function oracles_ram.getMessage()
 	elseif #items_in < count_in then
 		-- something is wrong if the save file's item count is higher
 		-- than the RAM controller's, likely a disconnect. reset it so
-		-- that the player can resync. TODO: items sent while a player
-		-- is not connected will currently be lost forever
-		console.log("resetting item count")
+		-- that the player can resync.
+		console.log("resetting save file's item count")
 		memory.writebyte(addrs.wNetCountIn, #items_in)
 	end
 
 	local message = {}
 
-	-- buffered treasure out? send and clear it
+	-- buffered treasure out? add to item out queue
 	local out_player = memory.readbyte(addrs.wNetPlayerOut)
 	if out_player ~= 0 then
 		-- get and clear vars
@@ -98,18 +138,35 @@ function oracles_ram.getMessage()
 			console.log(string.format("item from P%d:%04x already sent",
 				this_player, room))
 		else
-			message["m"] = {
+			table.insert(out_queue, {
 				from = this_player,
 				to = out_player,
 				id = out_id,
 				param = out_param,
 				room = room,
-			}
-			table.insert(items_out, message["m"])
-			console.log(string.format("sent item to P%d: {%02x, %02x}",
-				out_player, out_id, out_param))
+			})
 		end
 	end
+
+	-- send items if queue is nonempty
+	empty_queue(out_queue, function(item)
+		message["m"] = message["m"] or {}
+		table.insert(message["m"], item)
+		table.insert(items_out, item)
+		table.insert(items_unack, item)
+		console.log(string.format("sent item to P%d: {%02x, %02x}",
+			item.to, item.id, item.param))
+	end)
+
+	-- send acks if queue is nonempty
+	empty_queue(ack_queue, function(ack)
+		message["a"] = message["a"] or {}
+		table.insert(message["a"], ack)
+		if debug then
+			console.log(string.format("DEBUG: sent ack for P%d:%04x",
+				ack.from, ack.room))
+		end
+	end)
 
 	-- return the message if it has content
 	for _, __ in pairs(message) do return message end
@@ -118,18 +175,33 @@ end
 
 -- Process a message from another player and update RAM
 function oracles_ram.processMessage(their_user, message)
+	-- new connection
+	if message["i"] ~= nil then
+		if #items_unack > 0 then
+			console.log(string.format(
+				"new connection; resending %d unacknowledged items",
+				#items_unack))
+		end
+		for _, item in ipairs(items_unack) do
+			table.insert(out_queue, item)
+		end
+	end
+
+	-- sent items
 	if message["m"] ~= nil then
-		local item = message["m"]
-		if item.to == this_player then
-			if any_element_matches(items_in, function(e)
-				return e.player == item.player and e.room == item.room
-			end) then
-				console.log(string.format("item from P%d:%04x already received",
-					item.from, item.room))
-			else
-				table.insert(items_in, item)
-				console.log(string.format("received item from P%d: {%02x, %02x}",
-					item.from, item.id, item.param))
+		for _, item in ipairs(message["m"]) do
+			receive_item(item)
+		end
+	end
+
+	-- acknowledged items
+	if message["a"] ~= nil then
+		for _, ack in ipairs(message["a"]) do
+			if remove_first_match(items_unack, function(e)
+				return e.from == ack.from and e.room == ack.room
+			end) ~= nil and debug then
+				console.log(string.format("DEBUG: received ack for P%d:%04x",
+					ack.from, ack.room))
 			end
 		end
 	end
