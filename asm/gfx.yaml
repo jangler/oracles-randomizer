@@ -77,11 +77,15 @@ common:
       ret
 
   3f/readWord: |
+      push de
       call readByte
       ld b,e
+      pop de
       inc hl
+      push de
       call readByte
       ld c,e
+      pop de
       ret
 
   # used if item at e:hl is stored in (ID,subID) order.
