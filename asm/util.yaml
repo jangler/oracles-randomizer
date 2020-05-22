@@ -23,22 +23,6 @@ common:
       ld (2222),a
       ret
 
-  # read 2 bytes e:hl into bc.
-  00/readWord: |
-      ld a,(ff00+hRomBank)
-      push af
-      ld a,e
-      ld (ff00+hRomBank),a
-      ld (2222),a
-      ldi a,(hl)
-      ld b,a
-      ld a,(hl)
-      ld c,a
-      pop af
-      ld (ff00+hRomBank),a
-      ld (2222),a
-      ret
-
   # searches for a value in a table starting at hl, with an entry matching
   # keys b and subkey c, and values e bytes long. sets c if found. a key of
   # ff ends the table.

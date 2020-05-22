@@ -107,6 +107,16 @@ floating:
 common:
   00/multiPlayerNumber: db 00
 
+  # returns nz if the file is part of a multiworld seed.
+  00/checkIsFileMultiworld: |
+      push bc
+      ld b,a
+      ld a,(multiPlayerNumber)
+      and a
+      ld a,b
+      pop bc
+      ret
+
   # if the item buffer is nonzero, spawn the item at link and reset the buffer.
   # var INTERAC_MULTI_BYTE is used to signal the destination player number.
   # this manually upgrades feather to cape based on wFeatherLevel to avoid
@@ -164,23 +174,17 @@ common:
       ret
 
 seasons:
-  # keep default woods of winter season after game is beaten for the sake of
-  # check accessibility.
-  01/keepWoodsOfWinterSeason: |
-      ld a,(wLoadingRoomPack)
-      jp z,7e19
-      cp a,12
-      jp nz,7e17
-      jp 7e19
-  01/7e12/: jp keepWoodsOfWinterSeason; nop; nop
-
   05/54ca/: call checkNetItemBuffer
-
-  # don't delete master diver in postgame
-  08/587b/: nop; nop; nop
 
   09/treasureCollideImmediately: /include treasureCollideImmediately
   09/4033/: jp treasureCollideImmediately
+
+  # don't set global flag 30 when defeating onox in multiworld
+  0f/checkSetFlag30: |
+      call checkIsFileMultiworld
+      ret nz
+      jp setGlobalFlag
+  0f/7145/: call checkSetFlag30
 
   15/reverseTreasureLookup: /include reverseTreasureLookup
   15/subMultiworldText: /include subMultiworldText
@@ -188,11 +192,33 @@ seasons:
   15/setTextNumberSubstitution: /include setTextNumberSubstitution
   15/466f/: call subMultiworldText
 
+  # don't set file to completed when saving after credits in multiworld
+  15/checkSetFileCompleted: |
+      call checkIsFileMultiworld
+      ret nz
+      ld (wFileIsCompleted),a
+      ld a,28
+      jp setGlobalFlag
+  15/49bc/: jp checkSetFileCompleted
+
 ages:
   05/5526/: call checkNetItemBuffer
 
   09/treasureCollideImmediately: /include treasureCollideImmediately
   09/49a6/: jp treasureCollideImmediately
+
+  # don't set file to completed when saving after credits in multiworld
+  15/checkSetFileCompleted: |
+      call checkIsFileMultiworld
+      ret nz
+      ld (wFileIsCompleted),a
+      ld a,1c
+      ld (wMakuMapTextPresent),a
+      ld a,8c
+      ld (wMakuMapTextPast),a
+      ld a,14
+      jp setGlobalFlag
+  15/4303/: jp checkSetFileCompleted
 
   16/reverseTreasureLookup: /include reverseTreasureLookup
   16/subMultiworldText: /include subMultiworldText

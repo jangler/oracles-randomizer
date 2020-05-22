@@ -111,6 +111,7 @@ common:
     define wKeysJustPressed,c482
     define wAnimalRegion,c610
     define wWhichGame,c611
+    define wFileIsCompleted,c614
     define wRingsObtained,c616
     define wTotalSignsDestroyed,c626
     define wTextIndexL,cba2
@@ -296,6 +297,8 @@ ages:
     define wTradeItem,c6c0
     define wActiveRing,c6cb
     define wRingBoxLevel,c6cc
+    define wMakuMapTextPresent,c6e6
+    define wMakuMapTextPast,c6e7
     define wMakuTreeState,c6e8
     define wJabuWaterLevel,c6e9
     define wStatusBarNeedsRefresh,cbe9

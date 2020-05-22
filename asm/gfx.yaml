@@ -76,6 +76,14 @@ common:
       rst 10
       ret
 
+  3f/readWord: |
+      call readByte
+      ld b,e
+      inc hl
+      call readByte
+      ld c,e
+      ret
+
   # used if item at e:hl is stored in (ID,subID) order.
   3f/lookupItemSprite: |
       push bc
