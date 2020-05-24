@@ -20,17 +20,14 @@ common:
       pop bc
       ret
 
-  # return a spawning item's collection mode in a and e, based on current room,
-  # or based on the net collection mode if one is stored (and then clears it).
+  # return a spawning item's collection mode in a and e, based on current room.
   # the table format is (group, room, mode), and modes 80+ are used to index a
   # jump table for special cases. if no match is found, it returns the regular,
-  # non-overriden mode. this also handles network items.
+  # non-overriden mode. does nothing if the item's collect mode is already set.
   06/lookupCollectMode_body: |
-      ld hl,wNetCollect
-      ld e,(hl)
-      xor a
-      ld (hl),a
-      ld a,e
+      ld e,71
+      ld a,(de)
+      ld e,a
       and a
       ret nz
       ld a,(wActiveGroup)

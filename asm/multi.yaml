@@ -104,6 +104,21 @@ floating:
       ret z
       jp interactionCode60
 
+  # if var 71 is already nonzero, use that as the collect mode instead of
+  # whatever this is.
+  keepNonzeroCollectMode: |
+      ld e,71
+      ld a,(de)
+      and a
+      jr nz,.next
+      ld a,b
+      .next
+      ld b,a
+      swap a
+      and a,07
+      ld (de),a
+      ret
+
 common:
   00/multiPlayerNumber: db 00
 
@@ -118,8 +133,9 @@ common:
       ret
 
   # if the item buffer is nonzero, spawn the item at link and reset the buffer.
-  # var INTERAC_MULTI_BYTE is used to signal the destination player number.
-  # this manually upgrades feather to cape based on wFeatherLevel to avoid
+  # var INTERAC_MULTI_BYTE is used to signal the destination player number, and
+  # var 71 is set to override normal collect/player properties lookup. this
+  # manually upgrades feather to cape based on wFeatherLevel to avoid
   # softlocking by receiving feather during hide and seek.
   05/checkNetItemBuffer: |
       push bc
@@ -158,10 +174,10 @@ common:
       ld a,(multiPlayerNumber)
       ld l,INTERAC_MULTI_BYTE
       ld (hl),a
+      ld l,71
+      ld (hl),02
       ld hl,wNetCountIn
       inc (hl)
-      ld hl,wNetCollect
-      ld (hl),02
       ld hl,wNetTreasureIn
       xor a
       ldi (hl),a
@@ -190,6 +206,8 @@ seasons:
   15/subMultiworldText: /include subMultiworldText
   15/getMultiworldItemDest: /include getMultiworldItemDest
   15/setTextNumberSubstitution: /include setTextNumberSubstitution
+  15/keepNonzeroCollectMode: /include keepNonzeroCollectMode
+  15/465f/: call keepNonzeroCollectMode
   15/466f/: call subMultiworldText
 
   # don't set file to completed when saving after credits in multiworld
@@ -224,4 +242,6 @@ ages:
   16/subMultiworldText: /include subMultiworldText
   16/getMultiworldItemDest: /include getMultiworldItemDest
   16/setTextNumberSubstitution: /include setTextNumberSubstitution
+  16/keepNonzeroCollectMode: /include keepNonzeroCollectMode
+  16/453e/: call keepNonzeroCollectMode
   16/454e/: call subMultiworldText

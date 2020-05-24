@@ -121,7 +121,6 @@ common:
     define wMapMenu_cursorIndex,cbb6
     define wInventorySubmenu1CursorPos,cbd1
     define wRingMenu_mode,cbd3
-    define wNetCollect,cbfa
     define wNetTreasureIn,cbfb
     define wNetPlayerOut,cbfd
     define wNetTreasureOut,cbfe
