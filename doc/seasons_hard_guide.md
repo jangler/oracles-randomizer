@@ -64,8 +64,6 @@ for a list of things that are out of logic even in hard.
   reach the stump. In the second room, only move diagonally for a moment, then
   hold right. To get back, reenter and walk straight up.
   [[Video]](https://streamable.com/1occ3)
-- Bomb jump capeless to the button before the D7 miniboss.
-  [[Video]](https://clips.twitch.tv/CloudyGoodReubenOneHand)
 - Access the western stump in Temple Remains without autumn, using seeds +
   cape. [[Video]](https://streamable.com/6u65g)
 - Hit the lever in the floodgate keeper's house by throwing a pot. The
@@ -98,6 +96,8 @@ for a list of things that are out of logic even in hard.
   traps, obviating feather or a means to break the crystal.
 - Poe skip: skip fighting the first Poe in D7.
   [[Video]](https://streamable.com/ztzsh)
+- Bomb jump capeless to the button before the D7 miniboss.
+  [[Video]](https://clips.twitch.tv/CloudyGoodReubenOneHand)
 - Hit the three buttons in D7 in the correct order without pegasus seeds, by
   jumping on the edges of the tiles.
   [[Video]](https://streamable.com/q7gnh)

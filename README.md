@@ -90,9 +90,8 @@ for information on plando generation.
 
 **Q: Is there a place to discuss the randomizer?**
 
-A: Yes, the Oracles Discord server (link
-[here](https://www.speedrun.com/oos/thread/3qwe1)). The server is mainly focused
-on speedrunning, but randomizer-specific channels exist as well.
+A: Yes, the [Oracles Discord server](https://discord.gg/pyBEbz5). The server is
+mainly focused on speedrunning, but randomizer-specific channels exist as well.
 
 **Q: I found a problem. What do I do?**
 
