@@ -43,7 +43,6 @@ common:
       inc hl
       jr .loop
       .done
-      call applySpringSwampShallowWater
       pop de
       pop bc
       call applyAllTileSubstitutions
@@ -104,28 +103,27 @@ seasons:
   04/endTileSubTable: |
       db ff
 
-  # replace all (regular) deep water on four spool swamp screens with shallow
-  # water, in order to avoid a softlock.
-  04/springSwampScreens: db 91,92,a1,a2,ff
-  04/applySpringSwampShallowWater: |
-      ld a,(wActiveGroup)
+  # replaces some tiles in shallow spool swamp in spring, in addition to the
+  # regular tile sub routine.
+  04/applySeasonsTileSubstitutions: |
+      push bc
+      ld bc,9100
+      call compareRoom
+      pop bc
+      jr nz,.done
+      ld a,(wRoomStateModifier)
       and a
-      ret nz
-      ld a,(wActiveRoom)
-      ld hl,springSwampScreens
-      call searchValue
-      ret nz
-      .match
-      ld hl,cf00
+      jr nz,.done
+      ld hl,cf64
+      ld a,68
       .loop
-      ld a,(hl)
-      cp a,fd
-      jr nz,.next
       ld (hl),fa
-      .next
       inc l
-      ret z
-      jr .loop
+      cp l
+      jr nc,.loop
+      .done
+      jp applyExtraTileSubstitutions
+  00/3854/: call applySeasonsTileSubstitutions
 
   # unset a room flag when the flower outside D6 is broken. see tileSubTable.
   06/checkBreakD6Flower: |
@@ -146,8 +144,6 @@ seasons:
       pop af
       jp setTile
   06/4774/: call checkBreakD6Flower
-
-  00/3854/: call applyExtraTileSubstitutions
 
   # change water tiles outside d4 from deep to shallow, to prevent softlock
   # from entering without flippers or default summer.
@@ -173,12 +169,19 @@ seasons:
   21/7ab6/: db d4,d4,d4
   21/7abe/: db d1
 
-  # replace deep water on spring floodgate keyhole screen with shallow water.
-  # other spring swamp screens use a blanket substitution function.
+  # replace deep water on spring floodgate keyhole screen, and the screen below
+  # it, with shallow water. applySeasonsTileSubstitutions also contributes to
+  # this, since in-place changes can't keep deep water tiles on the edge of the
+  # screen.
   21/6d9b/: db fa,fa,fa
   21/6da3/: db fa
   21/6db4/: db fa,fa,fa
   21/6dbd/: db fa
+  21/71f1/: db fa,fa,fa
+  21/71f9/: db fa,fa
+  21/71fd/: db fa
+  21/7208/: db fa
+  21/7214/: db fa
 
   # replace deep water in eyeglass lake water with shallow water to prevent a
   # softlock from default winter + summer rod + no flippers.
@@ -237,10 +240,8 @@ ages:
       db 01,a5,00,45,0b # cont.
       db 01,a5,00,55,6c # cont.
       db 00,83,00,44,d7 # portal outside D2 present
+      db 01,48,02,31,cd # past maku road: remove dirt when exiting
       db ff
-
-  # this doesn't apply to ages.
-  04/applySpringSwampShallowWater: ret
 
   # burning the first tree in yoll graveyard should set room flag 1 so that it
   # can be gone for good (see tileSubTable).
@@ -290,6 +291,21 @@ ages:
   23/7ea0/: db 27,c8
   23/7ead/: db 22
 
-
   # change bush type in moosh nuun (for static peg seed drop)
   26/4501/: db c8
+
+  # change maku path hidden stairs tile to visible stair tile.
+  # remove the object responsible for spawning the stairs.
+  26/7042/: db 45
+  12/6572/: |
+      db f8,09,00,14
+      db f3,68,40
+      db ff
+
+  # give "goron's hiding place" bombable wall a different tile, like other
+  # bombable walls have.
+  28/6ac0/: db 31
+
+  # Maku Path: Prevent Softlock when exiting cave (see tileSubTable)
+  25/5c9a/: db 3a
+  26/4a9e/: db 3a

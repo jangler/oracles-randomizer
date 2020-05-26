@@ -42,6 +42,8 @@ seasons:
 
   0a/7b9e/: ret; nop; nop # ??
 
+  1d/5922/remoteItemText: '' # 003b, strange flute
+
   # overwritten in-place
   1e/5375/membersShopSatchelText: ''
   1e/53a0/membersShopMapText: ''
@@ -92,6 +94,8 @@ ages:
   06/40e7/: call setSignTextIndex
 
   38/owlText: ''
+
+  1e/4721/remoteItemText: '' # 003b, strange flute
 
   # overwritten in-place
   1e/4c3e/tuneOfEchoesText: ''

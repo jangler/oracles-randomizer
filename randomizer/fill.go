@@ -98,8 +98,8 @@ func newRouteGraph(rom *romState) graph {
 
 // attempts to create a path to the given targets by placing different items in
 // slots.
-func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
-	verbose bool, logf logFunc) (*routeInfo, error) {
+func findRoute(rom *romState, seed uint32, src *rand.Rand,
+	ropts randomizerOptions, verbose bool, logf logFunc) (*routeInfo, error) {
 	// make stacks out of the item names and slot names for backtracking
 	var itemList, slotList *list.List
 
@@ -109,7 +109,7 @@ func findRoute(rom *romState, seed uint32, ropts randomizerOptions,
 		seed:      seed,
 		usedItems: list.New(),
 		usedSlots: list.New(),
-		src:       rand.New(rand.NewSource(int64(seed))),
+		src:       src,
 	}
 
 	// try to find the route, retrying if needed
@@ -515,6 +515,8 @@ func getDungeonName(name string) string {
 		return "d6 present"
 	} else if strings.HasPrefix(name, "d6 past") {
 		return "d6 past"
+	} else if strings.HasPrefix(name, "maku path") {
+		return "d0"
 	} else if name == "slate" {
 		return "d8"
 	}

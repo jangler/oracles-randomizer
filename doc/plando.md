@@ -7,7 +7,7 @@ unspecified rings. The names in the log may be external spoiler log names (like
 "wooden/noble sword") or internal ones (like "sword").
 
 Currently the only way to create a plando is via the `-plan` command-line
-option.
+option. Multiworld plandos are not supported.
 
 
 ## Sections

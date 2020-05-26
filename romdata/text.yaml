@@ -5,6 +5,9 @@
 # manually.
 
 seasons:
+  # this would overflow if the number were >2 digits.
+  remoteItemText: P\x0c\x08 got an item!\x00
+
   # all this text overwrites the text from the initial rosa encounter, which
   # runs from 1f:4533 to 1f:45c1 inclusive. the last entry is displayed at
   # the end of any warning message.
@@ -68,6 +71,9 @@ seasons:
     \x02\xfe\x03\xbf\x00 # Sure / No
 
 ages:
+  # this would overflow if the number were >2 digits.
+  remoteItemText: P\x0c\x08 got an item!\x00
+
   # "fix" pickup text for harp tunes - it's all weird and calls things wrong
   # names in vanilla and i don't like it.
   tuneOfEchoesText: |

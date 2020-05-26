@@ -24,34 +24,46 @@ common:
     define SND_SOLVEPUZZLE_2,5b
     define TREASURE_SHIELD,01
     define TREASURE_PUNCH,02
+    define TREASURE_BOMBS,03
     define TREASURE_CANE_OF_SOMARIA,04
     define TREASURE_SWORD,05
     define TREASURE_BOOMERANG,06
     define TREASURE_ROD_OF_SEASONS,07
     define TREASURE_MAGNET_GLOVES,08
+    define TREASURE_SWITCH_HOOK,0a
     define TREASURE_FLUTE,0e
     define TREASURE_SHOOTER,0f
     define TREASURE_SLINGSHOT,13
+    define TREASURE_BRACELET,16
     define TREASURE_FEATHER,17
     define TREASURE_SEED_SATCHEL,19
     define TREASURE_FOOLS_ORE,1e
     define TREASURE_EMBER_SEEDS,20
+    define TREASURE_SCENT_SEEDS,21
     define TREASURE_PEGASUS_SEEDS,22
     define TREASURE_GALE_SEEDS,23
     define TREASURE_MYSTERY_SEEDS,24
     define TREASURE_TUNE_OF_ECHOES,25
     define TREASURE_TUNE_OF_CURRENTS,26
+    define TREASURE_RUPEES,28
+    define TREASURE_HEART_REFILL,29
     define TREASURE_HEART_CONTAINER,2a
     define TREASURE_RING,2d
     define TREASURE_FLIPPERS,2e
     define TREASURE_SMALL_KEY,30
     define TREASURE_BOSS_KEY,31
+    define TREASURE_COMPASS,32
+    define TREASURE_MAP,33
     define TREASURE_MAKU_SEED,36
+    define TREASURE_ORE_CHUNKS,37
     define TREASURE_ESSENCE,40
+    define TREASURE_TRADEITEM,41
     define TREASURE_STAR_ORE,45
     define TREASURE_MASTERS_PLAQUE,54
     define TREASURE_GORON_LETTER,59
+    define TX_REMOTE_ITEM,3b
     define DEV_RING,40
+    define INTERAC_MULTI_BYTE,7f # low byte of struct
 
     # script commands
     define scriptend,00
@@ -99,14 +111,19 @@ common:
     define wKeysJustPressed,c482
     define wAnimalRegion,c610
     define wWhichGame,c611
+    define wFileIsCompleted,c614
     define wRingsObtained,c616
     define wTotalSignsDestroyed,c626
     define wTextIndexL,cba2
     define wTextIndexH,cba3
+    define wTextNumberSubstitution,cba8
     define wMapMenu_mode,cbb3
     define wMapMenu_cursorIndex,cbb6
     define wInventorySubmenu1CursorPos,cbd1
     define wRingMenu_mode,cbd3
+    define wNetTreasureIn,cbfb
+    define wNetPlayerOut,cbfd
+    define wNetTreasureOut,cbfe
     define wIsLinkedGame,cc01
     define wMenuDisabled,cc02
     define wCutsceneState,cc03
@@ -114,6 +131,7 @@ common:
     define wScreenTransitionDirection,cd02
     define wScreenOffsetY,cd08
     define wScreenShakeCounterY,cd18
+    define w1Link.state,d004
     define w1Link.angle,d009
     define w1Link.yh,d00b
     define w1Link.xh,d00d
@@ -121,9 +139,9 @@ common:
 
     # rom 00
     define interBankCall,008a
-    define setFlag,020e
     define getNumSetBits,0176
     define compareHlToBc,01d6
+    define setFlag,020e
     define decHlRef16WithCap,0237
 
     # rom 3f
@@ -156,6 +174,7 @@ seasons:
     define wAnimalTutorialFlags,c646
     define wInventoryB,c680
     define wObtainedTreasureFlags,c692
+    define wNetCountIn,c6a1
     define wShieldLevel,c6a9
     define wSwordLevel,c6ac
     define wFluteIcon,c6af
@@ -171,9 +190,11 @@ seasons:
     define wRoomStateModifier,cc4e
     define wAreaFlags,cc50
     define wDungeonIndex,cc55
+    define wLoadingRoomPack,cc61
     define wWarpDestGroup,cc63
     define wWarpDestIndex,cc64
     define wWarpTransition2,cc67
+    define wLinkGrabState,cc75
     define wDisableWarpTiles,ccaa
     define wDisableTransitions,ccab
     define wActiveTileType,ccb6
@@ -197,11 +218,14 @@ seasons:
     define showText,184b
     define getThisRoomFlags,1956
     define openMenu,1a76
+    define linkInteractWithAButtonSensitiveObjects,1b23
     define lookupKey,1dc4
     define lookupCollisionTable,1ddd
+    define objectSetVisiblec2,1e03
     define convertShortToLongPosition,2089
     define objectDelete_useActiveObjectType,219e
     define objectCopyPosition,21fd
+    define objectCopyPosition_rawAddress,2202
     define objectCopyPositionWithOffset,221a
     define interactionSetScript,24fe
     define createTreasure,271b
@@ -225,6 +249,9 @@ seasons:
 
     # rom 05
     define _specialObjectGetRelativeTileWithDirectionTable,44aa
+
+    # rom 09
+    define interactionCode60,4000
 
     # rom 0b
     define scriptEnd,4103
@@ -254,6 +281,7 @@ ages:
     define hMusicVolume,b6
 
     # wram
+    define wFeatherLevel,0 # not present in ages
     define wRememberedCompanionId,cc24
     define wRickyState,c646
     define wDimitriState,c647
@@ -261,12 +289,15 @@ ages:
     define wDungeonBossKeys,c682
     define wInventoryB,c688
     define wObtainedTreasureFlags,c69a
+    define wNetCountIn,c6a9
     define wSeedSatchelLevel,c6b4
     define wFluteIcon,c6b5
     define wEssencesObtained,c6bf
     define wTradeItem,c6c0
     define wActiveRing,c6cb
     define wRingBoxLevel,c6cc
+    define wMakuMapTextPresent,c6e6
+    define wMakuMapTextPast,c6e7
     define wMakuTreeState,c6e8
     define wJabuWaterLevel,c6e9
     define wStatusBarNeedsRefresh,cbe9
@@ -278,6 +309,7 @@ ages:
     define wWarpDestIndex,cc48
     define wWarpTransition,cc49
     define wWarpTransition2,cc4b
+    define wLinkGrabState,cc5a
     define wDisableTransitions,cc91
     define wDisabledObjects,cc8a
     define wPlayingInstrument1,cc8d
@@ -298,10 +330,13 @@ ages:
     define showText,1872
     define getThisRoomFlags,197d
     define openMenu,1ab0
+    define linkInteractWithAButtonSensitiveObjects,1b5d
     define lookupKey,1e06
     define lookupCollisionTable,1e1f
+    define objectSetVisiblec2,1e45
     define objectDelete_useActiveObjectType,21e0
     define objectCopyPosition,2242
+    define objectCopyPosition_rawAddress,2247
     define objectCreateInteraction,24c5
     define createTreasure,27d4
     define checkGlobalFlag,31f3
@@ -319,6 +354,9 @@ ages:
 
     # rom 04
     define applyAllTileSubstitutions,5fef
+
+    # rom 09
+    define interactionCode60,4973
 
     # rom 16
     define treasureObjectData,5332

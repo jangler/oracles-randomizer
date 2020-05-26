@@ -76,6 +76,18 @@ common:
       rst 10
       ret
 
+  3f/readWord: |
+      push de
+      call readByte
+      ld b,e
+      pop de
+      inc hl
+      push de
+      call readByte
+      ld c,e
+      pop de
+      ret
+
   # used if item at e:hl is stored in (ID,subID) order.
   3f/lookupItemSprite: |
       push bc
@@ -154,7 +166,6 @@ seasons:
       db 47,05; dw setMembersShop3Sprite
       db 47,0d; dw setShopSprite
       db 59,00; dw setPedestalSprite
-      db 60,16; dw setFeatherSprite
       db 6e,00; dw setStolenFeatherSprite
       db 81,00; dw setMarket1Sprite
       db 81,04; dw setMarket2Sprite
@@ -187,20 +198,6 @@ seasons:
       ld e,0b
       ld hl,6418
       jp setGenericSprite
-
-  3f/setFeatherSprite: |
-      ld e,43
-      ld a,(de) # treasure sub ID
-      cp a,02
-      jp z,setStolenFeatherSprite
-      ld hl,671e
-      ld a,(wFeatherLevel)
-      or a
-      jr z,.feather
-      ld hl,6721
-      .feather
-      pop af
-      ret
 
   3f/setStolenFeatherSprite: |
       ld hl,671e
@@ -278,6 +275,12 @@ seasons:
   3f/67ba/: db 60,14,00 # fool's ore
   3f/67c6/: db 5d,10,26 # rare peach stone
   3f/67c9/: db 65,0c,23 # ribbon
+
+  # also flutes with different palettes? idk how this works in vanilla
+  3f/6790/: |
+      db 5f,16,33
+      db 5f,16,23
+      db 5f,16,13
 
   3f/4356/: call checkLoadCustomSprite
 
@@ -400,6 +403,12 @@ ages:
       dec hl
       pop af
       ret
+
+  # give flutes different palettes; idk how this works in vanilla
+  3f/681f/: |
+      db 7c,16,33
+      db 7c,16,23
+      db 7c,16,13
 
   # fix the zora scale object palette (to match inventory?)
   3f/67d0/: db 43

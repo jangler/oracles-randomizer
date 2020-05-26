@@ -23,22 +23,6 @@ common:
       ld (2222),a
       ret
 
-  # read 2 bytes e:hl into bc.
-  00/readWord: |
-      ld a,(ff00+hRomBank)
-      push af
-      ld a,e
-      ld (ff00+hRomBank),a
-      ld (2222),a
-      ldi a,(hl)
-      ld b,a
-      ld a,(hl)
-      ld c,a
-      pop af
-      ld (ff00+hRomBank),a
-      ld (2222),a
-      ret
-
   # searches for a value in a table starting at hl, with an entry matching
   # keys b and subkey c, and values e bytes long. sets c if found. a key of
   # ff ends the table.
@@ -61,17 +45,6 @@ common:
       rst 10
       jr .loop
 
-seasons:
-  # call a function hl in bank 02, preserving af. e can't be used as a
-  # parameter to that function, but it can be returned. this function only
-  # exists because banks 08 and 09 are so tight on space.
-  00/callBank2: |
-      push af
-      ld e,02
-      call interBankCall
-      pop af
-      ret
-
   # increment hl until (hl) equals either register a or ff. returns z if
   # a match was found.
   00/searchValue: |
@@ -89,4 +62,15 @@ seasons:
       .match
       ld a,b
       pop bc
+      ret
+
+seasons:
+  # call a function hl in bank 02, preserving af. e can't be used as a
+  # parameter to that function, but it can be returned. this function only
+  # exists because banks 08 and 09 are so tight on space.
+  00/callBank2: |
+      push af
+      ld e,02
+      call interBankCall
+      pop af
       ret

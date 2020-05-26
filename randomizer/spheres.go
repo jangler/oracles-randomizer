@@ -25,7 +25,7 @@ func getChecks(usedItems, usedSlots *list.List) map[*node]*node {
 // items from sphere 0, and so on. each check only belongs to one sphere. it
 // also returns a separate slice of checks that aren't reachable at all.
 // returned slices are ordered alphabetically.
-func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
+func getSpheres(g graph, checks map[*node]*node, resetFunc func()) ([][]*node, []*node) {
 	reached := make(map[*node]bool)
 	spheres := make([][]*node, 0)
 
@@ -44,6 +44,7 @@ func getSpheres(g graph, checks map[*node]*node) ([][]*node, []*node) {
 	for {
 		sphere := make([]*node, 0)
 		g.reset()
+		resetFunc()
 		g["start"].explore()
 
 		// get the set of newly reachable nodes
@@ -108,9 +109,17 @@ func logSpheres(summary chan string, checks map[*node]*node,
 			}
 			for _, n := range sphere {
 				if n == slot {
-					lines = append(lines, fmt.Sprintf("%-28s <- %s",
-						getNiceName(slot.name, game),
-						getNiceName(item.name, game)))
+					if slot.player == 0 {
+						lines = append(lines, fmt.Sprintf("%-28s <- %s",
+							getNiceName(slot.name, game),
+							getNiceName(item.name, game)))
+					} else {
+						lines = append(lines, fmt.Sprintf("P%d %-28s <- P%d %s",
+							slot.player,
+							getNiceName(slot.name, game),
+							checks[slot].player,
+							getNiceName(item.name, game)))
+					}
 					break
 				}
 			}
@@ -136,4 +145,28 @@ func logSpheres(summary chan string, checks map[*node]*node,
 			}
 		}
 	}
+}
+
+// collates all the checks from multiple routes and returns check/sphere data.
+// also returns a "master graph" which contains all the route graphs.
+func getAllSpheres(routes []*routeInfo) (graph, map[*node]*node, [][]*node, []*node) {
+	checks, spheres := make(map[*node]*node), make([][]*node, 0)
+	for _, ri := range routes {
+		for k, v := range getChecks(ri.usedItems, ri.usedSlots) {
+			checks[k] = v
+		}
+	}
+	g := newGraph()
+	g["start"] = newNode("start", andNode)
+	g["done"] = newNode("done", andNode)
+	for _, ri := range routes {
+		ri.graph["start"].addParent(g["start"])
+		g["done"].addParent(ri.graph["done"])
+	}
+	spheres, extra := getSpheres(g, checks, func() {
+		for _, ri := range routes {
+			ri.graph.reset()
+		}
+	})
+	return g, checks, spheres, extra
 }

@@ -34,14 +34,14 @@ func getSummaryChannel(filename string) (chan string, chan int) {
 }
 
 // separates a map of checks into progression checks and junk checks.
-func filterJunk(g graph, checks map[*node]*node,
-	treasures map[string]*treasure) (prog, junk map[*node]*node) {
+func filterJunk(g graph, checks map[*node]*node, treasures map[string]*treasure,
+	resetFunc func()) (prog, junk map[*node]*node) {
 	prog, junk = make(map[*node]*node), make(map[*node]*node)
 
 	// get all required items. if multiple instances of the same class exist
 	// and any is skippable but some are required, the first instances are
 	// considered required and the rest are considered unrequired.
-	spheres, _ := getSpheres(g, checks)
+	spheres, _ := getSpheres(g, checks, resetFunc)
 	for _, class := range getAllItemClasses(checks) {
 		// skip known inert items
 		if class != "rupees" && itemIsInert(treasures, class) {
@@ -59,6 +59,7 @@ func filterJunk(g graph, checks map[*node]*node,
 		}
 
 		// add instances back one at a time in sphere order
+		resetFunc()
 		g.reset()
 		g["start"].explore()
 		for !g["done"].reached {
@@ -73,6 +74,7 @@ func filterJunk(g graph, checks map[*node]*node,
 					}
 				}
 			}
+			resetFunc()
 			g.reset()
 			g["start"].explore()
 		}
@@ -96,6 +98,7 @@ func filterJunk(g graph, checks map[*node]*node,
 	for slot, item := range prog {
 		if strings.HasPrefix(item.name, "rupees") {
 			item.removeParent(slot)
+			resetFunc()
 			g.reset()
 			g["start"].explore()
 			if g["done"].reached {
@@ -155,7 +158,8 @@ func spheresToText(spheres [][]*node, checks map[*node]*node, except *node) stri
 // write a "spoiler log" to a file.
 func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 	rom *romState, ri *routeInfo, checks map[*node]*node, spheres [][]*node,
-	extra []*node, owlHints map[string]string) {
+	extra []*node, g graph, resetFunc func(), treasures map[string]*treasure,
+	owlHints map[string]string) {
 	summary, summaryDone := getSummaryChannel(path)
 
 	// header
@@ -165,14 +169,14 @@ func writeSummary(path string, checksum []byte, ropts randomizerOptions,
 		ternary(ropts.hard, "hard", "normal"))
 
 	// items
-	sendSectionHeader(summary, "progression items")
 	nonKeyChecks := make(map[*node]*node)
 	for slot, item := range checks {
 		if !keyRegexp.MatchString(item.name) {
 			nonKeyChecks[slot] = item
 		}
 	}
-	prog, junk := filterJunk(ri.graph, nonKeyChecks, rom.treasures)
+	prog, junk := filterJunk(g, nonKeyChecks, treasures, resetFunc)
+	sendSectionHeader(summary, "progression items")
 	logSpheres(summary, prog, spheres, extra, rom.game, nil)
 	sendSectionHeader(summary, "small keys and boss keys")
 	logSpheres(summary, checks, spheres, extra, rom.game, keyRegexp.MatchString)

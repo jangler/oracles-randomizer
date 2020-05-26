@@ -654,12 +654,12 @@ def search_objects(rom, game, mode, obj_id=None, obj_subid=None):
     return objects
 
 
-def get_sprite(rom, game, sprite_id):
+def get_sprite(rom, game, index, subindex):
     bank, addr = get_table(SPRITE_PTR_TABLE, game)
-    addr += 0x60 * 3
+    addr += index * 3
     offset = full_addr(bank, addr)
     addr = rom[offset+1] * 0x100 + rom[offset-1]
-    addr += sprite_id * 3
+    addr += subindex * 3
     offset = full_addr(bank, addr)
     return [addr] + list(rom[offset:offset+3])
 
@@ -673,7 +673,7 @@ def get_treasure(rom, game, treasure_id, treasure_subid):
     offset = full_addr(bank, addr)
     return {
         "data": [addr] + list(rom[offset:offset+4]),
-        "gfx": get_sprite(rom, game, rom[offset+3]),
+        "gfx": get_sprite(rom, game, 0x60, rom[offset+3]),
     }
 
 
@@ -760,6 +760,14 @@ elif args.action == "searchobjects":
     name_objects(objects)
 
     yaml.dump(objects, sys.stdout)
+elif args.action == "sprite":
+    if len(args.args) != 2:
+        fatal("sprite expects 2 args, got", len(args.args))
+
+    index = int(args.args[0], 16)
+    subindex = int(args.args[1], 16)
+
+    yaml.dump(get_sprite(rom, game, index, subindex), sys.stdout)
 elif args.action == "treasure":
     if len(args.args) != 2:
         fatal("treasure expects 2 args, got", len(args.args))

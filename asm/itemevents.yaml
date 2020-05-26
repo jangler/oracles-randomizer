@@ -2,6 +2,30 @@
 # created/give, how to create/give the item, and what happens when the item is
 # obtained.
 
+floating:
+  # if item is multiworld, send it and replace the id and param in bc with a
+  # dummy value. returns nz if the item is outgoing.
+  handleGetMultiworldItem: |
+      ld e,INTERAC_MULTI_BYTE
+      ld a,(de)
+      and a
+      ret z
+      ld e,a
+      ld a,(multiPlayerNumber)
+      cp e
+      ret z
+      ld e,INTERAC_MULTI_BYTE
+      ld a,(de)
+      ld (wNetPlayerOut),a
+      ld hl,wNetTreasureOut
+      ld (hl),b
+      inc hl
+      ld (hl),c
+      ld b,TREASURE_RUPEES
+      ld c,00
+      or b
+      ret
+
 seasons:
   # check room flags to determine whether to create star ore instead of
   # whatever global flag 0e is. this also fixes a vanilla bug causing star ore
@@ -30,9 +54,15 @@ seasons:
   08/62a7/: call checkBeachItemObtained
 
   # star ore and maku tree both need fake treasure ids to check instead of the
-  # vanilla ones.
+  # vanilla ones. also handle shared items.
   02/makuTreeRooms: db 0b,0c,7b,2b,2c,2d,5b,5c,5d,ff
-  02/setFakeIdsForStarOreAndMakuTree_body: |
+  02/handleGetMultiworldItem: /include handleGetMultiworldItem
+  02/handleGetItem_body: |
+      call handleGetMultiworldItem
+      ld e,73
+      ld a,(de) # nonzero if interaction should set item room flag
+      and a
+      ret z
       ld a,(wActiveGroup)
       cp a,01
       jr z,.subrosia
@@ -105,16 +135,20 @@ seasons:
   08/7e62/: ld a,01
 
   # see function in bank 02.
-  09/setFakeIdsForStarOreAndMakuTree: |
+  09/handleGetItem: |
+      ld b,a
       push af
+      push de
       push hl
-      ld hl,setFakeIdsForStarOreAndMakuTree_body
+      ld hl,handleGetItem_body
       call callBank2
       pop hl
+      pop de
       pop af
+      ld a,b
       call giveTreasure
       ret
-  09/42e0/: call setFakeIdsForStarOreAndMakuTree
+  09/42e0/: call handleGetItem
 
   # mt. cucco platform cave item is normally created using ring-specific code.
   # values are replaced at randomization.
@@ -354,17 +388,31 @@ ages:
   # run certain actions depending on what item was picked up and where. this
   # has to be explicitly called if an item is given by an interaction other
   # than ID 60.
+  09/handleGetMultiworldItem: /include handleGetMultiworldItem
   09/handleGetItem: |
+      call handleGetMultiworldItem
+      ld a,b
       ld e,a
+      jr nz,.outgoing
+      push de
+      ld e,73
+      ld a,(de) # nonzero if interaction should set item room flag
+      pop de
+      and a
+      push af
       call satchelRefillSeeds
       call seedShooterGiveSeeds
       call activateFlute
-      call setD6BossKey
+      pop af
+      jr z,.incoming
+      .outgoing
       call dirtSetFakeId
       call tingleSetFakeId
       call symmetryBrotherSetFakeId
       call goronDanceSetFakeId
       call kingZoraSetFakeId
+      .incoming
+      call setD6BossKey
       call makuSeedResetTreeState
       ld a,e
       jp giveTreasure

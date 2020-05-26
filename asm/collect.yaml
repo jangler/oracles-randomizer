@@ -23,17 +23,26 @@ common:
   # return a spawning item's collection mode in a and e, based on current room.
   # the table format is (group, room, mode), and modes 80+ are used to index a
   # jump table for special cases. if no match is found, it returns the regular,
-  # non-overriden mode.
+  # non-overriden mode. does nothing if the item's collect mode is already set.
   06/lookupCollectMode_body: |
+      ld e,71
+      ld a,(de)
+      ld e,a
+      and a
+      ret nz
       ld a,(wActiveGroup)
       ld b,a
       ld a,(wActiveRoom)
       ld c,a
-      ld e,01
-      ld hl,collectModeTable
+      ld e,02
+      ld hl,collectPropertiesTable
       call searchDoubleKey
       ld e,a
       ret nc
+      inc hl
+      ldd a,(hl)
+      ld e,INTERAC_MULTI_BYTE
+      ld (de),a
       ld a,(hl)
       ld e,a
       cp a,80

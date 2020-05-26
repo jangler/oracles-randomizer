@@ -1,0 +1,247 @@
+floating:
+  # returns b = id, c = subid for b = id, c = param.
+  # might loop forever if given bad data.
+  reverseTreasureLookup: |
+      ld hl,treasureObjectData
+      ld a,b
+      rst 18
+      rst 18
+      .idLoop
+      bit 7,(hl)
+      jr z,.idDone
+      inc hl
+      ldi a,(hl)
+      ld h,(hl)
+      ld l,a
+      jr .idLoop
+      .idDone
+      ld a,c
+      ld c,00
+      inc hl
+      .paramLoop
+      cp (hl)
+      jr z,.paramDone
+      inc hl
+      inc hl
+      inc hl
+      inc hl
+      inc c
+      jr .paramLoop
+      .paramDone
+      ret
+
+  # use different text if the item you receive is for another player.
+  subMultiworldText: |
+      call getMultiworldItemDest
+      jr z,.local
+      call setTextNumberSubstitution
+      inc hl
+      ld a,TX_REMOTE_ITEM
+      jr .done
+      .local
+      ldi a,(hl)
+      .done
+      inc e
+      ld (de),a
+      ret
+
+  # sets z if the flag is local, and returns the destination player in a.
+  getMultiworldItemDest: |
+      push de
+      ld e,INTERAC_MULTI_BYTE
+      ld a,(de)
+      and a
+      ld e,a
+      ld a,(multiPlayerNumber)
+      jr z,.done
+      cp e
+      ld a,e
+      .done
+      pop de
+      ret
+
+  # conerts a to BCD and loads it into wTextNumberSubstitution.
+  setTextNumberSubstitution: |
+      push hl
+      ld hl,wTextNumberSubstitution
+      inc hl
+      ld (hl),0
+      .hundreds
+      sub a,64
+      jr c,.next
+      inc (hl)
+      jr .hundreds
+      .next
+      add a,64
+      dec hl
+      ld (hl),0
+      .tens
+      sub a,0a
+      jr c,.done
+      inc (hl)
+      jr .tens
+      .done
+      add a,0a
+      sla (hl)
+      sla (hl)
+      sla (hl)
+      sla (hl)
+      add a,(hl)
+      ld (hl),a
+      pop hl
+      ret
+
+  # run treasure state 1 code immediately following treasure state 0 code, so
+  # that link can pick up items on the same frame they're spawned. this avoids
+  # issues for treasures spawning on the frame before link gets warped, like
+  # after subrosian dancing and when failing poe skip. maku seed visuals don't
+  # quite work right this way, so don't do this for maku seed.
+  treasureCollideImmediately: |
+      call objectSetVisiblec2
+      ld e,70
+      ld a,(de)
+      cp a,TREASURE_MAKU_SEED
+      ret z
+      jp interactionCode60
+
+  # if var 71 is already nonzero, use that as the collect mode instead of
+  # whatever this is.
+  keepNonzeroCollectMode: |
+      ld e,71
+      ld a,(de)
+      and a
+      jr nz,.next
+      ld a,b
+      .next
+      ld b,a
+      swap a
+      and a,07
+      ld (de),a
+      ret
+
+common:
+  00/multiPlayerNumber: db 00
+
+  # returns nz if the file is part of a multiworld seed.
+  00/checkIsFileMultiworld: |
+      push bc
+      ld b,a
+      ld a,(multiPlayerNumber)
+      and a
+      ld a,b
+      pop bc
+      ret
+
+  # if the item buffer is nonzero, spawn the item at link and reset the buffer.
+  # var INTERAC_MULTI_BYTE is used to signal the destination player number, and
+  # var 71 is set to override normal collect/player properties lookup. this
+  # manually upgrades feather to cape based on wFeatherLevel to avoid
+  # softlocking by receiving feather during hide and seek.
+  05/checkNetItemBuffer: |
+      push bc
+      push de
+      push hl
+      ld a,(wMenuDisabled)
+      and a
+      jr nz,.done
+      ld a,(wLinkGrabState)
+      and a
+      jr nz,.done
+      ld hl,wNetTreasureIn
+      ldi a,(hl)
+      and a
+      jr z,.done
+      cp a,TREASURE_FEATHER
+      ld b,a
+      ld a,(hl)
+      ld c,a
+      jr nz,.noUpgradeFeather
+      ld a,(wWhichGame)
+      and a
+      jr nz,.noUpgradeFeather
+      ld a,(wFeatherLevel)
+      and a
+      jr z,.noUpgradeFeather
+      ld c,02
+      .noUpgradeFeather
+      ld e,BANK_TREASURE_DATA
+      ld hl,reverseTreasureLookup
+      call interBankCall
+      call createTreasure
+      jr nz,.done
+      ld de,w1Link.yh
+      call objectCopyPosition_rawAddress
+      ld a,(multiPlayerNumber)
+      ld l,INTERAC_MULTI_BYTE
+      ld (hl),a
+      ld l,71
+      ld (hl),02
+      ld hl,wNetCountIn
+      inc (hl)
+      ld hl,wNetTreasureIn
+      xor a
+      ldi (hl),a
+      ld (hl),a
+      .done
+      pop hl
+      pop de
+      pop bc
+      call linkInteractWithAButtonSensitiveObjects
+      ret
+
+seasons:
+  05/54ca/: call checkNetItemBuffer
+
+  09/treasureCollideImmediately: /include treasureCollideImmediately
+  09/4033/: jp treasureCollideImmediately
+
+  # don't set global flag 30 when defeating onox in multiworld
+  0f/checkSetFlag30: |
+      call checkIsFileMultiworld
+      ret nz
+      jp setGlobalFlag
+  0f/7145/: call checkSetFlag30
+
+  15/reverseTreasureLookup: /include reverseTreasureLookup
+  15/subMultiworldText: /include subMultiworldText
+  15/getMultiworldItemDest: /include getMultiworldItemDest
+  15/setTextNumberSubstitution: /include setTextNumberSubstitution
+  15/keepNonzeroCollectMode: /include keepNonzeroCollectMode
+  15/465f/: call keepNonzeroCollectMode
+  15/466f/: call subMultiworldText
+
+  # don't set file to completed when saving after credits in multiworld
+  15/checkSetFileCompleted: |
+      call checkIsFileMultiworld
+      ret nz
+      ld (wFileIsCompleted),a
+      ld a,28
+      jp setGlobalFlag
+  15/49bc/: jp checkSetFileCompleted
+
+ages:
+  05/5526/: call checkNetItemBuffer
+
+  09/treasureCollideImmediately: /include treasureCollideImmediately
+  09/49a6/: jp treasureCollideImmediately
+
+  # don't set file to completed when saving after credits in multiworld
+  15/checkSetFileCompleted: |
+      call checkIsFileMultiworld
+      ret nz
+      ld (wFileIsCompleted),a
+      ld a,1c
+      ld (wMakuMapTextPresent),a
+      ld a,8c
+      ld (wMakuMapTextPast),a
+      ld a,14
+      jp setGlobalFlag
+  15/4303/: jp checkSetFileCompleted
+
+  16/reverseTreasureLookup: /include reverseTreasureLookup
+  16/subMultiworldText: /include subMultiworldText
+  16/getMultiworldItemDest: /include getMultiworldItemDest
+  16/setTextNumberSubstitution: /include setTextNumberSubstitution
+  16/keepNonzeroCollectMode: /include keepNonzeroCollectMode
+  16/453e/: call keepNonzeroCollectMode
+  16/454e/: call subMultiworldText

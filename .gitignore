@@ -8,6 +8,7 @@ dist/
 gbc/
 notes/
 ref/
+untracked/
 *.gbc
 *.out
 *.prof

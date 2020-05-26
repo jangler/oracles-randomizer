@@ -14,6 +14,7 @@ maku tree:
   ids: [{bank: 0x15, addr: 0x613a}, {bank: 0x09, addr: 0x7e16}]
   subids: [{bank: 0x15, addr: 0x613d}, {bank: 0x09, addr: 0x7e19}]
   collect: maku tree (seasons)
+  local: true
 horon village SW chest:
   treasure: rupees, 20
   room: 0x00f5
@@ -34,6 +35,7 @@ blaino prize:
   maptile: 0x78
   addr: {bank: 0x0b, addr: 0x64cc}
   collect: touch
+  local: true
 floodgate keeper's house:
   treasure: floodgate key
   room: 0x03b5
@@ -57,6 +59,7 @@ master diver's reward:
   maptile: 0x2e
   addr: {bank: 0x0b} # addr set at EOB
   collect: diver room
+  local: true
 spring banana tree:
   treasure: spring banana
   room: 0x000f
@@ -131,6 +134,7 @@ chest in master diver's cave:
   room: 0x05bd
   maptile: 0x2e
   collect: diver room
+  local: true
 dry eyeglass lake, east cave:
   treasure: piece of heart
   room: 0x05c0
@@ -147,6 +151,7 @@ mt. cucco, talon's cave:
   treasure: subrosian ring
   room: 0x05b6
   maptile: 0x1b
+  local: true
 tarm ruins, under tree:
   treasure: gasha seed
   room: 0x039b
@@ -180,21 +185,25 @@ shop, 150 rupees:
   room: 0x03a6
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4ce8}
+  local: true
 member's shop 1:
   treasure: satchel
   room: 0x03b0
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4cce}
+  local: true
 member's shop 2:
   treasure: gasha seed
   room: 0x03b0
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4cd2}
+  local: true
 member's shop 3:
   treasure: treasure map
   room: 0x03b0
   maptile: 0xe6
   addr: {bank: 0x08, addr: 0x4cd8}
+  local: true
 
 # subrosia
 #
@@ -236,18 +245,21 @@ subrosian dance hall:
   room: 0x0395
   maptile: 0x9a
   addr: {bank: 0x0b, addr: 0x6646}
+  local: true
 temple of seasons:
   treasure: fool's ore # lone rod doesn't exist in rando
   room: 0x03ac
   maptile: 0xb0
   ids: [{bank: 0x15, addr: 0x70ce}]
   subids: [{bank: 0x15, addr: 0x70cc}]
+  local: true
 subrosia seaside:
   treasure: star ore
   room: 0x0166
   morerooms: [0x0176, 0x0175, 0x0165]
   maptile: 0xb0
   addr: {bank: 0x08} # addr set at EOB
+  local: true
 subrosian wilds chest:
   treasure: blue ore
   room: 0x0141
@@ -269,16 +281,19 @@ subrosia market, 1st item:
   room: 0x03a0
   maptile: 0xb0
   addr: {bank: 0x09, addr: 0x77da}
+  local: true
 subrosia market, 2nd item:
   treasure: rare peach stone
   room: 0x03a0
   maptile: 0xb0
   addr: {bank: 0x09, addr: 0x77e2}
+  local: true
 subrosia market, 5th item:
   treasure: member's card
   room: 0x03a0
   maptile: 0xb0
   addr: {bank: 0x09, addr: 0x77f4}
+  local: true
 great furnace:
   treasure: hard ore
   room: 0x038e
@@ -291,6 +306,7 @@ subrosian smithy:
   maptile: 0x1e
   ids: [{bank: 0x15, addr: 0x62be}]
   subids: [{bank: 0x15, addr: 0x62b4}]
+  local: true
 
 # hero's cave
 d0 key chest:
@@ -301,6 +317,7 @@ d0 sword chest:
   room: 0x0404
   ids: [{bank: 0x0a, addr: 0x7b90}] # not a real chest!
   subids: [{bank: 0x0a, addr: 0x7b92}]
+  local: true
 d0 rupee chest:
   treasure: rupees, 30
   room: 0x0405
@@ -466,6 +483,7 @@ d5 armos chest:
   room: 0x0491
   addr: {bank: 0x09, addr: 0x5051}
   collect: d5 armos
+  local: true
 d5 gibdo/zol chest:
   treasure: d5 dungeon map
   room: 0x048f
@@ -626,23 +644,29 @@ horon village tree:
   treasure: ember tree seeds
   room: 0x00f8
   ids: [{bank: 0x0d, addr: 0x68fb}]
+  local: true
 woods of winter tree:
   treasure: mystery tree seeds
   room: 0x009e
   ids: [{bank: 0x0d, addr: 0x68fe}]
+  local: true
 north horon tree:
   treasure: scent tree seeds
   room: 0x0067
   ids: [{bank: 0x0d, addr: 0x6901}]
+  local: true
 spool swamp tree:
   treasure: pegasus tree seeds
   room: 0x0072
   ids: [{bank: 0x0d, addr: 0x6904}]
+  local: true
 sunken city tree:
   treasure: gale tree seeds
   room: 0x005f
   ids: [{bank: 0x0d, addr: 0x6907}]
+  local: true
 tarm ruins tree:
   treasure: gale tree seeds
   room: 0x0010
   ids: [{bank: 0x0d, addr: 0x690a}]
+  local: true

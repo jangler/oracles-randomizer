@@ -60,7 +60,7 @@ type node struct {
 	minCount int // for countNodes, minimum parents to reach
 	parents  []*node
 	children []*node
-	nChecked uint64
+	player   int
 }
 
 // returns a new unconnected graph node, not yet part of any graph.

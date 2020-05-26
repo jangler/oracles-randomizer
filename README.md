@@ -77,6 +77,14 @@ For game-specific notes on randomization and logic, see
 and
 [ages_notes.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/ages_notes.md).
 
+See
+[multiworld.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/multiworld.md)
+for information on multiworld seeds.
+
+See
+[plan.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/plan.md)
+for information on plando generation.
+
 
 ## FAQ
 
@@ -100,7 +108,7 @@ A: no
 
 A: Yes, although linked support has not been extensively tested, and linked
 elements of the games are not randomized. Animal companion is still determined
-by the seed, not by the linked file.
+by the seed, not by the linked file. Multiworld linked games are not supported.
 
 
 ## Thanks to:

@@ -42,6 +42,7 @@ var agesNiceNames = map[string]string{
 	"harp":         "tune of echoes/currents/ages",
 	"switch hook":  "switch/long hook",
 	"bracelet":     "power bracelet/glove",
+	"feather":      "roc's feather",
 	"flippers":     "zora's flippers / mermaid suit",
 	"goron letter": "letter of introduction",
 
