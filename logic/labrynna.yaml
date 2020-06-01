@@ -12,7 +12,7 @@ nayru's house: [start]
 lynna city: {or: [break bush, flute, echoes, [shore present, mermaid suit]]}
 lynna village: {or: [lynna city, echoes]}
 black tower worker: [lynna village]
-maku tree: {or: [rescue nayru, [lynna village, shovel, kill normal]]}
+maku tree: {or: [rescue nayru, [maku path basement, kill normal]]}
 south lynna tree: [lynna city, seed item,
     or: [sword, punch object, dimitri's flute, [hard, break bush]]]
 lynna city chest: {or: [ember seeds, currents]}
