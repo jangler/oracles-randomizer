@@ -311,6 +311,13 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 		roms := make([]*romState, len(infiles))
 		routes := make([]*routeInfo, len(infiles))
 
+		if ui != nil {
+			if ui.doPrompt("use specific seed? (y/n)") == 'y' {
+				optsList[0].seed =
+					ui.promptSeed("enter seed: (8-digit hex number)")
+				logf("using seed %s.", optsList[0].seed)
+			}
+		}
 		seed, err := setRandomSeed(optsList[0].seed)
 		if err != nil {
 			fatal(err, logf)
@@ -342,7 +349,7 @@ func runRandomizer(ui *uiInstance, optsList []*randomizerOptions, logf logFunc) 
 			}
 
 			logf("randomizing %s.", infile)
-			getAndLogOptions(game, ui, ropts, i == 0, logf)
+			getAndLogOptions(game, ui, ropts, logf)
 			if ui != nil {
 				logf("")
 			}
@@ -518,14 +525,7 @@ func getRomPaths(ui *uiInstance, optsList []*randomizerOptions,
 // getAndLogOptions logs values of selected options, prompting for them first
 // if the TUI is used.
 func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions,
-	isFirstFile bool, logf logFunc) {
-	if ui != nil && isFirstFile {
-		if ui.doPrompt("use specific seed? (y/n)") == 'y' {
-			ropts.seed = ui.promptSeed("enter seed: (8-digit hex number)")
-			logf("using seed %s.", ropts.seed)
-		}
-	}
-
+	logf logFunc) {
 	if ui != nil {
 		ropts.hard = ui.doPrompt("enable hard difficulty? (y/n)") == 'y'
 	}
