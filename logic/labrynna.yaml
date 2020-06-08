@@ -20,7 +20,7 @@ shore present: {or: [flute, ricky's gloves, [break bush, feather],
     [ages, break bush], [lynna city, {or: [bracelet, mermaid suit]}],
     [currents, or: [feather, flippers, raft, [hard, seed shooter]]]]}
 south shore dirt: [shore present, or: [shovel, flute]]
-balloon guy: [feather, or: [sword, boomerang],
+balloon guy: [feather, or: [sword, boomerang, punch object],
     or: [currents, ricky's gloves, ricky's flute,
         [shore present, or: [any seed shooter,
             [hard, or: [pegasus satchel, bombs], boomerang]]]]]
