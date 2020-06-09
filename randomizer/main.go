@@ -63,6 +63,7 @@ var (
 	flagPlan     string
 	flagMulti    string
 	flagPortals  bool
+	flagMusic    bool
 	flagSeed     string
 	flagRace     bool
 	flagTreewarp bool
@@ -74,6 +75,7 @@ type randomizerOptions struct {
 	hard     bool
 	dungeons bool
 	portals  bool
+	music    bool
 	plan     *plan
 	race     bool
 	seed     string
@@ -103,6 +105,8 @@ func initFlags() {
 		"comma-separated list of strings such as s+hdp or a+ht")
 	flag.BoolVar(&flagPortals, "portals", false,
 		"shuffle subrosia portal connections (seasons)")
+	flag.BoolVar(&flagMusic, "music", false,
+		"shuffle music and sound effects")
 	flag.BoolVar(&flagRace, "race", false,
 		"don't print full seed in file select screen or filename")
 	flag.StringVar(&flagSeed, "seed", "",
@@ -143,6 +147,8 @@ func roptsFromString(s string, ropts *randomizerOptions) error {
 				ropts.portals = true
 			case 't':
 				ropts.treewarp = true
+			case 'm':
+				ropts.music = true
 			default:
 				return fmt.Errorf("unknown flag: %v", c)
 			}
@@ -189,6 +195,7 @@ func Main() {
 			hard:     flagHard,
 			dungeons: flagDungeons,
 			portals:  flagPortals,
+			music:    flagMusic,
 			include:  include,
 		})
 	}
@@ -547,6 +554,11 @@ func getAndLogOptions(game int, ui *uiInstance, ropts *randomizerOptions,
 		}
 		logf("portal shuffle %s.", ternary(ropts.portals, "on", "off"))
 	}
+
+	if ui != nil {
+		ropts.music = ui.doPrompt("shuffle music? (y/n)") == 'y'
+	}
+	logf("music shuffle %s.", ternary(ropts.music, "on", "off"))
 }
 
 // attempt to write rom data to a file and print summary info.
@@ -746,6 +758,10 @@ func setRomData(rom *romState, ri *routeInfo, ropts *randomizerOptions,
 		}
 	}
 
+	if ropts.music {
+		rom.shuffleMusic(ri.src, rom.game)
+	}
+
 	// do it! (but don't write anything)
 	return rom.mutate(warps, ri.seed, ropts)
 }
@@ -790,6 +806,9 @@ func optString(seed uint32, ropts *randomizerOptions, flagSep string) string {
 		}
 		if ropts.portals {
 			s += "p"
+		}
+		if ropts.music {
+			s += "m"
 		}
 	}
 
