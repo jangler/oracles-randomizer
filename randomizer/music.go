@@ -19,15 +19,13 @@ func (rom *romState) shuffleMusic(src *rand.Rand, game int) {
 	for sndType, music := range gameMusicData {
 		musicMap := make([]mutableRange, 0)
 		for i := 0; i < len(music); i++ {
-			musicOffset := address{0x39, uint16(soundPointerOffset)+3*uint16(music[i])}
+			musicOffset := address{0x39, uint16(soundPointerOffset+3*music[i])}
 			musicFullOffset := musicOffset.fullOffset()
 			oldData := rom.data[musicFullOffset:musicFullOffset+3]
 			musicMap = append(musicMap, mutableRange{musicOffset, oldData, oldData})
 		}
 		src.Shuffle(len(music), func(i, j int) {
-			tmpRange := musicMap[i].new
-			musicMap[i].new = musicMap[j].new
-			musicMap[j].new = tmpRange
+			musicMap[i].new, musicMap[j].new = musicMap[j].new, musicMap[i].new
 		})
 		for i := 0; i < len(music); i++ {
 			rom.codeMutables[fmt.Sprintf("%s%d", sndType, i)] = &musicMap[i]
