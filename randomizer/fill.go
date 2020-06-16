@@ -638,6 +638,8 @@ func getDungeonName(name string) string {
 		return "d6 present"
 	} else if strings.HasPrefix(name, "d6 past") {
 		return "d6 past"
+	} else if strings.HasPrefix(name, "maku path") {
+		return "d0"
 	} else if name == "slate" {
 		return "d8"
 	}
