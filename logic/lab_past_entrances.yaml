@@ -438,7 +438,7 @@ past underwater zora: {or: [
 past overwater zora: {or: [
     [clean seas, or: [
         raft,
-        open seas past,
+        open sea past,
         [mermaid suit, outer past - moving island]]],
     [mermaid suit, or: [
         past underwater zora,
@@ -446,7 +446,7 @@ past overwater zora: {or: [
 ]}
 past library island: {or: [
     [clean seas, or: [
-      open seas past, 
+      open sea past, 
       raft]], 
     [present library island, ages],
     [mermaid suit, or: [
@@ -462,7 +462,7 @@ outer past - moving island: {or: [
     [mermaid suit, outer past underwater - moving island],
     [clean seas, or: [
         raft, 
-        open seas past]],
+        open sea past]],
     [ages, flippers, outer present - moving island] # ages drops in water
 ]}
 outer past underwater - zora palace: {or: [past underwater zora]}

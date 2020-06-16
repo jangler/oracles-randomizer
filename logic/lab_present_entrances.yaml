@@ -354,7 +354,7 @@ present underwater zora: {or: [
 ]}
 present overwater zora: {or: [
     clean dimitri,
-    [clean seas, open seas present],
+    [clean seas, open sea present],
     [mermaid suit, or: [
         present underwater zora,
         [past overwater zora, currents]]]
