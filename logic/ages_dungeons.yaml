@@ -72,8 +72,10 @@ d2 boss: [d2 color room, d2 boss key, or: [bombs, hard]]
 enter d3: {or: []}
 
 # 0 keys
-d3 pols voice chest: [or: [inner d3, bombs],
-    [d3 six-block drop, kill pols voice]]
+d3 pols voice chest: {or: [
+    [inner d3, bombs],
+    [d3 six-block drop, kill pols voice]
+]}
 d3 1F spinner: [inner d3, or: [kill moldorm, bracelet]]
 d3 S crystal: [d3 1F spinner]
 four crystals owl: [mystery seeds, d3 1F spinner]
