@@ -39,7 +39,7 @@ outer cheval: {or: [
 ]}
 outer raft guy L: {or: [lynna village]}
 outer raft guy R: {or: [open sea past]}
-# black tower
+
 
 inner palace: {or: [
     inner palace L, 
@@ -68,16 +68,18 @@ inner past - SW goron - old zora: {or: []}
 inner cheval: {or: []}
 inner raft guy L: {or: [inner raft guy R]}
 inner raft guy R: {or: [inner raft guy L]}
-# black tower
+
 
 # western woods
 outer past - NE of mystery tree: {or: [
+    [fairies' woods, ages],
     [deku forest, or: [
         feather, 
         switch hook, 
         [ember seeds, bracelet]]]
 ]}
 outer past - NW of d2: {or: [
+    [fairies' woods, ages],
     [deku forest, or: [
         bracelet, 
         feather]]
