@@ -26,7 +26,7 @@ generated locally yet. Then install Go dependencies:
 
 ```
 go get github.com/mjibson/esc
-go get github.com/nsf/termbox-go
+go get github.com/gdamore/tcell
 go get github.com/yuin/gopher-lua
 go get gopkg.in/yaml.v2
 ```
