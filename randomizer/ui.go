@@ -4,16 +4,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/nsf/termbox-go"
+	"github.com/gdamore/tcell"
 )
-
-const colorDefault = termbox.ColorDefault // alias for convenience
 
 // a uiSegment is a text string with formatting information.
 type uiSegment struct {
-	fg, bg termbox.Attribute
-	text   string
-	el     uiEllipsis
+	style tcell.Style
+	text  string
+	el    uiEllipsis
 }
 
 // a uiLine is just an array of segments.
@@ -44,13 +42,14 @@ const (
 )
 
 var uiBottom = []uiSegment{
-	{text: "(q)", fg: colorDefault | termbox.AttrBold},
+	{text: "(q)", style: tcell.StyleDefault.Bold(true)},
 	{text: "uit"},
 }
 
 type uiInstance struct {
 	// this one's actually used as a constant, but can't be declared as one
 	lines          []uiLine
+	screen         tcell.Screen
 	write, rewrite chan uiLine
 	input, prompt  chan rune
 	resize         chan interface{}
@@ -59,15 +58,19 @@ type uiInstance struct {
 
 // creates and displays a blank TUI.
 func newUI(title string) *uiInstance {
-	err := termbox.Init()
+	screen, err := tcell.NewScreen()
 	if err != nil {
 		panic(err)
+	}
+	if err := screen.Init(); err != nil {
+		_ = err
 	}
 
 	ui := &uiInstance{
 		lines: []uiLine{
 			[]uiSegment{{text: title}},
 		},
+		screen:  screen,
 		write:   make(chan uiLine, 1),      // add a line
 		rewrite: make(chan uiLine),         // rewrite the last line
 		input:   make(chan rune),           // key input to main loop
@@ -87,16 +90,15 @@ func (ui *uiInstance) run() {
 	// run event processing in a different goroutine
 	go func() {
 		for {
-			evt := termbox.PollEvent()
-			switch evt.Type {
-			case termbox.EventKey:
-				switch evt.Key {
-				case termbox.KeyCtrlC, '\x7f': // 7f == backspace
-					ui.input <- rune(evt.Key)
-				default:
-					ui.input <- evt.Ch
+			switch evt := ui.screen.PollEvent().(type) {
+			case *tcell.EventKey:
+				switch evt.Key() {
+				case tcell.KeyCtrlC, tcell.KeyDEL: // del is backspace
+					ui.input <- rune(evt.Key())
+				case tcell.KeyRune:
+					ui.input <- evt.Rune()
 				}
-			case termbox.EventResize:
+			case *tcell.EventResize:
 				ui.resize <- 1
 			}
 		}
@@ -114,13 +116,14 @@ func (ui *uiInstance) run() {
 			ui.lines[len(ui.lines)-1] = ln
 			ui.draw(mode)
 		case ch := <-ui.input:
-			if ch == 'q' || ch == '\x03' || mode == modeDone {
-				termbox.Close()
+			if ch == 'q' || ch == rune(tcell.KeyCtrlC) || mode == modeDone {
+				ui.screen.Fini()
 				loop = false
 			} else if mode == modePrompt {
 				ui.prompt <- ch
 			}
 		case <-ui.resize:
+			ui.screen.Sync()
 			ui.draw(mode)
 		case m := <-ui.change:
 			mode = m
@@ -131,14 +134,14 @@ func (ui *uiInstance) run() {
 
 // (re)draws the entire display.
 func (ui *uiInstance) draw(mode uiMode) {
-	termbox.Clear(colorDefault, colorDefault)
+	ui.screen.Clear()
 
 	// draw title bar
-	w, h := termbox.Size()
+	w, h := ui.screen.Size()
 	ui.drawLine(w, 0, ui.lines[0])
 	var x int
 	for x := 0; x < w; x++ {
-		termbox.SetCell(x, 1, '─', colorDefault, colorDefault)
+		ui.screen.SetContent(x, 1, '─', nil, tcell.StyleDefault)
 	}
 
 	// draw content lines
@@ -152,18 +155,18 @@ func (ui *uiInstance) draw(mode uiMode) {
 
 	// draw bottom bar
 	for x := 0; x < w; x++ {
-		termbox.SetCell(x, h-2, '─', colorDefault, colorDefault)
+		ui.screen.SetContent(x, h-2, '─', nil, tcell.StyleDefault)
 	}
 	ui.drawLine(w, h-1, uiBottom)
 
 	// draw cursor if applicable
 	if mode == modePrompt {
-		termbox.SetCursor(x, len(ui.lines)-scroll)
+		ui.screen.ShowCursor(x, len(ui.lines)-scroll)
 	} else {
-		termbox.HideCursor()
+		ui.screen.HideCursor()
 	}
 
-	termbox.Flush()
+	ui.screen.Show()
 }
 
 // draws a line of text on the display, truncating it as needed (not wrapping
@@ -201,7 +204,7 @@ func (ui *uiInstance) drawLine(w, y int, ln uiLine) int {
 		// ...text
 		if i == truncIndex {
 			if seg.el == ellipsisLeft {
-				x = drawEllipsis(x, y, seg.fg, seg.bg)
+				x = ui.drawEllipsis(x, y, seg.style)
 				text = text[len(text)-truncLen:]
 			} else {
 				text = text[:truncLen]
@@ -209,13 +212,13 @@ func (ui *uiInstance) drawLine(w, y int, ln uiLine) int {
 		}
 
 		for _, ch := range text {
-			termbox.SetCell(x, y, ch, seg.fg, seg.bg)
+			ui.screen.SetContent(x, y, ch, nil, seg.style)
 			x++
 		}
 
 		// text...
 		if i == truncIndex && seg.el != ellipsisLeft {
-			x = drawEllipsis(x, y, seg.fg, seg.bg)
+			x = ui.drawEllipsis(x, y, seg.style)
 		}
 	}
 
@@ -223,9 +226,9 @@ func (ui *uiInstance) drawLine(w, y int, ln uiLine) int {
 }
 
 // drawEllipsis draws "..." at the given coords and returns the new x position.
-func drawEllipsis(x, y int, fg, bg termbox.Attribute) int {
+func (ui *uiInstance) drawEllipsis(x, y int, style tcell.Style) int {
 	for i := 0; i < 3; i++ {
-		termbox.SetCell(x, y, '.', fg, bg)
+		ui.screen.SetContent(x, y, '.', nil, style)
 		x++
 	}
 	return x
@@ -269,8 +272,8 @@ func (ui *uiInstance) doPrompt(s string) rune {
 			} else {
 				line = append(line, uiSegment{text: s[pos : pos+open]})
 				line = append(line, uiSegment{
-					text: s[pos+open : pos+open+close+1],
-					fg:   colorDefault | termbox.AttrBold,
+					text:  s[pos+open : pos+open+close+1],
+					style: tcell.StyleDefault.Bold(true),
 				})
 				acceptedRunes += s[pos+open+1 : pos+open+close]
 				pos += open + close + 1
@@ -305,7 +308,7 @@ func (ui *uiInstance) promptSeed(s string) string {
 		ch := <-ui.prompt
 		if strings.ContainsRune(acceptedRunes, ch) {
 			line[1].text += string(ch)
-		} else if ch == '\x7f' && len(line[1].text) > 0 {
+		} else if ch == rune(tcell.KeyDEL) && len(line[1].text) > 0 {
 			line[1].text = line[1].text[:len(line[1].text)-1]
 		}
 		ui.rewrite <- line
@@ -322,6 +325,6 @@ func (ui *uiInstance) promptSeed(s string) string {
 func (ui *uiInstance) done() {
 	ui.write <- []uiSegment{{}}
 	ui.write <- []uiSegment{{text: "press any key to exit.",
-		fg: colorDefault | termbox.AttrBold}}
+		style: tcell.StyleDefault.Bold(true)}}
 	ui.change <- modeDone
 }
