@@ -12,6 +12,7 @@ following instructions are for building the dev branch.
 First, clone and set up the repository:
 
 ```
+go get github.com/mjibson/esc
 go get github.com/jangler/oracles-randomizer
 cd $GOPATH/src/github.com/jangler/oracles-randomizer
 git fetch
@@ -20,18 +21,7 @@ git submodule init
 git submodule update
 ```
 
-You'll get warnings about being unable to build the code, which is expected and
-since some of the code isn't tracked by the repository and hasn't been
-generated locally yet. Then install Go dependencies:
-
-```
-go get github.com/mjibson/esc
-go get github.com/gdamore/tcell
-go get github.com/yuin/gopher-lua
-go get gopkg.in/yaml.v2
-```
-
-Last, generate and build the code (do both whenever changes are made):
+Then generate and build the code (do both whenever changes are made):
 
 ```
 go generate
