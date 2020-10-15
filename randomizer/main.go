@@ -88,7 +88,7 @@ func initFlags() {
 	flag.StringVar(&flagCpuProf, "cpuprofile", "",
 		"write CPU profile to file")
 	flag.StringVar(&flagDevCmd, "devcmd", "",
-		"subcommands are 'findaddr', 'showasm', 'stats', and 'hardstats'")
+		"subcommands are 'findaddr', 'gui', 'showasm', 'stats', and 'hardstats'")
 	flag.BoolVar(&flagDungeons, "dungeons", false,
 		"shuffle dungeon entrances")
 	flag.BoolVar(&flagHard, "hard", false,
@@ -197,6 +197,9 @@ func Main() {
 	}
 
 	switch flagDevCmd {
+	case "gui":
+		// test gui
+		runGUI()
 	case "findaddr":
 		// print the name of the mutable/etc that modifies an address
 		tokens := strings.Split(flag.Arg(0), "/")
