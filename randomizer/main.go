@@ -156,6 +156,10 @@ func roptsFromString(s string, ropts *randomizerOptions) error {
 func Main() {
 	initFlags()
 
+	// XXX temp gui testing code
+	runGUI()
+	return
+
 	if flagCpuProf != "" {
 		f, err := os.Create(flagCpuProf)
 		if err != nil {
