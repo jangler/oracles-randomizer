@@ -27,7 +27,7 @@ d1 U-room: {or: [
     d1 west terrace,
     [d1 wide room, break bush safe, kill giant ghini,
         count: [3, d1 small key]]]}
-d1 basement: [d1 U-room, ember seeds]
+d1 basement: [d1 U-room, or: [ember seeds, [hard, mystery seeds]]]
 
 # d2
 enter d2: {or: []}
