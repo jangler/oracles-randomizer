@@ -21,10 +21,6 @@ There are three ways to use the randomizer:
 3. Use the command line. Type `./oracles-randomizer -h` to view the usage
    summary.
 
-A web interface also exists at <http://oosarando.jaysee.live/>, created and
-maintained by jaysee87. Note that the web interface may not always be using the
-latest version of the randomizer.
-
 
 ## Download
 
