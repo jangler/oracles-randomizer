@@ -67,6 +67,9 @@ General details common to both games:
   warps to the seed tree in Horon Village or Lynna City. Tree warp comes with
   no warranty and is not supported as a "feature", so think carefully before
   using it.
+- If hard difficulty is enabled, speedrun-level tricks may be required to
+  complete the game. Use normal difficulty if you just want to do a casual
+  playthrough!
 
 For game-specific notes on randomization and logic, see
 [seasons_notes.md](https://github.com/jangler/oracles-randomizer/blob/master/doc/seasons_notes.md)
