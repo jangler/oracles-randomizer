@@ -27,7 +27,7 @@ d1 U-room: {or: [
     d1 west terrace,
     [d1 wide room, break bush safe, kill giant ghini,
         count: [3, d1 small key]]]}
-d1 basement: [d1 U-room, ember seeds]
+d1 basement: [d1 U-room, or: [ember seeds, [hard, mystery seeds]]]
 
 # d2
 enter d2: {or: []}
@@ -203,7 +203,8 @@ enter d6 present: {or: []}
 enter d6 past: {or: []}
 
 # past, 0 keys
-d6 past color room: [enter d6 past, feather, kill switch hook]
+d6 past color room: [enter d6 past, or: [feather, [hard, mystery seeds]],
+        kill switch hook]
 d6 past wizzrobe chest: [enter d6 past, bombs, kill wizzrobe]
 d6 past pool chest: [enter d6 past, bombs, ember seeds, flippers]
 d6 open wall: [enter d6 past, bombs, ember shooter]

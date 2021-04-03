@@ -149,6 +149,9 @@ ages:
   # vanilla bug: compass doesn't show D6 boss key chest.
   01/4eea/: db 34
 
+  # make postgame respawn point valid even if maku tree is in cheshire state
+  01/5eca/: db 58,50
+
   03/4d6b/: call skipCapcom
 
   # don't spawn maku path skeletons when entering from the right.
