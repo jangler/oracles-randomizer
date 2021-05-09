@@ -63,6 +63,10 @@ General details common to both games:
   accessed from the inventory ring box icon. For convenience, the L-3 ring box
   is given at the start. The punch rings can be used with only one equip slot
   empty.
+- Select+right on the file select screen toggles music. Select+left on the file
+  select screen toggles between GBC palettes (default) and lighter GBA
+  palettes; this will only have an effect if you're playing on or emulating a
+  GBA.
 - If tree warp is enabled, holding start while closing the map screen outdoors
   warps to the seed tree in Horon Village or Lynna City. Tree warp comes with
   no warranty and is not supported as a "feature", so think carefully before
