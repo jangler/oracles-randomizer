@@ -18,7 +18,6 @@ ages:
       ld a,(wWarpDestGroup)
       and a,f0
       ld (wWarpDestGroup),a
-      ret
       .next
       push bc
       ld bc,0d04 # past maku road south entrance room
