@@ -55,8 +55,7 @@ exit house of pirates portal: {or: []}
 enter temple remains lower portal: [temple remains lower stump, or: [
     [bomb temple remains, feather],
     [or: [temple remains default winter, winter], or: [
-        [exit temple remains upper portal,
-            or: [temple remains default winter, feather]],
+        [exit temple remains upper portal, feather, winter],
         [hard, shovel, break bush, jump 6],
         [hard, or: [temple remains default spring, spring],
             break flower, break bush, jump 6, winter],
