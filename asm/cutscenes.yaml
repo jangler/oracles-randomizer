@@ -11,7 +11,10 @@ seasons:
       ld hl,6314
       call interactionSetScript
       ld a,15
-      jp setGlobalFlag
+      call setGlobalFlag
+      ld hl,c716
+      set 0,(hl) # affects tileSubTable
+      ret
 
   # drop link below bushes at game start, not above
   07/4197/: db 58
