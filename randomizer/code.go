@@ -70,7 +70,7 @@ func (rom *romState) replaceRaw(addr address, label, data string) string {
 // returns a byte table of (group, room, collect mode, player) entries for
 // randomized items. a mode >7f means to use &7f as an index to a jump table
 // for special cases.
-func makeCollectPropertiesTable(itemSlots map[string]*itemSlot) string {
+func makeCollectPropertiesTable(game, player int, itemSlots map[string]*itemSlot) string {
 	b := new(strings.Builder)
 	for _, key := range orderedKeys(itemSlots) {
 		slot := itemSlots[key]
@@ -89,6 +89,14 @@ func makeCollectPropertiesTable(itemSlots map[string]*itemSlot) string {
 			if _, err := b.Write([]byte{group, room, mode, slot.player}); err != nil {
 				panic(err)
 			}
+		}
+	}
+
+	// linked hero's cave
+	if game == gameSeasons {
+		// don't play linked multiworld please
+		if _, err := b.Write([]byte{0x05, 0x2c, collectModes["chest"], byte(player)}); err != nil {
+			panic(err)
 		}
 	}
 
@@ -403,7 +411,7 @@ func (rom *romState) initBanks() {
 	roomTreasureBank := byte(sora(rom.game, 0x3f, 0x38).(int))
 	numOwlIds := sora(rom.game, 0x1e, 0x14).(int)
 	rom.replaceRaw(address{0x06, 0}, "collectPropertiesTable",
-		makeCollectPropertiesTable(rom.itemSlots))
+		makeCollectPropertiesTable(rom.game, rom.player, rom.itemSlots))
 	rom.replaceRaw(address{roomTreasureBank, 0}, "roomTreasures",
 		makeRoomTreasureTable(rom.game, rom.itemSlots))
 	rom.replaceRaw(address{0x3f, 0}, "owlTextOffsets",
