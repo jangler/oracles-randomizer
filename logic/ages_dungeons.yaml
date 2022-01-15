@@ -148,8 +148,7 @@ d4 second crystal switch: [d4 minecart B,
 # 3 keys
 d4 minecart C: [d4 minecart B, count: [3, d4 small key]]
 d4 color tile drop: [d4 minecart C,
-    or: [sword, ember seeds, scent shooter, gale shooter,
-        [hard, scent satchel]]]
+    or: [sword, ember seeds, scent shooter, gale shooter]]
 
 # 4 keys
 d4 minecart D: [d4 color tile drop, count: [4, d4 small key]]
